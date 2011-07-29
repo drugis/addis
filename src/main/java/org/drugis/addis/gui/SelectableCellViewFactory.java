@@ -27,29 +27,30 @@ package org.drugis.addis.gui;
 import java.awt.Color;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphConstants;
 import org.jgrapht.ext.JGraphModelAdapter;
 
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 
-	private ListHolder<DrugSet> d_selectedDrugs;
+	private ObservableList<DrugSet> d_selectedDrugs;
 
 	@SuppressWarnings("unchecked")
-	public SelectableCellViewFactory(JGraphModelAdapter model, ListHolder<DrugSet> selectedDrugs) {
+	public SelectableCellViewFactory(JGraphModelAdapter model, ObservableList<DrugSet> observableList) {
 		super(model);
 		
-		this.d_selectedDrugs = selectedDrugs;
+		d_selectedDrugs = observableList;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void addVertexAttributes(AttributeMap map, Vertex v) {
 		Color col = null;
-		if (d_selectedDrugs.getValue().contains(v.getDrug())) {
+		if (d_selectedDrugs.contains(v.getDrug())) {
 			col = Color.green;
 		} else {
 			col = Color.lightGray;

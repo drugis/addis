@@ -24,21 +24,20 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
@@ -62,24 +61,30 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
-		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), 
-				getSelectedDrugsModel(), getOutcomeMeasureModel()); // FIXME: Use BuildStudyGraphPresentation, don't create multiple copies.
-		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
+		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), getSelectedDrugsModel(), getOutcomeMeasureModel());
+		getSelectedDrugsModel().addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void contentsChanged(ListDataEvent e) {
 				updateArmHolders();
 			}
 		});
+		getStudyGraphModel().addGraphListener(d_connectedDrugsSelectedModel);
+		getSelectedDrugsModel().addListDataListener(d_connectedDrugsSelectedModel);
 		d_studySelectionCompleteModel = new StudySelectionCompleteListener();
 	}
 
 	@Override
 	protected void buildDrugHolders() {
 		d_connectedDrugsSelectedModel = new DrugSelectionCompleteListener();
-		d_studyGraphPresentationModel.getSelectedDrugsModel().addValueChangeListener(d_connectedDrugsSelectedModel);
 	}
 
 	@Override
-	public ListHolder<DrugSet> getSelectedDrugsModel() {
+	public ObservableList<DrugSet> getSelectedDrugsModel() {
 		return d_studyGraphPresentationModel.getSelectedDrugsModel();
 	}
 	
@@ -152,15 +157,34 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 	
 	@SuppressWarnings("serial")
-	private class DrugSelectionCompleteListener extends ModifiableHolder<Boolean> implements PropertyChangeListener {
+	private class DrugSelectionCompleteListener extends ModifiableHolder<Boolean> implements GraphListener<Vertex, Edge>, ListDataListener {
 		public DrugSelectionCompleteListener() {
 			setValue(false);
 		}
-		
-		@SuppressWarnings("unchecked")
-		public void propertyChange(PropertyChangeEvent evt) {
-			List<Drug> selectedDrugs = (List<Drug>) evt.getNewValue();	
-			setValue(selectedDrugs.size() > 1 && d_studyGraphPresentationModel.isSelectionConnected());
+		public void edgeAdded(GraphEdgeChangeEvent<Vertex, Edge> e) {
+			update();
+		}
+		public void edgeRemoved(GraphEdgeChangeEvent<Vertex, Edge> e) {
+			update();
+		}
+		public void vertexAdded(GraphVertexChangeEvent<Vertex> e) {
+			update();
+		}
+		public void vertexRemoved(GraphVertexChangeEvent<Vertex> e) {
+			update();
+		}
+		public void contentsChanged(ListDataEvent e) {
+			update();
+		}
+		public void intervalAdded(ListDataEvent e) {
+			update();
+		}
+		public void intervalRemoved(ListDataEvent e) {
+			update();
+		}
+
+		private void update() {
+			setValue(getSelectedDrugsModel().size() > 1 && d_studyGraphPresentationModel.isSelectionConnected());
 		}
 	}
 
@@ -169,7 +193,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<? extends Study> studies = getSelectedStudiesModel();
-		List<DrugSet> drugs = getSelectedDrugsModel().getValue();
+		List<DrugSet> drugs = getSelectedDrugsModel();
 		Map<Study, Map<DrugSet, Arm>> armMap = getArmMap();
 		
 		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);

@@ -104,7 +104,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
-				new DefaultListHolder<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
+				new ArrayListModel<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {

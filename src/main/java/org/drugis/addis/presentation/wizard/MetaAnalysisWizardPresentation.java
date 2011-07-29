@@ -26,8 +26,8 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -40,13 +40,14 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.presentation.AbstractListHolder;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.util.ListDataListenerManager;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -54,7 +55,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private ModifiableHolder<DrugSet> d_firstDrugHolder;
 	private ModifiableHolder<DrugSet> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-	private ListHolder<DrugSet> d_selectedDrugs;
+	private ObservableList<DrugSet> d_selectedDrugs;
 	private RandomEffectsMetaAnalysisPresentation d_pm;
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
@@ -87,48 +88,105 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 		
 		d_selectedDrugs = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
-		d_selectedDrugs.addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
+		d_selectedDrugs.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void contentsChanged(ListDataEvent e) {
 				updateArmHolders();
 			}
 		});
 	}
 	
-	@SuppressWarnings("serial")
-	private static class SelectedDrugsHolder extends AbstractListHolder<DrugSet> {
-		private ArrayList<DrugSet> d_list;
+	private static class SelectedDrugsHolder extends AbstractList<DrugSet> implements ObservableList<DrugSet> {
+		ObservableList<DrugSet> d_list = new ArrayListModel<DrugSet>();
 		private ModifiableHolder<DrugSet> d_firstDrugHolder;
 		private ModifiableHolder<DrugSet> d_secondDrugHolder;
+		private ListDataListenerManager d_listenerManager = new ListDataListenerManager();
 
-		public SelectedDrugsHolder(ModifiableHolder<DrugSet> firstDrugHolder,
-				ModifiableHolder<DrugSet> secondDrugHolder) {
-			d_list = new ArrayList<DrugSet>();
+
+		public SelectedDrugsHolder(ModifiableHolder<DrugSet> firstDrugHolder, ModifiableHolder<DrugSet> secondDrugHolder) {
 			d_firstDrugHolder = firstDrugHolder;
 			d_secondDrugHolder = secondDrugHolder;
-			updated();
-			PropertyChangeListener listener = new PropertyChangeListener() {
+			d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					updated();
+					if (evt.getOldValue() == null) {
+						if (evt.getNewValue() != null) {
+							d_list.add(0, (DrugSet)evt.getNewValue());
+						}
+					} else {
+						if (evt.getNewValue() == null) {
+							d_list.remove(0);
+						} else {
+							d_list.set(0, (DrugSet) evt.getNewValue());
+						}
+					}
 				}
-			};
-			d_firstDrugHolder.addValueChangeListener(listener);
-			d_secondDrugHolder.addValueChangeListener(listener);
-		}
-		
-		private void updated() {
-			d_list.clear();
-			if (d_firstDrugHolder.getValue() != null) {
-				d_list.add(d_firstDrugHolder.getValue());
-			}
-			if (d_secondDrugHolder.getValue() != null) {
-				d_list.add(d_secondDrugHolder.getValue());
-			}
-			fireValueChange(null, Collections.unmodifiableList(d_list));
+			});
+			d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getOldValue() == null) {
+						if (evt.getNewValue() != null) {
+							d_list.add(d_list.size(),(DrugSet)evt.getNewValue());
+						}
+					} else {
+						if (evt.getNewValue() == null) {
+							d_list.remove(d_list.size() - 1);
+						} else {
+							d_list.set(d_list.size() - 1, (DrugSet) evt.getNewValue());
+						}
+					}
+				}
+			});
+			d_list.addListDataListener(new ListDataListener() {
+				public void intervalRemoved(ListDataEvent e) {
+					d_listenerManager.fireIntervalRemoved(SelectedDrugsHolder.this, e.getIndex0(), e.getIndex1());
+				}
+				
+				@Override
+				public void intervalAdded(ListDataEvent e) {
+					d_listenerManager.fireIntervalAdded(SelectedDrugsHolder.this, e.getIndex0(), e.getIndex1());
+				}
+				
+				@Override
+				public void contentsChanged(ListDataEvent e) {
+					d_listenerManager.fireContentsChanged(SelectedDrugsHolder.this, e.getIndex0(), e.getIndex1());
+				}
+			});
 		}
 
 		@Override
-		public List<DrugSet> getValue() {
-			return Collections.unmodifiableList(d_list);
+		public DrugSet get(int index) {
+			return d_list.get(index);
+		}
+
+		@Override
+		public int size() {
+			return d_list.size();
+		}
+
+
+		@Override
+		public Object getElementAt(int index) {
+			return get(index);
+		}
+
+		@Override
+		public int getSize() {
+			return size();
+		}
+
+		@Override
+		public void addListDataListener(ListDataListener l) {
+			d_listenerManager.addListDataListener(l);
+		}
+		
+		@Override
+		public void removeListDataListener(ListDataListener l) {
+			d_listenerManager.removeListDataListener(l);
 		}
 		
 	}
@@ -150,7 +208,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 	
 	@Override
-	public ListHolder<DrugSet> getSelectedDrugsModel() {
+	public ObservableList<DrugSet> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}
 

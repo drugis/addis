@@ -24,7 +24,9 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -88,17 +90,20 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		ArrayList<DrugSet> newList = new ArrayList<DrugSet>();
 		newList.add(d_sertrSet);
-		d_pm.getSelectedDrugsModel().setValue(newList);
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<DrugSet>(newList);
 		newList.add(d_paroxSet);
-		d_pm.getSelectedDrugsModel().setValue(newList);
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<DrugSet>(newList);		
 		newList.add(d_fluoxSet);
-		d_pm.getSelectedDrugsModel().setValue(newList);
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(newList);
 		assertTrue((Boolean)completeModel.getValue());		
 	}
 	
@@ -122,7 +127,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		replay(mock);
 		
 		listModel.getAvailableStudies().addListDataListener(mock);
-		d_pm.getSelectedDrugsModel().setValue(selectionList);
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(selectionList);
 		verify(mock);
 	}
 	
@@ -138,7 +144,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
 		
-		d_pm.getSelectedDrugsModel().setValue(new ArrayList<DrugSet>(selectionList));
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(new ArrayList<DrugSet>(selectionList));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
 		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getAvailableStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
@@ -146,7 +153,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		listModel.getAvailableStudies().addListDataListener(mock);
 		selectionList.add(d_fluoxSet);	
-		d_pm.getSelectedDrugsModel().setValue(selectionList);		
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(selectionList);		
 		verify(mock);
 	}
 	
@@ -162,7 +170,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		ArrayList<DrugSet> selectionList = new ArrayList<DrugSet>();
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
-		d_pm.getSelectedDrugsModel().setValue(selectionList);
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(selectionList);
 
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(0, graphModel.edgeSet().size());
@@ -232,7 +241,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_paroxSet
 			};
 		
-		assertEquals(Arrays.asList(expected), d_pm.getDrugListModel().getValue());
+		assertEquals(Arrays.asList(expected), d_pm.getDrugListModel());
 	}
 	
 	@Test
@@ -286,7 +295,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testCreateMetaAnalysis() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.getSelectedDrugsModel().setValue(Arrays.asList(new DrugSet[] {
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(Arrays.asList(new DrugSet[] {
 				d_fluoxSet,
 				d_paroxSet,
 				d_sertrSet}));
@@ -300,7 +310,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		NetworkMetaAnalysis ma = d_pm.createMetaAnalysis("name");
 		
-		assertEquals(d_pm.getSelectedDrugsModel().getValue(), ma.getIncludedDrugs());
+		assertEquals(d_pm.getSelectedDrugsModel(), ma.getIncludedDrugs());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
 				d_pm.getStudyListModel().getSelectedStudiesModel());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());

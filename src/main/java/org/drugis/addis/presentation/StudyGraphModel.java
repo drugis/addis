@@ -24,8 +24,6 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,12 +83,12 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 	
-	protected ListHolder<DrugSet> d_drugs;
+	protected ObservableList<DrugSet> d_drugs;
 	private ObservableList<Study> d_studies;
 	private final ValueHolder<OutcomeMeasure> d_om;
 
 	
-	public StudyGraphModel(ObservableList<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> om){ // FIXME: change to ObservableList once available.
+	public StudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> om) { // FIXME: change to ObservableList once available.
 		super(Edge.class);
 		
 		d_drugs = drugs;
@@ -98,27 +96,19 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		d_om = om;	
 		
 		resetGraph();
-		
-		PropertyChangeListener listener = new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent ev) {
-				resetGraph();
-			}
-		};
+
 		ListDataListener listListener = new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				resetGraph();
 			}
-
 			public void intervalAdded(ListDataEvent e) {
 				resetGraph();
 			}
-			
-
 			public void contentsChanged(ListDataEvent e) {
 				resetGraph();
 			}
 		};
-		d_drugs.addValueChangeListener(listener);
+		d_drugs.addListDataListener(listListener);
 		d_studies.addListDataListener(listListener);
 	}
 	
@@ -129,17 +119,15 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		removeAllEdges(edges);
 		removeAllVertices(verts);
 
-		List<DrugSet> drugs = d_drugs.getValue();
-
-		for (DrugSet d : drugs) {
+		for (DrugSet d : d_drugs) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
 
-		for (int i = 0; i < (drugs.size() - 1); ++i) {
-			for (int j = i + 1; j < drugs.size(); ++j) {
-				List<Study> studies = getStudies(drugs.get(i), drugs.get(j));
+		for (int i = 0; i < (d_drugs.size() - 1); ++i) {
+			for (int j = i + 1; j < d_drugs.size(); ++j) {
+				List<Study> studies = getStudies(d_drugs.get(i), d_drugs.get(j));
 				if (studies.size() > 0) {
-					addEdge(findVertex(drugs.get(i)), findVertex(drugs.get(j)), new Edge(studies.size()));
+					addEdge(findVertex(d_drugs.get(i)), findVertex(d_drugs.get(j)), new Edge(studies.size()));
 				}
 			}
 		}
@@ -168,7 +156,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 * and outcome.
 	 */
 	public List<DrugSet> getDrugs() {
-		return d_drugs.getValue();
+		return d_drugs;
 	}
 	
 	/**

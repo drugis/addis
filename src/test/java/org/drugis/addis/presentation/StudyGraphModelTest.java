@@ -25,17 +25,21 @@
 package org.drugis.addis.presentation;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
@@ -45,7 +49,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
-import org.drugis.common.JUnitUtil;
+import org.drugis.addis.util.ListDataEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +61,7 @@ public class StudyGraphModelTest {
 	private StudyGraphModel d_pm;
 	private List<DrugSet> d_drugs;
 	private Domain d_domain;
-	private AbstractListHolder<DrugSet> d_drugListHolder;
+	private ObservableList<DrugSet> d_drugListHolder;
 	private ValueHolder<OutcomeMeasure> d_outcome;
 	
 	@Before
@@ -72,7 +76,7 @@ public class StudyGraphModelTest {
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
-		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
+		d_drugListHolder = new ArrayListModel<DrugSet>(d_drugs);
 		d_pm = new StudyGraphModel(studies, d_drugListHolder, d_outcome);
 	}
 	
@@ -158,7 +162,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testNullEndpoint() {
-		d_pm = new StudyGraphModel(new ArrayListModel<Study>(), new DefaultListHolder<DrugSet>(Collections.<DrugSet>emptyList()), 
+		d_pm = new StudyGraphModel(new ArrayListModel<Study>(), new ArrayListModel<DrugSet>(Collections.<DrugSet>emptyList()), 
 				new UnmodifiableHolder<OutcomeMeasure>(null));
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
@@ -168,18 +172,20 @@ public class StudyGraphModelTest {
 		assertEquals(3, d_pm.vertexSet().size());
 		assertEquals(2, d_pm.edgeSet().size());
 		
-		PropertyChangeListener l = JUnitUtil.mockListener(d_drugListHolder, "value",
-				 new ArrayList<DrugSet>(d_drugs), new ArrayList<DrugSet>());
-		d_drugListHolder.addValueChangeListener(l);
-	
-		d_drugListHolder.setValue(Collections.emptyList());
+		ListDataListener l = createStrictMock(ListDataListener.class);
+		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_drugListHolder, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
+		replay(l);
+
+		d_drugListHolder.addListDataListener(l);
+		d_drugListHolder.clear();
+		
 		assertTrue(d_pm.vertexSet().isEmpty());
 		verify(l);
 	}
 	
 	@Test
 	public void testChangeStudyList() {
-		AbstractListHolder<DrugSet> drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
+		ObservableList<DrugSet> drugListHolder = new ArrayListModel<DrugSet>(d_drugs);
 		ObservableList<Study> studyListHolder = new ArrayListModel<Study>();
 		
 		d_pm = new StudyGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));

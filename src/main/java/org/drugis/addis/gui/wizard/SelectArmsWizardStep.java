@@ -82,7 +82,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (DrugSet drug: d_pm.getSelectedDrugsModel().getValue()) {
+			for (DrugSet drug: d_pm.getSelectedDrugsModel()) {
 				if (curStudy.getDrugs().contains(drug)) {
 					row = createArmSelect(row, curStudy, drug, cc);
 				}

@@ -24,15 +24,19 @@
 
 package org.drugis.addis.presentation;
 
+import static org.easymock.EasyMock.createStrictMock;
+import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
@@ -40,7 +44,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.common.JUnitUtil;
+import org.drugis.addis.util.ListDataEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,7 +56,7 @@ public class SelectableStudyGraphModelTest {
 	private Domain d_domain;
 	private ArrayList<DrugSet> d_drugs;
 	private SelectableStudyGraphModel d_pm;
-	private ListHolder<DrugSet> d_drugListHolder;
+	private ObservableList<DrugSet> d_drugListHolder;
 
 	@Before
 	public void setUp() {
@@ -62,7 +66,7 @@ public class SelectableStudyGraphModelTest {
 		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
 		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
-		d_drugListHolder = new DefaultListHolder<DrugSet>(d_drugs);
+		d_drugListHolder = new ArrayListModel<DrugSet>(d_drugs);
 		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
@@ -72,13 +76,17 @@ public class SelectableStudyGraphModelTest {
 	
 	@Test
 	public void testGetSelectedDrugsModel() {
-		ListHolder<DrugSet> selDrugs = d_pm.getSelectedDrugsModel();
+		ObservableList<DrugSet> selDrugs = d_pm.getSelectedDrugsModel();
 		List<DrugSet> list = Collections.singletonList(new DrugSet(ExampleData.buildDrugFluoxetine()));
 		
-		PropertyChangeListener mock = JUnitUtil.mockListener(selDrugs, "value", selDrugs.getValue(), list);
-		selDrugs.addValueChangeListener(mock);
+		ListDataListener mock = createStrictMock(ListDataListener.class);
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(selDrugs, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(selDrugs, ListDataEvent.INTERVAL_ADDED, 0, 0)));
+		replay(mock);
 		
-		d_drugListHolder.setValue(list);
+		selDrugs.addListDataListener(mock);
+		d_drugListHolder.clear();
+		d_drugListHolder.addAll(list);
 		verify(mock);
 	}
 	
@@ -87,7 +95,8 @@ public class SelectableStudyGraphModelTest {
 		assertTrue(d_pm.isSelectionConnected());
 
 		d_drugs.remove(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		d_pm.getSelectedDrugsModel().setValue(d_drugs);
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(d_drugs);
 		
 		assertFalse(d_pm.isSelectionConnected());
 	}

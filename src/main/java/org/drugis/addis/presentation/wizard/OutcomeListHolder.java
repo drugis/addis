@@ -46,8 +46,8 @@ public class OutcomeListHolder extends AbstractListHolder<OutcomeMeasure> implem
 	private Domain d_domain;
 
 	public OutcomeListHolder(ModifiableHolder<Indication> indication, Domain domain) {
-		this.d_indication = indication;
-		this.d_domain = domain;
+		d_indication = indication;
+		d_domain = domain;
 		d_indication.addValueChangeListener(this);
 	}
 	

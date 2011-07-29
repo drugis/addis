@@ -25,11 +25,12 @@
 package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;
 import org.jgraph.JGraph;
 import org.jgraph.graph.GraphLayoutCache;
+
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class SelectableStudyGraph extends StudyGraph {
@@ -41,7 +42,7 @@ public class SelectableStudyGraph extends StudyGraph {
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
-		ListHolder<DrugSet> selectedDrugs = ((SelectableStudyGraphModel)d_pm).getSelectedDrugsModel();
+		ObservableList<DrugSet> selectedDrugs = ((SelectableStudyGraphModel)d_pm).getSelectedDrugsModel();
 		SelectedDrugsGraphListener listener =
 			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
 		graph.addMouseListener(listener);

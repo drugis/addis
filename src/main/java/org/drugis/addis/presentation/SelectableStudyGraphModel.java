@@ -24,11 +24,11 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -37,19 +37,34 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.UndirectedSubgraph;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class SelectableStudyGraphModel extends StudyGraphModel {
 	
-	private ListHolder<DrugSet> d_selectedDrugs;
+	private ObservableList<DrugSet> d_selectedDrugs;
 
-	public SelectableStudyGraphModel(ObservableList<Study> studies, ListHolder<DrugSet> drugs, ValueHolder<OutcomeMeasure> outcome) {
+	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, drugs, outcome);
-		d_selectedDrugs = new DefaultListHolder<DrugSet>(new ArrayList<DrugSet>(d_drugs.getValue()));
-		d_drugs.addValueChangeListener(new DrugsChangedListener());
+		d_selectedDrugs = new ArrayListModel<DrugSet>(d_drugs);
+		d_drugs.addListDataListener(new ListDataListener() {
+			public void contentsChanged(ListDataEvent e) {
+				resetDrugs();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				resetDrugs();
+			}
+			public void intervalRemoved(ListDataEvent e) {
+				resetDrugs();
+			}
+			private void resetDrugs() {
+				d_selectedDrugs.clear();
+				d_selectedDrugs.addAll(d_drugs);
+			}	
+		});
 	}
-	public ListHolder<DrugSet> getSelectedDrugsModel() {
+	public ObservableList<DrugSet> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}
 	
@@ -57,8 +72,8 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		UndirectedGraph<Vertex, Edge> g = getSelectedDrugsGraph();
 		
 		ConnectivityInspector<Vertex, Edge> inspectorGadget = new ConnectivityInspector<Vertex, Edge>(g);
-		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDrugs.getValue().get(0)));
-		for (DrugSet d : d_selectedDrugs.getValue()) {
+		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDrugs.get(0)));
+		for (DrugSet d : d_selectedDrugs) {
 			if (!connectedDrugs.contains(this.findVertex(d))) {
 				return false;
 			}
@@ -66,21 +81,16 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		return true;
 	}	
 
-	private UndirectedGraph<Vertex, Edge> getSelectedDrugsGraph() {
+	public UndirectedGraph<Vertex, Edge> getSelectedDrugsGraph() {
 		UndirectedGraph<Vertex, Edge> newGraph = new UndirectedSubgraph<Vertex, Edge>(this,
 				new HashSet<Vertex>(this.vertexSet()), new HashSet<Edge>(this.edgeSet()));
 		Set<Vertex> vertices = new HashSet<Vertex>(newGraph.vertexSet());
 		for (Vertex v : vertices) {
-			if (!d_selectedDrugs.getValue().contains(v.getDrug())) {
+			if (!d_selectedDrugs.contains(v.getDrug())) {
 				newGraph.removeVertex(v);
 			}
 		}
 		return newGraph;
 	}
 
-	private class DrugsChangedListener implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent evt) {
-			d_selectedDrugs.setValue(d_drugs.getValue());
-		}		
-	}
 }

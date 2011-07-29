@@ -25,6 +25,8 @@
 package org.drugis.addis.presentation.wizard;
 
 import static org.drugis.common.JUnitUtil.assertAllAndOnly;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,9 +35,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
@@ -52,10 +58,12 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.util.ListDataEventMatcher;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -241,7 +249,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
-		assertEquals(expected, d_wizard.getDrugListModel().getValue());
+		assertEquals(expected, d_wizard.getDrugListModel());
 	}
 	
 	@Test
@@ -250,9 +258,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
-		assertNotNull(d_wizard.getDrugListModel().getValue());
+		assertNotNull(d_wizard.getDrugListModel());
 		
-		assertTrue(d_wizard.getDrugListModel().getValue().isEmpty());
+		assertTrue(d_wizard.getDrugListModel().isEmpty());
 	}
 	
 	@Test
@@ -313,25 +321,51 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testSelectedDrugList() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_wizard.getSelectedDrugsModel().getValue().equals(Collections.<Drug>emptyList());
+		assertEquals(Collections.<Drug>emptyList(), d_wizard.getSelectedDrugsModel());
 		
-		PropertyChangeListener mock = JUnitUtil.mockListener(d_wizard.getSelectedDrugsModel(), "value", null, 
-				Collections.<DrugSet>singletonList(d_fluoxSet));
-		d_wizard.getSelectedDrugsModel().addValueChangeListener(mock);
+		ListDataListener mock = createMock(ListDataListener.class);
+
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_ADDED,
+				0, 0)));
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_ADDED,
+				1, 1)));
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_REMOVED,
+				0, 0)));
+		
+		d_wizard.getSelectedDrugsModel().addListDataListener(mock);
+		replay(mock);
+		
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
-		assertEquals(Collections.<DrugSet>singletonList(d_fluoxSet),
-				d_wizard.getSelectedDrugsModel().getValue());
-		verify(mock);
+		assertEquals(Collections.<DrugSet>singletonList(d_fluoxSet), d_wizard.getSelectedDrugsModel());
 		
-		List<DrugSet> drugs = new ArrayList<DrugSet>();
-		drugs.add(d_fluoxSet);
-		drugs.add(d_sertrSet);
 		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
-		assertEquals(drugs, d_wizard.getSelectedDrugsModel().getValue());
+		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel());
 		
 		d_wizard.getFirstDrugModel().setValue(null);
 		assertEquals(Collections.<DrugSet>singletonList(d_sertrSet),
-				d_wizard.getSelectedDrugsModel().getValue());
+				d_wizard.getSelectedDrugsModel());
+		verify(mock);
+	}
+	
+	@Test
+	public void testSelectedDrugListReplace() {
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
+		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
+		
+		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel()); // just a sanity check
+		
+		ListDataListener mock = createMock(ListDataListener.class);
+		mock.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.CONTENTS_CHANGED,
+				1, 1)));
+		d_wizard.getSelectedDrugsModel().addListDataListener(mock);
+		replay(mock);
+
+		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
+		assertEquals(Arrays.asList(d_fluoxSet, d_paroxSet), d_wizard.getSelectedDrugsModel());
+
+		verify(mock);
 	}
 	
 	@Test
@@ -375,22 +409,23 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<DrugSet> expected = d_wizard.getDrugListModel().getValue();
-		ListHolder<DrugSet> drugList = d_wizard.getDrugListModel();
-		assertEquals(expected, drugList.getValue());
+		List<DrugSet> expected = d_wizard.getDrugListModel();
+		ObservableList<DrugSet> drugList = d_wizard.getDrugListModel();
+		assertEquals(expected, drugList);
 	}
 	
 	@Test
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		List<DrugSet> newValue = d_wizard.getDrugListModel().getValue();
-		
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ValueModel drugList = d_wizard.getDrugListModel();
-		PropertyChangeListener l = JUnitUtil.mockListener(drugList, "value", null, newValue);
+		ObservableList<DrugSet> drugList = d_wizard.getDrugListModel();
 		
-		drugList.addValueChangeListener(l);
+		ListDataListener l = createMock(ListDataListener.class);
+		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
+		l.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_ADDED, 0, 2)));
+		replay(l);
+
+		drugList.addListDataListener(l);
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		verify(l);
 	}
@@ -548,7 +583,7 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testSwitchingRateToContinuousDrugStep() {
+	public void testForNullPointersWhenSwitchingRateToContinuous() {
 		Study burke = ExampleData.buildStudyBurke();
 		d_domain.getStudies().add(burke);
 		d_domain.getDrugs().add(ExampleData.buildDrugCitalopram());
@@ -568,5 +603,4 @@ public class MetaAnalysisWizardPresentationTest {
 
 		d_wizard.getSelectedArmModel(burke, placeSet);
 	}
-	
 }

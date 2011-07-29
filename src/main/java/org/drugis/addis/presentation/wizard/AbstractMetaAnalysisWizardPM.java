@@ -26,7 +26,6 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +56,7 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.FilteredObservableList.Filter;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -66,7 +66,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	protected PresentationModelFactory d_pmf;
 	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
 	protected OutcomeListHolder d_outcomeListHolder;
-	protected AbstractListHolder<DrugSet> d_drugListHolder;
+	protected ObservableList<DrugSet> d_drugListHolder;
 	protected G d_studyGraphPresentationModel;	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
 	protected Map<Study, Map<DrugSet, ModifiableHolder<Arm>>> d_selectedArms;
@@ -79,13 +79,28 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		d_pmf = pmf;
 	
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
-		
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
 	
 		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
 
 		d_studiesEndpointIndication = createStudiesIndicationOutcome();
-		d_drugListHolder = new DrugListHolder();
+		
+		d_drugListHolder = new ArrayListModel<DrugSet>();
+		d_outcomeHolder.addValueChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
+				if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
+					List<Study> studies = getStudiesEndpointAndIndication();
+					for (Study s : studies) {
+						drugs.addAll(s.getMeasuredDrugs(d_outcomeHolder.getValue()));
+					}			
+				}
+				d_drugListHolder.clear();
+				d_drugListHolder.addAll(drugs);
+			}
+		});
+		
 		d_studyGraphPresentationModel = buildStudyGraphPresentation();
 		buildDrugHolders();
 
@@ -104,21 +119,24 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 				updateArmHolders();
 			}
 		};
-
 		d_selectableStudies = createSelectableStudies();
-		d_studyListPm = new DefaultSelectableStudyListPresentation(
-				new DefaultStudyListPresentation(d_selectableStudies));
+		d_studyListPm = new DefaultSelectableStudyListPresentation(new DefaultStudyListPresentation(d_selectableStudies));
 		d_studyListPm.getSelectedStudiesModel().addListDataListener(listener);
 	}
 	
 	private ObservableList<Study> createSelectableStudies() {
-		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(getStudiesEndpointAndIndication(), new DrugFilter());
-		PropertyChangeListener listener = new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				studies.setFilter((Filter<Study>) new DrugFilter());
+		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(getStudiesEndpointAndIndication(), new SelectedDrugsFilter());
+		getSelectedDrugsModel().addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
 			}
-		};
-		getSelectedDrugsModel().addValueChangeListener(listener);
+			public void intervalAdded(ListDataEvent e) {
+				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
+			}
+			public void contentsChanged(ListDataEvent e) {
+				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
+			}
+		});
 		return studies;
 	}
 	
@@ -162,7 +180,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		return d_outcomeHolder;
 	}
 
-	public AbstractListHolder<DrugSet> getDrugListModel() {
+	public ObservableList<DrugSet> getDrugListModel() {
 		return d_drugListHolder;
 	}
 
@@ -170,7 +188,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		return d_outcomeListHolder;
 	}
 
-	public abstract ListHolder<DrugSet> getSelectedDrugsModel();
+	public abstract ObservableList<DrugSet> getSelectedDrugsModel();
 
 	public G getStudyGraphModel() {
 		return d_studyGraphPresentationModel;
@@ -181,7 +199,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		
 		for(Study s : getStudyListModel().getSelectedStudiesModel()) {
 			d_selectedArms.put(s, new HashMap<DrugSet, ModifiableHolder<Arm>>());
-			for(DrugSet d : getSelectedDrugsModel().getValue()){
+			for(DrugSet d : getSelectedDrugsModel()){
 				if(s.getDrugs().contains(d)){
 					d_selectedArms.get(s).put(d, new ModifiableHolder<Arm>(getDefaultArm(s, d)));
 				}
@@ -216,29 +234,6 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	protected ObservableList<Study> getSelectableStudies() {
 		return d_selectableStudies;
 	}
-
-	@SuppressWarnings("serial")
-	protected class DrugListHolder extends AbstractListHolder<DrugSet> implements PropertyChangeListener {
-		public DrugListHolder() {
-			d_outcomeHolder.addValueChangeListener(this);
-		}
-		
-		@Override
-		public List<DrugSet> getValue() {
-			SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
-			if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
-				List<Study> studies = getStudiesEndpointAndIndication();
-				for (Study s : studies) {
-					drugs.addAll(s.getMeasuredDrugs(d_outcomeHolder.getValue()));
-				}
-			}			
-			return new ArrayList<DrugSet>(drugs);
-		}
-		
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireValueChange(null, getValue());
-		}
-	}
 	
 	@SuppressWarnings("serial")
 	public class StudiesMeasuringValueModel extends AbstractValueModel implements PropertyChangeListener {
@@ -265,7 +260,6 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			fireValueChange(null, constructString());
 		}		
 	}
-	
 
 	private final class FalseFilter implements Filter<Study> {
 		public boolean accept(Study s) {
@@ -281,13 +275,13 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		}
 	}
 	
-	public class DrugFilter implements Filter<Study> {
+	public class SelectedDrugsFilter implements Filter<Study> {
 		public boolean accept(Study s) {
 			if(d_outcomeHolder.getValue() == null) {
 				return false;
 			}
 			Set<DrugSet> drugs = new HashSet<DrugSet>(s.getMeasuredDrugs(d_outcomeHolder.getValue()));
-			List<DrugSet> value = getSelectedDrugsModel().getValue();
+			List<DrugSet> value = getSelectedDrugsModel();
 			drugs.retainAll(value);
 			return drugs.size() >= 2;
 		}
