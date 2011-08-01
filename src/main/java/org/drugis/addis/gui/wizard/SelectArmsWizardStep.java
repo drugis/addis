@@ -42,7 +42,6 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
-import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -99,7 +98,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	private int createArmSelect(int row, final Study curStudy, DrugSet drug, CellConstraints cc) {
 		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
 		
-		ListModel arms = new ListHolderWrapperPlsDel<Arm>(d_pm.getArmsPerStudyPerDrug(curStudy, drug));
+		ListModel arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);
 
 		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug), true);
 		if (arms.getSize() == 1)

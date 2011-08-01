@@ -47,7 +47,6 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultSelectableStudyListPresentation;
 import org.drugis.addis.presentation.DefaultStudyListPresentation;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentation;
@@ -208,11 +207,11 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	}
 
 	private Arm getDefaultArm(Study s, DrugSet d) {
-		return getArmsPerStudyPerDrug(s, d).getValue().get(0);
+		return getArmsPerStudyPerDrug(s, d).get(0);
 	}
 
-	public ListHolder<Arm> getArmsPerStudyPerDrug(Study study, DrugSet drug) {
-		return new ArmListHolder(study, drug);
+	public ObservableList<Arm> getArmsPerStudyPerDrug(Study study, DrugSet drug) {
+		return new FilteredObservableList<Arm>(study.getArms(), new StudyArmDrugsFilter(study, drug));
 	}
 
 	public ModifiableHolder<Arm> getSelectedArmModel(Study study, DrugSet drug) {
@@ -286,4 +285,18 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			return drugs.size() >= 2;
 		}
 	}
+
+	public class StudyArmDrugsFilter implements Filter<Arm> {
+		private final DrugSet d_drugs;
+		private final Study d_study;
+		public StudyArmDrugsFilter(Study s, DrugSet drugs) {
+			d_study = s;
+			d_drugs = drugs;
+		}
+		public boolean accept(Arm a) {
+			return d_study.getDrugs(a).equals(d_drugs);
+		}
+
+	}
+	
 }

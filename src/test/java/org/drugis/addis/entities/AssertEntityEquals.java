@@ -46,7 +46,7 @@ public class AssertEntityEquals {
 	public static void assertEntityEquals(Indication expected, Indication actual) {
 		assertEquals(expected.getClass(), actual.getClass());
 		assertEquals(expected.getCode(),  actual.getCode());
-		assertEquals(expected.getName(),  actual.getName());	
+		assertEquals(expected.getName(),  actual.getName());
 	}
 	
 	public static void assertEntityEquals(Drug expected, Drug actual) {
