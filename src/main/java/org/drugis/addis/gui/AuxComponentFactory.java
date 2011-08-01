@@ -101,11 +101,6 @@ public class AuxComponentFactory {
 		return createBoundComboBox(new ArrayListModel<T>(Arrays.asList(values)), model, isEntity);
 	}
 	
-	@Deprecated
-	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model) {
-		return createBoundComboBox(listHolder, model, false);
-	}
-	
 	public static <T> JComboBox createBoundComboBox(ListModel list, ValueModel model, boolean isEntity) {
 		SelectionInList<T> typeSelectionInList = new SelectionInList<T>(list, model);
 		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);

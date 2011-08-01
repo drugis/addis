@@ -44,7 +44,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
@@ -52,7 +51,6 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
-import org.drugis.addis.util.ListHolderWrapperPlsDel;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
@@ -153,8 +151,7 @@ public class BenefitRiskWizard extends Wizard {
 			super("Select Study","In this step, you select which study you use as a basis for your analysis.");
 			add(new JLabel("Study : "));
 
-			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(new ListHolderWrapperPlsDel<Study>(pm.getStudiesWithIndication()),
-					pm.getStudyModel(), true);
+			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(),	pm.getStudyModel(), true);
 			add(studyBox);
 			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {

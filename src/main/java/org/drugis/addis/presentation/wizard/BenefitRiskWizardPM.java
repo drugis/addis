@@ -56,9 +56,12 @@ import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.FilteredObservableList;
+import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.CriteriaComparator;
 import org.pietschy.wizard.InvalidStateException;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
@@ -166,7 +169,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private ModifiableHolder<Study> d_studyHolder;
 	private ModifiableHolder<BRAType> d_evidenceTypeHolder;
 	private ModifiableHolder<AnalysisType> d_analysisTypeHolder;
-	private StudiesWithIndicationHolder d_studiesWithIndicationHolder;
+	private FilteredObservableList<Study> d_studiesWithIndicationHolder;
 	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
 
@@ -196,7 +199,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_studyHolder.addValueChangeListener(resetValuesListener);
 		d_analysisTypeHolder.addValueChangeListener(resetValuesListener);
 
-		d_studiesWithIndicationHolder = new StudiesWithIndicationHolder(d_indicationHolder, d_domain);
+		d_studiesWithIndicationHolder = new FilteredObservableList<Study>(d_domain.getStudies(), new IndicationFilter(d_indicationHolder.getValue()));
 
 		d_metaAnalysesSelectedHolder = new MetaAnalysesSelectedHolder();
 		d_metaAnalysesSelectedHolder.addValueChangeListener(d_completeHolder);
@@ -531,33 +534,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return getSelectedEntities(d_alternativeSelectedMap);
 	}
 
-	@SuppressWarnings("serial")
-	public static class StudiesWithIndicationHolder extends AbstractListHolder<Study> implements PropertyChangeListener {
-		private final ValueHolder<Indication> d_indicationHolder;
-		private final Domain d_domain;
-
-		public StudiesWithIndicationHolder(ValueHolder<Indication> indicationHolder, Domain domain) {
-			d_indicationHolder = indicationHolder;
-			d_domain = domain;
-			d_indicationHolder.addValueChangeListener(this);
-		}
-
-		@Override
-		public List<Study> getValue() {
-			if(d_indicationHolder.getValue() == null) {
-				return new ArrayList<Study>();
-			} else {
-				return d_domain.getStudies(d_indicationHolder.getValue());
-			}
-		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			fireValueChange(null, getValue());
-		}
-
-	}
-
-	public ListHolder<Study> getStudiesWithIndication() {
+	public ObservableList<Study> getStudiesWithIndication() {
 		return d_studiesWithIndicationHolder;
 	}	
 
@@ -577,6 +554,22 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaAnalysisSelectedMap.clear();
 		d_outcomeEnabledMap.clear();
 		d_completeHolder.propertyChange(null);
+		d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indicationHolder.getValue()));
+	}
+
+
+	public class IndicationFilter implements Filter<Study> {
+
+		private final Indication d_i;
+
+		public IndicationFilter(Indication i) {
+			d_i = i;
+		}
+
+		public boolean accept(Study s) {
+			return s.getIndication().equals(d_i);
+		}
+
 	}
 
 }
