@@ -44,6 +44,9 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Arm> {
 	public static String PROPERTY_STUDY = "study";
 	public static String PROPERTY_ARMS = "arms";
@@ -51,7 +54,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_criteria;
-	private List<Arm> d_alternatives;
+	private ObservableList<Arm> d_alternatives;
 	private AnalysisType d_analysisType;
 	
 	private class StudyMeasurementSource extends AbstractMeasurementSource<Arm> {
@@ -63,7 +66,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		d_indication = indication;
 		d_study = study;
 		setCriteria(criteria);
-		d_alternatives = Collections.unmodifiableList(alternatives);
+		d_alternatives = new ArrayListModel<Arm>(Collections.unmodifiableList(alternatives));
 		d_analysisType = analysisType;
 		if(d_analysisType == AnalysisType.LyndOBrien && (d_criteria.size() != 2 || d_alternatives.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
@@ -88,7 +91,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		return d_alternatives;
 	}
 
-	public List<Arm> getAlternatives() {
+	public ObservableList<Arm> getAlternatives() {
 		return d_alternatives;
 	}
 

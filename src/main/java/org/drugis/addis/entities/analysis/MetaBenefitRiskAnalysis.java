@@ -66,6 +66,9 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
 
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<DrugSet> {
 	private final class MetaMeasurementSource extends AbstractMeasurementSource<DrugSet> {
 		public MetaMeasurementSource() {
@@ -137,12 +140,12 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		d_metaAnalyses = metaAnalysis;
 	}
 	
-	public List<DrugSet> getAlternatives() {
+	public ObservableList<DrugSet> getAlternatives() {
 		return getDrugs();
 	}
 
-	public List<DrugSet> getDrugs() {
-		List<DrugSet> sortedList = new ArrayList<DrugSet>(d_drugs);
+	public ObservableList<DrugSet> getDrugs() {
+		ObservableList<DrugSet> sortedList = new ArrayListModel<DrugSet>(d_drugs);
 		sortedList.add(getBaseline());
 		Collections.sort(sortedList, new AlphabeticalComparator());
 		return sortedList;

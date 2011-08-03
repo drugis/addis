@@ -45,7 +45,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
  * Wraps a beans-property that returns a list in a ListHolder
  */
 @SuppressWarnings("serial")
-public class PropertyListHolder<E> extends AbstractListHolder<E> implements PropertyChangeListener {
+public class PropertyListHolder<E> extends ModifiableHolder<List<E>> implements PropertyChangeListener {
 	private final AbstractValueModel d_vm;
 
 	@SuppressWarnings("unchecked")
@@ -77,9 +77,9 @@ public class PropertyListHolder<E> extends AbstractListHolder<E> implements Prop
 	@Override
 	public List<E> getValue() {
 		if (d_vm.getValue() instanceof Set) {
-			List<E> lst = new ArrayList((Set<E>)d_vm.getValue());
-			Collections.sort(lst, new AlphabeticalComparator());
-			return lst;
+			List<E> list = new ArrayList((Set<E>)d_vm.getValue());
+			Collections.sort(list, new AlphabeticalComparator());
+			return list;
 		}
 		return Collections.unmodifiableList((List<E>) d_vm.getValue());
 	}

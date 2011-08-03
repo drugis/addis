@@ -25,33 +25,40 @@
 package org.drugis.addis.gui.components;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.presentation.DefaultListHolder;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PropertyListHolder;
+
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class ListPanel extends JPanel {
-	private ListHolder<?> d_entities;
+	private ObservableList<?> d_entities;
 	private JLabel d_listLabel = new JLabel();
 	
-	public ListPanel(ListHolder<?> entities) {
+	public <E> ListPanel(ObservableList<E> entities) {
 		super(new BorderLayout());
 		d_listLabel.setBackground(null);
 		d_listLabel.setOpaque(true);
 		
-		resetItems(entities);
+		d_entities = entities;
 		refreshItems();
 		
-		d_entities.addValueChangeListener(new PropertyChangeListener() {	
-			public void propertyChange(PropertyChangeEvent evt) {
+		d_entities.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				refreshItems();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				refreshItems();
+			}
+			public void contentsChanged(ListDataEvent e) {
 				refreshItems();
 			}
 		});
@@ -59,26 +66,22 @@ public class ListPanel extends JPanel {
 		super.add(d_listLabel, BorderLayout.CENTER);
 	}
 	
-	public <E> ListPanel(List<E> entityList) {
-		this(new DefaultListHolder<E>(entityList));
-	}
-	
 	public <E> ListPanel(Object bean, String propertyName, Class<E> objType) {
-		this(new PropertyListHolder<E>(bean, propertyName, objType));
+		this(new PropertyListHolder<E>(bean, propertyName, objType).getValue());
 	}
 	
-	public void resetItems(ListHolder<?> entities) {
-		d_entities = entities;
+	public <E> ListPanel(List<E> value) {
+		this(new ArrayListModel<E>(value));
 	}
-	
+
 	public void refreshItems() {
 		d_listLabel.setText(extractListItems());
 	}
 	
 	private String extractListItems() {
 		String listItems = "<html><ul style='list-style-type: circle; padding:0 px; margin:0 px; margin-left:10px;'>";
-		for(int i=0; i < d_entities.getValue().size(); i++) {
-			listItems += makeListItem(d_entities.getValue().get(i));
+		for(int i=0; i < d_entities.size(); i++) {
+			listItems += makeListItem(d_entities.get(i));
 		}
 		return listItems + "</ul></html>";
 	}

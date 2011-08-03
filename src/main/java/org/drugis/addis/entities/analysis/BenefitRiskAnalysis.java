@@ -31,6 +31,8 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
+import com.jgoodies.binding.list.ObservableList;
+
 public interface BenefitRiskAnalysis<Alternative extends Entity> extends Comparable<BenefitRiskAnalysis<?>>, Entity {
 	public static String PROPERTY_NAME = "name";
 	public static String PROPERTY_INDICATION = "indication";
@@ -46,7 +48,7 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 
 	public abstract List<OutcomeMeasure> getCriteria();
 
-	public abstract List<Alternative> getAlternatives();
+	public abstract ObservableList<Alternative> getAlternatives();
 
 	public abstract String getName();
 	
