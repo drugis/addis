@@ -51,7 +51,6 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
@@ -67,8 +66,7 @@ import com.jgoodies.binding.value.ValueModel;
 public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
 
 	@SuppressWarnings("serial")
-	private class MetaAnalysesSelectedHolder extends AbstractListHolder<MetaAnalysis> implements PropertyChangeListener {
-		@Override
+	private class MetaAnalysesSelectedHolder extends ModifiableHolder<List<MetaAnalysis>> implements PropertyChangeListener {
 		public List<MetaAnalysis> getValue() {
 			List<MetaAnalysis> list = new ArrayList<MetaAnalysis>();
 			for (ModifiableHolder<MetaAnalysis> holder : getSelectedMetaAnalysisHolders()) {
