@@ -37,6 +37,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.LabeledPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
@@ -63,10 +64,12 @@ public class NetworkMetaAnalysisTablePanel extends TablePanel {
 	}
 
 	static class NetworkTableCellRenderer implements TableCellRenderer {
-		public Component getTableCellRendererComponent(JTable table,
-				Object val, boolean isSelected, boolean hasFocus, int row, int col) {
-			
-			JLabel label = BasicComponentFactory.createLabel(((LabeledPresentation)val).getLabelModel());
+		@SuppressWarnings("unchecked")
+		public Component getTableCellRendererComponent(JTable table, Object val, boolean isSelected, boolean hasFocus, int row, int col) {
+			JLabel label =  (val instanceof LabeledPresentation) ? 			// FIXME: Is this general enough?
+					BasicComponentFactory.createLabel(((LabeledPresentation)val).getLabelModel()) :
+				new JLabel(((PresentationModel<DrugSet>) val).getBean().getLabel()); 
+
 			label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 	
 			if (((PresentationModel<?>)val).getBean() instanceof Drug) {
