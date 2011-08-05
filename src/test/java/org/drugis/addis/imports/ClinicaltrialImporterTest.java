@@ -102,7 +102,7 @@ public class ClinicaltrialImporterTest {
 		
 		
 		assertTrue(Study.extractVariables(d_testStudy.getEndpoints()).size() > 0);
-		Note note = d_testStudy.getStudyEndpoints().get(0).getNotes().get(0);
+		Note note = d_testStudy.getEndpoints().get(0).getNotes().get(0);
 		
 		
 		Boolean checkNote = note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up") 

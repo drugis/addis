@@ -95,11 +95,11 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 	
 		List<? extends StudyOutcomeMeasure<?>> outcomeMeasures = null;
 		if (d_type == Endpoint.class) {
-			outcomeMeasures = d_model.getBean().getStudyEndpoints();
+			outcomeMeasures = d_model.getBean().getEndpoints();
 		} else if (d_type == AdverseEvent.class) {
-			 outcomeMeasures = d_model.getBean().getStudyAdverseEvents();
+			 outcomeMeasures = d_model.getBean().getAdverseEvents();
 		} else if (d_type == PopulationCharacteristic.class) {
-			outcomeMeasures = d_model.getBean().getStudyPopulationCharacteristics();
+			outcomeMeasures = d_model.getBean().getPopulationChars();
 		}
 		if (outcomeMeasures.isEmpty()) {
 			builder.addLabel("No " + d_type.getSimpleName(), cc.xy(1, 1));

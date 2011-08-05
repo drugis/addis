@@ -1162,10 +1162,10 @@ public class JAXBConvertorTest {
 		
 		Note adeNote = new Note(Source.MANUAL, "I would not like to suffer from this!");
 		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(2).getNotes().getNote().add(JAXBConvertor.convertNote(adeNote));
-		studyEntity.getStudyAdverseEvents().get(0).getNotes().add(adeNote);
+		studyEntity.getAdverseEvents().get(0).getNotes().add(adeNote);
 		Note hamdNote = new Note(Source.MANUAL, "Mmm... HAM!");
 		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(0).getNotes().getNote().add(JAXBConvertor.convertNote(hamdNote));
-		studyEntity.getStudyEndpoints().get(0).getNotes().add(hamdNote);
+		studyEntity.getEndpoints().get(0).getNotes().add(hamdNote);
 		Note charNote = new Note(Source.CLINICALTRIALS, "A randomized double blind trial of something");
 		studyData.getCharacteristics().getAllocation().getNotes().getNote().add(JAXBConvertor.convertNote(charNote));
 		studyEntity.getCharacteristics().get(BasicStudyCharacteristic.ALLOCATION).getNotes().add(charNote);

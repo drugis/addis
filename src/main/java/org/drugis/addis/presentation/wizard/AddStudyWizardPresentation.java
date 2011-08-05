@@ -26,6 +26,7 @@ package org.drugis.addis.presentation.wizard;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -46,6 +47,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
@@ -117,9 +119,9 @@ public class AddStudyWizardPresentation {
 	}
 	
 	private void updateSelectionHolders() {
-		d_endpointSelect.setSlots(getNewStudy().getStudyEndpoints());
-		d_adverseEventSelect.setSlots(getNewStudy().getStudyAdverseEvents());
-		d_populationCharSelect.setSlots(getNewStudy().getStudyPopulationCharacteristics());
+		d_endpointSelect.setSlots((List<StudyOutcomeMeasure<Endpoint>>) getNewStudy().getEndpoints());
+		d_adverseEventSelect.setSlots((List<StudyOutcomeMeasure<AdverseEvent>>) getNewStudy().getAdverseEvents());
+		d_populationCharSelect.setSlots((List<StudyOutcomeMeasure<PopulationCharacteristic>>) getNewStudy().getPopulationChars());
 		
 		getAddArmsModel().setList(getArms());
 		getAddEpochsModel().setList(getEpochs());

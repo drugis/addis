@@ -946,13 +946,13 @@ public class JAXBConvertor {
 		
 		// convert outcome measures
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> omMap = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
-		for (Study.StudyOutcomeMeasure<Endpoint> e : study.getStudyEndpoints()) {
+		for (Study.StudyOutcomeMeasure<Endpoint> e : study.getEndpoints()) {
 			omMap.put("endpoint-" + e.getValue().getName(), e);
 		}
-		for (org.drugis.addis.entities.Study.StudyOutcomeMeasure<AdverseEvent> e : study.getStudyAdverseEvents()) {
+		for (org.drugis.addis.entities.Study.StudyOutcomeMeasure<AdverseEvent> e : study.getAdverseEvents()) {
 			omMap.put("adverseEvent-" + e.getValue().getName(), e);
 		}
-		for (org.drugis.addis.entities.Study.StudyOutcomeMeasure<PopulationCharacteristic> e : study.getStudyPopulationCharacteristics()) {
+		for (org.drugis.addis.entities.Study.StudyOutcomeMeasure<PopulationCharacteristic> e : study.getPopulationChars()) {
 			omMap.put("popChar-" + e.getValue().getName(), e);
 		}
 		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));

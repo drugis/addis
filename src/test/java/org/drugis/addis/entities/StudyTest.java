@@ -64,7 +64,7 @@ public class StudyTest {
 		
 		// Add some notes to test them being cloned.
 		d_orig.getArms().get(1).getNotes().add(d_note);
-		d_orig.getStudyAdverseEvents().get(0).getNotes().add(d_note);
+		d_orig.getAdverseEvents().get(0).getNotes().add(d_note);
 		d_orig.getNameWithNotes().getNotes().add(d_note);
 		ObjectWithNotes<Object> val = new ObjectWithNotes<Object>(null);
 		val.getNotes().add(d_note);
@@ -500,9 +500,9 @@ public class StudyTest {
 	public void testCloneHasDistinctNotes() {
 		Note note = new Note(Source.MANUAL);
 		
-		assertTrue(d_clone.getStudyEndpoints().get(0).getNotes().isEmpty());
-		d_clone.getStudyEndpoints().get(0).getNotes().add(note);
-		assertTrue(d_orig.getStudyEndpoints().get(0).getNotes().isEmpty());
+		assertTrue(d_clone.getEndpoints().get(0).getNotes().isEmpty());
+		d_clone.getEndpoints().get(0).getNotes().add(note);
+		assertTrue(d_orig.getEndpoints().get(0).getNotes().isEmpty());
 		
 		assertTrue(d_clone.getIndicationWithNotes().getNotes().isEmpty());
 		d_clone.getIndicationWithNotes().getNotes().add(note);

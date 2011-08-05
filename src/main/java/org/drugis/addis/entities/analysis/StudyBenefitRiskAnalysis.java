@@ -87,7 +87,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		return deps;
 	}
 	
-	public List<Arm> getArms() {
+	public ObservableList<Arm> getArms() {
 		return d_alternatives;
 	}
 

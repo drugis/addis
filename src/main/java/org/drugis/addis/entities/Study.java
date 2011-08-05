@@ -37,7 +37,9 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.RebuildableHashMap;
+import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
@@ -566,10 +568,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return s;
 	}
 
-	public void removeEndpoint(int i) {
-		getEndpoints().remove(i);
-	}
-
 	public Map<MeasurementKey, BasicMeasurement> getMeasurements() {
 		return d_measurements;
 	}
@@ -580,18 +578,6 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 
 	public void setMeasurement(MeasurementKey key, BasicMeasurement value) {
 		d_measurements.put(key, value);
-	}
-
-	public List<StudyOutcomeMeasure<Endpoint>> getStudyEndpoints() {
-		return getEndpoints();
-	}
-	
-	public List<StudyOutcomeMeasure<AdverseEvent>> getStudyAdverseEvents() {
-		return getAdverseEvents();
-	}
-	
-	public List<StudyOutcomeMeasure<PopulationCharacteristic>> getStudyPopulationCharacteristics() {
-		return getPopulationChars();
 	}
 
 	public ObjectWithNotes<?> getNameWithNotes() {
@@ -755,14 +741,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return drugs;
 	}
 	
-	public List<Arm> getMeasuredArms(Variable v, DrugSet d) {
-		List<Arm> arms = new ArrayList<Arm>();
-		for (Arm a : getArms(d)) {
-			if (isMeasured(v, a)) {
-				arms.add(a);
-			}
-		}
-		return arms;
+	public ObservableList<Arm> getMeasuredArms(Variable v, DrugSet d) {
+		return new FilteredObservableList<Arm>(getArms(d), new IsMeasuredFilter(v));
 	}
 
 	private boolean isMeasured(Variable v, DrugSet d) {
@@ -778,14 +758,8 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		return getMeasurement(v, a) != null && getMeasurement(v, a).isComplete();
 	}
 
-	private List<Arm> getArms(DrugSet d) {
-		List<Arm> arms = new ArrayList<Arm>();
-		for (Arm a : getArms()) {
-			if (getDrugs(a).equals(d)) {
-				arms.add(a);
-			}
-		}
-		return arms;
+	private ObservableList<Arm> getArms(DrugSet d) {
+		return new FilteredObservableList<Arm>(d_arms, new DrugArmFilter(d));
 	}
 
 	public ObservableList<StudyOutcomeMeasure<Endpoint>> getEndpoints() {
@@ -807,5 +781,27 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		}
 		return soms;
 	}
-	
+
+	public class IsMeasuredFilter implements Filter<Arm> {
+		private final Variable d_v;
+		public IsMeasuredFilter(Variable v) {
+			d_v = v;
+		}
+		public boolean accept(Arm a) {
+			return isMeasured(d_v, a);
+		}
+	}
+
+	public class DrugArmFilter implements Filter<Arm> {
+		private final DrugSet d_d;
+
+		public DrugArmFilter(DrugSet d) {
+			d_d = d;
+		}
+
+		public boolean accept(Arm a) {
+			return getDrugs(a).equals(d_d);
+		}
+	}
+
 }
