@@ -95,17 +95,17 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		assertAllAndOnly(Arrays.asList(ExampleData.buildEndpointHamd(), ExampleData.buildEndpointCgi(),
 				ExampleData.buildAdverseEventConvulsion(), ExampleData.buildAdverseEventSexualDysfunction()), 
-				d_pm.getOutcomesListModel().getValue());
+				d_pm.getOutcomesListModel());
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		assertAllAndOnly(Collections.singletonList(ExampleData.buildEndpointCVdeath()), d_pm.getOutcomesListModel().getValue());
+		assertAllAndOnly(Collections.singletonList(ExampleData.buildEndpointCVdeath()), d_pm.getOutcomesListModel());
 
 	}
 	
 	@Test
 	public void testMetaAnalysesForEachOutcome() {
 		d_pm.getIndicationModel().setValue(d_indication);
-		for (OutcomeMeasure om : d_pm.getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om : d_pm.getOutcomesListModel()) {
 			List<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>();
 			for (MetaAnalysis analysis : d_domain.getMetaAnalyses()) {
 				if (om.equals(analysis.getOutcomeMeasure()))
@@ -363,15 +363,15 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		
-		assertTrue(d_pm.getOutcomesListModel().getValue().size() > 2);
+		assertTrue(d_pm.getOutcomesListModel().size() > 2);
 		
-		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel()) {
 			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
 		}
 		
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		
-		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel()) {
 			if (om.equals(ExampleData.buildEndpointHamd()) || om.equals(ExampleData.buildAdverseEventConvulsion())) {
 				assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
 			} else {
@@ -381,7 +381,7 @@ public class BenefitRiskWizardPMTest {
 		
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(false);
 
-		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel()) {
 			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
 		}
 	}
@@ -397,7 +397,7 @@ public class BenefitRiskWizardPMTest {
 
 		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
 	
-		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel()) {
 			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
 		}
 	}
@@ -411,7 +411,7 @@ public class BenefitRiskWizardPMTest {
 		
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
 	
-		for (OutcomeMeasure om: d_pm.getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om: d_pm.getOutcomesListModel()) {
 			assertTrue(d_pm.getOutcomeEnabledModel(om).getValue());
 		}
 	}

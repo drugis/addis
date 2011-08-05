@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
@@ -51,15 +52,16 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.CriteriaComparator;
+import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.pietschy.wizard.InvalidStateException;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
@@ -170,6 +172,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	private FilteredObservableList<Study> d_studiesWithIndicationHolder;
 	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
+	private ObservableList<OutcomeMeasure> d_outcomes = new ArrayListModel<OutcomeMeasure>();
 
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
@@ -182,6 +185,13 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_evidenceTypeHolder = new ModifiableHolder<BRAType>(BRAType.Synthesis);
 		d_analysisTypeHolder = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
 		d_outcomeEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
+		
+		updateOutcomes();
+		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateOutcomes();
+			}
+		});
 
 		PropertyChangeListener resetValuesListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -219,23 +229,36 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 	private void initOutcomeMeasures() {
 		// create outcome selected models
-		for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om : getOutcomesListModel()) {
 			ModifiableHolder<Boolean> val = new OutcomeSelectedHolder(om);
 			val.addPropertyChangeListener(d_completeHolder);
 			d_outcomeSelectedMap.put(om, val);
 		}
 		// create outcome enabled models
-		for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om : getOutcomesListModel()) {
 			ModifiableHolder<Boolean> val = new ModifiableHolder<Boolean>(getCriterionShouldBeEnabled(om));
 			d_outcomeEnabledMap.put(om, val);
 		}
 	}
 
+
+	private void updateOutcomes() {
+		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>(new OutcomeComparator());
+		if (d_indicationHolder.getValue() != null) {
+			for (Study s : d_domain.getStudies(this.d_indicationHolder.getValue())) {
+				outcomeSet.addAll(Study.extractVariables(s.getEndpoints()));
+				outcomeSet.addAll(Study.extractVariables(s.getAdverseEvents()));
+			}			
+		}	
+		d_outcomes.clear();
+		d_outcomes.addAll(outcomeSet);
+	}
+	
 	private void initializeSynthesis() {
 		initOutcomeMeasures();
 
 		// create analyses models
-		for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om : getOutcomesListModel()) {
 			ModifiableHolder<MetaAnalysis> val = new ModifiableHolder<MetaAnalysis>();
 			val.addPropertyChangeListener(d_metaAnalysesSelectedHolder);
 			d_metaAnalysisSelectedMap.put(om, val);
@@ -300,8 +323,8 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return n;
 	}
 
-	public ListHolder<OutcomeMeasure> getOutcomesListModel() {
-		return new OutcomeListHolder(d_indicationHolder, d_domain);
+	public ObservableList<OutcomeMeasure> getOutcomesListModel() {
+		return d_outcomes;
 	}
 
 	public ValueHolder<Study> getStudyModel() {
@@ -361,7 +384,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 			}
 		} else {
 			// To allow only measured alternatives to be selected
-			for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
+			for (OutcomeMeasure om : getOutcomesListModel()) {
 				getOutcomeSelectedModel(om).addValueChangeListener(model);
 			}
 
@@ -433,7 +456,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	}
 
 	private void updateCriteriaEnabled() {
-		for (OutcomeMeasure om : getOutcomesListModel().getValue()) {
+		for (OutcomeMeasure om : getOutcomesListModel()) {
 			getOutcomeEnabledModel(om).setValue(getCriterionShouldBeEnabled(om));
 		}
 	}

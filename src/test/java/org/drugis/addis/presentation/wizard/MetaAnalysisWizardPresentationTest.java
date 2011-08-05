@@ -55,7 +55,6 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.presentation.ListHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.util.ListDataEventMatcher;
@@ -118,7 +117,7 @@ public class MetaAnalysisWizardPresentationTest {
 		expected.add(ExampleData.buildEndpointCgi());		
 		expected.add(ExampleData.buildEndpointHamd());
 		expected.add(ExampleData.buildAdverseEventConvulsion());
-		assertEquals(expected, d_wizard.getOutcomeMeasureListModel().getValue());
+		assertEquals(expected, d_wizard.getOutcomeMeasureListModel());
 	}
 	
 	@Test
@@ -129,13 +128,13 @@ public class MetaAnalysisWizardPresentationTest {
 		expected.add(ExampleData.buildEndpointCgi());
 		expected.add(ExampleData.buildAdverseEventConvulsion());
 		expected.add(ExampleData.buildEndpointHamd());
-		JUnitUtil.assertAllAndOnly(expected, d_wizard.getOutcomeMeasureListModel().getValue());
+		JUnitUtil.assertAllAndOnly(expected, d_wizard.getOutcomeMeasureListModel());
 	}
 	
 	@Test
 	public void testGetEndpointSetNoIndication() {
-		assertNotNull(d_wizard.getOutcomeMeasureListModel().getValue());
-		assertTrue(d_wizard.getOutcomeMeasureListModel().getValue().isEmpty());
+		assertNotNull(d_wizard.getOutcomeMeasureListModel());
+		assertTrue(d_wizard.getOutcomeMeasureListModel().isEmpty());
 	}
 	
 	@Test
@@ -143,7 +142,7 @@ public class MetaAnalysisWizardPresentationTest {
 		List<Indication> indList = d_wizard.getIndicationsModel();
 		d_wizard.getIndicationModel().setValue(indList.get(indList.size()-1));
 		
-		List<OutcomeMeasure> outcomeList = d_wizard.getOutcomeMeasureListModel().getValue();
+		List<OutcomeMeasure> outcomeList = d_wizard.getOutcomeMeasureListModel();
 		OutcomeMeasure firstEndp = outcomeList.get(0);
 		OutcomeMeasure lastEndp = outcomeList.get(outcomeList.size() - 1);
 		
@@ -184,7 +183,7 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetStudiesMeasuringLabelModel() {
 		d_wizard.getIndicationModel().setValue(d_wizard.getIndicationsModel().get(0));
-		d_wizard.getOutcomeMeasureModel().setValue(d_wizard.getOutcomeMeasureListModel().getValue().get(0));		
+		d_wizard.getOutcomeMeasureModel().setValue(d_wizard.getOutcomeMeasureListModel().get(0));		
 		
 		Indication indic = d_wizard.getIndicationsModel().get(0);
 		OutcomeMeasure endp = (OutcomeMeasure) d_wizard.getOutcomeMeasureModel().getValue();
@@ -386,21 +385,22 @@ public class MetaAnalysisWizardPresentationTest {
 	@Test
 	public void testGetOutcomeMeasureListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		List<OutcomeMeasure> expected = d_wizard.getOutcomeMeasureListModel().getValue();
-		ListHolder<OutcomeMeasure> omList = d_wizard.getOutcomeMeasureListModel();
-		assertEquals(expected, omList.getValue());
+		List<OutcomeMeasure> expected = d_wizard.getOutcomeMeasureListModel();
+		ObservableList<OutcomeMeasure> omList = d_wizard.getOutcomeMeasureListModel();
+		assertEquals(expected, omList);
 	}
 	
 	@Test
 	public void testEndpointListModelEventOnIndicationChange() {
-		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		List<OutcomeMeasure> newValue = d_wizard.getOutcomeMeasureListModel().getValue();
-		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		ValueModel endpointList = d_wizard.getOutcomeMeasureListModel();
-		PropertyChangeListener l = JUnitUtil.mockListener(endpointList, "value", null, newValue);
+		ObservableList<OutcomeMeasure> endpointList = d_wizard.getOutcomeMeasureListModel();
 		
-		endpointList.addValueChangeListener(l);
+		ListDataListener l = createMock(ListDataListener.class);
+		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(endpointList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
+		l.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(endpointList, ListDataEvent.INTERVAL_ADDED, 0, 0)));
+		replay(l);
+		
+		endpointList.addListDataListener(l);
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
 		verify(l);
 	}

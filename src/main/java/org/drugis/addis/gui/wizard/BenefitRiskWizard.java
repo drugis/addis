@@ -338,7 +338,7 @@ public class BenefitRiskWizard extends Wizard {
 			builder.add(criteriaLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for(OutcomeMeasure out : d_pm.getOutcomesListModel().getValue()){
+			for(OutcomeMeasure out : d_pm.getOutcomesListModel()){
 				if(d_pm.getMetaAnalyses(out).isEmpty())
 					continue;
 

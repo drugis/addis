@@ -44,7 +44,6 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.presentation.AbstractListHolder;
 import org.drugis.addis.presentation.DefaultSelectableStudyListPresentation;
 import org.drugis.addis.presentation.DefaultStudyListPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -54,6 +53,7 @@ import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.FilteredObservableList.Filter;
+import org.drugis.addis.util.comparator.OutcomeComparator;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -64,14 +64,14 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 
 	protected PresentationModelFactory d_pmf;
 	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
-	protected OutcomeListHolder d_outcomeListHolder;
+	private ObservableList<OutcomeMeasure> d_outcomes = new ArrayListModel<OutcomeMeasure>();	
 	protected ObservableList<DrugSet> d_drugListHolder;
 	protected G d_studyGraphPresentationModel;	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
 	protected Map<Study, Map<DrugSet, ModifiableHolder<Arm>>> d_selectedArms;
 	protected DefaultSelectableStudyListPresentation d_studyListPm;
 	private ObservableList<Study> d_studiesEndpointIndication;
-	private ObservableList<Study> d_selectableStudies;	
+	private ObservableList<Study> d_selectableStudies;
 	
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d);
@@ -80,8 +80,13 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
 	
-		d_outcomeListHolder = new OutcomeListHolder(d_indicationHolder, d_domain);		
-
+		updateOutcomes();
+		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateOutcomes();
+			}
+		});
+		
 		d_studiesEndpointIndication = createStudiesIndicationOutcome();
 		
 		d_drugListHolder = new ArrayListModel<DrugSet>();
@@ -121,6 +126,18 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		d_selectableStudies = createSelectableStudies();
 		d_studyListPm = new DefaultSelectableStudyListPresentation(new DefaultStudyListPresentation(d_selectableStudies));
 		d_studyListPm.getSelectedStudiesModel().addListDataListener(listener);
+	}
+
+	private void updateOutcomes() {
+		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>(new OutcomeComparator());
+		if (d_indicationHolder.getValue() != null) {
+			for (Study s : d_domain.getStudies(this.d_indicationHolder.getValue())) {
+				outcomeSet.addAll(Study.extractVariables(s.getEndpoints()));
+				outcomeSet.addAll(Study.extractVariables(s.getAdverseEvents()));
+			}			
+		}	
+		d_outcomes.clear();
+		d_outcomes.addAll(outcomeSet);
 	}
 	
 	private ObservableList<Study> createSelectableStudies() {
@@ -183,8 +200,8 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		return d_drugListHolder;
 	}
 
-	public AbstractListHolder<OutcomeMeasure> getOutcomeMeasureListModel() {
-		return d_outcomeListHolder;
+	public ObservableList<OutcomeMeasure> getOutcomeMeasureListModel() {
+		return d_outcomes;
 	}
 
 	public abstract ObservableList<DrugSet> getSelectedDrugsModel();
