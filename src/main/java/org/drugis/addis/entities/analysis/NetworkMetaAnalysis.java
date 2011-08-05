@@ -35,6 +35,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -42,6 +43,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.common.EqualsUtil;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
@@ -281,4 +283,21 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return d_nodeSplitModels.get(p);
 	}
+	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if (!super.deepEquals(other)) {
+			return false;
+		}
+		NetworkMetaAnalysis o = (NetworkMetaAnalysis) other;
+		for (DrugSet d : o.getIncludedDrugs()) {
+			for (Study s : o.getIncludedStudies()) {
+				if (!EqualsUtil.equal(getArm(s, d), o.getArm(s, d))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 }

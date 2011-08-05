@@ -58,6 +58,7 @@ import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
+import org.drugis.common.EqualsUtil;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
@@ -180,6 +181,18 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		if (!(other instanceof MetaBenefitRiskAnalysis))
 			return false;
 		return this.getName().equals( ((BenefitRiskAnalysis<?>)other).getName() );
+	}
+	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if (!equals(other)) {
+			return false;
+		}
+		MetaBenefitRiskAnalysis o = (MetaBenefitRiskAnalysis) other;
+		return EqualsUtil.equal(getBaseline(), o.getBaseline()) &&
+			EqualsUtil.equal(getIndication(), o.getIndication()) &&
+			EqualsUtil.equal(getMetaAnalyses(), o.getMetaAnalyses()) &&
+			EqualsUtil.equal(getDrugs(), o.getDrugs());
 	}
 
 	public int compareTo(BenefitRiskAnalysis<?> other) {

@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -43,6 +44,7 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelative
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.common.EqualsUtil;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements PairWiseMetaAnalysis {
 
@@ -218,5 +220,21 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		d_isCorrected = iscorrected;
 		firePropertyChange(PROPERTY_CORRECTED, oldVal, d_isCorrected);
 	}
+	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if (!super.deepEquals(other)) {
+			return false;
+		}
+		RandomEffectsMetaAnalysis o = (RandomEffectsMetaAnalysis) other;
+		for (StudyArmsEntry s : o.getStudyArms()) {
+			if ( !EqualsUtil.equal(s.getBase(), getArm(s.getStudy(), o.getFirstDrug())) ||
+				 !EqualsUtil.equal(s.getSubject(), getArm(s.getStudy(), o.getSecondDrug()))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 }
 

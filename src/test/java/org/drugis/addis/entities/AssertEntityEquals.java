@@ -36,22 +36,18 @@ import java.util.SortedSet;
 
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.EqualsUtil;
 
 public class AssertEntityEquals {
 	
 	public static void assertEntityEquals(Indication expected, Indication actual) {
-		assertEquals(expected.getClass(), actual.getClass());
-		assertEquals(expected.getCode(),  actual.getCode());
-		assertEquals(expected.getName(),  actual.getName());
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
 	public static void assertEntityEquals(Drug expected, Drug actual) {
-		assertEquals(expected.getName(),actual.getName());
-		assertEquals (expected.getAtcCode(), actual.getAtcCode());
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
 	public static boolean armsEqual(Arm expected, Arm actual) {
@@ -99,56 +95,15 @@ public class AssertEntityEquals {
 	}
 	
 	public static void assertEntityEquals(MetaAnalysis expected, MetaAnalysis actual) {
-		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getType(), actual.getType());
-		assertEquals(expected.getIncludedStudies(), actual.getIncludedStudies());
-		assertEquals(expected.getIncludedDrugs(), actual.getIncludedDrugs());
-		assertEquals(expected.getSampleSize(), actual.getSampleSize());
-		assertEquals(expected.getOutcomeMeasure(), actual.getOutcomeMeasure());
-		assertEquals(expected.getIndication(), actual.getIndication());
-		assertEquals(expected.getDependencies(), actual.getDependencies());
-		if (expected instanceof NetworkMetaAnalysis) {
-			assertTrue(actual instanceof NetworkMetaAnalysis);
-			NetworkMetaAnalysis expNetwork = (NetworkMetaAnalysis) expected;
-			NetworkMetaAnalysis actNetwork = (NetworkMetaAnalysis) actual;
-			for (DrugSet d : expNetwork.getIncludedDrugs()) {
-				for (Study s : expNetwork.getIncludedStudies()) {
-					assertEntityEquals(expNetwork.getArm(s, d), actNetwork.getArm(s, d));
-				}
-			}
-		} else {
-			assertTrue(actual instanceof RandomEffectsMetaAnalysis);
-			RandomEffectsMetaAnalysis expPairWise = (RandomEffectsMetaAnalysis) expected;
-			RandomEffectsMetaAnalysis actPairWise = (RandomEffectsMetaAnalysis) actual;
-			for (StudyArmsEntry s : expPairWise.getStudyArms()) {
-				assertEntityEquals(s.getBase(), actPairWise.getArm(s.getStudy(), expPairWise.getFirstDrug()));
-				assertEntityEquals(s.getSubject(), actPairWise.getArm(s.getStudy(), expPairWise.getSecondDrug()));
-			}
-		}
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
 	public static void assertEntityEquals(MetaBenefitRiskAnalysis expected, MetaBenefitRiskAnalysis actual) {
-		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getBaseline(), actual.getBaseline());
-		assertEquals(expected.getIndication(), actual.getIndication());
-		assertEquals(expected.getMetaAnalyses(), actual.getMetaAnalyses());
-		assertEquals(expected.getDrugs(), actual.getDrugs());
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 
 	public static void assertEntityEquals(StudyBenefitRiskAnalysis expected, StudyBenefitRiskAnalysis actual) {
-		assertEquals(expected.getName(), actual.getName());
-		assertEquals(expected.getIndication(), actual.getIndication());
-		assertEquals(expected.getStudy(), actual.getStudy());
-		assertEquals(expected.getAlternatives().size(), actual.getAlternatives().size());
-		for (int i = 0; i < expected.getAlternatives().size(); ++i) {
-			assertEntityEquals(expected.getAlternatives().get(i), actual.getAlternatives().get(i));
-		}
-		assertEquals(expected.getCriteria().size(), actual.getCriteria().size());
-		for (int i = 0; i < expected.getCriteria().size(); ++i) {
-			assertEntityEquals(expected.getCriteria().get(i), actual.getCriteria().get(i));
-		}
-		
-		
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 	
 	public static void assertEntityEquals(Entity expected, Entity actual){
@@ -190,14 +145,7 @@ public class AssertEntityEquals {
 	}
 
 	public static void assertDomainEquals(Domain d1, Domain d2) {
-		assertEntityEquals(d1.getEndpoints(), d2.getEndpoints());
-		assertEntityEquals(d1.getDrugs(), d2.getDrugs());
-		assertEntityEquals(d1.getIndications(), d2.getIndications());
-		assertEntityEquals(d1.getAdverseEvents(), d2.getAdverseEvents());
-		assertEntityEquals(d1.getPopulationCharacteristics(), d2.getPopulationCharacteristics());
-		assertEntityEquals(d1.getStudies(), d2.getStudies());
-		assertEntityEquals(d1.getMetaAnalyses(), d2.getMetaAnalyses());
-		assertEntityEquals(d1.getBenefitRiskAnalyses(), d2.getBenefitRiskAnalyses());
+		assertTrue(EqualsUtil.equal(d1, d2));
 	}
 
 }

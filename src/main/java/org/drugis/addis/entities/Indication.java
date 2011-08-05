@@ -73,4 +73,12 @@ public class Indication extends AbstractNamedEntity<Indication> implements Compa
 		return d_code.toString() + " " + getName();
 	}
 	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if(!equals(other)) {
+			return false;
+		}
+		Indication o = (Indication) other;
+		return getCode().equals(o.getCode()) && getName().equals(o.getName());
+	}
 }

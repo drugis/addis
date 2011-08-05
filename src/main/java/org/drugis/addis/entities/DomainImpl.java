@@ -180,7 +180,8 @@ public class DomainImpl extends Domain {
 				getAdverseEvents().equals(other.getAdverseEvents()) &&
 				getPopulationCharacteristics().equals(other.getPopulationCharacteristics()) &&
 				getStudies().equals(other.getStudies()) &&
-				getMetaAnalyses().equals(other.getMetaAnalyses())
+				getMetaAnalyses().equals(other.getMetaAnalyses()) &&
+				getBenefitRiskAnalyses().equals(other.getBenefitRiskAnalyses())
 			);
 		}
 		return false;

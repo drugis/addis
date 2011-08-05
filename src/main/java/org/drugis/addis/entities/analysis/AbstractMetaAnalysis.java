@@ -42,6 +42,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.EqualsUtil;
 
 public abstract class AbstractMetaAnalysis extends AbstractEntity implements MetaAnalysis {
 	
@@ -202,5 +203,21 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		ArrayList<Study> studies = new ArrayList<Study>(armMap.keySet());
 		Collections.sort(studies);
 		return studies;
+	}
+	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if(!equals(other)) {
+			return false;
+		}
+		AbstractMetaAnalysis o = (AbstractMetaAnalysis) other;
+		return 
+			EqualsUtil.equal(getType(), o.getType()) &&
+			EqualsUtil.equal(getIncludedStudies(), o.getIncludedStudies()) &&
+			EqualsUtil.equal(getIncludedDrugs(), o.getIncludedDrugs()) &&
+			EqualsUtil.equal(getSampleSize(), o.getSampleSize()) &&
+			EqualsUtil.equal(getOutcomeMeasure(), o.getOutcomeMeasure()) &&
+			EqualsUtil.equal(getIndication(), o.getIndication()) &&
+			EqualsUtil.equal(getDependencies(), o.getDependencies());
 	}
 }
