@@ -29,179 +29,121 @@ import static org.junit.Assert.assertEquals;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.junit.Before;
 import org.junit.Test;
 
 public class RelativeEffectFactoryTest {
-	@Test
-	public void testGetStandardizedMeanDifference() {
-		Study s = ExampleData.buildStudyChouinard();
-		Endpoint e = ExampleData.buildEndpointCgi();
-		Drug base = ExampleData.buildDrugParoxetine();
-		Drug subj = ExampleData.buildDrugFluoxetine();
-		Arm pBase = s.getArms().get(0);
-		Arm pSubj = s.getArms().get(1);
-		// sanity check:
-		assertEquals(new DrugSet(base), s.getDrugs(pBase));
-		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
-		
-		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
-				(ContinuousMeasurement)s.getMeasurement(e, pBase),
-				(ContinuousMeasurement)s.getMeasurement(e, pSubj));
-		
-		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
-						BasicStandardisedMeanDifference.class);
-		
-		assertRelativeEffectEqual(expected, actual);
+	
+	private Study d_s;
+	private Endpoint d_eCont;
+	private DrugSet d_fluox;
+	private DrugSet d_parox;
+	private Arm d_pBase;
+	private Arm d_pSubj;
+	private Endpoint d_eRate;
+
+	@Before
+	public void setUp() {
+		d_s = ExampleData.buildStudyChouinard();
+		d_eCont = ExampleData.buildEndpointCgi();
+		d_eRate = ExampleData.buildEndpointHamd();
+		d_parox = new DrugSet(ExampleData.buildDrugParoxetine());
+		d_fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
+		d_pBase = d_s.getArms().get(0);
+		d_pSubj = d_s.getArms().get(1);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetStandardizedMeanDifferenceRate() {
-		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildStudyChouinard(),
-				ExampleData.buildEndpointHamd(),
-				new DrugSet(ExampleData.buildDrugParoxetine()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				BasicStandardisedMeanDifference.class);
+		RelativeEffectFactory.buildRelativeEffect(d_s, d_eRate, d_parox, d_fluox, BasicStandardisedMeanDifference.class);
 	}
 	
-	@Test
-	public void testGetMeanDifference() {
-		Study s = ExampleData.buildStudyChouinard();
-		Endpoint e = ExampleData.buildEndpointCgi();
-		Drug base = ExampleData.buildDrugParoxetine();
-		Drug subj = ExampleData.buildDrugFluoxetine();
-		Arm pBase = s.getArms().get(0);
-		Arm pSubj = s.getArms().get(1);
-		// sanity check:
-		assertEquals(new DrugSet(base), s.getDrugs(pBase));
-		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
-		
-		RelativeEffect<?> expected = new BasicMeanDifference(
-				(ContinuousMeasurement)s.getMeasurement(e, pBase),
-				(ContinuousMeasurement)s.getMeasurement(e, pSubj));
-		
-		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
-						BasicMeanDifference.class, false);
-		
-		assertRelativeEffectEqual(expected, actual);
-	}
-
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetMeanDifferenceRate() {
-		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildStudyChouinard(),
-				ExampleData.buildEndpointHamd(),
-				new DrugSet(ExampleData.buildDrugParoxetine()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				BasicMeanDifference.class, false);
+		RelativeEffectFactory.buildRelativeEffect(d_s, d_eRate, d_parox, d_fluox, BasicMeanDifference.class, false);
 	}
 	
-	@Test
-	public void testGetOddsRatio() {
-		Study s = ExampleData.buildStudyChouinard();
-		Endpoint e = ExampleData.buildEndpointHamd();
-		Drug base = ExampleData.buildDrugParoxetine();
-		Drug subj = ExampleData.buildDrugFluoxetine();
-		Arm pBase = s.getArms().get(0);
-		Arm pSubj = s.getArms().get(1);
-		// sanity check:
-		assertEquals(new DrugSet(base), s.getDrugs(pBase));
-		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
-		
-		RelativeEffect<?> expected = new BasicOddsRatio(
-				(RateMeasurement)s.getMeasurement(e, pBase),
-				(RateMeasurement)s.getMeasurement(e, pSubj));
-		
-		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
-						BasicOddsRatio.class);
-		
-		assertRelativeEffectEqual(expected, actual);
-	}
-
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetOddsRatioCont() {
-		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildStudyChouinard(),
-				ExampleData.buildEndpointCgi(),
-				new DrugSet(ExampleData.buildDrugParoxetine()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				BasicOddsRatio.class);
-	}
-	
-	@Test
-	public void testGetRiskRatio() {
-		Study s = ExampleData.buildStudyChouinard();
-		Endpoint e = ExampleData.buildEndpointHamd();
-		Drug base = ExampleData.buildDrugParoxetine();
-		Drug subj = ExampleData.buildDrugFluoxetine();
-		Arm pBase = s.getArms().get(0);
-		Arm pSubj = s.getArms().get(1);
-		// sanity check:
-		assertEquals(new DrugSet(base), s.getDrugs(pBase));
-		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
-		
-		RelativeEffect<?> expected = new BasicRiskRatio(
-				(RateMeasurement)s.getMeasurement(e, pBase),
-				(RateMeasurement)s.getMeasurement(e, pSubj));
-		
-		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
-						BasicRiskRatio.class);
-		
-		assertRelativeEffectEqual(expected, actual);
+		RelativeEffectFactory.buildRelativeEffect(d_s, d_eCont, d_parox, d_fluox, BasicOddsRatio.class);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetRiskRatioCont() {
-		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildStudyChouinard(),
-				ExampleData.buildEndpointCgi(),
-				new DrugSet(ExampleData.buildDrugParoxetine()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				BasicRiskRatio.class);
-	}
-	
-	@Test
-	public void testGetRiskDifference() {
-		Study s = ExampleData.buildStudyChouinard();
-		Endpoint e = ExampleData.buildEndpointHamd();
-		Drug base = ExampleData.buildDrugParoxetine();
-		Drug subj = ExampleData.buildDrugFluoxetine();
-		Arm pBase = s.getArms().get(0);
-		Arm pSubj = s.getArms().get(1);
-		// sanity check:
-		assertEquals(new DrugSet(base), s.getDrugs(pBase));
-		assertEquals(new DrugSet(subj), s.getDrugs(pSubj));
-		
-		RelativeEffect<?> expected = new BasicRiskDifference(
-				(RateMeasurement)s.getMeasurement(e, pBase),
-				(RateMeasurement)s.getMeasurement(e, pSubj));
-		
-		RelativeEffect<?> actual =
-				RelativeEffectFactory.buildRelativeEffect(s, e, new DrugSet(base), new DrugSet(subj),
-						BasicRiskDifference.class);
-		
-		assertRelativeEffectEqual(expected, actual);
+		RelativeEffectFactory.buildRelativeEffect(d_s, d_eCont, d_parox, d_fluox, BasicRiskRatio.class);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetRiskDifferenceCont() {
-		RelativeEffectFactory.buildRelativeEffect(
-				ExampleData.buildStudyChouinard(),
-				ExampleData.buildEndpointCgi(),
-				new DrugSet(ExampleData.buildDrugParoxetine()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				BasicRiskDifference.class);
+		RelativeEffectFactory.buildRelativeEffect(d_s, d_eCont, d_parox, d_fluox, BasicRiskDifference.class);
 	}
 	
+	@Test
+	public void testGetMeanDifference() {
+		RelativeEffect<?> expected = new BasicMeanDifference(
+				(ContinuousMeasurement)d_s.getMeasurement(d_eCont, d_pBase),
+				(ContinuousMeasurement)d_s.getMeasurement(d_eCont, d_pSubj));
+		
+		RelativeEffect<?> actual = RelativeEffectFactory.buildRelativeEffect(d_s, d_eCont, d_parox, d_fluox, BasicMeanDifference.class, false);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test
+	public void testGetStandardizedMeanDifference() {
+		// Sanity check
+		assertEquals(d_parox, d_s.getDrugs(d_pBase));
+		assertEquals(d_fluox, d_s.getDrugs(d_pSubj));
+		
+		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
+				(ContinuousMeasurement)d_s.getMeasurement(d_eCont, d_pBase),
+				(ContinuousMeasurement)d_s.getMeasurement(d_eCont, d_pSubj));
+		
+		RelativeEffect<?> actual =
+				RelativeEffectFactory.buildRelativeEffect(d_s, d_eCont, d_parox, d_fluox, BasicStandardisedMeanDifference.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test
+	public void testGetOddsRatio() {
+		RelativeEffect<?> expected = new BasicOddsRatio(
+				(RateMeasurement)d_s.getMeasurement(d_eRate, d_pBase),
+				(RateMeasurement)d_s.getMeasurement(d_eRate, d_pSubj));
+		
+		RelativeEffect<?> actual = RelativeEffectFactory.buildRelativeEffect(d_s, d_eRate, d_parox, d_fluox, BasicOddsRatio.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	
+	@Test
+	public void testGetRiskRatio() {
+		RelativeEffect<?> expected = new BasicRiskRatio(
+				(RateMeasurement)d_s.getMeasurement(d_eRate, d_pBase),
+				(RateMeasurement)d_s.getMeasurement(d_eRate, d_pSubj));
+		
+		RelativeEffect<?> actual = RelativeEffectFactory.buildRelativeEffect(d_s, d_eRate, d_parox, d_fluox, BasicRiskRatio.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
+	@Test
+	public void testGetRiskDifference() {
+		RelativeEffect<?> expected = new BasicRiskDifference(
+				(RateMeasurement)d_s.getMeasurement(d_eRate, d_pBase),
+				(RateMeasurement)d_s.getMeasurement(d_eRate, d_pSubj));
+		
+		RelativeEffect<?> actual =
+				RelativeEffectFactory.buildRelativeEffect(d_s, d_eRate, d_parox, d_fluox, BasicRiskDifference.class);
+		
+		assertRelativeEffectEqual(expected, actual);
+	}
+
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,
 			RelativeEffect<?> actual) {
 		assertEquals(expected.getClass(), actual.getClass());
