@@ -44,7 +44,7 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelative
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.common.EqualsUtil;
+import org.drugis.addis.util.EntityUtil;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements PairWiseMetaAnalysis {
 
@@ -228,8 +228,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		}
 		RandomEffectsMetaAnalysis o = (RandomEffectsMetaAnalysis) other;
 		for (StudyArmsEntry s : o.getStudyArms()) {
-			if ( !EqualsUtil.equal(s.getBase(), getArm(s.getStudy(), o.getFirstDrug())) ||
-				 !EqualsUtil.equal(s.getSubject(), getArm(s.getStudy(), o.getSecondDrug()))) {
+			if ( !EntityUtil.deepEqual(s.getBase(), getArm(s.getStudy(), o.getFirstDrug())) ||
+				 !EntityUtil.deepEqual(s.getSubject(), getArm(s.getStudy(), o.getSecondDrug()))) {
 				return false;
 			}
 		}

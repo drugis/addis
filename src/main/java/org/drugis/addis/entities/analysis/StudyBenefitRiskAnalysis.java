@@ -42,6 +42,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.EqualsUtil;
 
@@ -160,9 +161,9 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			return false;
 		}
 		StudyBenefitRiskAnalysis o = (StudyBenefitRiskAnalysis) other;
-		return EqualsUtil.equal(getStudy(), o.getStudy()) &&
-			EqualsUtil.equal(getIndication(), o.getIndication()) &&
-			EqualsUtil.equal(getAlternatives(), o.getAlternatives()) &&
-			EqualsUtil.equal(getCriteria(), o.getCriteria());
+		return EntityUtil.deepEqual(getStudy(), o.getStudy()) &&
+			EntityUtil.deepEqual(getIndication(), o.getIndication()) &&
+			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
+			EntityUtil.deepEqual(getCriteria(), o.getCriteria());
 	}
 }

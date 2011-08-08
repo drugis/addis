@@ -24,8 +24,13 @@
 
 package org.drugis.addis.entities;
 
+import static org.drugis.common.JUnitUtil.assertAllAndOnly;
+
 import java.util.Collections;
 import java.util.Set;
+
+import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.EqualsUtil;
 
 public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<?>> {
 	public CharacteristicsMap() {
@@ -37,6 +42,30 @@ public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<
 	@Override
 	public Set<Entity> getDependencies() {
 		return Collections.emptySet();
+	}
+	
+	@Override
+	public boolean deepEquals(Entity other) {
+		if (!EqualsUtil.equal(this, other)) {
+			return false;
+		}
+		
+		CharacteristicsMap o = (CharacteristicsMap) other;
+		assertAllAndOnly(o.keySet(), keySet());
+		for (Characteristic key : o.keySet()) {
+			Object expValue = o.get(key);
+			Object actValue = get(key);
+			if (expValue instanceof Entity) {
+				if (!EntityUtil.deepEqual((Entity)expValue, (Entity)actValue)) {
+					return false;
+				}
+			} else {
+				if (!expValue.equals(actValue)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }

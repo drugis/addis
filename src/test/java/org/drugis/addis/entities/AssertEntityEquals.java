@@ -24,31 +24,18 @@
 
 package org.drugis.addis.entities;
 
-import static org.drugis.common.JUnitUtil.assertAllAndOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
 public class AssertEntityEquals {
-	
-	public static void assertEntityEquals(Indication expected, Indication actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
-	
-	public static void assertEntityEquals(Drug expected, Drug actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
 	
 	public static boolean armsEqual(Arm expected, Arm actual) {
 		if (expected == null || actual == null) {
@@ -56,21 +43,6 @@ public class AssertEntityEquals {
 		}
 		return expected.deepEquals(actual);
 	}
-
-	public static void assertEntityEquals(Arm expected, Arm actual) {
-		if (!armsEqual(expected, actual)) {
-			throw new AssertionError("Expected " + expected + " but got " + actual);
-		}
-	}
-	
-	public static void assertEntityEquals(Variable expected, Variable actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
-	
-	public static void assertEntityEquals(Measurement expected, Measurement actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
-	
 
 	public static void assertEntityEquals(SortedSet<? extends Entity> expected, SortedSet<? extends Entity> actual) {
 		assertEntityEquals(asList(expected), asList(actual));
@@ -90,58 +62,9 @@ public class AssertEntityEquals {
 			assertEntityEquals(expectedIterator.next(), actualIterator.next());
 	}
 	
-	public static void assertEntityEquals(Study expected, Study actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
-	
-	public static void assertEntityEquals(MetaAnalysis expected, MetaAnalysis actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
-	
-	public static void assertEntityEquals(MetaBenefitRiskAnalysis expected, MetaBenefitRiskAnalysis actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
-
-	public static void assertEntityEquals(StudyBenefitRiskAnalysis expected, StudyBenefitRiskAnalysis actual) {
-		assertTrue(EntityUtil.deepEqual(expected, actual));
-	}
 	
 	public static void assertEntityEquals(Entity expected, Entity actual){
-		if (expected instanceof Arm)
-			assertEntityEquals((Arm) expected, (Arm) actual);
-		else if (expected instanceof Drug)
-			assertEntityEquals((Drug) expected, (Drug) actual);
-		else if (expected instanceof Indication)
-			assertEntityEquals((Indication) expected, (Indication) actual);
-		else if (expected instanceof Measurement)
-			assertEntityEquals((Measurement) expected, (Measurement) actual);
-		else if (expected instanceof Study)
-			assertEntityEquals((Study) expected, (Study) actual);
-		else if (expected instanceof Variable)
-			assertEntityEquals((Variable) expected, (Variable) actual);
-		else if (expected instanceof MetaAnalysis) {
-			assertEntityEquals((MetaAnalysis)expected, (MetaAnalysis)actual);
-		} else if (expected instanceof CharacteristicsMap) {
-			CharacteristicsMap expCh = (CharacteristicsMap) expected;
-			CharacteristicsMap actCh = (CharacteristicsMap) actual;
-			assertAllAndOnly(expCh.keySet(), actCh.keySet());
-			for (Characteristic key : expCh.keySet()) {
-				Object expValue = expCh.get(key);
-				Object actValue = actCh.get(key);
-				if (expValue instanceof Entity) {
-					assertEntityEquals((Entity)expValue, (Entity)actValue);
-				} else {
-					assertEquals(expValue, actValue);
-				}
-			}
-		} else if (expected instanceof MetaBenefitRiskAnalysis) {
-			assertEntityEquals((MetaBenefitRiskAnalysis)expected, (MetaBenefitRiskAnalysis)actual);
-		} else if (expected instanceof StudyBenefitRiskAnalysis) {
-			assertEntityEquals((StudyBenefitRiskAnalysis)expected, (StudyBenefitRiskAnalysis)actual);
-		} else {
-			System.err.println("No test for the equality of this entity: " + expected.getClass());
-			fail();
-		}
+		assertTrue(EntityUtil.deepEqual(expected, actual));
 	}
 
 	public static void assertDomainEquals(Domain d1, Domain d2) {

@@ -213,11 +213,11 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		AbstractMetaAnalysis o = (AbstractMetaAnalysis) other;
 		return 
 			EqualsUtil.equal(getType(), o.getType()) &&
-			EqualsUtil.equal(getIncludedStudies(), o.getIncludedStudies()) &&
-			EqualsUtil.equal(getIncludedDrugs(), o.getIncludedDrugs()) &&
+			EntityUtil.deepEqual(getIncludedStudies(), o.getIncludedStudies()) &&
+			EntityUtil.deepEqual(getIncludedDrugs(), o.getIncludedDrugs()) &&
 			EqualsUtil.equal(getSampleSize(), o.getSampleSize()) &&
-			EqualsUtil.equal(getOutcomeMeasure(), o.getOutcomeMeasure()) &&
-			EqualsUtil.equal(getIndication(), o.getIndication()) &&
-			EqualsUtil.equal(getDependencies(), o.getDependencies());
+			EntityUtil.deepEqual(getOutcomeMeasure(), o.getOutcomeMeasure()) &&
+			EntityUtil.deepEqual(getIndication(), o.getIndication()) &&
+			EntityUtil.deepEqual(getDependencies(), o.getDependencies());
 	}
 }

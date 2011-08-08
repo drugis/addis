@@ -43,7 +43,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.common.EqualsUtil;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
@@ -292,7 +292,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		NetworkMetaAnalysis o = (NetworkMetaAnalysis) other;
 		for (DrugSet d : o.getIncludedDrugs()) {
 			for (Study s : o.getIncludedStudies()) {
-				if (!EqualsUtil.equal(getArm(s, d), o.getArm(s, d))) {
+				if (!EntityUtil.deepEqual(getArm(s, d), o.getArm(s, d))) {
 					return false;
 				}
 			}
