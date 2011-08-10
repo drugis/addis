@@ -24,8 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import static org.drugis.common.JUnitUtil.assertAllAndOnly;
-
 import java.util.Collections;
 import java.util.Set;
 
@@ -51,7 +49,6 @@ public class CharacteristicsMap extends MapBean<Characteristic, ObjectWithNotes<
 		}
 		
 		CharacteristicsMap o = (CharacteristicsMap) other;
-		assertAllAndOnly(o.keySet(), keySet());
 		for (Characteristic key : o.keySet()) {
 			Object expValue = o.get(key);
 			Object actValue = get(key);

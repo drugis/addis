@@ -39,6 +39,7 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.OtherActivity;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.StudyActivity;
@@ -121,6 +122,7 @@ public class StudyActivityPresentationTest {
 		StudyActivityPresentation pm1 = new StudyActivityPresentation(d_emptyList, null, d_activity);
 		List<Activity> list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 		list.add(new TreatmentActivity(new DrugTreatment(null, null)));
+		list.add(new OtherActivity("Other"));
 		assertEquals(list, pm1.getActivityOptions());
 		
 		// Test initialization with treatment
@@ -128,6 +130,7 @@ public class StudyActivityPresentationTest {
 		StudyActivityPresentation pm2 = new StudyActivityPresentation(d_emptyList, null, activity);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 		list.add(new TreatmentActivity(d_treatment));
+		list.add(new OtherActivity("Other"));
 		assertEquals(list, pm2.getActivityOptions());
 
 		// Changing the TreatmentActivity in the PM should affect the option list
@@ -143,6 +146,7 @@ public class StudyActivityPresentationTest {
 		StudyActivityPresentation pm3 = new StudyActivityPresentation(d_emptyList, null, activity2);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 		list.add(ct);
+		list.add(new OtherActivity("Other"));
 		assertEquals(list, pm3.getActivityOptions());
 
 	}

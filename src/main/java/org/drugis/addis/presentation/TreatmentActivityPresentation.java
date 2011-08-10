@@ -57,20 +57,14 @@ public class TreatmentActivityPresentation extends PresentationModel<TreatmentAc
 		};
 		
 		ct.getTreatments().addListDataListener(new ListDataListener() {
-		
-			@Override
 			public void intervalRemoved(ListDataEvent e) {
 				updateTreatmentListeners();
 				firePropertyChange(PROPERTY_NAME, null, getName());
 			}
-			
-			@Override
 			public void intervalAdded(ListDataEvent e) {
 				updateTreatmentListeners();
 				firePropertyChange(PROPERTY_NAME, null, getName());
 			}
-			
-			@Override
 			public void contentsChanged(ListDataEvent e) {
 				updateTreatmentListeners();
 				firePropertyChange(PROPERTY_NAME, null, getName());

@@ -27,20 +27,21 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.OtherActivity;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.presentation.OtherActivityPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.SortedSetModel;
-
-import scala.actors.threadpool.Arrays;
 
 import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.list.ObservableList;
@@ -80,12 +81,12 @@ public class StudyActivityPresentation {
 	private ValueHolder<Boolean> d_valid;
 	private SortedSetModel<Drug> d_drugOptions;
 	private TreatmentActivityPresentation d_treatmentModel;
+	private OtherActivityPresentation d_otherModel;
 
 	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, SortedSetModel<Drug> drugOptions) {
 		this (activityList, drugOptions, null);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public StudyActivityPresentation(ObservableList<StudyActivity> activityList, SortedSetModel<Drug> drugOptions, StudyActivity activity) {
 		d_activityList = activityList;
 		d_drugOptions = drugOptions;
@@ -96,7 +97,10 @@ public class StudyActivityPresentation {
 		d_activityOptions = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));
 	    TreatmentActivity initialTreatment = getInitialTreatment();
 	    d_activityOptions.add(initialTreatment);
+	    OtherActivity initialOther = getInitialOtherTreatment();
+	    d_activityOptions.add(initialOther);
 		d_treatmentModel = new TreatmentActivityPresentation(initialTreatment);
+		d_otherModel = new OtherActivityPresentation(initialOther);
 		d_valid = new ValidModel();
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
@@ -107,6 +111,7 @@ public class StudyActivityPresentation {
 		if (!isEditing()) {
 			d_activityHolder.addValueChangeListener(listener);
 			d_treatmentModel.addPropertyChangeListener(listener);
+			d_otherModel.addPropertyChangeListener(listener);
 		}
 	}
 
@@ -131,6 +136,14 @@ public class StudyActivityPresentation {
 			return (TreatmentActivity) d_newActivity.getActivity();
 		} else {
 			return new TreatmentActivity(new DrugTreatment(null, null));
+		}
+	}
+
+	private OtherActivity getInitialOtherTreatment() {
+		if (d_newActivity.getActivity() instanceof OtherActivity) {
+			return (OtherActivity) d_newActivity.getActivity();
+		} else {
+			return new OtherActivity("Other");
 		}
 	}
 	
@@ -169,8 +182,11 @@ public class StudyActivityPresentation {
 	public TreatmentActivityPresentation getTreatmentModel() {
 		return d_treatmentModel;
 	}
-	
-	
+
+	public OtherActivityPresentation getOtherActivityModel() {
+		return d_otherModel;
+	}
+
 	/**
 	 * A value model indicating whether the input is complete and valid.
 	 */
@@ -195,8 +211,10 @@ public class StudyActivityPresentation {
 	private void updateName() {
 		if(d_activityHolder.getValue() instanceof TreatmentActivity) {
 			d_newActivity.setName(d_treatmentModel.getName());
-		} else if (d_activityHolder.getValue() != null) {
-			d_newActivity.setName(d_activityHolder.getValue().toString());
+		} else {
+			String string = d_activityHolder.getValue().toString();
+			System.out.println(string);
+			d_newActivity.setName(string);
 		}
 	}
 }

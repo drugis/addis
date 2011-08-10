@@ -72,6 +72,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
+import org.drugis.addis.entities.OtherActivity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PredefinedActivity;
@@ -135,7 +136,6 @@ import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
-import org.drugis.addis.entities.data.Treatment;
 import org.drugis.common.Interval;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -403,6 +403,8 @@ public class JAXBConvertor {
 			return activity.getPredefined();
 		} else if (activity.getTreatment() != null) {
 			return convertTreatmentActivity(activity.getTreatment(), domain);
+		} else if (activity.getOther() != null) {
+			return new OtherActivity(activity.getOther());
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
@@ -413,13 +415,10 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.Activity converted = new org.drugis.addis.entities.data.Activity();
 		if (activity instanceof PredefinedActivity) {
 			converted.setPredefined((PredefinedActivity) activity);
-		} else if (activity instanceof DrugTreatment){
-			org.drugis.addis.entities.data.DrugTreatment dt = convertTreatmentActivity((DrugTreatment) activity);
-			Treatment treatment = new org.drugis.addis.entities.data.Treatment();
-			treatment.getDrugTreatment().add(dt);
-			converted.setTreatment(treatment);
 		} else if (activity instanceof TreatmentActivity){
 			converted.setTreatment(convertCombinationTreatment((TreatmentActivity) activity));
+		} else if (activity instanceof OtherActivity) {
+			converted.setOther(activity.getLabel());
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
@@ -467,7 +466,7 @@ public class JAXBConvertor {
 		return newCombinationTreatment;
 	}
 	
-	private static org.drugis.addis.entities.data.DrugTreatment convertTreatmentActivity(DrugTreatment ta)  throws ConversionException {
+	private static org.drugis.addis.entities.data.DrugTreatment convertDrugTreatmentActivity(DrugTreatment ta)  throws ConversionException {
 		org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(ta.getDrug().getName()));
 		if (ta.getDose() instanceof FixedDose) {
@@ -484,7 +483,7 @@ public class JAXBConvertor {
 	private static org.drugis.addis.entities.data.Treatment convertCombinationTreatment(TreatmentActivity activity) throws ConversionException {
 		org.drugis.addis.entities.data.Treatment ct = new org.drugis.addis.entities.data.Treatment();
 		for(DrugTreatment ta : activity.getTreatments()) {
-			ct.getDrugTreatment().add(convertTreatmentActivity(ta));
+			ct.getDrugTreatment().add(convertDrugTreatmentActivity(ta));
 		}
 		return ct;
 	}

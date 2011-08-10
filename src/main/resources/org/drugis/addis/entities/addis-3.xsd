@@ -416,6 +416,7 @@
 			<xs:choice>
 				<xs:element name="treatment" type="Treatment"/>
 				<xs:element name="predefined" type="PredefinedActivityEnum"/>
+				<xs:element name="other" type="xs:string"/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>

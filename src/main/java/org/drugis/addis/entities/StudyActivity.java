@@ -154,7 +154,12 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 
 
 	private Activity cloneActivity() {
-		return d_activity instanceof TreatmentActivity ? ((TreatmentActivity) d_activity).clone() : d_activity;
+		if (d_activity instanceof TreatmentActivity) {
+			return ((TreatmentActivity) d_activity).clone();
+		} else if (d_activity instanceof OtherActivity) {
+			return ((OtherActivity) d_activity).clone();
+		}
+		return  d_activity;
 	}
 
 
