@@ -168,7 +168,6 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = builder.getLayout();
 
-//		builder.addSeparator("", cc.xyw(1, row, 5));
 		row = LayoutUtil.addRow(layout, row);
 		builder.addSeparator("", cc.xyw(1, row, 5));
 		row = LayoutUtil.addRow(layout, row);

@@ -44,8 +44,8 @@ public class TreatmentActivityPresentation extends PresentationModel<TreatmentAc
 
 	private PropertyChangeListener d_nameListener;
 
-	public TreatmentActivityPresentation(final TreatmentActivity ct) {
-		super(ct);
+	public TreatmentActivityPresentation(final TreatmentActivity ta) {
+		super(ta);
 
 		d_nameListener = new PropertyChangeListener() {
 			@Override
@@ -56,7 +56,7 @@ public class TreatmentActivityPresentation extends PresentationModel<TreatmentAc
 			}
 		};
 		
-		ct.getTreatments().addListDataListener(new ListDataListener() {
+		ta.getTreatments().addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				updateTreatmentListeners();
 				firePropertyChange(PROPERTY_NAME, null, getName());

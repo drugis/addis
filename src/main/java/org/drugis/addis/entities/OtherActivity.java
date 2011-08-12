@@ -6,9 +6,10 @@ import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
-public class OtherActivity implements Activity {
+public class OtherActivity extends AbstractEntity implements Activity {
 
-	private final String d_description;
+	public static final String PROPERTY_DESCRIPTION = "description";
+	private String d_description;
 
 	public OtherActivity(String description) {
 		d_description = description;
@@ -32,6 +33,12 @@ public class OtherActivity implements Activity {
 	
 	public String getDescription() {
 		return d_description;
+	}
+	
+	public void setDescription(String d) {
+		String oldValue = d_description;
+		d_description = d;
+		firePropertyChange(PROPERTY_DESCRIPTION, oldValue, d_description);
 	}
 	
 	@Override

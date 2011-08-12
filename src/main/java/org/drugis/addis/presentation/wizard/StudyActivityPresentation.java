@@ -52,15 +52,15 @@ public class StudyActivityPresentation {
 	public class ValidModel extends AbstractValueModel implements ValueHolder<Boolean> {
 		private static final long serialVersionUID = -9106397706220712681L;
 
-		ValidModel() {
+		public ValidModel() {
 			PropertyChangeListener listener = new PropertyChangeListener() {
-				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					firePropertyChange("value", null, getValue());
 				}
 			};
 			d_treatmentModel.addPropertyChangeListener(listener);
 			d_newActivity.addPropertyChangeListener(listener);
+			d_otherModel.addPropertyChangeListener(listener);
 		}
 		@Override
 		public Boolean getValue() {
@@ -213,7 +213,6 @@ public class StudyActivityPresentation {
 			d_newActivity.setName(d_treatmentModel.getName());
 		} else {
 			String string = d_activityHolder.getValue().toString();
-			System.out.println(string);
 			d_newActivity.setName(string);
 		}
 	}

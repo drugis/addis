@@ -3,6 +3,7 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.OtherActivity;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.value.ValueModel;
 
 public class OtherActivityPresentation extends PresentationModel<OtherActivity> {
@@ -13,7 +14,7 @@ public class OtherActivityPresentation extends PresentationModel<OtherActivity> 
 	}
 	
 	public String getName() {
-		return "Other";
+		return "Other (" + getBean().getDescription() + ")";
 	}
 	
 	public String getDescription() {
@@ -21,6 +22,6 @@ public class OtherActivityPresentation extends PresentationModel<OtherActivity> 
 	}
 
 	public ValueModel getDescriptionModel() {
-		return new ModifiableHolder<String>(getBean().getDescription());
+		return new PropertyAdapter<OtherActivity>(getBean(), OtherActivity.PROPERTY_DESCRIPTION, true);
 	}
 }
