@@ -42,7 +42,7 @@ public class OtherActivityPresentationTest {
 	public void setUp() {
 		d_oa = new OtherActivity("Foo");
 		d_oap = new OtherActivityPresentation(d_oa);
-		d_dm = d_oap.getDescriptionModel();
+		d_dm = d_oap.getModel(OtherActivity.PROPERTY_DESCRIPTION);
 	}
 	
 	@Test
