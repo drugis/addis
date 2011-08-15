@@ -970,7 +970,7 @@
             <epoch name="Randomization">
                <notes/>
             </epoch>
-            <epoch name="Mian phase">
+            <epoch name="Main phase">
                <duration>P84D</duration>
                <notes>
                   <note source="MANUAL">Titration at week 2</note>
@@ -1001,7 +1001,7 @@
                      <drug name="Venlafaxine"/>
                   </treatment>
                </activity>
-               <usedBy arm="Venlafaxine" epoch="Mian phase"/>
+               <usedBy arm="Venlafaxine" epoch="Main phase"/>
                <notes/>
             </studyActivity>
             <studyActivity name="Fluoxetine">
@@ -1011,7 +1011,7 @@
                      <drug name="Fluoxetine"/>
                   </treatment>
                </activity>
-               <usedBy arm="Fluoxetine" epoch="Mian phase"/>
+               <usedBy arm="Fluoxetine" epoch="Main phase"/>
                <notes/>
             </studyActivity>
          </activities>
@@ -1379,7 +1379,7 @@
             <epoch name="Randomization">
                <notes/>
             </epoch>
-            <epoch name="Mian phase">
+            <epoch name="Main phase">
                <duration>P168D</duration>
                <notes>
                   <note source="MANUAL">Titration at week 4</note>
@@ -1410,7 +1410,7 @@
                      <drug name="Venlafaxine"/>
                   </treatment>
                </activity>
-               <usedBy arm="Venlafaxine" epoch="Mian phase"/>
+               <usedBy arm="Venlafaxine" epoch="Main phase"/>
                <notes/>
             </studyActivity>
             <studyActivity name="Paroxetine">
@@ -1420,7 +1420,7 @@
                      <drug name="Paroxetine"/>
                   </treatment>
                </activity>
-               <usedBy arm="Paroxetine" epoch="Mian phase"/>
+               <usedBy arm="Paroxetine" epoch="Main phase"/>
                <notes/>
             </studyActivity>
          </activities>
@@ -2199,7 +2199,7 @@ Patients were also excluded if they were pregnant, lactating, or of childbearing
             <epoch name="Randomization">
                <notes/>
             </epoch>
-            <epoch name="Mian phase">
+            <epoch name="Main phase">
                <duration>P56D</duration>
                <notes>
                   <note source="MANUAL">Titration at week 2</note>
@@ -2230,7 +2230,7 @@ Patients were also excluded if they were pregnant, lactating, or of childbearing
                      <drug name="Paroxetine"/>
                   </treatment>
                </activity>
-               <usedBy arm="Paroxetine" epoch="Mian phase"/>
+               <usedBy arm="Paroxetine" epoch="Main phase"/>
                <notes/>
             </studyActivity>
             <studyActivity name="Mirtazapine">
@@ -2240,7 +2240,7 @@ Patients were also excluded if they were pregnant, lactating, or of childbearing
                      <drug name="Mirtazapine"/>
                   </treatment>
                </activity>
-               <usedBy arm="Mirtazapine" epoch="Mian phase"/>
+               <usedBy arm="Mirtazapine" epoch="Main phase"/>
                <notes/>
             </studyActivity>
          </activities>
