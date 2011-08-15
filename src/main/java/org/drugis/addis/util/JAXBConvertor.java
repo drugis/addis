@@ -418,7 +418,7 @@ public class JAXBConvertor {
 		} else if (activity instanceof TreatmentActivity){
 			converted.setTreatment(convertCombinationTreatment((TreatmentActivity) activity));
 		} else if (activity instanceof OtherActivity) {
-			converted.setOther(activity.getLabel());
+			converted.setOther(((OtherActivity) activity).getDescription());
 		} else {
 			throw new ConversionException("Unknown Activity type " + activity);
 		}
