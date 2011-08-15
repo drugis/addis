@@ -158,9 +158,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-     			<groupId>javax.xml.bind</groupId>
-     			<artifactId>jaxb-api</artifactId>
-     			<version>2.1</version>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
@@ -320,35 +320,35 @@
 						</manifest>
 					</archive>
 				</configuration>
-                    <executions>
-                        <execution>
-                            <id>make-assembly</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.5</version>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -367,16 +367,16 @@
 					</execution>
 				</executions>
 			</plugin>
-        </plugins>
-    </build>
+		</plugins>
+	</build>
     
-	 <reporting>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.codehaus.mojo</groupId>
-	        <artifactId>emma-maven-plugin</artifactId>
-	        <version>1.0-alpha-3-SNAPSHOT</version>
-	      </plugin>
-	    </plugins>
-	  </reporting>    
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>emma-maven-plugin</artifactId>
+				<version>1.0-alpha-3-SNAPSHOT</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
