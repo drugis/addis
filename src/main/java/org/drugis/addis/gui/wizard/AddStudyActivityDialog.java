@@ -172,7 +172,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		builder.addSeparator("", cc.xyw(1, row, 5));
 		row = LayoutUtil.addRow(layout, row);
 		builder.addLabel("Description: ", cc.xy(1, row));
-		builder.add(BasicComponentFactory.createTextField(d_pm.getOtherActivityModel().getDescriptionModel(), false), cc.xy(3, row));
+		builder.add(BasicComponentFactory.createTextField(d_pm.getOtherActivityModel().getModel(OtherActivity.PROPERTY_DESCRIPTION), false), cc.xy(3, row));
 		return row;
 	}
 
