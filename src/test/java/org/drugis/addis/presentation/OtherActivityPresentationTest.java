@@ -2,11 +2,7 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.drugis.addis.entities.OtherActivity;
-import static org.easymock.EasyMock.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,14 +26,5 @@ public class OtherActivityPresentationTest {
 		d_dm.setValue("foo");
 		assertEquals(d_oa.getDescription(), d_dm.getValue());
 	}
-	
-	@Test
-	public void testPropertyChange() {
-		PropertyChangeListener mock = createMock(PropertyChangeListener.class);
-		mock.propertyChange(new PropertyChangeEvent(d_oa, OtherActivity.PROPERTY_DESCRIPTION, "Foo", "Bar"));
-		replay();
-		d_oa.addPropertyChangeListener(mock);
-		d_oa.setDescription("Bar");
-		verify();
-	}
+
 }

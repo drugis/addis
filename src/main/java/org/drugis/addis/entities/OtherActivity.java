@@ -1,6 +1,5 @@
 package org.drugis.addis.entities;
 
-import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Set;
 
@@ -39,6 +38,7 @@ public class OtherActivity extends AbstractEntity implements Activity {
 		String oldValue = d_description;
 		d_description = d;
 		firePropertyChange(PROPERTY_DESCRIPTION, oldValue, d_description);
+		System.out.println("FIRED ");
 	}
 	
 	@Override
@@ -50,9 +50,6 @@ public class OtherActivity extends AbstractEntity implements Activity {
 		return Collections.emptySet();
 	}
 
-	public void addPropertyChangeListener(PropertyChangeListener listener) {}
-	public void removePropertyChangeListener(PropertyChangeListener listener) {}
-	
 	@Override
 	protected OtherActivity clone() {
 		return new OtherActivity(d_description);
