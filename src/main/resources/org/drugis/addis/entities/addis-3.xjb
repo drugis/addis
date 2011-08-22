@@ -10,8 +10,8 @@
 		</bindings>
 
 		<!-- Unit of Dose -->
-		<bindings node="//xs:simpleType[@name='Unit']">
-			<javaType name="org.drugis.addis.entities.SIUnit" 
+		<bindings node="//xs:simpleType[@name='ScaleModifier']">
+			<javaType name="org.drugis.addis.entities.ScaleModifier" 
 				parseMethod="valueOf" printMethod="name"/>
 		</bindings>
 

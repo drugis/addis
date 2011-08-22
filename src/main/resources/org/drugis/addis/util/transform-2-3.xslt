@@ -9,6 +9,10 @@
     <xsl:strip-space elements="*"/>
     <xsl:template match="/addis-data">
         <addis-data xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-3.xsd">
+            <units>
+                <unit name="gram" symbol="g"/>
+                <unit name="liter" symbol="l"/>
+            </units>
             <xsl:for-each select="./*">
                 <xsl:copy>
                     <xsl:apply-templates select="node()"/>
@@ -33,12 +37,35 @@
     <xsl:template match="activity/treatment">
         <treatment>
             <drugTreatment>
-                <xsl:for-each select="child::node()">
+                <xsl:for-each select="./flexibleDose">
+                    <flexibleDose>
+                        <xsl:attribute name="minDose">
+                            <xsl:value-of select="@minDose"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="maxDose">
+                            <xsl:value-of select="@maxDose"/>
+                        </xsl:attribute>
+                        <doseUnit scaleModifier="MILLI" perTime="P1D">
+                            <unit name="gram"/>
+                        </doseUnit>
+                    </flexibleDose>
+                </xsl:for-each>
+                <xsl:for-each select="./fixedDose">
+                    <fixedDose>
+                        <xsl:attribute name="quantity">
+                            <xsl:value-of select="@quantity"/>
+                        </xsl:attribute>
+                        <doseUnit scaleModifier="MILLI" perTime="P1D">
+                            <unit name="gram"/>
+                        </doseUnit>
+                    </fixedDose>
+                </xsl:for-each>
+                 <xsl:for-each select="./drug">
                     <xsl:copy>
                         <xsl:apply-templates select="@*"/>
                     </xsl:copy>
                 </xsl:for-each>
-            </drugTreatment>
+           </drugTreatment>
         </treatment>
     </xsl:template>
     <xsl:template match="metaBenefitRiskAnalysis/baseline">

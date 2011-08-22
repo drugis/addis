@@ -4,6 +4,7 @@
 	<xs:element name="addis-data">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="units" type="Units"/>
 				<xs:element name="indications" type="Indications"/>
 				<xs:element name="endpoints" type="Endpoints"/>
 				<xs:element name="adverseEvents" type="AdverseEvents"/>
@@ -111,26 +112,7 @@
 				xpath="studies/study/studyOutcomeMeasures/studyOutcomeMeasure/populationCharacteristic"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-
-<!--		<xs:keyref name="studyActivityArmIdKey" refer="armIdKey">
-			<xs:selector xpath="studies/study/activities/studyActivity/usedBy"/>
-			<xs:field xpath="@arm"/>
-		</xs:keyref>
-
-		<xs:keyref name="studyMeasurementArmRef" refer="armIdKey">
-			<xs:selector xpath="studies/study/measurements/measurement/arm"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
-	
-		<xs:keyref name="studyBenefitRiskAnalysisArmRef" refer="armIdKey">
-			<xs:selector xpath="benefitRiskAnalyses/studyBenefitRiskAnalysis/arms/arm"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
-		<xs:keyref name="metaAnalysisArmIdKeyRef" refer="armIdKey">
-			<xs:selector xpath="metaAnalyses/*/alternative/arms/arm"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
--->		<xs:key name="metaAnalysisNameKey">
+		<xs:key name="metaAnalysisNameKey">
 			<xs:selector xpath="metaAnalyses/*"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
@@ -143,6 +125,11 @@
 
 	<!-- Top-level types -->
 
+	<xs:complexType name="Units">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="unit" type="Unit"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="Indications">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="indication" type="Indication"/>
@@ -512,13 +499,24 @@
 	<!-- Enums and other simple utility types (doses, alphanumeric and such) -->
 
 	<xs:complexType name="FlexibleDose">
+		<xs:sequence>
+			<xs:element name="doseUnit" type="DoseUnit"/>			
+		</xs:sequence>
 		<xs:attribute name="minDose" type="xs:double"/>
 		<xs:attribute name="maxDose" type="xs:double"/>
-		<xs:attribute name="unit" type="Unit"/>
 	</xs:complexType>
 	<xs:complexType name="FixedDose">
+		<xs:sequence>
+			<xs:element name="doseUnit" type="DoseUnit"/>			
+		</xs:sequence>
 		<xs:attribute name="quantity" type="xs:double"/>
-		<xs:attribute name="unit" type="Unit"/>
+	</xs:complexType>
+	<xs:complexType name="DoseUnit">
+		<xs:sequence>
+			<xs:element name="unit" type="NameReference"/>
+		</xs:sequence>
+		<xs:attribute name="scaleModifier" type="ScaleModifier"/>
+		<xs:attribute name="perTime" type="xs:duration"/>
 	</xs:complexType>
 
 	<xs:simpleType name="StatusEnum">
@@ -549,11 +547,21 @@
 			<xs:enumeration value="UNKNOWN"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="Unit">
+	<xs:complexType name="Unit">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="symbol" type="xs:string"/>
+	</xs:complexType>
+	<xs:simpleType name="ScaleModifier">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="MILLIGRAMS_A_DAY"/>
+			<xs:enumeration value="MEGA"/>
+			<xs:enumeration value="KILO"/>
+			<xs:enumeration value="UNIT"/>
+			<xs:enumeration value="MILLI"/>
+			<xs:enumeration value="MICRO"/>
+			<xs:enumeration value="NANO"/>
 		</xs:restriction>
 	</xs:simpleType>
+
 	<xs:simpleType name="Direction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="LOWER_IS_BETTER"/>
