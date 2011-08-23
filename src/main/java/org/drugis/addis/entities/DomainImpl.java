@@ -47,6 +47,8 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class DomainImpl extends Domain {
 
+	private static final EntityCategory CATEGORY_UNITS =
+		new EntityCategory("units", Unit.class);
 	private static final EntityCategory CATEGORY_INDICATIONS =
 		new EntityCategory("indications", Indication.class);
 	private static final EntityCategory CATEGORY_DRUGS =
@@ -69,6 +71,7 @@ public class DomainImpl extends Domain {
 	
 	private static final List<EntityCategory> CATEGORIES = 
 		Arrays.asList(new EntityCategory[] {
+			CATEGORY_UNITS,
 			CATEGORY_INDICATIONS,
 			CATEGORY_DRUGS,
 			CATEGORY_ENDPOINTS,
@@ -114,6 +117,7 @@ public class DomainImpl extends Domain {
 	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new DomainSortedSetModel<MetaAnalysis>();		
 	private SortedSetModel<Drug> d_drugs = new DomainSortedSetModel<Drug>();
 	private SortedSetModel<Indication> d_indications = new DomainSortedSetModel<Indication>();	
+	private SortedSetModel<Unit> d_units = new DomainSortedSetModel<Unit>();
 	private SortedSetModel<PopulationCharacteristic> d_populationCharacteristics = new DomainSortedSetModel<PopulationCharacteristic>();
 	private SortedSetModel<AdverseEvent> d_adverseEvents = new DomainSortedSetModel<AdverseEvent>();
 	private SortedSetModel<BenefitRiskAnalysis<?>> d_benefitRiskAnalyses = new DomainSortedSetModel<BenefitRiskAnalysis<?>>();
@@ -355,6 +359,11 @@ public class DomainImpl extends Domain {
 		return d_benefitRiskAnalyses;
 	}
 	
+	@Override
+	public SortedSetModel<Unit> getUnits() {
+		return d_units;
+	}
+
 	public static class EndpointFilter implements Filter<Study> {
 		private Endpoint d_endpoint;
 

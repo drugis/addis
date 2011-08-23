@@ -27,6 +27,7 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
@@ -34,28 +35,28 @@ import org.junit.Test;
 public class DoseTest {
 	@Test
 	public void testSetUnit() {
-		JUnitUtil.testSetter(new FixedDose(0.0, null), AbstractDose.PROPERTY_UNIT, null, SIUnit.MILLIGRAMS_A_DAY);
+		JUnitUtil.testSetter(new FixedDose(0.0, null), AbstractDose.PROPERTY_DOSE_UNIT, null, ExampleData.MILLIGRAMS_A_DAY);
 	}
 	
 	@Test
 	public void testSetFlexibleDose() {
-		JUnitUtil.testSetter(new FlexibleDose(new Interval<Double>(0.0,1.0), SIUnit.MILLIGRAMS_A_DAY), FlexibleDose.PROPERTY_FLEXIBLEDOSE, new Interval<Double>(0.0,1.0), new Interval<Double>(1.0,2.0));
+		JUnitUtil.testSetter(new FlexibleDose(new Interval<Double>(0.0,1.0), ExampleData.MILLIGRAMS_A_DAY), FlexibleDose.PROPERTY_FLEXIBLEDOSE, new Interval<Double>(0.0,1.0), new Interval<Double>(1.0,2.0));
 	}
 	
 	@Test
 	public void testSetMinDose() {
-		JUnitUtil.testSetter(new FlexibleDose(new Interval<Double>(0.0,1.0), SIUnit.MILLIGRAMS_A_DAY), FlexibleDose.PROPERTY_MIN_DOSE, 0d, 10d);
+		JUnitUtil.testSetter(new FlexibleDose(new Interval<Double>(0.0,1.0), ExampleData.MILLIGRAMS_A_DAY), FlexibleDose.PROPERTY_MIN_DOSE, 0d, 10d);
 	}
 	
 	@Test
 	public void testSetMaxDose() {
-		JUnitUtil.testSetter(new FlexibleDose(new Interval<Double>(0.0,1.0), SIUnit.MILLIGRAMS_A_DAY), FlexibleDose.PROPERTY_MAX_DOSE, 1d, 12d);
+		JUnitUtil.testSetter(new FlexibleDose(new Interval<Double>(0.0,1.0), ExampleData.MILLIGRAMS_A_DAY), FlexibleDose.PROPERTY_MAX_DOSE, 1d, 12d);
 	}
 	
 	
 	@Test
 	public void testSetQuantity() {
-		JUnitUtil.testSetter(new FixedDose(0.0, SIUnit.MILLIGRAMS_A_DAY), FixedDose.PROPERTY_QUANTITY, 0.0, 40.0);
+		JUnitUtil.testSetter(new FixedDose(0.0, ExampleData.MILLIGRAMS_A_DAY), FixedDose.PROPERTY_QUANTITY, 0.0, 40.0);
 	}
 	
 	@Test
@@ -63,8 +64,8 @@ public class DoseTest {
 		FixedDose d = new FixedDose(0.0, null);
 		assertEquals("INCOMPLETE", d.toString());
 		d.setQuantity(25.5);
-		d.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		assertEquals("25.5 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
+		d.setDoseUnit(ExampleData.MILLIGRAMS_A_DAY);
+		assertEquals("25.5 " + ExampleData.MILLIGRAMS_A_DAY.getLabel(), d.toString());
 	}
 	
 	@Test
@@ -72,8 +73,8 @@ public class DoseTest {
 		FlexibleDose d = new FlexibleDose(new Interval<Double>(0.0,0.0), null);
 		assertEquals("INCOMPLETE", d.toString());
 		d.setFlexibleDose(new Interval<Double>(25D, 40D));
-		d.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-		assertEquals("25.0-40.0 " + SIUnit.MILLIGRAMS_A_DAY.toString(), d.toString());
+		d.setDoseUnit(ExampleData.MILLIGRAMS_A_DAY);
+		assertEquals("25.0-40.0 " + ExampleData.MILLIGRAMS_A_DAY.getLabel(), d.toString());
 	}
 	
 	@Test
@@ -81,14 +82,14 @@ public class DoseTest {
 		double q1 = 13.0;
 		double q2 = 8.8;
 		
-		assertEquals(new FixedDose(q1, SIUnit.MILLIGRAMS_A_DAY),
-				new FixedDose(q1, SIUnit.MILLIGRAMS_A_DAY));
+		assertEquals(new FixedDose(q1, ExampleData.MILLIGRAMS_A_DAY),
+				new FixedDose(q1, ExampleData.MILLIGRAMS_A_DAY));
 		
-		JUnitUtil.assertNotEquals(new FixedDose(q1, SIUnit.MILLIGRAMS_A_DAY),
-				new FixedDose(q2, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.assertNotEquals(new FixedDose(q1, ExampleData.MILLIGRAMS_A_DAY),
+				new FixedDose(q2, ExampleData.MILLIGRAMS_A_DAY));
 		
-		assertEquals(new FixedDose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode(),
-				new FixedDose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode());
+		assertEquals(new FixedDose(q1, ExampleData.MILLIGRAMS_A_DAY).hashCode(),
+				new FixedDose(q1, ExampleData.MILLIGRAMS_A_DAY).hashCode());
 	}
 	
 	@Test
@@ -96,19 +97,19 @@ public class DoseTest {
 		Interval<Double> q1 = new Interval<Double>(13.0, 15.0);
 		Interval<Double> q2 = new Interval<Double>(8.8, 9.9);
 		
-		assertEquals(new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY),
-				new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY));
+		assertEquals(new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY),
+				new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY));
 		
-		JUnitUtil.assertNotEquals(new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY),
-				new FlexibleDose(q2, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.assertNotEquals(new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY),
+				new FlexibleDose(q2, ExampleData.MILLIGRAMS_A_DAY));
 		
-		assertEquals(new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode(),
-				new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY).hashCode());
+		assertEquals(new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY).hashCode(),
+				new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY).hashCode());
 	}
 	
 	@Test
 	public void testCloneFixedDose() {
-		FixedDose dose = new FixedDose(12.5, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(12.5, ExampleData.MILLIGRAMS_A_DAY);
 		assertEquals(dose, dose.clone());
 		assertNotSame(dose, dose.clone());
 	}
@@ -116,7 +117,7 @@ public class DoseTest {
 	@Test
 	public void testCloneFlexibleDose() {
 		Interval<Double> q1 = new Interval<Double>(13.0, 15.0);
-		FlexibleDose dose = new FlexibleDose(q1, SIUnit.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY);
 		assertEquals(dose, dose.clone());
 		assertNotSame(dose, dose.clone());
 	}

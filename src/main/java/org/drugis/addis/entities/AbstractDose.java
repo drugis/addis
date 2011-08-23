@@ -28,17 +28,17 @@ import java.util.Set;
 
 public abstract class AbstractDose extends AbstractEntity {
 	
-	protected SIUnit d_unit;
-	public static final String PROPERTY_UNIT = "unit";
+	protected DoseUnit d_unit;
+	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 
-	public SIUnit getUnit() {
+	public DoseUnit getDoseUnit() {
 		return d_unit;
 	}
 
-	public void setUnit(SIUnit unit) {
-		SIUnit oldVal = d_unit;
+	public void setDoseUnit(DoseUnit unit) {
+		DoseUnit oldVal = d_unit;
 		d_unit = unit;
-		firePropertyChange(PROPERTY_UNIT, oldVal, d_unit);
+		firePropertyChange(PROPERTY_DOSE_UNIT, oldVal, d_unit);
 	}
 
 	@Override

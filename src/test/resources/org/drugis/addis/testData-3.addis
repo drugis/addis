@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-3.xsd">
+   <units>
+      <unit name="gram" symbol="g"/>
+      <unit name="liter" symbol="l"/>
+   </units>
    <indications>
       <indication name="Type II diabetes mellitus " code="190392008"/>
    </indications>
@@ -947,11 +951,19 @@
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="3000.0" minDose="1500.0"/>
+                        <flexibleDose minDose="1500.0" maxDose="3000.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </flexibleDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -963,11 +975,19 @@
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="3000.0" minDose="1500.0"/>
+                        <flexibleDose minDose="1500.0" maxDose="3000.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </flexibleDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -1560,7 +1580,11 @@
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -1572,7 +1596,11 @@
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="200.0"/>
+                        <fixedDose quantity="200.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -1584,7 +1612,11 @@
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -2061,7 +2093,11 @@ mmol/l were eligible to participate.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -2073,7 +2109,11 @@ mmol/l were eligible to participate.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -2085,7 +2125,11 @@ mmol/l were eligible to participate.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -2692,7 +2736,11 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -2704,7 +2752,11 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.01"/>
+                        <fixedDose quantity="0.01">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -2716,7 +2768,11 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.005"/>
+                        <fixedDose quantity="0.005">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -3505,7 +3561,11 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -3517,7 +3577,11 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -4039,7 +4103,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -4051,7 +4119,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.005"/>
+                        <fixedDose quantity="0.005">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -4063,7 +4135,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.01"/>
+                        <fixedDose quantity="0.01">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -4656,7 +4732,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -4668,7 +4748,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -4681,7 +4765,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -5078,7 +5166,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="8.0E-5"/>
+                        <fixedDose quantity="8.0E-5">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -5090,7 +5182,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="8.0E-5"/>
+                        <fixedDose quantity="8.0E-5">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -5102,7 +5198,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="8.0E-5"/>
+                        <fixedDose quantity="8.0E-5">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -5114,7 +5214,11 @@ screening.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="8.0E-5"/>
+                        <fixedDose quantity="8.0E-5">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -5691,7 +5795,11 @@ Have used drugs for weight loss within 1 month of screening.
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -5703,7 +5811,11 @@ Have used drugs for weight loss within 1 month of screening.
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.02"/>
+                        <fixedDose quantity="0.02">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -6225,11 +6337,19 @@ Have used drugs for weight loss within 1 month of screening.
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="45.0"/>
+                        <fixedDose quantity="45.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="pioglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -6241,11 +6361,19 @@ Have used drugs for weight loss within 1 month of screening.
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="45.0"/>
+                        <fixedDose quantity="45.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="pioglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -6257,11 +6385,19 @@ Have used drugs for weight loss within 1 month of screening.
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="45.0"/>
+                        <fixedDose quantity="45.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="pioglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -7037,11 +7173,19 @@ aminotransferase (AST) greater than three times the upper limit of normal (ULN),
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="4.0"/>
+                        <fixedDose quantity="4.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -7053,11 +7197,19 @@ aminotransferase (AST) greater than three times the upper limit of normal (ULN),
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="4.0"/>
+                        <fixedDose quantity="4.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -7069,11 +7221,19 @@ aminotransferase (AST) greater than three times the upper limit of normal (ULN),
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="4.0"/>
+                        <fixedDose quantity="4.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -8057,7 +8217,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -8069,7 +8233,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="500.0"/>
+                        <fixedDose quantity="500.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -8081,7 +8249,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1000.0"/>
+                        <fixedDose quantity="1000.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -8093,11 +8265,19 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="500.0"/>
+                        <fixedDose quantity="500.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -8109,11 +8289,19 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1000.0"/>
+                        <fixedDose quantity="1000.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -8125,7 +8313,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -8732,7 +8924,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -8744,7 +8940,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -9745,7 +9945,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -9757,7 +9961,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="25.0"/>
+                        <fixedDose quantity="25.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -9769,7 +9977,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -9781,7 +9993,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -9793,7 +10009,11 @@ method) aged 18 – 78 years, with a body mass index (BMI) of 22– 40 kg/ m 2 a
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -10952,7 +11172,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -10964,7 +11188,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -10976,11 +11204,19 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -10992,15 +11228,27 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -11012,11 +11260,19 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -11028,15 +11284,27 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -11547,7 +11815,11 @@ medications, or any investigational drug.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -11559,7 +11831,11 @@ medications, or any investigational drug.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.005"/>
+                        <fixedDose quantity="0.005">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -11571,7 +11847,11 @@ medications, or any investigational drug.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.01"/>
+                        <fixedDose quantity="0.01">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -12220,7 +12500,11 @@ Japanese patients with type 2 diabetes mellitus (T2DM).</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -12232,7 +12516,11 @@ Japanese patients with type 2 diabetes mellitus (T2DM).</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="10.0"/>
+                        <fixedDose quantity="10.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -12244,7 +12532,11 @@ Japanese patients with type 2 diabetes mellitus (T2DM).</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="25.0"/>
+                        <fixedDose quantity="25.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -12256,7 +12548,11 @@ Japanese patients with type 2 diabetes mellitus (T2DM).</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -12908,7 +13204,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -12920,7 +13220,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.045"/>
+                        <fixedDose quantity="0.045">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -12932,7 +13236,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.225"/>
+                        <fixedDose quantity="0.225">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -12944,7 +13252,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.45"/>
+                        <fixedDose quantity="0.45">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -12956,7 +13268,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.6"/>
+                        <fixedDose quantity="0.6">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -12968,7 +13284,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.75"/>
+                        <fixedDose quantity="0.75">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -12980,7 +13300,11 @@ a placebo arm was included in the trial.</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -13548,7 +13872,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="4.0"/>
+                        <fixedDose quantity="4.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="rosiglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -13582,7 +13910,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.6"/>
+                        <fixedDose quantity="0.6">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -13594,7 +13926,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.2"/>
+                        <fixedDose quantity="1.2">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -13606,7 +13942,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.8"/>
+                        <fixedDose quantity="1.8">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -13618,7 +13958,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -13787,7 +14131,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -13799,7 +14147,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="10.0"/>
+                        <fixedDose quantity="10.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -13811,7 +14163,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="25.0"/>
+                        <fixedDose quantity="25.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -13823,7 +14179,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -14365,7 +14725,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -14377,7 +14741,11 @@ Type 2 diabetes (LEAD-1 SU)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -15038,7 +15406,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -15050,7 +15422,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.005"/>
+                        <fixedDose quantity="0.005">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -15062,7 +15438,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.01"/>
+                        <fixedDose quantity="0.01">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -15715,7 +16095,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -15738,7 +16122,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.6"/>
+                        <fixedDose quantity="0.6">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -15750,7 +16138,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.2"/>
+                        <fixedDose quantity="1.2">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -15762,7 +16154,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.8"/>
+                        <fixedDose quantity="1.8">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -15774,7 +16170,11 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="4.0"/>
+                        <fixedDose quantity="4.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -16149,7 +16549,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -16161,7 +16565,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -16832,7 +17240,11 @@ Patients with any of the following laboratory abnormalities were also excluded: 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -16844,7 +17256,11 @@ Patients with any of the following laboratory abnormalities were also excluded: 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -16857,7 +17273,11 @@ Patients with any of the following laboratory abnormalities were also excluded: 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -17364,7 +17784,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -17376,7 +17800,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0025"/>
+                        <fixedDose quantity="0.0025">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -17388,7 +17816,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.005"/>
+                        <fixedDose quantity="0.005">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -17400,7 +17832,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0075"/>
+                        <fixedDose quantity="0.0075">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -17412,7 +17848,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.01"/>
+                        <fixedDose quantity="0.01">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -18059,7 +18499,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -18071,7 +18515,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -18083,7 +18531,11 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="200.0"/>
+                        <fixedDose quantity="200.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -18776,11 +19228,19 @@ to metformin therapy in patients with moderately severe (hemoglobin A1c ≥ 8.0%
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -18792,11 +19252,19 @@ to metformin therapy in patients with moderately severe (hemoglobin A1c ≥ 8.0%
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                   </treatment>
@@ -19707,7 +20175,11 @@ channel blockers within the previous 12 weeks, combination oral antidiabetic the
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -19730,7 +20202,11 @@ channel blockers within the previous 12 weeks, combination oral antidiabetic the
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="25.0"/>
+                        <fixedDose quantity="25.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -19743,7 +20219,11 @@ channel blockers within the previous 12 weeks, combination oral antidiabetic the
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -19755,7 +20235,11 @@ channel blockers within the previous 12 weeks, combination oral antidiabetic the
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -20552,11 +21036,19 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="pioglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -20568,11 +21060,19 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="pioglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -20841,15 +21341,27 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -20861,15 +21373,27 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.8"/>
+                        <fixedDose quantity="1.8">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -20881,15 +21405,27 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Insulin glargine"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="metformin"/>
                      </drugTreatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="glimepiride"/>
                      </drugTreatment>
                   </treatment>
@@ -21450,7 +21986,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -21462,7 +22002,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="vildagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -22435,7 +22979,11 @@ patients with type 2 diabetes</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -22447,7 +22995,11 @@ patients with type 2 diabetes</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="5.0"/>
+                        <fixedDose quantity="5.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -22459,7 +23011,11 @@ patients with type 2 diabetes</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="12.5"/>
+                        <fixedDose quantity="12.5">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -22471,7 +23027,11 @@ patients with type 2 diabetes</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="25.0"/>
+                        <fixedDose quantity="25.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -22483,7 +23043,11 @@ patients with type 2 diabetes</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="50.0"/>
+                        <fixedDose quantity="50.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -22495,7 +23059,11 @@ patients with type 2 diabetes</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Glipizide"/>
                      </drugTreatment>
                   </treatment>
@@ -23204,7 +23772,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -23216,7 +23788,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="8.0"/>
+                        <fixedDose quantity="8.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="rosiglitazone"/>
                      </drugTreatment>
                   </treatment>
@@ -23228,7 +23804,11 @@ SD is calculated according to 95%CI</note>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="100.0"/>
+                        <fixedDose quantity="100.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="Sitagliptin"/>
                      </drugTreatment>
                   </treatment>
@@ -23763,7 +24343,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -23775,7 +24359,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.1"/>
+                        <fixedDose quantity="0.1">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -23787,7 +24375,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.3"/>
+                        <fixedDose quantity="0.3">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -23799,7 +24391,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.6"/>
+                        <fixedDose quantity="0.6">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -23811,7 +24407,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.9"/>
+                        <fixedDose quantity="0.9">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -24098,7 +24698,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -24110,7 +24714,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.9"/>
+                        <fixedDose quantity="1.9">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -24122,7 +24730,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.25"/>
+                        <fixedDose quantity="1.25">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -24134,7 +24746,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.65"/>
+                        <fixedDose quantity="0.65">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -24588,7 +25204,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -24600,7 +25220,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <flexibleDose unit="MILLIGRAMS_A_DAY" maxDose="0.01" minDose="0.005"/>
+                        <flexibleDose minDose="0.005" maxDose="0.01">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </flexibleDose>
                         <drug name="exenatide"/>
                      </drugTreatment>
                   </treatment>
@@ -24966,7 +25590,11 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="0.0"/>
+                        <fixedDose quantity="0.0">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="placebo"/>
                      </drugTreatment>
                   </treatment>
@@ -24978,7 +25606,11 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.2"/>
+                        <fixedDose quantity="1.2">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>
@@ -24990,7 +25622,11 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                <activity>
                   <treatment>
                      <drugTreatment>
-                        <fixedDose unit="MILLIGRAMS_A_DAY" quantity="1.8"/>
+                        <fixedDose quantity="1.8">
+                           <doseUnit scaleModifier="MILLI" perTime="P1D">
+                              <unit name="gram"/>
+                           </doseUnit>
+                        </fixedDose>
                         <drug name="liraglutide"/>
                      </drugTreatment>
                   </treatment>

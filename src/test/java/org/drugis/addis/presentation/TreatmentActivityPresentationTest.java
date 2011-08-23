@@ -28,11 +28,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.beans.PropertyChangeListener;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
@@ -49,8 +49,8 @@ public class TreatmentActivityPresentationTest {
 	@Before
 	public void setUp() {
 		d_combTreatment = new TreatmentActivity();
-		d_combTreatment.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY));
-		d_combTreatment.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), SIUnit.MILLIGRAMS_A_DAY));
+		d_combTreatment.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY));
+		d_combTreatment.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), ExampleData.MILLIGRAMS_A_DAY));
 		d_pm = new TreatmentActivityPresentation(d_combTreatment);
 	}
 	

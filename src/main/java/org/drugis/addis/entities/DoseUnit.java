@@ -89,4 +89,8 @@ public class DoseUnit extends AbstractEntity {
 		return new DoseUnit(d_unit, d_scaleModifier, d_perTime);
 	}
 	
+	@Override
+	public String toString() {
+		return getLabel();
+	}
 }

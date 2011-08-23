@@ -47,6 +47,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public class DomainTest {
@@ -340,7 +341,7 @@ public class DomainTest {
 		Study s1 = new Study("s1", d_indication);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		s1.setMeasurement(e, g1, m1);
 		d_domain.getIndications().add(d_indication);
@@ -350,8 +351,8 @@ public class DomainTest {
 		Study s2 = new Study("s2", indic2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY));		
-		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));		
+		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		s2.setMeasurement(e, g2, m2);
@@ -386,7 +387,7 @@ public class DomainTest {
 		Study s1 = new Study("s1", d_indication);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		s1.setMeasurement(e, g1, m1);
 		d_domain.getIndications().add(d_indication);
@@ -396,8 +397,8 @@ public class DomainTest {
 		Study s2 = new Study("s2", indic2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY));		
-		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));		
+		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		s2.setMeasurement(e, g2, m2);
@@ -466,12 +467,12 @@ public class DomainTest {
 		Drug parox = ExampleData.buildDrugParoxetine();
 		
 		Study s1 = new Study("X", d_indication);
-		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
-		s1.createAndAddArm("parox", 23, parox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("parox", 23, parox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
 	
 		Study s2 = new Study("Y", d_indication);
-		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
-		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, SIUnit.MILLIGRAMS_A_DAY));
+		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
+		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
 		
 		d_domain.getIndications().add(d_indication);
 		d_domain.getDrugs().addAll(Arrays.asList(fluox, parox));
@@ -506,7 +507,7 @@ public class DomainTest {
 		Drug d = new Drug("d", "atc");
 		d_domain.getDrugs().add(d);
 	
-		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
 		d_domain.deleteEntity(d);
 	}
 
@@ -594,16 +595,14 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategories() {
-		assertEquals(9, d_domain.getCategories().size());
-		assertEquals(Indication.class, d_domain.getCategories().get(0).getEntityClass());
-		assertEquals(Drug.class, d_domain.getCategories().get(1).getEntityClass());
-		assertEquals(Endpoint.class, d_domain.getCategories().get(2).getEntityClass());
-		assertEquals(AdverseEvent.class, d_domain.getCategories().get(3).getEntityClass());
-		assertEquals(PopulationCharacteristic.class, d_domain.getCategories().get(4).getEntityClass());
-		assertEquals(Study.class, d_domain.getCategories().get(5).getEntityClass());
-		assertEquals(PairWiseMetaAnalysis.class, d_domain.getCategories().get(6).getEntityClass());
-		assertEquals(NetworkMetaAnalysis.class, d_domain.getCategories().get(7).getEntityClass());
-		assertEquals(BenefitRiskAnalysis.class, d_domain.getCategories().get(8).getEntityClass());
+		assertEquals(10, d_domain.getCategories().size());
+		List<Class<?>> cats = Arrays.<Class<?>>asList(Unit.class, Indication.class, Drug.class, Endpoint.class, AdverseEvent.class, PopulationCharacteristic.class, 
+				Study.class, PairWiseMetaAnalysis.class, NetworkMetaAnalysis.class, BenefitRiskAnalysis.class);
+		List<Class<?>> domainCats = new ArrayListModel<Class<?>>();
+		for (EntityCategory ec : d_domain.getCategories()) {
+			domainCats.add(ec.getEntityClass());
+		}
+		assertEquals(cats, domainCats);
 	}
 	
 	@Test

@@ -28,7 +28,7 @@ public class Unit extends AbstractNamedEntity<Unit> {
 	public Set<? extends Entity> getDependencies() {
 		return Collections.emptySet();
 	}
-
+	
 	@Override
 	public boolean deepEquals(Entity other) {
 		if (!super.deepEquals(other)) {

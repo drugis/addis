@@ -35,6 +35,7 @@ import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
@@ -47,11 +48,13 @@ import org.drugis.addis.gui.knowledge.NetworkMetaAnalysesKnowledge;
 import org.drugis.addis.gui.knowledge.PairWiseMetaAnalysesKnowledge;
 import org.drugis.addis.gui.knowledge.PopulationCharacteristicsKnowledge;
 import org.drugis.addis.gui.knowledge.StudiesKnowledge;
+import org.drugis.addis.gui.knowledge.UnitsKnowledge;
 
 public class CategoryKnowledgeFactory {
 	private static final Map<Class<? extends Entity>, CategoryKnowledge> s_knowledge =
 		new HashMap<Class<? extends Entity>, CategoryKnowledge>();
 	static {
+		s_knowledge.put(Unit.class, new UnitsKnowledge());
 		s_knowledge.put(Indication.class, new IndicationsKnowledge());
 		s_knowledge.put(Drug.class, new DrugsKnowledge());
 		s_knowledge.put(Endpoint.class, new EndpointsKnowledge());

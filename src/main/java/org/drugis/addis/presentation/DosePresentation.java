@@ -29,5 +29,5 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public interface DosePresentation {
 	public AbstractValueModel getMinModel();
 	public AbstractValueModel getMaxModel();
-	public AbstractValueModel getUnitModel();
+	public DoseUnitPresentation getDoseUnitPresentation();
 }

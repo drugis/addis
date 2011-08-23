@@ -36,7 +36,7 @@ public class FixedDose extends AbstractDose {
 	public FixedDose(){
 	}
 	
-	public FixedDose(double quantity, SIUnit unit) {
+	public FixedDose(double quantity, DoseUnit unit) {
 		d_quantity = quantity;
 		d_unit = unit;
 	}
@@ -56,7 +56,7 @@ public class FixedDose extends AbstractDose {
 		if (d_quantity == null || d_unit == null) {
 			return "INCOMPLETE";
 		}
-		return d_quantity.toString() + " " + d_unit.toString();
+		return d_quantity.toString() + " " + d_unit.getLabel();
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class FixedDose extends AbstractDose {
 		if (o instanceof FixedDose) {
 			FixedDose other = (FixedDose)o;
 			return EqualsUtil.equal(other.getQuantity(), getQuantity()) &&
-				EqualsUtil.equal(other.getUnit(), getUnit());
+				EqualsUtil.equal(other.getDoseUnit(), getDoseUnit());
 		}
 		return false;
 	}
@@ -74,13 +74,13 @@ public class FixedDose extends AbstractDose {
 		int hash = 1;
 		hash *= 31; 
 		hash += getQuantity().hashCode();
-		hash = hash * 31 + getUnit().hashCode();
+		hash = hash * 31 + getDoseUnit().hashCode();
 		return hash;
 	}
 
 	@Override
 	public AbstractDose clone() {
-		return new FixedDose(getQuantity(), getUnit());
+		return new FixedDose(getQuantity(), getDoseUnit());
 	}
 
 }

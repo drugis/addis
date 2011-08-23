@@ -40,6 +40,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousVariableType;
@@ -53,8 +54,8 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -75,17 +76,19 @@ public class DomainTreeModelTest {
 	private Study d_firstStudy;
 	private Drug d_firstDrug;
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
+	private Unit d_firstUnit;
 	
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
+		d_firstUnit = new Unit("gram", "g");
 		d_firstIndication = new Indication(8L, "Indication");		
 		d_firstEndpoint = new Endpoint("Endpoint", Endpoint.convertVarType(Variable.Type.RATE));
 		d_firstADE = new AdverseEvent("firstADE", AdverseEvent.convertVarType(Variable.Type.CONTINUOUS));
 		d_firstStudy = new Study("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
-		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, SIUnit.MILLIGRAMS_A_DAY));
+		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, ExampleData.MILLIGRAMS_A_DAY));
 		
 		d_firstStudy.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_firstEndpoint));
 		d_firstStudy.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(d_firstADE));
@@ -98,6 +101,7 @@ public class DomainTreeModelTest {
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
+		d_domain.getUnits().add(d_firstUnit);
 		d_domain.getIndications().add(d_firstIndication);
 		d_domain.getEndpoints().add(d_firstEndpoint);
 		d_domain.getAdverseEvents().add(d_firstADE);
@@ -179,7 +183,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testGetIndexOfChild() {
 		// test root
-		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_domain.getCategory(Indication.class)));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_treeModel.getRoot(), d_domain.getCategory(Unit.class)));
 			
 		// test categories
 		for (EntityCategory cat : d_domain.getCategories()) {
@@ -188,6 +192,7 @@ public class DomainTreeModelTest {
 		}
 		
 		// test first element of every category
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Unit.class), d_firstUnit));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Indication.class), d_firstIndication));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Endpoint.class), d_firstEndpoint));	
 		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(AdverseEvent.class), d_firstADE));			

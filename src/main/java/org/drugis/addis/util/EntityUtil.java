@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
+
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.common.EqualsUtil;
@@ -85,5 +88,13 @@ public class EntityUtil {
 			flat.addAll(nested.getContents());
 		}
 		return flat;
+	}
+
+	public static Duration createDuration(String durationStr) {
+		try {
+			return DatatypeFactory.newInstance().newDuration(durationStr);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

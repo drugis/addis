@@ -27,6 +27,7 @@ package org.drugis.addis.entities.relativeeffect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Drug;
@@ -35,7 +36,6 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
@@ -176,8 +176,8 @@ public class BasicOddsRatioTest {
 	{
 		Study s = new Study(studyName, d_ind);
 		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_ep));
-		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));
-		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertra, new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY));		
+		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertra, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));		
 		
 		s.getArms().add(g_sertr);
 		s.getArms().add(g_fluox);

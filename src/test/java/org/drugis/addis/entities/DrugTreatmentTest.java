@@ -27,6 +27,7 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class DrugTreatmentTest {
 	@Before
 	public void setUp() {
 		d_pg = new DrugTreatment(null, null);
-		d_orig = new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY));
+		d_orig = new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY));
 		d_clone = d_orig.clone();
 	}
 	
@@ -61,7 +62,7 @@ public class DrugTreatmentTest {
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DOSE, null, new FixedDose(1.0, SIUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DOSE, null, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
 	}
 	
 	@Test
@@ -82,13 +83,13 @@ public class DrugTreatmentTest {
 	@Test
 	public void testEquals() {
 		assertEquals(new DrugTreatment(null, null), d_pg);
-		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)), d_orig);
+		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY)), d_orig);
 		JUnitUtil.assertNotEquals(new DrugTreatment(null, null), d_orig);
 		JUnitUtil.assertNotEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), null), d_orig);
-		JUnitUtil.assertNotEquals(new DrugTreatment(null, new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)), d_orig);
+		JUnitUtil.assertNotEquals(new DrugTreatment(null, new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY)), d_orig);
 		
 		assertEquals(new DrugTreatment(null, null).hashCode(), d_pg.hashCode());
-		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, SIUnit.MILLIGRAMS_A_DAY)).hashCode(), d_orig.hashCode());
+		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY)).hashCode(), d_orig.hashCode());
 	}
 
 }

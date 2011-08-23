@@ -72,7 +72,7 @@ public class DrugTreatment extends AbstractEntity {
 	public Set<Entity> getDependencies() {
 		return Collections.<Entity>singleton(d_drug);
 	}
-	
+
 	@Override
 	public DrugTreatment clone() {
 		return new DrugTreatment(d_drug, d_dose == null ? null : d_dose.clone());
@@ -80,7 +80,7 @@ public class DrugTreatment extends AbstractEntity {
 
 	public String getLabel() {
 		if(d_drug != null) {
-			return d_drug.getName() + (d_dose == null ? "" : " " + d_dose.toString());
+			return d_drug.getName() + (d_dose == null ? "" : " " + d_dose.getLabel());
 		}
 		return "Treatment (undefined)";
 	}

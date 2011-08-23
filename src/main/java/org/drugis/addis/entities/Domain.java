@@ -72,6 +72,8 @@ public abstract class Domain {
 	public abstract SortedSetModel<MetaAnalysis> getMetaAnalyses();
 
 	public abstract SortedSetModel<BenefitRiskAnalysis<?>> getBenefitRiskAnalyses();
+	
+	public abstract SortedSetModel<Unit> getUnits();
 
 	/**
 	 * Delete a top-level entity from the domain.
@@ -110,4 +112,5 @@ public abstract class Domain {
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
 	public abstract ObservableList<Study> getStudies(Indication i);
+
 }

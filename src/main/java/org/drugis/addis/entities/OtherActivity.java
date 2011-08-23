@@ -62,7 +62,6 @@ public class OtherActivity extends AbstractEntity implements Activity {
 		String oldValue = d_description;
 		d_description = d;
 		firePropertyChange(PROPERTY_DESCRIPTION, oldValue, d_description);
-		System.out.println("FIRED ");
 	}
 	
 	@Override

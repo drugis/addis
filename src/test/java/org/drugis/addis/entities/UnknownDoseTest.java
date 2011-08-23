@@ -27,6 +27,7 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
+import org.drugis.addis.ExampleData;
 import org.junit.Test;
 
 public class UnknownDoseTest {
@@ -37,12 +38,12 @@ public class UnknownDoseTest {
 	
 	@Test
 	public void testNotEqualsKnown() {
-		assertNotSame(new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY), new UnknownDose());
+		assertNotSame(new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY), new UnknownDose());
 	}
 	
 	@Test
 	public void testGetUnit() {
-		assertEquals(SIUnit.MILLIGRAMS_A_DAY, new UnknownDose().getUnit());
+		assertEquals(ExampleData.MILLIGRAMS_A_DAY, new UnknownDose().getDoseUnit());
 	}
 	
 	@Test

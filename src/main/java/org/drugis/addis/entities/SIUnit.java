@@ -24,11 +24,8 @@
 
 package org.drugis.addis.entities;
 
-import java.io.Serializable;
 
-public enum SIUnit implements Serializable {
-	MILLIGRAMS_A_DAY("Milligrams a Day", "mg/day");
-	
+public class SIUnit {
 	private String d_name;
 	private String d_symbol;
 	

@@ -39,12 +39,12 @@ public class FlexibleDose extends AbstractDose {
 		d_flexDose = new Interval<Double>(0.,0.);
 	}
 	
-	public FlexibleDose(Interval<Double> flexDose, SIUnit unit) {
+	public FlexibleDose(Interval<Double> flexDose, DoseUnit doseUnit) {
 		if (flexDose.getLowerBound() > flexDose.getUpperBound()) {
 			throw new IllegalArgumentException("Dose bounds illegal");
 		}
 		d_flexDose = flexDose;
-		d_unit = unit;
+		d_unit = doseUnit;
 	}
 	
 	public Interval<Double> getFlexibleDose() {
@@ -86,14 +86,14 @@ public class FlexibleDose extends AbstractDose {
 		if (d_flexDose == null || d_unit == null) {
 			return "INCOMPLETE";
 		}
-		return d_flexDose.toString() + " " + d_unit.toString();
+		return d_flexDose.toString() + " " + d_unit.getLabel();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof FlexibleDose) {
 			FlexibleDose other = (FlexibleDose)o;
-			return EqualsUtil.equal(other.getFlexibleDose(), getFlexibleDose()) && EqualsUtil.equal(other.getUnit(), getUnit());
+			return EqualsUtil.equal(other.getFlexibleDose(), getFlexibleDose()) && EqualsUtil.equal(other.getDoseUnit(), getDoseUnit());
 		}
 		return false;
 	}
@@ -103,13 +103,13 @@ public class FlexibleDose extends AbstractDose {
 		int hash = 1;
 		hash *= 31; 
 		hash += getFlexibleDose().hashCode();
-		hash = hash * 31 + getUnit().hashCode();
+		hash = hash * 31 + getDoseUnit().hashCode();
 		return hash;
 	}
 
 	@Override
 	public AbstractDose clone() {
-		return new FlexibleDose(getFlexibleDose(), getUnit());
+		return new FlexibleDose(getFlexibleDose(), getDoseUnit());
 	}
 
 }

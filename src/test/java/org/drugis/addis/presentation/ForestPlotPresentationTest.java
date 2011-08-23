@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -39,7 +40,6 @@ import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
@@ -81,8 +81,8 @@ public class ForestPlotPresentationTest {
 		d_s1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
 		d_baseline = new Drug("DrugA", "");
 		d_subject = new Drug("DrugB", "");
-		Arm pBase = d_s1.createAndAddArm("base", s_baseSize, d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
-		Arm pSubj = d_s1.createAndAddArm("subj", s_subjSize, d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
+		Arm pBase = d_s1.createAndAddArm("base", s_baseSize, d_baseline, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
+		Arm pSubj = d_s1.createAndAddArm("subj", s_subjSize, d_subject, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
 		d_mBase1 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pBase.getSize());
 		d_mSubj1 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pSubj.getSize());
 		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
@@ -90,8 +90,8 @@ public class ForestPlotPresentationTest {
 		
 		d_s2 = new Study("Y", new Indication(0L, ""));
 		d_s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
-		Arm pBase2 = d_s2.createAndAddArm("base2", s_baseSize, d_baseline, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
-		Arm pSubj2 = d_s2.createAndAddArm("subj2", s_subjSize, d_subject, new FixedDose(10, SIUnit.MILLIGRAMS_A_DAY));
+		Arm pBase2 = d_s2.createAndAddArm("base2", s_baseSize, d_baseline, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
+		Arm pSubj2 = d_s2.createAndAddArm("subj2", s_subjSize, d_subject, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
 		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2.getSize());
 		d_mSubj2 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pSubj2.getSize());
 		d_s2.setMeasurement(d_endpoint, pBase2, d_mBase2);

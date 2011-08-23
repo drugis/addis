@@ -49,6 +49,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.AbstractNamedEntity;
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
@@ -60,6 +61,7 @@ import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
@@ -84,6 +86,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -136,6 +139,7 @@ import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
+import org.drugis.addis.entities.data.Units;
 import org.drugis.common.Interval;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -158,7 +162,10 @@ public class JAXBConvertor {
 	
 	public static Domain convertAddisDataToDomain(AddisData addisData) throws ConversionException {
 		Domain newDomain = new org.drugis.addis.entities.DomainImpl();
-		for(org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
+		for (org.drugis.addis.entities.data.Unit u : addisData.getUnits().getUnit()) {
+			newDomain.getUnits().add(new Unit(u.getName(), u.getSymbol()));
+		}
+		for (org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
 			newDomain.getIndications().add(convertIndication(i));
 		}
 		for (org.drugis.addis.entities.data.Drug d : addisData.getDrugs().getDrug()) {
@@ -189,6 +196,10 @@ public class JAXBConvertor {
 
 	public static AddisData convertDomainToAddisData(Domain domain) throws ConversionException {
 		AddisData addisData = new AddisData();
+		addisData.setUnits(new Units());
+		for (Unit u : domain.getUnits()) {
+			addisData.getUnits().getUnit().add(convertUnit(u));
+		}
 		addisData.setIndications(new Indications());
 		for (Indication i : domain.getIndications()) {
 			addisData.getIndications().getIndication().add(convertIndication(i));
@@ -221,6 +232,13 @@ public class JAXBConvertor {
 		return addisData;
 	}
 	
+	private static org.drugis.addis.entities.data.Unit convertUnit(Unit u) {
+		org.drugis.addis.entities.data.Unit newUnit = new org.drugis.addis.entities.data.Unit();
+		newUnit.setName(u.getName());
+		newUnit.setSymbol(u.getSymbol());
+		return newUnit;
+	}
+
 	static AdverseEvent convertAdverseEvent(org.drugis.addis.entities.data.OutcomeMeasure ae) throws ConversionException {
 		AdverseEvent a = new AdverseEvent();
 		convertOutcomeMeasure(ae, a);
@@ -308,42 +326,15 @@ public class JAXBConvertor {
 		}
 	}
 	
-	static Indication findIndication(Domain domain, String name) {
-		for (Indication i : domain.getIndications()) {
-			if (i.getName().equals(name)) {
-				return i;
+	private static <T extends AbstractNamedEntity<?>> T findNamedItem(List<T> items, String name) {
+		for (T t: items) {
+			if (t.getName().equals(name)) {
+				return t;
 			}
 		}
 		return null;
 	}
-	
-	static Drug findDrug(Domain domain, String name) {
-		for(Drug d: domain.getDrugs()) {
-			if(d.getName().equals(name)) {
-				return d;
-			}
-		}
-		return null;
-	}
-	
-	static Endpoint findEndpoint(Domain domain, String name) {
-		for (Endpoint e : domain.getEndpoints()) {
-			if (e.getName().equals(name)) {
-				return e;
-			}
-		}
-		return null;
-	}
-	
-	static AdverseEvent findAdverseEvent(Domain domain, String name) {
-		for (AdverseEvent ae : domain.getAdverseEvents()) {
-			if (ae.getName().equals(name)) {
-				return ae;
-			}
-		}
-		return null;
-	}
-	
+
 	private static PopulationCharacteristic findPopulationCharacteristic(Domain domain,	String name) {
 		for (PopulationCharacteristic pc : domain.getPopulationCharacteristics()) {
 			if (pc.getName().equals(name)) {
@@ -444,12 +435,13 @@ public class JAXBConvertor {
 	}
 
 	static DrugTreatment convertDrugTreatment(org.drugis.addis.entities.data.DrugTreatment t, Domain domain) throws ConversionException {
-		Drug drug = findDrug(domain, t.getDrug().getName());
+		Drug drug = findNamedItem(domain.getDrugs(), t.getDrug().getName());
 		AbstractDose dose;
 		if (t.getFixedDose() != null) {
-			dose = new FixedDose(t.getFixedDose().getQuantity(), t.getFixedDose().getUnit());
+			dose = new FixedDose(t.getFixedDose().getQuantity(), convertDoseUnit(t.getFixedDose().getDoseUnit(), domain));
 		} else if (t.getFlexibleDose() != null) {
-			dose = new FlexibleDose(new Interval<Double>(t.getFlexibleDose().getMinDose(), t.getFlexibleDose().getMaxDose()), t.getFlexibleDose().getUnit());
+			dose = new FlexibleDose(new Interval<Double>(t.getFlexibleDose().getMinDose(), t.getFlexibleDose().getMaxDose()), 
+					convertDoseUnit(t.getFlexibleDose().getDoseUnit(), domain));
 		} else {
 			throw new ConversionException("Unknown dose type " + t );
 		}
@@ -458,6 +450,11 @@ public class JAXBConvertor {
 	}
 	
 	
+	private static DoseUnit convertDoseUnit(org.drugis.addis.entities.data.DoseUnit doseUnit, Domain domain) {
+		Unit findNamedItem = findNamedItem(domain.getUnits(), doseUnit.getUnit().getName());
+		return new DoseUnit(findNamedItem, doseUnit.getScaleModifier(), doseUnit.getPerTime());
+	}
+
 	static Activity convertTreatmentActivity(org.drugis.addis.entities.data.Treatment treatment, Domain domain) throws ConversionException {
 		TreatmentActivity newCombinationTreatment = new TreatmentActivity();
 		for(org.drugis.addis.entities.data.DrugTreatment ct : treatment.getDrugTreatment()) {
@@ -524,16 +521,24 @@ public class JAXBConvertor {
 
 	private static org.drugis.addis.entities.data.FlexibleDose convertFlexibleDose(FlexibleDose dose) {
 		org.drugis.addis.entities.data.FlexibleDose newDose = new org.drugis.addis.entities.data.FlexibleDose();
-		newDose.setUnit(dose.getUnit());
+		newDose.setDoseUnit(convertDoseUnit(dose.getDoseUnit()));
 		newDose.setMinDose(dose.getMinDose());
 		newDose.setMaxDose(dose.getMaxDose());
 		return newDose;
 	}
 
+	static org.drugis.addis.entities.data.DoseUnit convertDoseUnit(DoseUnit unit) {
+		org.drugis.addis.entities.data.DoseUnit du = new org.drugis.addis.entities.data.DoseUnit();
+		du.setUnit(nameReference(unit.getUnit().getName()));
+		du.setScaleModifier(unit.getScaleModifier());
+		du.setPerTime(unit.getPerTime());
+		return du;
+	}
+
 	private static org.drugis.addis.entities.data.FixedDose convertFixedDose(FixedDose dose) {
 		org.drugis.addis.entities.data.FixedDose newDose = new org.drugis.addis.entities.data.FixedDose();
 		newDose.setQuantity(dose.getQuantity());
-		newDose.setUnit(dose.getUnit());
+		newDose.setDoseUnit(convertDoseUnit(dose.getDoseUnit()));
 		return newDose;
 	}
 
@@ -701,9 +706,9 @@ public class JAXBConvertor {
 	public static Study.StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om, Domain domain) throws ConversionException {
 		Variable var = null;
 		if(om.getEndpoint() != null) {
-			var = findEndpoint(domain, om.getEndpoint().getName());
+			var = findNamedItem(domain.getEndpoints(), om.getEndpoint().getName());
 		} else if(om.getAdverseEvent() != null) {
-			var = findAdverseEvent(domain, om.getAdverseEvent().getName());
+			var = findNamedItem(domain.getAdverseEvents(), om.getAdverseEvent().getName());
 		} else if(om.getPopulationCharacteristic() != null) {
 			var = findPopulationCharacteristic(domain, om.getPopulationCharacteristic().getName());
 		} else {
@@ -865,7 +870,7 @@ public class JAXBConvertor {
 	static Study convertStudy(org.drugis.addis.entities.data.Study study, Domain domain) throws ConversionException {
 		Study newStudy = new Study();
 		newStudy.setName(study.getName());
-		newStudy.setIndication(findIndication(domain, study.getIndication().getName()));
+		newStudy.setIndication(findNamedItem(domain.getIndications(), study.getIndication().getName()));
 		convertNotes(study.getIndication().getNotes().getNote(), newStudy.getIndicationWithNotes().getNotes());
 		
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
@@ -1055,7 +1060,7 @@ public class JAXBConvertor {
 	
 	public static NetworkMetaAnalysis convertNetworkMetaAnalysis(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
 		String name = nma.getName();
-		Indication indication = findIndication(domain, nma.getIndication().getName());
+		Indication indication = findNamedItem(domain.getIndications(), nma.getIndication().getName());
 		org.drugis.addis.entities.OutcomeMeasure om = findOutcomeMeasure(domain, nma);
 		List<Study> studies = new ArrayList<Study>();		
 		List<DrugSet> drugs = new ArrayList<DrugSet>();
@@ -1080,7 +1085,7 @@ public class JAXBConvertor {
 	private static DrugSet convertDrugSet(AnalysisDrugs drugs, Domain domain) {
 		List<Drug> out = new ArrayList<Drug>();
 		for(NameReference d : drugs.getDrug()) {
-			out.add(findDrug(domain, d.getName()));
+			out.add(findNamedItem(domain.getDrugs(), d.getName()));
 		}
 		return new DrugSet(out);
 	}
@@ -1141,9 +1146,9 @@ public class JAXBConvertor {
 	throws ConversionException {
 		org.drugis.addis.entities.OutcomeMeasure om = null;
 		if (ma.getEndpoint() != null) {
-			om = findEndpoint(domain, ma.getEndpoint().getName());
+			om = findNamedItem(domain.getEndpoints(), ma.getEndpoint().getName());
 		} else if (ma.getAdverseEvent() != null) {
-			om = findAdverseEvent(domain, ma.getAdverseEvent().getName());
+			om = findNamedItem(domain.getAdverseEvents(), ma.getAdverseEvent().getName());
 		} else {
 			throw new ConversionException("MetaAnalysis has unsupported OutcomeMeasure: " + ma);
 		}
@@ -1182,14 +1187,14 @@ public class JAXBConvertor {
 	public static StudyBenefitRiskAnalysis convertStudyBenefitRiskAnalysis(
 			org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br, Domain domain) throws ConversionException {
 		
-		Indication indication = findIndication(domain, br.getIndication().getName());
+		Indication indication = findNamedItem(domain.getIndications(), br.getIndication().getName());
 		Study study = findStudy(br.getStudy().getName(), domain);
 		List<org.drugis.addis.entities.OutcomeMeasure> criteria = new ArrayList<org.drugis.addis.entities.OutcomeMeasure>();
 		for (NameReference ref : br.getOutcomeMeasures().getEndpoint()) {
-			criteria.add(findEndpoint(domain, ref.getName()));
+			criteria.add(findNamedItem(domain.getEndpoints(), ref.getName()));
 		}
 		for (NameReference ref : br.getOutcomeMeasures().getAdverseEvent()) {
-			criteria.add(findAdverseEvent(domain, ref.getName()));
+			criteria.add(findNamedItem(domain.getAdverseEvents(), ref.getName()));
 		}
 		if (!br.getOutcomeMeasures().getPopulationCharacteristic().isEmpty()) {
 			throw new ConversionException("PopulationCharacteristics not supported as criteria. " + br);
@@ -1233,7 +1238,7 @@ public class JAXBConvertor {
 
 	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(
 			org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
-		Indication indication = findIndication(domain, br.getIndication().getName());
+		Indication indication = findNamedItem(domain.getIndications(), br.getIndication().getName());
 		DrugSet baseline = convertDrugSet(br.getBaseline(), domain);
 		List<DrugSet> drugs = new ArrayList<DrugSet>();
 		for (AnalysisDrugs set : br.getAlternatives().getAlternative()) {

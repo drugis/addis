@@ -24,15 +24,17 @@
 
 package org.drugis.addis.entities;
 
+import org.drugis.addis.ExampleData;
+
 
 public class UnknownDose extends AbstractDose {
 	
 	public UnknownDose() {
-		d_unit = SIUnit.MILLIGRAMS_A_DAY;
+		d_unit = ExampleData.MILLIGRAMS_A_DAY;
 	}
 	
 	@Override
-	public void setUnit(SIUnit u) {
+	public void setDoseUnit(DoseUnit u) {
 		d_unit = u;
 	}
 

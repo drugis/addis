@@ -222,7 +222,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		// add dose
 		row = LayoutUtil.addRow(layout, row);
 		builder.addLabel("Dose: ", cc.xy(1, row));
-		DoseView doseView = new DoseView(tap.getDoseModel());
+		DoseView doseView = new DoseView(tap.getDoseModel(), d_mainWindow.getDomain().getUnits());
 		builder.add(doseView.buildPanel(), cc.xy(3, row));
 		return row;
 	}

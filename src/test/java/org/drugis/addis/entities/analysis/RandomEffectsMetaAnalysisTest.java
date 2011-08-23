@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drugis.addis.ADDISTestUtil;
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -44,7 +45,6 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.SIUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.Variable;
@@ -276,7 +276,7 @@ public class RandomEffectsMetaAnalysisTest {
 	}
 	
 	private Arm addArm(Study study, Drug drug, int nSubjects) {
-		FixedDose dose = new FixedDose(10.0, SIUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY);
 		Arm group = study.createAndAddArm(drug.getName(), nSubjects, drug, dose);
 		return group;
 	}

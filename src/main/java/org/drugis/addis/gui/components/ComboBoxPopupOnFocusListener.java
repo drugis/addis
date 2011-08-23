@@ -31,7 +31,7 @@ import javax.swing.JComboBox;
 
 public class ComboBoxPopupOnFocusListener implements FocusListener {
 
-	private JComboBox box;
+	private JComboBox d_box;
 	
 	public static void add (JComboBox box) {
 		ComboBoxPopupOnFocusListener l = new ComboBoxPopupOnFocusListener(box);
@@ -39,11 +39,11 @@ public class ComboBoxPopupOnFocusListener implements FocusListener {
 	}
 
 	private ComboBoxPopupOnFocusListener(JComboBox box) {
-		this.box = box;
+		d_box = box;
 	}
 
 	public void focusGained(FocusEvent arg0) {
-		box.showPopup();
+		d_box.showPopup();
 	}
 
 	public void focusLost(FocusEvent arg0) {
