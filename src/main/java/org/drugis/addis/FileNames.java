@@ -27,6 +27,7 @@ package org.drugis.addis;
 public class FileNames {
 	public static final String ICON_STOP = "stop.gif";
 	public static final String ICON_DRUG = "drug.gif";
+	public static final String ICON_UNIT = "unit.gif";
 	public static final String ICON_STUDY = "study.gif";
 	public static final String ICON_STUDY_NEW = "study_new.gif";
 	public static final String ICON_ENDPOINT = "endpoint.gif";
