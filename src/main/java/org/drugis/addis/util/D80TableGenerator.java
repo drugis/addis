@@ -47,7 +47,7 @@ import org.drugis.addis.entities.relativeeffect.AbstractBasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
-import org.drugis.addis.presentation.EpochDurationPresentation;
+import org.drugis.addis.presentation.DurationPresentation;
 import org.stringtemplate.v4.ST;
 
 public class D80TableGenerator {
@@ -85,7 +85,7 @@ public class D80TableGenerator {
 
 	private static String getEpochDuration(Epoch epoch) {
 		if (epoch != null && epoch.getDuration() != null) {
-			EpochDurationPresentation pm = new EpochDurationPresentation(epoch);
+			DurationPresentation<Epoch> pm = new DurationPresentation<Epoch>(epoch);
 			return pm.getLabel();
 		}
 		return "&lt;duration&gt;";

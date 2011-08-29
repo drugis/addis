@@ -35,7 +35,7 @@ import org.drugis.common.EqualsUtil;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class Epoch extends AbstractNamedEntity<Epoch> implements TypeWithNotes {
+public class Epoch extends AbstractNamedEntity<Epoch> implements TypeWithNotes, TypeWithDuration {
 	public static final String PROPERTY_DURATION = "duration";
 
 	private Duration d_duration;

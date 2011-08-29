@@ -356,6 +356,14 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		dep.addAll(getOutcomeMeasures());
 		dep.addAll(extractVariables(getPopulationChars()));
 		dep.add(d_indication.getValue());
+		for (StudyActivity sa: getStudyActivities()) {
+			if (sa.getActivity() instanceof TreatmentActivity) {
+				TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
+				for (AbstractDose d: ta.getDoses()) {
+					dep.add(d.getDoseUnit().getUnit());
+				}
+			}
+		}
 		return dep;
 	}
 

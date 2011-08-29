@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.gui.NoteViewButton;
-import org.drugis.addis.presentation.EpochDurationPresentation;
+import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.LayoutUtil;
@@ -78,14 +78,14 @@ public class StudyEpochsView {
 
 	private int buildEpoch(FormLayout layout, PanelBuilder builder,	CellConstraints cc, int row, Epoch e) {
 		PresentationModel<Epoch> epochModel = d_pmf.getModel(e);
-		EpochDurationPresentation edpm = new EpochDurationPresentation(e);
+		DurationPresentation<Epoch> edpm = new DurationPresentation<Epoch>(e);
 		
 		LayoutUtil.addRow(layout);
 		row += 2;
 		
 		final JLabel epochLabel = BasicComponentFactory.createLabel(epochModel.getModel(Epoch.PROPERTY_NAME));
 		final JLabel epochDurationLabel = BasicComponentFactory.createLabel(
-				new PropertyAdapter<EpochDurationPresentation>(edpm, EpochDurationPresentation.PROPERTY_LABEL, true));
+				new PropertyAdapter<DurationPresentation<Epoch>>(edpm, DurationPresentation.PROPERTY_LABEL, true));
 		JButton button = new NoteViewButton(d_parent, "Epoch: " + e.toString(), e.getNotes());
 		builder.add(button, cc.xy(1, row));
 		builder.add(epochLabel, cc.xy(3, row));

@@ -102,7 +102,6 @@ public class DrugTreatmentPresentationTest {
 	public void testSetDoseUnit() {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), ExampleData.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
-		System.out.println(d_pm.getDoseModel().getDoseUnitPresentation().getBean().getLabel());
 		assertEntityEquals(d_pm.getDoseModel().getDoseUnitPresentation().getBean(), d_drugTreatment.getDose().getDoseUnit());
 	}
 }
