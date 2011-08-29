@@ -62,6 +62,7 @@ public class DomainTest {
 	
 	@Test
 	public void testEmptyDomain() {
+		assertTrue(d_domain.getUnits().isEmpty());
 		assertTrue(d_domain.getEndpoints().isEmpty());
 		assertTrue(d_domain.getStudies().isEmpty());
 		assertTrue(d_domain.getDrugs().isEmpty());
@@ -332,6 +333,7 @@ public class DomainTest {
 	
 	@Test
 	public void testGetStudiesByDrug() {
+		d_domain.getUnits().add(new Unit("gram", "g"));
 		Drug d1 = new Drug("drug1", "atccode1");
 		Drug d2 = new Drug("drug2", "atccode2");
 		Drug d3 = new Drug("drug3", "atccode3");
@@ -381,6 +383,7 @@ public class DomainTest {
 	public void testGetStudies() {
 		Drug d1 = new Drug("drug1", "atccode1");
 		Drug d2 = new Drug("drug2", "atccode2");
+		d_domain.getUnits().add(new Unit("gram", "g"));
 		
 		Endpoint e = new Endpoint("Death", Endpoint.convertVarType(Variable.Type.RATE));
 		
@@ -465,6 +468,7 @@ public class DomainTest {
 	public void testDeleteStudyThrowsCorrectException() throws DependentEntitiesException, NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug parox = ExampleData.buildDrugParoxetine();
+		d_domain.getUnits().add(new Unit("gram", "g"));
 		
 		Study s1 = new Study("X", d_indication);
 		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));

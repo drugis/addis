@@ -40,4 +40,9 @@ public class UnitTest {
 		JUnitUtil.testSetter(d_gram, Unit.PROPERTY_SYMBOL, "g", "Graeme");
 	}
 	
+	@Test
+	public void testGetLabel() {
+		assertEquals("gram", d_gram.getLabel());
+	}
+	
 }

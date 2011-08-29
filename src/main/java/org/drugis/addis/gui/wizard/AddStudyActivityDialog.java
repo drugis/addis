@@ -197,7 +197,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		return row;
 	}
 
-	private int showDrug(PanelBuilder builder, int row, final DrugTreatmentPresentation tap) {
+	private int showDrug(PanelBuilder builder, int row, final DrugTreatmentPresentation dtp) {
 		CellConstraints cc = new CellConstraints();
 		// add drug
 		builder.addSeparator("", cc.xyw(1, row, 5));
@@ -207,7 +207,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		
 		builder.addLabel("Drug: ", cc.xy(1, row));
 		
-		final AbstractValueModel drugModel = tap.getModel(DrugTreatment.PROPERTY_DRUG);
+		final AbstractValueModel drugModel = dtp.getModel(DrugTreatment.PROPERTY_DRUG);
 		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), drugModel, true);
 		builder.add(drugSelect, cc.xy(3, row));
 		
@@ -220,9 +220,15 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		});
 		
 		// add dose
+		row = buildDoseView(builder, row, layout, dtp);
+		return row;
+	}
+
+	private int buildDoseView(PanelBuilder builder, int row, FormLayout layout, DrugTreatmentPresentation dtp) {
 		row = LayoutUtil.addRow(layout, row);
-		builder.addLabel("Dose: ", cc.xy(1, row));
-		DoseView doseView = new DoseView(tap.getDoseModel(), d_mainWindow.getDomain().getUnits());
+		CellConstraints cc = new CellConstraints();
+		builder.addLabel("Dose: ", cc .xy(1, row));
+		DoseView doseView = new DoseView(dtp.getDoseModel(), d_mainWindow.getDomain().getUnits());
 		builder.add(doseView.buildPanel(), cc.xy(3, row));
 		return row;
 	}

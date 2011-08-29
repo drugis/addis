@@ -5,10 +5,11 @@ import java.util.Set;
 
 import javax.xml.datatype.Duration;
 
+import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
-public class DoseUnit extends AbstractEntity {
+public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 
 	public static final String PROPERTY_SCALE_MODIFIER = "scaleModifier";
 	public static final String PROPERTY_UNIT = "unit";
@@ -61,7 +62,7 @@ public class DoseUnit extends AbstractEntity {
 
 	@Override
 	public String getLabel() {
-		return d_scaleModifier.getSymbol() + d_unit.getSymbol() + "/" + "day";
+		return d_scaleModifier.getSymbol() + d_unit.getSymbol() + "/" + DurationPresentation.parseDuration(d_perTime, null);
 	}
 	
 	@Override
@@ -92,5 +93,15 @@ public class DoseUnit extends AbstractEntity {
 	@Override
 	public String toString() {
 		return getLabel();
+	}
+
+	@Override
+	public Duration getDuration() {
+		return getPerTime();
+	}
+
+	@Override
+	public void setDuration(Duration duration) {
+		setPerTime(duration);
 	}
 }

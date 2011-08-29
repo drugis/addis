@@ -106,7 +106,7 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
-import org.drugis.addis.presentation.EpochDurationPresentation;
+import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
@@ -231,9 +231,9 @@ public class AddStudyWizard extends Wizard {
 		
 		@Override
 		protected void addAdditionalFields(PanelBuilder builder, CellConstraints cc, int rows, int idx) {
-			EpochDurationPresentation durationModel = ((AddEpochsPresentation)d_pm).getDurationModel(idx);
-			ValueModel definedModel = new PropertyAdapter<EpochDurationPresentation>(
-					durationModel, EpochDurationPresentation.PROPERTY_DEFINED, true);
+			DurationPresentation<Epoch> durationModel = ((AddEpochsPresentation)d_pm).getDurationModel(idx);
+			ValueModel definedModel = new PropertyAdapter<DurationPresentation<Epoch>>(
+					durationModel, DurationPresentation.PROPERTY_DEFINED, true);
 			
 			JPanel panel = new JPanel();
 			panel.add(new JLabel("Duration: "));
@@ -244,7 +244,7 @@ public class AddStudyWizard extends Wizard {
 
 			// duration quantity input
 			final JTextField quantityField = BasicComponentFactory.createFormattedTextField(
-					new PropertyAdapter<EpochDurationPresentation>(durationModel, EpochDurationPresentation.PROPERTY_QUANTITY, true),
+					new PropertyAdapter<DurationPresentation<Epoch>>(durationModel, DurationPresentation.PROPERTY_DURATION_QUANTITY, true),
 					new DefaultFormatter());
 			quantityField.setColumns(4);
 			Bindings.bind(quantityField, "enabled", definedModel);
@@ -252,8 +252,8 @@ public class AddStudyWizard extends Wizard {
 
 			// duration units input
 			final JComboBox unitsField = AuxComponentFactory.createBoundComboBox(
-					EpochDurationPresentation.DateUnits.values(), 
-					new PropertyAdapter<EpochDurationPresentation>(durationModel, EpochDurationPresentation.PROPERTY_UNITS, true));
+					DurationPresentation.DateUnits.values(), 
+					new PropertyAdapter<DurationPresentation<Epoch>>(durationModel, DurationPresentation.PROPERTY_DURATION_UNITS, true));
 			Bindings.bind(unitsField, "enabled", definedModel);
 			panel.add(unitsField);
 			

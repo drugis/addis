@@ -37,4 +37,10 @@ public class Unit extends AbstractNamedEntity<Unit> {
 		Unit o = (Unit) other;
 		return EqualsUtil.equal(d_symbol, o.d_symbol);
 	}
+	
+	@Override
+	public String toString() {
+		return getLabel();
+	}
+	
 }

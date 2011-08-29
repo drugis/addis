@@ -30,20 +30,27 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.Unit;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.DosePresentation;
+import org.drugis.addis.presentation.DurationPresentation;
+import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class DoseView implements ViewBuilder {
 	private DosePresentation d_model;
@@ -54,16 +61,10 @@ public class DoseView implements ViewBuilder {
 	private JFormattedTextField d_quantityMax;
 	private final List<Unit> d_unitOptions;
 	
-	public DoseView(DosePresentation dose, List<Unit> unitOptions) {
-		d_model = dose;
+	public DoseView(DosePresentation dosePresentation, List<Unit> unitOptions) {
+		d_model = dosePresentation;
 		d_unitOptions = unitOptions;
 	}
-	
-// FIXME: unused?
-//	public DoseView(DosePresentation dose, NotEmptyValidator validator) {
-//		d_model = dose;
-//		d_validator = validator;
-//	}	
 	
 	public void initComponents() {
 		d_quantityMin = new JFormattedTextField(new DefaultFormatter());
@@ -93,12 +94,35 @@ public class DoseView implements ViewBuilder {
 	}
 
 	public JComponent buildPanel() {
+		FormLayout layout = new FormLayout("p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p",
+				"p");
 		initComponents();
-		JPanel panel = new JPanel();
-		panel.add(d_quantityMin);
-		panel.add(new JLabel(" up to "));
-		panel.add(d_quantityMax);
-		panel.add(d_unitCB);
-		return panel;
+		PanelBuilder builder = new PanelBuilder(layout);
+		
+		CellConstraints cc = new CellConstraints();
+		builder.add(d_quantityMin, cc.xyw(1, 1, 3));
+		builder.add(new JLabel(" up to "), cc.xyw(4, 1, 3));
+		builder.add(d_quantityMax, cc.xyw(7, 1, 3));
+		
+		int row = LayoutUtil.addRow(layout, 1);
+		
+		builder.add(d_scaleModifierCB, cc.xy(1, row));
+		builder.add(d_unitCB, cc.xy(3, row));
+		builder.add(new JLabel(" per "), cc.xy(5, row));
+		DurationPresentation<DoseUnit> durationModel = d_model.getDoseUnitPresentation().getDurationPresentation();
+		
+		// duration quantity input
+		final JTextField quantityField = BasicComponentFactory.createFormattedTextField(
+				new PropertyAdapter<DurationPresentation<DoseUnit>>(durationModel, DurationPresentation.PROPERTY_DURATION_QUANTITY, true),
+				new DefaultFormatter());
+		quantityField.setColumns(4);
+		builder.add(quantityField, cc.xy(7, row));
+
+		// duration units input
+		final JComboBox unitsField = AuxComponentFactory.createBoundComboBox(
+				DurationPresentation.DateUnits.values(), 
+				new PropertyAdapter<DurationPresentation<DoseUnit>>(durationModel, DurationPresentation.PROPERTY_DURATION_UNITS, true));
+		builder.add(unitsField, cc.xy(9, row));
+		return builder.getPanel();
 	}
 }

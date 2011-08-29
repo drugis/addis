@@ -37,8 +37,8 @@ import org.drugis.addis.entities.TypeWithDuration;
 import org.drugis.common.beans.AbstractObservable;
 
 public class DurationPresentation<T extends TypeWithDuration> extends AbstractObservable {
-	private static class Data {
-		public final DateUnits units;
+	public static class Data {
+		public DateUnits units;
 		public final int quantity;
 
 		public Data(DateUnits units, int quantity) {
@@ -48,6 +48,15 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 		
 		public Duration getDuration() {
 			return generateDuration(units.asDurationString(quantity));
+		}
+		
+		public DateUnits getDateunits() {
+			return units;
+		}
+		
+		@Override
+		public String toString() {
+			return (quantity > 1 ? quantity + " " +  units : units.getSingular()).toLowerCase();
 		}
 	}
 
@@ -84,6 +93,10 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 				case Months: return "P" + q + "M";
 				default: return null;
 			}
+		}
+		
+		public String getSingular() {
+			return toString().substring(0, this.toString().length() - 1);
 		}
 	}
 	
@@ -129,8 +142,7 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 		d_data = parseDuration();
 	}
 
-	private Data parseDuration() {
-		Duration duration = d_bean.getDuration();
+	public static Data parseDuration(Duration duration, DateUnits prevUnits) {
 		if (duration == null) {
 			return null;
 		} else if (duration.isSet(DatatypeConstants.SECONDS)) {
@@ -140,7 +152,7 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 		} else if (duration.isSet(DatatypeConstants.HOURS)) {
 			return new Data(DateUnits.Hours, duration.getHours());
 		} else if (duration.isSet(DatatypeConstants.DAYS)) {
-			if(duration.getDays() % 7 == 0 && (d_data == null || d_data.units != DateUnits.Days)) {
+			if(duration.getDays() % 7 == 0 && prevUnits != DateUnits.Days) {
 				return new Data(DateUnits.Weeks, duration.getDays() / 7);
 			} else {
 				return new Data(DateUnits.Days, duration.getDays());
@@ -150,6 +162,13 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 		} else {
 			throw new RuntimeException("Unhandled Duration: " + duration);
 		}
+	}
+	
+	private Data parseDuration() {
+		if(d_data == null) { 
+			d_data = new Data(DateUnits.Weeks, 0);
+		}
+		return parseDuration(d_bean.getDuration(), d_data.units);
 	}
 	
 	public DateUnits getUnits() {

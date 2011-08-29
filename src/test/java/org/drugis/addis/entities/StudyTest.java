@@ -344,6 +344,14 @@ public class StudyTest {
 		for (DrugSet d : s.getDrugs()) {
 			dep.addAll(d.getContents());
 		}
+		for (StudyActivity sa: s.getStudyActivities()) {
+			if (sa.getActivity() instanceof TreatmentActivity) {
+				TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
+				for (AbstractDose d: ta.getDoses()) {
+					dep.add(d.getDoseUnit().getUnit());
+				}
+			}
+		}
 		dep.add(s.getIndication());
 		assertEquals(dep, s.getDependencies());
 	}	

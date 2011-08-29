@@ -239,6 +239,8 @@ public class DomainImpl extends Domain {
 			getBenefitRiskAnalyses().remove(((StudyBenefitRiskAnalysis) entity));
 		} else if (entity instanceof Indication) {
 			getIndications().remove(((Indication) entity));
+		} else if (entity instanceof Unit) {
+			getUnits().remove(((Unit) entity));
 		} else {
 			throw new RuntimeException("Unhandled entity type " + entity.getClass().getSimpleName());
 		}

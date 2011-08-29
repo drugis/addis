@@ -51,7 +51,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class DrugView implements ViewBuilder{
+public class DrugView implements ViewBuilder {
 	private static final String SEARCH_DOMAIN = "medicines.org.uk";
 	private DrugPresentation d_model;
 	private AddisWindow d_parent;

@@ -43,8 +43,7 @@ public class DrugsKnowledge extends CategoryKnowledgeBase {
 		super("drug", FileNames.ICON_DRUG, Drug.class);
 	}
 	
-	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
-			ValueModel selectionModel) {
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		return new AddDrugDialog(mainWindow, domain, selectionModel);
 	}
 	

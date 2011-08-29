@@ -36,6 +36,7 @@ import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -84,6 +85,9 @@ public class PresentationModelFactory {
 			return new VariablePresentation((Variable)obj,
 					d_domain.getStudies((Variable)obj), this);
 		}
+		if (obj instanceof Unit) {
+			return new UnitPresentation((Unit) obj);
+		}		
 		if (obj instanceof Study) {
 			return new StudyPresentation((Study) obj, this);
 		}		

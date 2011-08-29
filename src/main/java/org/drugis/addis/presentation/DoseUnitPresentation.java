@@ -11,4 +11,8 @@ public class DoseUnitPresentation extends PresentationModel<DoseUnit> {
 		super(bean);
 	}
 
+	public DurationPresentation<DoseUnit> getDurationPresentation() {
+		return new DurationPresentation<DoseUnit>(getBean());
+	}
+
 }
