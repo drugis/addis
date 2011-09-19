@@ -37,7 +37,7 @@ public class RebuildableHashMapTest {
 		Arm arm1 = new Arm("Arm1", 0);
 		Arm arm2 = new Arm("Arm2", 0);
 		
-		RebuildableHashMap<Arm, Object> map = new RebuildableHashMap<Arm, Object>();
+		RebuildableTreeMap<Arm, Object> map = new RebuildableTreeMap<Arm, Object>();
 		map.put(arm1, "bla");
 		map.put(arm2, "Bla2");
 		

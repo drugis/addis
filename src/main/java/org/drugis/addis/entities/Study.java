@@ -42,7 +42,7 @@ import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.FilteredObservableList;
-import org.drugis.addis.util.RebuildableHashMap;
+import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.DateUtil;
@@ -53,7 +53,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity, TypeWithName {
 
-	public static class WhenTaken extends AbstractEntity implements Entity {
+	public static class WhenTaken extends AbstractEntity implements Entity, Comparable<WhenTaken> {
 
 		private final Duration d_howLong;
 		private final RelativeTo d_relativeTo;
@@ -92,9 +92,17 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		private String formatRelativeTo(RelativeTo relativeTo) {
 			return relativeTo.toString().toLowerCase().replace('_', ' ');
 		}
+
+		@Override
+		public int compareTo(WhenTaken o) {
+			if (d_relativeTo == o.d_relativeTo) {
+				return d_howLong.compare(o.d_howLong);
+			}
+			return d_relativeTo == RelativeTo.FROM_EPOCH_START ? -1 : 1;
+		}
 	}
 	
-	public static class MeasurementKey extends AbstractEntity implements Entity {
+	public static class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
 
 		private Variable d_variable;
 		private Arm d_arm;
@@ -166,6 +174,23 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 		public Set<? extends Entity> getDependencies() {
 			return Collections.emptySet();
 		}
+
+		@Override
+		public int compareTo(MeasurementKey o) {
+			if (d_variable.compareTo(o.d_variable) == 0) {
+				if (d_arm != null) {
+					if (d_arm.compareTo(o.d_arm) == 0) {
+						return d_wt.compareTo(o.d_wt);
+					}
+					return d_arm.compareTo(o.d_arm);
+				} else if (o.d_arm == null) {
+					return d_wt.compareTo(o.d_wt);
+				} else {
+					return -1;
+				}
+			}
+			return d_variable.compareTo(o.d_variable);
+		}
 	}
 	
 	@SuppressWarnings("serial")
@@ -221,7 +246,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
 	private ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>(); 
 
-	private RebuildableHashMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableHashMap<MeasurementKey, BasicMeasurement>();
+	private RebuildableTreeMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>();
 	
 	public Study() {
 		this(null, null);
@@ -648,7 +673,7 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 	}
 
 	private void setMeasurements(Map<MeasurementKey, BasicMeasurement> m) {
-		d_measurements = new RebuildableHashMap<MeasurementKey, BasicMeasurement>(m);
+		d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>(m);
 	}
 
 	public void setMeasurement(MeasurementKey key, BasicMeasurement value) {

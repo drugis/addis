@@ -41,9 +41,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -135,6 +138,7 @@ import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.RelativeTime;
+import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.Studies;
@@ -755,7 +759,7 @@ public class JAXBConvertor {
 		return map;
 	}
 	
-	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> linkedMap) throws ConversionException {
+	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(Map<String, Study.StudyOutcomeMeasure<?>> linkedMap) throws ConversionException {
 		StudyOutcomeMeasures measures = new StudyOutcomeMeasures();
 		for(Entry<String, Study.StudyOutcomeMeasure<?>> item : linkedMap.entrySet()) {
 			StudyOutcomeMeasure om = new StudyOutcomeMeasure();
@@ -791,8 +795,27 @@ public class JAXBConvertor {
 		throw new ConversionException("Measurement type not supported: " + m.toString());
 	}
 	
+	public static org.drugis.addis.entities.data.Measurement convertMeasurement(MeasurementKey mk, Measurement m) throws ConversionException {
+		org.drugis.addis.entities.data.Measurement measurement = convertMeasurement(m);
+		measurement.getWhenTaken().clear();
+		measurement.getWhenTaken().add(convertWhenTaken(mk.getWhenTaken()));
+		return measurement;
+	}
 
-	public static org.drugis.addis.entities.data.Measurement convertMeasurement(Measurement m, String defaultEpochName) throws ConversionException {
+	public static void addDefaultWhenTaken(
+			org.drugis.addis.entities.data.Measurement m) {
+		RelativeTime rt = new RelativeTime();
+		try {
+			rt.setHowLong(DatatypeFactory.newInstance().newDuration("P0D"));
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		rt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+		m.getWhenTaken().add(rt);
+	}
+
+	
+	public static org.drugis.addis.entities.data.Measurement convertMeasurement(Measurement m) throws ConversionException {
 		org.drugis.addis.entities.data.Measurement measurement = new org.drugis.addis.entities.data.Measurement();
 		Integer sampleSize = m.getSampleSize();
 		if(m instanceof BasicRateMeasurement) {
@@ -818,24 +841,21 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Measurement type not supported: " + m.toString());
 		}
+		addDefaultWhenTaken(measurement);
 		return measurement;
 	}
 	
 	public static Map<MeasurementKey, BasicMeasurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
 	throws ConversionException {
-		Map<MeasurementKey, BasicMeasurement> map = new HashMap<MeasurementKey, BasicMeasurement>();
+		Map<MeasurementKey, BasicMeasurement> map = new TreeMap<MeasurementKey, BasicMeasurement>();
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
 			String omId = m.getStudyOutcomeMeasure().getId();
 			Arm arm = m.getArm() != null ? findArm(m.getArm().getName(), arms) : null;
 			if (m.getWhenTaken().size() == 0) {
-				MeasurementKey key = new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm);
-				System.out.println(key);
-				map.put(key, convertMeasurement(m));
+				map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm), convertMeasurement(m));
 			} else {
 				for (RelativeTime rt : m.getWhenTaken()) {
-					MeasurementKey key = new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt));
-					System.out.println(key);
-					map.put(key, convertMeasurement(m));
+					map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt)), convertMeasurement(m));
 				}
 			}
 		}
@@ -846,26 +866,42 @@ public class JAXBConvertor {
 		return new WhenTaken(rt.getHowLong(), rt.getRelativeTo());
 	}
 
-	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> map, List<Arm> arms, String defaultEpochName, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
+	private static RelativeTime convertWhenTaken(WhenTaken whenTaken) {
+		RelativeTime rt = new RelativeTime();
+		rt.setHowLong(whenTaken.getHowLong());
+		rt.setRelativeTo(whenTaken.getRelativeTo());
+		return rt;
+	}
+
+
+	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> map, List<Arm> arms, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements measurements = new Measurements();
 		for (Entry<String, Study.StudyOutcomeMeasure<?>> omEntry : oms.entrySet()) {
 			for (Arm a: arms) {
-				findAndAddMeasurement(map, a, defaultEpochName, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
+				findAndAddMeasurement(map, a, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
 			}
-			findAndAddMeasurement(map, null, defaultEpochName, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
+			findAndAddMeasurement(map, null, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
 		}
 		return measurements;
 	}
 
 
-	private static void findAndAddMeasurement(Map<MeasurementKey, BasicMeasurement> source, Arm arm, String defaultEpochName, String omId, Variable om, Measurements target)
+	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements) throws ConversionException {
+		Measurements ms = new Measurements();
+		for (MeasurementKey key : measurements.keySet()) {
+			ms.getMeasurement().add(convertMeasurement(key, measurements.get(key)));
+		}
+		return ms;
+	}
+
+	private static void findAndAddMeasurement(Map<MeasurementKey, BasicMeasurement> source, Arm arm, String omId, Variable om, Measurements target)
 	throws ConversionException {
 		if (om instanceof OutcomeMeasure && arm == null) {
 			return;
 		}
 		MeasurementKey key = new MeasurementKey(om, arm);
 		if (source.containsKey(key)) {
-			org.drugis.addis.entities.data.Measurement m = convertMeasurement(source.get(key), defaultEpochName);
+			org.drugis.addis.entities.data.Measurement m = convertMeasurement(key, source.get(key));
 			if (arm != null) {
 				m.setArm(nameReference(arm.getName()));
 			}
@@ -965,7 +1001,7 @@ public class JAXBConvertor {
 		newStudy.setActivities(convertStudyActivities(study.getStudyActivities()));
 		
 		// convert outcome measures
-		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> omMap = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
+		Map<String,org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> omMap = new TreeMap<String, Study.StudyOutcomeMeasure<?>>();
 		for (Study.StudyOutcomeMeasure<Endpoint> e : study.getEndpoints()) {
 			omMap.put("endpoint-" + e.getValue().getName(), e);
 		}
@@ -978,8 +1014,7 @@ public class JAXBConvertor {
 		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));
 		
 		// convert measurements
-		String defaultEpochName = study.getEpochs().get(study.getEpochs().getSize()-1).getName();
-		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), study.getArms(), defaultEpochName, omMap));
+		newStudy.setMeasurements(convertMeasurements(study.getMeasurements()));
 		
 		// convert characteristics
 		newStudy.setCharacteristics(convertStudyCharacteristics(study.getCharacteristics()));

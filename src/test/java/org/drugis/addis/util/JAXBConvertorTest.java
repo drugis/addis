@@ -769,10 +769,15 @@ public class JAXBConvertorTest {
 		int s = 42;
 		rm.setRate(c);
 		rm.setSampleSize(s);
+		
 		org.drugis.addis.entities.data.Measurement meas = buildRateMeasurement(null, null, rm, "Main phase");
+//		RelativeTime rt = new RelativeTime();
+//		rt.setHowLong(DatatypeFactory.newInstance().newDuration("P2D"));
+//		rt.setRelativeTo(RelativeTo.FROM_EPOCH_START);
+//		meas.getWhenTaken().add(rt);
 		BasicRateMeasurement expected1 = new BasicRateMeasurement(c, s);
 		assertEntityEquals(expected1, JAXBConvertor.convertMeasurement(meas));
-		assertEquals(meas, JAXBConvertor.convertMeasurement(expected1, "Main phase"));
+		assertEquals(meas, JAXBConvertor.convertMeasurement(expected1));
 		
 		org.drugis.addis.entities.data.ContinuousMeasurement cm = new org.drugis.addis.entities.data.ContinuousMeasurement();
 		double m = 3.14;
@@ -783,7 +788,7 @@ public class JAXBConvertorTest {
 		meas = buildContinuousMeasurement(null, null, cm, "Main phase");
 		BasicContinuousMeasurement expected2 = new BasicContinuousMeasurement(m, e, s);
 		assertEntityEquals(expected2, JAXBConvertor.convertMeasurement(meas));
-		assertEquals(meas, JAXBConvertor.convertMeasurement(expected2, "Main phase"));
+		assertEquals(meas, JAXBConvertor.convertMeasurement(expected2));
 		
 		List<CategoryMeasurement> cms = new ArrayList<CategoryMeasurement>();
 		CategoryMeasurement c1 = new CategoryMeasurement();
@@ -801,7 +806,7 @@ public class JAXBConvertorTest {
 		map.put("Cats", 18);
 		FrequencyMeasurement expected3 = new FrequencyMeasurement(Arrays.asList((new String[] {"Cats", "Dogs"})), map);	
 		assertEntityEquals(expected3, JAXBConvertor.convertMeasurement(meas));
-		assertEquals(meas, JAXBConvertor.convertMeasurement(expected3, "Main phase"));
+		assertEquals(meas, JAXBConvertor.convertMeasurement(expected3));
 	}
 	
 
@@ -860,12 +865,13 @@ public class JAXBConvertorTest {
 		expected.put(new MeasurementKey(pc, null), ccm1);
 		
 		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements, arms, oms));
-		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, arms, "Main phase", oms).getMeasurement());
+		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected).getMeasurement());
 	}
 
 	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm, String epochName) {
 		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
 		m.setContinuousMeasurement(cm);
+		JAXBConvertor.addDefaultWhenTaken(m);
 		return m;
 	}
 
@@ -883,6 +889,7 @@ public class JAXBConvertorTest {
 	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm, String epochName) {
 		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
 		m.setRateMeasurement(rm);
+		JAXBConvertor.addDefaultWhenTaken(m);
 		return m;
 	}
 
@@ -893,6 +900,7 @@ public class JAXBConvertorTest {
 			cms.getCategory().add(cm);
 		}
 		m.setCategoricalMeasurement(cms);
+		JAXBConvertor.addDefaultWhenTaken(m);
 		return m;
 	}
 
