@@ -451,6 +451,9 @@
 				<xs:element name="continuousMeasurement" type="ContinuousMeasurement"/>
 				<xs:element name="categoricalMeasurement" type="CategoricalMeasurement"/>
 			</xs:choice>
+			<xs:sequence minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="whenTaken" type="RelativeTime"/>
+			</xs:sequence>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RateMeasurement">
@@ -518,6 +521,13 @@
 		<xs:attribute name="scaleModifier" type="ScaleModifier"/>
 		<xs:attribute name="perTime" type="xs:duration"/>
 	</xs:complexType>
+	
+	<xs:complexType name="RelativeTime">
+		<xs:sequence>
+			<xs:element name="howLong" type="xs:duration"/>
+		</xs:sequence>
+		<xs:attribute name="relativeTo" type="RelativeTo"/>
+	</xs:complexType>
 
 	<xs:simpleType name="StatusEnum">
 		<xs:restriction base="xs:string">
@@ -532,6 +542,13 @@
 			<xs:enumeration value="UNKNOWN"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="RelativeTo">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FROM_EPOCH_START"/>
+			<xs:enumeration value="BEFORE_EPOCH_END"/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:simpleType name="BenefitRiskAnalysisType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="LyndOBrien"/>

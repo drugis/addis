@@ -92,6 +92,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.Study.MeasurementKey;
+import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -133,6 +134,7 @@ import org.drugis.addis.entities.data.PopulationCharacteristics;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
+import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.Studies;
@@ -825,11 +827,25 @@ public class JAXBConvertor {
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
 			String omId = m.getStudyOutcomeMeasure().getId();
 			Arm arm = m.getArm() != null ? findArm(m.getArm().getName(), arms) : null;
-			map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm), convertMeasurement(m));
+			if (m.getWhenTaken().size() == 0) {
+				MeasurementKey key = new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm);
+				System.out.println(key);
+				map.put(key, convertMeasurement(m));
+			} else {
+				for (RelativeTime rt : m.getWhenTaken()) {
+					MeasurementKey key = new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt));
+					System.out.println(key);
+					map.put(key, convertMeasurement(m));
+				}
+			}
 		}
 		return map;
 	}
 	
+	private static WhenTaken convertWhenTaken(RelativeTime rt) {
+		return new WhenTaken(rt.getHowLong(), rt.getRelativeTo());
+	}
+
 	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> map, List<Arm> arms, String defaultEpochName, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements measurements = new Measurements();
 		for (Entry<String, Study.StudyOutcomeMeasure<?>> omEntry : oms.entrySet()) {

@@ -34,8 +34,12 @@ import java.util.Set;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
+import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.RebuildableHashMap;
@@ -49,20 +53,78 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class Study extends AbstractEntity implements Comparable<Study>, Entity, TypeWithName {
 
+	public static class WhenTaken extends AbstractEntity implements Entity {
+
+		private final Duration d_howLong;
+		private final RelativeTo d_relativeTo;
+
+		public WhenTaken(Duration howLong, RelativeTo relativeTo) {
+			d_howLong = howLong;
+			d_relativeTo = relativeTo;
+		}
+
+		public Duration getHowLong() {
+			return d_howLong;
+		}
+
+		public RelativeTo getRelativeTo() {
+			return d_relativeTo;
+		}
+
+		public Set<? extends Entity> getDependencies() {
+			return Collections.emptySet();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null || !(obj instanceof WhenTaken)) {
+				return false;
+			}
+			WhenTaken other = (WhenTaken) obj;
+			return EqualsUtil.equal(d_howLong, other.d_howLong) && EqualsUtil.equal(d_relativeTo, other.d_relativeTo);
+		}
+		
+		@Override
+		public String toString() {
+			return d_howLong + " " + formatRelativeTo(d_relativeTo);
+		}
+
+		private String formatRelativeTo(RelativeTo relativeTo) {
+			return relativeTo.toString().toLowerCase().replace('_', ' ');
+		}
+	}
+	
 	public static class MeasurementKey extends AbstractEntity implements Entity {
 
 		private Variable d_variable;
 		private Arm d_arm;
+		private final WhenTaken d_wt;
 
-		public MeasurementKey(Variable v, Arm a)  {
+		public MeasurementKey(Variable v, Arm a, WhenTaken wt)  {
 			if (v == null) {
 				throw new NullPointerException("Variable may not be null");
 			}
 			if (v instanceof OutcomeMeasure && a == null) {
 				throw new NullPointerException("Arm may not be null for Endpoints/ADEs");
 			}
+			if (v instanceof OutcomeMeasure && wt == null) {
+				throw new NullPointerException("Moment of measurement may not be null for Endpoints/ADEs");
+			}
 			d_variable = v;
 			d_arm = a;
+			d_wt = wt;
+		}
+
+		public MeasurementKey(Variable v, Arm a) {
+			this(v, a, buildDefaultWhenTaken());
+		}
+		
+		private static WhenTaken buildDefaultWhenTaken() {
+			try {
+				return new WhenTaken(DatatypeFactory.newInstance().newDurationDayTime("P0D"), RelativeTo.BEFORE_EPOCH_END);
+			} catch (DatatypeConfigurationException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		public Variable getVariable() {
@@ -73,16 +135,20 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 			return d_arm;
 		}
 		
+		public WhenTaken getWhenTaken() {
+			return d_wt;
+		}
+		
 		@Override
 		public String toString() {
-			return "<" + d_variable + ", " + d_arm + ">";
+			return "<" + d_variable + ", " + d_arm + " at " + d_wt + ">";
 		}
 
 		@Override
 		public boolean equals(Object o) {
 			if (o instanceof MeasurementKey) { 
 				MeasurementKey other = (MeasurementKey)o;
-				return d_variable.equals(other.d_variable) && EqualsUtil.equal(d_arm, other.d_arm);
+				return d_variable.equals(other.d_variable) && EqualsUtil.equal(d_arm, other.d_arm) && EqualsUtil.equal(d_wt, other.d_wt);
 			}
 			return false;
 		}
@@ -92,12 +158,13 @@ public class Study extends AbstractEntity implements Comparable<Study>, Entity, 
 			int code = 1;
 			code = code * 31 + d_variable.hashCode();
 			code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
+			code = code * 31 + (d_wt == null ? 0 : d_wt.hashCode());
 			return code;
 		}
 
 		@Override
 		public Set<? extends Entity> getDependencies() {
-			return null;
+			return Collections.emptySet();
 		}
 	}
 	

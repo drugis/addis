@@ -104,4 +104,12 @@
             <xsl:apply-templates select="@*[not(name()='direction')]"/>
        </xsl:copy>
     </xsl:template>
+    <xsl:template match="study/measurements/measurement">
+        <xsl:copy>
+            <xsl:apply-templates select="@*"/>
+            <whenTaken relativeTo="BEFORE_EPOCH_END">
+                <howLong>P0D</howLong>
+            </whenTaken>
+        </xsl:copy>
+    </xsl:template>
 </xsl:stylesheet>
