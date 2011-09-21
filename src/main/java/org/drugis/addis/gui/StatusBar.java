@@ -32,8 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import org.drugis.addis.AppInfo;
-import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.presentation.ThreadHandlerPresentation;
+import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
