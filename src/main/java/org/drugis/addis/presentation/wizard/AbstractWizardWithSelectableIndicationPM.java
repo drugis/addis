@@ -28,7 +28,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.SortedSetModel;
+import org.drugis.common.beans.SortedSetModel;
 
 public class AbstractWizardWithSelectableIndicationPM implements WizardWithSelectableIndicationPresentation {
 

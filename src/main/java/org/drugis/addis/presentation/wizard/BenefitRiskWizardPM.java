@@ -55,10 +55,10 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.FilteredObservableList;
-import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.CriteriaComparator;
 import org.drugis.addis.util.comparator.OutcomeComparator;
+import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.list.ArrayListModel;

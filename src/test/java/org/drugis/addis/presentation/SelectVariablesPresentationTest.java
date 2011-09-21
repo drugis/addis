@@ -36,8 +36,8 @@ import java.util.Collections;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
-import org.drugis.addis.util.SortedSetModel;
 import org.drugis.common.JUnitUtil;
+import org.drugis.common.beans.SortedSetModel;
 import org.junit.Before;
 import org.junit.Test;
 

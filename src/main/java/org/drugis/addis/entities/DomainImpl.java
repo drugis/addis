@@ -38,9 +38,9 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.util.FilteredObservableList;
-import org.drugis.addis.util.SortedSetModel;
-import org.drugis.addis.util.FilteredObservableList.Filter;
+import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.SortedSetModel;
+import org.drugis.common.beans.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.list.ObservableList;

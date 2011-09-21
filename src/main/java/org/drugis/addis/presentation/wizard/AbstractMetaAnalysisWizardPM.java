@@ -51,9 +51,9 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.FilteredObservableList;
-import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.OutcomeComparator;
+import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;

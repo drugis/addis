@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
-import org.drugis.addis.util.SortedSetModel;
+import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.list.ObservableList;
 

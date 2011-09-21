@@ -41,7 +41,7 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.presentation.OtherActivityPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.SortedSetModel;
+import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.list.ObservableList;

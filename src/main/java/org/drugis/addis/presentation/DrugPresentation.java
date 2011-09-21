@@ -29,7 +29,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.addis.util.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;

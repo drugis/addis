@@ -39,7 +39,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
-import org.drugis.addis.util.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList;
 import org.junit.Before;
 import org.junit.Test;
 
