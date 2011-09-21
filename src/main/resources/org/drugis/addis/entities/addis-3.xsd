@@ -524,8 +524,9 @@
 	
 	<xs:complexType name="RelativeTime">
 		<xs:sequence>
-			<xs:element name="howLong" type="xs:duration"/>
+			<xs:element name="epoch" type="NameReference"/>
 		</xs:sequence>
+		<xs:attribute name="howLong" type="xs:duration"/>
 		<xs:attribute name="relativeTo" type="RelativeTo"/>
 	</xs:complexType>
 
