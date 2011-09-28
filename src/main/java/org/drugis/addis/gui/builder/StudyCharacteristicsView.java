@@ -74,7 +74,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel idLabel = AuxComponentFactory.createAutoWrapLabel(d_model.getModel(Study.PROPERTY_NAME));
-		builder.add(new NoteViewButton(d_parent, "Study ID", d_model.getBean().getNameWithNotes().getNotes()), cc.xy(3, 1));
+		builder.add(new NoteViewButton(d_parent, "Study ID", d_model.getBean().getNotes()), cc.xy(3, 1));
 		builder.add(idLabel,
 				cc.xyw(5, 1, fullWidth - 4));
 		

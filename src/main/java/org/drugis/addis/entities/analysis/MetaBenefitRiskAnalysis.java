@@ -57,7 +57,6 @@ import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
-import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
@@ -118,7 +117,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	public List<OutcomeMeasure> getCriteria() {
 		List<OutcomeMeasure> sortedList = findOutcomeMeasures();
-		Collections.sort(sortedList, new OutcomeComparator());
+		Collections.sort(sortedList);
 		return sortedList;
 	}
 

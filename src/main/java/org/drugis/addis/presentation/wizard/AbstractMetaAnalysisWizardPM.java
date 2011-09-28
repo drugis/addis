@@ -53,7 +53,6 @@ import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.FilteredObservableList.Filter;
-import org.drugis.addis.util.comparator.OutcomeComparator;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -129,7 +128,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	}
 
 	private void updateOutcomes() {
-		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>(new OutcomeComparator());
+		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>();
 		if (d_indicationHolder.getValue() != null) {
 			for (Study s : d_domain.getStudies(this.d_indicationHolder.getValue())) {
 				outcomeSet.addAll(Study.extractVariables(s.getEndpoints()));

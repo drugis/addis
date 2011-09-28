@@ -25,6 +25,8 @@
 package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
@@ -40,9 +42,21 @@ public class ObjectWithNotesTest {
 		assertEquals(a, b);
 		
 		b.getNotes().add(new Note(Source.CLINICALTRIALS, "This used to be B"));
-		JUnitUtil.assertNotEquals(a, b);
+		assertEquals(a, b);
 		a.getNotes().add(new Note(Source.CLINICALTRIALS, "This used to be B"));
 		assertEquals(a, b);
+	}
+	
+	@Test
+	
+	public void testDeepEqual() {
+		ObjectWithNotes<String> a = new ObjectWithNotes<String>("B");
+		ObjectWithNotes<String> b = new ObjectWithNotes<String>("B");
+		b.getNotes().add(new Note(Source.CLINICALTRIALS, "This used to be B"));
+		
+		assertFalse(a.deepEquals(b));
+		a.getNotes().add(new Note(Source.CLINICALTRIALS, "This used to be B"));
+		assertTrue(a.deepEquals(b));
 	}
 	
 }

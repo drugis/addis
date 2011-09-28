@@ -58,7 +58,6 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.addis.util.comparator.CriteriaComparator;
-import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -243,7 +242,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 
 	private void updateOutcomes() {
-		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>(new OutcomeComparator());
+		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>();
 		if (d_indicationHolder.getValue() != null) {
 			for (Study s : d_domain.getStudies(this.d_indicationHolder.getValue())) {
 				outcomeSet.addAll(Study.extractVariables(s.getEndpoints()));

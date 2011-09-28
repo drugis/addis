@@ -53,28 +53,12 @@ public interface Variable extends Entity, Comparable<Variable>, TypeWithName {
 	public final static String PROPERTY_VARIABLE_TYPE = "variableType";
 	public final static String PROPERTY_DESCRIPTION = "description";
 	
-	@Deprecated
-	public final static String PROPERTY_TYPE = "type";
-	@Deprecated
-	public static final String PROPERTY_UNIT_OF_MEASUREMENT = "unitOfMeasurement";
 	public static final String UOM_DEFAULT_RATE = "Ratio of Patients";
 	public static final String UOM_DEFAULT_CONTINUOUS = "";
 
 	public void setDescription(String description);
 
 	public String getDescription();
-
-	@Deprecated
-	public void setUnitOfMeasurement(String um);
-
-	@Deprecated
-	public String getUnitOfMeasurement();
-
-	@Deprecated
-	public Variable.Type getType();
-	
-	@Deprecated
-	public void setType(Type val);
 	
 	public VariableType getVariableType();
 	

@@ -41,7 +41,11 @@ public class RebuildableTreeMap<K, V> implements Map<K, V> {
 	}
 	
 	public void rebuild() {
-		d_nested = new TreeMap<K,V>(d_nested);
+		Map<K, V> old = d_nested;
+		d_nested = new TreeMap<K,V>();
+		for (Entry<K, V> e : old.entrySet()) {
+			d_nested.put(e.getKey(), e.getValue());
+		}
 	}
 	
 	public void clear() {

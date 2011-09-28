@@ -43,7 +43,6 @@ import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.addis.util.comparator.OutcomeComparator;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -78,7 +77,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 
 	private void setCriteria(List<OutcomeMeasure> criteria) {
 		criteria = new ArrayList<OutcomeMeasure>(criteria);
-		Collections.sort(criteria, new OutcomeComparator());
+		Collections.sort(criteria);
 		d_criteria = Collections.unmodifiableList(criteria);
 	}
 

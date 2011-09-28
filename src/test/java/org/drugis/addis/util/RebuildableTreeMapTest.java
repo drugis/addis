@@ -22,22 +22,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util.comparator;
+package org.drugis.addis.util;
 
-import java.util.Comparator;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Arm;
+import org.junit.Test;
 
-public class OutcomeComparator implements Comparator<OutcomeMeasure>  {
-	public int compare(OutcomeMeasure o1, OutcomeMeasure o2) {
-		if (o1 == null) {
-			return o2 == null ? 0 : 1;
-		}
-		if (o1.getClass().equals(o2.getClass()))
-			return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-		else 
-			return o1 instanceof Endpoint ? -1 : 1;
+public class RebuildableTreeMapTest {
+	
+	@Test
+	public void testRebuild() {
+		Arm arm1 = new Arm("Arm1", 0);
+		Arm arm2 = new Arm("Arm2", 0);
+		
+		RebuildableTreeMap<Arm, Object> map = new RebuildableTreeMap<Arm, Object>();
+		map.put(arm1, "bla");
+		map.put(arm2, "Bla2");
+		
+		arm1.setName("Arm8");
+		assertNull(map.get(arm2)); // In a TreeMap, the second arm becomes unreachable
+		// (In a HashMap, the first arm would become unreachable)
+		
+		map.rebuild();
+		assertNotNull(map.get(arm1));
+		assertNotNull(map.get(arm2));
 	}
-
 }

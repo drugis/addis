@@ -46,8 +46,7 @@ public class ObjectWithNotes<T> extends ModifiableHolder<T> implements TypeWithN
 	public boolean equals(Object o) {
 		if (o instanceof ObjectWithNotes<?>) {
 			ObjectWithNotes<?> other = (ObjectWithNotes<?>)o;
-			return EqualsUtil.equal(other.getValue(), getValue()) &&
-				other.getNotes().equals(getNotes());
+			return EqualsUtil.equal(other.getValue(), getValue());
 		}
 		return false;
 	}
@@ -62,5 +61,13 @@ public class ObjectWithNotes<T> extends ModifiableHolder<T> implements TypeWithN
 		ObjectWithNotes<T> clone = new ObjectWithNotes<T>(getValue());
 		clone.d_notes.addAll(d_notes);
 		return clone;
+	}
+	
+	public Boolean deepEquals(Object o) {
+		if (!equals(o)) {
+			return false;
+		}
+		ObjectWithNotes<?> other = (ObjectWithNotes<?>)o;
+		return other.getNotes().equals(getNotes());
 	}
 }

@@ -31,7 +31,7 @@ import org.drugis.common.EqualsUtil;
  * @param <T> What the subclass should be comparable to.
  */
 public abstract class AbstractNamedEntity<T extends TypeWithName> extends AbstractEntity implements Comparable<T>, TypeWithName {
-	private String d_name = "";
+	protected String d_name = "";
 
 	public AbstractNamedEntity(String name) {
 		d_name = name;

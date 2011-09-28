@@ -24,7 +24,9 @@
 
 package org.drugis.addis.entities;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
@@ -37,19 +39,6 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 	protected AbstractVariable(String name, VariableType type) {
 		super(name);
 		d_varType = type;
-	}
-	
-	@Deprecated
-	protected AbstractVariable(String name, Variable.Type type) {
-		super(name);
-		
-		setVariableType(type);
-	}
-
-	private void setVariableType(Variable.Type type) {
-		VariableType varType = convertVarType(type);
-
-		d_varType = varType;
 	}
 
 	public static VariableType convertVarType(Variable.Type type) {
@@ -84,36 +73,9 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 		return getName();
 	}
 
-	@Deprecated
-	public void setUnitOfMeasurement(String uom) {
-		if (d_varType instanceof ContinuousVariableType) {
-			((ContinuousVariableType) d_varType).setUnitOfMeasurement(uom);
-		}
-	}
-
-	@Deprecated
-	public String getUnitOfMeasurement() {
-		if (d_varType instanceof ContinuousVariableType) {
-			return ((ContinuousVariableType) d_varType).getUnitOfMeasurement();
-		}
-		return UOM_DEFAULT_RATE;
-	}
-
 	@Override
 	public String toString() {
 		return getName();
-	}
-
-	@Deprecated
-	public void setType(Variable.Type type) {
-		Variable.Type oldVal = getType();
-		setVariableType(type);
-		firePropertyChange(PROPERTY_TYPE, oldVal, type);
-	}
-
-	@Deprecated
-	public Variable.Type getType() {
-		return Variable.Type.valueOf(d_varType.getType().toUpperCase());
 	}
 
 	@Override
@@ -159,4 +121,16 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 		d_varType = type;
 		firePropertyChange(PROPERTY_VARIABLE_TYPE, oldValue, d_varType);
 	}
+	
+	@SuppressWarnings("unchecked")
+	private static List<Class<? extends Variable>> s_types = Arrays.<Class<? extends Variable>>asList(Endpoint.class, AdverseEvent.class, PopulationCharacteristic.class);
+	
+	@Override
+	public int compareTo(Variable other) {
+		if (other.getClass().equals(getClass())) {
+			return super.compareTo(other);
+		}
+		return s_types.indexOf(getClass()) - s_types.indexOf(other.getClass());
+	}
+	
 }

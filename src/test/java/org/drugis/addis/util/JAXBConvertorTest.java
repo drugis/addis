@@ -817,6 +817,10 @@ public class JAXBConvertorTest {
 		arms.add(arm5);
 		Arm arm8 = new Arm("LSD", 42);
 		arms.add(arm8);
+		List<Epoch> epochs = new ArrayList<Epoch>();
+		Epoch mainPhase = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
+		epochs.add(mainPhase);
+		
 		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
 		PopulationCharacteristic pc = new PopulationCharacteristic("Hair Length", new ContinuousVariableType());
@@ -846,13 +850,13 @@ public class JAXBConvertorTest {
 		
 		Measurements measurements = new Measurements();
 		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
-		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Main phase"));		
-		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Main phase"));
-		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Main phase"));
-		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Main phase"));
-		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Main phase"));
-		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Main phase"));
-		list.add(buildContinuousMeasurement(null, pcName, cm1, "Main phase"));
+		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Measurement phase"));		
+		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Measurement phase"));
+		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Measurement phase"));
+		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Measurement phase"));
+		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Measurement phase"));
+		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Measurement phase"));
+		list.add(buildContinuousMeasurement(null, pcName, cm1, "Measurement phase"));
 		
 		
 		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
@@ -864,8 +868,8 @@ public class JAXBConvertorTest {
 		expected.put(new MeasurementKey(pc, arm8), ccm1);
 		expected.put(new MeasurementKey(pc, null), ccm1);
 		
-		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements, arms, oms));
-		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected).getMeasurement());
+		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements, arms, epochs, oms));
+		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, oms).getMeasurement());
 	}
 
 	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm, String epochName) {
@@ -1186,7 +1190,7 @@ public class JAXBConvertorTest {
 		
 		Note idNote = new Note(Source.CLINICALTRIALS, "NCT1337");
 		studyData.getNotes().getNote().add(JAXBConvertor.convertNote(idNote));
-		studyEntity.getNameWithNotes().getNotes().add(idNote);
+		studyEntity.getNotes().add(idNote);
 		
 		assertEntityEquals(studyEntity, JAXBConvertor.convertStudy(studyData, domain));
 		assertEquals(studyData, JAXBConvertor.convertStudy(studyEntity));
@@ -1410,10 +1414,10 @@ public class JAXBConvertorTest {
 
 	private void buildArmEpochTreatmentActivityCombination(Arms arms, Epochs epochs,
 			StudyActivities sas, int armSize, String fluoxArmName,
-			String mainPhaseName, String treatmentName, TreatmentActivity fluoxFixedDose)
-			throws DatatypeConfigurationException, ConversionException {
+			String mainPhaseName, String treatmentName, TreatmentActivity fluoxFixedDose) throws ConversionException
+			{
 		arms.getArm().add(buildArmData(fluoxArmName, armSize));
-		epochs.getEpoch().add(buildEpoch(mainPhaseName, DatatypeFactory.newInstance().newDuration("P2D")));
+		epochs.getEpoch().add(buildEpoch(mainPhaseName, EntityUtil.createDuration("P2D")));
 		org.drugis.addis.entities.data.StudyActivity saTreatment1 = buildStudyActivity(treatmentName, fluoxFixedDose);
 		saTreatment1.getUsedBy().add(buildActivityUsedby(fluoxArmName, mainPhaseName));
 		sas.getStudyActivity().add(saTreatment1);
@@ -1649,6 +1653,7 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testSmallerDataRoundTripConversion() throws Exception {
+//		PubMedDataBankRetriever.copyStream(JAXBConvertor.transformToVersion(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0), 0, 2), System.out);
 		doRoundTripTest(getTransformedTestData());
 	}
 
@@ -1670,10 +1675,8 @@ public class JAXBConvertorTest {
 		sortBenefitRiskOutcomes(data);
 		sortCategoricalMeasurementCategories(data);
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
-		sortPopulationCharacteristics(data);
 		sortUsedBys(data);
 		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
-		sortPopulationCharacteristics(roundTrip);
 		assertEquals(data, roundTrip);
 	}
 		
@@ -1720,10 +1723,6 @@ public class JAXBConvertorTest {
 		return null;
 	}
 
-	private static void sortPopulationCharacteristics(AddisData data) {
-		Collections.sort(data.getPopulationCharacteristics().getPopulationCharacteristic(), new PopCharComparator());
-	}
-
 	private static void sortBenefitRiskOutcomes(AddisData data) {
 		for(Object obj : data.getBenefitRiskAnalyses().getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
 			if (obj instanceof org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) {
@@ -1755,26 +1754,6 @@ public class JAXBConvertorTest {
 	private static void sortMeasurements(AddisData data) {
 		for(org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
 			Collections.sort(s.getMeasurements().getMeasurement(), new MeasurementComparator(s));
-		}
-	}
-	
-	public static class PopCharComparator implements Comparator<org.drugis.addis.entities.data.OutcomeMeasure> {
-		public int compare(OutcomeMeasure o1, OutcomeMeasure o2) {
-			if (scoreType(o1) != scoreType(o2)) {
-				return scoreType(o1) - scoreType(o2);
-			}
-			return o1.getName().compareTo(o2.getName());
-		}
-
-		private int scoreType(OutcomeMeasure o1) {
-			if (o1.getContinuous() != null) {
-				return 1;
-			} else if (o1.getRate() != null) {
-				return 2;
-			} else if (o1.getCategorical() != null) {
-				return 3;
-			}
-			return 0;
 		}
 	}
 	
@@ -1816,10 +1795,10 @@ public class JAXBConvertorTest {
 		}
 
 		public int compare(org.drugis.addis.entities.data.Measurement o1, org.drugis.addis.entities.data.Measurement o2) {
-			int omId1 = findOmIndex(o1.getStudyOutcomeMeasure().getId());
-			int omId2 = findOmIndex(o2.getStudyOutcomeMeasure().getId());
-			if (omId1 != omId2) {
-				return omId1 - omId2;
+			StudyOutcomeMeasure om1 = findOutcomeMeasure(o1.getStudyOutcomeMeasure().getId());
+			StudyOutcomeMeasure om2 = findOutcomeMeasure(o2.getStudyOutcomeMeasure().getId());
+			if (!om1.equals(om2)) {
+				return compareOutcomeMeasure(om1, om2);
 			}
 			if (o1.getArm() == null) {
 				return o2.getArm() == null ? 0 : 1;
@@ -1827,26 +1806,34 @@ public class JAXBConvertorTest {
 			if (o2.getArm() == null) {
 				return -1;
 			}
-			return findArmIndex(o1.getArm().getName()) - findArmIndex(o2.getArm().getName());
+			return o1.getArm().getName().compareTo(o2.getArm().getName());
 		}
 
-		private int findArmIndex(String armName1) {
-			for (org.drugis.addis.entities.data.Arm a : d_study.getArms().getArm()) {
-				if (a.getName().equals(armName1)) {
-					return d_study.getArms().getArm().indexOf(a);
+		private static int compareOutcomeMeasure(StudyOutcomeMeasure om1, StudyOutcomeMeasure om2) {
+			if (om1.getEndpoint() != null) {
+				return (om2.getEndpoint() == null ? -1 : compareOutcomeId(om1, om2));
+			} else if (om1.getAdverseEvent() != null) {
+				if (om2.getEndpoint() != null) {
+					return 1;
 				}
+				return (om2.getAdverseEvent() == null ? -1 : compareOutcomeId(om1, om2));
+			} else {
+				return om2.getPopulationCharacteristic() == null ? 1 : compareOutcomeId(om1, om2);
 			}
-			return -1;
 		}
 
-		private int findOmIndex(String id) {
+		private static int compareOutcomeId(StudyOutcomeMeasure om1, StudyOutcomeMeasure om2) {
+			return om1.getId().compareTo(om2.getId());
+		}
+
+		private StudyOutcomeMeasure findOutcomeMeasure (String id) {
 			List<StudyOutcomeMeasure> oms = d_study.getStudyOutcomeMeasures().getStudyOutcomeMeasure();
-			for (int i = 0; i < oms.size(); ++i) {
-				if (oms.get(i).getId().equals(id)) {
-					return i;
+			for (StudyOutcomeMeasure om : oms) {
+				if (om.getId().equals(id)) {
+					return om;
 				}
 			}
-			return -1;
+			return null;
 		}
 	}
 	
@@ -1891,8 +1878,8 @@ public class JAXBConvertorTest {
 	private static InputStream getTransformedDefaultData() throws TransformerException, IOException {
 		return getTestData("../defaultData.addis");
 	}
-
+	
 	private static InputStream getTransformedTestData() throws TransformerException, IOException {
-		return getTestData(TEST_DATA_A_0);
+			return getTestData(TEST_DATA_A_0);
 	}
 }

@@ -28,8 +28,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -177,5 +180,18 @@ public class VariableEqualityTest {
 		
 		// Equality only on Name within PopulationCharacteristic hierarchy
 		assertEquals(d_gender, new PopulationCharacteristic(d_gender.getName(), new RateVariableType()));
+	}
+	
+
+	@Test
+	public void testCompareOutcomeMeasure(){
+		ArrayList<OutcomeMeasure> list = new ArrayList<OutcomeMeasure>();
+		list.add(ExampleData.buildAdverseEventConvulsion());
+		list.add(ExampleData.buildEndpointHamd());
+		list.add(ExampleData.buildEndpointCgi());
+		Collections.sort(list);
+		assertEquals(ExampleData.buildEndpointCgi(), list.get(0));
+		assertEquals(ExampleData.buildEndpointHamd(), list.get(1));
+		assertEquals(ExampleData.buildAdverseEventConvulsion(), list.get(2));
 	}
 }

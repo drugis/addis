@@ -41,12 +41,12 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.gui.AddisWindow;
@@ -174,7 +174,7 @@ public class AddStudyWizardPresentation {
 	}
 	
 	public ValueModel getIdNoteModel() {
-		return new NoteModel(getNewStudy().getNameWithNotes());
+		return new NoteModel(getNewStudy());
 	}
 	
 	public ValueModel getTitleModel() {
@@ -288,9 +288,9 @@ public class AddStudyWizardPresentation {
 	
 	@SuppressWarnings("serial")
 	static class NoteModel extends AbstractValueModel {
-		private final ObjectWithNotes<?> d_obj;
+		private final TypeWithNotes d_obj;
 
-		public NoteModel(ObjectWithNotes<?> obj) {
+		public NoteModel(TypeWithNotes obj) {
 			d_obj = obj;
 		}
 		

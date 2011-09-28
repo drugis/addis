@@ -1019,7 +1019,7 @@ public class AddStudyWizard extends Wizard {
 				
 				// add note to ID field
 				Study newStudy = d_pm.getNewStudyPM().getBean();
-				d_builder.add(buildNotesEditor(newStudy.getNameWithNotes()), cc.xy(3, 5));
+				d_builder.add(buildNotesEditor(newStudy), cc.xy(3, 5));
 
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));

@@ -65,7 +65,7 @@ public class StudyTest {
 		// Add some notes to test them being cloned.
 		d_orig.getArms().get(1).getNotes().add(d_note);
 		d_orig.getAdverseEvents().get(0).getNotes().add(d_note);
-		d_orig.getNameWithNotes().getNotes().add(d_note);
+		d_orig.getNotes().add(d_note);
 		ObjectWithNotes<Object> val = new ObjectWithNotes<Object>(null);
 		val.getNotes().add(d_note);
 		d_orig.setCharacteristicWithNotes(BasicStudyCharacteristic.SOURCE,
@@ -266,9 +266,9 @@ public class StudyTest {
 		assertFalse(study1.deepEquals(study2));
 		study1.setCharacteristic(BasicStudyCharacteristic.TITLE, "This is terrible");
 		assertTrue(study1.deepEquals(study2));
-		study2.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE).getNotes().add(new Note(Source.CLINICALTRIALS, "Official title"));
+		study2.getNotes().add(new Note(Source.CLINICALTRIALS, "Official title"));
 		assertFalse(study1.deepEquals(study2));
-		study2.getCharacteristicWithNotes(BasicStudyCharacteristic.TITLE).getNotes().clear();
+		study2.getNotes().clear();
 		
 		// endpoints
 		study2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
@@ -328,9 +328,9 @@ public class StudyTest {
 		study2.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
 		assertTrue(study1.deepEquals(study2));
 		
-		study1.getNameWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
+		study1.getNotes().add(new Note(Source.MANUAL, "testnote"));
 		assertFalse(study1.deepEquals(study2));
-		study2.getNameWithNotes().getNotes().add(new Note(Source.MANUAL, "testnote"));
+		study2.getNotes().add(new Note(Source.MANUAL, "testnote"));
 		assertTrue(study1.deepEquals(study2));
 	}
 	

@@ -104,7 +104,7 @@ public class MeasurementTableModelTest {
 		int index = 0;
 		for (Variable v : Study.extractVariables(d_standardStudy.getEndpoints())) {
 			assertEquals(v.getName(), d_model.getValueAt(index, 0));
-			
+
 			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(0), (MissingMeasurementPresentation)d_model.getValueAt(index, 1));
 			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(1), (MissingMeasurementPresentation)d_model.getValueAt(index, 2));
 			index++;

@@ -314,9 +314,7 @@ public class JAXBConvertor {
 		return om;
 	}
 	
-	private static void convertOutcomeMeasure(
-			org.drugis.addis.entities.data.OutcomeMeasure from,
-			org.drugis.addis.entities.OutcomeMeasure to)
+	private static void convertOutcomeMeasure(org.drugis.addis.entities.data.OutcomeMeasure from, org.drugis.addis.entities.OutcomeMeasure to)
 	throws ConversionException {
 		to.setName(from.getName());
 		to.setDescription(from.getDescription());
@@ -332,29 +330,10 @@ public class JAXBConvertor {
 		}
 	}
 	
-	private static <T extends AbstractNamedEntity<?>> T findNamedItem(List<T> items, String name) {
+	private static <T extends AbstractNamedEntity<?>> T findNamedItem(Collection<T> items, String name) {
 		for (T t: items) {
 			if (t.getName().equals(name)) {
 				return t;
-			}
-		}
-		return null;
-	}
-
-	private static PopulationCharacteristic findPopulationCharacteristic(Domain domain,	String name) {
-		for (PopulationCharacteristic pc : domain.getPopulationCharacteristics()) {
-			if (pc.getName().equals(name)) {
-				return pc;
-			}
-		}
-		return null;
-	}
-	
-
-	private static Study findStudy(String name, Domain domain) {
-		for (Study s : domain.getStudies()) {
-			if (s.getName().equals(name)) {
-				return s;
 			}
 		}
 		return null;
@@ -716,7 +695,7 @@ public class JAXBConvertor {
 		} else if(om.getAdverseEvent() != null) {
 			var = findNamedItem(domain.getAdverseEvents(), om.getAdverseEvent().getName());
 		} else if(om.getPopulationCharacteristic() != null) {
-			var = findPopulationCharacteristic(domain, om.getPopulationCharacteristic().getName());
+			var = findNamedItem(domain.getPopulationCharacteristics(), om.getPopulationCharacteristic().getName());
 		} else {
 			throw new ConversionException("StudyOutcomeMeasure type not supported: " + om.toString());
 		}
@@ -731,17 +710,16 @@ public class JAXBConvertor {
 	public static org.drugis.addis.entities.data.StudyOutcomeMeasure convertStudyOutcomeMeasure(Study.StudyOutcomeMeasure<?> studyOutcomeMeasure) throws ConversionException {
 		StudyOutcomeMeasure newOutcome = new StudyOutcomeMeasure();
 		newOutcome.setNotes(new Notes());
-		NameReference value = new NameReference();
-		value.setName(studyOutcomeMeasure.getValue().getName());
+		NameReference nameRef = nameReference(studyOutcomeMeasure.getValue().getName());
 		newOutcome.setPrimary(true);
 		if(studyOutcomeMeasure.getValue() instanceof Endpoint) {
-			newOutcome.setEndpoint(value);
+			newOutcome.setEndpoint(nameRef);
 			newOutcome.setPrimary(studyOutcomeMeasure.getIsPrimary());
 		} else if(studyOutcomeMeasure.getValue() instanceof AdverseEvent){
-			newOutcome.setAdverseEvent(value);
+			newOutcome.setAdverseEvent(nameRef);
 			newOutcome.setPrimary(false);
 		} else if(studyOutcomeMeasure.getValue() instanceof PopulationCharacteristic) {
-			newOutcome.setPopulationCharacteristic(value);
+			newOutcome.setPopulationCharacteristic(nameRef);
 			newOutcome.setPrimary(false);
 		} else {
 			throw new ConversionException("Unsupported type of StudyOutcomeMeasure: " + studyOutcomeMeasure);
@@ -751,7 +729,7 @@ public class JAXBConvertor {
 		return newOutcome;
 	}
 
-	public static LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, Domain domain) throws ConversionException {
+	public static LinkedHashMap<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, Domain domain) throws ConversionException {
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> map = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
 		for(StudyOutcomeMeasure om : oms.getStudyOutcomeMeasure()) {
 			map.put(om.getId(), convertStudyOutcomeMeasure(om, domain));
@@ -759,7 +737,7 @@ public class JAXBConvertor {
 		return map;
 	}
 	
-	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(Map<String, Study.StudyOutcomeMeasure<?>> linkedMap) throws ConversionException {
+	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> linkedMap) throws ConversionException {
 		StudyOutcomeMeasures measures = new StudyOutcomeMeasures();
 		for(Entry<String, Study.StudyOutcomeMeasure<?>> item : linkedMap.entrySet()) {
 			StudyOutcomeMeasure om = new StudyOutcomeMeasure();
@@ -795,15 +773,18 @@ public class JAXBConvertor {
 		throw new ConversionException("Measurement type not supported: " + m.toString());
 	}
 	
-	public static org.drugis.addis.entities.data.Measurement convertMeasurement(MeasurementKey mk, Measurement m) throws ConversionException {
-		org.drugis.addis.entities.data.Measurement measurement = convertMeasurement(m);
-		measurement.getWhenTaken().clear();
-		measurement.getWhenTaken().add(convertWhenTaken(mk.getWhenTaken()));
-		return measurement;
+	public static org.drugis.addis.entities.data.Measurement convertMeasurement(MeasurementKey mk, Measurement m, String omId) throws ConversionException {
+		org.drugis.addis.entities.data.Measurement dMeas = convertMeasurement(m);
+		dMeas.getWhenTaken().clear();
+		dMeas.getWhenTaken().add(convertWhenTaken(mk.getWhenTaken()));
+		dMeas.setStudyOutcomeMeasure(stringIdReference(omId));
+		if (mk.getArm() != null) {
+			dMeas.setArm(nameReference(mk.getArm().getName()));
+		}
+		return dMeas;
 	}
 
-	public static void addDefaultWhenTaken(
-			org.drugis.addis.entities.data.Measurement m) {
+	public static void addDefaultWhenTaken(org.drugis.addis.entities.data.Measurement m) {
 		RelativeTime rt = new RelativeTime();
 		try {
 			rt.setHowLong(DatatypeFactory.newInstance().newDuration("P0D"));
@@ -811,6 +792,7 @@ public class JAXBConvertor {
 			throw new RuntimeException(e);
 		}
 		rt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+		rt.setEpoch(nameReference("Main phase"));
 		m.getWhenTaken().add(rt);
 	}
 
@@ -845,7 +827,8 @@ public class JAXBConvertor {
 		return measurement;
 	}
 	
-	public static Map<MeasurementKey, BasicMeasurement> convertMeasurements(Measurements measurements, List<Arm> arms, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
+	public static Map<MeasurementKey, BasicMeasurement> convertMeasurements(Measurements measurements, List<Arm> arms, 
+			List<Epoch> epochs, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
 	throws ConversionException {
 		Map<MeasurementKey, BasicMeasurement> map = new TreeMap<MeasurementKey, BasicMeasurement>();
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
@@ -855,59 +838,33 @@ public class JAXBConvertor {
 				map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm), convertMeasurement(m));
 			} else {
 				for (RelativeTime rt : m.getWhenTaken()) {
-					map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt)), convertMeasurement(m));
+					map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt, epochs)), convertMeasurement(m));
 				}
 			}
 		}
 		return map;
 	}
 	
-	private static WhenTaken convertWhenTaken(RelativeTime rt) {
-		return new WhenTaken(rt.getHowLong(), rt.getRelativeTo());
+	private static WhenTaken convertWhenTaken(RelativeTime rt, List<Epoch> epochs) {
+		return new WhenTaken(rt.getHowLong(), findNamedItem(epochs, rt.getEpoch().getName()), rt.getRelativeTo());
 	}
 
 	private static RelativeTime convertWhenTaken(WhenTaken whenTaken) {
 		RelativeTime rt = new RelativeTime();
 		rt.setHowLong(whenTaken.getHowLong());
 		rt.setRelativeTo(whenTaken.getRelativeTo());
+		rt.setEpoch(nameReference(whenTaken.getEpoch().getName()));
 		return rt;
 	}
 
-
-	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> map, List<Arm> arms, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
-		Measurements measurements = new Measurements();
-		for (Entry<String, Study.StudyOutcomeMeasure<?>> omEntry : oms.entrySet()) {
-			for (Arm a: arms) {
-				findAndAddMeasurement(map, a, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
-			}
-			findAndAddMeasurement(map, null, omEntry.getKey(), omEntry.getValue().getValue(), measurements);
-		}
-		return measurements;
-	}
-
-
-	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements) throws ConversionException {
+	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements, 
+			Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements ms = new Measurements();
 		for (MeasurementKey key : measurements.keySet()) {
-			ms.getMeasurement().add(convertMeasurement(key, measurements.get(key)));
+			String omId = findKey(oms, new Study.StudyOutcomeMeasure<Variable>(key.getVariable()));
+			ms.getMeasurement().add(convertMeasurement(key, measurements.get(key), omId));
 		}
 		return ms;
-	}
-
-	private static void findAndAddMeasurement(Map<MeasurementKey, BasicMeasurement> source, Arm arm, String omId, Variable om, Measurements target)
-	throws ConversionException {
-		if (om instanceof OutcomeMeasure && arm == null) {
-			return;
-		}
-		MeasurementKey key = new MeasurementKey(om, arm);
-		if (source.containsKey(key)) {
-			org.drugis.addis.entities.data.Measurement m = convertMeasurement(key, source.get(key));
-			if (arm != null) {
-				m.setArm(nameReference(arm.getName()));
-			}
-			m.setStudyOutcomeMeasure(stringIdReference(omId));
-			target.getMeasurement().add(m);
-		}
 	}
 
 	public static <K, V> K findKey(Map<K,V> map, V value) {
@@ -940,12 +897,12 @@ public class JAXBConvertor {
 		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
 		newStudy.setCharacteristics(map);
 		
-		Map<MeasurementKey, BasicMeasurement> measurements = convertMeasurements(study.getMeasurements(), arms, outcomeMeasures);
+		Map<MeasurementKey, BasicMeasurement> measurements = convertMeasurements(study.getMeasurements(), arms, newStudy.getEpochs(), outcomeMeasures);
 		for(Entry<MeasurementKey, BasicMeasurement> m : measurements.entrySet()) {
 			newStudy.setMeasurement(m.getKey(), m.getValue());
 		}
 		
-		convertNotes(study.getNotes().getNote(), newStudy.getNameWithNotes().getNotes());
+		convertNotes(study.getNotes().getNote(), newStudy.getNotes());
 		
 		return newStudy;
 	}
@@ -999,9 +956,8 @@ public class JAXBConvertor {
 		newStudy.setEpochs(convertEpochs(study.getEpochs()));
 		
 		newStudy.setActivities(convertStudyActivities(study.getStudyActivities()));
-		
 		// convert outcome measures
-		Map<String,org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> omMap = new TreeMap<String, Study.StudyOutcomeMeasure<?>>();
+		LinkedHashMap<String,org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> omMap = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
 		for (Study.StudyOutcomeMeasure<Endpoint> e : study.getEndpoints()) {
 			omMap.put("endpoint-" + e.getValue().getName(), e);
 		}
@@ -1014,13 +970,13 @@ public class JAXBConvertor {
 		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));
 		
 		// convert measurements
-		newStudy.setMeasurements(convertMeasurements(study.getMeasurements()));
+		newStudy.setMeasurements(convertMeasurements(study.getMeasurements(), omMap));
 		
 		// convert characteristics
 		newStudy.setCharacteristics(convertStudyCharacteristics(study.getCharacteristics()));
 		
 		Notes notes = new Notes();
-		convertOldNotes(study.getNameWithNotes().getNotes(), notes.getNote());
+		convertOldNotes(study.getNotes(), notes.getNote());
 		newStudy.setNotes(notes);
 		
 		return newStudy ;
@@ -1060,7 +1016,7 @@ public class JAXBConvertor {
 				throw new ConversionException("Matching arms must be from the same study. Offending arms: " + 
 						baseArms.get(i) + " -- " + subjArms.get(i) + " -- from " + pwma.getName());
 			}
-			Study study = findStudy(baseArms.get(i).getStudy(), domain);
+			Study study = findNamedItem(domain.getStudies(), baseArms.get(i).getStudy());
 			Arm base = findArm(baseArms.get(i).getName(), study.getArms());
 			Arm subj = findArm(subjArms.get(i).getName(), study.getArms());
 			studyArms.add(new StudyArmsEntry(study, base, subj));
@@ -1120,7 +1076,7 @@ public class JAXBConvertor {
 			DrugSet drugSet = convertDrugSet(a.getDrugs(), domain);
 			drugs.add(drugSet);
 			for (ArmReference armRef : a.getArms().getArm()) {
-				Study study = findStudy(armRef.getStudy(), domain);
+				Study study = findNamedItem(domain.getStudies(), armRef.getStudy());
 				if (!studies.contains(study)) {
 					studies.add(study);
 					armMap.put(study, new HashMap<DrugSet, Arm>());
@@ -1239,7 +1195,7 @@ public class JAXBConvertor {
 			org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br, Domain domain) throws ConversionException {
 		
 		Indication indication = findNamedItem(domain.getIndications(), br.getIndication().getName());
-		Study study = findStudy(br.getStudy().getName(), domain);
+		Study study = findNamedItem(domain.getStudies(), br.getStudy().getName());
 		List<org.drugis.addis.entities.OutcomeMeasure> criteria = new ArrayList<org.drugis.addis.entities.OutcomeMeasure>();
 		for (NameReference ref : br.getOutcomeMeasures().getEndpoint()) {
 			criteria.add(findNamedItem(domain.getEndpoints(), ref.getName()));
@@ -1488,20 +1444,32 @@ public class JAXBConvertor {
 	/**
 	 * Convert an XML stream to the latest XML version.
 	 * @param xml An XML input stream
-	 * @param version The schema version of the source.
+	 * @param sourceVersion The schema version of the source.
 	 * @return XML compliant with most recent schema.
 	 */
-	public static InputStream transformToLatest(InputStream xml, int version)
+	public static InputStream transformToLatest(InputStream xml, int sourceVersion)
 	throws TransformerException, IOException {
-		if (version == LATEST_VERSION) {
+		return transformToVersion(xml, sourceVersion, LATEST_VERSION);
+	}
+	
+	/**
+	 * Convert an XML stream to a specific XML version.
+	 * @param xml An XML input stream
+	 * @param sourceVersion The schema version of the source.
+	 * @param targetVersion The schema version to convert to.
+	 * @return XML compliant with the specified schema.
+	 */
+	public static InputStream transformToVersion(InputStream xml, int sourceVersion, int targetVersion)
+	throws TransformerException, IOException {
+		if (sourceVersion == targetVersion) {
 			return xml;
-		} else if (version > LATEST_VERSION) {
+		} else if (sourceVersion > targetVersion) {
 			throw new RuntimeException("XML version from the future detected");
 		}
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 		
 		TransformerFactory tFactory = TransformerFactory.newInstance();
-		for (int v = version; v < LATEST_VERSION; ++v) {
+		for (int v = sourceVersion; v < targetVersion; ++v) {
 			InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("transform-" + v + "-" + (v + 1) + ".xslt");
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 
