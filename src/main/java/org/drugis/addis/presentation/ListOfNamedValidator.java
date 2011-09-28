@@ -32,7 +32,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.TypeWithName;
-import org.drugis.addis.util.ContentAwareListModel;
+import org.drugis.common.beans.ContentAwareListModel;
 
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;

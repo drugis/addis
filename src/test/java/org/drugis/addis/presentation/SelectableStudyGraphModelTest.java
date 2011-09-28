@@ -44,7 +44,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.util.ListDataEventMatcher;
+import org.drugis.common.event.ListDataEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
 

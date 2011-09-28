@@ -30,7 +30,7 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.util.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;

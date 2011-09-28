@@ -41,11 +41,11 @@ import javax.xml.datatype.Duration;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.addis.util.FilteredObservableList;
 import org.drugis.addis.util.RebuildableTreeMap;
-import org.drugis.addis.util.FilteredObservableList.Filter;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;

@@ -26,7 +26,7 @@ package org.drugis.addis.presentation.wizard;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.SortedSetModel;
+import org.drugis.common.beans.SortedSetModel;
 
 public interface WizardWithSelectableIndicationPresentation {
 

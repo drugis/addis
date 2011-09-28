@@ -44,8 +44,8 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
-import org.drugis.addis.util.ListDataEventProxy;
-import org.drugis.addis.util.ListDataListenerManager;
+import org.drugis.common.event.ListDataEventProxy;
+import org.drugis.common.event.ListDataListenerManager;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;

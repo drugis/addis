@@ -62,7 +62,7 @@ import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
-import org.drugis.addis.util.SortedSetModel;
+import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;

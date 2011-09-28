@@ -35,14 +35,14 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
-import org.drugis.addis.gui.components.LinkLabel;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.DrugPresentation;
 import org.drugis.addis.util.AtcParser;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.addis.util.AtcParser.AtcDescription;
+import org.drugis.common.gui.BuildViewWhenReadyComponent;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;

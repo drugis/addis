@@ -39,11 +39,11 @@ import javax.swing.JScrollPane;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.components.BuildViewWhenReadyComponent;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
+import org.drugis.common.gui.BuildViewWhenReadyComponent;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
@@ -266,7 +266,6 @@ public class SMAAView implements ViewBuilder  {
 		return cpane;
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
 		return new BuildViewWhenReadyComponent(builder, d_BRpm.getSMAAPresentation().getInitializedModel(), WAITING_MESSAGE);
 	}
