@@ -27,24 +27,28 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.ScaleModifier;
+import org.drugis.addis.entities.Unit;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.Interval;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 
 class DosePresentationImpl implements DosePresentation {
+	private static final DoseUnit MILLIGRAMS_A_DAY = new DoseUnit(new Unit("gram", "g"), ScaleModifier.MILLI, EntityUtil.createDuration("P1D"));
 	private DrugTreatment d_activity;
 	private ValueHolder d_min;
 	private ValueHolder d_max;
 	
 	public DosePresentationImpl(DrugTreatmentPresentation treatmentActivityPresentation) {
 		d_activity = treatmentActivityPresentation.getBean();
-		if (d_activity.getDose() == null) {		// FIXME : Is this default initialisation still appropriate?
-			d_activity.setDose(new FixedDose(0.0, ExampleData.MILLIGRAMS_A_DAY));
+		if (d_activity.getDose() == null) {
+			d_activity.setDose(new FixedDose(0.0, MILLIGRAMS_A_DAY));
 		}
 		d_min = new ValueHolder(getMinDose(d_activity));
 		d_max = new ValueHolder(getMaxDose(d_activity));

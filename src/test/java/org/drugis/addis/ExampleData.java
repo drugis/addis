@@ -99,8 +99,8 @@ public class ExampleData {
 	private static Endpoint s_endpointMadrs;
 	private static Study s_studyBurke;
 	
-	public static DoseUnit MILLIGRAMS_A_DAY = new DoseUnit(new Unit("gram", "g"), ScaleModifier.MILLI, EntityUtil.createDuration("P1D"));
-	public static DoseUnit KILOGRAMS_PER_HOUR = new DoseUnit(new Unit("gram", "g"), ScaleModifier.KILO, EntityUtil.createDuration("PT1H"));
+	public static DoseUnit MILLIGRAMS_A_DAY = new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D"));
+	public static DoseUnit KILOGRAMS_PER_HOUR = new DoseUnit(Domain.GRAM, ScaleModifier.KILO, EntityUtil.createDuration("PT1H"));
 
 	public static void initDefaultData(Domain domain) {
 		clearAll();

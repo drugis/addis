@@ -101,6 +101,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.MeasurementKey;
+import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -138,6 +139,7 @@ import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
+import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
@@ -820,7 +822,9 @@ public class JAXBConvertorTest {
 		List<Epoch> epochs = new ArrayList<Epoch>();
 		Epoch mainPhase = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
 		epochs.add(mainPhase);
-		
+
+		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), mainPhase, RelativeTo.BEFORE_EPOCH_END);
+
 		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
 		PopulationCharacteristic pc = new PopulationCharacteristic("Hair Length", new ContinuousVariableType());
@@ -860,13 +864,13 @@ public class JAXBConvertorTest {
 		
 		
 		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
-		expected.put(new MeasurementKey(ep, arm5), crm1);
-		expected.put(new MeasurementKey(ep, arm8), crm2);
-		expected.put(new MeasurementKey(ae, arm5), crm2);
-		expected.put(new MeasurementKey(ae, arm8), crm1);
-		expected.put(new MeasurementKey(pc, arm5), ccm1);
-		expected.put(new MeasurementKey(pc, arm8), ccm1);
-		expected.put(new MeasurementKey(pc, null), ccm1);
+		expected.put(new MeasurementKey(ep, arm5, whenTaken), crm1);
+		expected.put(new MeasurementKey(ep, arm8, whenTaken), crm2);
+		expected.put(new MeasurementKey(ae, arm5, whenTaken), crm2);
+		expected.put(new MeasurementKey(ae, arm8, whenTaken), crm1);
+		expected.put(new MeasurementKey(pc, arm5, whenTaken), ccm1);
+		expected.put(new MeasurementKey(pc, arm8, whenTaken), ccm1);
+		expected.put(new MeasurementKey(pc, null, whenTaken), ccm1);
 		
 		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements, arms, epochs, oms));
 		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, oms).getMeasurement());

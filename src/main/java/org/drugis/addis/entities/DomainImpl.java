@@ -135,7 +135,8 @@ public class DomainImpl extends Domain {
 				return obj instanceof NetworkMetaAnalysis;
 			}
 		});
-
+		d_units.add(GRAM);
+		d_units.add(LITER);
 	}
 	
 	public void addOutcomeMeasure(OutcomeMeasure om) {

@@ -834,12 +834,8 @@ public class JAXBConvertor {
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
 			String omId = m.getStudyOutcomeMeasure().getId();
 			Arm arm = m.getArm() != null ? findArm(m.getArm().getName(), arms) : null;
-			if (m.getWhenTaken().size() == 0) {
-				map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm), convertMeasurement(m));
-			} else {
-				for (RelativeTime rt : m.getWhenTaken()) {
-					map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt, epochs)), convertMeasurement(m));
-				}
+			for (RelativeTime rt : m.getWhenTaken()) {
+				map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt, epochs)), convertMeasurement(m));
 			}
 		}
 		return map;

@@ -33,6 +33,9 @@ import org.drugis.common.beans.SortedSetModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public abstract class Domain {
+	public static final Unit GRAM = new Unit("gram", "g");
+	public static final Unit LITER = new Unit("liter", "l");
+
 	/**
 	 * Get the list of top-level entity categories.
 	 */
