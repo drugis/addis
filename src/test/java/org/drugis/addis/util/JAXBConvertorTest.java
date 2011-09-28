@@ -94,7 +94,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -139,6 +138,7 @@ import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
+import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasure;
@@ -388,31 +388,11 @@ public class JAXBConvertorTest {
 		armNotes.getNote().add(JAXBConvertor.convertNote(note));
 		arm1.setNotes(armNotes);
 		
-//		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
-//		fixDose.setQuantity(quantity);
-//		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-//		arm1.setFixedDose(fixDose);
-//		arm1.setDrug(nameReference(name));
-		
 		Arm arm2 = new Arm(name + "-12", size);
 		arm2.getNotes().add(note);
 		
 		assertEntityEquals(arm2, JAXBConvertor.convertArm(arm1));
 		assertEquals(arm1, JAXBConvertor.convertArm(arm2));
-		
-//		arm1.setFixedDose(null);
-//		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
-//		flexDose.setMinDose(quantity);
-//		flexDose.setMaxDose(maxQuantity);
-//		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-//		arm1.setFlexibleDose(flexDose);
-//		
-//		Arm arm3 = buildFlexibleDoseArm(size, drug, 12, quantity, maxQuantity);
-//		arm3.getNotes().add(note);
-//		arm1.setId(12);
-//		assertEntityEquals(arm3, JAXBConvertor.convertArm(arm1, domain));
-//		arm1.setId(null);
-//		assertEquals(arm1, JAXBConvertor.convertArm(arm3));
 	}
 	
 	@Test
@@ -423,7 +403,6 @@ public class JAXBConvertorTest {
 		double maxQuantity = 34.5;
 		
 		Domain domain = new DomainImpl();
-		domain.getUnits().add(new Unit("gram", "g"));
 		Drug drug = new Drug(name, code);
 		domain.getDrugs().add(drug);
 
@@ -489,7 +468,6 @@ public class JAXBConvertorTest {
 		Drug drug2 = new Drug(drugName2, code2);
 		domain.getDrugs().add(drug1);
 		domain.getDrugs().add(drug2);
-		domain.getUnits().add(new Unit("gram", "g"));
 		
 		// test with predefined activity
 		String activityName = "Randomization";
@@ -592,36 +570,6 @@ public class JAXBConvertorTest {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), ExampleData.MILLIGRAMS_A_DAY);
 		return new TreatmentActivity(new DrugTreatment(drug, dose));
 	}
-	
-
-//	private org.drugis.addis.entities.data.Arm buildFlexibleDoseArmData(
-//			Integer id, int size2, String name, double minQuantity, double maxQuantity) {
-//		org.drugis.addis.entities.data.Arm newArm = new org.drugis.addis.entities.data.Arm();
-//		newArm.setId(id);
-//		newArm.setSize(size2);
-//		newArm.setNotes(new Notes());
-//		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
-//		flexDose.setMinDose(minQuantity);
-//		flexDose.setMaxDose(maxQuantity);
-//		flexDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-//		newArm.setFlexibleDose(flexDose);
-//		newArm.setDrug(nameReference(name));
-//		return newArm;
-//	}
-
-//	private org.drugis.addis.entities.data.Arm buildFixedDoseArmData(
-//			Integer id, int size1, String name, double quantity) {
-//		org.drugis.addis.entities.data.Arm newArm = new org.drugis.addis.entities.data.Arm();
-//		newArm.setId(id);
-//		newArm.setSize(size1);
-//		newArm.setNotes(new Notes());
-//		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
-//		fixDose.setQuantity(quantity);
-//		fixDose.setUnit(SIUnit.MILLIGRAMS_A_DAY);
-//		newArm.setFixedDose(fixDose);
-//		newArm.setDrug(nameReference(name));
-//		return newArm;
-//	}
 	
 	@Test
 	public void testConvertStudyChars() {
@@ -764,19 +712,18 @@ public class JAXBConvertorTest {
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasures(vars), oms);
 	}
 	
+	/**
+	 *	Test whether the numerical measurements (so NOT measurement time etc) are converted properly 
+	 */
 	@Test
-	public void testConvertMeasurement() throws ConversionException {
+	public void testConvertMeasurementData() throws ConversionException {
 		org.drugis.addis.entities.data.RateMeasurement rm = new org.drugis.addis.entities.data.RateMeasurement();
 		int c = 12;
 		int s = 42;
 		rm.setRate(c);
 		rm.setSampleSize(s);
 		
-		org.drugis.addis.entities.data.Measurement meas = buildRateMeasurement(null, null, rm, "Main phase");
-//		RelativeTime rt = new RelativeTime();
-//		rt.setHowLong(DatatypeFactory.newInstance().newDuration("P2D"));
-//		rt.setRelativeTo(RelativeTo.FROM_EPOCH_START);
-//		meas.getWhenTaken().add(rt);
+		org.drugis.addis.entities.data.Measurement meas = buildRateMeasurement(null, null, rm);
 		BasicRateMeasurement expected1 = new BasicRateMeasurement(c, s);
 		assertEntityEquals(expected1, JAXBConvertor.convertMeasurement(meas));
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected1));
@@ -787,7 +734,7 @@ public class JAXBConvertorTest {
 		cm.setMean(m);
 		cm.setStdDev(e);
 		cm.setSampleSize(s);
-		meas = buildContinuousMeasurement(null, null, cm, "Main phase");
+		meas = buildContinuousMeasurement(null, null, cm);
 		BasicContinuousMeasurement expected2 = new BasicContinuousMeasurement(m, e, s);
 		assertEntityEquals(expected2, JAXBConvertor.convertMeasurement(meas));
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected2));
@@ -801,7 +748,7 @@ public class JAXBConvertorTest {
 		c2.setRate(2145);
 		cms.add(c1);
 		cms.add(c2);
-		meas = buildCategoricalMeasurement(null, null, cms, "Main phase");
+		meas = buildCategoricalMeasurement(null, null, cms);
 
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		map.put("Dogs", 2145);
@@ -811,7 +758,6 @@ public class JAXBConvertorTest {
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected3));
 	}
 	
-
 	@Test
 	public void testConvertMeasurements() throws ConversionException {
 		List<Arm> arms = new ArrayList<Arm>();
@@ -854,13 +800,13 @@ public class JAXBConvertorTest {
 		
 		Measurements measurements = new Measurements();
 		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
-		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Measurement phase"));		
-		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Measurement phase"));
-		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Measurement phase"));
-		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Measurement phase"));
-		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Measurement phase"));
-		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Measurement phase"));
-		list.add(buildContinuousMeasurement(null, pcName, cm1, "Measurement phase"));
+		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));		
+		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
+		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
+		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
+		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
+		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
+		list.add(buildContinuousMeasurement(null, pcName, cm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
 		
 		
 		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
@@ -876,11 +822,25 @@ public class JAXBConvertorTest {
 		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, oms).getMeasurement());
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm, String epochName) {
+	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm, String epochName, Duration duration, RelativeTo relativeTo) {
+		org.drugis.addis.entities.data.Measurement m = buildContinuousMeasurement(armName, omName, cm);
+		m.getWhenTaken().add(buildRelativeTime(epochName, duration, relativeTo));
+		return m;
+	}
+
+	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm) {
 		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
 		m.setContinuousMeasurement(cm);
-		JAXBConvertor.addDefaultWhenTaken(m);
 		return m;
+	}
+
+	private RelativeTime buildRelativeTime(String epochName, Duration duration,
+			RelativeTo relativeTo) {
+		RelativeTime rt = new RelativeTime();
+		rt.setEpoch(nameReference(epochName));
+		rt.setRelativeTo(relativeTo);
+		rt.setHowLong(duration);
+		return rt;
 	}
 
 	private org.drugis.addis.entities.data.Measurement initMeasurement(String armName, String omName) {
@@ -894,21 +854,32 @@ public class JAXBConvertorTest {
 		return m;
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm, String epochName) {
-		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
-		m.setRateMeasurement(rm);
-		JAXBConvertor.addDefaultWhenTaken(m);
+	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm, String epochName, Duration duration, RelativeTo relativeTo) {
+		org.drugis.addis.entities.data.Measurement m = buildRateMeasurement(armName, omName, rm);
+		m.getWhenTaken().add(buildRelativeTime(epochName, duration, relativeTo));
 		return m;
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildCategoricalMeasurement(String armName, String omName, List<CategoryMeasurement> cmList, String epochName) {
+	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm) {
+		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
+		m.setRateMeasurement(rm);
+		return m;
+	}
+
+	private org.drugis.addis.entities.data.Measurement buildCategoricalMeasurement(String armName, String omName, List<CategoryMeasurement> cmList, String epochName, Duration duration, RelativeTo relativeTo) {
+		org.drugis.addis.entities.data.Measurement m = buildCategoricalMeasurement(armName, omName, cmList);
+		m.getWhenTaken().add(buildRelativeTime(epochName, duration, relativeTo));
+		return m;
+	}
+
+	private org.drugis.addis.entities.data.Measurement buildCategoricalMeasurement(
+			String armName, String omName, List<CategoryMeasurement> cmList) {
 		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
 		CategoricalMeasurement cms = new CategoricalMeasurement();
 		for (CategoryMeasurement cm: cmList) {
 			cms.getCategory().add(cm);
 		}
 		m.setCategoricalMeasurement(cms);
-		JAXBConvertor.addDefaultWhenTaken(m);
 		return m;
 	}
 
@@ -976,8 +947,8 @@ public class JAXBConvertorTest {
 		cm1.setMean(0.2);
 		cm1.setStdDev(0.01);
 		cm1.setSampleSize(110);
-		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], rm1, "Main phase");
-		org.drugis.addis.entities.data.Measurement m2 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], cm1, "Main phase");
+		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], rm1, "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
+		org.drugis.addis.entities.data.Measurement m2 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], cm1, "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
 		list.add(m1);
 		list.add(m2);
 				

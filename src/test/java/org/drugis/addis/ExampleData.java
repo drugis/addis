@@ -53,7 +53,6 @@ import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
@@ -105,7 +104,6 @@ public class ExampleData {
 	public static void initDefaultData(Domain domain) {
 		clearAll();
 		// depression data
-		domain.getUnits().add(new Unit("gram", "g"));
 		domain.getIndications().add(buildIndicationDepression());
 		domain.getEndpoints().add(buildEndpointHamd());
 		domain.getEndpoints().add(buildEndpointCgi());

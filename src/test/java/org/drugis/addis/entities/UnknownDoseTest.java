@@ -43,7 +43,7 @@ public class UnknownDoseTest {
 	
 	@Test
 	public void testGetUnit() {
-		assertEquals(ExampleData.MILLIGRAMS_A_DAY, new UnknownDose().getDoseUnit());
+		assertEquals(null, new UnknownDose().getDoseUnit());
 	}
 	
 	@Test

@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities;
 
-
 public class UnknownDose extends AbstractDose {
 	
 	@Override
@@ -39,6 +38,11 @@ public class UnknownDose extends AbstractDose {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void setDoseUnit(DoseUnit unit) {
+		throw new UnsupportedOperationException("Cannot set unit of unknown dose.");
 	}
 	
 	@Override

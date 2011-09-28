@@ -169,7 +169,10 @@ public class JAXBConvertor {
 	public static Domain convertAddisDataToDomain(AddisData addisData) throws ConversionException {
 		Domain newDomain = new org.drugis.addis.entities.DomainImpl();
 		for (org.drugis.addis.entities.data.Unit u : addisData.getUnits().getUnit()) {
-			newDomain.getUnits().add(new Unit(u.getName(), u.getSymbol()));
+			Unit unit = new Unit(u.getName(), u.getSymbol());
+			if (!newDomain.getUnits().contains(unit)) {
+				newDomain.getUnits().add(unit);
+			}
 		}
 		for (org.drugis.addis.entities.data.Indication i : addisData.getIndications().getIndication()) {
 			newDomain.getIndications().add(convertIndication(i));
@@ -784,6 +787,7 @@ public class JAXBConvertor {
 		return dMeas;
 	}
 
+	@Deprecated
 	public static void addDefaultWhenTaken(org.drugis.addis.entities.data.Measurement m) {
 		RelativeTime rt = new RelativeTime();
 		try {
@@ -823,7 +827,6 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Measurement type not supported: " + m.toString());
 		}
-		addDefaultWhenTaken(measurement);
 		return measurement;
 	}
 	

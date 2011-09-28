@@ -76,12 +76,10 @@ public class DomainTreeModelTest {
 	private Study d_firstStudy;
 	private Drug d_firstDrug;
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
-	private Unit d_firstUnit;
 	
 	@Before
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
-		d_firstUnit = new Unit("gram", "g");
 		d_firstIndication = new Indication(8L, "Indication");		
 		d_firstEndpoint = new Endpoint("Endpoint", Endpoint.convertVarType(Variable.Type.RATE));
 		d_firstADE = new AdverseEvent("firstADE", AdverseEvent.convertVarType(Variable.Type.CONTINUOUS));
@@ -101,7 +99,6 @@ public class DomainTreeModelTest {
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
-		d_domain.getUnits().add(d_firstUnit);
 		d_domain.getIndications().add(d_firstIndication);
 		d_domain.getEndpoints().add(d_firstEndpoint);
 		d_domain.getAdverseEvents().add(d_firstADE);
@@ -192,7 +189,7 @@ public class DomainTreeModelTest {
 		}
 		
 		// test first element of every category
-		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Unit.class), d_firstUnit));
+		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Unit.class), Domain.GRAM));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Indication.class), d_firstIndication));
 		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(Endpoint.class), d_firstEndpoint));	
 		assertEquals(0, d_treeModel.getIndexOfChild(d_domain.getCategory(AdverseEvent.class), d_firstADE));			
