@@ -88,7 +88,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			}
 			WhenTaken other = (WhenTaken) obj;
 			return EqualsUtil.equal(d_howLong, other.d_howLong)
-					&& EqualsUtil.equal(d_relativeTo, other.d_relativeTo);
+					&& EqualsUtil.equal(d_relativeTo, other.d_relativeTo)
+					&& EqualsUtil.equal(d_epoch, other.d_epoch);
 		}
 
 		@Override
@@ -118,8 +119,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public static class MeasurementKey extends AbstractEntity implements
-			Entity, Comparable<MeasurementKey> {
+	public static class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
 
 		private Variable d_variable;
 		private Arm d_arm;
@@ -133,9 +133,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 				throw new NullPointerException(
 						"Arm may not be null for Endpoints/ADEs");
 			}
-			if (v instanceof OutcomeMeasure && wt == null) {
-				throw new NullPointerException(
-						"Moment of measurement may not be null for Endpoints/ADEs");
+			if (wt == null) {
+				throw new NullPointerException("Moment of measurement may not be null");
 			}
 			d_variable = v;
 			d_arm = a;
@@ -221,6 +220,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		public static final String PROPERTY_IS_PRIMARY = "isPrimary";
 
 		private Boolean d_isPrimary = false;
+		private List<WhenTaken> d_whenTaken = new ArrayList<WhenTaken>();
 
 		public StudyOutcomeMeasure(T obj) {
 			super(obj);
@@ -228,23 +228,39 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		@Override
 		public StudyOutcomeMeasure<T> clone() {
-			StudyOutcomeMeasure<T> clone = new StudyOutcomeMeasure<T>(
-					getValue());
+			StudyOutcomeMeasure<T> clone = new StudyOutcomeMeasure<T>(getValue());
 			clone.setIsPrimary(getIsPrimary());
 			clone.getNotes().addAll(getNotes());
+			for (WhenTaken wt : getWhenTaken()) {
+				clone.getWhenTaken().add(new WhenTaken(wt.getHowLong(), wt.getEpoch().clone(), wt.getRelativeTo()));
+			}
 			return clone;
 		}
 
 		public Boolean getIsPrimary() {
 			return d_isPrimary;
 		}
-
+		
 		public void setIsPrimary(Boolean isPrimary) {
 			Boolean oldValue = new Boolean(d_isPrimary);
 			d_isPrimary = isPrimary;
 			firePropertyChange(PROPERTY_IS_PRIMARY, oldValue, d_isPrimary);
 		}
 
+		public List<WhenTaken> getWhenTaken() {
+			return d_whenTaken;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof StudyOutcomeMeasure<?>) {
+				StudyOutcomeMeasure<?> other = (StudyOutcomeMeasure<?>) o;
+				return d_isPrimary.equals(other.d_isPrimary)
+						&& EqualsUtil.equal(d_whenTaken, other.d_whenTaken)
+						&& EqualsUtil.equal(getNotes(), other.getNotes());
+			}
+			return false;
+		}
 	}
 
 	public final static String PROPERTY_INDICATION = "indication";
@@ -731,8 +747,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private void setMeasurements(Map<MeasurementKey, BasicMeasurement> m) {
-		d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>(
-				m);
+		d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>(m);
 	}
 
 	public void setMeasurement(MeasurementKey key, BasicMeasurement value) {
