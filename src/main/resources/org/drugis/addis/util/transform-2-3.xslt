@@ -116,4 +116,23 @@
             </whenTaken>
         </xsl:copy>
     </xsl:template>
+    <xsl:template match="study/studyOutcomeMeasures/studyOutcomeMeasure">
+        <xsl:copy>
+            <xsl:apply-templates select="node()[name() != 'notes']|@*"/>
+            <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
+                <xsl:element name="epoch">
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="../../epochs/epoch[last()]/@name"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </whenTaken>
+            <notes>
+                <xsl:for-each select="notes/note">
+                    <xsl:copy>
+                        <xsl:apply-templates select="node()|@*"/>
+                    </xsl:copy>
+                </xsl:for-each>
+            </notes>
+        </xsl:copy>
+    </xsl:template>
 </xsl:stylesheet>

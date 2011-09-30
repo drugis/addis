@@ -293,6 +293,9 @@
 				<xs:element name="endpoint" type="NameReference"/>
 				<xs:element name="populationCharacteristic" type="NameReference"/>
 			</xs:choice>
+			<xs:sequence minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="whenTaken" type="RelativeTime"/>
+			</xs:sequence>
 			<xs:element name="notes" type="Notes"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required"/>
@@ -451,9 +454,7 @@
 				<xs:element name="continuousMeasurement" type="ContinuousMeasurement"/>
 				<xs:element name="categoricalMeasurement" type="CategoricalMeasurement"/>
 			</xs:choice>
-			<xs:sequence minOccurs="1" maxOccurs="unbounded">
-				<xs:element name="whenTaken" type="RelativeTime"/>
-			</xs:sequence>
+			<xs:element name="whenTaken" type="RelativeTime"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RateMeasurement">

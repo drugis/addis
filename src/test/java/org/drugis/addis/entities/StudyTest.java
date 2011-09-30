@@ -46,16 +46,10 @@ import javax.xml.datatype.DatatypeFactory;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
-import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.entities.data.RelativeTime;
-import org.drugis.addis.entities.data.RelativeTo;
-import org.drugis.addis.util.EntityUtil;
-import org.drugis.common.EqualsUtil;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.mvel2.ast.AssertNode;
 
 public class StudyTest {
 	private Study d_orig;
@@ -491,17 +485,6 @@ public class StudyTest {
 		assertFalse(d_orig.getPopulationChars() == d_clone.getPopulationChars());
 	}
 
-	@Test
-	public void testOutcomeMeasureClone() {
-		StudyOutcomeMeasure<AdverseEvent> om1 = new StudyOutcomeMeasure<AdverseEvent>(new AdverseEvent("Test1", AdverseEvent.convertVarType(Variable.Type.CONTINUOUS)));
-		om1.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P2D"), new Epoch("startup", EntityUtil.createDuration("P5D")), RelativeTo.BEFORE_EPOCH_END));
-		StudyOutcomeMeasure<AdverseEvent> clone = om1.clone();
-		assertEquals(om1, clone);
-		om1.getWhenTaken().get(0).getEpoch().setName("Nonsense");
-		JUnitUtil.assertNotEquals(om1, clone);
-	}
-	
-	
 	@Test
 	public void testCloneHasCorrectMeasurementKeys() {
 		Arm arm = d_clone.getArms().get(1);

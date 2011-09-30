@@ -45,8 +45,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -138,7 +136,6 @@ import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.RelativeTime;
-import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.Studies;
@@ -691,7 +688,7 @@ public class JAXBConvertor {
 		return refs;
 	}
 
-	public static Study.StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om, Domain domain) throws ConversionException {
+	public static Study.StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om, List<Epoch> epochs, Domain domain) throws ConversionException {
 		Variable var = null;
 		if(om.getEndpoint() != null) {
 			var = findNamedItem(domain.getEndpoints(), om.getEndpoint().getName());
@@ -704,8 +701,14 @@ public class JAXBConvertor {
 		}
 		Study.StudyOutcomeMeasure<Variable> studyOutcomeMeasure = new Study.StudyOutcomeMeasure<Variable>(var);
 		boolean isPrimaryNull = om.isPrimary() == null ? true : om.isPrimary();
-		studyOutcomeMeasure.setIsPrimary(om.getEndpoint() != null ? isPrimaryNull: true);
+		studyOutcomeMeasure.setIsPrimary(om.getEndpoint() != null ? isPrimaryNull: false);
+		
+		for (RelativeTime wt : om.getWhenTaken()) {
+			studyOutcomeMeasure.getWhenTaken().add(convertWhenTaken(wt, epochs));
+		}
+		
 		List<org.drugis.addis.entities.data.Note> notes = om.getNotes() == null ? Collections.<org.drugis.addis.entities.data.Note>emptyList() : om.getNotes().getNote();
+		
 		convertNotes(notes, studyOutcomeMeasure.getNotes());
 		return studyOutcomeMeasure;
 	}
@@ -729,13 +732,17 @@ public class JAXBConvertor {
 		}
 		newOutcome.setNotes(new Notes());
 		convertOldNotes(studyOutcomeMeasure.getNotes(), newOutcome.getNotes().getNote());
+		for (WhenTaken wt : studyOutcomeMeasure.getWhenTaken()) {
+			newOutcome.getWhenTaken().add(convertWhenTaken(wt));
+		}
 		return newOutcome;
 	}
 
-	public static LinkedHashMap<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, Domain domain) throws ConversionException {
+	public static LinkedHashMap<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, List<Epoch> epochs, Domain domain) throws ConversionException {
 		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> map = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
 		for(StudyOutcomeMeasure om : oms.getStudyOutcomeMeasure()) {
-			map.put(om.getId(), convertStudyOutcomeMeasure(om, domain));
+			org.drugis.addis.entities.Study.StudyOutcomeMeasure<?> convOm = convertStudyOutcomeMeasure(om, epochs, domain);
+			map.put(om.getId(), convOm);
 		}
 		return map;
 	}
@@ -778,28 +785,13 @@ public class JAXBConvertor {
 	
 	public static org.drugis.addis.entities.data.Measurement convertMeasurement(MeasurementKey mk, Measurement m, String omId) throws ConversionException {
 		org.drugis.addis.entities.data.Measurement dMeas = convertMeasurement(m);
-		dMeas.getWhenTaken().clear();
-		dMeas.getWhenTaken().add(convertWhenTaken(mk.getWhenTaken()));
+		dMeas.setWhenTaken(convertWhenTaken(mk.getWhenTaken()));
 		dMeas.setStudyOutcomeMeasure(stringIdReference(omId));
 		if (mk.getArm() != null) {
 			dMeas.setArm(nameReference(mk.getArm().getName()));
 		}
 		return dMeas;
 	}
-
-	@Deprecated
-	public static void addDefaultWhenTaken(org.drugis.addis.entities.data.Measurement m) {
-		RelativeTime rt = new RelativeTime();
-		try {
-			rt.setHowLong(DatatypeFactory.newInstance().newDuration("P0D"));
-		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-		rt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
-		rt.setEpoch(nameReference("Main phase"));
-		m.getWhenTaken().add(rt);
-	}
-
 	
 	public static org.drugis.addis.entities.data.Measurement convertMeasurement(Measurement m) throws ConversionException {
 		org.drugis.addis.entities.data.Measurement measurement = new org.drugis.addis.entities.data.Measurement();
@@ -837,9 +829,7 @@ public class JAXBConvertor {
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
 			String omId = m.getStudyOutcomeMeasure().getId();
 			Arm arm = m.getArm() != null ? findArm(m.getArm().getName(), arms) : null;
-			for (RelativeTime rt : m.getWhenTaken()) {
-				map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(rt, epochs)), convertMeasurement(m));
-			}
+			map.put(new MeasurementKey(outcomeMeasures.get(omId).getValue(), arm, convertWhenTaken(m.getWhenTaken(), epochs)), convertMeasurement(m));
 		}
 		return map;
 	}
@@ -856,11 +846,10 @@ public class JAXBConvertor {
 		return rt;
 	}
 
-	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements, 
-			Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
+	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements ms = new Measurements();
 		for (MeasurementKey key : measurements.keySet()) {
-			String omId = findKey(oms, new Study.StudyOutcomeMeasure<Variable>(key.getVariable()));
+			String omId = findKey(oms, new Study.StudyOutcomeMeasure<Variable>(key.getVariable(), key.getWhenTaken()));
 			ms.getMeasurement().add(convertMeasurement(key, measurements.get(key), omId));
 		}
 		return ms;
@@ -880,12 +869,7 @@ public class JAXBConvertor {
 		newStudy.setName(study.getName());
 		newStudy.setIndication(findNamedItem(domain.getIndications(), study.getIndication().getName()));
 		convertNotes(study.getIndication().getNotes().getNote(), newStudy.getIndicationWithNotes().getNotes());
-		
-		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), domain);
-		for(Entry<String, Study.StudyOutcomeMeasure<?>> om : outcomeMeasures.entrySet()) {
-			newStudy.addStudyOutcomeMeasure(om.getValue());
-		}
-		
+
 		List<Arm> arms = convertStudyArms(study.getArms());
 		newStudy.getArms().addAll(arms);
 
@@ -895,6 +879,12 @@ public class JAXBConvertor {
 		
 		CharacteristicsMap map = convertStudyCharacteristics(study.getCharacteristics());
 		newStudy.setCharacteristics(map);
+		
+		
+		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), newStudy.getEpochs(), domain);
+		for(Entry<String, Study.StudyOutcomeMeasure<?>> om : outcomeMeasures.entrySet()) {
+			newStudy.addStudyOutcomeMeasure(om.getValue());
+		}
 		
 		Map<MeasurementKey, BasicMeasurement> measurements = convertMeasurements(study.getMeasurements(), arms, newStudy.getEpochs(), outcomeMeasures);
 		for(Entry<MeasurementKey, BasicMeasurement> m : measurements.entrySet()) {

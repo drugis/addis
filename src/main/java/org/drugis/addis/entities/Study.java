@@ -226,6 +226,13 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			super(obj);
 		}
 
+		public StudyOutcomeMeasure(T obj, WhenTaken whenTaken) {
+			this(obj);
+			if (whenTaken != null) {
+				d_whenTaken.add(whenTaken);
+			}
+		}
+
 		@Override
 		public StudyOutcomeMeasure<T> clone() {
 			StudyOutcomeMeasure<T> clone = new StudyOutcomeMeasure<T>(getValue());
@@ -255,11 +262,14 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		public boolean equals(Object o) {
 			if (o instanceof StudyOutcomeMeasure<?>) {
 				StudyOutcomeMeasure<?> other = (StudyOutcomeMeasure<?>) o;
-				return d_isPrimary.equals(other.d_isPrimary)
-						&& EqualsUtil.equal(d_whenTaken, other.d_whenTaken)
-						&& EqualsUtil.equal(getNotes(), other.getNotes());
+				return  EqualsUtil.equal(getValue(), other.getValue());
 			}
 			return false;
+		}
+		
+		@Override
+		public String toString() {
+			return d_isPrimary ? "primary measure: " : "secondary measure: " + getValue().getName() + " " + d_whenTaken + " " + getNotes();
 		}
 	}
 
@@ -676,22 +686,27 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public void addVariable(Variable om) {
+		addVariable(om, null);
+	}
+
+
+	public void addVariable(Variable om, WhenTaken wt) {
 		if (om instanceof Endpoint)
 			getEndpoints().add(
-					new StudyOutcomeMeasure<Endpoint>(((Endpoint) om)));
+					new StudyOutcomeMeasure<Endpoint>(((Endpoint) om), wt));
 		else if (om instanceof AdverseEvent) {
 			getAdverseEvents().add(
-					new StudyOutcomeMeasure<AdverseEvent>(((AdverseEvent) om)));
+					new StudyOutcomeMeasure<AdverseEvent>(((AdverseEvent) om), wt));
 		} else if (om instanceof PopulationCharacteristic) {
 			getPopulationChars().add(
 					new StudyOutcomeMeasure<PopulationCharacteristic>(
-							((PopulationCharacteristic) om)));
+							((PopulationCharacteristic) om), wt));
 		} else {
 			throw new IllegalStateException("Illegal OutcomeMeasure type "
 					+ om.getClass());
 		}
 	}
-
+	
 	private void removeOrphanMeasurements() {
 		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements
 				.keySet())) {
@@ -1008,5 +1023,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public ObservableList<Note> getNotes() {
 		return d_notes;
 	}
+
 
 }
