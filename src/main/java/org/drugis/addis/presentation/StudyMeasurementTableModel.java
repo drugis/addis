@@ -26,7 +26,6 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +35,8 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.MeasurementKey;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 
@@ -62,6 +63,8 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		if(isArmColumn(columnIndex)) {
 			return String.class;
+		} else if (isMeasurementMomentColumn(columnIndex)) { 
+			return String.class;
 		} else {
 			return MissingMeasurementPresentation.class;
 		}
@@ -77,16 +80,18 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	}
 
 	private void initVariables(Arm a) {
-		for (Variable v : d_study.getVariables(d_type)) {
+		for (StudyOutcomeMeasure<? extends Variable> v : d_study.getStudyOutcomeMeasures(d_type)) {
 			MissingMeasurementPresentation mmp = new MissingMeasurementPresentation(d_study, v, a);
-			d_mmpMap.put(new MeasurementKey(v, a), mmp);
+			for (WhenTaken wt : v.getWhenTaken()) {
+				d_mmpMap.put(new MeasurementKey(v.getValue(), a, wt), mmp);
+			}
 			mmp.getMeasurement().addPropertyChangeListener(d_measurementListener);
 			mmp.getMissingModel().addValueChangeListener(d_measurementListener);
 		}
 	}
 
 	public int getColumnCount() {
-		return d_study.getArms().size() + 1 + (d_hasOverallColumn ? 1 : 0);
+		return d_study.getArms().size() + 2 + (d_hasOverallColumn ? 1 : 0);
 	}
 
 	public int getRowCount() {
@@ -102,10 +107,12 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	public String getColumnName(int col) {
 		if (isArmColumn(col)) {
 			return CategoryKnowledgeFactory.getCategoryKnowledge(d_type).getSingularCapitalized();
+		} else if (isMeasurementMomentColumn(col)) {
+			return "Measurement moment";
 		} else if (isOverallColumn(col)) {
 			return "Overall";
 		} 
-		return d_pmf.getLabeledModel(d_study.getArms().get(col-1)).getLabelModel().getString();	
+		return d_pmf.getLabeledModel(d_study.getArms().get(col-2)).getLabelModel().getString();	
 	}
 
 	private boolean isOverallColumn(int col) {
@@ -116,14 +123,22 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 		return col == 0;
 	}
 
+	private boolean isMeasurementMomentColumn(int col) {
+		return col == 1;
+	}
+
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (isArmColumn(columnIndex)) {
 			return getVariableAtIndex(rowIndex).getName();
+		} 
+		StudyOutcomeMeasure<? extends Variable> om = d_study.getStudyOutcomeMeasures(d_type).get(rowIndex);
+		Arm arm = (isOverallColumn(columnIndex) || isMeasurementMomentColumn(columnIndex)) ? null : d_study.getArms().get(columnIndex - 2);
+		if (isMeasurementMomentColumn(columnIndex)) {
+			return om.getWhenTaken().get(0);
 		}
-		Variable om = new ArrayList<Variable>(d_study.getVariables(d_type)).get(rowIndex);
-		Arm arm = isOverallColumn(columnIndex) ? null : d_study.getArms().get(columnIndex - 1);
-		return d_mmpMap.get(new Study.MeasurementKey(om, arm));
+		return d_mmpMap.get(new Study.MeasurementKey(om.getValue(), arm, om.getWhenTaken().get(0)));
 	}
+
 
 	private Variable getVariableAtIndex(int rowIndex) {
 		int index = 0;

@@ -28,6 +28,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -40,7 +41,7 @@ public class MissingMeasurementPresentation {
 
 		@Override
 		public Object getValue() {
-			return d_study.getMeasurement(d_v, d_a) == null;
+			return d_study.getMeasurement(d_v.getValue(), d_a) == null;
 		}
 
 		@Override
@@ -55,14 +56,14 @@ public class MissingMeasurementPresentation {
 		}
 	};
 	private final Study d_study;
-	private final Variable d_v;
+	private final StudyOutcomeMeasure<? extends Variable> d_v;
 	private final Arm d_a;
 	
-	public MissingMeasurementPresentation(final Study s, final Variable v, final Arm a) {
+	public MissingMeasurementPresentation(final Study s, final StudyOutcomeMeasure<? extends Variable> v, final Arm a) {
 		d_study = s;
 		d_v = v;
 		d_a = a;
-		d_m = d_study.getMeasurement(d_v, d_a) == null ? d_study.buildDefaultMeasurement(d_v, d_a) : d_study.getMeasurement(d_v, d_a);
+		d_m = d_study.getMeasurement(d_v.getValue(), d_a, d_v.getWhenTaken().get(0)) == null ? d_study.buildDefaultMeasurement(d_v.getValue(), d_a) : d_study.getMeasurement(d_v.getValue(), d_a);
 	}
 	
 	public BasicMeasurement getMeasurement() {

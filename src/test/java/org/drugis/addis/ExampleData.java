@@ -45,6 +45,7 @@ import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -236,6 +237,8 @@ public class ExampleData {
 		startDate.set(1991, Calendar.DECEMBER, 13, 0, 0, 0);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_START, startDate.getTime());
 		
+		addDefaultEpochs(study);
+		
 		// Paroxetine data 1
 		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
 		Arm parox = study.createAndAddArm("Paroxetine-0", 102, buildDrugParoxetine(), dose);
@@ -247,12 +250,6 @@ public class ExampleData {
 		BasicRateMeasurement pConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
 		pConv.setRate(10);
 		pConv.setSampleSize(40);
-		
-		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
-		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
-		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
-		
-	
 		
 		// Fluoxetine data
 		dose = new FixedDose(27.5, ExampleData.MILLIGRAMS_A_DAY);
@@ -266,6 +263,12 @@ public class ExampleData {
 		fConv.setRate(12);
 		fConv.setSampleSize(40);
 		
+		addDefaultMeasurementMoments(study);
+
+		// only set measurements once studyactivities are initialised
+		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
+		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
+		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
 		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
 		study.setMeasurement(buildAdverseEventConvulsion(), fluox, pConv);
@@ -307,6 +310,8 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
+		addDefaultEpochs(study);
+
 		// Paroxetine data
 		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
 		Arm parox = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
@@ -328,6 +333,9 @@ public class ExampleData {
 		BasicRateMeasurement fConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(fluox);
 		fConv.setRate(10);
 		fConv.setSampleSize(34);
+		
+		addBaselineMeasurementMoment(study, Endpoint.class);
+		addDefaultMeasurementMoments(study);
 		
 		study.setMeasurement(hamd, fluox, fHamd);
 		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
@@ -367,27 +375,40 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
+		addDefaultEpochs(study);
+		
 		// Paroxetine data 1
 		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
-		Arm parox = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
-		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
-		pHamd.setRate(23);
-		study.setMeasurement(hamd, parox, pHamd);
+		Arm parox0 = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
+		BasicRateMeasurement pHamd0 = (BasicRateMeasurement)hamd.buildMeasurement(parox0);
+		pHamd0.setRate(23);
 		
 		// Paroxetine data 2
 		dose = new FixedDose(5.5, ExampleData.MILLIGRAMS_A_DAY);
-		parox = study.createAndAddArm("Paroxetine-1", 54, buildDrugParoxetine(), dose);
-		pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
-		pHamd.setRate(23);
-		study.setMeasurement(hamd, parox, pHamd);
+		Arm parox1 = study.createAndAddArm("Paroxetine-1", 54, buildDrugParoxetine(), dose);
+		BasicRateMeasurement pHamd1 = (BasicRateMeasurement)hamd.buildMeasurement(parox1);
+		pHamd1.setRate(23);
 
 		// Fluoxetine data
 		dose = new FixedDose(27.5, ExampleData.MILLIGRAMS_A_DAY);
 		Arm fluox = study.createAndAddArm("Fluoxetine-2", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
+
+		// Initialise measurement moment data structure (only after arms are created)
+		addDefaultMeasurementMoments(study);
+		
+		study.setMeasurement(hamd, parox0, pHamd0);
+		study.setMeasurement(hamd, parox1, pHamd1);
 		study.setMeasurement(hamd, fluox, fHamd);
+
 		return study;
+	}
+
+	private static void addDefaultMeasurementMoments(Study study) {
+		addDefaultMeasurementMoment(study, Endpoint.class);
+		addDefaultMeasurementMoment(study, AdverseEvent.class);
+		addDefaultMeasurementMoment(study, PopulationCharacteristic.class);
 	}
 	
 	public static Study buildStudyBennie() {
@@ -491,6 +512,10 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
+		// New epoch/measurement moment data structure
+		addDefaultEpochs(study);
+		addDefaultMeasurementMoments(study);
+		
 		// Fluoxetine data
 		FixedDose dose = new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY);
 		Arm fluox = study.createAndAddArm("Fluoxetine-0", 144, buildDrugFluoxetine(), dose);
@@ -513,6 +538,23 @@ public class ExampleData {
 		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
 		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
 		return study;
+	}
+
+	private static <T extends Variable> void addDefaultMeasurementMoment(Study study, Class<T> type) {
+		for (StudyOutcomeMeasure<T> om : study.getStudyOutcomeMeasures(type)) {
+			om.getWhenTaken().add(study.defaultMeasurementMoment());
+		}
+	}
+	
+	private static <T extends Variable> void addBaselineMeasurementMoment(Study study, Class<T> type) {
+		for (StudyOutcomeMeasure<T> om : study.getStudyOutcomeMeasures(type)) {
+			om.getWhenTaken().add(study.baselineMeasurementMoment());
+		}
+	}
+
+	private static void addDefaultEpochs(Study study) {
+		study.getEpochs().add(new Epoch("Randomization", EntityUtil.createDuration("P0D")));
+		study.getEpochs().add(new Epoch("Main phase", EntityUtil.createDuration("P0D")));
 	}
 
 	public static Study buildStudyAdditionalThreeArm() {
@@ -611,18 +653,22 @@ public class ExampleData {
 		endDate.set(2003, Calendar.MARCH, 31, 0, 0, 0);
 		study.setCharacteristic(BasicStudyCharacteristic.STUDY_END, endDate.getTime());
 		
+		addDefaultEpochs(study);
+		
 		// Candesartan data
 		FixedDose cDose = new FixedDose(32, ExampleData.MILLIGRAMS_A_DAY);
 		Arm cand = study.createAndAddArm("Candesartan-0", 1273, buildDrugCandesartan(), cDose);
 		BasicRateMeasurement cDeath = new BasicRateMeasurement(302, cand.getSize());
-		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
 		
 		// Placebo data
 		FixedDose pDose = new FixedDose(32, ExampleData.MILLIGRAMS_A_DAY);
 		Arm placebo = study.createAndAddArm("Placebo-1", 1271, buildPlacebo(), pDose);
 		BasicRateMeasurement pDeath = new BasicRateMeasurement(347, placebo.getSize());
-		OutcomeMeasure om = buildEndpointCVdeath();
-		study.setMeasurement(om, placebo, pDeath);
+
+		addDefaultMeasurementMoments(study);
+		
+		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
+		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);
 		
 		return study;
 	}

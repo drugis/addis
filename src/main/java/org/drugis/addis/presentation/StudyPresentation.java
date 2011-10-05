@@ -40,6 +40,7 @@ import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.DerivedStudyCharacteristic.Dosing;
@@ -149,7 +150,7 @@ public class StudyPresentation extends PresentationModel<Study> {
 	}
 
 	public List<? extends Variable> getPopulationCharacteristics() {
-		return getBean().getVariables(Variable.class);
+		return getBean().getVariables(PopulationCharacteristic.class);
 	}
 	
 	public LabeledPresentation getCharacteristicModel(BasicStudyCharacteristic c) {

@@ -507,6 +507,17 @@ public class StudyTest {
 	}
 	
 	@Test
+	public void testClonedMeasurementKeysReferences() {
+		assertEquals(d_orig.getMeasurements(), d_clone.getMeasurements());
+		MeasurementKey origKey = d_orig.getMeasurements().keySet().iterator().next();
+		MeasurementKey cloneKey = d_clone.getMeasurements().keySet().iterator().next();
+		assertNotSame(origKey, cloneKey);
+		assertNotSame(origKey.getArm(), cloneKey.getArm());
+		assertNotSame(origKey.getWhenTaken(), cloneKey.getWhenTaken());
+		assertNotSame(origKey.getWhenTaken().getEpoch(), cloneKey.getWhenTaken().getEpoch());
+	}
+	
+	@Test
 	public void testCloneHasDistinctCharacteristics() {
 		assertFalse(d_orig.getCharacteristics() == d_clone.getCharacteristics());
 	}

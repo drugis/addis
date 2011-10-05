@@ -34,12 +34,11 @@ import java.util.Set;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.data.RelativeTo;
+import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.common.DateUtil;
@@ -94,11 +93,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		@Override
 		public String toString() {
-			return d_howLong + " " + formatRelativeTo(d_relativeTo);
+			return DurationPresentation.parseDuration(d_howLong, null) + " " + formatRelativeTo(d_relativeTo) + d_epoch.getName();
 		}
 
 		private String formatRelativeTo(RelativeTo relativeTo) {
-			return relativeTo.toString().toLowerCase().replace('_', ' ');
+			return relativeTo == RelativeTo.BEFORE_EPOCH_END ? "before end of " : "from start of ";
 		}
 
 		@Override
@@ -141,18 +140,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			d_wt = wt;
 		}
 
-		@Deprecated
-		public MeasurementKey(Variable v, Arm a) {
-			this(v, a, buildDefaultWhenTaken());
-		}
-
-		private static WhenTaken buildDefaultWhenTaken() {
-			try {
-				return new WhenTaken(DatatypeFactory.newInstance()
-						.newDurationDayTime("P0D"), new Epoch("Main phase", EntityUtil.createDuration("P2D")), RelativeTo.BEFORE_EPOCH_END);
-			} catch (DatatypeConfigurationException e) {
-				throw new RuntimeException(e);
-			}
+		public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a) {
+			this(som.getValue(), a, som.getWhenTaken().get(0));
 		}
 
 		public Variable getVariable() {
@@ -315,12 +304,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(getAdverseEvents());
 		newStudy.d_populationChars = cloneStudyOutcomeMeasures(getPopulationChars());
 
-		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc
-		// removes orphan measurements from the study.
-		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms()));
-
-		newStudy.setCharacteristics(cloneCharacteristics());
-
 		for (Epoch e : getEpochs()) {
 			newStudy.getEpochs().add(e.clone());
 		}
@@ -330,6 +313,14 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 					cloneStudyActivity(sa, newStudy.getArms(), newStudy
 							.getEpochs()));
 		}
+
+		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc
+		// removes orphan measurements from the study.
+		// Also copy AFTER the epochs/SAs because measurements need to be placed within their coordinate system.
+		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms(), newStudy.getEpochs()));
+
+		newStudy.setCharacteristics(cloneCharacteristics());
+
 
 		return newStudy;
 	}
@@ -368,17 +359,18 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return cm;
 	}
 
-	private Map<MeasurementKey, BasicMeasurement> cloneMeasurements(
-			List<Arm> newArms) {
+	private Map<MeasurementKey, BasicMeasurement> cloneMeasurements(List<Arm> newArms, List<Epoch> newEpochs) {
 		HashMap<MeasurementKey, BasicMeasurement> hashMap = new HashMap<MeasurementKey, BasicMeasurement>();
 		for (MeasurementKey key : d_measurements.keySet()) {
-			hashMap.put(fixKey(key, newArms), d_measurements.get(key).clone());
+			hashMap.put(fixKey(key, newArms, newEpochs), d_measurements.get(key).clone());
 		}
 		return hashMap;
 	}
 
-	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms) {
-		return new MeasurementKey(key.getVariable(), key.getArm() == null ? null : newArms.get(getArms().indexOf(key.getArm())));
+	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms, List<Epoch> newEpochs) {
+		WhenTaken wt = key.getWhenTaken();
+		return new MeasurementKey(key.getVariable(), key.getArm() == null ? null : newArms.get(getArms().indexOf(key.getArm())), 
+				new WhenTaken(wt.getHowLong(), newEpochs.get(getEpochs().indexOf(wt.getEpoch())), wt.getRelativeTo()));
 	}
 
 	private ObservableList<Arm> cloneArms() {
@@ -592,12 +584,20 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return getName().compareTo(other.getName());
 	}
 
+	public BasicMeasurement getMeasurement(Variable v, Arm a, WhenTaken wt) {
+		return d_measurements.get(new MeasurementKey(v, a, wt));
+	}
+	
 	public BasicMeasurement getMeasurement(Variable v, Arm a) {
-		return d_measurements.get(new MeasurementKey(v, a));
+		return d_measurements.get(new MeasurementKey(v, a, defaultMeasurementMoment()));
 	}
 
 	public BasicMeasurement getMeasurement(Variable v) {
 		return getMeasurement(v, null);
+	}
+
+	public Object getMeasurement(StudyOutcomeMeasure<AdverseEvent> dV, Arm dA) {
+		return getMeasurement(dV.getValue(), dA);
 	}
 
 	private void forceLegalArguments(OutcomeMeasure e, Arm a, Measurement m) {
@@ -617,7 +617,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public void setMeasurement(OutcomeMeasure e, Arm a, BasicMeasurement m) {
 		forceLegalArguments(e, a, m);
-		d_measurements.put(new MeasurementKey(e, a), m);
+		d_measurements.put(new MeasurementKey(e, a, defaultMeasurementMoment()), m);
 	}
 
 	/**
@@ -629,7 +629,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 */
 	public void setMeasurement(Variable v, Arm a, BasicMeasurement m) {
 		forceLegalArguments(v, a, m);
-		d_measurements.put(new MeasurementKey(v, a), m);
+		d_measurements.put(new MeasurementKey(v, a, defaultMeasurementMoment()), m);
 	}
 
 	/**
@@ -655,6 +655,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			throw new IllegalArgumentException(
 					"Measurement does not conform with outcome");
 		}
+		if (findTreatmentEpoch() == null) {
+			throw new IllegalStateException("Attempting to add measurement before treatment epoch is defined.");
+		}
 	}
 
 	public List<OutcomeMeasure> getOutcomeMeasures() {
@@ -675,16 +678,21 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public List<? extends Variable> getVariables(Class<? extends Variable> type) {
-		if (type == Endpoint.class) {
-			return extractVariables(getEndpoints());
-		} else if (type == AdverseEvent.class) {
-			return extractVariables(getAdverseEvents());
-		} else if (type == OutcomeMeasure.class) {
-			return getOutcomeMeasures();
-		}
-		return extractVariables(getPopulationChars());
+		return extractVariables(getStudyOutcomeMeasures(type));
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> getStudyOutcomeMeasures(Class<T> type) {
+		if (type == Endpoint.class) {
+			return (ObservableList) getEndpoints();
+		} else if (type == AdverseEvent.class) {
+			return (ObservableList) getAdverseEvents();
+		} else if (type == PopulationCharacteristic.class) {
+			return (ObservableList) getPopulationChars();
+		}
+		throw new IllegalArgumentException("Unknown variable type " + type.getSimpleName());
+	}
+	
 	public void addVariable(Variable om) {
 		addVariable(om, null);
 	}
@@ -737,8 +745,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			return false;
 		}
 		// PopulationChar measurements
-		if (k.d_variable instanceof Variable) {
-			if (!getVariables(Variable.class).contains(k.d_variable)) {
+		if (k.d_variable instanceof PopulationCharacteristic) {
+			if (!getPopulationChars().contains(
+					new StudyOutcomeMeasure<Variable>(k.d_variable))) {
 				return true;
 			}
 			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {
@@ -811,6 +820,14 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 				return epoch;
 		}
 		return null;
+	}
+
+	public WhenTaken defaultMeasurementMoment() {
+		return new WhenTaken(EntityUtil.createDuration("P0D"), findTreatmentEpoch(), RelativeTo.BEFORE_EPOCH_END);
+	}
+	
+	public WhenTaken baselineMeasurementMoment() {
+		return new WhenTaken(EntityUtil.createDuration("P0D"), findTreatmentEpoch(), RelativeTo.FROM_EPOCH_START);
 	}
 
 	private boolean isTreatmentEpoch(Epoch epoch) {
@@ -925,9 +942,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		StudyActivity studyActivity = new StudyActivity(name + " treatment",
 				new TreatmentActivity(new DrugTreatment(drug, dose)));
 		getStudyActivities().add(studyActivity);
-		if (getEpochs().isEmpty()) {
-			getEpochs().add(new Epoch("Main phase", null));
-		}
 		Epoch epoch = getEpochs().get(getEpochs().size() - 1);
 		this.setStudyActivityAt(arm, epoch, studyActivity);
 		return arm;
@@ -938,34 +952,43 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	/**
+	 * @param wt TODO
 	 * @return The Drugs that have at least one Arm with a complete measurement
 	 *         for the Variable v.
 	 */
-	public Set<DrugSet> getMeasuredDrugs(Variable v) {
+	public Set<DrugSet> getMeasuredDrugs(Variable v, WhenTaken wt) {
 		Set<DrugSet> drugs = new HashSet<DrugSet>();
 		for (DrugSet d : getDrugs()) {
-			if (isMeasured(v, d)) {
+			if (isMeasured(v, d, wt)) {
 				drugs.add(d);
 			}
 		}
 		return drugs;
 	}
-
-	public ObservableList<Arm> getMeasuredArms(Variable v, DrugSet d) {
-		return new FilteredObservableList<Arm>(getArms(d),
-				new IsMeasuredFilter(v));
+	
+	public Set<DrugSet> getMeasuredDrugs(Variable v) {
+		return getMeasuredDrugs(v, defaultMeasurementMoment());
 	}
 
-	private boolean isMeasured(Variable v, DrugSet d) {
+	public ObservableList<Arm> getMeasuredArms(Variable v, DrugSet d) {
+		return getMeasuredArms(v, d, defaultMeasurementMoment());
+	}	
+	
+	public ObservableList<Arm> getMeasuredArms(Variable v, DrugSet d, WhenTaken wt) {
+		return new FilteredObservableList<Arm>(getArms(d),
+				new IsMeasuredFilter(v, wt));
+	}
+
+	private boolean isMeasured(Variable v, DrugSet d, WhenTaken wt) {
 		for (Arm a : getArms(d)) {
-			if (isMeasured(v, a)) {
+			if (isMeasured(v, a, wt)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private boolean isMeasured(Variable v, Arm a) {
+	private boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
 		return getMeasurement(v, a) != null
 				&& getMeasurement(v, a).isComplete();
 	}
@@ -997,13 +1020,15 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public class IsMeasuredFilter implements Filter<Arm> {
 		private final Variable d_v;
+		private final WhenTaken d_wt;
 
-		public IsMeasuredFilter(Variable v) {
+		public IsMeasuredFilter(Variable v, WhenTaken wt) {
 			d_v = v;
+			d_wt = wt;
 		}
 
 		public boolean accept(Arm a) {
-			return isMeasured(d_v, a);
+			return isMeasured(d_v, a, d_wt);
 		}
 	}
 
@@ -1023,6 +1048,5 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public ObservableList<Note> getNotes() {
 		return d_notes;
 	}
-
 
 }

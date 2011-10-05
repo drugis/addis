@@ -56,7 +56,7 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 		
 		@Override
 		public String toString() {
-			return (quantity > 1 ? quantity + " " +  units : units.getSingular()).toLowerCase();
+			return quantity + " " + (quantity == 1 ? units.getSingular() : units.toString()).toLowerCase();
 		}
 	}
 
@@ -223,5 +223,10 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 	
 	public String getLabel() {
 		return getDefined() ? d_data.quantity + " " + d_data.units : "Undefined";
+	}
+	
+	@Override
+	public String toString() {
+		return getLabel();
 	}
 }
