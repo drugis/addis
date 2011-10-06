@@ -56,7 +56,7 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 		
 		@Override
 		public String toString() {
-			return quantity + " " + (quantity == 1 ? units.getSingular() : units.toString()).toLowerCase();
+			return (quantity == 1 ? units.getSingular() : quantity + " " + units.toString()).toLowerCase();
 		}
 	}
 

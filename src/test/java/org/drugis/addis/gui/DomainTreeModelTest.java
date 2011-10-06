@@ -86,14 +86,18 @@ public class DomainTreeModelTest {
 		d_firstStudy = new Study("First", d_firstIndication);
 		d_firstDrug = new Drug("Drug", "atc");
 		
+		ExampleData.addDefaultEpochs(d_firstStudy);
+
 		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, ExampleData.MILLIGRAMS_A_DAY));
 		
 		d_firstStudy.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_firstEndpoint));
 		d_firstStudy.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(d_firstADE));
+
+		ExampleData.addDefaultMeasurementMoments(d_firstStudy);
 		
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, d_firstEndpoint.buildMeasurement(pg));
 		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
-				
+		
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
 				Collections.singletonList((Study)d_firstStudy), new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
 		

@@ -77,6 +77,8 @@ public class ForestPlotPresentationTest {
 	@Before
 	public void setUp() {
 		d_s1 = new Study("X", new Indication(0L, ""));
+		ExampleData.addDefaultEpochs(d_s1);
+
 		d_endpoint = new Endpoint("E", Endpoint.convertVarType(Variable.Type.CONTINUOUS));
 		d_s1.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
 		d_baseline = new Drug("DrugA", "");
@@ -85,15 +87,19 @@ public class ForestPlotPresentationTest {
 		Arm pSubj = d_s1.createAndAddArm("subj", s_subjSize, d_subject, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
 		d_mBase1 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pBase.getSize());
 		d_mSubj1 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pSubj.getSize());
-		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
-		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
 		
 		d_s2 = new Study("Y", new Indication(0L, ""));
+		ExampleData.addDefaultEpochs(d_s2);
 		d_s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_endpoint));
 		Arm pBase2 = d_s2.createAndAddArm("base2", s_baseSize, d_baseline, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
 		Arm pSubj2 = d_s2.createAndAddArm("subj2", s_subjSize, d_subject, new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY));
 		d_mBase2 = new BasicContinuousMeasurement(s_mean2, s_stdDev2, pBase2.getSize());
 		d_mSubj2 = new BasicContinuousMeasurement(s_mean1, s_stdDev1, pSubj2.getSize());
+
+		ExampleData.addDefaultMeasurementMoments(d_s1);
+		ExampleData.addDefaultMeasurementMoments(d_s2);
+		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
+		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
 		d_s2.setMeasurement(d_endpoint, pBase2, d_mBase2);
 		d_s2.setMeasurement(d_endpoint, pSubj2, d_mSubj2);
 		

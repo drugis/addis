@@ -203,6 +203,7 @@ public class StudyTest {
 	@Test
 	public void testSetMeasurement() {
 		Study study = new Study("X", new Indication(0L, ""));
+		ExampleData.addDefaultEpochs(study);
 		Endpoint endpoint = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(endpoint));
 		Arm group = study.createAndAddArm("", 100, null, null);
@@ -225,6 +226,7 @@ public class StudyTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetMeasurementThrowsException2() {
 		Study study = new Study("X", new Indication(0L, ""));
+		ExampleData.addDefaultEpochs(study);
 		Endpoint e = new Endpoint("e", Endpoint.convertVarType(Variable.Type.RATE));
 		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		Arm group = study.createAndAddArm("", 100, null, null);
@@ -381,10 +383,9 @@ public class StudyTest {
 	@Test
 	public void testGetSampleSize() {
 		Study s = new Study("s1", new Indication(01L, "i"));
-		@SuppressWarnings("unused")
-		Arm pg1 = s.createAndAddArm("pg1", 25, null, null);
-		@SuppressWarnings("unused")
-		Arm pg2 = s.createAndAddArm("pg2", 35, null, null);
+		ExampleData.addDefaultEpochs(s);
+		s.createAndAddArm("pg1", 25, null, null);
+		s.createAndAddArm("pg2", 35, null, null);
 		assertEquals(60, s.getSampleSize());
 	}
 	
@@ -399,6 +400,7 @@ public class StudyTest {
 	public void testSetPopulationChar() {
 		PopulationCharacteristic v = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		Study s = new Study("X", new Indication(0L, "Y"));
+		ExampleData.addDefaultEpochs(s);
 		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, ExampleData.MILLIGRAMS_A_DAY));
 		s.getPopulationChars().clear();
 		s.getPopulationChars().addAll(Study.wrapVariables(Collections.singletonList(v)));
@@ -414,6 +416,7 @@ public class StudyTest {
 	@Test
 	public void testChangePopulationCharRetainMeasurements() {
 		Study s = new Study("X", new Indication(0L, "Y"));
+		ExampleData.addDefaultEpochs(s);
 		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, ExampleData.MILLIGRAMS_A_DAY));
 		
 		PopulationCharacteristic v1 = new PopulationCharacteristic("Age1", new ContinuousVariableType());
@@ -495,15 +498,28 @@ public class StudyTest {
 	
 	@Test
 	public void testClonedUsedBysReferToClonedArmAndEpoch() {
-		assertSame(d_orig.getArms().get(0), d_orig.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
-		assertEquals(d_orig.getArms().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
-		assertNotSame(d_orig.getArms().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
-		assertSame(d_clone.getArms().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getArm());
+		// Check that we're still testing what we think we're testing
+		StudyActivity orig_sa = d_orig.getStudyActivities().get(0);
+		assertEquals("Sertraline-0 treatment", orig_sa.getName());
+		assertEquals(1, orig_sa.getUsedBy().size());
 		
-		assertSame(d_orig.getEpochs().get(0), d_orig.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
-		assertEquals(d_orig.getEpochs().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
-		assertNotSame(d_orig.getEpochs().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
-		assertSame(d_clone.getEpochs().get(0), d_clone.getStudyActivities().get(0).getUsedBy().iterator().next().getEpoch());
+		StudyActivity clone_sa = d_clone.getStudyActivities().get(0);
+		assertEquals("Sertraline-0 treatment", clone_sa.getName());
+		assertEquals(1, clone_sa.getUsedBy().size());
+
+		UsedBy orig_ub = orig_sa.getUsedBy().iterator().next();
+		UsedBy clone_ub = clone_sa.getUsedBy().iterator().next();
+		
+		// The actual test
+		assertSame(d_orig.getArms().get(0), orig_ub.getArm());
+		assertEquals(d_orig.getArms().get(0), clone_ub.getArm());
+		assertNotSame(d_orig.getArms().get(0), clone_ub.getArm());
+		assertSame(d_clone.getArms().get(0), clone_ub.getArm());
+		
+		assertSame(d_orig.getEpochs().get(1), orig_ub.getEpoch());
+		assertEquals(d_orig.getEpochs().get(1), clone_ub.getEpoch());
+		assertNotSame(d_orig.getEpochs().get(1), clone_ub.getEpoch());
+		assertSame(d_clone.getEpochs().get(1), clone_ub.getEpoch());
 	}
 	
 	@Test

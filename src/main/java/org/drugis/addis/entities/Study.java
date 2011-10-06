@@ -942,8 +942,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 * @return The created arm, already added and embedded in the study
 	 *         structure.
 	 */
-	public Arm createAndAddArm(String name, Integer size, Drug drug,
-			AbstractDose dose) {
+	public Arm createAndAddArm(String name, Integer size, Drug drug, AbstractDose dose) {
 		Arm arm = new Arm(name, size);
 		getArms().add(arm);
 		StudyActivity studyActivity = new StudyActivity(name + " treatment",

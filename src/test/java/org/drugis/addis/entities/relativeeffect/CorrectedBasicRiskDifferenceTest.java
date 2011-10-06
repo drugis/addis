@@ -28,42 +28,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.FixedDose;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CorrectedBasicRiskDifferenceTest {
-
-	private Drug d_fluox;
-	private Drug d_sertra;
-	
-	private Indication d_ind;
-	private Endpoint d_ep;
-	
-	private Study d_bennie;
-	
+public class CorrectedBasicRiskDifferenceTest extends RelativeEffectTestBase {
 	private BasicRiskDifference d_riskDifferenceBennie;
 	
 	@Before
 	public void setUp() {
-		d_ind = new Indication(001L, "Impression");
-		d_fluox = new Drug("Fluoxetine","01");
-		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", Endpoint.convertVarType(Variable.Type.RATE));
-		
-		d_bennie = createStudy("Bennie 1995",0,144,73,142);
-		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicRiskDifference.class, true);
+		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
+		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskDifference.class, true);
 	}
 
 	@Test
@@ -146,28 +123,5 @@ public class CorrectedBasicRiskDifferenceTest {
 		// c=0.5, n2 = 145, a = 73.5, n1 = 143 -> b = 69.5, d = 144.5
 		double expected = (73.5/143 - 0.5/145);
 		assertEquals(expected, d_riskDifferenceBennie.getMu(), 0.00001);
-	}
-	
-	
-	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
-	{
-		Study s = new Study(studyName, d_ind);
-		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_ep));
-		Arm g_fluox = s.createAndAddArm("fluox", fluoxSize, d_fluox, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
-		Arm g_parox = s.createAndAddArm("sertr", sertraSize, d_sertra, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));		
-		
-		s.getArms().add(g_parox);
-		s.getArms().add(g_fluox);
-		
-		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
-		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
-		
-		m_parox.setRate(sertraResp);
-		m_fluox.setRate(fluoxResp);
-		
-		s.setMeasurement(d_ep, g_parox, m_parox);
-		s.setMeasurement(d_ep, g_fluox, m_fluox);		
-		
-		return s;
 	}
 }

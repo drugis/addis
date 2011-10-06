@@ -61,6 +61,7 @@ public class StudyPresentationModelTest {
 	@Before
 	public void setUp() {
 		d_study = new Study("study", new Indication(0L, "ind"));
+		ExampleData.addDefaultEpochs(d_study);
 		d_pmf = new PresentationModelFactory(new DomainImpl());
 		d_model = new StudyPresentation(d_study, d_pmf);
 	}

@@ -28,49 +28,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Endpoint;
-import org.drugis.addis.entities.FixedDose;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CorrectedOddsRatioTest {
-	private Drug d_fluox;
-	private Drug d_sertra;
-	
-	private Indication d_ind;
-	private Endpoint d_ep;
-	
-	private Study d_bennie, d_boyer, d_fava, d_newhouse, d_sechter;
+public class CorrectedOddsRatioTest extends RelativeEffectTestBase {
+
 	
 	private BasicOddsRatio d_ratioBennie, d_ratioBoyer, d_ratioFava, d_ratioNewhouse, d_ratioSechter;
 
 	@Before
 	public void setUp() {
-		d_ind = new Indication(001L, "Impression");
-		d_fluox = new Drug("Fluoxetine","01");
-		d_sertra = new Drug("Sertraline","02");
-		d_ep = new Endpoint("ep", Endpoint.convertVarType(Variable.Type.RATE));
-		
-		d_bennie = createStudy("Bennie 1995",0,144,73,142);
-		d_boyer = createStudy("Boyer 1998", 50,120, 0,122);
-		d_fava = createStudy("Fava 2002", 0, 92, 70, 96);
-		d_newhouse = createStudy("Newhouse 2000", 50,119, 0,117);
-		d_sechter = createStudy("Sechter 1999", 70,120, 86,118);
-		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
-		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
-		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
-		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
-		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_ep, new DrugSet(d_fluox), new DrugSet(d_sertra), BasicOddsRatio.class, true);
+		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
+		d_boyer = createRateStudy("Boyer 1998", 50,120, 0,122);
+		d_fava = createRateStudy("Fava 2002", 0, 92, 70, 96);
+		d_newhouse = createRateStudy("Newhouse 2000", 50,119, 0,117);
+		d_sechter = createRateStudy("Sechter 1999", 70,120, 86,118);
+		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
+		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
+		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
+		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
+		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
 
 	}
 
@@ -157,27 +137,4 @@ public class CorrectedOddsRatioTest {
 		assertFalse(or.getMu() == Double.NaN);
 		assertFalse(Double.NaN == or.getConfidenceInterval().getPointEstimate()); 
 	}
-
-	private Study createStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize)
-	{
-		Study s = new Study(studyName, d_ind);
-		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_ep));
-		Arm g_fluox = s.createAndAddArm("fluox", fluoxSize, d_fluox, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
-		Arm g_parox = s.createAndAddArm("sertr", sertraSize, d_sertra, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));		
-		
-		s.getArms().add(g_parox);
-		s.getArms().add(g_fluox);
-		
-		BasicRateMeasurement m_parox = (BasicRateMeasurement) d_ep.buildMeasurement(g_parox);
-		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_ep.buildMeasurement(g_fluox);
-		
-		m_parox.setRate(sertraResp);
-		m_fluox.setRate(fluoxResp);
-		
-		s.setMeasurement(d_ep, g_parox, m_parox);
-		s.setMeasurement(d_ep, g_fluox, m_fluox);		
-		
-		return s;
-	}
-
 }

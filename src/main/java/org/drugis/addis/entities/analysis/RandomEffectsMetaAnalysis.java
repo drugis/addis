@@ -60,7 +60,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 			DrugSet drug1, DrugSet drug2) 
 	throws IllegalArgumentException {
 		super(name, studies.get(0).getIndication(), om, studies, 
-				drugList(drug1, drug2), getArmMap(studies, drug1, drug2));
+				drugSetList(drug1, drug2), getArmMap(studies, drug1, drug2));
 		checkREDataConsistency(studies, drug1, drug2);
 	}
 
@@ -122,10 +122,10 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	private static List<DrugSet> getDrugs(List<StudyArmsEntry> studyArms) {
 		DrugSet d1 = getFirstDrug(studyArms);
 		DrugSet d2 = getSecondDrug(studyArms);
-		return drugList(d1, d2);
+		return drugSetList(d1, d2);
 	}
 
-	private static List<DrugSet> drugList(DrugSet d1, DrugSet d2) {
+	private static List<DrugSet> drugSetList(DrugSet d1, DrugSet d2) {
 		List<DrugSet> list = new ArrayList<DrugSet>();
 		list.add(d1);
 		list.add(d2);
@@ -184,8 +184,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	}
 
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {
-		if (!d_drugs.containsAll(drugList(d1, d2)))
-			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + drugList(d1, d2) + " were asked");
+		if (!d_drugs.containsAll(drugSetList(d1, d2)))
+			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + drugSetList(d1, d2) + " were asked");
 		
 		
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = getFilteredRelativeEffects(d1, d2, type);
