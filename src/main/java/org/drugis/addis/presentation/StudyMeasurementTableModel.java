@@ -61,7 +61,7 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		if(isArmColumn(columnIndex)) {
+		if(isVariableColumn(columnIndex)) {
 			return String.class;
 		} else if (isMeasurementMomentColumn(columnIndex)) { 
 			return String.class;
@@ -81,12 +81,12 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 
 	private void initVariables(Arm a) {
 		for (StudyOutcomeMeasure<? extends Variable> v : d_study.getStudyOutcomeMeasures(d_type)) {
-			MissingMeasurementPresentation mmp = new MissingMeasurementPresentation(d_study, v, a);
 			for (WhenTaken wt : v.getWhenTaken()) {
-				d_mmpMap.put(new MeasurementKey(v.getValue(), a, wt), mmp);
+				MissingMeasurementPresentation mmp = new MissingMeasurementPresentation(d_study, v, wt, a);
+				d_mmpMap.put(new MeasurementKey(v, a, wt), mmp);
+				mmp.getMeasurement().addPropertyChangeListener(d_measurementListener);
+				mmp.getMissingModel().addValueChangeListener(d_measurementListener);
 			}
-			mmp.getMeasurement().addPropertyChangeListener(d_measurementListener);
-			mmp.getMissingModel().addValueChangeListener(d_measurementListener);
 		}
 	}
 
@@ -95,7 +95,11 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return d_study.getVariables(d_type).size();
+		int n = 0;
+		for (StudyOutcomeMeasure<? extends Variable> var : d_study.getStudyOutcomeMeasures(d_type)) {
+			n += var.getWhenTaken().size();
+		}
+		return n;
 	}
 	
 	@Override
@@ -105,7 +109,7 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	
 	@Override
 	public String getColumnName(int col) {
-		if (isArmColumn(col)) {
+		if (isVariableColumn(col)) {
 			return CategoryKnowledgeFactory.getCategoryKnowledge(d_type).getSingularCapitalized();
 		} else if (isMeasurementMomentColumn(col)) {
 			return "Measurement moment";
@@ -119,7 +123,7 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 		return d_hasOverallColumn ? col == getColumnCount() - 1 : false;
 	}
 
-	private boolean isArmColumn(int col) {
+	private boolean isVariableColumn(int col) {
 		return col == 0;
 	}
 
@@ -128,28 +132,49 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (isArmColumn(columnIndex)) {
-			return getVariableAtIndex(rowIndex).getName();
+		Key key = getKeyAt(rowIndex, columnIndex);
+		if (isVariableColumn(columnIndex)) {
+			return key.v.getValue().getName();
 		} 
-		StudyOutcomeMeasure<? extends Variable> om = d_study.getStudyOutcomeMeasures(d_type).get(rowIndex);
-		Arm arm = (isOverallColumn(columnIndex) || isMeasurementMomentColumn(columnIndex)) ? null : d_study.getArms().get(columnIndex - 2);
 		if (isMeasurementMomentColumn(columnIndex)) {
-			return om.getWhenTaken().get(0);
+			return key.wt;
 		}
-		return d_mmpMap.get(new Study.MeasurementKey(om.getValue(), arm, om.getWhenTaken().get(0)));
+		return d_mmpMap.get(key.getMeasurementKey());
 	}
 
+	private static class Key {
+		public final StudyOutcomeMeasure<? extends Variable> v;
+		public final WhenTaken wt;
+		public final Arm a;
+		
+		public Key(StudyOutcomeMeasure<? extends Variable> v, WhenTaken wt, Arm a) {
+			this.v = v;
+			this.wt = wt;
+			this.a = a;
+		}
+		
+		public Study.MeasurementKey getMeasurementKey() {
+			return new Study.MeasurementKey(v, a, wt);
+		}
+	}
 
-	private Variable getVariableAtIndex(int rowIndex) {
+	private Key getKeyAt(int rowIndex, int columnIndex) {
 		int index = 0;
-		for (Variable m : d_study.getVariables(d_type)) {
-			if (index == rowIndex) {
-				return m;
-			} else {
-				index++;
+		Arm arm = !isArmColumn(columnIndex) ? null : d_study.getArms().get(columnIndex - 2);
+		for (StudyOutcomeMeasure<? extends Variable> v : d_study.getStudyOutcomeMeasures(d_type)) {
+			for (WhenTaken wt : v.getWhenTaken()) {
+				if (index == rowIndex) {
+					return new Key(v, wt, arm);
+				} else {
+					++index;
+				}
 			}
 		}
-		throw new IllegalStateException("no endpoint of index " + rowIndex);
+		throw new IndexOutOfBoundsException("Index out of bounds: " + rowIndex + ", " + columnIndex);
+	}
+
+	private boolean isArmColumn(int columnIndex) {
+		return !(isOverallColumn(columnIndex) || isMeasurementMomentColumn(columnIndex) || isVariableColumn(columnIndex));
 	}
 	
 	private class MyMeasurementListener implements PropertyChangeListener {

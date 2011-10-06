@@ -49,6 +49,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -92,7 +93,8 @@ public class StudyMeasurementTableModelTest {
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(Study.extractVariables(d_standardStudy.getEndpoints()).size(), d_model.getRowCount());
+		// DeWilde has 2 measurement moments per endpoint
+		assertEquals(d_standardStudy.getEndpoints().size() * 2, d_model.getRowCount());
 	}
 	
 	@Test
@@ -103,12 +105,14 @@ public class StudyMeasurementTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		int index = 0;
-		for (Variable v : Study.extractVariables(d_standardStudy.getEndpoints())) {
-			assertEquals(v.getName(), d_model.getValueAt(index, 0));
-
-			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(0), (MissingMeasurementPresentation)d_model.getValueAt(index, 2));
-			presentMeasurementCorrectlyBound(v, d_standardStudy.getArms().get(1), (MissingMeasurementPresentation)d_model.getValueAt(index, 3));
-			index++;
+		for (StudyOutcomeMeasure<Endpoint> v : d_standardStudy.getEndpoints()) {
+			for (WhenTaken wt : v.getWhenTaken()) {
+				assertEquals(v.getValue().getName(), d_model.getValueAt(index, 0));
+				assertEquals(wt, d_model.getValueAt(index, 1));
+				measurementCorrectlyBound(d_standardStudy, v.getValue(), wt, d_standardStudy.getArms().get(0), (MissingMeasurementPresentation)d_model.getValueAt(index, 2));
+				measurementCorrectlyBound(d_standardStudy, v.getValue(), wt, d_standardStudy.getArms().get(1), (MissingMeasurementPresentation)d_model.getValueAt(index, 3));
+				++index;
+			}
 		}
 	}
 	
@@ -117,28 +121,36 @@ public class StudyMeasurementTableModelTest {
 		int index = 0;
 		for (Variable v : d_popcharStudy.getVariables(PopulationCharacteristic.class)) {
 			assertEquals(v.getName(), d_popcharTablemodel.getValueAt(index, 0));
-			
-			missingMeasurementCorrectlyBound(v, d_popcharStudy.getArms().get(0), (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 2));
-			missingMeasurementCorrectlyBound(v, d_popcharStudy.getArms().get(1), (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 3));
-			missingMeasurementCorrectlyBound(v, null, (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 4));
+			WhenTaken wt = d_popcharStudy.defaultMeasurementMoment();
+			measurementCorrectlyBound(d_popcharStudy, v, wt, d_popcharStudy.getArms().get(0), (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 2));
+			measurementCorrectlyBound(d_popcharStudy, v, wt, d_popcharStudy.getArms().get(1), (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 3));
+			measurementCorrectlyBound(d_popcharStudy, v, wt, null, (MissingMeasurementPresentation)d_popcharTablemodel.getValueAt(index, 4));
 			++index;
 		}
 	}
 	
-	private void missingMeasurementCorrectlyBound(Variable v, Arm a, MissingMeasurementPresentation mmp) {
+	private void missingMeasurementCorrectlyBound(Study study, Variable v, WhenTaken wt, Arm a, MissingMeasurementPresentation mmp) {
 		assertEquals(Boolean.TRUE, mmp.getMissingModel().getValue());
+		assertEquals(study.buildDefaultMeasurement(v, a), mmp.getMeasurement());
 		mmp.getMissingModel().setValue(false);
-		assertSame(mmp.getMeasurement(), d_popcharStudy.getMeasurement(v, a));
+		assertSame(mmp.getMeasurement(), study.getMeasurement(v, a, wt));
 		mmp.getMissingModel().setValue(true);
-		assertEquals(null, d_popcharStudy.getMeasurement(v, a));
+		assertEquals(null, study.getMeasurement(v, a, wt));
 	}
 	
+	private void measurementCorrectlyBound(Study study, Variable v, WhenTaken wt, Arm a, MissingMeasurementPresentation mmp) {
+		assertEquals(study.getMeasurement(v, a, wt) == null, mmp.getMissingModel().getValue());
+		if ((Boolean) mmp.getMissingModel().getValue()) {
+			missingMeasurementCorrectlyBound(study, v, wt, a, mmp);
+		} else {
+			presentMeasurementCorrectlyBound(study, v, wt, a, mmp);
+		}
+	}
 	
-	private void presentMeasurementCorrectlyBound(Variable v, Arm a, MissingMeasurementPresentation mmp) {
-		assertEquals(Boolean.FALSE, mmp.getMissingModel().getValue());
-		assertSame(mmp.getMeasurement(), d_standardStudy.getMeasurement(v, a));
+	private void presentMeasurementCorrectlyBound(Study study, Variable v, WhenTaken wt, Arm a, MissingMeasurementPresentation mmp) {
+		assertSame(mmp.getMeasurement(), study.getMeasurement(v, a, wt));
 		mmp.getMissingModel().setValue(true);
-		assertEquals(null, d_standardStudy.getMeasurement(v, a));
+		assertEquals(null, study.getMeasurement(v, a, wt));
 		assertEquals(Boolean.TRUE, mmp.getMissingModel().getValue());
 		mmp.getMissingModel().setValue(false);
 	}	
@@ -167,7 +179,7 @@ public class StudyMeasurementTableModelTest {
 	@Test
 	public void testGetWhenTaken() {
 		assertEquals("0 weeks from start of Main phase", d_model.getValueAt(0, 1).toString());
-		assertEquals("0 weeks before end of Main phase", d_model.getValueAt(0, 1).toString());
+		assertEquals("0 weeks before end of Main phase", d_model.getValueAt(1, 1).toString());
 	}
 	
 	@Test

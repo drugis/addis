@@ -29,6 +29,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.Study.WhenTaken;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -41,16 +42,16 @@ public class MissingMeasurementPresentation {
 
 		@Override
 		public Object getValue() {
-			return d_study.getMeasurement(d_v.getValue(), d_a) == null;
+			return d_study.getMeasurement(d_v.getValue(), d_a, d_wt) == null;
 		}
 
 		@Override
 		public void setValue(Object newValue) {
 			Object oldValue = getValue();
 			if (newValue.equals(Boolean.TRUE)) {
-				d_study.getMeasurements().remove(new Study.MeasurementKey(d_v, d_a));
+				d_study.getMeasurements().remove(new Study.MeasurementKey(d_v, d_a, d_wt));
 			} else {
-				d_study.getMeasurements().put(new Study.MeasurementKey(d_v, d_a), d_m);
+				d_study.getMeasurements().put(new Study.MeasurementKey(d_v, d_a, d_wt), d_m);
 			}
 			fireValueChange(oldValue, newValue);
 		}
@@ -58,12 +59,16 @@ public class MissingMeasurementPresentation {
 	private final Study d_study;
 	private final StudyOutcomeMeasure<? extends Variable> d_v;
 	private final Arm d_a;
+	private final WhenTaken d_wt;
 	
-	public MissingMeasurementPresentation(final Study s, final StudyOutcomeMeasure<? extends Variable> v, final Arm a) {
+	public MissingMeasurementPresentation(final Study s, final StudyOutcomeMeasure<? extends Variable> v, WhenTaken wt, final Arm a) {
 		d_study = s;
 		d_v = v;
+		d_wt = wt;
 		d_a = a;
-		d_m = d_study.getMeasurement(d_v.getValue(), d_a, d_v.getWhenTaken().get(0)) == null ? d_study.buildDefaultMeasurement(d_v.getValue(), d_a) : d_study.getMeasurement(d_v.getValue(), d_a);
+		d_m = d_study.getMeasurement(d_v.getValue(), d_a, d_wt) == null ? 
+				d_study.buildDefaultMeasurement(d_v.getValue(), d_a) : 
+					d_study.getMeasurement(d_v.getValue(), d_a, d_wt);
 	}
 	
 	public BasicMeasurement getMeasurement() {

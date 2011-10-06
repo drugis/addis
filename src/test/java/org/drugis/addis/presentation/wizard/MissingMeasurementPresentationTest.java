@@ -51,7 +51,7 @@ public class MissingMeasurementPresentationTest {
 		d_s = ExampleData.buildStudyBennie();
 		d_v = d_s.getAdverseEvents().get(0);
 		d_a = d_s.getArms().get(0);
-		d_mmp = new MissingMeasurementPresentation(d_s, d_v, d_a);
+		d_mmp = new MissingMeasurementPresentation(d_s, d_v, d_s.defaultMeasurementMoment(), d_a);
 		d_defaultMeasurement = d_s.buildDefaultMeasurement(d_v.getValue(), d_a);
 		d_missing = d_mmp.getMissingModel();
 	}

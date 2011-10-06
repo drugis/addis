@@ -120,8 +120,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public static class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
 
-		private Variable d_variable;
-		private Arm d_arm;
+		private final Variable d_variable;
+		private final Arm d_arm;
 		private final WhenTaken d_wt;
 
 		public MeasurementKey(Variable v, Arm a, WhenTaken wt) {
@@ -140,8 +140,13 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			d_wt = wt;
 		}
 
+		@Deprecated
 		public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a) {
 			this(som.getValue(), a, som.getWhenTaken().get(0));
+		}
+
+		public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
+			this(som.getValue(), a, wt);
 		}
 
 		public Variable getVariable() {
@@ -585,7 +590,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public BasicMeasurement getMeasurement(Variable v, Arm a, WhenTaken wt) {
-		return d_measurements.get(new MeasurementKey(v, a, wt));
+		MeasurementKey key = new MeasurementKey(v, a, wt);
+		BasicMeasurement basicMeasurement = d_measurements.get(key);
+		return basicMeasurement;
 	}
 	
 	public BasicMeasurement getMeasurement(Variable v, Arm a) {
