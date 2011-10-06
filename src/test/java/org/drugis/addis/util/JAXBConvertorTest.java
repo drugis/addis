@@ -95,12 +95,12 @@ import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study.MeasurementKey;
-import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -663,7 +663,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		Study.StudyOutcomeMeasure<Variable> sOm1 = new Study.StudyOutcomeMeasure<Variable>(ep);
-		sOm1.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), epoch, RelativeTo.BEFORE_EPOCH_END));
+		sOm1.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm1), om);
 		
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
@@ -674,7 +674,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(ade, (org.drugis.addis.entities.OutcomeMeasure)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		Study.StudyOutcomeMeasure<Variable> sOm2 = new Study.StudyOutcomeMeasure<Variable>(ade);
-		sOm2.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), epoch, RelativeTo.BEFORE_EPOCH_END));
+		sOm2.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm2), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
@@ -683,7 +683,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(pc, (PopulationCharacteristic)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		Study.StudyOutcomeMeasure<Variable> sOm3 = new Study.StudyOutcomeMeasure<Variable>(pc);
-		sOm3.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), epoch, RelativeTo.BEFORE_EPOCH_END));
+		sOm3.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm3), om);
 	}
 	
@@ -707,7 +707,7 @@ public class JAXBConvertorTest {
 		List<Epoch> epochs = new ArrayList<Epoch>();
 		epochs.add(epoch);
 		
-		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), epoch, RelativeTo.BEFORE_EPOCH_END);
+		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
 		epSom.getWhenTaken().add(wt);
 		vars.put("X", epSom);
 		vars.put("Y", new Study.StudyOutcomeMeasure<Variable>(ExampleData.buildAdverseEventDiarrhea()));
@@ -717,7 +717,7 @@ public class JAXBConvertorTest {
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
 		epRef.setPrimary(false);
-		epRef.getWhenTaken().add(buildRelativeTime(epoch.getName(), wt.getHowLong(), wt.getRelativeTo()));
+		epRef.getWhenTaken().add(buildRelativeTime(epoch.getName(), wt.getDuration(), wt.getRelativeTo()));
 
 		StudyOutcomeMeasure adeRef = new StudyOutcomeMeasure();
 		adeRef.setNotes(new Notes());
@@ -789,7 +789,7 @@ public class JAXBConvertorTest {
 		Epoch mainPhase = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
 		epochs.add(mainPhase);
 
-		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), mainPhase, RelativeTo.BEFORE_EPOCH_END);
+		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, mainPhase);
 
 		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
@@ -820,13 +820,13 @@ public class JAXBConvertorTest {
 		
 		Measurements measurements = new Measurements();
 		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
-		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));		
-		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
-		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
-		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
-		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
-		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
-		list.add(buildContinuousMeasurement(null, pcName, cm1, "Measurement phase", whenTaken.getHowLong(), whenTaken.getRelativeTo()));
+		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));		
+		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
+		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
+		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
+		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
+		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
+		list.add(buildContinuousMeasurement(null, pcName, cm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
 		
 		
 		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();

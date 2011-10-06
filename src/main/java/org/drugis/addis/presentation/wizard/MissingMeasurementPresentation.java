@@ -28,8 +28,8 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
-import org.drugis.addis.entities.Study.WhenTaken;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;

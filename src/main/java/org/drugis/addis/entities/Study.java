@@ -34,11 +34,9 @@ import java.util.Set;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import javax.xml.datatype.Duration;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.data.RelativeTo;
-import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.common.DateUtil;
@@ -50,73 +48,6 @@ import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
-
-	public static class WhenTaken extends AbstractEntity implements Entity,
-			Comparable<WhenTaken> {
-
-		private final Duration d_howLong;
-		private final RelativeTo d_relativeTo;
-		private final Epoch d_epoch;
-
-		public WhenTaken(Duration howLong, Epoch epoch, RelativeTo relativeTo) {
-			d_howLong = howLong;
-			d_epoch = epoch;
-			d_relativeTo = relativeTo;
-		}
-
-		public Duration getHowLong() {
-			return d_howLong;
-		}
-
-		public RelativeTo getRelativeTo() {
-			return d_relativeTo;
-		}
-
-		public Epoch getEpoch() {
-			return d_epoch;
-		}
-		
-		public Set<? extends Entity> getDependencies() {
-			return Collections.singleton(d_epoch);
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null || !(obj instanceof WhenTaken)) {
-				return false;
-			}
-			WhenTaken other = (WhenTaken) obj;
-			return EqualsUtil.equal(d_howLong, other.d_howLong)
-					&& EqualsUtil.equal(d_relativeTo, other.d_relativeTo)
-					&& EqualsUtil.equal(d_epoch, other.d_epoch);
-		}
-
-		@Override
-		public String toString() {
-			return DurationPresentation.parseDuration(d_howLong, null) + " " + formatRelativeTo(d_relativeTo) + d_epoch.getName();
-		}
-
-		private String formatRelativeTo(RelativeTo relativeTo) {
-			return relativeTo == RelativeTo.BEFORE_EPOCH_END ? "before end of " : "from start of ";
-		}
-
-		@Override
-		public int compareTo(WhenTaken o) {
-			if (d_relativeTo == o.d_relativeTo) {
-				return d_howLong.compare(o.d_howLong);
-			}
-			return d_relativeTo == RelativeTo.FROM_EPOCH_START ? -1 : 1;
-		}
-		
-		@Override
-		public int hashCode() {
-			int code = 1;
-			code = code * 31 + d_epoch.hashCode();
-			code = code * 31 + d_howLong.hashCode();
-			code = code * 31 + d_relativeTo.hashCode();
-			return code;
-		}
-	}
 
 	public static class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
 
@@ -214,7 +145,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		public static final String PROPERTY_IS_PRIMARY = "isPrimary";
 
 		private Boolean d_isPrimary = false;
-		private List<WhenTaken> d_whenTaken = new ArrayList<WhenTaken>();
+		private ObservableList<WhenTaken> d_whenTaken = new ArrayListModel<WhenTaken>();
 
 		public StudyOutcomeMeasure(T obj) {
 			super(obj);
@@ -233,7 +164,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			clone.setIsPrimary(getIsPrimary());
 			clone.getNotes().addAll(getNotes());
 			for (WhenTaken wt : getWhenTaken()) {
-				clone.getWhenTaken().add(new WhenTaken(wt.getHowLong(), wt.getEpoch().clone(), wt.getRelativeTo()));
+				clone.getWhenTaken().add(new WhenTaken(wt.getDuration(), wt.getRelativeTo(), wt.getEpoch().clone()));
 			}
 			return clone;
 		}
@@ -248,7 +179,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			firePropertyChange(PROPERTY_IS_PRIMARY, oldValue, d_isPrimary);
 		}
 
-		public List<WhenTaken> getWhenTaken() {
+		public ObservableList<WhenTaken> getWhenTaken() {
 			return d_whenTaken;
 		}
 
@@ -375,7 +306,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms, List<Epoch> newEpochs) {
 		WhenTaken wt = key.getWhenTaken();
 		return new MeasurementKey(key.getVariable(), key.getArm() == null ? null : newArms.get(getArms().indexOf(key.getArm())), 
-				new WhenTaken(wt.getHowLong(), newEpochs.get(getEpochs().indexOf(wt.getEpoch())), wt.getRelativeTo()));
+				new WhenTaken(wt.getDuration(), wt.getRelativeTo(), newEpochs.get(getEpochs().indexOf(wt.getEpoch()))));
 	}
 
 	private ObservableList<Arm> cloneArms() {
@@ -830,11 +761,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public WhenTaken defaultMeasurementMoment() {
-		return new WhenTaken(EntityUtil.createDuration("P0D"), findTreatmentEpoch(), RelativeTo.BEFORE_EPOCH_END);
+		return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, findTreatmentEpoch());
 	}
 	
 	public WhenTaken baselineMeasurementMoment() {
-		return new WhenTaken(EntityUtil.createDuration("P0D"), findTreatmentEpoch(), RelativeTo.FROM_EPOCH_START);
+		return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, findTreatmentEpoch());
 	}
 
 	private boolean isTreatmentEpoch(Epoch epoch) {

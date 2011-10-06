@@ -89,11 +89,11 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.Study.MeasurementKey;
-import org.drugis.addis.entities.Study.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -835,12 +835,12 @@ public class JAXBConvertor {
 	}
 	
 	private static WhenTaken convertWhenTaken(RelativeTime rt, List<Epoch> epochs) {
-		return new WhenTaken(rt.getHowLong(), findNamedItem(epochs, rt.getEpoch().getName()), rt.getRelativeTo());
+		return new WhenTaken(rt.getHowLong(), rt.getRelativeTo(), findNamedItem(epochs, rt.getEpoch().getName()));
 	}
 
 	private static RelativeTime convertWhenTaken(WhenTaken whenTaken) {
 		RelativeTime rt = new RelativeTime();
-		rt.setHowLong(whenTaken.getHowLong());
+		rt.setHowLong(whenTaken.getDuration());
 		rt.setRelativeTo(whenTaken.getRelativeTo());
 		rt.setEpoch(nameReference(whenTaken.getEpoch().getName()));
 		return rt;
