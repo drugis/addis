@@ -70,7 +70,7 @@ public class MeasurementTable extends JTableWithPopupEditor {
 
 	@Override
 	protected JPanel createEditorPanel(int row, int col) {
-		if (col < 1) {
+		if (col < 2) {
 			return null;
 		}
 		return createPanel((MissingMeasurementPresentation)getValueAt(row, col));

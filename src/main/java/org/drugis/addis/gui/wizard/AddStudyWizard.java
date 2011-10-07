@@ -669,9 +669,9 @@ public class AddStudyWizard extends Wizard {
 
 	}
 	
-	public static class SelectEndpointWizardStep extends SelectFromFiniteListWizardStep<Endpoint> {
+	public static class SelectEndpointWizardStep extends SelectFromOutcomeMeasureListWizardStep<Endpoint> {
 		public SelectEndpointWizardStep(AddStudyWizardPresentation pm) {
-			super(pm.getEndpointSelectModel());
+			super(pm.getEndpointSelectModel(), pm.getAddEpochsModel());
 		}
 		
 		@Override
@@ -685,15 +685,15 @@ public class AddStudyWizard extends Wizard {
 		}
 	}
 	
-	public static class SelectPopulationCharsWizardStep extends SelectFromFiniteListWizardStep<PopulationCharacteristic> {
+	public static class SelectPopulationCharsWizardStep extends SelectFromOutcomeMeasureListWizardStep<PopulationCharacteristic> {
 		public SelectPopulationCharsWizardStep(AddStudyWizardPresentation pm) {
-			super(pm.getPopulationCharSelectModel());
+			super(pm.getPopulationCharSelectModel(), pm.getAddEpochsModel());
 		}
 	}
 	
-	public static class SelectAdverseEventWizardStep extends SelectFromFiniteListWizardStep<AdverseEvent> {
+	public static class SelectAdverseEventWizardStep extends SelectFromOutcomeMeasureListWizardStep<AdverseEvent> {
 		public SelectAdverseEventWizardStep(AddStudyWizardPresentation pm) {
-			super(pm.getAdverseEventSelectModel());
+			super(pm.getAdverseEventSelectModel(), pm.getAddEpochsModel());
 		}		
 	}
 	

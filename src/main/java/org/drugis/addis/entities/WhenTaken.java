@@ -8,12 +8,28 @@ import java.util.Set;
 
 import javax.xml.datatype.Duration;
 
-import org.drugis.addis.entities.data.RelativeTo;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.common.EqualsUtil;
 
 public class WhenTaken extends AbstractEntity implements Entity, Comparable<WhenTaken>, TypeWithDuration {
 
+	public enum RelativeTo {
+		BEFORE_EPOCH_END("Before end of"),
+		FROM_EPOCH_START("From start of");
+
+		String d_string;
+		
+		RelativeTo(String s) {
+			d_string = s;
+		}
+		
+		@Override
+		public String toString() {
+			return d_string;
+		}
+	}
+	
+	
 	public static final String PROPERTY_EPOCH = "epoch";
 	public static final String PROPERTY_RELATIVE_TO = "relativeTo";
 	public static final String PROPERTY_OFFSET = "offset";

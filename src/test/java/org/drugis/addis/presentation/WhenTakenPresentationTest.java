@@ -8,7 +8,8 @@ import java.util.Arrays;
 
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.data.RelativeTo;
+import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.presentation.DurationPresentation.DateUnits;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.easymock.EasyMock;
@@ -50,7 +51,8 @@ public class WhenTakenPresentationTest {
 	public void testOffsetPresentation() {
 		DurationPresentation<WhenTaken> op = d_wtp.getOffsetPresentation();
 		op.setQuantity(1396);
-		assertEquals(EntityUtil.createDuration("P1396D"), d_wtp.getBean().getOffset());
+		op.setUnits(DateUnits.Minutes);
+		assertEquals(EntityUtil.createDuration("PT1396M"), d_wtp.getBean().getOffset());
 	}
 	
 }

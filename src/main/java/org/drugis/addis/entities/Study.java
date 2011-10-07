@@ -36,7 +36,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.entities.data.RelativeTo;
+import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.common.DateUtil;

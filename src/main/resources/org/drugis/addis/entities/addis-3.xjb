@@ -15,6 +15,12 @@
 				parseMethod="valueOf" printMethod="name"/>
 		</bindings>
 
+		<!--RelativeTo of WhenTaken -->
+		<bindings node="//xs:simpleType[@name='RelativeTo']">
+			<javaType name="org.drugis.addis.entities.WhenTaken.RelativeTo" 
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
 		<!-- Study characteristics -->
 		<bindings node="//xs:simpleType[@name='AllocationEnum']">
 			<javaType name="org.drugis.addis.entities.BasicStudyCharacteristic.Allocation"

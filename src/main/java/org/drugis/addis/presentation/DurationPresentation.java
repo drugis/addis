@@ -61,8 +61,8 @@ public class DurationPresentation<T extends TypeWithDuration> extends AbstractOb
 	}
 
 	public static final String PROPERTY_DEFINED = "defined";
-	public static final String PROPERTY_DURATION_UNITS = "units";
 	public static final String PROPERTY_DURATION_QUANTITY = "quantity";
+	public static final String PROPERTY_DURATION_UNITS = "units";
 	public static final String PROPERTY_LABEL = "label";
 	
 	private static final Data DEFAULT_DATA = new Data(DateUnits.Weeks, 0);

@@ -2,7 +2,7 @@ package org.drugis.addis.entities;
 
 import javax.xml.datatype.Duration;
 
-import org.drugis.addis.entities.data.RelativeTo;
+import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
