@@ -28,15 +28,16 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class SelectPopulationCharsPresentation
 extends SelectVariablesPresentation<PopulationCharacteristic> {
-	public SelectPopulationCharsPresentation(ObservableList<PopulationCharacteristic> options, AddisWindow mainWindow) {
+	public SelectPopulationCharsPresentation(ObservableList<PopulationCharacteristic> options, WhenTakenFactory wtf, AddisWindow mainWindow) {
 		super(options, "Population Baseline Characteristics", "Select Population Baseline Characteristics",
-			"Please select the appropriate population baseline characteristics.", mainWindow);
+			"Please select the appropriate population baseline characteristics.", wtf, mainWindow);
 	}
 	
 	@Override

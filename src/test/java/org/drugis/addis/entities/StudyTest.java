@@ -534,6 +534,19 @@ public class StudyTest {
 	}
 	
 	@Test
+	public void testClonedStudyOutcomeMeasuresReferences() {
+		assertEquals(d_orig.getEndpoints(), d_clone.getEndpoints());
+		assertEquals(d_orig.getEndpoints().get(0).getWhenTaken(), d_clone.getEndpoints().get(0).getWhenTaken());
+		assertNotSame(d_orig.getEndpoints().get(0).getWhenTaken(), d_clone.getEndpoints().get(0).getWhenTaken());
+		assertNotSame(d_orig.getEndpoints().get(0).getWhenTaken().get(0), d_clone.getEndpoints().get(0).getWhenTaken().get(0));
+		Epoch clonedEpoch = d_clone.getEndpoints().get(0).getWhenTaken().get(0).getEpoch();
+		assertNotSame(d_orig.getEndpoints().get(0).getWhenTaken().get(0).getEpoch(), clonedEpoch);
+		assertTrue(d_clone.getEpochs().contains(clonedEpoch));
+		assertSame(d_clone.getEpochs().get(d_clone.getEpochs().indexOf(clonedEpoch)), clonedEpoch);
+	}
+	
+	
+	@Test
 	public void testCloneHasDistinctCharacteristics() {
 		assertFalse(d_orig.getCharacteristics() == d_clone.getCharacteristics());
 	}

@@ -51,7 +51,7 @@ public class SelectVariablesPresentationTest {
 
 	public static class SelectPresentation extends SelectVariablesPresentation<AdverseEvent> {
 		public SelectPresentation(ObservableList<AdverseEvent> options) {
-			super(options, TYPENAME, TITLE, DESCRIPTION, null);
+			super(options, TYPENAME, TITLE, DESCRIPTION, null, null);
 		}
 		
 	}
@@ -65,7 +65,7 @@ public class SelectVariablesPresentationTest {
 	public void setUp() {
 		d_list = new SortedSetModel<AdverseEvent>(Arrays.asList(d_ade1, d_ade2));
 		
-		d_pm = new SelectAdverseEventsPresentation(d_list, null);
+		d_pm = new SelectAdverseEventsPresentation(d_list, null, null);
 	}
 	
 	@Test

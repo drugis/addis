@@ -59,8 +59,7 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
 		JDialog dialog = new JDialog(mainWindow, "Add Study", true);
-		AddStudyWizard wizard = new AddStudyWizard(
-				new AddStudyWizardPresentation(domain,
+		AddStudyWizard wizard = new AddStudyWizard(	new AddStudyWizardPresentation(domain,
 						mainWindow.getPresentationModelFactory(), mainWindow), mainWindow, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.setMinimumSize(new Dimension(700, 550));

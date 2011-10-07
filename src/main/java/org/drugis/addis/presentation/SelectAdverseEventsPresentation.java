@@ -28,6 +28,7 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 
 import com.jgoodies.binding.list.ObservableList;
 
@@ -35,8 +36,8 @@ import com.jgoodies.binding.list.ObservableList;
 public class SelectAdverseEventsPresentation
 extends SelectVariablesPresentation<AdverseEvent> {
 	
-	public SelectAdverseEventsPresentation(ObservableList<AdverseEvent> options, AddisWindow mainWindow) {
-		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.", mainWindow);
+	public SelectAdverseEventsPresentation(ObservableList<AdverseEvent> options, WhenTakenFactory wtf, AddisWindow mainWindow) {
+		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.", wtf, mainWindow);
 	}
 
 	@Override

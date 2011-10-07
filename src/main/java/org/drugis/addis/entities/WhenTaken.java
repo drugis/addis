@@ -130,4 +130,8 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 		return code;
 	}
 
+	@Override
+	protected WhenTaken clone() {
+		return new WhenTaken(d_offset, d_relativeTo, d_epoch);
+	}
 }

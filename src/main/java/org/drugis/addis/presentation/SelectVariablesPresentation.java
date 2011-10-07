@@ -32,6 +32,8 @@ import java.util.List;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
+import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.Model;
@@ -52,11 +54,13 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private String d_title;
 	private String d_description;
 	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
+	private final WhenTakenFactory d_wtf;
 
-	public SelectVariablesPresentation(ObservableList<T> options, String typeName, String title, String description, AddisWindow mainWindow) {
+	public SelectVariablesPresentation(ObservableList<T> options, String typeName, String title, String description, AddStudyWizardPresentation.WhenTakenFactory wtf, AddisWindow mainWindow) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;
+		d_wtf = wtf;
 		d_slots = new ArrayList<StudyOutcomeMeasure<T>>();
 		d_options = options;
 		d_addSlotsEnabled = new AddSlotsAlwaysEnabledModel();
@@ -69,9 +73,10 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	}
 
 	public void addSlot() {
-		StudyOutcomeMeasure<T> s = new StudyOutcomeMeasure<T>(null);
-		d_slots.add(s);
-		bindSlot(s);
+		StudyOutcomeMeasure<T> som = new StudyOutcomeMeasure<T>(null);
+		som.getWhenTaken().add(d_wtf.buildDefault());
+		d_slots.add(som);
+		bindSlot(som);
 	}
 
 	private void bindSlot(StudyOutcomeMeasure<T> slot) {

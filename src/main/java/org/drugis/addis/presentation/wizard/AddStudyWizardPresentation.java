@@ -47,8 +47,10 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.TypeWithNotes;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
+import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.BasicArmPresentation;
@@ -62,6 +64,7 @@ import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -71,6 +74,18 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
 	
+	public class WhenTakenFactory {
+		private final ObservableList<Epoch> d_epochs;
+
+		public WhenTakenFactory(ObservableList<Epoch> epochs) {
+			d_epochs = epochs;
+		}
+		
+		public WhenTaken buildDefault() {
+			return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.get(0));
+		}
+	}
+
 	private final class RebuildIndicesMonitor<T extends TypeWithName> extends RenameMonitor<T> {
 		private RebuildIndicesMonitor(AddListItemsPresentation<T> listPresentation) {
 			super(listPresentation);
@@ -108,13 +123,14 @@ public class AddStudyWizardPresentation {
 		d_domain = d;
 		d_pmf = pmf;
 		d_mainWindow = mainWindow;
-		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), d_mainWindow);
-		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), d_mainWindow);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), d_mainWindow);
-		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
-		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
 		new RebuildIndicesMonitor<Epoch>(d_epochs); // registers itself as listener to d_epochs
+		WhenTakenFactory wtf = new WhenTakenFactory(d_epochs.getList());
+		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), wtf, d_mainWindow);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), wtf, d_mainWindow);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), wtf, d_mainWindow);
+		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
+		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		resetStudy();
 	}
 	

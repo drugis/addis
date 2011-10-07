@@ -164,7 +164,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			clone.setIsPrimary(getIsPrimary());
 			clone.getNotes().addAll(getNotes());
 			for (WhenTaken wt : getWhenTaken()) {
-				clone.getWhenTaken().add(new WhenTaken(wt.getDuration(), wt.getRelativeTo(), wt.getEpoch().clone()));
+				clone.getWhenTaken().add(wt.clone());
 			}
 			return clone;
 		}
@@ -236,13 +236,13 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		newStudy.d_arms = cloneArms();
 
-		newStudy.d_endpoints = cloneStudyOutcomeMeasures(getEndpoints());
-		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(getAdverseEvents());
-		newStudy.d_populationChars = cloneStudyOutcomeMeasures(getPopulationChars());
-
 		for (Epoch e : getEpochs()) {
 			newStudy.getEpochs().add(e.clone());
 		}
+
+		newStudy.d_endpoints = cloneStudyOutcomeMeasures(getEndpoints(), newStudy.getEpochs());
+		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(getAdverseEvents(), newStudy.getEpochs());
+		newStudy.d_populationChars = cloneStudyOutcomeMeasures(getPopulationChars(), newStudy.getEpochs());
 
 		for (StudyActivity sa : getStudyActivities()) {
 			newStudy.getStudyActivities().add(
@@ -278,11 +278,14 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 				.get(newEpochs.indexOf(ub.getEpoch())));
 	}
 
-	private <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(
-			List<StudyOutcomeMeasure<T>> soms) {
-		ObservableList<StudyOutcomeMeasure<T>> list = new ArrayListModel<StudyOutcomeMeasure<T>>();
+	private <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(List<StudyOutcomeMeasure<T>> soms, List<Epoch> epochs) {
+		ObservableList<StudyOutcomeMeasure<T>> list = new ArrayListModel<StudyOutcomeMeasure<T>>(); 
 		for (StudyOutcomeMeasure<T> som : soms) {
-			list.add(som.clone());
+			StudyOutcomeMeasure<T> clone = som.clone();
+			for (WhenTaken wt : clone.getWhenTaken()) {
+				wt.setEpoch(epochs.get(epochs.indexOf(wt.getEpoch())));
+			}
+			list.add(clone);
 		}
 		return list;
 	}
