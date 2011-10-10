@@ -34,27 +34,24 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
+import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.beans.SortedSetModel;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.list.ArrayListModel;
 
-@SuppressWarnings("serial")
 public class SelectVariablesPresentationTest {
 	private static final String TYPENAME = "Adverse Event";
 	private static final String DESCRIPTION = "Please select the appropriate adverse events.";
 	private static final String TITLE = "Select Adverse Events";
 
-	public static class SelectPresentation extends SelectVariablesPresentation<AdverseEvent> {
-		public SelectPresentation(ObservableList<AdverseEvent> options) {
-			super(options, TYPENAME, TITLE, DESCRIPTION, null, null);
-		}
-		
-	}
 	private AdverseEvent d_ade1 = new AdverseEvent("ADE 1", AdverseEvent.convertVarType(Variable.Type.RATE));
 	private AdverseEvent d_ade2 = new AdverseEvent("ADE 2", AdverseEvent.convertVarType(Variable.Type.RATE));
 	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", AdverseEvent.convertVarType(Variable.Type.RATE));
@@ -65,7 +62,10 @@ public class SelectVariablesPresentationTest {
 	public void setUp() {
 		d_list = new SortedSetModel<AdverseEvent>(Arrays.asList(d_ade1, d_ade2));
 		
-		d_pm = new SelectAdverseEventsPresentation(d_list, null, null);
+		AddEpochsPresentation aep = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "epoch", 1);
+		aep.getList().add(new Epoch("test", EntityUtil.createDuration("P3D")));
+		WhenTakenFactory wtf = new WhenTakenFactory(aep);
+		d_pm = new SelectAdverseEventsPresentation(d_list, wtf, null);
 	}
 	
 	@Test

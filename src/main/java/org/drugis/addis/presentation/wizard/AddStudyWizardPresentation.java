@@ -72,7 +72,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
 	
-	public class WhenTakenFactory {
+	public static class WhenTakenFactory {
 		private final AddEpochsPresentation d_epochs;
 
 		public WhenTakenFactory(AddEpochsPresentation epochs) {
