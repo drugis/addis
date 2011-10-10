@@ -71,11 +71,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			d_wt = wt;
 		}
 
-		@Deprecated
-		public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a) {
-			this(som.getValue(), a, som.getWhenTaken().get(0));
-		}
-
 		public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
 			this(som.getValue(), a, wt);
 		}
@@ -261,8 +256,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return newStudy;
 	}
 
-	private StudyActivity cloneStudyActivity(StudyActivity sa,
-			ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
+	private StudyActivity cloneStudyActivity(StudyActivity sa, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
 		StudyActivity newSA = sa.clone();
 		Set<UsedBy> newUsedBys = new HashSet<UsedBy>();
 		for (UsedBy ub : sa.getUsedBy()) {

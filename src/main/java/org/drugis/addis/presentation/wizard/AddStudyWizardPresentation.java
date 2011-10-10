@@ -26,7 +26,6 @@ package org.drugis.addis.presentation.wizard;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -48,7 +47,6 @@ import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AddisWindow;
@@ -75,14 +73,14 @@ import com.jgoodies.binding.value.ValueModel;
 public class AddStudyWizardPresentation {
 	
 	public class WhenTakenFactory {
-		private final ObservableList<Epoch> d_epochs;
+		private final AddEpochsPresentation d_epochs;
 
-		public WhenTakenFactory(ObservableList<Epoch> epochs) {
+		public WhenTakenFactory(AddEpochsPresentation epochs) {
 			d_epochs = epochs;
 		}
 		
 		public WhenTaken buildDefault() {
-			return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.get(0));
+			return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.getList().get(0));
 		}
 	}
 
@@ -125,7 +123,7 @@ public class AddStudyWizardPresentation {
 		d_mainWindow = mainWindow;
 		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
 		new RebuildIndicesMonitor<Epoch>(d_epochs); // registers itself as listener to d_epochs
-		WhenTakenFactory wtf = new WhenTakenFactory(d_epochs.getList());
+		WhenTakenFactory wtf = new WhenTakenFactory(d_epochs);
 		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), wtf, d_mainWindow);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), wtf, d_mainWindow);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), wtf, d_mainWindow);
@@ -135,12 +133,12 @@ public class AddStudyWizardPresentation {
 	}
 	
 	private void updateSelectionHolders() {
-		d_endpointSelect.setSlots((List<StudyOutcomeMeasure<Endpoint>>) getNewStudy().getEndpoints());
-		d_adverseEventSelect.setSlots((List<StudyOutcomeMeasure<AdverseEvent>>) getNewStudy().getAdverseEvents());
-		d_populationCharSelect.setSlots((List<StudyOutcomeMeasure<PopulationCharacteristic>>) getNewStudy().getPopulationChars());
-		
 		getAddArmsModel().setList(getArms());
 		getAddEpochsModel().setList(getEpochs());
+
+		d_endpointSelect.setSlots(getNewStudy().getEndpoints());
+		d_adverseEventSelect.setSlots(getNewStudy().getAdverseEvents());
+		d_populationCharSelect.setSlots(getNewStudy().getPopulationChars());
 		
 		ListDataListener removeOrphansListener = new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
@@ -239,6 +237,7 @@ public class AddStudyWizardPresentation {
 		getEpochs().add(getAddEpochsModel().createItem());
 		
 		updateSelectionHolders();
+		
 		d_endpointSelect.addSlot(); // by default have 1 endpoint slot.
 	}
 	

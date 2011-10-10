@@ -56,9 +56,12 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.util.EntityUtil;
 
 
 
@@ -84,7 +87,7 @@ public class ClinicaltrialsImporter {
 			JAXBContext jc = JAXBContext.newInstance("org.drugis.addis.imports");
 			Unmarshaller unmarshaller = jc.createUnmarshaller();
 			ClinicalStudy studyImport = (ClinicalStudy) unmarshaller.unmarshal(isr);
-			getClinicalTrialsData(study,studyImport);
+			getClinicalTrialsData(study, studyImport);
 			isr.close();
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -104,7 +107,7 @@ public class ClinicaltrialsImporter {
 		try {
 			jc = JAXBContext.newInstance("org.drugis.addis.imports");
 			ClinicalStudy studyImport = (ClinicalStudy) jc.createUnmarshaller().unmarshal(is);
-			getClinicalTrialsData(study,studyImport);
+			getClinicalTrialsData(study, studyImport);
 		} catch (JAXBException e) {
 			System.err.println("Error in parsing xml file (ClinicaltrialsImporter.java))");
 			throw new RuntimeException(e);
@@ -194,16 +197,31 @@ public class ClinicaltrialsImporter {
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
 			om.setIsPrimary(true);
-			om.getNotes().add(new Note(Source.CLINICALTRIALS, endp.getMeasure()));
+			String noteStr = endp.getMeasure();
+			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
+			noteStr = addIfAny(noteStr, "Safety issue", endp.getSafetyIssue());
+			om.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
+			om.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0)));
 			study.getEndpoints().add(om);
 		}
 		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
 			om.setIsPrimary(false);
-			om.getNotes().add(new Note(Source.CLINICALTRIALS, endp.getMeasure()));
+			String noteStr = endp.getMeasure();
+			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
+			noteStr = addIfAny(noteStr, "Safety issue", endp.getSafetyIssue());
+			om.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
+			om.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0)));
 			study.getEndpoints().add(om);
 		}
+	}
+
+	private static String addIfAny(String noteStr, String fieldName, String timeFrame) {
+		if (timeFrame != null && !timeFrame.equals("")) {
+			return noteStr + "\n\n" + fieldName + ": " + timeFrame;
+		}
+		return noteStr;
 	}
 
 	private static void addStudyArms(Study study, ClinicalStudy studyImport, Epoch mainphaseEpoch) {

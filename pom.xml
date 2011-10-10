@@ -243,7 +243,7 @@
 								<goal>generate</goal>
 						</goals>
 						<configuration>
-							<schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/imports</schemaDirectory>
 							<schemaIncludes>
 								<include>**/clinicaltrials.xsd</include>
 							</schemaIncludes>
