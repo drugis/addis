@@ -404,7 +404,8 @@ public class AddisWindow extends JFrame {
 			case JOptionPane.YES_OPTION : {
 				try {
 					if (d_main.getCurFilename() == null) {				
-						new MainFileSaveDialog(AddisWindow.this, "xml", "XML files");
+						MainFileSaveDialog dialog = new MainFileSaveDialog(AddisWindow.this, "xml", "XML files");
+						dialog.saveActions();
 						yesNoClicked = true;
 					} else {
 						d_main.saveDomainToFile(d_main.getCurFilename());
@@ -446,7 +447,8 @@ public class AddisWindow extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				if (d_main.getCurFilename() == null) {				
-					new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
+					MainFileSaveDialog dialog = new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
+					dialog.saveActions();
 				} else {
 					d_main.saveDomainToFile(d_main.getCurFilename());
 				}
@@ -468,7 +470,8 @@ public class AddisWindow extends JFrame {
 
 		saveItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
+				MainFileSaveDialog dialog = new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
+				dialog.saveActions();
 			}
 		});
 		return saveItem;

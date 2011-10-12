@@ -41,7 +41,7 @@ public class ThreadHandlerPresentation extends PresentationModel<ThreadHandler> 
 	}
 	
 	public ValueModel getThreadsInQueue(){
-		return getModel(ThreadHandler.PROPERTY_QUEUED_THREADS);
+		return getModel(ThreadHandler.PROPERTY_QUEUED_TASKS);
 	}
 	
 }

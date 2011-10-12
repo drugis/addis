@@ -241,7 +241,7 @@ implements ViewBuilder {
 	private ActionListener buildRButtonActionListener(final MCMCModel model) {
 		return new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new FileSaveDialog(d_mainWindow, "R", "R files") {
+				FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "R", "R files") {
 					@Override
 					public void doAction(String path, String extension) {
 						try {
@@ -254,7 +254,7 @@ implements ViewBuilder {
 						}
 					}
 				};
-				
+				dialog.saveActions();
 			}
 		};
 	}
@@ -598,12 +598,13 @@ implements ViewBuilder {
 		button.setToolTipText("Save data set for analysis using drugis.org MTC");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new FileSaveDialog(d_mainWindow, "xml", "XML files") {
+				FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "xml", "XML files") {
 					@Override
 					public void doAction(String path, String extension) {
 						writeXML(path, d_pm.getNetworkXML());
 					}
 				};
+				dialog.saveActions();
 			}
 		});
 		return button;

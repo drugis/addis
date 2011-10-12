@@ -127,12 +127,13 @@ public class Main {
 	}
 	
 	public static void printWindow(final JComponent component) throws HeadlessException, AWTException {
-		new FileSaveDialog(component, "svg", "SVG files") {
+		FileSaveDialog dialog = new FileSaveDialog(component, "svg", "SVG files") {
 			@Override
 			public void doAction(String path, String extension) {
 				ImageExporter.writeSVG(path, component, component.getWidth(), component.getHeight());
 			}
 		};
+		dialog.saveActions();
 	}
 	
 	protected void showWelcome() {
@@ -289,6 +290,7 @@ public class Main {
 				}
 			}
 		};
+		d.loadActions();
 		return d.getReturnValue();
 	}
 

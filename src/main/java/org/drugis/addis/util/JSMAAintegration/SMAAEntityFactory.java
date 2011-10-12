@@ -49,13 +49,13 @@ import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
 
 import fi.smaa.jsmaa.model.Alternative;
+import fi.smaa.jsmaa.model.BaselineGaussianMeasurement;
 import fi.smaa.jsmaa.model.BetaMeasurement;
 import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
 import fi.smaa.jsmaa.model.LogNormalMeasurement;
 import fi.smaa.jsmaa.model.LogitNormalMeasurement;
-import fi.smaa.jsmaa.model.ReferenceableGaussianMeasurement;
 import fi.smaa.jsmaa.model.RelativeLogitNormalMeasurement;
 import fi.smaa.jsmaa.model.RelativeNormalMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
@@ -105,14 +105,14 @@ public class SMAAEntityFactory<AltType extends Entity> {
 			smaaModel.addCriterion(crit);
 			if (brAnalysis instanceof MetaBenefitRiskAnalysis) {
 				MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
-				smaaModel.getImpactMatrix().setBaseline(crit, new ReferenceableGaussianMeasurement(
+				smaaModel.getImpactMatrix().setBaseline(crit, new BaselineGaussianMeasurement(
 						mbr.getBaselineDistribution(om).getMu(), mbr.getBaselineDistribution(om).getSigma()));
 			}
 			
 			for (AltType a : brAnalysis.getAlternatives()) {
 				if (brAnalysis instanceof MetaBenefitRiskAnalysis) {
 					MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
-					ReferenceableGaussianMeasurement baseline = smaaModel.getImpactMatrix().getBaseline(crit);
+					BaselineGaussianMeasurement baseline = smaaModel.getImpactMatrix().getBaseline(crit);
 					GaussianMeasurement relative = new GaussianMeasurement(
 							mbr.getRelativeEffectDistribution((DrugSet) a, om).getMu(),
 							mbr.getRelativeEffectDistribution((DrugSet) a, om).getSigma());

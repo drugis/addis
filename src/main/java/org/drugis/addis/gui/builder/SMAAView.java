@@ -111,12 +111,13 @@ public class SMAAView implements ViewBuilder  {
 		JButton expButton = new JButton("Export model to JSMAA");
 		expButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new FileSaveDialog(d_mainWindow, "jsmaa", "JSMAA") {
+				FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "jsmaa", "JSMAA") {
 					@Override
 					public void doAction(String path, String extension) {
 						d_pm.saveSmaa(path);
 					}
 				};
+				dialog.saveActions();
 			}
 		});
 		return expButton;

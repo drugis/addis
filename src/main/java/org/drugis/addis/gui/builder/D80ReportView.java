@@ -153,7 +153,7 @@ public class D80ReportView extends JDialog {
 	}
 	
 	private void saveAsHtmlDialog(final Component component) {
-		new FileSaveDialog(component, "html", "HTML files") {
+		FileSaveDialog dialog = new FileSaveDialog(component, "html", "HTML files") {
 			@Override
 			public void doAction(String path, String extension) {
 				try {
@@ -163,6 +163,7 @@ public class D80ReportView extends JDialog {
 				}
 			}
 		};
+		dialog.saveActions();
 	}
 	
 	private void saveD80ToHtmlFile(String fileName) throws IOException {
