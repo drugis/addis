@@ -42,58 +42,69 @@
 		</repository>
 	</repositories>
 
+	<packaging>jar</packaging>
+
+	<properties>
+        	<izpack-standalone.version>4.3.1</izpack-standalone.version>
+        	<izpack-maven-plugin.version>1.0-alpha-5</izpack-maven-plugin.version>
+        	<izpack.dir>${project.build.directory}/izpack</izpack.dir>
+        	<drugis-common.version>0.4.6-SNAPSHOT</drugis-common.version>
+        	<jsmaa.version>0.9-SNAPSHOT</jsmaa.version>
+        	<mtc.version>0.10</mtc.version>
+    </properties> 
+    
 	<dependencies>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-lib</artifactId>
-			<version>0.4.6-SNAPSHOT</version>
+			<version>${drugis-common.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-gui</artifactId>
-			<version>0.4.6-SNAPSHOT</version>
+			<version>${drugis-common.version}</version>
 		</dependency>
 	    	<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-test</artifactId>
-			<version>0.4.6-SNAPSHOT</version>
+			<version>${drugis-common.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>lib</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<version>${jsmaa.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.smaa.jsmaa</groupId>
 			<artifactId>gui</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<version>${jsmaa.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-test</artifactId>
-			<version>0.10</version>
+			<version>${mtc.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-mcmc</artifactId>
-			<version>0.10</version>
+			<version>${mtc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-model</artifactId>
-			<version>0.10</version>
+			<version>${mtc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>mtc-lib</artifactId>
-			<version>0.10</version>
+			<version>${mtc.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.3</version>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>1.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jgoodies</groupId>
@@ -355,7 +366,7 @@
 				<version>1.1</version>
 				<executions>
 					<execution>
-						<phase>validate</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -365,11 +376,53 @@
 							</tasks>
 						</configuration>
 					</execution>
+					<execution>
+						<id>create-staging-area</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy file="${basedir}/src/izpack/addis.cmd" todir="${izpack.dir}"/>
+								<copy file="${basedir}/src/izpack/errordialog.vbs" todir="${izpack.dir}"/>
+								<copy file="${basedir}/src/izpack/registrySpec.xml" todir="${izpack.dir}"/>
+								<copy file="${basedir}/README.txt" todir="${izpack.dir}"/>
+								<copy file="${basedir}/LICENSE.txt" todir="${izpack.dir}"/>
+								<copy file="${basedir}/graphics/addis.ico" todir="${izpack.dir}/"/>
+								<copy file="${basedir}/target/${project.build.finalName}-jar-with-dependencies.jar" tofile="${izpack.dir}/addis.jar"/>
+							</tasks>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+          		<groupId>org.codehaus.izpack</groupId>
+          		<artifactId>izpack-maven-plugin</artifactId>
+          		<version>${izpack-maven-plugin.version}</version>
+				<executions>
+            		<execution>
+              			<phase>package</phase>
+              			<goals>
+	                		<goal>izpack</goal>
+              			</goals>
+              			<configuration>
+	                		<izpackBasedir>${izpack.dir}</izpackBasedir>
+	                		<installerFile>${basedir}/target/${project.build.finalName}-installer.jar</installerFile>
+	  					</configuration>
+            		</execution>
+          		</executions>
+          		<dependencies>
+            			<dependency>
+              				<groupId>org.codehaus.izpack</groupId>
+              				<artifactId>izpack-standalone-compiler</artifactId>
+              				<version>${izpack-standalone.version}</version>
+            			</dependency>
+          		</dependencies>
+        	</plugin>
 		</plugins>
 	</build>
-    
+   
 	<reporting>
 		<plugins>
 			<plugin>

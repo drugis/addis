@@ -32,6 +32,10 @@ mvn package -Dmaven.test.skip=true -q|| exit
 echo '---- Putting license on all sources'
 ant license || exit
 
+echo "<html><head><style type="text/css">h1{font-size:20pt;}</style> <title>README for ADDIS</title></head><body>" > src/izpack/README.html
+markdown README.txt >> src/izpack/README.html 
+echo "</body></html>" >> src/izpack/README.html 
+
 # Package ADDIS
 echo '---- Building JAR'
 mvn clean package -q|| exit

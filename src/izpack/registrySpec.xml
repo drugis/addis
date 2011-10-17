@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+	<registry>
+		<pack name="Base">
+			<key root="HKCU"
+			    keypath="software\classes\ADDIS.ADDISFile"/>
+			<value root="HKCU"
+			    keypath="software\classes\ADDIS.ADDISFile"
+			    name="" string="ADDIS data file"/>
+
+			<value root="HKCU"
+			    keypath="software\classes\ADDIS.ADDISFile\DefaultIcon"
+			    name="" string="$INSTALL_PATH\icons\addis.ico,0"/>
+			<key root="HKCU"
+			    keypath="software\classes\ADDIS.ADDISFile\shell"/>
+			<key root="HKCU"
+			    keypath="software\classes\ADDIS.ADDISFile\shell\open"/>
+			<value root="HKCU"
+			    keypath="software\classes\ADDIS.ADDISFile\shell\open\command"
+			    name="" string='$INSTALL_PATH\addis.cmd "%1"'/>
+			
+			<value root="HKCU"
+			    keypath="software\classes\.addis"
+			    name="" string="ADDIS.ADDISFile"/>
+			
+			<key root="HKCU"
+			    keypath="software\microsoft\windows\currentversion\explorer\fileexts\open\.addis"/>
+			<value root="HKCU"
+			    keypath="software\microsoft\windows\currentversion\explorer\fileexts\open\.addis\OpenWithProgIds"
+			    name="ADDIS.ADDISFile"><bin data=""/></value>
+			<value root="HKCU"
+			    keypath="software\microsoft\windows\currentversion\explorer\fileexts\open\.addis\DefaultIcon"
+			    name="" string="$INSTALL_PATH\icons\addis.ico,0"/>
+		</pack>
+	</registry>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+
+    <skipIfNotSupported/>
+
+    <programGroup defaultName="ADDIS" location="applications"/>
+
+      <shortcut
+        name="ADDIS"
+        programGroup="yes"
+        desktop="yes"
+        applications="no"
+        startMenu="yes"
+        startup="no"
+        target="$INSTALL_PATH\addis.jar"
+        commandLine=""
+        description="ADDIS"
+        iconFile="$INSTALL_PATH\icons\addis.ico"
+        iconIndex="0"
+        initialState="noShow">
+
+         <createForPack name="Base"/>
+
+       </shortcut>
+ 
+
+    <shortcut
+           name="ADDIS"
+           programGroup="yes"
+           desktop="no"
+           applications="no"
+           startMenu="no"
+           startup="no"
+           target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+           commandLine=""
+           iconFile="%SystemRoot%\system32\SHELL32.dll"
+           iconIndex="31"
+           description="Uninstall ADDIS">
+
+        <createForPack name="Base"/>
+    </shortcut>
+
+</shortcuts>
