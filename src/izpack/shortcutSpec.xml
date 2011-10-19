@@ -11,7 +11,7 @@
         programGroup="yes"
         desktop="yes"
         applications="no"
-        startMenu="yes"
+        startMenu="no"
         startup="no"
         target="$INSTALL_PATH\addis.jar"
         commandLine=""
@@ -26,7 +26,7 @@
  
 
     <shortcut
-           name="ADDIS"
+           name="Uninstall ADDIS"
            programGroup="yes"
            desktop="no"
            applications="no"

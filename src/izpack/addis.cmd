@@ -1,22 +1,27 @@
 @echo off
 
-set JAVAV=1.6
+IF NOT DEFINED JAVA_HOME SET /p JAVA_HOME= <"%~dp0java.home.txt"
+SET JAVAV=1.6
+
 REM check for Java %JAVAV% (or higher)
 REM also fails if java.exe not found
-SET HAVEJAVA=TRUE
-java -version:%JAVAV%+ -version 2>NUL
-IF ERRORLEVEL 1 SET HAVEJAVA=FALSE
+SET JAVA=java
+"%JAVA%" -version:%JAVAV%+ -version 2>NUL
+IF NOT ERRORLEVEL 1 GOTO :RunAddis
 
-IF %HAVEJAVA%==TRUE GOTO RunAddis
-GOTO JavaMissingError
+REM try the JAVA_HOME
+SET JAVA=%JAVA_HOME%\bin\java.exe
+"%JAVA%" -version:%JAVAV%+ -version 2>NUL
+IF NOT ERRORLEVEL 1 GOTO :RunAddis
+
+GOTO :JavaMissingError
 
 :RunAddis
-java -jar %~dp0addis.jar "%~1"
+"%JAVA%" -jar "%~dp0addis.jar" "%~1"
 GOTO End
 
 :JavaMissingError
-REM FIXME: should display an error *DIALOG* so the user is notified of the failure.
-wscript %~dp0errordialog.vbs %JAVAV%
+wscript "%~dp0errordialog.vbs" %JAVAV%
 GOTO End
 
 :End

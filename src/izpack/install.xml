@@ -50,12 +50,15 @@
         <panel classname="TargetPanel"/>
         <panel classname="PacksPanel"/>
         <panel classname="InstallPanel"/>
-	<panel classname="ShortcutPanel"/>
+		<panel classname="ShortcutPanel"/>
         <panel classname="FinishPanel"/>
     </panels>
-
+    
 	<listeners>
 		<listener installer="RegistryInstallerListener" uninstaller="RegistryUninstallerListener">
+			<os family="windows"/>
+		</listener>
+		<listener installer="JavaLocationListener">
 			<os family="windows"/>
 		</listener>
 	</listeners>

@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.drugis.addis</groupId>
+  <artifactId>addis-installer-actions</artifactId>
+  <version>0.1</version>
+
+  <name>ADDIS installer actions</name>
+  
+  <packaging>jar</packaging>
+  
+  <dependencies>
+    
+    <dependency>
+      <groupId>org.codehaus.izpack</groupId>
+      <artifactId>izpack-standalone-compiler</artifactId>
+      <version>${izpack-standalone.version}</version>
+    </dependency>
+   <!-- 
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+   --> 
+  </dependencies>
+  
+  <build>
+      <plugins>
+        <!-- configure the compiler to use 1.5  -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <izpack-standalone.version>4.3.1</izpack-standalone.version>
+  </properties>
+
+</project>
