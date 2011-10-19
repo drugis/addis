@@ -17,7 +17,10 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.9: Enable combination treatment, add "free text" ('Other') activity.
+1.9: Enable combination treatment, add "free text" ('Other') activity,
+   allow multiple moments of measurement for each adverse event/endpoint/
+   population characteristic/add installer that sets up double-click
+   loading of .addis data files on Windows.
 
 1.8: Input study design (time structure), allow missing measurements,
    generate summary of efficacy table according to EMA D80 template,
