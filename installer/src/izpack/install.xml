@@ -7,10 +7,10 @@
         The meaning of the tags should be natural ...
     -->
     <info>
-        <appname>@{project.name}</appname>
+        <appname>ADDIS</appname>
         <appversion>@{project.version}</appversion>
         <authors>
-            <author name="${user.name}" email="osmosisch@gmail.com"/>
+            <author name="drugis.org development team" email="info@drugis.org" />
         </authors>
         <url>http://drugis.org/addis</url>
     </info>
@@ -34,10 +34,10 @@
         The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
     -->
     <resources>
-        <res id="LicencePanel.licence" src="@{basedir}/LICENSE.txt"/>
-        <res id="HTMLInfoPanel.info" src="@{basedir}/src/izpack/README.html"/>
-        <res id="shortcutSpec.xml" src="@{basedir}/src/izpack/shortcutSpec.xml"/>
-        <res id="RegistrySpec.xml" src="@{basedir}/src/izpack/registrySpec.xml"/>
+        <res id="LicencePanel.licence" src="LICENSE.txt"/>
+        <res id="HTMLInfoPanel.info" src="README.html"/>
+        <res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+        <res id="RegistrySpec.xml" src="registrySpec.xml"/>
     </resources>
 
     <!-- 
@@ -74,8 +74,8 @@
     <packs>
         <pack name="Base" required="yes">
             <description>The base files</description>
-            <file src="@{basedir}/README.txt" targetdir="$INSTALL_PATH"/>
-            <file src="@{basedir}/LICENSE.txt" targetdir="$INSTALL_PATH"/>
+            <file src="README.txt" targetdir="$INSTALL_PATH"/>
+            <file src="LICENSE.txt" targetdir="$INSTALL_PATH"/>
             <file src="addis.cmd" targetdir="$INSTALL_PATH"/>
             <file src="errordialog.vbs" targetdir="$INSTALL_PATH"/>
             <file src="addis.ico" targetdir="$INSTALL_PATH/icons"/>

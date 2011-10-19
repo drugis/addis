@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.drugis</groupId>
+		<artifactId>addis</artifactId>
+		<version>1.9.3-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.drugis.addis</groupId>
+	<artifactId>installer</artifactId>
+	<name>ADDIS installer</name>
+ 
+	<packaging>jar</packaging>
+
+	<properties>
+		<izpack-standalone.version>4.3.1</izpack-standalone.version>
+		<izpack-maven-plugin.version>1.0-alpha-5</izpack-maven-plugin.version>
+		<izpack.dir>${project.build.directory}/izpack</izpack.dir>
+	</properties>
+  
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.izpack</groupId>
+			<artifactId>izpack-standalone-compiler</artifactId>
+			<version>${izpack-standalone.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drugis.addis</groupId>
+			<artifactId>addis</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>create-staging-area</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy file="${basedir}/target/installer-${project.version}.jar" tofile="${izpack.dir}/bin/customActions/JavaLocationListener.jar"/>
+								<copy file="${basedir}/src/izpack/addis.cmd" todir="${izpack.dir}"/>
+								<copy file="${basedir}/src/izpack/errordialog.vbs" todir="${izpack.dir}"/>
+								<copy file="${basedir}/src/izpack/registrySpec.xml" todir="${izpack.dir}"/>
+								<copy file="${basedir}/src/izpack/shortcutSpec.xml" todir="${izpack.dir}"/>
+								<copy file="${basedir}/src/izpack/addis.ico" todir="${izpack.dir}/"/>
+								<copy file="${basedir}/src/izpack/README.html" todir="${izpack.dir}/"/>
+								<copy file="${basedir}/../README.txt" todir="${izpack.dir}"/>
+								<copy file="${basedir}/../LICENSE.txt" todir="${izpack.dir}"/>
+								<copy file="${basedir}/../application/target/addis-${project.version}-jar-with-dependencies.jar" tofile="${izpack.dir}/addis.jar"/>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+          		<groupId>org.codehaus.izpack</groupId>
+          		<artifactId>izpack-maven-plugin</artifactId>
+          		<version>${izpack-maven-plugin.version}</version>
+			<executions>
+				<execution>
+					<phase>package</phase>
+					<goals>
+						<goal>izpack</goal>
+					</goals>
+					<configuration>
+						<izpackBasedir>${izpack.dir}</izpackBasedir>
+						<installerFile>${basedir}/target/addis-${project.version}-installer.jar</installerFile>
+					</configuration>
+				</execution>
+			</executions>
+          		<dependencies>
+            			<dependency>
+              				<groupId>org.codehaus.izpack</groupId>
+              				<artifactId>izpack-standalone-compiler</artifactId>
+              				<version>${izpack-standalone.version}</version>
+            			</dependency>
+          		</dependencies>
+        	</plugin>
+		</plugins>
+	</build>
+</project>

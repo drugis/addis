@@ -8,12 +8,15 @@
 
 
 	<target name="license">
-		<java classpath="target/addis-${addis-pom.version}-jar-with-dependencies.jar" classname="org.drugis.addis.util.CopyrightInfo" />
+		<java classpath="application/target/addis-${addis-pom.version}-jar-with-dependencies.jar" classname="org.drugis.addis.util.CopyrightInfo" />
 		<loadfile property="header" srcFile="HEADER" />
 		<replaceregexp flags="s"
 			match=".*package org.drugis.addis"
 			replace="${header}package org.drugis.addis">
-			<fileset dir="src">
+			<fileset dir="application/src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="installer/src">
 				<include name="**/*.java" />
 			</fileset>
 		</replaceregexp>

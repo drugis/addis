@@ -1,216 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
-	<name>ADDIS</name>
 	<version>1.9.3-SNAPSHOT</version>
 
-	<repositories>
+	<name>ADDIS project</name>
+	<packaging>pom</packaging>
+
+	<distributionManagement>
 		<repository>
-  			<id>maven2-repository.dev.java.net</id>
-	  		<name>Java.net Repository for Maven</name>
-  			<url>http://download.java.net/maven/2/</url>
-  			<layout>default</layout>
-		</repository>
-		<repository>
-  			<id>ibiblio</id>
-	  		<name>ibiblio Repository for Maven</name>
-  			<url>http://www.ibiblio.org/maven/</url>
-  			<layout>default</layout>
-		</repository>		
-		<repository>
-  			<id>apache-snapshots</id>
-	  		<name>Apache Snapshot repository for Maven</name>
-  			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
-  			<layout>default</layout>
-		</repository>		
-		<repository>
-  			<id>drugis.org</id>
-	  		<name>drugis.org Maven 2 Repository</name>
-  			<url>http://drugis.org/mvn</url>
-  			<layout>default</layout>
-		</repository>		
-		<repository>
-			<id>smaa.fi</id>
-			<name>smaa.fi mvn repository</name>
+			<uniqueVersion>true</uniqueVersion>
+			<id>ssh-drugis.org</id>
+			<name>drugis.org repository</name>
+			<url>scpexe://drugis.org/var/www/drugis.org/mvn</url>
 			<layout>default</layout>
-			<url>http://smaa.fi/mvn</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
 		</repository>
-	</repositories>
+	</distributionManagement>	
 
-	<packaging>jar</packaging>
-
-	<properties>
-        	<izpack-standalone.version>4.3.1</izpack-standalone.version>
-        	<izpack-maven-plugin.version>1.0-alpha-5</izpack-maven-plugin.version>
-        	<izpack.dir>${project.build.directory}/izpack</izpack.dir>
-        	<drugis-common.version>0.4.6-SNAPSHOT</drugis-common.version>
-        	<jsmaa.version>0.9-SNAPSHOT</jsmaa.version>
-        	<mtc.version>0.10</mtc.version>
-    </properties> 
-    
-	<dependencies>
-		<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>common-lib</artifactId>
-			<version>${drugis-common.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>common-gui</artifactId>
-			<version>${drugis-common.version}</version>
-		</dependency>
-	    	<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>common-test</artifactId>
-			<version>${drugis-common.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>fi.smaa.jsmaa</groupId>
-			<artifactId>lib</artifactId>
-			<version>${jsmaa.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.smaa.jsmaa</groupId>
-			<artifactId>gui</artifactId>
-			<version>${jsmaa.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>mtc-test</artifactId>
-			<version>${mtc.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>mtc-mcmc</artifactId>
-			<version>${mtc.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>mtc-model</artifactId>
-			<version>${mtc.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drugis</groupId>
-			<artifactId>mtc-lib</artifactId>
-			<version>${mtc.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-utils</artifactId>
-			<version>1.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jgoodies</groupId>
-			<artifactId>binding</artifactId>
-			<version>2.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jgoodies</groupId>
-			<artifactId>forms</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jgoodies</groupId>
-			<artifactId>looks</artifactId>
-			<version>2.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.pietschy</groupId>
-			<artifactId>wizard</artifactId>
-			<version>0.1.12</version>
-		</dependency>
-		<dependency>
-			<groupId>com.toedter</groupId>
-			<artifactId>jcalendar</artifactId>
-			<version>1.3.2</version>
-		</dependency>		
-		<dependency>
-			<groupId>org.swinglabs</groupId>
-			<artifactId>swingx</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jgrapht</groupId>
-			<artifactId>jgrapht-jdk1.5</artifactId>
-			<version>0.7.3</version>
-		</dependency>
-		<dependency>
-			<groupId>jgraph</groupId>
-			<artifactId>jgraph</artifactId>
-			<version>5.13.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jvnet.jaxb2_commons</groupId>
-			<artifactId>jaxb2-basics-runtime</artifactId>
-			<version>0.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>jfree</groupId>
-			<artifactId>jfreechart</artifactId>
-			<version>1.0.12</version>
-		</dependency>
-		<dependency>
-			<groupId>javolution</groupId>
-			<artifactId>javolution</artifactId>
-			<version>5.5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>gov.lanl</groupId>
-			<artifactId>yadas</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.saxon</groupId>
-			<artifactId>saxon</artifactId>
-			<version>9.1.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>stringtemplate</artifactId>
-			<version>4.0.2</version>
-		</dependency>
-	</dependencies>
-    <build>
-        <plugins>
+	<build>
+		<plugins>
+			<!-- eclipse integration -->
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
@@ -218,155 +29,44 @@
 					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>add-integration-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/integration-test/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>ClinicalTrials.gov import schema</id>
-						<goals>
-								<goal>generate</goal>
-						</goals>
-						<configuration>
-							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/imports</schemaDirectory>
-							<schemaIncludes>
-								<include>**/clinicaltrials.xsd</include>
-							</schemaIncludes>
-							<generateDirectory>${basedir}/src/main/generated-source</generateDirectory>
-							<generatePackage>org.drugis.addis.imports</generatePackage>
-						</configuration>
-					</execution>
-					<execution>
-						<id>ADDIS schema</id>
-						<goals>
-								<goal>generate</goal>
-						</goals>
-						<configuration>
-							<extension>true</extension>
-							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</schemaDirectory>
-							<bindingDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</bindingDirectory>
-							<schemaIncludes>
-								<include>addis-3.xsd</include>
-							</schemaIncludes>
-							<bindingIncludes>
-								<include>addis-3.xjb</include>
-							</bindingIncludes>
-							<generateDirectory>${basedir}/src/main/generated-entities</generateDirectory>
-							<generatePackage>org.drugis.addis.entities.data</generatePackage>
-							<args>
-								<arg>-Xinject-listener-code</arg>
-								<arg>-XtoString</arg>
-								<arg>-Xequals</arg>
-								<arg>-XhashCode</arg>
-								<!-- <arg>-Xcopyable</arg> -->
-								<!-- <arg>-Xmergeable</arg> -->
-							</args>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-xjc</artifactId>
-						<version>2.1.3</version>
-					</dependency>
-					<dependency>
-						<groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-impl</artifactId>
-						<version>2.1.3</version>
-					</dependency>
-					<dependency>
-						<groupId>org.jvnet.jaxb2-commons</groupId>
-						<artifactId>property-listener-injector</artifactId>
-						<version>1.0</version>
-						<exclusions>
-							<exclusion>
-								<groupId>com.sun.xml.bind</groupId>
-								<artifactId>jaxb-xjc</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-basics</artifactId>
-						<version>0.6.0</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>org.drugis.addis.gui.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
+			<!-- attach source to release
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.5</version>
+				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>integration-test</id>
 						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>verify</id>
-						<goals>
-							<goal>verify</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+			-->
+
+			<!-- attach javadoc to release
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+
+			<!-- output project version to file -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.1</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>verify</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -376,60 +76,14 @@
 							</tasks>
 						</configuration>
 					</execution>
-					<execution>
-						<id>create-staging-area</id>
-						<phase>package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<copy file="${basedir}/src/izpack/addis.cmd" todir="${izpack.dir}"/>
-								<copy file="${basedir}/src/izpack/errordialog.vbs" todir="${izpack.dir}"/>
-								<copy file="${basedir}/src/izpack/registrySpec.xml" todir="${izpack.dir}"/>
-								<copy file="${basedir}/README.txt" todir="${izpack.dir}"/>
-								<copy file="${basedir}/LICENSE.txt" todir="${izpack.dir}"/>
-								<copy file="${basedir}/graphics/addis.ico" todir="${izpack.dir}/"/>
-								<copy file="${basedir}/target/${project.build.finalName}-jar-with-dependencies.jar" tofile="${izpack.dir}/addis.jar"/>
-							</tasks>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-          		<groupId>org.codehaus.izpack</groupId>
-          		<artifactId>izpack-maven-plugin</artifactId>
-          		<version>${izpack-maven-plugin.version}</version>
-				<executions>
-            		<execution>
-              			<phase>package</phase>
-              			<goals>
-	                		<goal>izpack</goal>
-              			</goals>
-              			<configuration>
-	                		<izpackBasedir>${izpack.dir}</izpackBasedir>
-	                		<installerFile>${basedir}/target/${project.build.finalName}-installer.jar</installerFile>
-	  					</configuration>
-            		</execution>
-          		</executions>
-          		<dependencies>
-            			<dependency>
-              				<groupId>org.codehaus.izpack</groupId>
-              				<artifactId>izpack-standalone-compiler</artifactId>
-              				<version>${izpack-standalone.version}</version>
-            			</dependency>
-          		</dependencies>
-        	</plugin>
 		</plugins>
 	</build>
-   
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>emma-maven-plugin</artifactId>
-				<version>1.0-alpha-3-SNAPSHOT</version>
-			</plugin>
-		</plugins>
-	</reporting>
+
+	<modules>
+		<module>application</module>
+		<module>installer</module>
+	</modules>
 </project>
+
