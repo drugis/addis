@@ -1,13 +1,18 @@
 #!/bin/bash
 
+ANT_LIB=~/.ant/lib
+if [ ! -e $ANT_LIB/maven-ant-tasks*.jar ]; then
+	echo "Missing maven ant library, please install it to $ANT_LIB";
+	exit;
+fi
+
 echo '---- Getting version from Maven'
-mvn validate
+mvn compile
 
 VERSION=`cat version`
 rm version
 DIR=addis-$VERSION
-GFX=src/main/resources/org/drugis/addis/gfx
-#DATA=$DIR/data
+GFX=application/src/main/resources/org/drugis/addis/gfx
 
 if [ "$VERSION" = '' ]; then
 	echo '!!!! Error: could not get version';
@@ -19,6 +24,7 @@ fi
 # Create header.png for current version
 echo '---- Generating header.png'
 (cat graphics/header.scm; echo "(addis-version-header \"ADDIS v $VERSION\" \"graphics/header.xcf\" \"$GFX/header.png\")"; echo '(gimp-quit 0)') | gimp -i -b -
+
 
 if [[ "$VERSION" == *-SNAPSHOT ]]; then
 	echo '!!!! Not packaging -SNAPSHOT';
@@ -37,13 +43,12 @@ echo '---- Building JAR'
 mvn clean package -q|| exit
 
 mkdir $DIR
-#mkdir -p $DATA
 
-cp target/addis-$VERSION-jar-with-dependencies.jar $DIR/addis-$VERSION.jar
+cp application/target/addis-$VERSION-jar-with-dependencies.jar $DIR/addis-$VERSION.jar
 chmod a+x $DIR/addis-$VERSION.jar
 cp LICENSE.txt $DIR
 cp README.txt $DIR
-#cp hansen.xml $DATA
-#cp hansen-analyses.xml $DATA 
 
 zip -r addis-$VERSION.zip $DIR
+cp installer/target/addis-$VERSION-installer.jar .
+

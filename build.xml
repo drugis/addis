@@ -6,7 +6,6 @@
 
 	<artifact:pom id="addis-pom" file="pom.xml" />
 
-
 	<target name="license">
 		<java classpath="application/target/addis-${addis-pom.version}-jar-with-dependencies.jar" classname="org.drugis.addis.util.CopyrightInfo" />
 		<loadfile property="header" srcFile="HEADER" />
