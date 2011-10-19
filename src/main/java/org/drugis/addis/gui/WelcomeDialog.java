@@ -64,6 +64,8 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 		setTitle("Welcome to " + AppInfo.getAppName());		
 		initComps();
 		setResizable(false);
+		setIconImage(ImageLoader.getImage(FileNames.ICON_ADDIS_APP));
+		
 		pack();
 		addWindowListener(new WindowAdapter() {
 			@Override

@@ -61,4 +61,5 @@ public class FileNames {
 	public static final String ICON_RUN = "run.gif";
 	public static final String ICON_NOTE = "note.gif";
 	public static final String ICON_NOTE_NEW = "note_new.gif";
+	public static final String ICON_ADDIS_APP = "addis.png";
 }

@@ -115,6 +115,8 @@ public class AddisWindow extends JFrame {
 			}
 		});
 
+		setIconImage(ImageLoader.getImage(FileNames.ICON_ADDIS_APP));
+		
 		setPreferredSize(fitDimensionToScreen(960, 800));
 		setMinimumSize(new Dimension(750, 550)); // fit the screen for 800x600 resolution
 
