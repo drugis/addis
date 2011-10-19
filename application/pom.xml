@@ -9,8 +9,10 @@
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
-	<artifactId>addis</artifactId>
+	<artifactId>application</artifactId>
 	<name>ADDIS</name>
+
+	<packaging>jar</packaging>
 
 	<repositories>
 		<repository>
@@ -47,8 +49,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
-	<packaging>jar</packaging>
 
 	<properties>
         	<drugis-common.version>0.4.6</drugis-common.version>
@@ -214,13 +214,6 @@
 	</dependencies>
     <build>
         <plugins>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadJavadocs>true</downloadJavadocs>
-					<downloadSources>true</downloadSources>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>

@@ -27,8 +27,8 @@
 			<version>${izpack-standalone.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.drugis.addis</groupId>
-			<artifactId>addis</artifactId>
+			<groupId>${pom.groupId}</groupId>
+			<artifactId>application</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

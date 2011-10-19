@@ -5,8 +5,8 @@
 	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
 	<version>1.9.4-SNAPSHOT</version>
-
 	<name>ADDIS project</name>
+
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -27,6 +27,7 @@
 				<configuration>
 					<downloadJavadocs>true</downloadJavadocs>
 					<downloadSources>true</downloadSources>
+					<addGroupIdToProjectName>true</addGroupIdToProjectName>
 				</configuration>
 			</plugin>
 
