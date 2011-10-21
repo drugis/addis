@@ -52,9 +52,9 @@
 
 	<properties>
         	<drugis-common.version>0.4.6</drugis-common.version>
-        	<jsmaa.version>0.9-SNAPSHOT</jsmaa.version>
+        	<jsmaa.version>0.8.5</jsmaa.version>
         	<mtc.version>0.10</mtc.version>
-    </properties> 
+	</properties> 
     
 	<dependencies>
 		<dependency>
