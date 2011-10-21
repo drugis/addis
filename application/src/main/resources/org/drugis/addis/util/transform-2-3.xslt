@@ -34,38 +34,40 @@
             </drug>
         </drugs>
     </xsl:template>
-    <xsl:template match="activity/treatment">
+    <xsl:template match="activity/treatment|activity/combinationTreatment">
         <treatment>
-            <drugTreatment>
-                <xsl:for-each select="./flexibleDose">
-                    <flexibleDose>
-                        <xsl:attribute name="minDose">
-                            <xsl:value-of select="@minDose"/>
-                        </xsl:attribute>
-                        <xsl:attribute name="maxDose">
-                            <xsl:value-of select="@maxDose"/>
-                        </xsl:attribute>
-                        <doseUnit scaleModifier="MILLI" perTime="P1D">
-                            <unit name="gram"/>
-                        </doseUnit>
-                    </flexibleDose>
-                </xsl:for-each>
-                <xsl:for-each select="./fixedDose">
-                    <fixedDose>
-                        <xsl:attribute name="quantity">
-                            <xsl:value-of select="@quantity"/>
-                        </xsl:attribute>
-                        <doseUnit scaleModifier="MILLI" perTime="P1D">
-                            <unit name="gram"/>
-                        </doseUnit>
-                    </fixedDose>
-                </xsl:for-each>
-                 <xsl:for-each select="./drug">
-                    <xsl:copy>
-                        <xsl:apply-templates select="@*"/>
-                    </xsl:copy>
-                </xsl:for-each>
-           </drugTreatment>
+            <xsl:for-each select="./treatment|../treatment">
+                <drugTreatment>
+                    <xsl:for-each select="./flexibleDose">
+                        <flexibleDose>
+                            <xsl:attribute name="minDose">
+                                <xsl:value-of select="@minDose"/>
+                            </xsl:attribute>
+                            <xsl:attribute name="maxDose">
+                                <xsl:value-of select="@maxDose"/>
+                            </xsl:attribute>
+                            <doseUnit scaleModifier="MILLI" perTime="P1D">
+                                <unit name="gram"/>
+                            </doseUnit>
+                        </flexibleDose>
+                    </xsl:for-each>
+                    <xsl:for-each select="./fixedDose">
+                        <fixedDose>
+                            <xsl:attribute name="quantity">
+                                <xsl:value-of select="@quantity"/>
+                            </xsl:attribute>
+                            <doseUnit scaleModifier="MILLI" perTime="P1D">
+                                <unit name="gram"/>
+                            </doseUnit>
+                        </fixedDose>
+                    </xsl:for-each>
+                     <xsl:for-each select="./drug">
+                        <xsl:copy>
+                            <xsl:apply-templates select="@*"/>
+                        </xsl:copy>
+                    </xsl:for-each>
+                </drugTreatment>
+            </xsl:for-each>
         </treatment>
     </xsl:template>
     <xsl:template match="metaBenefitRiskAnalysis/baseline">

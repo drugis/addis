@@ -31,4 +31,16 @@
             </notes>
         </xsl:copy>
     </xsl:template>
+    <xsl:template match="study/measurements/measurement">
+        <xsl:copy>
+            <xsl:apply-templates select="node()|@*"/>
+            <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
+                <xsl:element name="epoch">
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="../../epochs/epoch[last()]/@name"/>
+                    </xsl:attribute>
+                </xsl:element>
+            </whenTaken>
+        </xsl:copy>
+    </xsl:template>    
 </xsl:stylesheet>
