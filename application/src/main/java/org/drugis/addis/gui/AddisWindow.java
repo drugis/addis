@@ -131,6 +131,7 @@ public class AddisWindow extends JFrame {
 		initComponents();
 		Main.bindPrintScreen(super.getContentPane());
 		updateTitle();
+		d_leftPanelTree.getSelectionModel().setSelectionPath(d_domainTreeModel.getPathTo(d_domain.getCategory(Study.class)));
 	}
 	
 	public static Dimension fitDimensionToScreen(int width, int height) {

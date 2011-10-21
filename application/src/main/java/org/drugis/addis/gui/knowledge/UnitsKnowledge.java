@@ -48,6 +48,11 @@ public class UnitsKnowledge extends CategoryKnowledgeBase {
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		return new AddUnitDialog(mainWindow, domain, selectionModel);
 	}
+	
+	@Override
+	protected String[] getShownProperties() {
+		return new String[] { "name", "symbol" };
+	}
 
 	@Override
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
