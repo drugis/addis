@@ -31,6 +31,12 @@ if [[ "$VERSION" == *-SNAPSHOT ]]; then
 	exit;
 fi;
 
+#create readme.html for pretty-printed display in installer
+echo "<html><head><style type="text/css">h1{font-size:20pt;}</style> <title>README for ADDIS</title></head><body>" > installer/src/izpack/README.html
+markdown README.txt >> installer/src/izpack/README.html 
+echo "</body></html>" >> installer/src/izpack/README.html 
+
+
 # Package to be able to run CopyrightInfo
 mvn package -Dmaven.test.skip=true -q|| exit
 
