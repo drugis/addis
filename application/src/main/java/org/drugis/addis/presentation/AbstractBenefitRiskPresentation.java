@@ -39,6 +39,7 @@ extends PresentationModel<AnalysisType> {
 	protected BuildQueue d_buildQueue;
 	private SMAAPresentation<Alternative, AnalysisType> d_smaaPresentation;
 	private LyndOBrienPresentation<Alternative, AnalysisType> d_lyndOBrienPresentation;
+	private BRATTableModel<Alternative, AnalysisType> d_bratTableModel;
 
 	public AbstractBenefitRiskPresentation(AnalysisType bean, PresentationModelFactory pmf) {
 		super(bean);
@@ -51,6 +52,7 @@ extends PresentationModel<AnalysisType> {
 			d_lyndOBrienPresentation = new LyndOBrienPresentation<Alternative, AnalysisType>(getBean());
 			startLyndOBrien();
 		}
+		d_bratTableModel = new BRATTableModel<Alternative, AnalysisType>(bean);
 	}
 	
 	protected abstract void startSMAA();
@@ -70,5 +72,9 @@ extends PresentationModel<AnalysisType> {
 
 	public LyndOBrienPresentation<Alternative, AnalysisType> getLyndOBrienPresentation() {
 		return d_lyndOBrienPresentation;
+	}
+	
+	public BRATTableModel<Alternative, AnalysisType> getBRATTableModel() {
+		return d_bratTableModel;
 	}
 }

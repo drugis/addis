@@ -24,6 +24,8 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.ScrollPane;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,6 +38,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
+import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
@@ -61,6 +64,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		} else {
 			d_view = new LyndOBrienView(d_pm, d_mainWindow);
 		}
+		
 	}
 	
 
@@ -68,10 +72,24 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", buildOverviewPanel());
 		tabbedPane.addTab("Measurements", buildMeasurementsPanel());
+		tabbedPane.addTab("BRAT Framework", buildBratPanel());
 		tabbedPane.addTab("Analysis", buildAnalysisPanel());
 		tabbedPane.setOpaque(true);
 		return tabbedPane;
 	}
+
+	protected JPanel buildBratPanel() {
+		JPanel panel = new JPanel();
+		EnhancedTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
+		table.getTableHeader().setVisible(true);
+//		table.getTableHeader().getColumnModel().getColumn(0).setHeaderRenderer(new RotatedTableCellRenderer(270));
+		ScrollPane pane = new ScrollPane();
+		pane.add(table);
+		pane.setPreferredSize(table.getPreferredScrollableViewportSize());
+		panel.add(pane);
+		return panel;
+	}
+
 
 	protected abstract JPanel buildOverviewPanel();
 
@@ -123,4 +141,5 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 	}
 
 	protected abstract JPanel buildMeasurementsPanel();
+
 }
