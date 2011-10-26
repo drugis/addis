@@ -34,13 +34,24 @@ import org.drugis.addis.presentation.SummaryCellRenderer;
 
 @SuppressWarnings("serial")
 public class DistributionQuantileCellRenderer extends DefaultTableCellRenderer {
+	
+	private final boolean d_useTwoLines;
+	public DistributionQuantileCellRenderer(boolean useTwoLines) {
+		d_useTwoLines = useTwoLines;
+	}
+
+	public DistributionQuantileCellRenderer() {
+		this(false);
+	}
+	
 	public Component getTableCellRendererComponent(JTable table, Object value, 
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		if (value instanceof Distribution) {
 			Distribution d = (Distribution)value;
-			String str = SummaryCellRenderer.format(d.getQuantile(0.5)) + " (" + 
-				SummaryCellRenderer.format(d.getQuantile(0.025)) + ", " + 
-				SummaryCellRenderer.format(d.getQuantile(0.975)) + ")";
+			String str = "<html><center>" + SummaryCellRenderer.format(d.getQuantile(0.5)) + 
+				(d_useTwoLines ? "<br>" : " ") + "(" + 
+				SummaryCellRenderer.format(d.getQuantile(0.025)) + ",&nbsp;" + 
+				SummaryCellRenderer.format(d.getQuantile(0.975)) + ")" + "</center></html>";
 			return super.getTableCellRendererComponent(table, str, isSelected, hasFocus, row, column);
 		}
 		return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

@@ -89,15 +89,15 @@ public class ForestPlot extends JComponent {
 		d_g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		//HEADER ROW:
-		drawVCentrString(d_g2d, "Study", 0, 1, Align.LEFT);
-		drawVCentrString(d_g2d, "Relative Effect (95% CI)", 0, FULLWIDTH, Align.RIGHT);
+		drawVerticalCenterString(d_g2d, "Study", 1, Align.LEFT, FULLROW * 0);
+		drawVerticalCenterString(d_g2d, "Relative Effect (95% CI)", FULLWIDTH, Align.RIGHT, FULLROW * 0);
 		
 		d_g2d.drawRect(1, ROWHEIGHT, FULLWIDTH, 1);
 				
 		//STUDY COLUMN & CI COLUMN:
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
-			drawVCentrString(d_g2d, d_pm.getStudyLabelAt(i), i + 1, 1, Align.LEFT);
-			drawVCentrString(d_g2d, d_pm.getCIlabelAt(i).getLabelModel().getString(), i + 1, FULLWIDTH, Align.RIGHT);
+			drawVerticalCenterString(d_g2d, d_pm.getStudyLabelAt(i), 1, Align.LEFT, FULLROW * (i + 1));
+			drawVerticalCenterString(d_g2d, d_pm.getCIlabelAt(i).getLabelModel().getString(), FULLWIDTH, Align.RIGHT, FULLROW * (i + 1));
 		}
 		
 		d_g2d.translate(STUDYWIDTH, FULLROW);
@@ -114,26 +114,24 @@ public class ForestPlot extends JComponent {
 	
 	public void paintAxis(Graphics2D g2d) {
 		//Horizontal axis:
-		g2d.drawLine(1, FULLROW * d_bars.size(), BARWIDTH, FULLROW * d_bars.size());
+		int y0 = FULLROW * d_bars.size();
+		g2d.drawLine(1, y0, BARWIDTH, y0);
 		//Vertical axis:
 		int originX = d_pm.getScale().getBin(d_pm.getScaleType() == AxisType.LOGARITHMIC ? 1D : 0D).bin;
-		g2d.drawLine(originX, 1 - ROWPAD, originX, FULLROW * d_bars.size());
+		g2d.drawLine(originX, 1 - ROWPAD, originX, y0);
 		
 		//Tickmarks:
-		int index = 0;
-		for (Integer i : d_pm.getTicks()) {
-			g2d.drawLine(i, FULLROW * d_bars.size(), i, FULLROW * d_bars.size() + TICKLENGTH);
-			drawVCentrString(g2d, d_pm.getTickVals().get(index).toString(), d_bars.size(), i, Align.CENTER);
-			++index;
-		}
+		List<Integer> ticks = d_pm.getTicks();
+		List<String> tickVals = d_pm.getTickVals();
+		drawAxisTicks(g2d, y0, ticks, tickVals);
 		
-		drawVCentrString(g2d, d_pm.getRelativeEffectAt(0).getName(), d_bars.size() + 1, originX, Align.CENTER);
-		drawVCentrString(g2d, "Favours " + d_pm.getLowValueFavorsDrug().getLabel(), d_bars.size() + 2, originX - HORPAD, Align.RIGHT);
-		drawVCentrString(g2d, "Favours " + d_pm.getHighValueFavorsDrug().getLabel(), d_bars.size() + 2, originX + HORPAD, Align.LEFT);
+		drawVerticalCenterString(g2d, d_pm.getRelativeEffectAt(0).getName(), originX, Align.CENTER, FULLROW * (d_bars.size() + 1));
+		drawVerticalCenterString(g2d, ("Favours " + d_pm.getLowValueFavorsDrug().getLabel()), (originX - HORPAD), Align.RIGHT, FULLROW * (d_bars.size() + 2));
+		drawVerticalCenterString(g2d, ("Favours " + d_pm.getHighValueFavorsDrug().getLabel()), (originX + HORPAD), Align.LEFT, FULLROW * (d_bars.size() + 2));
 		
 		// Draw the Heterogeneity
 		if (d_pm.isMetaAnalysis()) {
-			drawVCentrString(g2d, "Heterogeneity = " + d_pm.getHeterogeneity() + " (I\u00B2 = " + d_pm.getHeterogeneityI2() + ")", d_bars.size() + 3, FULLWIDTH / 4, Align.CENTER);
+			drawVerticalCenterString(g2d, ("Heterogeneity = " + d_pm.getHeterogeneity() + " (I\u00B2 = " + d_pm.getHeterogeneityI2() + ")"), (FULLWIDTH / 4), Align.CENTER, FULLROW * (d_bars.size() + 3));
 			//draw dashed line from the combined diamond:
 			float[] dash = { 1f, 1f, 1f };
 			g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, 
@@ -144,16 +142,24 @@ public class ForestPlot extends JComponent {
 					ROWVCENTER);
 		}
 	}
+
+	public static void drawAxisTicks(Graphics g, int y0, List<Integer> ticks, List<String> tickVals) {
+		int index = 0;
+		for (Integer i : ticks) {
+			g.drawLine(i, y0, i, y0 + TICKLENGTH);
+			drawVerticalCenterString(g, tickVals.get(index).toString(), i, Align.CENTER, y0);
+			++index;
+		}
+	}
 	
 	public Dimension getPlotSize() {
 		return new Dimension(2 * PADDING + FULLWIDTH, FULLROW * getNumRows() + ROWPAD + 2 * PADDING);
 	}
 	
 	
-	private void drawVCentrString(Graphics2D g2d, String text, int rownr, int xpos, Align a) {
-		//rownr for the header == 0
-		Rectangle2D textBounds = g2d.getFontMetrics().getStringBounds(text, g2d);
-		int y = (int) ((FULLROW * rownr) + ROWVCENTER + (textBounds.getHeight() / 2.0));
+	private static void drawVerticalCenterString(Graphics g, String text, int xpos, Align a, int y0) {
+		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(text, g);
+		int y = (int) (y0 + ROWVCENTER + (textBounds.getHeight() / 2.0));
 				
 		int x = 1;
 		
@@ -168,7 +174,7 @@ public class ForestPlot extends JComponent {
 				x = (int) (xpos - textBounds.getWidth());
 				break;
 		}
-		g2d.drawString(text, x, y);
+		g.drawString(text, x, y);
 	}
 
 }

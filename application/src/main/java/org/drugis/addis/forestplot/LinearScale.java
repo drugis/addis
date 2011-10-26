@@ -26,24 +26,18 @@ package org.drugis.addis.forestplot;
 
 import org.drugis.common.Interval;
 
-public class LinearScale implements Scale {
+public class LinearScale extends ScaleBase {
 	
-	Interval<Double> d_in;
-
 	public LinearScale(Interval<Double> interval) {
-		d_in = interval;
+		super(interval);
 	}
 	
-	public double getMax() {
-		return d_in.getUpperBound();
-	}
-
-	public double getMin() {
-		return d_in.getLowerBound();
-	}
-
 	public double getNormalized(double x) {
 		return (x - getMin()) / (getMax() - getMin());
 	}
 
+	@Override
+	protected boolean canEqual(ScaleBase other) {
+		return other instanceof LinearScale;
+	}
 }

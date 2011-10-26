@@ -68,4 +68,8 @@ public class BinnedScale {
 	public int getMax() {
 		return d_max;
 	}
+	
+	public Scale getScale() {
+		return d_scale;
+	}
 }

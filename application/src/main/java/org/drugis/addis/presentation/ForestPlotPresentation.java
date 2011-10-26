@@ -37,6 +37,7 @@ import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.forestplot.BinnedScale;
@@ -44,6 +45,7 @@ import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.IdentityScale;
 import org.drugis.addis.forestplot.LinearScale;
 import org.drugis.addis.forestplot.LogScale;
+import org.drugis.addis.forestplot.Scale;
 import org.drugis.common.Interval;
 
 
@@ -159,22 +161,30 @@ public class ForestPlotPresentation {
 	}
 
 	public Interval<Double> getRange() {
+		List<ConfidenceInterval> cis = new ArrayList<ConfidenceInterval>();
+		for (int i = 0; i < getNumRelativeEffects(); ++i) {
+			cis.add(getRelativeEffectAt(i).getConfidenceInterval());
+		}
+		return getRange(cis, d_scaleType);
+	}
+
+	static Interval<Double> getRange(List<ConfidenceInterval> cis, AxisType scaleType) {
 		double min = Double.MAX_VALUE;
 		double max = Double.MIN_VALUE;
 		
-		for (int i = 0; i < getNumRelativeEffects(); ++i) {
-			double lowerBound = getRelativeEffectAt(i).getConfidenceInterval().getLowerBound();
-			min = (lowerBound < min) ? lowerBound : min;
-			double upperBound = getRelativeEffectAt(i).getConfidenceInterval().getUpperBound();
-			max = (upperBound > max) ? upperBound : max;
+		for (ConfidenceInterval ci : cis) {
+			min = Math.min((double) ci.getLowerBound(), min);
+			max = Math.max((double) ci.getUpperBound(), max);
 		}
 		
-		if (d_scaleType == AxisType.LINEAR)
-			return niceIntervalLinear(min,max);
-		if (d_scaleType == AxisType.LOGARITHMIC)
-			return niceIntervalLog(min, max);
+		Interval<Double> interval = new Interval<Double>(min, max);
 		
-		return new Interval<Double>(min, max);
+		if (scaleType == AxisType.LINEAR)
+			return niceIntervalLinear(interval);
+		if (scaleType == AxisType.LOGARITHMIC)
+			return niceIntervalLog(interval);
+		
+		return interval;
 	}
 	
 	public DrugSet getLowValueFavorsDrug() {
@@ -189,7 +199,11 @@ public class ForestPlotPresentation {
 		return isCombined(i) ? "Combined" : d_studies.get(i).toString();
 	}
 	
-	Interval<Double> niceIntervalLog(double min, double max) {
+	public static Interval<Double> niceIntervalLog(Interval<Double> interval) {
+		return niceIntervalLog(interval.getLowerBound(), interval.getUpperBound());
+	}
+	
+	public static Interval<Double> niceIntervalLog(double min, double max) {
 		double lowersign = Math.floor(anylog(min, 2));
 		double uppersign = Math.ceil(anylog(max, 2));
 		
@@ -199,7 +213,11 @@ public class ForestPlotPresentation {
 		return new Interval<Double>(Math.min(0.5, minM), Math.max(2, maxM));	
 	}
 	
-	private Interval<Double> niceIntervalLinear(double min, double max) {
+	public static Interval<Double> niceIntervalLinear(Interval<Double> interval) {
+		return niceIntervalLinear(interval.getLowerBound(), interval.getUpperBound());
+	}
+	
+	public static Interval<Double> niceIntervalLinear(double min, double max) {
 		int sign = getSignificanceLevel(min, max);
 
 		double minM = Math.floor(min / Math.pow(10, sign)) * Math.pow(10, sign);
@@ -210,7 +228,7 @@ public class ForestPlotPresentation {
 		return new Interval<Double>(Math.min(-smallest, minM), Math.max(smallest, maxM));
 	}
 
-	private int getSignificanceLevel(double min, double max) {
+	private static int getSignificanceLevel(double min, double max) {
 		int signMax = (int) Math.floor(Math.log10(Math.abs(max)));
 		int signMin = (int) Math.floor(Math.log10(Math.abs(min)));
 		
@@ -218,7 +236,7 @@ public class ForestPlotPresentation {
 		return sign;
 	}
 	
-	private double anylog(double x, double base) {
+	private static double anylog(double x, double base) {
 		return Math.log(x) / Math.log(base);
 	}
 
@@ -227,21 +245,27 @@ public class ForestPlotPresentation {
 	}
 	
 	public List<Integer> getTicks() {
-		Interval<Double> range = getRange();
-		ArrayList<Integer> tickList = new ArrayList<Integer>();
-		tickList.add(d_scale.getBin(range.getLowerBound()).bin);
-		tickList.add(d_scale.getBin(d_scaleType == AxisType.LOGARITHMIC ? 1 : 0).bin);
-		tickList.add(d_scale.getBin(range.getUpperBound()).bin);
-		return tickList;
+		return getTicks(getScale(), getScale().getScale());
 	}
 
+	public static List<Integer> getTicks(BinnedScale scale, Scale toRender) {
+		ArrayList<Integer> tickList = new ArrayList<Integer>();
+		tickList.add(scale.getBin(toRender.getMin()).bin);
+		tickList.add(scale.getBin(toRender instanceof LogScale ? 1 : 0).bin);
+		tickList.add(scale.getBin(toRender.getMax()).bin);
+		return tickList;
+	}
+	
 	public List<String> getTickVals() {
-		Interval<Double> range = getRange();
+		return getTickVals(getScale(), getScale().getScale());
+	}
+
+	public static List<String> getTickVals(BinnedScale scale, Scale toRender) {
 		ArrayList<String> tickVals = new ArrayList<String>();
 		DecimalFormat df = new DecimalFormat("####.####");
-		tickVals.add(df.format(range.getLowerBound()));
-		tickVals.add(d_scaleType == AxisType.LOGARITHMIC ? df.format(1D) : df.format(0D));
-		tickVals.add(df.format(range.getUpperBound()));
+		tickVals.add(df.format(toRender.getMin()));
+		tickVals.add(toRender instanceof LogScale ? df.format(1D) : df.format(0D));
+		tickVals.add(df.format(toRender.getMax()));
 		return tickVals;
 	}
 	
