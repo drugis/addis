@@ -20,10 +20,25 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.forestplot.BinnedScale;
+import org.drugis.addis.forestplot.ForestPlot;
+import org.drugis.addis.forestplot.LinearScale;
+import org.drugis.common.Interval;
 
 
 public class BRATTableModel<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> extends AbstractTableModel {
+	public static class BRATForest {
+		public final ConfidenceInterval ci;
+		public final BinnedScale scale;
+		
+		public BRATForest(ConfidenceInterval ci, BinnedScale scale) {
+			this.ci = ci;
+			this.scale = scale;
+		}
+	}
+	
 	public static final int COLUMN_BR = 0;
 	public static final int COLUMN_CRITERIA = 1;
 	public static final int COLUMN_OUTCOME_TYPE = 2;
@@ -75,8 +90,14 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			return getMeasurement(rowIndex, d_subject);
 		} else if (columnIndex == COLUMN_DIFFERENCE) {
 			return getDifference(rowIndex);
+		} else if (columnIndex == COLUMN_FOREST) {
+			return new BRATForest(getCI(getDifference(rowIndex)), new BinnedScale(new LinearScale(new Interval<Double>(0.0, 1.5)), 1, ForestPlot.BARWIDTH));
 		}
 		return "";
+	}
+
+	private ConfidenceInterval getCI(Distribution difference) {
+		return new ConfidenceInterval(difference.getQuantile(0.5), difference.getQuantile(0.025), difference.getQuantile(0.975));
 	}
 
 	private Distribution getDifference(int rowIndex) {
@@ -144,7 +165,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			case COLUMN_DIFFERENCE:
 				return Distribution.class;
 			case COLUMN_FOREST:
-				return Object.class;
+				return BRATForest.class;
 			default:
 				return null;
 		}

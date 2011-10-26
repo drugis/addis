@@ -26,6 +26,7 @@ package org.drugis.addis.forestplot;
 
 import java.awt.Graphics2D;
 
+import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 public class RelativeEffectBar implements Paintable {
@@ -36,20 +37,24 @@ public class RelativeEffectBar implements Paintable {
 	private int d_yCentre;
 
 	public RelativeEffectBar(BinnedScale scale, int yCentre, RelativeEffect<?> effect, int diamondW) {
+		this(scale, yCentre, effect.getConfidenceInterval(), diamondW);
+	}
+	
+	public RelativeEffectBar(BinnedScale scale, int yCentre, ConfidenceInterval ci, int diamondW) {
 		d_yCentre = yCentre;
 		
 		// Calculate parameters of confidence interval line.
-		d_confStart = scale.getBin(effect.getConfidenceInterval().getLowerBound()).bin;
-		d_confEnd = scale.getBin(effect.getConfidenceInterval().getUpperBound()).bin;
+		d_confStart = scale.getBin(ci.getLowerBound()).bin;
+		d_confEnd = scale.getBin(ci.getUpperBound()).bin;
 		
 		// Calculate parameters of mean-diamond.
-		d_diamondCenter = scale.getBin(effect.getConfidenceInterval().getPointEstimate()).bin;
+		d_diamondCenter = scale.getBin(ci.getPointEstimate()).bin;
 		d_diamondSize = diamondW; 
 	}
 	
 	public void paint(Graphics2D g2d) {
 		// Draw the confidence interval line.
-		g2d.drawLine( d_confStart, d_yCentre, d_confEnd, d_yCentre);
+		g2d.drawLine(d_confStart, d_yCentre, d_confEnd, d_yCentre);
 		
 		// Draw the mean-diamond
 		if (d_diamondSize == 0) {

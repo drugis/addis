@@ -24,11 +24,19 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Canvas;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
@@ -37,6 +45,8 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.forestplot.ForestPlot;
+import org.drugis.addis.forestplot.RelativeEffectBar;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
@@ -45,6 +55,7 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
+import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -87,6 +98,37 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(VariableType.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
+		table.setDefaultRenderer(BRATForest.class, new TableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				BRATForest forest = (BRATForest) value;
+				final RelativeEffectBar bar = new RelativeEffectBar(forest.scale, ForestPlot.ROWVCENTER, forest.ci, ForestPlot.ROWHEIGHT / 3);
+
+				Canvas canvas = new Canvas() {
+					@Override
+					public void paint(Graphics g) {
+						bar.paint((Graphics2D) g);
+					}
+					
+					@Override
+					public Dimension getSize() {
+						return new Dimension(ForestPlot.BARWIDTH, ForestPlot.ROWHEIGHT);
+					}
+					
+					@Override
+					public Dimension getPreferredSize() {
+						return getSize();
+					}
+					
+					@Override
+					public Dimension getMinimumSize() {
+						return getSize();
+					}
+				};
+				return canvas;
+			}
+			
+		});
 		table.autoSizeColumns();
 		return new TablePanel(table);
 //		table.getTableHeader().getColumnModel().getColumn(0).setHeaderRenderer(new RotatedTableCellRenderer(270));
