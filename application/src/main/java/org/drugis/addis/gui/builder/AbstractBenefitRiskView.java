@@ -24,22 +24,25 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.ScrollPane;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ListPanel;
+import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
@@ -79,17 +82,15 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 	}
 
 	protected JPanel buildBratPanel() {
-		JPanel panel = new JPanel();
 		EnhancedTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
-		table.getTableHeader().setVisible(true);
+//		table.setDefaultRenderer(Double.class, new SummaryCellRenderer());
+		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
+		table.setDefaultRenderer(VariableType.class, new DefaultTableCellRenderer());
+		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
+		table.autoSizeColumns();
+		return new TablePanel(table);
 //		table.getTableHeader().getColumnModel().getColumn(0).setHeaderRenderer(new RotatedTableCellRenderer(270));
-		ScrollPane pane = new ScrollPane();
-		pane.add(table);
-		pane.setPreferredSize(table.getPreferredScrollableViewportSize());
-		panel.add(pane);
-		return panel;
 	}
-
 
 	protected abstract JPanel buildOverviewPanel();
 

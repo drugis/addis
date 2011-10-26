@@ -113,7 +113,7 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 
 	private Distribution getMeasurement(BenefitRiskAnalysis<Alternative> analysis, Alternative alternative,
 			OutcomeMeasure criterion) {
-		Distribution measurement = analysis.getMeasurement(alternative, criterion);
+		Distribution measurement = analysis.getMeasurement(criterion, alternative);
 		if (measurement instanceof LogGaussian) {
 			LogGaussian logDist = (LogGaussian)measurement;
 			measurement = new Gaussian(logDist.getMu(), logDist.getSigma());

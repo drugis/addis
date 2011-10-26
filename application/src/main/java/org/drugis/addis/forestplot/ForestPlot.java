@@ -63,7 +63,7 @@ public class ForestPlot extends JComponent {
 	private ForestPlotPresentation d_pm;
 	private Graphics2D d_g2d;
 	
-	public ForestPlot (ForestPlotPresentation pm) {
+	public ForestPlot(ForestPlotPresentation pm) {
 		d_pm = pm;
 		d_bars = new ArrayList<RelativeEffectBar>();
 		

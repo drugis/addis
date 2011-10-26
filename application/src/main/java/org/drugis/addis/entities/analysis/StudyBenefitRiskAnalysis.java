@@ -63,6 +63,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
 			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
+		assertMeasurementsPresent(study, criteria, alternatives);
 		d_name = name;
 		d_indication = indication;
 		d_study = study;
@@ -73,6 +74,16 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 				
+	}
+
+	private void assertMeasurementsPresent(Study study, List<OutcomeMeasure> criteria, List<Arm> alternatives) {
+		for (OutcomeMeasure om : criteria) {
+			for (Arm a : alternatives) {
+				if (study.getMeasurement(om, a) == null) {
+					throw new IllegalArgumentException("Trying to create a StudyBR, but " + a + "," + om + " has no measurement in study " + study);
+				}
+			}
+		}
 	}
 
 	private void setCriteria(List<OutcomeMeasure> criteria) {
@@ -100,7 +111,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		return d_indication;
 	}
 
-	public Distribution getMeasurement(Arm alternative, OutcomeMeasure criterion) {
+	public Distribution getMeasurement(OutcomeMeasure criterion, Arm alternative) {
 		Measurement measurement = d_study.getMeasurement(criterion, alternative);
 		if (measurement instanceof RateMeasurement) {
 			RateMeasurement rateMeasurement = (RateMeasurement) measurement;

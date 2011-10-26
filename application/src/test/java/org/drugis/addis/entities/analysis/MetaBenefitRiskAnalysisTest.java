@@ -110,11 +110,11 @@ public class MetaBenefitRiskAnalysisTest {
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
-		LogitGaussian absoluteF = (LogitGaussian)d_BRAnalysis.getMeasurement(new DrugSet(fluox), om);
+		LogitGaussian absoluteF = (LogitGaussian)d_BRAnalysis.getMeasurement(om, new DrugSet(fluox));
 		assertEquals(expectedMu, absoluteF.getMu(), 0.0000001);
 		assertEquals(expectedSigma, absoluteF.getSigma(), 0.0000001);
 
-		LogitGaussian absoluteP = (LogitGaussian)d_BRAnalysis.getMeasurement(new DrugSet(parox), om);
+		LogitGaussian absoluteP = (LogitGaussian)d_BRAnalysis.getMeasurement(om, new DrugSet(parox));
 		assertEquals(baseline.getMu(), absoluteP.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteP.getSigma(), 0.0001);
 	}
@@ -131,11 +131,11 @@ public class MetaBenefitRiskAnalysisTest {
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
-		Gaussian absoluteP = (Gaussian)br.getMeasurement(new DrugSet(parox), om);
+		Gaussian absoluteP = (Gaussian)br.getMeasurement(om, new DrugSet(parox));
 		assertEquals(expectedMu, absoluteP.getMu(), 0.0000001);
 		assertEquals(expectedSigma, absoluteP.getSigma(), 0.0000001);
 		
-		Gaussian absoluteF = (Gaussian)br.getMeasurement(new DrugSet(fluox), om);
+		Gaussian absoluteF = (Gaussian)br.getMeasurement(om, new DrugSet(fluox));
 		assertEquals(baseline.getMu(), absoluteF.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0001);
 	}

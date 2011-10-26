@@ -25,6 +25,7 @@
 package org.drugis.addis.entities.relativeeffect;
 
 
+
 public class TransformedLogStudentT extends TransformedStudentTBase {
 
 	public TransformedLogStudentT(double mu, double sigma, int degreesOfFreedom) {
@@ -48,5 +49,9 @@ public class TransformedLogStudentT extends TransformedStudentTBase {
 	public String toString() {
 		return "LogStudentT(mu=" + getMu() + ", sigma=" + getSigma() + ", df=" + getDegreesOfFreedom() + ")";
 	}
-	
+
+	@Override
+	protected boolean canEqual(TransformedStudentTBase other) {
+		return other instanceof TransformedLogStudentT;
+	}
 }

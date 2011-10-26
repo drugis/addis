@@ -27,6 +27,7 @@ package org.drugis.addis.entities.relativeeffect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -100,5 +101,12 @@ public class LogGaussianTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void testPlusShouldFailOnIncompatibleType() {
 		(new LogGaussian(0.0, 0.1)).plus(new Gaussian(1.0, 2.0));
+	}
+	
+	@Test
+	public void testEquals() {
+		assertEquals(new LogGaussian(12.3, 5.5), new LogGaussian(12.3, 5.5));
+		assertEquals(new LogGaussian(12.3, 5.5).hashCode(), new LogGaussian(12.3, 5.5).hashCode());
+		JUnitUtil.assertNotEquals(new LogGaussian(12.3, 5.5), new Gaussian(12.3, 5.5));
 	}
 }

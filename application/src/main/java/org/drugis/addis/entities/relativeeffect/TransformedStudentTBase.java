@@ -80,8 +80,15 @@ public abstract class TransformedStudentTBase extends AbstractObservable impleme
 	public boolean equals(Object o) {
 		if(o instanceof TransformedStudentTBase) {
 			TransformedStudentTBase other = (TransformedStudentTBase) o;
-			return other.d_mu == d_mu && other.d_sigma == d_sigma && other.d_degreesOfFreedom == d_degreesOfFreedom && other.getClass().equals(getClass());
+			return canEqual(other) && other.d_mu == d_mu && other.d_sigma == d_sigma && other.d_degreesOfFreedom == d_degreesOfFreedom;
 		}
 		return false;
 	}
+
+	@Override
+	public int hashCode() {
+		return ((Double)d_mu).hashCode() + 31 * ((Double)d_sigma).hashCode() + 31 * 31 * ((Integer) d_degreesOfFreedom).hashCode();
+	}
+	
+	protected abstract boolean canEqual(TransformedStudentTBase other);
 }

@@ -124,7 +124,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 					}
 					smaaModel.setMeasurement(crit, getAlternative(brAnalysis, a), m);
 				} else {
-					CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(a, om));
+					CardinalMeasurement m = createCardinalMeasurement(brAnalysis.getMeasurement(om, a));
 					smaaModel.setMeasurement(crit, getAlternative(brAnalysis, a), m);
 				}
 			}

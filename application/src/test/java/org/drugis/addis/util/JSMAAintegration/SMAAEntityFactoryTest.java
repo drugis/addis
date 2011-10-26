@@ -119,7 +119,7 @@ public class SMAAEntityFactoryTest {
 			for(Arm d : d_brAnalysisStudy.getAlternatives()){
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = 
 					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d_brAnalysisStudy.getStudy(), d));
-				Distribution expDistribution = d_brAnalysisStudy.getMeasurement(d, om);
+				Distribution expDistribution = d_brAnalysisStudy.getMeasurement(om, d);
 				if (om.equals(ExampleData.buildEndpointCgi())) {
 					TransformedStudentTBase expected = (TransformedStudentTBase)expDistribution;
 					GaussianMeasurement actual = (GaussianMeasurement)actualMeasurement;

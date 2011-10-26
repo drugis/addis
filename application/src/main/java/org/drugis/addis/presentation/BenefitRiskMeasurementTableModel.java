@@ -81,6 +81,6 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 		if (columnIndex == 0) return a.getLabel();
 
 		OutcomeMeasure om = d_br.getCriteria().get(columnIndex-1);
-		return d_br.getMeasurement(a, om);
+		return d_br.getMeasurement(om, a);
 	}
 }

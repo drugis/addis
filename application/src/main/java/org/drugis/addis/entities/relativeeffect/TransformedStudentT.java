@@ -47,4 +47,9 @@ public class TransformedStudentT extends TransformedStudentTBase {
 	public String toString() {
 		return "StudentT(mu=" + getMu() + ", sigma=" + getSigma() + ", df=" + getDegreesOfFreedom() + ")";
 	}
+
+	@Override
+	protected boolean canEqual(TransformedStudentTBase other) {
+		return other instanceof TransformedStudentT;
+	}
 }

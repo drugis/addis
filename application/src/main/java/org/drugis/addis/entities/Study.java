@@ -943,11 +943,10 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return d_populationChars;
 	}
 
-	public static <T extends Variable> List<StudyOutcomeMeasure<T>> wrapVariables(
-			List<T> vars) {
+	public static <T extends Variable> List<StudyOutcomeMeasure<T>> wrapVariables(List<T> vars) {
 		List<StudyOutcomeMeasure<T>> soms = new ArrayList<StudyOutcomeMeasure<T>>();
 		for (T v : vars) {
-			soms.add(new StudyOutcomeMeasure<T>(v));
+			soms.add(wrapVariable(v));
 		}
 		return soms;
 	}
@@ -981,6 +980,10 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	@Override
 	public ObservableList<Note> getNotes() {
 		return d_notes;
+	}
+
+	public static <T extends Variable> StudyOutcomeMeasure<T> wrapVariable(T om) {
+		return new StudyOutcomeMeasure<T>(om);
 	}
 
 }

@@ -213,12 +213,12 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return d_baseline;
 	}
 	
-	private RelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d, OutcomeMeasure om) {
+	private RelativeEffect<? extends Measurement> getRelativeEffect(OutcomeMeasure om, DrugSet baseline, DrugSet subject) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
 			if(ma.getOutcomeMeasure().equals(om)){
-				if (!d.equals(getBaseline())) {
+				if (!subject.equals(baseline)) {
 					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getVariableType() instanceof RateVariableType) ? BasicOddsRatio.class : BasicMeanDifference.class;
-					return ma.getRelativeEffect(d_baseline, d, type);
+					return ma.getRelativeEffect(baseline, subject, type);
 				}
 				else {
 					return (om.getVariableType() instanceof RateVariableType) ?  NetworkRelativeEffect.buildOddsRatio(0.0, 0.0) : NetworkRelativeEffect.buildMeanDifference(0.0, 0.0); 
@@ -226,20 +226,24 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 			}
 			
 		}
-		throw new IllegalArgumentException("No analyses comparing drug " + d + " and Outcome " + om + " in this Benefit-Risk analysis");
+		throw new IllegalArgumentException("No analyses comparing drug " + subject + " and Outcome " + om + " in this Benefit-Risk analysis");
 	}
 	
 	/**
 	 * The effect of d on om relative to the baseline treatment. 
 	 */
 	public GaussianBase getRelativeEffectDistribution(DrugSet d, OutcomeMeasure om) {
-		return (GaussianBase) getRelativeEffect(d, om).getDistribution();
+		return getRelativeEffectDistribution(om, getBaseline(), d);
+	}
+
+	public GaussianBase getRelativeEffectDistribution(OutcomeMeasure om, DrugSet baseline, DrugSet subject) {
+		return (GaussianBase) getRelativeEffect(om, baseline, subject).getDistribution();
 	}
 	
 	/**
 	 * Get the measurement to be used in the BenefitRisk simulation.
 	 */
-	public Distribution getMeasurement(DrugSet d, OutcomeMeasure om) {
+	public Distribution getMeasurement(OutcomeMeasure om, DrugSet d) {
 		if (om.getVariableType() instanceof RateVariableType) {
 			GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
 			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());

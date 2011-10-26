@@ -74,6 +74,16 @@ public class StudyBenefitRiskAnalysisTest {
 		assertEquals(ExampleData.buildStudyChouinard().getArms(), d_analysis.getAlternatives());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testBadInitialization() {
+		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
+		criteria.add(ExampleData.buildEndpointHamd());
+		criteria.add(ExampleData.buildAdverseEventConvulsion());
+		criteria.add(ExampleData.buildAdverseEventSexualDysfunction());
+		new StudyBenefitRiskAnalysis("Test SBA", ExampleData.buildIndicationDepression(), 
+				ExampleData.buildStudyFava2002(), criteria, ExampleData.buildStudyFava2002().getArms(), AnalysisType.SMAA);	
+	}
+	
 	@Test
 	public void testDependencies() {
 		Set<Entity> expected = new HashSet<Entity>();
@@ -101,7 +111,7 @@ public class StudyBenefitRiskAnalysisTest {
 		Endpoint endpoint = ExampleData.buildEndpointHamd();
 		RateMeasurement measurement = (RateMeasurement) study.getMeasurement(endpoint, arm);
 		Beta expected = new Beta(1 + measurement.getRate(), 1 + measurement.getSampleSize() - measurement.getRate());
-		assertEquals(expected, d_analysis.getMeasurement(arm, endpoint));
+		assertEquals(expected, d_analysis.getMeasurement(endpoint, arm));
 	}
 
 	@Test
@@ -119,7 +129,7 @@ public class StudyBenefitRiskAnalysisTest {
 		ContinuousMeasurement measurement = (ContinuousMeasurement) study.getMeasurement(endpoint, arm);
 		TransformedStudentTBase expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev(),
 				measurement.getSampleSize() - 1);
-		assertEquals(expected, d_analysis.getMeasurement(arm, endpoint));
+		assertEquals(expected, d_analysis.getMeasurement(endpoint, arm));
 	}
 	
 	@Test

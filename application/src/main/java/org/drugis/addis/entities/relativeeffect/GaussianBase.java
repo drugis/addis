@@ -83,4 +83,23 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 	protected abstract GaussianBase newInstance(double mu, double sigma);
 
 	abstract protected boolean canEqual(GaussianBase other);
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof GaussianBase) {
+			GaussianBase other = (GaussianBase) obj;
+			return canEqual(other) && d_mu == other.d_mu && d_sigma == other.d_sigma;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return ((Double)d_mu).hashCode() + 31 * ((Double)d_sigma).hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(mu=" + getMu() + ", sigma=" + getSigma() + ")";
+	}
 }

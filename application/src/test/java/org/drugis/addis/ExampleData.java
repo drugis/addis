@@ -699,14 +699,14 @@ public class ExampleData {
 		Drug paroxetine = buildDrugParoxetine();
 		Study study = new Study("Fava et al, 2002", buildIndicationDepression());
 		study.getEndpoints().clear();
-		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(hamd)));
+		study.getEndpoints().add(Study.wrapVariable(hamd));
 		List<AdverseEvent> ade = new ArrayList<AdverseEvent>();
 		ade.add(buildAdverseEventConvulsion());
 		ade.add(buildAdverseEventSexualDysfunction());
 		study.getAdverseEvents().clear();
 		study.getAdverseEvents().addAll(Study.wrapVariables(ade));
 		study.getPopulationChars().clear();
-		study.getPopulationChars().addAll(Study.wrapVariables(Collections.<PopulationCharacteristic>singletonList(buildGenderVariable())));
+		study.getPopulationChars().add(Study.wrapVariable(buildGenderVariable()));
 
 		addDefaultEpochs(study);
 		
