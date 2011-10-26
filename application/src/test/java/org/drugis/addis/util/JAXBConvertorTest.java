@@ -159,6 +159,7 @@ public class JAXBConvertorTest {
 	private static final String TEST_DATA_A_0 = "../testDataA-0.xml";
 	private static final String TEST_DATA_3 = "../testData-3.addis";
 	private static final String TEST_DATA_A_1 = "../testDataA-1.addis";
+	private static final Duration ZERO_DAYS = EntityUtil.createDuration("P0D");
 
 	private JAXBContext d_jaxb;
 	private Unmarshaller d_unmarshaller;
@@ -820,13 +821,13 @@ public class JAXBConvertorTest {
 		
 		Measurements measurements = new Measurements();
 		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
-		list.add(buildRateMeasurement(arm5.getName(), epName, rm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));		
-		list.add(buildRateMeasurement(arm8.getName(), epName, rm2, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
-		list.add(buildRateMeasurement(arm5.getName(), aeName, rm2, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
-		list.add(buildRateMeasurement(arm8.getName(), aeName, rm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
-		list.add(buildContinuousMeasurement(arm5.getName(), pcName, cm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
-		list.add(buildContinuousMeasurement(arm8.getName(), pcName, cm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
-		list.add(buildContinuousMeasurement(null, pcName, cm1, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo()));
+		list.add(buildRateMeasurement(arm5.getName(), epName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm1));		
+		list.add(buildRateMeasurement(arm8.getName(), epName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm2));
+		list.add(buildRateMeasurement(arm5.getName(), aeName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm2));
+		list.add(buildRateMeasurement(arm8.getName(), aeName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm1));
+		list.add(buildContinuousMeasurement(arm5.getName(), pcName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
+		list.add(buildContinuousMeasurement(arm8.getName(), pcName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
+		list.add(buildContinuousMeasurement(null, pcName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
 		
 		
 		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
@@ -842,7 +843,7 @@ public class JAXBConvertorTest {
 		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, oms).getMeasurement());
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm, String epochName, Duration duration, RelativeTo relativeTo) {
+	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, String epochName, Duration duration, RelativeTo relativeTo, org.drugis.addis.entities.data.ContinuousMeasurement cm) {
 		org.drugis.addis.entities.data.Measurement m = buildContinuousMeasurement(armName, omName, cm);
 		m.setWhenTaken(buildRelativeTime(epochName, duration, relativeTo));
 		return m;
@@ -874,7 +875,7 @@ public class JAXBConvertorTest {
 		return m;
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm, String epochName, Duration duration, RelativeTo relativeTo) {
+	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, String epochName, Duration duration, RelativeTo relativeTo, org.drugis.addis.entities.data.RateMeasurement rm) {
 		org.drugis.addis.entities.data.Measurement m = buildRateMeasurement(armName, omName, rm);
 		m.setWhenTaken(buildRelativeTime(epochName, duration, relativeTo));
 		return m;
@@ -971,8 +972,8 @@ public class JAXBConvertorTest {
 		cm1.setMean(0.2);
 		cm1.setStdDev(0.01);
 		cm1.setSampleSize(110);
-		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], rm1, "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
-		org.drugis.addis.entities.data.Measurement m2 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], cm1, "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
+		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, rm1);
+		org.drugis.addis.entities.data.Measurement m2 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, cm1);
 		list.add(m1);
 		list.add(m2);
 				
@@ -1454,6 +1455,7 @@ public class JAXBConvertorTest {
 		String name = "BR Analysis";
 		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
 		String[] endpoints = { ExampleData.buildEndpointCgi().getName(), ExampleData.buildEndpointHamd().getName() };
+		String[] whichArms = { "parox arm high", "parox arm low" };
 		Arms arms = new Arms();
 		Epochs epochs = new Epochs();
 		StudyActivities sas = new StudyActivities();
@@ -1468,7 +1470,6 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
 				ExampleData.buildIndicationDepression().getName(), endpoints, adverseEvents, new String[]{}, arms, epochs, sas);
 		
-		String[] whichArms = { "parox arm high", "parox arm low" };
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
@@ -1492,6 +1493,23 @@ public class JAXBConvertorTest {
 	private org.drugis.addis.entities.data.StudyBenefitRiskAnalysis buildStudyBR(
 			String name, org.drugis.addis.entities.data.Study study,
 			String[] endpoints, String[] adverseEvents, String[] whichArms) {
+		RateMeasurement rm = new RateMeasurement();
+		rm.setRate(2);
+		rm.setSampleSize(50);
+		ContinuousMeasurement cm = new ContinuousMeasurement();
+		cm.setMean(0.5);
+		cm.setSampleSize(50);
+		cm.setStdDev(1.0);
+		for (String armName : whichArms) {
+			for (String aeName : adverseEvents) {
+				study.getMeasurements().getMeasurement().add(buildRateMeasurement(armName, "adverseEvent-" + aeName, "Main phase", ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END, rm));
+			}
+			
+			// FIXME: Magic numbers in endpoint indices (too tired)
+			study.getMeasurements().getMeasurement().add(buildRateMeasurement(armName, "endpoint-" + endpoints[1], "Main phase", ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END, rm));
+			study.getMeasurements().getMeasurement().add(buildContinuousMeasurement(armName, "endpoint-" + endpoints[0], "Main phase", ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END, cm));
+		}
+		
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
 		br.setName(name);
 		br.setIndication(nameReference(study.getIndication().getName()));
