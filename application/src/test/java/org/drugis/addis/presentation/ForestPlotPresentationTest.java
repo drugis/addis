@@ -194,7 +194,7 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testLogarithmic() {
-		Interval<Double> logint = d_pm.niceIntervalLog(0.0624, 4.1);
+		Interval<Double> logint = ForestPlotPresentation.niceIntervalLog(0.0624, 4.1);
 		assertEquals(logint.getLowerBound(), 1D/32D, 0.001);
 		assertEquals(logint.getUpperBound(), 8D, 0.001);
 	}

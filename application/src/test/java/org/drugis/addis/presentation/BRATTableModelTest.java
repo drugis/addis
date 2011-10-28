@@ -7,8 +7,8 @@ import static org.drugis.addis.presentation.BRATTableModel.COLUMN_DIFFERENCE;
 import static org.drugis.addis.presentation.BRATTableModel.COLUMN_FOREST;
 import static org.drugis.addis.presentation.BRATTableModel.COLUMN_OUTCOME_TYPE;
 import static org.drugis.addis.presentation.BRATTableModel.COLUMN_SUBJECT;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;

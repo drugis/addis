@@ -54,7 +54,27 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			this.axis = axis;
 		}
 	}
-	
+
+	public static class BRATDifference {
+
+		private final OutcomeMeasure d_om;
+		private final Distribution d_difference;
+
+		public BRATDifference(OutcomeMeasure om, Distribution difference) {
+			d_om = om;
+			d_difference = difference;
+		}
+
+		public OutcomeMeasure getOutcomeMeasure() {
+			return d_om;
+		}
+
+		public Distribution getDifference() {
+			return d_difference;
+		}
+
+	}
+
 	public static final int COLUMN_BR = 0;
 	public static final int COLUMN_CRITERIA = 1;
 	public static final int COLUMN_OUTCOME_TYPE = 2;
@@ -161,7 +181,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		} else if (columnIndex == COLUMN_DIFFERENCE) {
 			return getDifference(rowIndex);
 		} else if (columnIndex == COLUMN_FOREST) {
-			return new BRATForest(getBinnedScale(getScale(rowIndex)), getCI(getDifference(rowIndex)));
+			return new BRATForest(getBinnedScale(getScale(rowIndex)), getCI(getDifference(rowIndex).getDifference()));
 		}
 		return "";
 	}
@@ -178,9 +198,9 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		return new ConfidenceInterval(difference.getQuantile(0.5), difference.getQuantile(0.025), difference.getQuantile(0.975));
 	}
 
-	private Distribution getDifference(int rowIndex) {
+	private BRATDifference getDifference(int rowIndex) {
 		OutcomeMeasure om = d_analysis.getCriteria().get(rowIndex);
-		return getDifference(om);
+		return new BRATDifference(om, getDifference(om));
 	}
 	
 	private Distribution getDifference(OutcomeMeasure om) {
@@ -201,10 +221,10 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	}
 
 	private Object getMeasurement(int rowIndex, Alternative a) {
-		if (d_analysis instanceof StudyBenefitRiskAnalysis) {
+		if (d_analysis instanceof StudyBenefitRiskAnalysis && rowIndex < d_analysis.getCriteria().size()) {
 			StudyBenefitRiskAnalysis sba = (StudyBenefitRiskAnalysis) d_analysis;
 			return sba.getMeasurement(sba.getCriteria().get(rowIndex), (Arm) a);
-		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
+		} else if (d_analysis instanceof MetaBenefitRiskAnalysis && rowIndex < d_analysis.getCriteria().size()) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
 			return mba.getMeasurement(mba.getCriteria().get(rowIndex), (DrugSet) a);
 		}
@@ -244,8 +264,9 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 				return VariableType.class;
 			case COLUMN_BASELINE:
 			case COLUMN_SUBJECT:
-			case COLUMN_DIFFERENCE:
 				return Distribution.class;
+			case COLUMN_DIFFERENCE:
+				return BRATDifference.class;
 			case COLUMN_FOREST:
 				return BRATForest.class;
 			default:

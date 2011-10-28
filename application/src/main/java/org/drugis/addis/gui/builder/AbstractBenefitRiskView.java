@@ -58,6 +58,7 @@ import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.BRATTableModel;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
+import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -98,10 +99,10 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 	private static final int PADDING = 20;
 	protected JPanel buildBratPanel() {
 		JTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
-//		table.setDefaultRenderer(Double.class, new SummaryCellRenderer());
 		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(VariableType.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer(true));
+		table.setDefaultRenderer(BRATDifference.class, new BRATDifferenceRenderer());
 		table.setDefaultRenderer(BRATForest.class, new TableCellRenderer() {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
