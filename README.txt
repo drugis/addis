@@ -1,12 +1,12 @@
 ADDIS - Aggregate Data Drug Information System
 ==============================================
 
-[ADDIS][1] is a software developed within the Dutch [Escher-project][2] for
-managing and analyzing clinical trial information.
+[ADDIS][1] is a software developed within the Dutch [Escher-project][2]
+for managing and analyzing clinical trial information.
 
-ADDIS comes with a built-in example modeled on the paper: [Hansen et al.,
-Annals of internal medicine, 143(6): 415-426, 2005][3]. All data was
-extracted by us from the original papers.
+ADDIS comes with a built-in example modeled on the paper: [Hansen et
+al., Annals of internal medicine, 143(6): 415-426, 2005][3]. All data
+was extracted by us from the original papers.
 
 Requirements
 ------------
@@ -17,10 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.9: Enable combination treatment, add "free text" ('Other') activity,
-   allow multiple moments of measurement for each adverse event/endpoint/
-   population characteristic/add installer that sets up double-click
-   loading of .addis data files on Windows.
+1.10: Enable combination treatment. Add "free text" ('Other') activity.
+   Allow multiple moments of measurement for each outcome. Add installer
+   and double-click loading of .addis data files on Windows.
 
 1.8: Input study design (time structure), allow missing measurements,
    generate summary of efficacy table according to EMA D80 template,
@@ -66,9 +65,10 @@ Versions
 Building ADDIS from source
 --------------------------
 
-All releases as well as a nightly build (see [the DrugIS website][5]) are
-distributed in a compiled format. However, we also provide source for
-external development / verification. The sources can be checked out of the [ADDIS Git repository][6].
+All releases as well as a nightly build (see [the DrugIS website][5])
+are distributed in a compiled format. However, we also provide source
+for external development / verification. The sources can be checked out
+of the [ADDIS Git repository][6].
 
 In order to compile ADDIS, you need:
 
@@ -81,8 +81,8 @@ Building is automatic with "mvn package".
 License
 -------
 
-ADDIS is open source, and licensed under [GPLv3][8]. See [LICENSE.txt][9] for more
-information.
+ADDIS is open source, and licensed under [GPLv3][8]. See
+[LICENSE.txt][9] for more information.
 
 Contact
 -------
@@ -91,11 +91,11 @@ For contact information, see [the ADDIS website][1].
 
 ADDIS Development Team
 
-[1]: http://www.drugis.org/addis/
+[1]: http://www.drugis.org/addis
 [2]: http://www.tipharma.com/projects/efficiency-analysis-drug-discovery-process/the-escher-project.html
 [3]: http://pubmed.com/16172440
 [4]: http://www.java.com/getjava/
-[5]: http://www.drugis.org
+[5]: http://www.drugis.org/
 [6]: https://github.com/gertvv/addis
 [7]: http://maven.apache.org/download.html
 [8]: http://gplv3.fsf.org/
