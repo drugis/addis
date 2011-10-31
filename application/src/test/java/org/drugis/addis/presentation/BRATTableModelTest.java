@@ -32,6 +32,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.forestplot.LinearScale;
 import org.drugis.addis.forestplot.LogScale;
+import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.common.Interval;
 import org.junit.Before;
@@ -124,7 +125,7 @@ public class BRATTableModelTest {
 		assertEquals(Distribution.class, d_btmMeta.getColumnClass(COLUMN_SUBJECT));
 		assertEquals(Distribution.class, d_btmStudy.getColumnClass(COLUMN_BASELINE));
 		assertEquals(Distribution.class, d_btmStudy.getColumnClass(COLUMN_SUBJECT));
-		assertEquals(Distribution.class, d_btmMeta.getColumnClass(COLUMN_DIFFERENCE));
+		assertEquals(BRATDifference.class, d_btmMeta.getColumnClass(COLUMN_DIFFERENCE));
 //		assertEquals(Object.class, d_btmMockMeta.getColumnClass(COLUMN_FOREST)); should be a foresty thingy
 	}
 	
@@ -140,15 +141,15 @@ public class BRATTableModelTest {
 	public void testDifferences() {
 		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(1), d_baseline), 
 				(RateMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(1), d_subject));
-		assertEquals(ratio.getDistribution(), d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE));
+		assertEquals(ratio.getDistribution(), ((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
 		
 		BasicStandardisedMeanDifference diff = new BasicStandardisedMeanDifference(
 				(ContinuousMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(0), d_baseline), 
 				(ContinuousMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(0), d_subject));
-		assertEquals(diff.getDistribution(), d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE));
+		assertEquals(diff.getDistribution(), ((BRATDifference)d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	
 		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), d_mba.getAlternatives().get(0), d_mba.getAlternatives().get(1)),
-				d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE));
+				((BRATDifference)d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	}
 
 	@Test
@@ -168,15 +169,15 @@ public class BRATTableModelTest {
 	@Test
 	public void testForestScales() {
 		// linear scale for study BR
-		Distribution linVal = (Distribution)d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE);
+		Distribution linVal = ((BRATDifference)d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE)).getDifference();
 
 		double linMin = linVal.getQuantile(0.025);
 		double linMax = linVal.getQuantile(0.975);
 		Interval<Double> linScale = ForestPlotPresentation.niceIntervalLinear(linMin, linMax);
 		assertEquals(new LinearScale(linScale), d_btmStudy.getNiceLinearScale());
 		
-		Distribution logVal1 = (Distribution)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE);
-		Distribution logVal2 = (Distribution)d_btmStudy.getValueAt(2, COLUMN_DIFFERENCE);
+		Distribution logVal1 = ((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference();
+		Distribution logVal2 = ((BRATDifference)d_btmStudy.getValueAt(2, COLUMN_DIFFERENCE)).getDifference();
 		double logMin = Math.min(logVal1.getQuantile(0.025), logVal2.getQuantile(0.025));
 		double logMax = Math.max(logVal1.getQuantile(0.975), logVal2.getQuantile(0.975));
 		Interval<Double> logScale = ForestPlotPresentation.niceIntervalLog(logMin, logMax);

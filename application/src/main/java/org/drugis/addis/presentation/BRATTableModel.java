@@ -215,6 +215,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			}
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
+			mba.getMeasurement(om, (DrugSet) d_baseline);
 			return mba.getRelativeEffectDistribution(om, (DrugSet) d_baseline, (DrugSet) d_subject);
 		}
 		return null;
