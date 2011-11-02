@@ -52,8 +52,7 @@ public class EndpointsKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "description", "unitOfMeasurement",
-					"type", "direction" };
+		return new String[] { Variable.PROPERTY_NAME, Variable.PROPERTY_DESCRIPTION, Variable.PROPERTY_VARIABLE_TYPE, Endpoint.PROPERTY_DIRECTION };
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow mainWindow, Domain domain, Entity entity) {

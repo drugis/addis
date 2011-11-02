@@ -53,7 +53,7 @@ public class PopulationCharacteristicsKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "description", "unitOfMeasurement", "type" };
+		return new String[] { Variable.PROPERTY_NAME, Variable.PROPERTY_DESCRIPTION, Variable.PROPERTY_VARIABLE_TYPE };
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow mainWindow, Domain domain, Entity entity) {

@@ -27,7 +27,6 @@ package org.drugis.addis.entities;
 
 
 public interface Variable extends Entity, Comparable<Variable>, TypeWithName {
-	
 	public enum Type {
 		CONTINUOUS("Continuous"),
 		RATE("Rate"),
@@ -47,7 +46,6 @@ public interface Variable extends Entity, Comparable<Variable>, TypeWithName {
 		public String toString() {
 			return d_name;
 		}
-		
 	}
 
 	public final static String PROPERTY_VARIABLE_TYPE = "variableType";
