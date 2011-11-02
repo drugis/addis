@@ -17,6 +17,22 @@
             <xsl:otherwise>BEFORE_EPOCH_END</xsl:otherwise>
         </xsl:choose>
     </xsl:function>
+    
+    <xsl:function name="tf:getTreatmentEpochName">
+        <xsl:param name="study"/>
+        <xsl:variable name="treatment" select="$study/activities/studyActivity/activity/treatment"/>
+        <xsl:variable name="matchingEpochNames" select="$treatment/../../usedBy/@epoch" />
+        <xsl:variable name="epochs" select="$study/epochs/epoch[@name = $matchingEpochNames]/@name"/>
+        <xsl:choose>
+            <xsl:when test="$treatment">
+                <xsl:value-of select="$epochs[1]"/>
+                    <!-- $treatment[last()]/../../usedBy/@epoch"/> -->
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$study/epochs/epoch[last()]/@name"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
 
     <xsl:template match="/addis-data">
         <addis-data xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-3.xsd">
@@ -134,7 +150,7 @@
                 </xsl:attribute>
                 <xsl:element name="epoch">
                     <xsl:attribute name="name">
-                        <xsl:value-of select="../../epochs/epoch[last()]/@name"/>
+                        <xsl:value-of select="tf:getTreatmentEpochName(../..)"/>
                     </xsl:attribute>
                 </xsl:element>
             </whenTaken>
@@ -150,7 +166,7 @@
                 </xsl:attribute>
                 <xsl:element name="epoch">
                     <xsl:attribute name="name">
-                        <xsl:value-of select="../../epochs/epoch[last()]/@name"/>
+                        <xsl:value-of select="tf:getTreatmentEpochName(../..)"/>
                     </xsl:attribute>
                 </xsl:element>
             </whenTaken>
