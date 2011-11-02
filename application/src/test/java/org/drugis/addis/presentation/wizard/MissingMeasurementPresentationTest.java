@@ -31,7 +31,7 @@ import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.junit.Before;
 import org.junit.Test;
 

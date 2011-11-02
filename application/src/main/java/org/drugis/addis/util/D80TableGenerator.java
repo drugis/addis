@@ -42,7 +42,7 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.relativeeffect.AbstractBasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;

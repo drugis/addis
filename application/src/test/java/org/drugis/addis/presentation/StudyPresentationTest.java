@@ -44,15 +44,15 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class StudyPresentationModelTest {
+public class StudyPresentationTest {
 	
 	private StudyPresentation d_model;
 	private Study d_study;

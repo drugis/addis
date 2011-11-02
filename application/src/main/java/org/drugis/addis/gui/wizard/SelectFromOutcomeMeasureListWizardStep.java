@@ -38,10 +38,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;

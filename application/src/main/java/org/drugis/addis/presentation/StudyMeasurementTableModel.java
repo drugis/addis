@@ -32,11 +32,11 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.MeasurementKey;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.Study.MeasurementKey;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 
@@ -153,8 +153,8 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 			this.a = a;
 		}
 		
-		public Study.MeasurementKey getMeasurementKey() {
-			return new Study.MeasurementKey(v, a, wt);
+		public MeasurementKey getMeasurementKey() {
+			return new MeasurementKey(v, a, wt);
 		}
 	}
 

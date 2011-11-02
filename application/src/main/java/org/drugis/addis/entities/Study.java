@@ -49,150 +49,6 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
-	public static class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
-
-		private final Variable d_variable;
-		private final Arm d_arm;
-		private final WhenTaken d_wt;
-
-		public MeasurementKey(Variable v, Arm a, WhenTaken wt) {
-			if (v == null) {
-				throw new NullPointerException("Variable may not be null");
-			}
-			if (v instanceof OutcomeMeasure && a == null) {
-				throw new NullPointerException(
-						"Arm may not be null for Endpoints/ADEs");
-			}
-			if (wt == null) {
-				throw new NullPointerException("Moment of measurement may not be null");
-			}
-			d_variable = v;
-			d_arm = a;
-			d_wt = wt;
-		}
-
-		public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
-			this(som.getValue(), a, wt);
-		}
-
-		public Variable getVariable() {
-			return d_variable;
-		}
-
-		public Arm getArm() {
-			return d_arm;
-		}
-
-		public WhenTaken getWhenTaken() {
-			return d_wt;
-		}
-
-		@Override
-		public String toString() {
-			return "<" + d_variable + ", " + d_arm + " at " + d_wt + ">";
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof MeasurementKey) {
-				MeasurementKey other = (MeasurementKey) o;
-				return d_variable.equals(other.d_variable)
-						&& EqualsUtil.equal(d_arm, other.d_arm)
-						&& EqualsUtil.equal(d_wt, other.d_wt);
-			}
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			int code = 1;
-			code = code * 31 + d_variable.hashCode();
-			code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
-			code = code * 31 + (d_wt == null ? 0 : d_wt.hashCode());
-			return code;
-		}
-
-		@Override
-		public Set<? extends Entity> getDependencies() {
-			return Collections.emptySet();
-		}
-
-		@Override
-		public int compareTo(MeasurementKey o) {
-			if (d_variable.compareTo(o.d_variable) == 0) {
-				if (d_arm != null) {
-					if (d_arm.compareTo(o.d_arm) == 0) {
-						return d_wt.compareTo(o.d_wt);
-					}
-					return d_arm.compareTo(o.d_arm);
-				} else if (o.d_arm == null) {
-					return d_wt.compareTo(o.d_wt);
-				} else {
-					return -1;
-				}
-			}
-			return d_variable.compareTo(o.d_variable);
-		}
-	}
-
-	@SuppressWarnings("serial")
-	public static class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
-		public static final String PROPERTY_IS_PRIMARY = "isPrimary";
-
-		private Boolean d_isPrimary = false;
-		private ObservableList<WhenTaken> d_whenTaken = new ArrayListModel<WhenTaken>();
-
-		public StudyOutcomeMeasure(T obj) {
-			super(obj);
-		}
-
-		public StudyOutcomeMeasure(T obj, WhenTaken whenTaken) {
-			this(obj);
-			if (whenTaken != null) {
-				d_whenTaken.add(whenTaken);
-			}
-		}
-
-		@Override
-		public StudyOutcomeMeasure<T> clone() {
-			StudyOutcomeMeasure<T> clone = new StudyOutcomeMeasure<T>(getValue());
-			clone.setIsPrimary(getIsPrimary());
-			clone.getNotes().addAll(getNotes());
-			for (WhenTaken wt : getWhenTaken()) {
-				clone.getWhenTaken().add(wt.clone());
-			}
-			return clone;
-		}
-
-		public Boolean getIsPrimary() {
-			return d_isPrimary;
-		}
-		
-		public void setIsPrimary(Boolean isPrimary) {
-			Boolean oldValue = new Boolean(d_isPrimary);
-			d_isPrimary = isPrimary;
-			firePropertyChange(PROPERTY_IS_PRIMARY, oldValue, d_isPrimary);
-		}
-
-		public ObservableList<WhenTaken> getWhenTaken() {
-			return d_whenTaken;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof StudyOutcomeMeasure<?>) {
-				StudyOutcomeMeasure<?> other = (StudyOutcomeMeasure<?>) o;
-				return  EqualsUtil.equal(getValue(), other.getValue());
-			}
-			return false;
-		}
-		
-		@Override
-		public String toString() {
-			return d_isPrimary ? "primary measure: " : "secondary measure: " + getValue().getName() + " " + d_whenTaken + " " + getNotes();
-		}
-	}
-
 	public final static String PROPERTY_INDICATION = "indication";
 	public final static String PROPERTY_CHARACTERISTICS = "characteristics";
 
@@ -248,7 +104,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc
 		// removes orphan measurements from the study.
 		// Also copy AFTER the epochs/SAs because measurements need to be placed within their coordinate system.
-		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms(), newStudy.getEpochs()));
+		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms(), newStudy.getEpochs(), newStudy.getStudyOutcomeMeasures()));
 
 		newStudy.setCharacteristics(cloneCharacteristics());
 
@@ -292,18 +148,29 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return cm;
 	}
 
-	private Map<MeasurementKey, BasicMeasurement> cloneMeasurements(List<Arm> newArms, List<Epoch> newEpochs) {
+	private Map<MeasurementKey, BasicMeasurement> cloneMeasurements(List<Arm> newArms, List<Epoch> newEpochs, List<StudyOutcomeMeasure<?>> newOMs) {
 		HashMap<MeasurementKey, BasicMeasurement> hashMap = new HashMap<MeasurementKey, BasicMeasurement>();
 		for (MeasurementKey key : d_measurements.keySet()) {
-			hashMap.put(fixKey(key, newArms, newEpochs), d_measurements.get(key).clone());
+			hashMap.put(fixKey(key, newArms, newEpochs, newOMs), d_measurements.get(key).clone());
 		}
 		return hashMap;
 	}
 
-	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms, List<Epoch> newEpochs) {
+	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms, List<Epoch> newEpochs, List<StudyOutcomeMeasure<?>> newOMs) {
+		ObservableList<WhenTaken> newWT = findOMWT(key.getVariable(), newOMs);
 		WhenTaken wt = key.getWhenTaken();
-		return new MeasurementKey(key.getVariable(), key.getArm() == null ? null : newArms.get(getArms().indexOf(key.getArm())), 
-				new WhenTaken(wt.getDuration(), wt.getRelativeTo(), newEpochs.get(getEpochs().indexOf(wt.getEpoch()))));
+		return new MeasurementKey(key.getVariable(), key.getArm() == null ? null : 
+				newArms.get(getArms().indexOf(key.getArm())), 
+				newWT.get(newWT.indexOf(wt)) );
+	}
+
+	private ObservableList<WhenTaken> findOMWT(Variable v, List<StudyOutcomeMeasure<?>> newOMs) {
+		for (Object som : newOMs) {
+			if (((StudyOutcomeMeasure<?>)som).getValue().equals(v)) {
+				return ((StudyOutcomeMeasure<?>) som).getWhenTaken();
+			}
+		}
+		return null;
 	}
 
 	private ObservableList<Arm> cloneArms() {
@@ -624,9 +491,19 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			return (ObservableList) getAdverseEvents();
 		} else if (type == PopulationCharacteristic.class) {
 			return (ObservableList) getPopulationChars();
-		}
+		} 
 		throw new IllegalArgumentException("Unknown variable type " + type.getSimpleName());
 	}
+	
+	private List<StudyOutcomeMeasure<?>> getStudyOutcomeMeasures() {
+		List<StudyOutcomeMeasure<?>> l = new ArrayList<StudyOutcomeMeasure<?>>();
+		l.addAll(getAdverseEvents());
+		l.addAll(getEndpoints());
+		l.addAll(getPopulationChars());
+		return l;
+	}
+
+	
 	
 	public void addVariable(Variable om) {
 		addVariable(om, null);
@@ -768,9 +645,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	private boolean isTreatmentEpoch(Epoch epoch) {
 		for (Arm arm : d_arms) {
 			StudyActivity sa = getStudyActivityAt(arm, epoch);
-			if (sa == null
-					|| (!(sa.getActivity() instanceof DrugTreatment) && !(sa
-							.getActivity() instanceof TreatmentActivity))) {
+			if (sa == null || !(sa.getActivity() instanceof TreatmentActivity)) {
 				return false;
 			}
 		}
@@ -982,5 +857,13 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public ObservableList<Note> getNotes() {
 		return d_notes;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public <T extends Variable> StudyOutcomeMeasure<T> findStudyOutcomeMeasure(T v) {
+		ObservableList<StudyOutcomeMeasure<T>> soms = getStudyOutcomeMeasures((Class<T>)v.getClass());
+		for (StudyOutcomeMeasure<T> som : soms) {
+			if (som.getValue().equals(v)) return som;
+		}
+		return null;
+	}
 }

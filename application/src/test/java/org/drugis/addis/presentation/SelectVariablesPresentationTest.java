@@ -35,8 +35,8 @@ import java.util.Collections;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Epoch;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 import org.drugis.addis.util.EntityUtil;

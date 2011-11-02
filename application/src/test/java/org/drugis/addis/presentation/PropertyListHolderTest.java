@@ -37,7 +37,7 @@ import java.util.Set;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.common.JUnitUtil;
 import org.easymock.EasyMock;
