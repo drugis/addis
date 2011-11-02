@@ -391,7 +391,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 	
 	public BasicMeasurement getMeasurement(Variable v, Arm a) {
-		return d_measurements.get(new MeasurementKey(v, a, defaultMeasurementMoment()));
+		WhenTaken mm = defaultMeasurementMoment();
+		return mm == null ? null : d_measurements.get(new MeasurementKey(v, a, mm));
 	}
 
 	public BasicMeasurement getMeasurement(Variable v) {
@@ -635,11 +636,13 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public WhenTaken defaultMeasurementMoment() {
-		return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, findTreatmentEpoch());
+		Epoch epoch = findTreatmentEpoch();
+		return epoch == null ? null : new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
 	}
 	
 	public WhenTaken baselineMeasurementMoment() {
-		return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, findTreatmentEpoch());
+		Epoch epoch = findTreatmentEpoch();
+		return epoch == null ? null : new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, epoch);
 	}
 
 	private boolean isTreatmentEpoch(Epoch epoch) {

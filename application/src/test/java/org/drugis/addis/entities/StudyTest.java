@@ -635,4 +635,28 @@ public class StudyTest {
 		EasyMock.verify(listener);
 	}
 	
+	@Test
+	public void testMeasurementMomentsNoDefaultEpoch() {
+		assertNotNull(d_clone.defaultMeasurementMoment());
+		assertNotNull(d_clone.baselineMeasurementMoment());
+		removeTreatmentActivities();
+		assertNull(d_clone.defaultMeasurementMoment());
+		assertNull(d_clone.baselineMeasurementMoment());
+	}
+	
+	@Test
+	public void testGetMeasurementNoDefaultEpoch() {
+		assertNotNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), d_clone.getArms().get(0)));
+		removeTreatmentActivities();
+		assertNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), d_clone.getArms().get(0)));
+	}
+
+	private void removeTreatmentActivities() {
+		for (StudyActivity sa : d_clone.getStudyActivities()) {
+			if (sa.getActivity() instanceof TreatmentActivity) {
+				sa.setActivity(PredefinedActivity.WASH_OUT);
+			}
+		}
+	}
+	
 }
