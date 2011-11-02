@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:tf="http://example.com"
+    xmlns:tf="http://nonexistentdomainforfunctions.com"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-3.xsd"
     exclude-result-prefixes="xs tf" version="2.0">
     <xsl:output indent="yes"/>
     <xsl:strip-space elements="*"/>
+    
+    <xsl:function name="tf:getRelativeTo">
+        <xsl:param name="study"/>
+        <xsl:param name="studyOutcomeMeasureId"/>
+        <xsl:variable name="som" select="$study/studyOutcomeMeasures/studyOutcomeMeasure[@id=$studyOutcomeMeasureId]"/>
+        <xsl:choose>
+            <xsl:when test="$som/populationCharacteristic">FROM_EPOCH_START</xsl:when>
+            <xsl:otherwise>BEFORE_EPOCH_END</xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
+
     <xsl:template match="/addis-data">
         <addis-data xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-3.xsd">
             <units>
@@ -20,11 +31,13 @@
             </xsl:for-each>
         </addis-data>
     </xsl:template>
+
     <xsl:template match="node()|@*">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
+    
     <xsl:template match="alternative/drug">
         <drugs>
             <drug>
@@ -34,6 +47,7 @@
             </drug>
         </drugs>
     </xsl:template>
+    
     <xsl:template match="activity/treatment|activity/combinationTreatment">
         <treatment>
             <xsl:for-each select="./treatment|../treatment">
@@ -70,6 +84,7 @@
             </xsl:for-each>
         </treatment>
     </xsl:template>
+    
     <xsl:template match="metaBenefitRiskAnalysis/baseline">
         <baseline>
             <drug>
@@ -79,6 +94,7 @@
             </drug>
         </baseline>
     </xsl:template>
+    
     <xsl:template match="metaBenefitRiskAnalysis/drugs">
         <alternatives>
             <xsl:for-each select="child::node()">
@@ -92,6 +108,7 @@
             </xsl:for-each>
         </alternatives>
     </xsl:template>
+    
     <xsl:template match="addis-data/endpoints/endpoint|addis-data/adverseEvents/adverseEvent">
         <xsl:copy>
             <xsl:apply-templates select="@*"/>
@@ -101,15 +118,20 @@
             <xsl:apply-templates select="node()"/>
         </xsl:copy>
     </xsl:template>
+    
     <xsl:template match="continuous|rate">
         <xsl:copy>
             <xsl:apply-templates select="@*[not(name()='direction')]"/>
        </xsl:copy>
     </xsl:template>
+    
     <xsl:template match="study/measurements/measurement">
         <xsl:copy>
             <xsl:apply-templates select="node()|@*"/>
-            <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
+            <whenTaken howLong="P0D">
+                <xsl:attribute name="relativeTo">
+                    <xsl:value-of select="tf:getRelativeTo(../.., studyOutcomeMeasure/@id)"/>
+                </xsl:attribute>
                 <xsl:element name="epoch">
                     <xsl:attribute name="name">
                         <xsl:value-of select="../../epochs/epoch[last()]/@name"/>
@@ -118,10 +140,14 @@
             </whenTaken>
         </xsl:copy>
     </xsl:template>
+    
     <xsl:template match="study/studyOutcomeMeasures/studyOutcomeMeasure">
         <xsl:copy>
             <xsl:apply-templates select="node()[name() != 'notes']|@*"/>
-            <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
+            <whenTaken howLong="P0D">
+                <xsl:attribute name="relativeTo">
+                    <xsl:value-of select="tf:getRelativeTo(../.., @id)"/>
+                </xsl:attribute>
                 <xsl:element name="epoch">
                     <xsl:attribute name="name">
                         <xsl:value-of select="../../epochs/epoch[last()]/@name"/>
