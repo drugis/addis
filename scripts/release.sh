@@ -57,4 +57,4 @@ cp README.txt $DIR
 
 zip -r addis-$VERSION.zip $DIR
 cp installer/target/addis-$VERSION-installer.jar .
-
+chmod a+x ./addis-$VERSION-installer.jar
