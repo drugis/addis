@@ -56,11 +56,14 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 		return FileNames.ICON_STUDY_NEW;
 	}
 	
-	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
-			ValueModel selectionModel) {
-		JDialog dialog = new JDialog(mainWindow, "Add Study", true);
-		AddStudyWizard wizard = new AddStudyWizard(	new AddStudyWizardPresentation(domain,
-						mainWindow.getPresentationModelFactory(), mainWindow), mainWindow, dialog);
+	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
+		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(domain, mainWindow.getPresentationModelFactory(), mainWindow);
+		return buildStudyWizardDialog(mainWindow, "Add Study", pm);
+	}
+
+	public static JDialog buildStudyWizardDialog(AddisWindow mainWindow, String title, AddStudyWizardPresentation pm) {
+		JDialog dialog = new JDialog(mainWindow, title, true);
+		AddStudyWizard wizard = new AddStudyWizard(pm, mainWindow, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.setMinimumSize(new Dimension(700, 550));
 		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(790, 750));

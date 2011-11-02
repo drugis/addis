@@ -27,7 +27,6 @@ package org.drugis.addis.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -73,14 +72,13 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
-import org.drugis.addis.gui.wizard.AddStudyWizard;
+import org.drugis.addis.gui.knowledge.StudiesKnowledge;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
-import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
@@ -641,21 +639,15 @@ public class AddisWindow extends JFrame {
 	}
 
 	private void showEditStudyWizard(Study study) {
-		JDialog dialog = new JDialog((Frame) this, "Edit Study", true);
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(), d_pmf, this, study);
-		
+		JDialog dialog = StudiesKnowledge.buildStudyWizardDialog(this, "Edit Study", pm);
 		leftTreeFocus(d_domainTreeModel.getRoot());
-		AddStudyWizard wizard = new AddStudyWizard(pm, this, dialog);
-		dialog.getContentPane().add(wizard);
-		dialog.pack();
-		WizardFrameCloser.bind(wizard, dialog);
-		Main.bindPrintScreen(wizard);
+		GUIHelper.centerWindow(dialog, this);
 		dialog.setVisible(true);
 	}
 
 	private JMenuItem createNewItem() {
-		JMenuItem newItem = new JMenuItem("New", ImageLoader
-				.getIcon(FileNames.ICON_FILE_NEW));
+		JMenuItem newItem = new JMenuItem("New", ImageLoader.getIcon(FileNames.ICON_FILE_NEW));
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
