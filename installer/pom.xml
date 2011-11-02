@@ -63,7 +63,7 @@
 								<copy file="${basedir}/src/izpack/shortcutSpec.xml" todir="${izpack.dir}"/>
 								<copy file="${basedir}/src/izpack/addis.ico" todir="${izpack.dir}/"/>
 								<copy file="${basedir}/src/izpack/README.html" todir="${izpack.dir}/"/>
-								<copy file="${basedir}/../README.txt" todir="${izpack.dir}"/>
+								<copy file="${basedir}/../README.md" tofile="${izpack.dir}/README.txt"/>
 								<copy file="${basedir}/../LICENSE.txt" todir="${izpack.dir}"/>
 								<copy file="${basedir}/../application/target/addis-${project.version}-jar-with-dependencies.jar" tofile="${izpack.dir}/addis.jar"/>
 							</tasks>

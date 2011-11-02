@@ -33,7 +33,7 @@ fi;
 
 #create readme.html for pretty-printed display in installer
 echo "<html><head><style type="text/css">h1{font-size:20pt;}</style> <title>README for ADDIS</title></head><body>" > installer/src/izpack/README.html
-markdown README.txt >> installer/src/izpack/README.html 
+markdown README.md >> installer/src/izpack/README.html 
 echo "</body></html>" >> installer/src/izpack/README.html 
 
 
@@ -53,7 +53,7 @@ mkdir $DIR
 cp application/target/addis-$VERSION-jar-with-dependencies.jar $DIR/addis-$VERSION.jar
 chmod a+x $DIR/addis-$VERSION.jar
 cp LICENSE.txt $DIR
-cp README.txt $DIR
+cp README.md $DIR/README.txt
 
 zip -r addis-$VERSION.zip $DIR
 cp installer/target/addis-$VERSION-installer.jar .

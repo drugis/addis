@@ -1,6 +1,6 @@
  1. edit pom.xml, */pom.xml and change version
 
- 2. edit README.txt to reflect changes in the new version
+ 2. edit README.md to reflect changes in the new version
 
  3. commit your changes to git
 
