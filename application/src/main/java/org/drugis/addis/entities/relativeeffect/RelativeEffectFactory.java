@@ -103,36 +103,31 @@ public class RelativeEffectFactory {
 	}
 
 	
-	private static RelativeEffect<?> buildRiskDifference(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
+	private static RelativeEffect<?> buildRiskDifference(Study s, OutcomeMeasure om, Arm base, Arm subj) {
 		return new BasicRiskDifference(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
 
-	private static RelativeEffect<?> buildRiskRatio(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
+	private static RelativeEffect<?> buildRiskRatio(Study s, OutcomeMeasure om, Arm base, Arm subj) {
 		return new BasicRiskRatio(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
 	
-	private static RelativeEffect<?> buildOddsRatio(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
+	private static RelativeEffect<?> buildOddsRatio(Study s, OutcomeMeasure om, Arm base, Arm subj) {
 		return new BasicOddsRatio(
 				findRateMeasurement(s, om, base),
 				findRateMeasurement(s, om, subj));
 	}
 
-	private static RelativeEffect<?> buildMeanDifference(Study s, OutcomeMeasure om,
-			Arm base, Arm subj) {
+	private static RelativeEffect<?> buildMeanDifference(Study s, OutcomeMeasure om, Arm base, Arm subj) {
 		return new BasicMeanDifference(
 				findContinuousMeasurement(s, om, base),
 				findContinuousMeasurement(s, om, subj));
 	}
 
-	private static RelativeEffect<?> buildStandardisedMeanDifference(Study s,
-			OutcomeMeasure e, Arm base, Arm subj) {
+	private static RelativeEffect<?> buildStandardisedMeanDifference(Study s, OutcomeMeasure e, Arm base, Arm subj) {
 		return new BasicStandardisedMeanDifference(
 				findContinuousMeasurement(s, e, base),
 				findContinuousMeasurement(s, e, subj));
@@ -142,6 +137,7 @@ public class RelativeEffectFactory {
 		if (!(om.getVariableType() instanceof ContinuousVariableType)) {
 			throw new IllegalArgumentException("OutcomeMeasure should be Continuous");
 		}
+		checkMeasurementPresent(s, om, arm);
 		return (ContinuousMeasurement)s.getMeasurement(om, arm);
 	}
 	
@@ -149,7 +145,14 @@ public class RelativeEffectFactory {
 		if (!(om.getVariableType() instanceof RateVariableType)) {
 			throw new IllegalArgumentException("OutcomeMeasure should be Rate");
 		}
+		checkMeasurementPresent(s, om, arm);
 		return (RateMeasurement)s.getMeasurement(om, arm);
+	}
+
+	private static void checkMeasurementPresent(Study s, OutcomeMeasure om, Arm arm) {
+		if (s.getMeasurement(om, arm) == null) {
+			throw new IllegalStateException("No measurement found: study=" + s + ", outcomeMeasure=" + om + ", arm=" + arm);
+		}
 	}
 
 

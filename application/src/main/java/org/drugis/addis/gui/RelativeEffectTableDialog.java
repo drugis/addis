@@ -112,7 +112,7 @@ public class RelativeEffectTableDialog extends JDialog {
 			int row = ((JTable)e.getComponent()).rowAtPoint(e.getPoint());
 			int col = ((JTable)e.getComponent()).columnAtPoint(e.getPoint());
 			
-			if (row == col ||
+			if (row == col || d_tableModel.getValueAt(row, col) == null ||
 					!((RelativeEffectPresentation) d_tableModel.getValueAt(row, col)).getBean().isDefined()) {
 				return;
 			}

@@ -54,9 +54,9 @@ import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MockStudyBenefitRiskAnalysis;
@@ -517,13 +517,17 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		// STUDY_START, STUDY_END missing
 		
-		// New epoch/measurement moment data structure
 		addDefaultEpochs(study);
-		addDefaultMeasurementMoments(study);
 		
+		FixedDose fluoxDose = new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose sertrDose = new FixedDose(50, ExampleData.MILLIGRAMS_A_DAY);
+		Arm fluox = study.createAndAddArm("Fluoxetine-0", 144, buildDrugFluoxetine(), fluoxDose);
+		Arm sertr = study.createAndAddArm("Sertraline-1", 142, buildDrugSertraline(), sertrDose);
+		
+		// note: must be after arms added, because of finding treatment epoch
+		addDefaultMeasurementMoments(study);
+
 		// Fluoxetine data
-		FixedDose dose = new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY);
-		Arm fluox = study.createAndAddArm("Fluoxetine-0", 144, buildDrugFluoxetine(), dose);
 		BasicContinuousMeasurement fCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(fluox);
 		fCgi.setMean(0.67);
 		fCgi.setStdDev(0.5);
@@ -533,8 +537,6 @@ public class ExampleData {
 		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
 
 		// Sertraline data
-		dose = new FixedDose(50, ExampleData.MILLIGRAMS_A_DAY);
-		Arm sertr = study.createAndAddArm("Sertraline-1", 142, buildDrugSertraline(), dose);
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
 		sCgi.setMean(0.69);
 		sCgi.setStdDev(0.5);

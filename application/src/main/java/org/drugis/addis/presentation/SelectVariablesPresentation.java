@@ -29,10 +29,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 import org.drugis.common.EqualsUtil;
 
@@ -56,7 +55,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
 	private final WhenTakenFactory d_wtf;
 
-	public SelectVariablesPresentation(ObservableList<T> options, String typeName, String title, String description, AddStudyWizardPresentation.WhenTakenFactory wtf, AddisWindow mainWindow) {
+	public SelectVariablesPresentation(ObservableList<T> options, String typeName, String title, String description, WhenTakenFactory wtf, AddisWindow mainWindow) {
 		d_typeName = typeName;
 		d_title = title;
 		d_description = description;

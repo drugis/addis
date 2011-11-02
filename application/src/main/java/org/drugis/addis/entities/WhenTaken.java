@@ -59,6 +59,9 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	private Epoch d_epoch;
 
 	public WhenTaken(Duration offset, RelativeTo relativeTo, Epoch epoch) {
+		assert (offset != null);
+		assert (epoch != null);
+		assert (relativeTo != null);
 		d_offset = offset;
 		d_epoch = epoch;
 		d_relativeTo = relativeTo;
@@ -136,10 +139,14 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 
 	@Override
 	public int compareTo(WhenTaken o) {
-		if (d_relativeTo == o.d_relativeTo) {
-			return getOffset().compare(o.getOffset());
+		assert (o != null);
+		if (!d_epoch.equals(o.getEpoch())) {
+			return d_epoch.getName().compareTo(o.getEpoch().getName());
 		}
-		return d_relativeTo == RelativeTo.FROM_EPOCH_START ? -1 : 1;
+		if (d_relativeTo != o.d_relativeTo) {
+			return d_relativeTo == RelativeTo.FROM_EPOCH_START ? -1 : 1;
+		}
+		return getOffset().compare(o.getOffset());		
 	}
 	
 	@Override

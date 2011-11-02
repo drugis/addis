@@ -73,6 +73,7 @@ import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.addis.entities.MeasurementKey;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.OtherActivity;
@@ -86,6 +87,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
@@ -93,7 +95,6 @@ import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
-import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -140,7 +141,6 @@ import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
-import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Units;
 import org.drugis.common.Interval;
@@ -688,7 +688,7 @@ public class JAXBConvertor {
 		return refs;
 	}
 
-	public static Study.StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om, List<Epoch> epochs, Domain domain) throws ConversionException {
+	public static StudyOutcomeMeasure<?> convertStudyOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om, List<Epoch> epochs, Domain domain) throws ConversionException {
 		Variable var = null;
 		if(om.getEndpoint() != null) {
 			var = findNamedItem(domain.getEndpoints(), om.getEndpoint().getName());
@@ -699,7 +699,7 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("StudyOutcomeMeasure type not supported: " + om.toString());
 		}
-		Study.StudyOutcomeMeasure<Variable> studyOutcomeMeasure = new Study.StudyOutcomeMeasure<Variable>(var);
+		StudyOutcomeMeasure<Variable> studyOutcomeMeasure = new StudyOutcomeMeasure<Variable>(var);
 		boolean isPrimaryNull = om.isPrimary() == null ? true : om.isPrimary();
 		studyOutcomeMeasure.setIsPrimary(om.getEndpoint() != null ? isPrimaryNull: false);
 		
@@ -713,8 +713,8 @@ public class JAXBConvertor {
 		return studyOutcomeMeasure;
 	}
 	
-	public static org.drugis.addis.entities.data.StudyOutcomeMeasure convertStudyOutcomeMeasure(Study.StudyOutcomeMeasure<?> studyOutcomeMeasure) throws ConversionException {
-		StudyOutcomeMeasure newOutcome = new StudyOutcomeMeasure();
+	public static org.drugis.addis.entities.data.StudyOutcomeMeasure convertStudyOutcomeMeasure(StudyOutcomeMeasure<?> studyOutcomeMeasure) throws ConversionException {
+		org.drugis.addis.entities.data.StudyOutcomeMeasure newOutcome = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		newOutcome.setNotes(new Notes());
 		NameReference nameRef = nameReference(studyOutcomeMeasure.getValue().getName());
 		newOutcome.setPrimary(true);
@@ -738,19 +738,19 @@ public class JAXBConvertor {
 		return newOutcome;
 	}
 
-	public static LinkedHashMap<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, List<Epoch> epochs, Domain domain) throws ConversionException {
-		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> map = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
-		for(StudyOutcomeMeasure om : oms.getStudyOutcomeMeasure()) {
-			org.drugis.addis.entities.Study.StudyOutcomeMeasure<?> convOm = convertStudyOutcomeMeasure(om, epochs, domain);
+	public static LinkedHashMap<String, org.drugis.addis.entities.StudyOutcomeMeasure<?>> convertStudyOutcomeMeasures(StudyOutcomeMeasures oms, List<Epoch> epochs, Domain domain) throws ConversionException {
+		LinkedHashMap<String, StudyOutcomeMeasure<?>> map = new LinkedHashMap<String, StudyOutcomeMeasure<?>>();
+		for(org.drugis.addis.entities.data.StudyOutcomeMeasure om : oms.getStudyOutcomeMeasure()) {
+			org.drugis.addis.entities.StudyOutcomeMeasure<?> convOm = convertStudyOutcomeMeasure(om, epochs, domain);
 			map.put(om.getId(), convOm);
 		}
 		return map;
 	}
 	
-	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> linkedMap) throws ConversionException {
+	public static StudyOutcomeMeasures convertStudyOutcomeMeasures(LinkedHashMap<String, StudyOutcomeMeasure<?>> linkedMap) throws ConversionException {
 		StudyOutcomeMeasures measures = new StudyOutcomeMeasures();
-		for(Entry<String, Study.StudyOutcomeMeasure<?>> item : linkedMap.entrySet()) {
-			StudyOutcomeMeasure om = new StudyOutcomeMeasure();
+		for(Entry<String, StudyOutcomeMeasure<?>> item : linkedMap.entrySet()) {
+			org.drugis.addis.entities.data.StudyOutcomeMeasure om = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 			om = convertStudyOutcomeMeasure(item.getValue());
 			om.setId(item.getKey());
 			measures.getStudyOutcomeMeasure().add(om);
@@ -823,7 +823,7 @@ public class JAXBConvertor {
 	}
 	
 	public static Map<MeasurementKey, BasicMeasurement> convertMeasurements(Measurements measurements, List<Arm> arms, 
-			List<Epoch> epochs, Map<String, org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> outcomeMeasures) 
+			List<Epoch> epochs, Map<String, org.drugis.addis.entities.StudyOutcomeMeasure<?>> outcomeMeasures) 
 	throws ConversionException {
 		Map<MeasurementKey, BasicMeasurement> map = new TreeMap<MeasurementKey, BasicMeasurement>();
 		for(org.drugis.addis.entities.data.Measurement m : measurements.getMeasurement()) {
@@ -846,10 +846,10 @@ public class JAXBConvertor {
 		return rt;
 	}
 
-	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements, Map<String, Study.StudyOutcomeMeasure<?>> oms) throws ConversionException {
+	public static Measurements convertMeasurements(Map<MeasurementKey, BasicMeasurement> measurements, Map<String, StudyOutcomeMeasure<?>> oms) throws ConversionException {
 		Measurements ms = new Measurements();
 		for (MeasurementKey key : measurements.keySet()) {
-			String omId = findKey(oms, new Study.StudyOutcomeMeasure<Variable>(key.getVariable(), key.getWhenTaken()));
+			String omId = findKey(oms, new StudyOutcomeMeasure<Variable>(key.getVariable(), key.getWhenTaken()));
 			ms.getMeasurement().add(convertMeasurement(key, measurements.get(key), omId));
 		}
 		return ms;
@@ -881,8 +881,8 @@ public class JAXBConvertor {
 		newStudy.setCharacteristics(map);
 		
 		
-		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), newStudy.getEpochs(), domain);
-		for(Entry<String, Study.StudyOutcomeMeasure<?>> om : outcomeMeasures.entrySet()) {
+		LinkedHashMap<String, StudyOutcomeMeasure<?>> outcomeMeasures = convertStudyOutcomeMeasures(study.getStudyOutcomeMeasures(), newStudy.getEpochs(), domain);
+		for(Entry<String, StudyOutcomeMeasure<?>> om : outcomeMeasures.entrySet()) {
 			newStudy.addStudyOutcomeMeasure(om.getValue());
 		}
 		
@@ -946,14 +946,14 @@ public class JAXBConvertor {
 		
 		newStudy.setActivities(convertStudyActivities(study.getStudyActivities()));
 		// convert outcome measures
-		LinkedHashMap<String,org.drugis.addis.entities.Study.StudyOutcomeMeasure<?>> omMap = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
-		for (Study.StudyOutcomeMeasure<Endpoint> e : study.getEndpoints()) {
+		LinkedHashMap<String,org.drugis.addis.entities.StudyOutcomeMeasure<?>> omMap = new LinkedHashMap<String, StudyOutcomeMeasure<?>>();
+		for (StudyOutcomeMeasure<Endpoint> e : study.getEndpoints()) {
 			omMap.put("endpoint-" + e.getValue().getName(), e);
 		}
-		for (org.drugis.addis.entities.Study.StudyOutcomeMeasure<AdverseEvent> e : study.getAdverseEvents()) {
+		for (org.drugis.addis.entities.StudyOutcomeMeasure<AdverseEvent> e : study.getAdverseEvents()) {
 			omMap.put("adverseEvent-" + e.getValue().getName(), e);
 		}
-		for (org.drugis.addis.entities.Study.StudyOutcomeMeasure<PopulationCharacteristic> e : study.getPopulationChars()) {
+		for (org.drugis.addis.entities.StudyOutcomeMeasure<PopulationCharacteristic> e : study.getPopulationChars()) {
 			omMap.put("popChar-" + e.getValue().getName(), e);
 		}
 		newStudy.setStudyOutcomeMeasures(convertStudyOutcomeMeasures(omMap));

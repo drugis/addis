@@ -26,10 +26,11 @@ package org.drugis.addis.presentation.wizard;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
+import org.drugis.addis.entities.MeasurementKey;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -49,9 +50,9 @@ public class MissingMeasurementPresentation {
 		public void setValue(Object newValue) {
 			Object oldValue = getValue();
 			if (newValue.equals(Boolean.TRUE)) {
-				d_study.getMeasurements().remove(new Study.MeasurementKey(d_v, d_a, d_wt));
+				d_study.getMeasurements().remove(new MeasurementKey(d_v, d_a, d_wt));
 			} else {
-				d_study.getMeasurements().put(new Study.MeasurementKey(d_v, d_a, d_wt), d_m);
+				d_study.getMeasurements().put(new MeasurementKey(d_v, d_a, d_wt), d_m);
 			}
 			fireValueChange(oldValue, newValue);
 		}

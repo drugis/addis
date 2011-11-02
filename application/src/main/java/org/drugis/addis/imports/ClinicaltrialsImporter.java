@@ -56,10 +56,10 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 

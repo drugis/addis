@@ -33,8 +33,8 @@ import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 
 public class RelativeEffectTestBase {
 	protected Drug d_fluox;

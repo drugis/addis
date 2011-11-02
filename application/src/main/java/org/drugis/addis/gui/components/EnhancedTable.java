@@ -134,7 +134,7 @@ public class EnhancedTable extends JTable {
 				if (value instanceof Collection) {
 					return getElementDescriptions((Collection<?>) value, nested);
 				}
-				return value.toString();
+				return value == null ? "N/A" : value.toString();
 			}
 	
 			private String getElementDescriptions(Collection<?> c, boolean nested) {

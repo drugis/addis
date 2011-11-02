@@ -40,16 +40,22 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Study.MeasurementKey;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
+import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
+import org.drugis.common.beans.ContentAwareListModel;
+import org.drugis.common.event.ListDataEventMatcher;
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+
 
 public class StudyTest {
 	private Study d_orig;
@@ -319,11 +325,19 @@ public class StudyTest {
 		assertFalse(study1.deepEquals(study2));
 		study2.getStudyActivities().add(randomization2);
 		assertTrue(study1.deepEquals(study2));
+		
+		StudyActivity sa = new StudyActivity("Treatment", new TreatmentActivity(new DrugTreatment(ExampleData.buildDrugCandesartan(),
+				new FixedDose(100, new DoseUnit(Domain.GRAM, ScaleModifier.MICRO, EntityUtil.createDuration("P1D"))))));
+		study1.getStudyActivities().add(sa);
+		study2.getStudyActivities().add(sa);
 
-		study1.setStudyActivityAt(arm, new Epoch("Epoch1", null), randomization1);
+		study1.setStudyActivityAt(arm, study1.getEpochs().get(0), randomization1);
 		assertFalse(study1.deepEquals(study2));
-		study2.setStudyActivityAt(arm, new Epoch("Epoch1", null), randomization1);
+		study2.setStudyActivityAt(arm, study2.getEpochs().get(0), randomization1);
 		assertTrue(study1.deepEquals(study2));
+		
+		study1.setStudyActivityAt(arm, study1.getEpochs().get(0), sa);
+		study2.setStudyActivityAt(arm, study1.getEpochs().get(0), sa);
 		
 		study1.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
 		assertFalse(study1.deepEquals(study2));
@@ -363,7 +377,7 @@ public class StudyTest {
 		Study study = new Study("X", new Indication(0L, ""));
 		
 		PropertyChangeListener listener = JUnitUtil.mockStrictListener(study.getCharacteristics(), 
-				MapBean.PROPERTY_CONTENTS,null, null);		
+				MapBean.PROPERTY_CONTENTS, null, null);		
 		study.getCharacteristics().addPropertyChangeListener(listener);
 
 		study.setCharacteristic(BasicStudyCharacteristic.CENTERS, new Integer(2));
@@ -497,6 +511,14 @@ public class StudyTest {
 	}
 	
 	@Test
+	public void testCloneHasOrphanMeasurementRemoval() {
+		Endpoint old = d_clone.getEndpoints().get(0).getValue();
+		d_clone.getEndpoints().get(0).setValue(new Endpoint("BLA", new RateVariableType()));
+		
+		assertNull(d_clone.getMeasurement(old, d_clone.getArms().get(1)));
+	}
+	
+	@Test
 	public void testClonedUsedBysReferToClonedArmAndEpoch() {
 		// Check that we're still testing what we think we're testing
 		StudyActivity orig_sa = d_orig.getStudyActivities().get(0);
@@ -531,6 +553,9 @@ public class StudyTest {
 		assertNotSame(origKey.getArm(), cloneKey.getArm());
 		assertNotSame(origKey.getWhenTaken(), cloneKey.getWhenTaken());
 		assertNotSame(origKey.getWhenTaken().getEpoch(), cloneKey.getWhenTaken().getEpoch());
+		
+		StudyOutcomeMeasure<?> som = d_clone.findStudyOutcomeMeasure(cloneKey.getVariable());
+		assertSame(cloneKey.getWhenTaken(), som.getWhenTaken().get(0));
 	}
 	
 	@Test
@@ -600,4 +625,46 @@ public class StudyTest {
 		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 
 	}
+	
+	@Test
+	public void testWhenTakenChangePropagatesToStudyOutcomeMeasureList(){
+		ContentAwareListModel<StudyOutcomeMeasure<Endpoint>> listModel = 
+			new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(d_clone.getEndpoints(), new String[] {StudyOutcomeMeasure.PROPERTY_WHEN_TAKEN_EDITED});
+		
+		ListDataListener listener = EasyMock.createStrictMock(ListDataListener.class);
+		listener.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel, ListDataEvent.CONTENTS_CHANGED, 0, 0)));
+		EasyMock.replay(listener);
+		
+		listModel.addListDataListener(listener);
+
+		WhenTaken whenTaken = d_clone.getEndpoints().get(0).getWhenTaken().get(0);
+		whenTaken.setRelativeTo(RelativeTo.FROM_EPOCH_START);
+		
+		EasyMock.verify(listener);
+	}
+	
+	@Test
+	public void testMeasurementMomentsNoDefaultEpoch() {
+		assertNotNull(d_clone.defaultMeasurementMoment());
+		assertNotNull(d_clone.baselineMeasurementMoment());
+		removeTreatmentActivities();
+		assertNull(d_clone.defaultMeasurementMoment());
+		assertNull(d_clone.baselineMeasurementMoment());
+	}
+	
+	@Test
+	public void testGetMeasurementNoDefaultEpoch() {
+		assertNotNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), d_clone.getArms().get(0)));
+		removeTreatmentActivities();
+		assertNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), d_clone.getArms().get(0)));
+	}
+
+	private void removeTreatmentActivities() {
+		for (StudyActivity sa : d_clone.getStudyActivities()) {
+			if (sa.getActivity() instanceof TreatmentActivity) {
+				sa.setActivity(PredefinedActivity.WASH_OUT);
+			}
+		}
+	}
+	
 }

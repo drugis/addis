@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;

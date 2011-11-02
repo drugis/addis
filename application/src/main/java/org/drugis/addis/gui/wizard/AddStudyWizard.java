@@ -93,8 +93,8 @@ import org.drugis.addis.entities.PubMedIdList;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -677,8 +677,8 @@ public class AddStudyWizard extends Wizard {
 		@Override
 		protected int createAdditionalComponents(ModifiableHolder<Endpoint> slot, PanelBuilder builder, FormLayout layout, int row) {
 			row = LayoutUtil.addRow(layout, row);
-			Study.StudyOutcomeMeasure<Endpoint> som = (StudyOutcomeMeasure<Endpoint>) slot;
-			PropertyAdapter<StudyOutcomeMeasure<Endpoint>> primaryModel = new PropertyAdapter<Study.StudyOutcomeMeasure<Endpoint>>(som, Study.StudyOutcomeMeasure.PROPERTY_IS_PRIMARY, true);
+			StudyOutcomeMeasure<Endpoint> som = (StudyOutcomeMeasure<Endpoint>) slot;
+			PropertyAdapter<StudyOutcomeMeasure<Endpoint>> primaryModel = new PropertyAdapter<StudyOutcomeMeasure<Endpoint>>(som, StudyOutcomeMeasure.PROPERTY_IS_PRIMARY, true);
 			JCheckBox primaryCB = BasicComponentFactory.createCheckBox(primaryModel, "Primary endpoint");
 			builder.add(primaryCB, (new CellConstraints()).xy(5, row));
 			return row;

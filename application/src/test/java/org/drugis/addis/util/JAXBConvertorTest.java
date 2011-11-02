@@ -82,6 +82,7 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.MeasurementKey;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.PopulationCharacteristic;
@@ -92,6 +93,7 @@ import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
@@ -100,7 +102,6 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.Study.MeasurementKey;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
@@ -141,7 +142,6 @@ import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StudyActivities;
-import org.drugis.addis.entities.data.StudyOutcomeMeasure;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Treatment;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
@@ -655,7 +655,7 @@ public class JAXBConvertorTest {
 		epochs.add(epoch);
 		
 		Endpoint ep = ExampleData.buildEndpointHamd();
-		org.drugis.addis.entities.data.StudyOutcomeMeasure om = new StudyOutcomeMeasure();
+		org.drugis.addis.entities.data.StudyOutcomeMeasure om = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
 		om.setPrimary(false);
@@ -663,7 +663,7 @@ public class JAXBConvertorTest {
 		om.getWhenTaken().add(rt);
 		
 		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
-		Study.StudyOutcomeMeasure<Variable> sOm1 = new Study.StudyOutcomeMeasure<Variable>(ep);
+		StudyOutcomeMeasure<Variable> sOm1 = new StudyOutcomeMeasure<Variable>(ep);
 		sOm1.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm1), om);
 		
@@ -674,7 +674,7 @@ public class JAXBConvertorTest {
 		om.setPrimary(false);
 		
 		assertEntityEquals(ade, (org.drugis.addis.entities.OutcomeMeasure)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
-		Study.StudyOutcomeMeasure<Variable> sOm2 = new Study.StudyOutcomeMeasure<Variable>(ade);
+		StudyOutcomeMeasure<Variable> sOm2 = new StudyOutcomeMeasure<Variable>(ade);
 		sOm2.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm2), om);
 		
@@ -683,7 +683,7 @@ public class JAXBConvertorTest {
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
 		
 		assertEntityEquals(pc, (PopulationCharacteristic)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
-		Study.StudyOutcomeMeasure<Variable> sOm3 = new Study.StudyOutcomeMeasure<Variable>(pc);
+		StudyOutcomeMeasure<Variable> sOm3 = new StudyOutcomeMeasure<Variable>(pc);
 		sOm3.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm3), om);
 	}
@@ -691,7 +691,7 @@ public class JAXBConvertorTest {
 	@Test(expected=ConversionException.class)
 	public void testConvertStudyOutcomeMeasureThrows() throws ConversionException {
 		Domain domain = new DomainImpl();
-		StudyOutcomeMeasure om = new StudyOutcomeMeasure();
+		org.drugis.addis.entities.data.StudyOutcomeMeasure om = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		JAXBConvertor.convertStudyOutcomeMeasure(om, null, domain);
 	}
 	
@@ -702,8 +702,8 @@ public class JAXBConvertorTest {
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
 		
-		LinkedHashMap<String, Study.StudyOutcomeMeasure<?>> vars = new LinkedHashMap<String, Study.StudyOutcomeMeasure<?>>();
-		Study.StudyOutcomeMeasure<Variable> epSom = new Study.StudyOutcomeMeasure<Variable>(ep);
+		LinkedHashMap<String, StudyOutcomeMeasure<?>> vars = new LinkedHashMap<String, StudyOutcomeMeasure<?>>();
+		StudyOutcomeMeasure<Variable> epSom = new StudyOutcomeMeasure<Variable>(ep);
 		Epoch epoch = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
 		List<Epoch> epochs = new ArrayList<Epoch>();
 		epochs.add(epoch);
@@ -711,16 +711,16 @@ public class JAXBConvertorTest {
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
 		epSom.getWhenTaken().add(wt);
 		vars.put("X", epSom);
-		vars.put("Y", new Study.StudyOutcomeMeasure<Variable>(ExampleData.buildAdverseEventDiarrhea()));
+		vars.put("Y", new StudyOutcomeMeasure<Variable>(ExampleData.buildAdverseEventDiarrhea()));
 
-		StudyOutcomeMeasure epRef = new StudyOutcomeMeasure();
+		org.drugis.addis.entities.data.StudyOutcomeMeasure epRef = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		epRef.setNotes(new Notes());
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
 		epRef.setPrimary(false);
 		epRef.getWhenTaken().add(buildRelativeTime(epoch.getName(), wt.getDuration(), wt.getRelativeTo()));
 
-		StudyOutcomeMeasure adeRef = new StudyOutcomeMeasure();
+		org.drugis.addis.entities.data.StudyOutcomeMeasure adeRef = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		adeRef.setNotes(new Notes());
 		adeRef.setId("Y");
 		adeRef.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
@@ -792,16 +792,16 @@ public class JAXBConvertorTest {
 
 		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, mainPhase);
 
-		Map<String, Study.StudyOutcomeMeasure<?>> oms = new HashMap<String, Study.StudyOutcomeMeasure<?>>();
+		Map<String, StudyOutcomeMeasure<?>> oms = new HashMap<String, StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
 		PopulationCharacteristic pc = new PopulationCharacteristic("Hair Length", new ContinuousVariableType());
-		oms.put(pcName, new Study.StudyOutcomeMeasure<Variable>(pc, whenTaken));
+		oms.put(pcName, new StudyOutcomeMeasure<Variable>(pc, whenTaken));
 		String epName = "endpoint-tripping";
 		Endpoint ep = new Endpoint("Tripping achieved", Endpoint.convertVarType(Type.RATE), Direction.HIGHER_IS_BETTER);
-		oms.put(epName, new Study.StudyOutcomeMeasure<Variable>(ep, whenTaken));
+		oms.put(epName, new StudyOutcomeMeasure<Variable>(ep, whenTaken));
 		String aeName = "ade-nojob";
 		AdverseEvent ae = new AdverseEvent("Job loss", AdverseEvent.convertVarType(Type.RATE));
-		oms.put(aeName, new Study.StudyOutcomeMeasure<Variable>(ae, whenTaken));
+		oms.put(aeName, new StudyOutcomeMeasure<Variable>(ae, whenTaken));
 		
 		org.drugis.addis.entities.data.RateMeasurement rm1 = new org.drugis.addis.entities.data.RateMeasurement();
 		rm1.setRate(10);
@@ -1036,7 +1036,7 @@ public class JAXBConvertorTest {
 		
 		// Outcome measures: Endpoints
 		for (String epName : endpointName) {
-			StudyOutcomeMeasure ep = new StudyOutcomeMeasure();
+			org.drugis.addis.entities.data.StudyOutcomeMeasure ep = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 			ep.setNotes(new Notes());
 			ep.setId("endpoint-" + epName);
 			ep.setEndpoint(nameReference(epName));
@@ -1047,7 +1047,7 @@ public class JAXBConvertorTest {
 		
 		// Outcome measures: Adverse events
 		for (String aeName : adverseEventName) {
-			StudyOutcomeMeasure ae = new StudyOutcomeMeasure();
+			org.drugis.addis.entities.data.StudyOutcomeMeasure ae = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 			ae.setNotes(new Notes());
 			ae.setId("adverseEvent-" + aeName);
 			ae.setAdverseEvent(nameReference(aeName));
@@ -1058,7 +1058,7 @@ public class JAXBConvertorTest {
 		
 		// Outcome measures: Population chars
 		for (String pcName : popCharName) {
-			StudyOutcomeMeasure pc = new StudyOutcomeMeasure();
+			org.drugis.addis.entities.data.StudyOutcomeMeasure pc = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 			pc.setNotes(new Notes());
 			pc.setId("popChar-" + pcName);
 			pc.setPopulationCharacteristic(nameReference(pcName));
@@ -1106,9 +1106,9 @@ public class JAXBConvertorTest {
 		Epoch epoch2 = new Epoch("Main phase", EntityUtil.createDuration("P2D"));
 		study2.getEpochs().add(epoch1);
 		study2.getEpochs().add(epoch2);
-		study2.getEndpoints().add(new org.drugis.addis.entities.Study.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointHamd()));
-		study2.getEndpoints().add(new org.drugis.addis.entities.Study.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
-		study2.getAdverseEvents().add(new org.drugis.addis.entities.Study.StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
+		study2.getEndpoints().add(new org.drugis.addis.entities.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointHamd()));
+		study2.getEndpoints().add(new org.drugis.addis.entities.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
+		study2.getAdverseEvents().add(new org.drugis.addis.entities.StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
 		study2.addVariable(ExampleData.buildAgeVariable());
 		Arm fluoxArm = new Arm("fluox arm", 100);
 		study2.getArms().add(fluoxArm);
@@ -1721,14 +1721,14 @@ public class JAXBConvertorTest {
 
 	private static CategoricalVariable findVariable(AddisData data, org.drugis.addis.entities.data.Study s, String id) {
 		String varName = null;
-		for (StudyOutcomeMeasure x : s.getStudyOutcomeMeasures().getStudyOutcomeMeasure()) {
-			if (x.getId().equals(id)) {
-				varName = x.getPopulationCharacteristic().getName();
+		for (org.drugis.addis.entities.data.StudyOutcomeMeasure som : s.getStudyOutcomeMeasures().getStudyOutcomeMeasure()) {
+			if (som.getId().equals(id)) {
+				varName = som.getPopulationCharacteristic().getName();
 			}
 		}
-		for (OutcomeMeasure x : data.getPopulationCharacteristics().getPopulationCharacteristic()) {
-			if (x.getName().equals(varName)) {
-				return x.getCategorical();
+		for (OutcomeMeasure om : data.getPopulationCharacteristics().getPopulationCharacteristic()) {
+			if (om.getName().equals(varName)) {
+				return om.getCategorical();
 			}
 		}
 		return null;
@@ -1806,8 +1806,8 @@ public class JAXBConvertorTest {
 		}
 
 		public int compare(org.drugis.addis.entities.data.Measurement o1, org.drugis.addis.entities.data.Measurement o2) {
-			StudyOutcomeMeasure om1 = findOutcomeMeasure(o1.getStudyOutcomeMeasure().getId());
-			StudyOutcomeMeasure om2 = findOutcomeMeasure(o2.getStudyOutcomeMeasure().getId());
+			org.drugis.addis.entities.data.StudyOutcomeMeasure om1 = findOutcomeMeasure(o1.getStudyOutcomeMeasure().getId());
+			org.drugis.addis.entities.data.StudyOutcomeMeasure om2 = findOutcomeMeasure(o2.getStudyOutcomeMeasure().getId());
 			if (!om1.equals(om2)) {
 				return compareOutcomeMeasure(om1, om2);
 			}
@@ -1820,7 +1820,7 @@ public class JAXBConvertorTest {
 			return o1.getArm().getName().compareTo(o2.getArm().getName());
 		}
 
-		private static int compareOutcomeMeasure(StudyOutcomeMeasure om1, StudyOutcomeMeasure om2) {
+		private static int compareOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om1, org.drugis.addis.entities.data.StudyOutcomeMeasure om2) {
 			if (om1.getEndpoint() != null) {
 				return (om2.getEndpoint() == null ? -1 : compareOutcomeId(om1, om2));
 			} else if (om1.getAdverseEvent() != null) {
@@ -1833,13 +1833,13 @@ public class JAXBConvertorTest {
 			}
 		}
 
-		private static int compareOutcomeId(StudyOutcomeMeasure om1, StudyOutcomeMeasure om2) {
+		private static int compareOutcomeId(org.drugis.addis.entities.data.StudyOutcomeMeasure om1, org.drugis.addis.entities.data.StudyOutcomeMeasure om2) {
 			return om1.getId().compareTo(om2.getId());
 		}
 
-		private StudyOutcomeMeasure findOutcomeMeasure (String id) {
-			List<StudyOutcomeMeasure> oms = d_study.getStudyOutcomeMeasures().getStudyOutcomeMeasure();
-			for (StudyOutcomeMeasure om : oms) {
+		private org.drugis.addis.entities.data.StudyOutcomeMeasure findOutcomeMeasure (String id) {
+			List<org.drugis.addis.entities.data.StudyOutcomeMeasure> oms = d_study.getStudyOutcomeMeasures().getStudyOutcomeMeasure();
+			for (org.drugis.addis.entities.data.StudyOutcomeMeasure om : oms) {
 				if (om.getId().equals(id)) {
 					return om;
 				}

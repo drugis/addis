@@ -44,6 +44,7 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.WhenTaken;
@@ -63,6 +64,7 @@ import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -116,6 +118,10 @@ public class AddStudyWizardPresentation {
 	
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
+	private ContentAwareListModel<StudyOutcomeMeasure<Endpoint>> d_endpointMonitor;
+	private ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>> d_adverseEventMonitor;
+	private ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>> d_popCharMonitor;
+
 	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
@@ -155,6 +161,28 @@ public class AddStudyWizardPresentation {
 		};
 		getAddArmsModel().getList().addListDataListener(removeOrphansListener);
 		getAddEpochsModel().getList().addListDataListener(removeOrphansListener);
+		
+		ListDataListener rehashMeasurementsListener = new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+			}
+			public void intervalAdded(ListDataEvent e) {
+			}
+			public void contentsChanged(ListDataEvent e) {
+				for (StudyActivity act : getNewStudy().getStudyActivities()) {
+					act.rebuildUsedBy();
+				}
+				getNewStudy().rehashMeasurements();
+			}
+		};
+		d_endpointMonitor = 
+			new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(getNewStudy().getEndpoints());
+		d_endpointMonitor.addListDataListener(rehashMeasurementsListener);
+		d_adverseEventMonitor  = 
+			new ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>>(getNewStudy().getAdverseEvents());
+		d_adverseEventMonitor.addListDataListener(rehashMeasurementsListener);
+		d_popCharMonitor  = 
+			new ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>>(getNewStudy().getPopulationChars());
+		d_popCharMonitor.addListDataListener(rehashMeasurementsListener);
 	}
 	
 	void deleteOrphanUsedBys() {

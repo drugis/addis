@@ -24,6 +24,8 @@
 
 package org.drugis.addis.entities;
 
+import static org.junit.Assert.*;
+
 import javax.xml.datatype.Duration;
 
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
@@ -60,5 +62,19 @@ public class WhenTakenTest {
 	public void testSetOffset() {
 		Duration duration2 = EntityUtil.createDuration("P28D"); 
 		JUnitUtil.testSetter(d_wt, WhenTaken.PROPERTY_OFFSET, d_duration1, duration2);
+	}
+	
+	@Test
+	public void testCompare() {
+		WhenTaken wt2 = new WhenTaken(d_duration1, RelativeTo.FROM_EPOCH_START, d_epoch2);
+		assertTrue(d_wt.compareTo(wt2) < 0);
+		assertTrue(d_wt.compareTo(d_wt) == 0);
+		d_epoch1.setName(d_epoch2.getName());
+		assertTrue(d_wt.compareTo(wt2) == 0);
+		wt2.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+		assertTrue(d_wt.compareTo(wt2) < 0);
+		wt2.setRelativeTo(RelativeTo.FROM_EPOCH_START);
+		wt2.setDuration(EntityUtil.createDuration("P20D"));
+		assertTrue(d_wt.compareTo(wt2) > 0);
 	}
 }

@@ -53,7 +53,7 @@ import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Study.StudyOutcomeMeasure;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
