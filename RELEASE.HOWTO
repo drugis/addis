@@ -1,10 +1,10 @@
- 1. edit pom.xml and change version
+ 1. edit pom.xml, */pom.xml and change version
 
  2. edit README.txt to reflect changes in the new version
 
  3. commit your changes to git
 
- 4. ./release.sh
+ 4. ./scripts/release.sh
 
  5. commit the automated changes to git
 
@@ -22,6 +22,7 @@
     $ git push origin $(VERSION)b
     $ git push --tags
     $ git checkout master
+    (only branch for major releases, tag for all releases)
 
  9. edit pom.xml and change version to appropriate -SNAPSHOT
 
