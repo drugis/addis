@@ -511,6 +511,14 @@ public class StudyTest {
 	}
 	
 	@Test
+	public void testCloneHasOrphanMeasurementRemoval() {
+		Endpoint old = d_clone.getEndpoints().get(0).getValue();
+		d_clone.getEndpoints().get(0).setValue(new Endpoint("BLA", new RateVariableType()));
+		
+		assertNull(d_clone.getMeasurement(old, d_clone.getArms().get(1)));
+	}
+	
+	@Test
 	public void testClonedUsedBysReferToClonedArmAndEpoch() {
 		// Check that we're still testing what we think we're testing
 		StudyActivity orig_sa = d_orig.getStudyActivities().get(0);

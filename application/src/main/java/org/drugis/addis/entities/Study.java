@@ -41,6 +41,7 @@ import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
 
@@ -78,6 +79,37 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		this(null, null);
 	}
 
+	public Study(String id, Indication i) {
+		super(id);
+		d_indication = new ObjectWithNotes<Indication>(i);
+		d_arms = new ArrayListModel<Arm>();
+		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil
+				.getCurrentDateWithoutTime());
+		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
+		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
+
+		ListDataListener orphanListener = new ListDataListener() {
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				removeOrphanMeasurements();
+			}
+
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				removeOrphanMeasurements();
+			}
+
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				removeOrphanMeasurements();
+			}
+		};
+		d_arms.addListDataListener(orphanListener);
+		new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(d_endpoints).addListDataListener(orphanListener);
+		new ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>>(d_adverseEvents).addListDataListener(orphanListener);
+		new ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>>(d_populationChars).addListDataListener(orphanListener);
+	}
+	
 	@Override
 	public Study clone() {
 		Study newStudy = new Study();
@@ -91,14 +123,12 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			newStudy.getEpochs().add(e.clone());
 		}
 
-		newStudy.d_endpoints = cloneStudyOutcomeMeasures(getEndpoints(), newStudy.getEpochs());
-		newStudy.d_adverseEvents = cloneStudyOutcomeMeasures(getAdverseEvents(), newStudy.getEpochs());
-		newStudy.d_populationChars = cloneStudyOutcomeMeasures(getPopulationChars(), newStudy.getEpochs());
+		replace(newStudy.d_endpoints, cloneStudyOutcomeMeasures(getEndpoints(), newStudy.getEpochs()));
+		replace(newStudy.d_adverseEvents, cloneStudyOutcomeMeasures(getAdverseEvents(), newStudy.getEpochs()));
+		replace(newStudy.d_populationChars, cloneStudyOutcomeMeasures(getPopulationChars(), newStudy.getEpochs()));
 
 		for (StudyActivity sa : getStudyActivities()) {
-			newStudy.getStudyActivities().add(
-					cloneStudyActivity(sa, newStudy.getArms(), newStudy
-							.getEpochs()));
+			newStudy.getStudyActivities().add(cloneStudyActivity(sa, newStudy.getArms(), newStudy.getEpochs()));
 		}
 
 		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc
@@ -112,6 +142,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return newStudy;
 	}
 
+	private static <T> void replace(ObservableList<T> target, ObservableList<T> newValues) {
+		target.clear();
+		target.addAll(newValues);
+	}
+
 	private StudyActivity cloneStudyActivity(StudyActivity sa, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
 		StudyActivity newSA = sa.clone();
 		Set<UsedBy> newUsedBys = new HashSet<UsedBy>();
@@ -122,8 +157,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return newSA;
 	}
 
-	private UsedBy fixUsedBy(UsedBy ub, ObservableList<Arm> newArms,
-			ObservableList<Epoch> newEpochs) {
+	private UsedBy fixUsedBy(UsedBy ub, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
 		return new UsedBy(newArms.get(newArms.indexOf(ub.getArm())), newEpochs
 				.get(newEpochs.indexOf(ub.getEpoch())));
 	}
@@ -157,17 +191,17 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms, List<Epoch> newEpochs, List<StudyOutcomeMeasure<?>> newOMs) {
-		ObservableList<WhenTaken> newWT = findOMWT(key.getVariable(), newOMs);
+		ObservableList<WhenTaken> newWT = findStudyOutcomeMeasure(newOMs, key.getVariable()).getWhenTaken();
 		WhenTaken wt = key.getWhenTaken();
 		return new MeasurementKey(key.getVariable(), key.getArm() == null ? null : 
 				newArms.get(getArms().indexOf(key.getArm())), 
-				newWT.get(newWT.indexOf(wt)) );
+				newWT.get(newWT.indexOf(wt)));
 	}
 
-	private ObservableList<WhenTaken> findOMWT(Variable v, List<StudyOutcomeMeasure<?>> newOMs) {
-		for (Object som : newOMs) {
-			if (((StudyOutcomeMeasure<?>)som).getValue().equals(v)) {
-				return ((StudyOutcomeMeasure<?>) som).getWhenTaken();
+	private static StudyOutcomeMeasure<?> findStudyOutcomeMeasure(List<StudyOutcomeMeasure<?>> somList, Variable v) {
+		for (StudyOutcomeMeasure<?> som : somList) {
+			if (som.getValue().equals(v)) {
+				return som;
 			}
 		}
 		return null;
@@ -179,37 +213,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			newList.add(a.clone());
 		}
 		return newList;
-	}
-
-	public Study(String id, Indication i) {
-		super(id);
-		d_indication = new ObjectWithNotes<Indication>(i);
-		d_arms = new ArrayListModel<Arm>();
-		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil
-				.getCurrentDateWithoutTime());
-		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
-		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
-
-		ListDataListener orphanListener = new ListDataListener() {
-			@Override
-			public void intervalRemoved(ListDataEvent e) {
-				removeOrphanMeasurements();
-			}
-
-			@Override
-			public void intervalAdded(ListDataEvent e) {
-				removeOrphanMeasurements();
-			}
-
-			@Override
-			public void contentsChanged(ListDataEvent e) {
-				removeOrphanMeasurements();
-			}
-		};
-		d_arms.addListDataListener(orphanListener);
-		d_endpoints.addListDataListener(orphanListener);
-		d_populationChars.addListDataListener(orphanListener);
-		d_adverseEvents.addListDataListener(orphanListener);
 	}
 
 	public ObservableList<Arm> getArms() {
@@ -529,8 +532,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 	
 	private void removeOrphanMeasurements() {
-		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements
-				.keySet())) {
+		for (MeasurementKey k : new HashSet<MeasurementKey>(d_measurements.keySet())) {
 			if (orphanKey(k)) {
 				d_measurements.remove(k);
 			}
@@ -542,16 +544,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private boolean orphanKey(MeasurementKey k) {
+		if (findStudyOutcomeMeasure(k.d_variable) == null) {
+			return true;
+		}
 		// OutcomeMeasure measurement
 		if (k.d_variable instanceof OutcomeMeasure) {
-			if (!getAdverseEvents().contains(
-					new StudyOutcomeMeasure<Variable>(k.d_variable))
-					&& !getEndpoints().contains(
-							new StudyOutcomeMeasure<Variable>(k.d_variable))
-					&& !getPopulationChars().contains(
-							new StudyOutcomeMeasure<Variable>(k.d_variable))) {
-				return true;
-			}
 			if (!d_arms.contains(k.d_arm)) {
 				return true;
 			}
@@ -559,10 +556,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 		// PopulationChar measurements
 		if (k.d_variable instanceof PopulationCharacteristic) {
-			if (!getPopulationChars().contains(
-					new StudyOutcomeMeasure<Variable>(k.d_variable))) {
-				return true;
-			}
 			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {
 				return true;
 			}
