@@ -178,6 +178,7 @@ implements ViewBuilder {
 		builder.setBackground(Color.white);
 		
 		JScrollPane scrollPane = new JScrollPane(builder.getPanel());
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		scrollPane.setViewportBorder(null);
 		
 		encapsulating.add(scrollPane,cc.xy(1, 1));

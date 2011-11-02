@@ -188,6 +188,7 @@ public class SMAAView implements ViewBuilder  {
 	
 	public JComponent buildRankAcceptabilitiesPart() {
 		JScrollPane rankpane = new JScrollPane(createWaiter(new RankAcceptabilitiesBuilder()));
+		rankpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		rankpane.setViewportBorder(null);
 		return rankpane;
 	}
@@ -263,6 +264,7 @@ public class SMAAView implements ViewBuilder  {
 
 	public JComponent buildCentralWeightsPart() {
 		JScrollPane cpane = new JScrollPane(createWaiter(new CentralWeightsBuilder()));
+		cpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		cpane.setViewportBorder(null);
 		return cpane;
 	}
