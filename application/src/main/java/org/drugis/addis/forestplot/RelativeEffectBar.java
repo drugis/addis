@@ -35,13 +35,15 @@ public class RelativeEffectBar implements Paintable {
 	private int d_diamondCenter;
 	private int d_diamondSize;
 	private int d_yCentre;
+	private final boolean d_drawDiamond;
 
-	public RelativeEffectBar(BinnedScale scale, int yCentre, RelativeEffect<?> effect, int diamondW) {
-		this(scale, yCentre, effect.getConfidenceInterval(), diamondW);
+	public RelativeEffectBar(BinnedScale scale, int yCentre, RelativeEffect<?> effect, int diamondW, boolean drawDiamond) {
+		this(scale, yCentre, effect.getConfidenceInterval(), diamondW, drawDiamond);
 	}
 	
-	public RelativeEffectBar(BinnedScale scale, int yCentre, ConfidenceInterval ci, int diamondW) {
+	public RelativeEffectBar(BinnedScale scale, int yCentre, ConfidenceInterval ci, int diamondW, boolean drawDiamond) {
 		d_yCentre = yCentre;
+		d_drawDiamond = drawDiamond;
 		
 		// Calculate parameters of confidence interval line.
 		d_confStart = scale.getBin(ci.getLowerBound()).bin;
@@ -57,16 +59,19 @@ public class RelativeEffectBar implements Paintable {
 		g2d.drawLine(d_confStart, d_yCentre, d_confEnd, d_yCentre);
 		
 		// Draw the mean-diamond
-		if (d_diamondSize == 0) {
-			int size = 8;
-			g2d.drawLine(d_diamondCenter + size, d_yCentre, d_diamondCenter, d_yCentre + size);
-			g2d.drawLine(d_diamondCenter, d_yCentre + size, d_diamondCenter - size, d_yCentre);
-			g2d.drawLine(d_diamondCenter - size, d_yCentre, d_diamondCenter, d_yCentre - size);
-			g2d.drawLine(d_diamondCenter, d_yCentre - size, d_diamondCenter + size, d_yCentre);
+		if (d_drawDiamond) {
+			g2d.drawLine(d_diamondCenter + d_diamondSize, d_yCentre, d_diamondCenter, d_yCentre + d_diamondSize);
+			g2d.drawLine(d_diamondCenter, d_yCentre + d_diamondSize, d_diamondCenter - d_diamondSize, d_yCentre);
+			g2d.drawLine(d_diamondCenter - d_diamondSize, d_yCentre, d_diamondCenter, d_yCentre - d_diamondSize);
+			g2d.drawLine(d_diamondCenter, d_yCentre - d_diamondSize, d_diamondCenter + d_diamondSize, d_yCentre);
 		} else {
 			int x = d_diamondCenter - (d_diamondSize - 1)/2;
 			int y = d_yCentre - (d_diamondSize - 1)/2;
 			g2d.fillRect(x, y, d_diamondSize, d_diamondSize);
 		}
+	}
+
+	public boolean isDrawDiamond() {
+		return d_drawDiamond;
 	}
 }

@@ -79,6 +79,6 @@ public class ForestPlotPresentationMetaTest {
 	@Test
 	public void testGetDiamondSize() {
 		assertEquals(21, d_pm.getDiamondSize(0));
-		assertEquals(0, d_pm.getDiamondSize(2));
+		assertEquals(8, d_pm.getDiamondSize(2));
 	}
 }

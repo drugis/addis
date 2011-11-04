@@ -70,7 +70,8 @@ public class ForestPlot extends JComponent {
 		int yPos = ROWVCENTER;
 		
 		for (int i=0; i < d_pm.getNumRelativeEffects(); ++i) {		
-			d_bars.add(new RelativeEffectBar(d_pm.getScale(), yPos, (RelativeEffect<?>) d_pm.getRelativeEffectAt(i), d_pm.getDiamondSize(i)));
+			d_bars.add(new RelativeEffectBar(d_pm.getScale(), yPos, (RelativeEffect<?>) d_pm.getRelativeEffectAt(i), 
+					d_pm.getDiamondSize(i), d_pm.isCombined(i)));
 			yPos += FULLROW;
 		}
 	}

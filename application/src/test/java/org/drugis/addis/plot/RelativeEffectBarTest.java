@@ -62,7 +62,7 @@ public class RelativeEffectBarTest {
 		shapeSet.add(new FilledRectangle( bsl.getBin(effect.getConfidenceInterval().getPointEstimate()).bin - 2, 11 - 2, 5, 5) );
 	
 		MockGraphics2D g2d = new MockGraphics2D(shapeSet);
-		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect, 5);
+		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect, 5, false);
 		plot.paint(g2d);
 		
 		g2d.verify();
@@ -93,7 +93,7 @@ public class RelativeEffectBarTest {
 		shapeSet.add(new Line(center, 3, center + 8, 11));
 	
 		MockGraphics2D g2d = new MockGraphics2D(shapeSet);
-		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect, 0);
+		RelativeEffectBar plot = new RelativeEffectBar(bsl, 11, effect, 8, true);
 		plot.paint(g2d);
 		
 		g2d.verify();

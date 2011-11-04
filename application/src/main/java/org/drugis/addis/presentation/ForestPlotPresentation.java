@@ -275,7 +275,7 @@ public class ForestPlotPresentation {
 
 	public int getDiamondSize(int index) {
 		BinnedScale tempbin = new BinnedScale(new IdentityScale(), 1, 10);
-		return isCombined(index) ? 0 : tempbin.getBin(getWeightAt(index)).bin * 2 + 1;
+		return isCombined(index) ? 8 : tempbin.getBin(getWeightAt(index)).bin * 2 + 1;
 	}
 
 	public OutcomeMeasure getOutcomeMeasure() {

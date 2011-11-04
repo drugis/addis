@@ -25,6 +25,7 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -38,6 +39,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
@@ -116,8 +118,9 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 							return;
 						}
 						g.translate(PADDING, 0);
+						g.setColor(Color.BLACK);
 						if (forest.ci != null) {
-							final RelativeEffectBar bar = new RelativeEffectBar(forest.scale, ForestPlot.ROWVCENTER, forest.ci, ForestPlot.ROWHEIGHT / 3);
+							final RelativeEffectBar bar = new RelativeEffectBar(forest.scale, ForestPlot.ROWVCENTER, forest.ci, ForestPlot.ROWHEIGHT / 3, forest.vt instanceof ContinuousVariableType);
 							bar.paint((Graphics2D) g);
 							int originX = forest.scale.getBin(forest.scale.getScale() instanceof LogScale ? 1D : 0D).bin;
 							g.drawLine(originX, 1 - ForestPlot.ROWPAD, originX, ForestPlot.FULLROW);

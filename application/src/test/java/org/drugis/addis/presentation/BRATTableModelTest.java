@@ -10,6 +10,7 @@ import static org.drugis.addis.presentation.BRATTableModel.COLUMN_SUBJECT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,11 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -193,6 +196,9 @@ public class BRATTableModelTest {
 		
 		assertNull(d_btmMeta.getNiceLinearScale());
 		assertEquals(d_btmMeta.getNiceLogScale(), d_btmMeta.getFullLogScale());
+		assertTrue(((BRATForest)d_btmStudy.getValueAt(0, COLUMN_FOREST)).vt instanceof ContinuousVariableType);
+		assertEquals(new RateVariableType(), ((BRATForest)d_btmStudy.getValueAt(1, COLUMN_FOREST)).vt);
+		assertEquals(new RateVariableType(), ((BRATForest)d_btmStudy.getValueAt(2, COLUMN_FOREST)).vt);
 	}
 	
 	@Test

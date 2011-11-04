@@ -23,6 +23,7 @@ import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
@@ -41,14 +42,17 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		public final ConfidenceInterval ci;
 		public final BinnedScale scale;
 		public final Scale axis;
+		public final VariableType vt;
 		
-		public BRATForest(BinnedScale scale, ConfidenceInterval ci) {
+		public BRATForest(BinnedScale scale, ConfidenceInterval ci, VariableType vt) {
 			this.ci = ci;
 			this.scale = scale;
+			this.vt = vt;
 			this.axis = null;
 		}
 		
-		public BRATForest(BinnedScale scale, Scale axis) {
+		public BRATForest(BinnedScale scale, Scale axis, VariableType vt) {
+			this.vt = vt;
 			this.ci = null;
 			this.scale = scale;
 			this.axis = axis;
@@ -98,6 +102,12 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		d_analysis = bean;
 		d_baseline = baseline;
 		d_subject = subject;
+		d_analysis.getMeasurementSource().addMeasurementsChangedListener(new Listener() {
+			public void notifyMeasurementsChanged() {
+				calculateScales();
+				fireTableDataChanged();
+			}
+		});		
 		calculateScales();
 	}
 
@@ -105,10 +115,11 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		List<ConfidenceInterval> logCIs = new ArrayList<ConfidenceInterval>();
 		List<ConfidenceInterval> linCIs = new ArrayList<ConfidenceInterval>();
 		for (OutcomeMeasure om : d_analysis.getCriteria()) {
-			if (om.getVariableType() instanceof RateVariableType) {
-				logCIs.add(getCI(getDifference(om)));
-			} else if (om.getVariableType() instanceof ContinuousVariableType) {
-				linCIs.add(getCI(getDifference(om)));
+			Distribution diff = getDifference(om);
+			if (om.getVariableType() instanceof RateVariableType && diff != null) {
+				logCIs.add(getCI(diff));
+			} else if (om.getVariableType() instanceof ContinuousVariableType && diff != null) {
+				linCIs.add(getCI(diff));
 			}
 		}
 		if (!logCIs.isEmpty()) {
@@ -155,9 +166,9 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			if (columnIndex == COLUMN_FOREST) {
 				final int offset = rowIndex - d_analysis.getCriteria().size();
 				if (offset == OFFSET_LOGAXIS) {
-					return new BRATForest(getBinnedScale(getFullLogScale()), getNiceLogScale());
+					return new BRATForest(getBinnedScale(getFullLogScale()), getNiceLogScale(), new ContinuousVariableType());
 				} else if (offset == OFFSET_LINAXIS) {
-					return new BRATForest(getBinnedScale(getFullLinearScale()), getNiceLinearScale());
+					return new BRATForest(getBinnedScale(getFullLinearScale()), getNiceLinearScale(), new RateVariableType());
 				}
 			}
 			return null;
@@ -181,7 +192,8 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		} else if (columnIndex == COLUMN_DIFFERENCE) {
 			return getDifference(rowIndex);
 		} else if (columnIndex == COLUMN_FOREST) {
-			return new BRATForest(getBinnedScale(getScale(rowIndex)), getCI(getDifference(rowIndex).getDifference()));
+			return getDifference(rowIndex) == null ? null :
+					new BRATForest(getBinnedScale(getScale(rowIndex)), getCI(getDifference(rowIndex).getDifference()), getVariableType(rowIndex));
 		}
 		return "";
 	}
@@ -200,7 +212,8 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 
 	private BRATDifference getDifference(int rowIndex) {
 		OutcomeMeasure om = d_analysis.getCriteria().get(rowIndex);
-		return new BRATDifference(om, getDifference(om));
+		Distribution difference = getDifference(om);
+		return difference == null ? null : new BRATDifference(om, difference);
 	}
 	
 	private Distribution getDifference(OutcomeMeasure om) {
