@@ -657,126 +657,126 @@
             <studyOutcomeMeasure primary="false" id="endpoint-FPG change">
                <endpoint name="FPG change"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="true" id="endpoint-HbA1c change">
                <endpoint name="HbA1c change"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-cough">
                <adverseEvent name="cough"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-Nasopharyngitis">
                <adverseEvent name="Nasopharyngitis"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-Worsening hypertension">
                <adverseEvent name="Worsening hypertension"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-Urinary tract infection">
                <adverseEvent name="Urinary tract infection"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-Gastroenteritis">
                <adverseEvent name="Gastroenteritis"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-Bursitis">
                <adverseEvent name="Bursitis"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="adverseEvent-Number of hypeoglycemic episodes">
                <adverseEvent name="Number of hypeoglycemic episodes"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-BMI">
                <populationCharacteristic name="BMI"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-Age">
                <populationCharacteristic name="Age"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-Duration of diabetes">
                <populationCharacteristic name="Duration of diabetes"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-Duration of previous MET treatment">
                <populationCharacteristic name="Duration of previous MET treatment"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-hypertension">
                <populationCharacteristic name="hypertension"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-discontinued">
                <populationCharacteristic name="discontinued"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-FPG bas">
                <populationCharacteristic name="FPG bas"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-HbA1c bas">
                <populationCharacteristic name="HbA1c bas"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
             <studyOutcomeMeasure primary="false" id="popChar-Sex">
                <populationCharacteristic name="Sex"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
                <notes/>
             </studyOutcomeMeasure>
@@ -795,7 +795,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="0.3" sampleSize="50" mean="-0.1"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -803,7 +803,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="0.3" sampleSize="47" mean="0.2"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -811,7 +811,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="0.1" sampleSize="50" mean="-0.6"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -819,7 +819,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="0.1" sampleSize="47" mean="0.1"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -827,7 +827,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="3"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -835,7 +835,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -843,7 +843,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="2"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -851,7 +851,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="6"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -859,7 +859,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -867,7 +867,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -875,7 +875,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="1"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -883,7 +883,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="3"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -891,7 +891,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -899,7 +899,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -907,7 +907,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -915,7 +915,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="0"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -923,7 +923,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="3"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -931,7 +931,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="3.6" sampleSize="56" mean="29.4"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -939,7 +939,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="3.6" sampleSize="51" mean="30.2"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -947,7 +947,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="10.0" sampleSize="56" mean="57.9"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -955,7 +955,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="11.0" sampleSize="51" mean="55.7"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -963,7 +963,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="4.2" sampleSize="56" mean="5.6"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -971,7 +971,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="3.7" sampleSize="51" mean="5.5"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -979,7 +979,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="25.6" sampleSize="56" mean="28.2"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -987,7 +987,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="36.1" sampleSize="51" mean="29.8"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -995,7 +995,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="28"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1003,7 +1003,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="27"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1011,7 +1011,7 @@
                <arm name="Vildagliptin"/>
                <rateMeasurement sampleSize="56" rate="6"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1019,7 +1019,7 @@
                <arm name="Placebo"/>
                <rateMeasurement sampleSize="51" rate="4"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1027,7 +1027,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="2.0" sampleSize="56" mean="9.9"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1035,7 +1035,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="2.0" sampleSize="51" mean="10.3"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1043,7 +1043,7 @@
                <arm name="Vildagliptin"/>
                <continuousMeasurement stdDev="0.6" sampleSize="56" mean="7.7"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1051,7 +1051,7 @@
                <arm name="Placebo"/>
                <continuousMeasurement stdDev="0.7" sampleSize="51" mean="7.8"/>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1062,7 +1062,7 @@
                   <category rate="39" name="male"/>
                </categoricalMeasurement>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
             <measurement>
@@ -1073,7 +1073,7 @@
                   <category rate="34" name="male"/>
                </categoricalMeasurement>
                <whenTaken relativeTo="BEFORE_EPOCH_END" howLong="P0D">
-                  <epoch name="Extension"/>
+                  <epoch name="Main phase"/>
                </whenTaken>
             </measurement>
          </measurements>
