@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.11: Add [BRAT table][10] to benefit/risk view.
+
 1.10: Enable combination treatment. Add "free text" ('Other') activity.
    Allow multiple moments of measurement for each outcome. Add installer
    and double-click loading of .addis data files on Windows.
@@ -91,12 +93,13 @@ For contact information, see [the ADDIS website][1].
 
 ADDIS Development Team
 
-[1]: http://www.drugis.org/addis
-[2]: http://www.tipharma.com/projects/efficiency-analysis-drug-discovery-process/the-escher-project.html
-[3]: http://pubmed.com/16172440
-[4]: http://www.java.com/getjava/
-[5]: http://www.drugis.org/
-[6]: https://github.com/gertvv/addis
-[7]: http://maven.apache.org/download.html
-[8]: http://gplv3.fsf.org/
-[9]: https://github.com/gertvv/addis/blob/master/LICENSE.txt
+ [1]: http://www.drugis.org/addis
+ [2]: http://www.tipharma.com/projects/efficiency-analysis-drug-discovery-process/the-escher-project.html
+ [3]: http://pubmed.com/16172440
+ [4]: http://www.java.com/getjava/
+ [5]: http://www.drugis.org/
+ [6]: https://github.com/gertvv/addis
+ [7]: http://maven.apache.org/download.html
+ [8]: http://gplv3.fsf.org/
+ [9]: https://github.com/gertvv/addis/blob/master/LICENSE.txt
+[10]: http://dx.doi.org/10.1038/clpt.2010.291
