@@ -57,7 +57,7 @@ public class BRATDifferenceRenderer extends DistributionQuantileCellRenderer {
 			return renderer;
 		}
 		Component renderer = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (value == null) {
+		if (value == null || value instanceof String) {
 			renderer.setBackground(Color.WHITE);
 		}
 		return renderer ;

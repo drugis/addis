@@ -194,6 +194,13 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 				} else if (offset == OFFSET_LINAXIS) {
 					return new BRATForest(getBinnedScale(getFullLinearScale()), getNiceLinearScale(), new RateVariableType());
 				}
+			} else if (columnIndex == COLUMN_DIFFERENCE) {
+				final int offset = rowIndex - d_analysis.getCriteria().size();
+				if (offset == OFFSET_LOGAXIS && d_logScale != null) {
+					return "<html>Log&nbsp;scale</html>";
+				} else if (offset == OFFSET_LINAXIS && d_linScale != null) {
+					return "<html>Linear&nbsp;scale</html>";
+				}
 			}
 			return null;
 		}
@@ -210,9 +217,9 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		} else if (columnIndex == COLUMN_OUTCOME_TYPE) {
 			return getVariableType(rowIndex);
 		} else if (columnIndex == COLUMN_BASELINE) {
-			return getMeasurement(rowIndex, d_baseline);
+			return getMeasurement(rowIndex, getBaseline());
 		} else if (columnIndex == COLUMN_SUBJECT) {
-			return getMeasurement(rowIndex, d_subject);
+			return getMeasurement(rowIndex, getSubject());
 		} else if (columnIndex == COLUMN_DIFFERENCE) {
 			return getDifference(rowIndex);
 		} else if (columnIndex == COLUMN_FOREST) {
@@ -243,8 +250,8 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	private Distribution getDifference(OutcomeMeasure om) {
 		if (d_analysis instanceof StudyBenefitRiskAnalysis) {
 			StudyBenefitRiskAnalysis sba = (StudyBenefitRiskAnalysis) d_analysis;
-			BasicMeasurement baseMeas = sba.getStudy().getMeasurement(om, (Arm) d_baseline);
-			BasicMeasurement subjMeas = sba.getStudy().getMeasurement(om, (Arm) d_subject);
+			BasicMeasurement baseMeas = sba.getStudy().getMeasurement(om, (Arm) getBaseline());
+			BasicMeasurement subjMeas = sba.getStudy().getMeasurement(om, (Arm) getSubject());
 			if (baseMeas instanceof BasicRateMeasurement) {
 				return new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas).getDistribution();
 			} else if (baseMeas instanceof BasicContinuousMeasurement) {
@@ -252,8 +259,8 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			}
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			mba.getMeasurement(om, (DrugSet) d_baseline);
-			return mba.getRelativeEffectDistribution(om, (DrugSet) d_baseline, (DrugSet) d_subject);
+			mba.getMeasurement(om, (DrugSet) getBaseline());
+			return mba.getRelativeEffectDistribution(om, (DrugSet) getBaseline(), (DrugSet) getSubject());
 		}
 		return null;
 	}
@@ -279,9 +286,9 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			case COLUMN_OUTCOME_TYPE:
 				return "Type";
 			case COLUMN_BASELINE:
-				return getAlternativeDescription(d_baseline);
+				return getAlternativeDescription(getBaseline());
 			case COLUMN_SUBJECT:
-				return getAlternativeDescription(d_subject);
+				return getAlternativeDescription(getSubject());
 			case COLUMN_DIFFERENCE:
 				return "Difference (95% CI)";
 			case COLUMN_FOREST:
@@ -344,5 +351,13 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	
 	LogScale getFullLogScale() {
 		return d_logScaleFull;
+	}
+
+	public Alternative getBaseline() {
+		return d_baseline;
+	}
+
+	public Alternative getSubject() {
+		return d_subject;
 	}
 }

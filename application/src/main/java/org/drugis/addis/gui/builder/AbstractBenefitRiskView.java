@@ -24,12 +24,9 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -37,9 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
-import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
@@ -48,8 +43,6 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.forestplot.ForestPlot;
-import org.drugis.addis.forestplot.LogScale;
-import org.drugis.addis.forestplot.RelativeEffectBar;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
@@ -58,7 +51,6 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.BRATTableModel;
-import org.drugis.addis.presentation.ForestPlotPresentation;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
@@ -98,62 +90,25 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		return tabbedPane;
 	}
 
-	private static final int PADDING = 20;
 	protected JPanel buildBratPanel() {
+		FormLayout layout = new FormLayout("fill:0:grow",
+		"p, 3dlu, p");
+		JPanel panel = new JPanel(layout);
 		JTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
 		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(VariableType.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer(true));
 		table.setDefaultRenderer(BRATDifference.class, new BRATDifferenceRenderer());
-		table.setDefaultRenderer(BRATForest.class, new TableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-				final BRATForest forest = (BRATForest) value;
-				Canvas canvas = new Canvas() {
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void paint(Graphics g) {
-						if (forest == null || forest.scale == null) {
-							return;
-						}
-						g.translate(PADDING, 0);
-						g.setColor(Color.BLACK);
-						if (forest.ci != null) {
-							final RelativeEffectBar bar = new RelativeEffectBar(forest.scale, ForestPlot.ROWVCENTER, forest.ci, ForestPlot.ROWHEIGHT / 3, forest.vt instanceof ContinuousVariableType);
-							bar.paint((Graphics2D) g);
-							int originX = forest.scale.getBin(forest.scale.getScale() instanceof LogScale ? 1D : 0D).bin;
-							g.drawLine(originX, 1 - ForestPlot.ROWPAD, originX, ForestPlot.FULLROW);
-						} else if (forest.axis != null) {
-							g.drawLine(forest.scale.getBin(forest.axis.getMin()).bin, 1, forest.scale.getBin(forest.axis.getMax()).bin, 1);
-							ForestPlot.drawAxisTicks(g, 1, ForestPlotPresentation.getTicks(forest.scale, forest.axis), ForestPlotPresentation.getTickVals(forest.scale, forest.axis));
-						}
-						g.translate(-PADDING, 0);
-					}
-					
-					@Override
-					public Dimension getSize() {
-						return new Dimension(ForestPlot.BARWIDTH, ForestPlot.ROWHEIGHT);
-					}
-					
-					@Override
-					public Dimension getPreferredSize() {
-						return getSize();
-					}
-					
-					@Override
-					public Dimension getMinimumSize() {
-						return getSize();
-					}
-				};
-				return canvas;
-			}
-			
-		});
+		table.setDefaultRenderer(BRATForest.class, new BRATForestCellRenderer<PresentationType>());
 		table.setRowHeight((int) Math.max(ForestPlot.ROWHEIGHT + 2, new JLabel("<html>a<br/>b</html>").getPreferredSize().getHeight()));
-		table.getTableHeader().getColumnModel().getColumn(BRATTableModel.COLUMN_FOREST).setMinWidth(ForestPlot.BARWIDTH + PADDING * 2);
-		return new TablePanel(table);
-//		table.getTableHeader().getColumnModel().getColumn(0).setHeaderRenderer(new RotatedTableCellRenderer(270));
+		table.getTableHeader().getColumnModel().getColumn(BRATTableModel.COLUMN_FOREST).setMinWidth(ForestPlot.BARWIDTH + BRATForestCellRenderer.PADDING * 2);
+		CellConstraints cc = new CellConstraints();
+		panel.add(new TablePanel(table), cc.xy(1,1));
+		String baselineName = d_pm.getBRATTableModel().getBaseline().getLabel();
+		String subjectName = d_pm.getBRATTableModel().getSubject().getLabel();
+		String str = "Key Benefit-Risk Summary table with embedded risk difference forest plot. The color in the odds ratio column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
+		panel.add(AuxComponentFactory.createHtmlField(str), cc.xy(1,3));
+		return panel;
 	}
 
 	protected abstract JPanel buildOverviewPanel();
