@@ -25,9 +25,10 @@
 package org.drugis.addis.gui.builder;
 
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -92,7 +93,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 	protected JPanel buildBratPanel() {
 		FormLayout layout = new FormLayout("fill:0:grow",
-		"p, 3dlu, p");
+		"p, 3dlu, p, 3dlu, p");
 		JPanel panel = new JPanel(layout);
 		JTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
 		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
@@ -108,6 +109,15 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		String subjectName = d_pm.getBRATTableModel().getSubject().getLabel();
 		String str = "Key Benefit-Risk Summary table with embedded risk difference forest plot. The color in the odds ratio column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
 		panel.add(AuxComponentFactory.createHtmlField(str), cc.xy(1,3));
+		JButton valueTreeButton = new JButton("Change value tree");
+		valueTreeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BRATValueTreeView valueTreeView = new BRATValueTreeView(d_mainWindow, d_pm);
+				valueTreeView.setVisible(true);
+			}
+		});
+		panel.add(valueTreeButton);
 		return panel;
 	}
 
