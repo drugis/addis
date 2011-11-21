@@ -109,7 +109,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		String subjectName = d_pm.getBRATTableModel().getSubject().getLabel();
 		String str = "Key Benefit-Risk Summary table with embedded risk difference forest plot. The color in the odds ratio column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
 		panel.add(AuxComponentFactory.createHtmlField(str), cc.xy(1,3));
-		JButton valueTreeButton = new JButton("Change value tree");
+		JButton valueTreeButton = new JButton("Show value tree");
 		valueTreeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -117,7 +117,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 				valueTreeView.setVisible(true);
 			}
 		});
-		panel.add(valueTreeButton);
+		panel.add(valueTreeButton, cc.xy(1, 5));
 		return panel;
 	}
 
