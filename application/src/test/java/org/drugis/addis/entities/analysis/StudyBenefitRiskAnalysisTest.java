@@ -24,6 +24,7 @@
 
 package org.drugis.addis.entities.analysis;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -72,6 +73,15 @@ public class StudyBenefitRiskAnalysisTest {
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		assertEquals(criteria, d_analysis.getCriteria());
 		assertEquals(ExampleData.buildStudyChouinard().getArms(), d_analysis.getAlternatives());
+		assertEquals(d_analysis.getAlternatives().get(0), d_analysis.getBaseline());
+		
+		StudyBenefitRiskAnalysis analysis = buildOtherBaseline();
+		assertEquals(d_analysis.getAlternatives().get(1), analysis.getBaseline());
+	}
+
+	private StudyBenefitRiskAnalysis buildOtherBaseline() {
+		return new StudyBenefitRiskAnalysis(d_analysis.getName(), d_analysis.getIndication(), d_analysis.getStudy(), 
+				d_analysis.getCriteria(), d_analysis.getAlternatives().get(1), d_analysis.getAlternatives(), d_analysis.getAnalysisType());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -102,6 +112,11 @@ public class StudyBenefitRiskAnalysisTest {
 		assertTrue(d_analysis.compareTo(otherBRAnalysis) < 0);
 		otherBRAnalysis.setName("Je Loeder");
 		assertTrue(d_analysis.compareTo(otherBRAnalysis) > 0);
+	}
+	
+	@Test
+	public void testDeepEquals() {
+		assertFalse(d_analysis.deepEquals(buildOtherBaseline()));
 	}
 	
 	@Test

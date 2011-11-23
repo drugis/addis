@@ -121,6 +121,7 @@ import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
+import org.drugis.addis.entities.data.BaselineArmReference;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
 import org.drugis.addis.entities.data.CategoricalMeasurement;
 import org.drugis.addis.entities.data.CategoricalVariable;
@@ -1470,7 +1471,7 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
 				ExampleData.buildIndicationDepression().getName(), endpoints, adverseEvents, new String[]{}, arms, epochs, sas);
 		
-		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms);
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms[1], whichArms);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
 		domain.getStudies().add(convertStudy);
@@ -1484,7 +1485,7 @@ public class JAXBConvertorTest {
 		
 		StudyBenefitRiskAnalysis expected = new StudyBenefitRiskAnalysis(name, 
 				ExampleData.buildIndicationDepression(), convertStudy,
-				criteria , alternatives, AnalysisType.LyndOBrien);
+				criteria, alternatives.get(1), alternatives, AnalysisType.LyndOBrien);
 		
 		assertEntityEquals(expected, JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
 		assertEquals(br, JAXBConvertor.convertStudyBenefitRiskAnalysis(expected));
@@ -1492,7 +1493,7 @@ public class JAXBConvertorTest {
 
 	private org.drugis.addis.entities.data.StudyBenefitRiskAnalysis buildStudyBR(
 			String name, org.drugis.addis.entities.data.Study study,
-			String[] endpoints, String[] adverseEvents, String[] whichArms) {
+			String[] endpoints, String[] adverseEvents, String baseline, String[] whichArms) {
 		RateMeasurement rm = new RateMeasurement();
 		rm.setRate(2);
 		rm.setSampleSize(50);
@@ -1523,6 +1524,9 @@ public class JAXBConvertorTest {
 			armRefs.getArm().add(JAXBConvertor.armReference(study.getName(), whichArm));
 		}
 		br.setArms(armRefs);
+		BaselineArmReference baselineRef = new BaselineArmReference();
+		baselineRef.setArm(JAXBConvertor.armReference(study.getName(), baseline));
+		br.setBaseline(baselineRef);
 		return br;
 	}	
 	
@@ -1622,7 +1626,7 @@ public class JAXBConvertorTest {
 		
 		String[] whichArms = { "parox arm high", "parox arm low" };
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis studyBR = buildStudyBR(
-				name, study, endpoints, adverseEvents, whichArms);
+				name, study, endpoints, adverseEvents, whichArms[0], whichArms);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
 		domain.getStudies().add(convertStudy);
@@ -1874,10 +1878,10 @@ public class JAXBConvertorTest {
 		InputStream is = JAXBConvertorTest.class.getResourceAsStream(fileName);
 		XmlFormatType xmlType = JAXBHandler.determineXmlType(is);
 		int version = 0;
-		if (xmlType.equals(XmlFormatType.SCHEMA_FUTURE)) {
+		if (xmlType.isFuture()) {
 			throw new RuntimeException("XML Version from the future");
 		}
-		if (xmlType.equals(XmlFormatType.LEGACY)) {
+		if (xmlType.isLegacy()) {
 			is = JAXBConvertor.transformLegacyXML(is);
 			version = 1;
 		} else {

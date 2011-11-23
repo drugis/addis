@@ -39,6 +39,7 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 	public static String PROPERTY_CRITERIA = "criteria";
 	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_ANALYSIS_TYPE = "analysisType";
+	public static String PROPERTY_BASELINE = "baseline";
 
 	public enum AnalysisType { LyndOBrien, SMAA };
 	

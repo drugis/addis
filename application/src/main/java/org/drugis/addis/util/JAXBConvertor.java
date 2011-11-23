@@ -111,6 +111,7 @@ import org.drugis.addis.entities.data.AnalysisArms;
 import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
+import org.drugis.addis.entities.data.BaselineArmReference;
 import org.drugis.addis.entities.data.BenefitRiskAnalyses;
 import org.drugis.addis.entities.data.CategoricalMeasurement;
 import org.drugis.addis.entities.data.CategoricalVariable;
@@ -143,13 +144,12 @@ import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Units;
+import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertor {
-	public static final int LATEST_VERSION = 3;
-
 	@SuppressWarnings("serial")
 	public static class ConversionException extends Exception {
 		public ConversionException(String msg) {
@@ -1200,7 +1200,9 @@ public class JAXBConvertor {
 			alternatives.add(findArm(ref.getName(), study.getArms()));
 		}
 		
-		return new StudyBenefitRiskAnalysis(br.getName(), indication, study, criteria, alternatives, br.getAnalysisType());
+		Arm baseline = findArm(br.getBaseline().getArm().getName(), study.getArms());
+		
+		return new StudyBenefitRiskAnalysis(br.getName(), indication, study, criteria, baseline, alternatives, br.getAnalysisType());
 	}
 	
 	public static org.drugis.addis.entities.data.StudyBenefitRiskAnalysis convertStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis br) throws ConversionException {
@@ -1228,6 +1230,10 @@ public class JAXBConvertor {
 			arms.getArm().add(armReference(br.getStudy().getName(), arm.getName()));
 		}
 		newBr.setArms(arms);
+		
+		BaselineArmReference baseline = new BaselineArmReference();
+		baseline.setArm(armReference(br.getStudy().getName(), br.getBaseline().getName()));
+		newBr.setBaseline(baseline);
 		
 		return newBr;
 	}
@@ -1438,7 +1444,7 @@ public class JAXBConvertor {
 	 */
 	public static InputStream transformToLatest(InputStream xml, int sourceVersion)
 	throws TransformerException, IOException {
-		return transformToVersion(xml, sourceVersion, LATEST_VERSION);
+		return transformToVersion(xml, sourceVersion, XmlFormatType.CURRENT_VERSION);
 	}
 	
 	/**

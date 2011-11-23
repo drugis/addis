@@ -57,12 +57,19 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	private List<OutcomeMeasure> d_criteria;
 	private ObservableList<Arm> d_alternatives;
 	private AnalysisType d_analysisType;
+	private final Arm d_baseline;
 	
 	private class StudyMeasurementSource extends AbstractMeasurementSource<Arm> {
 	}
 	
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
 			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
+		this(name, indication, study, criteria, alternatives.get(0), alternatives, analysisType);
+	}
+	
+	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
+			List<OutcomeMeasure> criteria, Arm baseline, List<Arm> alternatives, AnalysisType analysisType) {
+		d_baseline = baseline;
 		assertMeasurementsPresent(study, criteria, alternatives);
 		d_name = name;
 		d_indication = indication;
@@ -173,12 +180,13 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		StudyBenefitRiskAnalysis o = (StudyBenefitRiskAnalysis) other;
 		return EntityUtil.deepEqual(getStudy(), o.getStudy()) &&
 			EntityUtil.deepEqual(getIndication(), o.getIndication()) &&
+			EntityUtil.deepEqual(getBaseline(), o.getBaseline()) &&
 			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
 			EntityUtil.deepEqual(getCriteria(), o.getCriteria());
 	}
 
 	@Override
 	public Arm getBaseline() {
-		return getAlternatives().get(0);
+		return d_baseline;
 	}
 }

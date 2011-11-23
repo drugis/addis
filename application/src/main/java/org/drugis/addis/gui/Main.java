@@ -194,7 +194,7 @@ public class Main {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
 			FileInputStream in = new FileInputStream(f);
-			if (loadDomainFromInputStream(in).equals(XmlFormatType.LEGACY)) {
+			if (loadDomainFromInputStream(in).isLegacy()) {
 				askToConvertToNew(fileName);
 			} else {
 				setFileNameAndReset(fileName);
@@ -207,13 +207,14 @@ public class Main {
 	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
 		BufferedInputStream fis = new BufferedInputStream(in);
 		XmlFormatType xmlType = JAXBHandler.determineXmlType(fis);
-		switch (xmlType) {
-		case LEGACY:
+		switch (xmlType.getVersion()) {
+		case XmlFormatType.LEGACY_VERSION:
 			d_domainMgr.loadLegacyXMLDomain(fis);
 			break;
-		case SCHEMA_FUTURE:
-			throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.");
 		default: // SCHEMA*
+			if (xmlType.isFuture()) {
+				throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.");
+			}
 			d_domainMgr.loadXMLDomain(fis, xmlType.getVersion());
 			break;
 		}

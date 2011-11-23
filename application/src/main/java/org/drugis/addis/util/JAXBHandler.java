@@ -38,15 +38,13 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 
+import org.drugis.addis.AppInfo;
 import org.drugis.addis.entities.data.AddisData;
 
 public class JAXBHandler {
-	public static enum XmlFormatType {
-		LEGACY(0),
-		SCHEMA1(1),
-		SCHEMA2(2),
-		SCHEMA3(3),
-		SCHEMA_FUTURE(-1);
+	public static class XmlFormatType {
+		public static final int LEGACY_VERSION = 0;
+		public static final int CURRENT_VERSION = AppInfo.currentSchemaVersion();
 		
 		private final int d_version;
 
@@ -56,6 +54,14 @@ public class JAXBHandler {
 
 		public int getVersion() {
 			return d_version;
+		}
+		
+		public boolean isLegacy() {
+			return d_version == LEGACY_VERSION;
+		}
+		
+		public boolean isFuture() {
+			return d_version > CURRENT_VERSION;
 		}
 	}
 	
@@ -71,7 +77,7 @@ public class JAXBHandler {
 		initialize();
 		Marshaller marshaller = s_jaxb.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-" + JAXBConvertor.LATEST_VERSION + ".xsd");
+		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-" + XmlFormatType.CURRENT_VERSION + ".xsd");
 		marshaller.marshal(data, os);
 	}
 	
@@ -110,17 +116,9 @@ public class JAXBHandler {
 		Matcher matcher = pattern.matcher(str);
 		XmlFormatType type = null;
 		if (matcher.find()) {
-			if (matcher.group(1).equals("1")) {
-				type = XmlFormatType.SCHEMA1;
-			} else if (matcher.group(1).equals("2")) {
-				type = XmlFormatType.SCHEMA2;
-			} else if (matcher.group(1).equals("3")) {
-				type = XmlFormatType.SCHEMA3;
-			} else {
-				type = XmlFormatType.SCHEMA_FUTURE;
-			}
+			type = new XmlFormatType(Integer.parseInt(matcher.group(1)));
 		} else {
-			type = XmlFormatType.LEGACY;
+			type = new XmlFormatType(XmlFormatType.LEGACY_VERSION);
 		}
 		is.reset();
 		return type;
