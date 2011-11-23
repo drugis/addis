@@ -42,10 +42,16 @@ public class EntityTableDeleteListener extends KeyAdapter {
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 			EnhancedTable studyTable = (EnhancedTable)e.getComponent();
+			if (!studyTable.isFocusOwner() || studyTable.getSelectedRowCount() != 1) {
+				return;
+			}
+				
 			int row = studyTable.getSelectedRow();
 
 			Entity en = (Entity) studyTable.getModel().getValueAt(row, 0);
 			d_main.deleteEntity(en, true);
+			
+			e.consume();
 		}
 	}
 }
