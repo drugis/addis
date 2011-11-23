@@ -25,10 +25,6 @@
 package org.drugis.addis.gui.builder;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,6 +42,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.gui.ValueTreeGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ListPanel;
@@ -93,8 +90,31 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 	protected JPanel buildBratPanel() {
 		FormLayout layout = new FormLayout("fill:0:grow",
-		"p, 3dlu, p, 3dlu, p");
-		JPanel panel = new JPanel(layout);
+		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		
+		CellConstraints cc = new CellConstraints();
+
+		builder.addSeparator("Value Tree", cc.xy(1, 1));
+		builder.add(new ValueTreeGraph(d_pm.getBean().getCriteria()), cc.xy(1, 3));
+		
+		builder.addSeparator("Key Benefit-Risk summary table", cc.xy(1, 5));
+		builder.add(new TablePanel(createSummaryTable()), cc.xy(1, 7));
+		builder.add(createSummaryLabel(), cc.xy(1, 9));
+		return builder.getPanel();
+	}
+
+
+	private JComponent createSummaryLabel() {
+		String baselineName = d_pm.getBRATTableModel().getBaseline().getLabel();
+		String subjectName = d_pm.getBRATTableModel().getSubject().getLabel();
+		String str = "Key Benefit-Risk Summary table with embedded relative effect forest plot. The color in the \"difference\" column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
+		return AuxComponentFactory.createHtmlField(str);
+	}
+
+
+	private JTable createSummaryTable() {
 		JTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
 		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(VariableType.class, new DefaultTableCellRenderer());
@@ -103,22 +123,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 		table.setDefaultRenderer(BRATForest.class, new BRATForestCellRenderer<PresentationType>());
 		table.setRowHeight((int) Math.max(ForestPlot.ROWHEIGHT + 2, new JLabel("<html>a<br/>b</html>").getPreferredSize().getHeight()));
 		table.getTableHeader().getColumnModel().getColumn(BRATTableModel.COLUMN_FOREST).setMinWidth(ForestPlot.BARWIDTH + BRATForestCellRenderer.PADDING * 2);
-		CellConstraints cc = new CellConstraints();
-		panel.add(new TablePanel(table), cc.xy(1,1));
-		String baselineName = d_pm.getBRATTableModel().getBaseline().getLabel();
-		String subjectName = d_pm.getBRATTableModel().getSubject().getLabel();
-		String str = "Key Benefit-Risk Summary table with embedded risk difference forest plot. The color in the odds ratio column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
-		panel.add(AuxComponentFactory.createHtmlField(str), cc.xy(1,3));
-		JButton valueTreeButton = new JButton("Show value tree");
-		valueTreeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				BRATValueTreeView valueTreeView = new BRATValueTreeView(d_mainWindow, d_pm);
-				valueTreeView.setVisible(true);
-			}
-		});
-		panel.add(valueTreeButton, cc.xy(1, 5));
-		return panel;
+		return table;
 	}
 
 	protected abstract JPanel buildOverviewPanel();
