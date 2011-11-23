@@ -24,8 +24,10 @@
 
 package org.drugis.addis.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,13 +40,13 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationEventLocator;
 
-import org.drugis.addis.AppInfo;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.data.AddisData;
 
 public class JAXBHandler {
 	public static class XmlFormatType {
 		public static final int LEGACY_VERSION = 0;
-		public static final int CURRENT_VERSION = AppInfo.currentSchemaVersion();
+		public static final int CURRENT_VERSION = currentSchemaVersion();
 		
 		private final int d_version;
 
@@ -65,6 +67,16 @@ public class JAXBHandler {
 		}
 	}
 	
+	public static int currentSchemaVersion() {
+		try {
+			InputStream is = Domain.class.getResourceAsStream("current-schema-version");
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			return Integer.parseInt(br.readLine());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+		
 	private static JAXBContext s_jaxb;
 
 	private static void initialize() throws JAXBException {
