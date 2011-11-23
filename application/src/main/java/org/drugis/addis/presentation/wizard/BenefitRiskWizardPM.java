@@ -360,7 +360,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	public ValueHolder<Set<DrugSet>> getAlternativesListModel() {
 		Set<DrugSet> drugSet = new TreeSet<DrugSet>();
 		for(MetaAnalysis ma : d_domain.getMetaAnalyses()){
-			if(ma.getIndication() == getIndicationModel().getValue() )
+			if(ma.getIndication() == getIndicationModel().getValue())
 				drugSet.addAll(ma.getIncludedDrugs());
 		}
 		return new UnmodifiableHolder<Set<DrugSet>>(drugSet);
