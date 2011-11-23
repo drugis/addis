@@ -269,10 +269,10 @@
 							<schemaDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</schemaDirectory>
 							<bindingDirectory>${basedir}/src/main/resources/org/drugis/addis/entities</bindingDirectory>
 							<schemaIncludes>
-								<include>addis-3.xsd</include>
+								<include>addis-4.xsd</include>
 							</schemaIncludes>
 							<bindingIncludes>
-								<include>addis-3.xjb</include>
+								<include>addis-4.xjb</include>
 							</bindingIncludes>
 							<generateDirectory>${basedir}/src/main/generated-entities</generateDirectory>
 							<generatePackage>org.drugis.addis.entities.data</generatePackage>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	version="2.1">
+	<bindings schemaLocation="addis-4.xsd" node="/xs:schema">
+
+		<!-- Direction of outcomeMeasures -->
+		<bindings node="//xs:simpleType[@name='Direction']">
+			<javaType name="org.drugis.addis.entities.OutcomeMeasure.Direction"
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
+		<!-- Unit of Dose -->
+		<bindings node="//xs:simpleType[@name='ScaleModifier']">
+			<javaType name="org.drugis.addis.entities.ScaleModifier" 
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
+		<!--RelativeTo of WhenTaken -->
+		<bindings node="//xs:simpleType[@name='RelativeTo']">
+			<javaType name="org.drugis.addis.entities.WhenTaken.RelativeTo" 
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
+		<!-- Study characteristics -->
+		<bindings node="//xs:simpleType[@name='AllocationEnum']">
+			<javaType name="org.drugis.addis.entities.BasicStudyCharacteristic.Allocation"
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+		<bindings node="//xs:simpleType[@name='BlindingEnum']">
+			<javaType name="org.drugis.addis.entities.BasicStudyCharacteristic.Blinding"
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+		<bindings node="//xs:simpleType[@name='StatusEnum']">
+			<javaType name="org.drugis.addis.entities.BasicStudyCharacteristic.Status"
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+		<bindings node="//xs:simpleType[@name='SourceEnum']">
+			<javaType name="org.drugis.addis.entities.Source" 
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
+		<!-- Benefit risk -->
+		<bindings node="//xs:simpleType[@name='BenefitRiskAnalysisType']">
+			<javaType name="org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType"
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
+		<!-- Predefined Activity -->
+		<bindings node="//xs:simpleType[@name='PredefinedActivityEnum']">
+			<javaType name="org.drugis.addis.entities.PredefinedActivity"
+				parseMethod="valueOf" printMethod="name"/>
+		</bindings>
+
+	</bindings>
+</bindings>
