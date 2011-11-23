@@ -64,16 +64,16 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	private ObjectWithNotes<Indication> d_indication;
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 
-	private ObservableList<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayListModel<StudyOutcomeMeasure<Endpoint>>();
-	private ObservableList<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayListModel<StudyOutcomeMeasure<AdverseEvent>>();
-	private ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayListModel<StudyOutcomeMeasure<PopulationCharacteristic>>();
+	private final ObservableList<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayListModel<StudyOutcomeMeasure<Endpoint>>();
+	private final ObservableList<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayListModel<StudyOutcomeMeasure<AdverseEvent>>();
+	private final ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayListModel<StudyOutcomeMeasure<PopulationCharacteristic>>();
 
-	private ObservableList<Arm> d_arms = new ArrayListModel<Arm>();
-	private ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
-	private ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>();
+	private final ObservableList<Arm> d_arms = new ArrayListModel<Arm>();
+	private final ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
+	private final ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>();
 
 	private RebuildableTreeMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>();
-	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
+	private final ObservableList<Note> d_notes = new ArrayListModel<Note>();
 
 	public Study() {
 		this(null, null);
@@ -82,7 +82,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public Study(String id, Indication i) {
 		super(id);
 		d_indication = new ObjectWithNotes<Indication>(i);
-		d_arms = new ArrayListModel<Arm>();
 		setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, DateUtil.getCurrentDateWithoutTime());
 		setCharacteristic(BasicStudyCharacteristic.TITLE, "");
 		setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
@@ -113,10 +112,10 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public Study clone() {
 		Study newStudy = new Study();
 		newStudy.setName(getName());
-		newStudy.getNotes().addAll(getNotes());
+		replace(newStudy.d_notes, d_notes);
 		newStudy.d_indication = d_indication.clone();
 
-		newStudy.d_arms = cloneArms();
+		replace(newStudy.d_arms, cloneArms());
 
 		for (Epoch e : getEpochs()) {
 			newStudy.getEpochs().add(e.clone());
