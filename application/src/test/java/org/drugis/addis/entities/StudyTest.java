@@ -511,11 +511,19 @@ public class StudyTest {
 	}
 	
 	@Test
-	public void testCloneHasOrphanMeasurementRemoval() {
+	public void testCloneHasOrphanMeasurementRemovalEndpoint() {
 		Endpoint old = d_clone.getEndpoints().get(0).getValue();
+		assertNotNull(d_clone.getMeasurement(old, d_clone.getArms().get(1)));
 		d_clone.getEndpoints().get(0).setValue(new Endpoint("BLA", new RateVariableType()));
-		
 		assertNull(d_clone.getMeasurement(old, d_clone.getArms().get(1)));
+	}
+	
+	@Test
+	public void testCloneHasOrphanMeasurementRemovalArm() {
+		Arm oldArm = d_clone.getArms().get(0);
+		assertNotNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), oldArm));
+		d_clone.getArms().remove(0);
+		assertNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), oldArm));
 	}
 	
 	@Test
