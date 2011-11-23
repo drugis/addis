@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.CompoundBorder;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.jgraph.JGraph;
@@ -36,7 +37,9 @@ public class ValueTreeGraph extends JPanel {
 		CellConstants.setVertexShape(vertexAttributes, MultiLineVertexRenderer.SHAPE_RECTANGLE);
 		CellConstants.setBackground(vertexAttributes, Color.WHITE);
 		CellConstants.setForeground(vertexAttributes, Color.BLACK);
-		CellConstants.setBorder(vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
+		CompoundBorder border = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK, 2), BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		CellConstants.setBorder(vertexAttributes, border);
+		CellConstants.setAutoSize(vertexAttributes, true);
 		jModel.setDefaultVertexAttributes(vertexAttributes);
 
 		// the graph layout cache 

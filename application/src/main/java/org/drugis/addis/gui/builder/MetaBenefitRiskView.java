@@ -36,6 +36,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -57,7 +58,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class MetaBenefitRiskView extends AbstractBenefitRiskView<MetaBenefitRiskPresentation> {
+public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBenefitRiskPresentation> {
 	
 	@SuppressWarnings("serial")
 	private final class DistributionParameterCellRenderer extends DefaultTableCellRenderer {

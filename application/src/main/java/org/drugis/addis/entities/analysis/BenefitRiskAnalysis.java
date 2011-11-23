@@ -49,6 +49,8 @@ public interface BenefitRiskAnalysis<Alternative extends Entity> extends Compara
 	public abstract List<OutcomeMeasure> getCriteria();
 
 	public abstract ObservableList<Alternative> getAlternatives();
+	
+	public abstract Alternative getBaseline();
 
 	public abstract String getName();
 	

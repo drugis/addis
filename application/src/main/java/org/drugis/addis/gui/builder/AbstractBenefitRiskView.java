@@ -25,6 +25,8 @@
 package org.drugis.addis.gui.builder;
 
 
+import java.util.ArrayList;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,6 +34,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
@@ -59,7 +62,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public abstract class AbstractBenefitRiskView<PresentationType extends AbstractBenefitRiskPresentation<?, ?>> implements ViewBuilder {
+public abstract class AbstractBenefitRiskView<Alternative extends Entity, PresentationType extends AbstractBenefitRiskPresentation<Alternative, ?>> implements ViewBuilder {
 
 
 	protected PresentationType d_pm;
@@ -90,7 +93,7 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 	protected JPanel buildBratPanel() {
 		FormLayout layout = new FormLayout("fill:0:grow",
-		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+		"p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		
@@ -98,24 +101,42 @@ public abstract class AbstractBenefitRiskView<PresentationType extends AbstractB
 
 		builder.addSeparator("Value Tree", cc.xy(1, 1));
 		builder.add(new ValueTreeGraph(d_pm.getBean().getCriteria()), cc.xy(1, 3));
-		
-		builder.addSeparator("Key Benefit-Risk summary table", cc.xy(1, 5));
-		builder.add(new TablePanel(createSummaryTable()), cc.xy(1, 7));
-		builder.add(createSummaryLabel(), cc.xy(1, 9));
+
+		int row = 3;
+		for (Alternative alternative : getNonBaselineAlternatives()) {
+			row = LayoutUtil.addRow(layout, row);
+			builder.addSeparator("Benefit-Risk summary: " + alternative.getLabel() + " vs "  + getBaseline().getLabel(), cc.xy(1, row));
+			row = LayoutUtil.addRow(layout, row);
+			builder.add(new TablePanel(createSummaryTable(d_pm.createBRATTableModel(getBaseline(), alternative))), cc.xy(1, row));
+			row = LayoutUtil.addRow(layout, row);
+			builder.add(createSummaryLabel(d_pm.createBRATTableModel(getBaseline(), alternative)), cc.xy(1, row));
+		}
 		return builder.getPanel();
 	}
 
 
-	private JComponent createSummaryLabel() {
-		String baselineName = d_pm.getBRATTableModel().getBaseline().getLabel();
-		String subjectName = d_pm.getBRATTableModel().getSubject().getLabel();
+	private ArrayList<Alternative> getNonBaselineAlternatives() {
+		ArrayList<Alternative> alternatives = new ArrayList<Alternative>(d_pm.getBean().getAlternatives());
+		alternatives.remove(getBaseline());
+		return alternatives;
+	}
+
+
+	private Alternative getBaseline() {
+		return d_pm.getBean().getBaseline();
+	}
+
+
+	private JComponent createSummaryLabel(BRATTableModel<Alternative, ? extends BenefitRiskAnalysis<Alternative>> model) {
+		String baselineName = model.getBaseline().getLabel();
+		String subjectName = model.getSubject().getLabel();
 		String str = "Key Benefit-Risk Summary table with embedded relative effect forest plot. The color in the \"difference\" column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
 		return AuxComponentFactory.createHtmlField(str);
 	}
 
 
-	private JTable createSummaryTable() {
-		JTable table = EnhancedTable.createBare(d_pm.getBRATTableModel());
+	private JTable createSummaryTable(BRATTableModel<Alternative, ? extends BenefitRiskAnalysis<Alternative>> model) {
+		JTable table = EnhancedTable.createBare(model);
 		table.setDefaultRenderer(Variable.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(VariableType.class, new DefaultTableCellRenderer());
 		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer(true));

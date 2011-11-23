@@ -169,10 +169,6 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 		d_linScaleFull = new LinearScale(new Interval<Double>(hullLower, hullUpper));
 	}
 
-	public BRATTableModel(AnalysisType bean) {
-		this(bean, bean.getAlternatives().get(0), bean.getAlternatives().get(1));
-	}
-
 	@Override
 	public int getColumnCount() {
 		return COLUMN_FOREST + 1;

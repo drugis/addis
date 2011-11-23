@@ -5,9 +5,9 @@ import java.util.List;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.SimpleDirectedGraph;
 
-public class ValueTreeModel extends DefaultDirectedGraph<Object, ValueTreeModel.Edge> {
+public class ValueTreeModel extends SimpleDirectedGraph<Object, ValueTreeModel.Edge> {
 	public static class Edge {
 		@Override
 		public String toString() {

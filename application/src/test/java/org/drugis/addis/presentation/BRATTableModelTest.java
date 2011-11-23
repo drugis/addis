@@ -49,7 +49,6 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
@@ -69,9 +68,9 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class BRATTableModelTest {
 
-	private BRATTableModel<DrugSet, BenefitRiskAnalysis<DrugSet>> d_btmMeta;
-	private BRATTableModel<Arm, BenefitRiskAnalysis<Arm>> d_btmMockStudy;
-	private BRATTableModel<Arm, BenefitRiskAnalysis<Arm>> d_btmStudy;
+	private BRATTableModel<DrugSet, MetaBenefitRiskAnalysis> d_btmMeta;
+	private BRATTableModel<Arm, StudyBenefitRiskAnalysis> d_btmMockStudy;
+	private BRATTableModel<Arm, StudyBenefitRiskAnalysis> d_btmStudy;
 	private StudyBenefitRiskAnalysis d_sba;
 	private Arm d_baseline;
 	private Arm d_subject;
@@ -80,8 +79,9 @@ public class BRATTableModelTest {
 	@Before
 	public void setUp() {
 		d_mba = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_btmMeta = new BRATTableModel<DrugSet, BenefitRiskAnalysis<DrugSet>>(d_mba);
-		d_btmMockStudy = new BRATTableModel<Arm, BenefitRiskAnalysis<Arm>>(ExampleData.buildStudyBenefitRiskAnalysis());
+		d_btmMeta = new BRATTableModel<DrugSet, MetaBenefitRiskAnalysis>(d_mba, d_mba.getAlternatives().get(0), d_mba.getAlternatives().get(1));
+		StudyBenefitRiskAnalysis sba = ExampleData.buildStudyBenefitRiskAnalysis();
+		d_btmMockStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(sba, sba.getAlternatives().get(0), sba.getAlternatives().get(1));
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointHamd());
 		criteria.add(ExampleData.buildEndpointCgi());
@@ -91,7 +91,7 @@ public class BRATTableModelTest {
 				ExampleData.buildStudyChouinard(), criteria, arms, AnalysisType.SMAA);
 		d_baseline = arms.get(1);
 		d_subject = arms.get(0);
-		d_btmStudy = new BRATTableModel<Arm, BenefitRiskAnalysis<Arm>>(d_sba, d_baseline, d_subject);
+		d_btmStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(d_sba, d_baseline, d_subject);
 	}
 	
 	@Test

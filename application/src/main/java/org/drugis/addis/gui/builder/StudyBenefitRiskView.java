@@ -26,6 +26,7 @@ package org.drugis.addis.gui.builder;
 
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.gui.AddisWindow;
@@ -39,7 +40,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class StudyBenefitRiskView extends AbstractBenefitRiskView<StudyBenefitRiskPresentation> {
+public class StudyBenefitRiskView extends AbstractBenefitRiskView<Arm, StudyBenefitRiskPresentation> {
 
 	public StudyBenefitRiskView(StudyBenefitRiskPresentation model, AddisWindow mainWindow) {
 		super(model, mainWindow);

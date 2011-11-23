@@ -176,4 +176,9 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
 			EntityUtil.deepEqual(getCriteria(), o.getCriteria());
 	}
+
+	@Override
+	public Arm getBaseline() {
+		return getAlternatives().get(0);
+	}
 }
