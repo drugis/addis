@@ -48,6 +48,7 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
@@ -61,15 +62,16 @@ import org.pietschy.wizard.models.DynamicModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
-public class BenefitRiskWizard extends Wizard {
+public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> extends Wizard {
 	private static final Dimension PREFERRED_COLUMN_SIZE = new Dimension(330, 370);
 
-	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
+	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM<Alternative> pm) {
 		super(buildModel(pm, mainWindow));
 		
 		getTitleComponent().setPreferredSize(new Dimension(700 , 100));
@@ -79,20 +81,21 @@ public class BenefitRiskWizard extends Wizard {
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	private static WizardModel buildModel(final BenefitRiskWizardPM pm, AddisWindow mainWindow) {
+	@SuppressWarnings("unchecked")
+	private static WizardModel buildModel(final BenefitRiskWizardPM<?> pm, AddisWindow mainWindow) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
-		wizardModel.add(new SelectStudyWizardStep(pm, mainWindow), new Condition() {
+		wizardModel.add(new SelectStudyWizardStep((BenefitRiskWizardPM<Arm>)pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
-		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep(pm, mainWindow), new Condition() {
+		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep((BenefitRiskWizardPM<Arm>)pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
-		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep(pm, mainWindow), new Condition() {
+		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep((BenefitRiskWizardPM<DrugSet>)pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.Synthesis;
 			}
@@ -102,7 +105,7 @@ public class BenefitRiskWizard extends Wizard {
 	}
 
 	private static class SelectIndicationWizardStep extends PanelWizardStep {
-		public SelectIndicationWizardStep(BenefitRiskWizardPM pm) {
+		public SelectIndicationWizardStep(BenefitRiskWizardPM<?> pm) {
 			
 			super("Select Indication, Study and Analysis","Select the Indication, Study and Analysis type that you want to use for this meta analysis.");
 
@@ -147,8 +150,8 @@ public class BenefitRiskWizard extends Wizard {
 	}
 
 	private static class SelectStudyWizardStep extends PanelWizardStep {
-		public SelectStudyWizardStep(final BenefitRiskWizardPM pm, AddisWindow mainWindow){
-			super("Select Study","In this step, you select which study you use as a basis for your analysis.");
+		public SelectStudyWizardStep(final BenefitRiskWizardPM<Arm> pm, AddisWindow mainWindow){
+			super("Select Study","In this step you select which study you use as a basis for your analysis.");
 			add(new JLabel("Study : "));
 
 			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(),	pm.getStudyModel(), true);
@@ -163,10 +166,10 @@ public class BenefitRiskWizard extends Wizard {
 
 	private static class SelectOutcomeMeasuresAndArmsWizardStep extends PanelWizardStep {
 		private AddisWindow d_main;
-		private BenefitRiskWizardPM d_pm;
+		private BenefitRiskWizardPM<Arm> d_pm;
 	
-		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, AddisWindow main) {
-			super("Select OutcomeMeasures and Arms","In this step, you select the criteria (specific outcomemeasures) " +
+		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM<Arm> pm, AddisWindow main) {
+			super("Select OutcomeMeasures and Arms","In this step you select the criteria (specific outcomemeasures) " +
 					"and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least " +
 					"two criteria and at least two alternatives must be included.");
 			d_main = main;
@@ -211,13 +214,13 @@ public class BenefitRiskWizard extends Wizard {
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
 			
-			builder.add(buildOutcomeMeasuresPane(d_pm), cc.xy(1, 1));
-			builder.add(buildArmsPane(d_pm), cc.xy(3, 1));
+			builder.add(buildOutcomeMeasuresPane(), cc.xy(1, 1));
+			builder.add(buildArmsPane(), cc.xy(3, 1));
 			
 			return builder.getPanel();
 		}
 
-		private Component buildOutcomeMeasuresPane(BenefitRiskWizardPM pm) {
+		private Component buildOutcomeMeasuresPane() {
 			FormLayout layout = new FormLayout(
 					"left:pref",
 					"p, 3dlu, p, 3dlu, p"
@@ -242,7 +245,7 @@ public class BenefitRiskWizard extends Wizard {
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
-		private Component buildArmsPane(BenefitRiskWizardPM pm) {
+		private Component buildArmsPane() {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
@@ -272,9 +275,9 @@ public class BenefitRiskWizard extends Wizard {
 
 	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
 		private AddisWindow d_mainWindow;
-		private BenefitRiskWizardPM d_pm;
+		private BenefitRiskWizardPM<DrugSet> d_pm;
 
-		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, AddisWindow main) {
+		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM<DrugSet> pm, AddisWindow main) {
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) " +
 				  "and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria " +
 				  "and at least two alternatives must be included.");
@@ -323,7 +326,7 @@ public class BenefitRiskWizard extends Wizard {
 			return panel;
 		}
 
-		private Component buildCriteriaPane(BenefitRiskWizardPM pm) {
+		private Component buildCriteriaPane(BenefitRiskWizardPM<DrugSet> pm) {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
@@ -376,10 +379,10 @@ public class BenefitRiskWizard extends Wizard {
 			return radioButtonPanel;
 		}
 
-		private Component buildAlternativesPane(BenefitRiskWizardPM pm) {
+		private Component buildAlternativesPane(BenefitRiskWizardPM<DrugSet> pm) {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
-					"p, 3dlu, p, 3dlu, p"
+					"p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			
 			PanelBuilder builder = new PanelBuilder(layout);
@@ -398,6 +401,9 @@ public class BenefitRiskWizard extends Wizard {
 				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getLabel(), enabledModel, selectedModel);
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
 			}
+			
+			ValueModel model = d_pm.getBaselineModel();
+			builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
 			
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}

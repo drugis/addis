@@ -1,6 +1,8 @@
 package org.drugis.addis.presentation.wizard;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,9 @@ import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import junit.framework.Assert;
+
+import org.drugis.addis.entities.AssertEntityEquals;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.common.event.ListDataEventMatcher;
 import org.easymock.EasyMock;
@@ -76,5 +81,79 @@ public class SelectableOptionsModelTest {
 		bladerdeeg.setValue(true);
 		EasyMock.verify(mock2);
 		list.removeListDataListener(mock2);
+		
+		ModifiableHolder<Boolean> ei = d_model.addOption("Ei", true);
+		ModifiableHolder<Boolean> courgette = d_model.addOption("Courgette", true);
+		
+		ListDataListener mock3 = EasyMock.createStrictMock(ListDataListener.class);
+		mock3.intervalRemoved(ListDataEventMatcher.eqListDataEvent(
+				new ListDataEvent(list, ListDataEvent.INTERVAL_REMOVED, 1, 1)));
+		mock3.intervalRemoved(ListDataEventMatcher.eqListDataEvent(
+				new ListDataEvent(list, ListDataEvent.INTERVAL_REMOVED, 1, 1)));
+		EasyMock.replay(mock3);
+		list.addListDataListener(mock3);
+		courgette.setValue(false);
+		ei.setValue(false);
+		EasyMock.verify(mock3);
+		list.removeListDataListener(mock3);		
+	}
+	
+	@Test
+	public void testClear() {
+		d_model.addOption("Bladerdeeg", false);
+		d_model.addOption("Geitenkaas", true);
+		d_model.addOption("Komijn", false);
+		d_model.addOption("Makreel", true);
+		
+		final ModifiableHolder<Integer> count = new ModifiableHolder<Integer>(0);
+		
+		ObservableList<String> list = d_model.getSelectedOptions();
+		ListDataListener counter = new ListDataListener() {
+			
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				count.setValue(count.getValue() + (e.getIndex1() - e.getIndex0()) + 1);
+			}
+			
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				Assert.fail("Expected INTERVAL_REMOVED, but got " + e);
+			}
+			
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				Assert.fail("Expected INTERVAL_REMOVED, but got " + e);
+			}
+		};
+		list.addListDataListener(counter);
+		d_model.clear();
+		list.removeListDataListener(counter);
+		
+		assertEquals(new Integer(2), count.getValue());
+		assertEquals(Collections.emptyList(), d_model.getSelectedOptions());
+	}
+	
+	@Test
+	public void testGet() {
+		ModifiableHolder<Boolean> bladerdeeg = d_model.addOption("Bladerdeeg", false);
+		ModifiableHolder<Boolean> geitekaas = d_model.addOption("Geitenkaas", true);
+		assertSame(bladerdeeg, d_model.getSelectedModel("Bladerdeeg"));
+		assertNull(d_model.getSelectedModel("DITBESTAATTOCHNIET"));
+		assertSame(geitekaas, d_model.getSelectedModel("Geitenkaas"));
+	}
+	
+	@Test
+	public void testSelectionsChangeList() {
+		ModifiableHolder<Boolean> bdeeg = d_model.addOption("Bladerdeeg", false);
+		ModifiableHolder<Boolean> gkaas = d_model.addOption("Geitenkaas", false);
+		ModifiableHolder<Boolean> komijn = d_model.addOption("Komijn", false);
+		ModifiableHolder<Boolean> makreel = d_model.addOption("Makreel", false);
+		
+		assertEquals(Collections.emptyList(), d_model.getSelectedOptions());
+		bdeeg.setValue(true);
+		gkaas.setValue(true);
+		assertEquals(Arrays.asList("Bladerdeeg", "Geitenkaas"), d_model.getSelectedOptions());
+		bdeeg.setValue(false);
+		assertEquals(Arrays.asList("Geitenkaas"), d_model.getSelectedOptions());
 	}
 }

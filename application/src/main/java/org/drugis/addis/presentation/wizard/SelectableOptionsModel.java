@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -76,6 +77,7 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 	 * Remove all options.
 	 */
 	public void clear() {
+		d_options.clear();
 	}
 	
 	/**
@@ -100,6 +102,14 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 			retVal.add(addOption(it, initialValue));
 		}
 		return retVal;
+	}
+	
+	public ModifiableHolder<Boolean> getSelectedModel(E option) {
+		int idx = Collections.binarySearch(d_options, new Option<E>(option, false));
+		if (idx >= 0) {
+			return d_options.get(idx).selected;
+		}
+		return null;
 	}
 	
 	/**

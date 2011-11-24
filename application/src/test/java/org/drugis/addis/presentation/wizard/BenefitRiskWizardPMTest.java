@@ -56,7 +56,7 @@ import org.junit.Test;
 public class BenefitRiskWizardPMTest {
 
 	private Domain d_domain;
-	private BenefitRiskWizardPM d_pm;
+	private BenefitRiskWizardPM<DrugSet> d_pm;
 	private Indication d_indication;
 	private Study d_study;
 	private DrugSet d_fluoxSet;
@@ -67,7 +67,7 @@ public class BenefitRiskWizardPMTest {
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_pm = new BenefitRiskWizardPM(d_domain); 
+		d_pm = new BenefitRiskWizardPM<DrugSet>(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
 		d_study = ExampleData.buildStudyChouinard().clone();
 		
@@ -126,14 +126,15 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testAlternativeSelectedModelKeepsChanges() {
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-		d_pm.getStudyModel().setValue(d_study);
+		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
+		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		pm.getStudyModel().setValue(d_study);
 		
 		Arm a = d_study.getArms().get(0);
-		ValueHolder<Boolean> origArm = d_pm.getAlternativeSelectedModel(a);
+		ValueHolder<Boolean> origArm = pm.getAlternativeSelectedModel(a);
 		assertFalse(origArm.getValue());
-		d_pm.getAlternativeSelectedModel(a).setValue(true);
-		assertEquals(d_pm.getAlternativeSelectedModel(a).getValue(), origArm.getValue());
+		pm.getAlternativeSelectedModel(a).setValue(true);
+		assertEquals(pm.getAlternativeSelectedModel(a).getValue(), origArm.getValue());
 	}
 
 	@Test
@@ -236,36 +237,40 @@ public class BenefitRiskWizardPMTest {
 
 	@Test
 	public void testCompletedStudyFalseWithLessThanTwoDrugs() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
+
+		pm.getIndicationModel().setValue(d_indication);
+		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
 
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study study = ExampleData.buildStudyChouinard().clone();
-		d_pm.getStudyModel().setValue(study);
+		pm.getStudyModel().setValue(study);
 		
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		
-		d_pm.getAlternativeSelectedModel(study.getArms().get(1)).setValue(true);
+		pm.getAlternativeSelectedModel(study.getArms().get(1)).setValue(true);
 		
-		assertFalse(d_pm.getCompleteModel().getValue());
+		assertFalse(pm.getCompleteModel().getValue());
 	}
 	
 	@Test
 	public void testCompletedSingleStudyFalseWithLessThanTwoCriteria() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
+
+		pm.getIndicationModel().setValue(d_indication);
+		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
 
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study local = ExampleData.buildStudyChouinard().clone();
-		d_pm.getStudyModel().setValue(local);
+		pm.getStudyModel().setValue(local);
 		
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 
-		d_pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
-		d_pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
+		pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
+		pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
-		assertFalse(d_pm.getCompleteModel().getValue());
+		assertFalse(pm.getCompleteModel().getValue());
 	}
 
 	@Test
@@ -276,6 +281,7 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		d_pm.getBaselineModel().setValue(d_fluoxSet);
 		assertTrue(d_pm.getCompleteModel().getValue());
 		d_pm.getOutcomeSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		assertEquals(null, d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).getValue());
@@ -293,23 +299,29 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
 		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		assertFalse(d_pm.getCompleteModel().getValue());
+		d_pm.getBaselineModel().setValue(d_fluoxSet);
 		assertTrue(d_pm.getCompleteModel().getValue());
 	}
 
 	@Test
 	public void testCompletedSingleStudyModelTrueWithTwoDrugsTwoCriteria() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
+
+		pm.getIndicationModel().setValue(d_indication);
+		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study local = ExampleData.buildStudyChouinard().clone();
-		d_pm.getStudyModel().setValue(local);
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		pm.getStudyModel().setValue(local);
+		pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getOutcomeSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 
-		d_pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
-		d_pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
+		pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
+		pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
-		assertTrue(d_pm.getCompleteModel().getValue());
+		assertFalse(d_pm.getCompleteModel().getValue());
+		d_pm.getBaselineModel().setValue(local.getArms().get(0));
+		assertTrue(pm.getCompleteModel().getValue());
 	}
 	
 	@Test
@@ -346,9 +358,9 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getIndicationModel().setValue(d_indication);
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
 		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugFluoxetine());
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugParoxetine());
-		d_pm.getAlternativeSelectedModel(ExampleData.buildDrugSertraline());
+		d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine()));
+		d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline()));
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
@@ -519,19 +531,21 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testSMAANoRestrictionsSingleStudy(){
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
+		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
+		
+		pm.getIndicationModel().setValue(d_indication);
+		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
 		Study study = ExampleData.buildStudyFava2002().clone();
-		d_pm.getStudyModel().setValue(study);
-		d_pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getStudyModel().setValue(study);
+		pm.getOutcomeSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 
 		// Select two alternatives
-		d_pm.getAlternativeSelectedModel(study.getArms().get(0)).setValue(true);
-		d_pm.getAlternativeSelectedModel(study.getArms().get(2)).setValue(true);
+		pm.getAlternativeSelectedModel(study.getArms().get(0)).setValue(true);
+		pm.getAlternativeSelectedModel(study.getArms().get(2)).setValue(true);
 		
 		// The other alternative should be enabled.
-		assertTrue(d_pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
 	}
 	
 	@Test
