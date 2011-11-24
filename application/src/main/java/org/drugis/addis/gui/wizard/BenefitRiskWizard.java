@@ -48,7 +48,6 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
@@ -158,6 +157,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			add(studyBox);
 			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
+					System.out.println("old: " + evt.getOldValue() + ", new: " + evt.getNewValue() + ", source: " + evt.getSource());
+					System.out.println(this);
 					setComplete(evt.getNewValue() != null);
 				}
 			});
@@ -268,7 +269,12 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.toString(), enabledModel, selectedModel);				
 				builder.add(armCheckbox, cc.xy(1, row += 2));
 			}
-			
+
+			row = LayoutUtil.addRow(layout, row, "10dlu");
+			builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
+			ValueModel model = d_pm.getBaselineModel();
+			builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
+
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}		
 	}
@@ -381,8 +387,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 
 		private Component buildAlternativesPane(BenefitRiskWizardPM<DrugSet> pm) {
 			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, left:pref",
-					"p, 3dlu, p, 3dlu, p, 3dlu, p"
+					"left:pref",
+					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			
 			PanelBuilder builder = new PanelBuilder(layout);
@@ -402,6 +408,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
 			}
 			
+			row = LayoutUtil.addRow(layout, row, "10dlu");
+			builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
 			ValueModel model = d_pm.getBaselineModel();
 			builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
 			

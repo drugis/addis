@@ -206,7 +206,14 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 				initializeValues();
 			}
 		};
+		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indicationHolder.getValue()));
+			}
+		});
 		d_indicationHolder.addValueChangeListener(resetValuesListener);
+
 		d_evidenceTypeHolder.addValueChangeListener(resetValuesListener);
 		d_studyHolder.addValueChangeListener(resetValuesListener);
 		d_analysisTypeHolder.addValueChangeListener(resetValuesListener);
@@ -582,7 +589,6 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		d_metaAnalysisSelectedMap.clear();
 		d_outcomeEnabledMap.clear();
 		d_completeHolder.propertyChange(null);
-		d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indicationHolder.getValue()));
 		d_baselineModel.setValue(null);
 	}
 
