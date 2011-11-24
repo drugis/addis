@@ -24,9 +24,8 @@
 
 package org.drugis.addis.entities.analysis;
 
-import org.drugis.addis.entities.Entity;
 
-public interface MeasurementSource<Alternative extends Entity> {
+public interface MeasurementSource<Alternative> {
 	public interface Listener {
 		public void notifyMeasurementsChanged();
 	}

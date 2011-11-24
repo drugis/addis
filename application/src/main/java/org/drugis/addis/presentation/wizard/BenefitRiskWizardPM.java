@@ -30,16 +30,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
@@ -50,7 +47,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
@@ -147,14 +143,14 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		}
 
 		private boolean synthesisComplete() {
-			return (getSelectedEntities(d_outcomeSelectedMap).size() >= 2) && 
+			return (getSelectedEntities(d_criteriaSelectedMap).size() >= 2) && 
 				(d_selectedAlternatives.getSelectedOptions().size() >= 2) && 
 				selectedOutcomesHaveAnalysis();
 		}
 
 		private boolean singleStudyComplete() {
 			return (d_selectedAlternatives.getSelectedOptions().size() >= 2) && 
-				(getSelectedEntities(d_outcomeSelectedMap).size() >= 2);
+				(getSelectedEntities(d_criteriaSelectedMap).size() >= 2);
 		}
 	}
 
@@ -163,12 +159,11 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		Synthesis
 	}
 
-	private Map<OutcomeMeasure,ModifiableHolder<Boolean>> d_outcomeSelectedMap;
+	private Map<OutcomeMeasure,ModifiableHolder<Boolean>> d_criteriaSelectedMap;
 	private Map<OutcomeMeasure,ModifiableHolder<MetaAnalysis>> d_metaAnalysisSelectedMap;
 	private HashMap<Alternative, ModifiableHolder<Boolean>> d_alternativeEnabledMap;
 	private SelectableOptionsModel<Alternative> d_selectedAlternatives;
 	private CompleteHolder d_completeHolder;
-	private ModifiableHolder<Study> d_studyHolder;
 	private ModifiableHolder<BRAType> d_evidenceTypeHolder;
 	private ModifiableHolder<AnalysisType> d_analysisTypeHolder;
 	private FilteredObservableList<Study> d_studiesWithIndicationHolder;
@@ -176,15 +171,16 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
 	private ObservableList<OutcomeMeasure> d_outcomes = new ArrayListModel<OutcomeMeasure>();
 	private ModifiableHolder<Alternative> d_baselineModel;
+	
+	private StudyCriteriaAndAlternativesPresentation d_studyCritAlt;
 
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
-		d_outcomeSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
+		d_criteriaSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		d_metaAnalysisSelectedMap = new HashMap<OutcomeMeasure, ModifiableHolder<MetaAnalysis>>();
 		d_alternativeEnabledMap = new HashMap<Alternative, ModifiableHolder<Boolean>>();
 		d_selectedAlternatives = new SelectableOptionsModel<Alternative>();
 		d_completeHolder = new CompleteHolder();
-		d_studyHolder = new ModifiableHolder<Study>();
 		d_evidenceTypeHolder = new ModifiableHolder<BRAType>(BRAType.Synthesis);
 		d_analysisTypeHolder = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
 		d_outcomeEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
@@ -199,10 +195,9 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 
 		PropertyChangeListener resetValuesListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getSource() != d_studyHolder) { // prevent infinite loop
-					d_studyHolder.setValue(null);
+				if (d_evidenceTypeHolder.getValue().equals(BRAType.Synthesis)) {
+					clearValues();
 				}
-				clearValues();
 				initializeValues();
 			}
 		};
@@ -215,7 +210,6 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		d_indicationHolder.addValueChangeListener(resetValuesListener);
 
 		d_evidenceTypeHolder.addValueChangeListener(resetValuesListener);
-		d_studyHolder.addValueChangeListener(resetValuesListener);
 		d_analysisTypeHolder.addValueChangeListener(resetValuesListener);
 
 		d_studiesWithIndicationHolder = new FilteredObservableList<Study>(d_domain.getStudies(), new IndicationFilter(d_indicationHolder.getValue()));
@@ -223,6 +217,8 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		d_metaAnalysesSelectedHolder = new MetaAnalysesSelectedHolder();
 		d_metaAnalysesSelectedHolder.addValueChangeListener(d_completeHolder);
 		d_baselineModel.addValueChangeListener(d_completeHolder);
+		
+		d_studyCritAlt = new StudyCriteriaAndAlternativesPresentation(d_indicationHolder, d_analysisTypeHolder);
 	}
 
 	private void initializeValues() {
@@ -231,7 +227,6 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		}
 		switch (d_evidenceTypeHolder.getValue()) {
 		case SingleStudy:
-			initializeSingleStudy();
 			break;
 		case Synthesis:
 			initializeSynthesis();
@@ -241,13 +236,13 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 
 	private void initOutcomeMeasures() {
 		// create outcome selected models
-		for (OutcomeMeasure om : getOutcomesListModel()) {
+		for (OutcomeMeasure om : getCriteriaListModel()) {
 			ModifiableHolder<Boolean> val = new OutcomeSelectedHolder(om);
 			val.addPropertyChangeListener(d_completeHolder);
-			d_outcomeSelectedMap.put(om, val);
+			d_criteriaSelectedMap.put(om, val);
 		}
 		// create outcome enabled models
-		for (OutcomeMeasure om : getOutcomesListModel()) {
+		for (OutcomeMeasure om : getCriteriaListModel()) {
 			ModifiableHolder<Boolean> val = new ModifiableHolder<Boolean>(getCriterionShouldBeEnabled(om));
 			d_outcomeEnabledMap.put(om, val);
 		}
@@ -270,7 +265,7 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		initOutcomeMeasures();
 
 		// create analyses models
-		for (OutcomeMeasure om : getOutcomesListModel()) {
+		for (OutcomeMeasure om : getCriteriaListModel()) {
 			ModifiableHolder<MetaAnalysis> val = new ModifiableHolder<MetaAnalysis>();
 			val.addPropertyChangeListener(d_metaAnalysesSelectedHolder);
 			d_metaAnalysisSelectedMap.put(om, val);
@@ -278,14 +273,6 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		d_metaAnalysesSelectedHolder.fireValueChange(null, d_metaAnalysesSelectedHolder.getValue());
 		
 		Set<Alternative> alternatives = getAlternativesListModel().getValue();
-		initAlternatives(alternatives);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void initializeSingleStudy() {
-		initOutcomeMeasures();
-		
-		Set<Alternative> alternatives = new HashSet<Alternative>((List<Alternative>)d_studyHolder.getValue().getArms()); 
 		initAlternatives(alternatives);
 	}
 	
@@ -303,11 +290,11 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 
 
 	private boolean readyToInit() {
-		return d_indicationHolder.getValue() != null && (d_evidenceTypeHolder.getValue().equals(BRAType.Synthesis) || d_studyHolder.getValue() != null);
+		return d_indicationHolder.getValue() != null && (d_evidenceTypeHolder.getValue().equals(BRAType.Synthesis));
 	}
 
 	private boolean selectedOutcomesHaveAnalysis() {
-		for (OutcomeMeasure om : getSelectedEntities(d_outcomeSelectedMap)) {
+		for (OutcomeMeasure om : getSelectedEntities(d_criteriaSelectedMap)) {
 			if (getMetaAnalysesSelectedModel(om).getValue() == null) {
 				return false;
 			}
@@ -317,8 +304,8 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 
 	private int nSelectedOutcomes() {
 		int n = 0;
-		for (OutcomeMeasure om : getSelectedEntities(d_outcomeSelectedMap)) {
-			if (getOutcomeSelectedModel(om).getValue() == true) {
+		for (OutcomeMeasure om : getSelectedEntities(d_criteriaSelectedMap)) {
+			if (getCriterionSelectedModel(om).getValue() == true) {
 				++n;
 			}
 		}
@@ -335,12 +322,12 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		return n;
 	}
 
-	public ObservableList<OutcomeMeasure> getOutcomesListModel() {
+	public ObservableList<OutcomeMeasure> getCriteriaListModel() {
 		return d_outcomes;
 	}
 
 	public ValueHolder<Study> getStudyModel() {
-		return d_studyHolder;
+		return d_studyCritAlt.getStudyModel();
 	}
 
 
@@ -353,14 +340,13 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		return analyses;
 	}
 
-	public ValueHolder<Boolean> getOutcomeSelectedModel(OutcomeMeasure om) {
-		return d_outcomeSelectedMap.get(om);
+	public ValueHolder<Boolean> getCriterionSelectedModel(OutcomeMeasure om) {
+		return d_criteriaSelectedMap.get(om);
 	}
 
 	public ValueHolder<Boolean> getAlternativeSelectedModel(Alternative alternative) {
 		return d_selectedAlternatives.getSelectedModel(alternative);
 	}
-
 
 	public ValueHolder<MetaAnalysis> getMetaAnalysesSelectedModel(OutcomeMeasure om) {
 		return d_metaAnalysisSelectedMap.get(om);
@@ -398,8 +384,8 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 			}
 		} else {
 			// To allow only measured alternatives to be selected
-			for (OutcomeMeasure om : getOutcomesListModel()) {
-				getOutcomeSelectedModel(om).addValueChangeListener(model);
+			for (OutcomeMeasure om : getCriteriaListModel()) {
+				getCriterionSelectedModel(om).addValueChangeListener(model);
 			}
 
 			// To limit the number of selected alternatives to 2 (in L&O analysis)
@@ -426,22 +412,6 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 				return (getAlternativeSelectedModel(alternative).getValue() == true) || nSelectedAlternatives() < 2;
 			}
 			return false;
-		} else if(getEvidenceTypeHolder().getValue() == BRAType.SingleStudy) {
-			// e is an arm in single-study
-			// safeguard added for spurious checks caused by listeners
-			if(! (alternative instanceof Arm))
-				return false;
-			for(Entry<OutcomeMeasure, ModifiableHolder<Boolean>> entry: d_outcomeSelectedMap.entrySet()) {
-				BasicMeasurement measurement = d_studyHolder.getValue().getMeasurement(entry.getKey(), (Arm) alternative);
-				if (entry.getValue().getValue() && (measurement == null || !measurement.isComplete())) {
-					return false;
-				}
-			}
-			if(d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) { 
-				return (getAlternativeSelectedModel(alternative).getValue() == true) || nSelectedAlternatives() < 2;
-			} else {
-				return true;
-			}
 		}
 		return false;
 	}
@@ -460,18 +430,18 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		return atLeastOneMASelected;
 	}
 
-	public ValueHolder<Boolean> getOutcomeEnabledModel(OutcomeMeasure out) {
+	public ValueHolder<Boolean> getCriterionEnabledModel(OutcomeMeasure out) {
 		return d_outcomeEnabledMap.get(out);
 	}
 
 	private boolean getCriterionShouldBeEnabled(OutcomeMeasure out) {
-		if(getOutcomeSelectedModel(out).getValue() == true) return true;
+		if(getCriterionSelectedModel(out).getValue() == true) return true;
 		else return (d_analysisTypeHolder.getValue() == AnalysisType.SMAA) || (nSelectedOutcomes() < 2);
 	}
 
 	private void updateCriteriaEnabled() {
-		for (OutcomeMeasure om : getOutcomesListModel()) {
-			getOutcomeEnabledModel(om).setValue(getCriterionShouldBeEnabled(om));
+		for (OutcomeMeasure om : getCriteriaListModel()) {
+			getCriterionEnabledModel(om).setValue(getCriterionShouldBeEnabled(om));
 		}
 	}
 
@@ -484,33 +454,23 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 	}
 
 	public BenefitRiskAnalysis<?> saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
-
+		if(getEvidenceTypeHolder().getValue() == BRAType.SingleStudy) {
+			return d_studyCritAlt.saveAnalysis(d_domain, id);
+		}
+		
+		
 		BenefitRiskAnalysis<?> brAnalysis = null;
 
 		if(getEvidenceTypeHolder().getValue() == BRAType.Synthesis) {
 			if(!getCompleteModel().getValue())
 				throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two criteria, and two alternatives.");
 			brAnalysis = createMetaBRAnalysis(id);
-		} else if(getEvidenceTypeHolder().getValue() == BRAType.SingleStudy) {
-			if(!getCompleteModel().getValue())
-				throw new InvalidStateException("cannot commit, Benefit Risk Analysis not ready. Select at least two outcome measures, and two arms.");
-			brAnalysis = createStudyBRAnalysis(id);
 		}
 		if(d_domain.getBenefitRiskAnalyses().contains(brAnalysis))
 			throw new EntityIdExistsException("Benefit Risk Analysis with this ID already exists in domain");
 
 		d_domain.getBenefitRiskAnalyses().add(brAnalysis);
 		return brAnalysis;
-	}
-
-	private StudyBenefitRiskAnalysis createStudyBRAnalysis(String id) {
-		List<Arm> alternatives = convertList(d_selectedAlternatives.getSelectedOptions(), Arm.class);
-
-		List<OutcomeMeasure> studyAnalyses = getSelectedEntities(d_outcomeSelectedMap);
-		sortCriteria(studyAnalyses);
-		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationHolder.getValue(), d_studyHolder.getValue(), 
-				studyAnalyses, (Arm) d_baselineModel.getValue(), alternatives, d_analysisTypeHolder.getValue());
-		return sbr;
 	}
 
 	private void sortCriteria(List<OutcomeMeasure> studyAnalyses) {
@@ -562,7 +522,7 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 	}
 
 	List<OutcomeMeasure> getSelectedCriteria() {
-		return getSelectedEntities(d_outcomeSelectedMap);
+		return getSelectedEntities(d_criteriaSelectedMap);
 	}
 
 	public ObservableList<Alternative> getSelectedAlternatives() {
@@ -582,7 +542,7 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 	}
 
 	private void clearValues() {
-		d_outcomeSelectedMap.clear();
+		d_criteriaSelectedMap.clear();
 		d_alternativeEnabledMap.clear();
 		d_selectedAlternatives.clear();
 		d_metaAnalysesSelectedHolder.fireValueChange();

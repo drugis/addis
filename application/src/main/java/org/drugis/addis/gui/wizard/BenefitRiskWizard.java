@@ -157,8 +157,6 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			add(studyBox);
 			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					System.out.println("old: " + evt.getOldValue() + ", new: " + evt.getNewValue() + ", source: " + evt.getSource());
-					System.out.println(this);
 					setComplete(evt.getNewValue() != null);
 				}
 			});
@@ -238,8 +236,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
-				ValueHolder<Boolean> enabledModel  = d_pm.getOutcomeEnabledModel(out);
-				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getOutcomeSelectedModel(out));
+				ValueHolder<Boolean> enabledModel  = d_pm.getCriterionEnabledModel(out);
+				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getCriterionSelectedModel(out));
 				builder.add(criteriaCheckBox, cc.xy(1, row));
 			}
 			
@@ -347,7 +345,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			builder.add(criteriaLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for(OutcomeMeasure out : d_pm.getOutcomesListModel()){
+			for(OutcomeMeasure out : d_pm.getCriteriaListModel()){
 				if(d_pm.getMetaAnalyses(out).isEmpty())
 					continue;
 
@@ -355,8 +353,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				row += 2;
 				LayoutUtil.addRow(layout);
 				
-				ValueHolder<Boolean> enabledModel  = d_pm.getOutcomeEnabledModel(out);
-				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getOutcomeSelectedModel(out));
+				ValueHolder<Boolean> enabledModel  = d_pm.getCriterionEnabledModel(out);
+				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getCriterionSelectedModel(out));
 				builder.add(criteriaCheckBox, cc.xyw(1, row, 3));
 				
 				// Add radio-button panel
@@ -374,7 +372,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
 			
 			// Retrieve the valueModel to see whether we should enable the radio-buttons.
-			ValueHolder<Boolean> enabledModel = d_pm.getOutcomeSelectedModel(out);
+			ValueHolder<Boolean> enabledModel = d_pm.getCriterionSelectedModel(out);
 			
 			// Add the radio buttons
 			for(MetaAnalysis ma : d_pm.getMetaAnalyses(out)){
