@@ -2,6 +2,7 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -17,9 +18,13 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.common.validation.ListMinimumSizeModel;
 import org.pietschy.wizard.InvalidStateException;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
 
 public abstract class CriteriaAndAlternativesPresentation<Alternative extends Comparable<Alternative>> {
@@ -29,16 +34,20 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 	protected final ModifiableHolder<AnalysisType> d_analysisTypeHolder;
 	protected final HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_criteriaEnabledMap;
 	protected final ModifiableHolder<Alternative> d_baselineModel;
-	protected final ValueHolder<Indication> d_indication;
+	protected final ValueHolder<Indication> d_indicationModel;
+	protected final ValueModel d_completeModel;
+	protected final ObservableList<Alternative> d_availableAlternatives;
+	protected final ListDataListener d_resetAlternativeEnabledModelsListener;
 
 	public CriteriaAndAlternativesPresentation(final ValueHolder<Indication> indication, final ModifiableHolder<AnalysisType> analysisType) {
-		d_indication = indication;
+		d_indicationModel = indication;
 		d_analysisTypeHolder = analysisType;
 		d_selectedCriteria = new SelectableOptionsModel<OutcomeMeasure>();
 		d_alternativeEnabledMap = new HashMap<Alternative, ModifiableHolder<Boolean>>();
 		d_selectedAlternatives = new SelectableOptionsModel<Alternative>();
 		d_criteriaEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		d_baselineModel = new ModifiableHolder<Alternative>();
+		d_availableAlternatives = new ArrayListModel<Alternative>();
 		
 		PropertyChangeListener resetValuesListener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -46,10 +55,10 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 			}
 		};
 
-		d_indication.addValueChangeListener(resetValuesListener);
+		d_indicationModel.addValueChangeListener(resetValuesListener);
 		d_analysisTypeHolder.addValueChangeListener(resetValuesListener);
 		
-		ListDataListener resetAlternativeEnabledModels = new ListDataListener() {
+		d_resetAlternativeEnabledModelsListener = new ListDataListener() {
 			public void contentsChanged(ListDataEvent e) {
 				updateAlternativesEnabled();
 			}
@@ -60,8 +69,8 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 				updateAlternativesEnabled();
 			}
 		};
-		getSelectedCriteria().addListDataListener(resetAlternativeEnabledModels);
-		getSelectedAlternatives().addListDataListener(resetAlternativeEnabledModels);
+		getSelectedCriteria().addListDataListener(d_resetAlternativeEnabledModelsListener);
+		getSelectedAlternatives().addListDataListener(d_resetAlternativeEnabledModelsListener);
 		
 		ListDataListener resetCriteriaEnabledModels = new ListDataListener() {
 			public void contentsChanged(ListDataEvent e) {
@@ -75,6 +84,26 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 			}
 		};
 		getSelectedCriteria().addListDataListener(resetCriteriaEnabledModels);
+		
+		
+		AbstractConverter baselineValidModel = new AbstractConverter(d_baselineModel) {
+			private static final long serialVersionUID = -8879640617811142054L;
+
+			@Override
+			public void setValue(Object newValue) {
+			}
+			
+			@Override
+			public Boolean convertFromSubject(Object subjectValue) {
+				return getSelectedAlternatives().contains(subjectValue);
+			}
+		};
+		
+		d_completeModel = new BooleanAndModel(Arrays.<ValueModel>asList(
+				new ListMinimumSizeModel(getSelectedAlternatives(), 2),
+				new ListMinimumSizeModel(getSelectedCriteria(), 2),
+				baselineValidModel));
+		
 	}
 	
 	protected abstract void reset();
@@ -89,8 +118,6 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 		return d_selectedAlternatives.getSelectedModel(alternative);
 	}
 	
-	public abstract ObservableList<Alternative> getAlternativesListModel();
-
 	public ValueHolder<Boolean> getAlternativeEnabledModel(Alternative e) {
 		return d_alternativeEnabledMap.get(e);
 	}
@@ -126,7 +153,6 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 	}
 	
 	protected void initCriteria() {
-		d_selectedCriteria.clear();
 		for (OutcomeMeasure om : getCriteriaListModel()) {
 			d_selectedCriteria.addOption(om, false);
 		}
@@ -137,7 +163,8 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 	}
 
 	protected void initAlternatives(Collection<Alternative> alternatives) {
-		d_selectedAlternatives.clear();
+		d_availableAlternatives.addAll(alternatives);
+		
 		// create alternative selected models
 		for (Alternative alt : alternatives) {
 			d_selectedAlternatives.addOption(alt, false);
@@ -186,5 +213,9 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 				getAlternativeSelectedModel(e.getKey()).setValue(false);
 			}
 		}
+	}
+
+	public ObservableList<Alternative> getAlternativesListModel() {
+		return d_availableAlternatives;
 	}
 }

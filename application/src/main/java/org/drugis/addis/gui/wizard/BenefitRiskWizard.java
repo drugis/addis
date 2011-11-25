@@ -50,6 +50,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.addis.presentation.wizard.MetaCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.StudyCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.drugis.common.gui.LayoutUtil;
@@ -71,7 +72,7 @@ import com.jgoodies.forms.layout.FormLayout;
 public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> extends Wizard {
 	private static final Dimension PREFERRED_COLUMN_SIZE = new Dimension(330, 370);
 
-	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM<Alternative> pm) {
+	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, mainWindow));
 		
 		getTitleComponent().setPreferredSize(new Dimension(700 , 100));
@@ -81,8 +82,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	@SuppressWarnings("unchecked")
-	private static WizardModel buildModel(final BenefitRiskWizardPM<?> pm, AddisWindow mainWindow) {
+	private static WizardModel buildModel(final BenefitRiskWizardPM pm, AddisWindow mainWindow) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
 		wizardModel.add(new SelectStudyWizardStep(pm.getStudyBRPresentation(), mainWindow), new Condition() {
@@ -95,7 +95,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
-		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep((BenefitRiskWizardPM<DrugSet>)pm, mainWindow), new Condition() {
+		wizardModel.add(new SelectCriteriaAndAlternativesWizardStep((BenefitRiskWizardPM)pm, mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.Synthesis;
 			}
@@ -105,7 +105,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 	}
 
 	private static class SelectIndicationWizardStep extends PanelWizardStep {
-		public SelectIndicationWizardStep(BenefitRiskWizardPM<?> pm) {
+		public SelectIndicationWizardStep(BenefitRiskWizardPM pm) {
 			
 			super("Select Indication, Study and Analysis","Select the Indication, Study and Analysis type that you want to use for this meta analysis.");
 
@@ -196,7 +196,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_main.leftTreeFocus(d_pm.saveAnalysis(res));
+					d_main.leftTreeFocus(d_pm.getStudyBRPresentation().saveAnalysis(d_main.getDomain(), res));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",
@@ -280,16 +280,18 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 		}		
 	}
 
-	private static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
+	public static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
 		private AddisWindow d_mainWindow;
-		private BenefitRiskWizardPM<DrugSet> d_pm;
+		private BenefitRiskWizardPM d_pm;
+		private MetaCriteriaAndAlternativesPresentation d_metaPM;
 
-		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM<DrugSet> pm, AddisWindow main) {
+		public SelectCriteriaAndAlternativesWizardStep(BenefitRiskWizardPM pm, AddisWindow main) {
 			super("Select Criteria and Alternatives","In this step, you select the criteria (analyses on specific outcomemeasures) " +
 				  "and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least two criteria " +
 				  "and at least two alternatives must be included.");
 			d_mainWindow = main;
 			d_pm = pm;
+			d_metaPM = d_pm.getMetaBRPresentation(); 
 		}
 
 		@Override
@@ -310,7 +312,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_mainWindow.leftTreeFocus(d_pm.saveAnalysis(res));
+					d_mainWindow.leftTreeFocus(d_pm.getMetaBRPresentation().saveAnalysis(d_mainWindow.getDomain(), res));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",
@@ -327,13 +329,13 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			
 			JPanel panel = new JPanel(layout);
 			
-			panel.add(buildCriteriaPane(d_pm));
-			panel.add(buildAlternativesPane(d_pm));
+			panel.add(buildCriteriaPane());
+			panel.add(buildAlternativesPane());
 			
 			return panel;
 		}
 
-		private Component buildCriteriaPane(BenefitRiskWizardPM<DrugSet> pm) {
+		private Component buildCriteriaPane() {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
@@ -348,16 +350,16 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			builder.add(criteriaLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for(OutcomeMeasure out : d_pm.getCriteriaListModel()){
-				if(d_pm.getMetaAnalyses(out).isEmpty())
+			for(OutcomeMeasure out : d_metaPM.getCriteriaListModel()){
+				if(d_metaPM.getMetaAnalyses(out).isEmpty())
 					continue;
 
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
 				
-				ValueHolder<Boolean> enabledModel  = d_pm.getCriterionEnabledModel(out);
-				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getCriterionSelectedModel(out));
+				ValueHolder<Boolean> enabledModel  = d_metaPM.getCriterionEnabledModel(out);
+				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_metaPM.getCriterionSelectedModel(out));
 				builder.add(criteriaCheckBox, cc.xyw(1, row, 3));
 				
 				// Add radio-button panel
@@ -375,18 +377,18 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
 			
 			// Retrieve the valueModel to see whether we should enable the radio-buttons.
-			ValueHolder<Boolean> enabledModel = d_pm.getCriterionSelectedModel(out);
+			ValueHolder<Boolean> enabledModel = d_metaPM.getCriterionSelectedModel(out);
 			
 			// Add the radio buttons
-			for(MetaAnalysis ma : d_pm.getMetaAnalyses(out)){
-				ValueHolder<MetaAnalysis> selectedModel = d_pm.getMetaAnalysesSelectedModel(out);
+			for(MetaAnalysis ma : d_metaPM.getMetaAnalyses(out)){
+				ValueHolder<MetaAnalysis> selectedModel = d_metaPM.getMetaAnalysesSelectedModel(out);
 				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), ma, selectedModel, enabledModel);
 				radioButtonPanel.add(radioButton);
 			}
 			return radioButtonPanel;
 		}
 
-		private Component buildAlternativesPane(BenefitRiskWizardPM<DrugSet> pm) {
+		private Component buildAlternativesPane() {
 			FormLayout layout = new FormLayout(
 					"left:pref",
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
@@ -400,10 +402,10 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			builder.add(alternativesLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for (DrugSet d : d_pm.getAlternativesListModel().getValue()) {
+			for (DrugSet d : d_metaPM.getAlternativesListModel()) {
 				LayoutUtil.addRow(layout);
-				ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(d);
-				ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(d);
+				ValueHolder<Boolean> enabledModel  = d_metaPM.getAlternativeEnabledModel(d);
+				ValueHolder<Boolean> selectedModel = d_metaPM.getAlternativeSelectedModel(d);
 				
 				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getLabel(), enabledModel, selectedModel);
 				builder.add(drugCheckbox, cc.xy(1, row += 2));
@@ -411,8 +413,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			
 			row = LayoutUtil.addRow(layout, row, "10dlu");
 			builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
-			ValueModel model = d_pm.getBaselineModel();
-			builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
+			ValueModel model = d_metaPM.getBaselineModel();
+			builder.add(AuxComponentFactory.createBoundComboBox(d_metaPM.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
 			
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}

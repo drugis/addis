@@ -1677,7 +1677,7 @@ public class JAXBConvertorTest {
 		doRoundTripTest(getTestData(TEST_DATA_A_1));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testCombinationTreatmentRoundTripConversion() throws Exception {
 		doRoundTripTest(getTestData(TEST_DATA_3));
 	}

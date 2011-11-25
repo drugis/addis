@@ -57,6 +57,7 @@ import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.addis.util.comparator.AlphabeticalComparator;
+import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
@@ -65,7 +66,6 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
 
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<DrugSet> {
@@ -85,7 +85,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private String d_name;
 	private Indication d_indication;
 	private List<MetaAnalysis> d_metaAnalyses;
-	private List<DrugSet> d_drugs;
+	private ObservableList<DrugSet> d_drugs;
 	private DrugSet d_baseline;
 	private Map<OutcomeMeasure, AbstractBaselineModel<?>> d_baselineModelMap;
 	private AnalysisType d_analysisType;
@@ -100,14 +100,16 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		super();
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
-		d_drugs = drugs;
+		d_drugs = new SortedSetModel<DrugSet>(drugs);
+		d_baseline = baseline;
+		d_drugs.add(baseline);
+
 		d_baselineModelMap = new HashMap<OutcomeMeasure, AbstractBaselineModel<?>>();
 		d_analysisType = analysisType;
-		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_drugs.size() != 1) ) {
+		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_drugs.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 		
-		setBaseline(baseline);
 		setName(id);
 	}
 
@@ -144,15 +146,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 
 	public ObservableList<DrugSet> getDrugs() {
-		ObservableList<DrugSet> sortedList = new ArrayListModel<DrugSet>(d_drugs);
-		sortedList.add(getBaseline());
-		Collections.sort(sortedList, new AlphabeticalComparator());
-		return sortedList;
-	}
-
-	void setDrugs(List<DrugSet> drugs) {
-		d_drugs = drugs;
-		d_drugs.remove(getBaseline());
+		return d_drugs;
 	}
 
 	@Override
@@ -203,10 +197,6 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	@Override
 	public String toString() {
 		return getName();
-	}
-
-	private void setBaseline(DrugSet baseline) {
-		d_baseline = baseline;
 	}
 
 	public DrugSet getBaseline() {
@@ -349,7 +339,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	}
 
 	public List<DrugSet> getNonBaselineAlternatives() {
-		List<DrugSet> alternatives = getDrugs();
+		List<DrugSet> alternatives = new ArrayList<DrugSet>(getDrugs());
 		alternatives.remove(getBaseline());
 		return alternatives;
 	}

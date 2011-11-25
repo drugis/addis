@@ -2,7 +2,6 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.entities.Arm;
@@ -16,12 +15,9 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
-import org.drugis.common.validation.BooleanAndModel;
-import org.drugis.common.validation.ListMinimumSizeModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
-import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<Arm> {
@@ -37,15 +33,12 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	}
 	
 	private final ModifiableHolder<Study> d_studyModel;
-	private final ArrayListModel<Arm> d_availableAlternatives;
 	private final ArrayListModel<OutcomeMeasure> d_availableCriteria;
-	private final ValueModel d_completeModel;
 	private final FilteredObservableList<Study> d_studiesWithIndicationHolder;
 
 	public StudyCriteriaAndAlternativesPresentation(ValueHolder<Indication> indication,	ModifiableHolder<AnalysisType> analysisType, ObservableList<Study> studies) {
 		super(indication, analysisType);
 		d_studyModel = new ModifiableHolder<Study>();
-		d_availableAlternatives =  new ArrayListModel<Arm>();
 		d_availableCriteria = new ArrayListModel<OutcomeMeasure>();
 		
 		d_studyModel.addValueChangeListener(new PropertyChangeListener() {
@@ -54,37 +47,14 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 				studyChanged();
 			}
 		});
-		
-		AbstractConverter baselineValidModel = new AbstractConverter(d_baselineModel) {
-			private static final long serialVersionUID = -8879640617811142054L;
 
-			@Override
-			public void setValue(Object newValue) {
-			}
-			
-			@Override
-			public Boolean convertFromSubject(Object subjectValue) {
-				return getSelectedAlternatives().contains(subjectValue);
-			}
-		};
-		
-		d_completeModel = new BooleanAndModel(Arrays.<ValueModel>asList(
-				new ListMinimumSizeModel(getSelectedAlternatives(), 2),
-				new ListMinimumSizeModel(getSelectedCriteria(), 2),
-				baselineValidModel));
-		
-		d_studiesWithIndicationHolder = new FilteredObservableList<Study>(studies, new IndicationFilter(d_indication.getValue()));
-		d_indication.addValueChangeListener(new PropertyChangeListener() {
+		d_studiesWithIndicationHolder = new FilteredObservableList<Study>(studies, new IndicationFilter(d_indicationModel.getValue()));
+		d_indicationModel.addValueChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indication.getValue()));
+				d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indicationModel.getValue()));
 			}
 		});
-	}
-
-	@Override
-	public ObservableList<Arm> getAlternativesListModel() {
-		return d_availableAlternatives;
 	}
 
 	@Override
@@ -110,9 +80,14 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 		d_alternativeEnabledMap.clear();
 		d_criteriaEnabledMap.clear();
 		
+		d_selectedCriteria.clear();
+		d_selectedAlternatives.clear();
+		
 		d_availableCriteria.clear();
+		d_availableAlternatives.clear();
+
 		d_baselineModel.setValue(null);
-		if (d_indication.getValue() != null && d_studyModel.getValue() != null) {
+		if (d_indicationModel.getValue() != null && d_studyModel.getValue() != null) {
 			initializeValues();
 		}
 	}
@@ -127,7 +102,7 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	public StudyBenefitRiskAnalysis createAnalysis(String id) {
 		List<Arm> alternatives = getSelectedAlternatives();
 		List<OutcomeMeasure> studyAnalyses = getSelectedCriteria();
-		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indication.getValue(), d_studyModel.getValue(), 
+		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationModel.getValue(), d_studyModel.getValue(), 
 				studyAnalyses, (Arm) d_baselineModel.getValue(), alternatives, d_analysisTypeHolder.getValue());
 		return sbr;
 	}

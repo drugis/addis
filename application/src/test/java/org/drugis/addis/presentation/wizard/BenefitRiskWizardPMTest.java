@@ -57,7 +57,7 @@ import org.junit.Test;
 public class BenefitRiskWizardPMTest {
 
 	private Domain d_domain;
-	private BenefitRiskWizardPM<DrugSet> d_pm;
+	private BenefitRiskWizardPM d_pm;
 	private Indication d_indication;
 	private Study d_study;
 	private DrugSet d_fluoxSet;
@@ -86,7 +86,7 @@ public class BenefitRiskWizardPMTest {
 		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisHamd());
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisCgi());
 
-		d_pm = new BenefitRiskWizardPM<DrugSet>(d_domain); 
+		d_pm = new BenefitRiskWizardPM(d_domain); 
 		d_pm.getIndicationModel().setValue(d_indication);
 	}
 	
@@ -106,23 +106,25 @@ public class BenefitRiskWizardPMTest {
 	@Test
 	public void testMetaAnalysesForEachOutcome() {
 		d_pm.getIndicationModel().setValue(d_indication);
-		for (OutcomeMeasure om : d_pm.getCriteriaListModel()) {
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		for (OutcomeMeasure om : pm.getCriteriaListModel()) {
 			List<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>();
 			for (MetaAnalysis analysis : d_domain.getMetaAnalyses()) {
 				if (om.equals(analysis.getOutcomeMeasure()))
 					analyses.add(analysis);
 			}
-			assertAllAndOnly(analyses, d_pm.getMetaAnalyses(om));
+			assertAllAndOnly(analyses, pm.getMetaAnalyses(om));
 		}
 	}
 	
 	@Test
 	public void testOutcomeSelectedModelKeepsChanges() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
-		ValueHolder<Boolean> origModel = d_pm.getCriterionSelectedModel(om);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		ValueHolder<Boolean> origModel = pm.getCriterionSelectedModel(om);
 		assertFalse(origModel.getValue());
-		d_pm.getCriterionSelectedModel(om).setValue(true);
-		assertEquals(d_pm.getCriterionSelectedModel(om).getValue(), origModel.getValue());
+		pm.getCriterionSelectedModel(om).setValue(true);
+		assertEquals(pm.getCriterionSelectedModel(om).getValue(), origModel.getValue());
 	}
 	
 	@Test
@@ -141,28 +143,31 @@ public class BenefitRiskWizardPMTest {
 	@Test
 	public void testOutcomeSelectedMultipleAnalysisShouldNotSelect() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
-		d_pm.getCriterionSelectedModel(om).setValue(true);
-		assertTrue(d_pm.getMetaAnalyses(om).size() > 1);
-		assertNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(om).setValue(true);
+		assertTrue(pm.getMetaAnalyses(om).size() > 1);
+		assertNull(pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	
 	@Test
 	public void testOutcomeSelectedSingleAnalysisShouldSelect() {
 		OutcomeMeasure om = ExampleData.buildEndpointCgi();
-		d_pm.getCriterionSelectedModel(om).setValue(true);
-		assertTrue(d_pm.getMetaAnalyses(om).size() == 1);
-		assertNotNull(d_pm.getMetaAnalysesSelectedModel(om).getValue());	
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(om).setValue(true);
+		assertTrue(pm.getMetaAnalyses(om).size() == 1);
+		assertNotNull(pm.getMetaAnalysesSelectedModel(om).getValue());	
 	}
 	
 	@Test
 	public void testMetaAnalysesSelectedModelKeepsChanges() {
-		ValueHolder<MetaAnalysis> metaAnal1 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		ValueHolder<MetaAnalysis> metaAnal1 = pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
 		assertNull(metaAnal1.getValue());
 		
 		metaAnal1.setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		assertEquals(ExampleData.buildNetworkMetaAnalysisHamD(), metaAnal1.getValue());
 		
-		ValueHolder<MetaAnalysis> metaAnal2 = d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
+		ValueHolder<MetaAnalysis> metaAnal2 = pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd());
 		assertEquals(metaAnal1.getValue(), metaAnal2.getValue());
 	}
 	
@@ -174,66 +179,71 @@ public class BenefitRiskWizardPMTest {
 				expected.addAll(ma.getIncludedDrugs());
 		}
 		
-		assertAllAndOnly(expected, d_pm.getAlternativesListModel().getValue());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		
+		assertAllAndOnly(expected, pm.getAlternativesListModel());
 	}
 	
 	@Test
 	public void testAlternativeEnabledModelShouldReflectInclusion() {
-		for (DrugSet d : d_pm.getAlternativesListModel().getValue()) {
-			assertEquals(false, d_pm.getAlternativeEnabledModel(d).getValue());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+
+		for (DrugSet d : pm.getAlternativesListModel()) {
+			assertEquals(false, pm.getAlternativeEnabledModel(d).getValue());
 		}
 		
 		d_pm.getIndicationModel().setValue(d_indication);
 		Endpoint outcomeM = ExampleData.buildEndpointHamd();
-		d_pm.getCriterionSelectedModel(outcomeM).setValue(true);
-		d_pm.getMetaAnalysesSelectedModel(outcomeM).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getCriterionSelectedModel(outcomeM).setValue(true);
+		pm.getMetaAnalysesSelectedModel(outcomeM).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 
-		assertTrue(d_pm.getAlternativesListModel().getValue().size() > 0);
+		assertTrue(pm.getAlternativesListModel().size() > 0);
 		
-		for (DrugSet d : d_pm.getAlternativesListModel().getValue()) {
+		for (DrugSet d : pm.getAlternativesListModel()) {
 			boolean expected = true;
-			for (ValueHolder<MetaAnalysis> mah : d_pm.getSelectedMetaAnalysisHolders()) {
-				if (mah.getValue() != null && !mah.getValue().getIncludedDrugs().contains(d)) {
+			for (MetaAnalysis mah : pm.getSelectedMetaAnalyses()) {
+				if (mah != null && !mah.getIncludedDrugs().contains(d)) {
 					expected = false;
 				}
 			}
 			
-			assertEquals(expected, d_pm.getAlternativeEnabledModel(d).getValue());
+			assertEquals(expected, pm.getAlternativeEnabledModel(d).getValue());
 		}
 	}
 	
 	@Test
 	public void testGetAlternativeSelectedModel() {
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		DrugSet d = new DrugSet(ExampleData.buildDrugParoxetine());
-		ValueHolder<Boolean> actual = d_pm.getAlternativeSelectedModel(d);
+		ValueHolder<Boolean> actual = pm.getAlternativeSelectedModel(d);
 		assertEquals(false, actual.getValue());
 		actual.setValue(true);
-		assertEquals(true, d_pm.getAlternativeEnabledModel(d).getValue());
+		assertEquals(true, pm.getAlternativeEnabledModel(d).getValue());
 		assertEquals(true, actual.getValue());
 	}
 	
 	@Test
 	public void testCompletedMetaModelFalseWithLessThanTwoDrugs() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
-		assertTrue(d_pm.getAlternativeSelectedModel(d_fluoxSet).getValue());
-		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(false);
-		assertFalse(d_pm.getCompleteModel().getValue());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		assertTrue(pm.getAlternativeSelectedModel(d_fluoxSet).getValue());
+		pm.getAlternativeSelectedModel(d_paroxSet).setValue(false);
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
 	}
 
 	@Test
 	public void testCompletedMetaModelFalseWithLessThanTwoCriteria() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
-		assertFalse(d_pm.getCompleteModel().getValue());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
 	}
 
 	@Test
@@ -271,33 +281,33 @@ public class BenefitRiskWizardPMTest {
 
 	@Test
 	public void testCompletedModelFalseWithCriteriaWithoutAnalysis() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
-		d_pm.getBaselineModel().setValue(d_fluoxSet);
-		assertTrue(d_pm.getCompleteModel().getValue());
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
-		assertEquals(null, d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).getValue());
-		assertFalse(d_pm.getCompleteModel().getValue());
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
-		assertTrue(d_pm.getCompleteModel().getValue());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		pm.getBaselineModel().setValue(d_fluoxSet);
+		assertTrue((Boolean)pm.getCompleteModel().getValue());
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		assertEquals(null, pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).getValue());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		assertTrue((Boolean)pm.getCompleteModel().getValue());
 	}
 
 	@Test
 	public void testCompletedMetaAnalysisModelTrueWithTwoDrugsTwoCriteria() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
-		assertFalse(d_pm.getCompleteModel().getValue());
-		d_pm.getBaselineModel().setValue(d_fluoxSet);
-		assertTrue(d_pm.getCompleteModel().getValue());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
+		pm.getBaselineModel().setValue(d_fluoxSet);
+		assertTrue((Boolean)pm.getCompleteModel().getValue());
 	}
 
 	@Test
@@ -320,75 +330,74 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testChangeIndicationShouldClearValues() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		assertTrue(d_pm.getSelectedCriteria().isEmpty());
-		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
-		assertNull(d_pm.getStudyModel().getValue());
-		assertFalse(d_pm.getCompleteModel().getValue());
+		assertTrue(pm.getSelectedCriteria().isEmpty());
+		assertTrue(pm.getSelectedAlternatives().isEmpty());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
 	}
 	
 	@Test
 	public void testChangeAnalysisTypeShouldClearValues() {
-		d_pm.getIndicationModel().setValue(d_indication);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine()));
-		d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline()));
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine()));
+		pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline()));
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
-		assertTrue(d_pm.getSelectedCriteria().isEmpty());
-		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
-		assertFalse(d_pm.getCompleteModel().getValue());
+		assertTrue(pm.getSelectedCriteria().isEmpty());
+		assertTrue(pm.getSelectedAlternatives().isEmpty());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
 	}
 	
 	@Test
 	public void testResetSelectedOutcomesShouldCascadeToEnabledModels() {
-		d_pm.getIndicationModel().setValue(d_indication);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		
-		assertTrue(d_pm.getCriteriaListModel().size() > 2);
+		assertTrue(pm.getCriteriaListModel().size() > 2);
 		
-		for (OutcomeMeasure om: d_pm.getCriteriaListModel()) {
-			assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
+		for (OutcomeMeasure om: pm.getCriteriaListModel()) {
+			assertTrue(pm.getCriterionEnabledModel(om).getValue());
 		}
 		
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		
-		for (OutcomeMeasure om: d_pm.getCriteriaListModel()) {
+		for (OutcomeMeasure om: pm.getCriteriaListModel()) {
 			if (om.equals(ExampleData.buildEndpointHamd()) || om.equals(ExampleData.buildAdverseEventConvulsion())) {
-				assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
+				assertTrue(pm.getCriterionEnabledModel(om).getValue());
 			} else {
-				assertFalse(d_pm.getCriterionEnabledModel(om).getValue());
+				assertFalse(pm.getCriterionEnabledModel(om).getValue());
 			}
 		}
 		
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(false);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(false);
 
-		for (OutcomeMeasure om: d_pm.getCriteriaListModel()) {
-			assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
+		for (OutcomeMeasure om: pm.getCriteriaListModel()) {
+			assertTrue(pm.getCriterionEnabledModel(om).getValue());
 		}
 	}
 
 	@Test
 	public void testChangeAnalysisTypeShouldCascadeToEnabledModels() {
-		d_pm.getIndicationModel().setValue(d_indication);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 		
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
 	
-		for (OutcomeMeasure om: d_pm.getCriteriaListModel()) {
-			assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
+		for (OutcomeMeasure om: pm.getCriteriaListModel()) {
+			assertTrue(pm.getCriterionEnabledModel(om).getValue());
 		}
 	}
 	
@@ -410,83 +419,79 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testSelectedMetaAnalysesRestrictAlternatives() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		
 		// First set a network-analysis with >3 alternatives
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		// Select all alternatives
-		for (DrugSet d : d_pm.getAlternativesListModel().getValue()) {
-			d_pm.getAlternativeSelectedModel(d).setValue(true);
+		for (DrugSet d : pm.getAlternativesListModel()) {
+			pm.getAlternativeSelectedModel(d).setValue(true);
 		}
 		
 		// Change to a pair-wise meta-analysis (RandomEffectsMetaAnalysis)
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
 		
 		// The non-included alternative should be deselected and disabled.
-		assertTrue(d_pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
-		assertTrue(d_pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
-		assertFalse(d_pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugSertraline())).getValue());
-		assertTrue(d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
-		assertTrue(d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
-		assertFalse(d_pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline())).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
+		assertFalse(pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugSertraline())).getValue());
+		assertTrue(pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
+		assertTrue(pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
+		assertFalse(pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline())).getValue());
 	}
 	
 	@Test
 	public void testSelectedMetaAnalysesRestrictAlternativesLyndOBrien() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 
 		// First set a network-analysis with >3 alternatives
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
-		d_pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		// Change to a pair-wise meta-analysis (RandomEffectsMetaAnalysis)
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
 		
 		// The non-included alternative should be deselected and disabled.
-		assertTrue(d_pm.getAlternativeEnabledModel(d_fluoxSet).getValue());
-		assertTrue(d_pm.getAlternativeEnabledModel(d_paroxSet).getValue());
-		assertFalse(d_pm.getAlternativeEnabledModel(d_sertrSet).getValue());
-		assertTrue(d_pm.getAlternativeSelectedModel(d_fluoxSet).getValue());
-		assertFalse(d_pm.getAlternativeSelectedModel(d_paroxSet).getValue());
-		assertFalse(d_pm.getAlternativeSelectedModel(d_sertrSet).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(d_fluoxSet).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(d_paroxSet).getValue());
+		assertFalse(pm.getAlternativeEnabledModel(d_sertrSet).getValue());
+		assertTrue(pm.getAlternativeSelectedModel(d_fluoxSet).getValue());
+		assertFalse(pm.getAlternativeSelectedModel(d_paroxSet).getValue());
+		assertFalse(pm.getAlternativeSelectedModel(d_sertrSet).getValue());
 	}
 	
 	@Test
 	public void testLyndOBrienAlternativesRestrictions(){
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 
 		// set a couple of network-analyses with >3 alternatives
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		//d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventDiarrhea()).setValue(ExampleData.buildNetworkMetaAnalysis());
 		// Select two alternatives
-		d_pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		// The other alternative should be disabled.
-		assertFalse(d_pm.getAlternativeEnabledModel(d_paroxSet).getValue());
+		assertFalse(pm.getAlternativeEnabledModel(d_paroxSet).getValue());
 	}
 
 	@Test
 	public void testLyndOBrienOutcomesRestrictions(){
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		assertFalse(d_pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(false);
-		assertTrue(d_pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		assertFalse(pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(false);
+		assertTrue(pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
 	}
 	
 	@Test
@@ -504,21 +509,20 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testSMAANoRestrictions(){
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
 		
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 
 		// set a couple of network-analyses with >3 alternatives
-		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		// Select two alternatives
-		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
 		
 		// The other alternative should be enabled.
-		assertTrue(d_pm.getAlternativeEnabledModel(d_sertrSet).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(d_sertrSet).getValue());
 	}
 	
 	@Test
