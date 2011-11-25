@@ -50,6 +50,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.addis.presentation.wizard.StudyCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.InvalidStateException;
@@ -84,12 +85,12 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 	private static WizardModel buildModel(final BenefitRiskWizardPM<?> pm, AddisWindow mainWindow) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
-		wizardModel.add(new SelectStudyWizardStep((BenefitRiskWizardPM<Arm>)pm, mainWindow), new Condition() {
+		wizardModel.add(new SelectStudyWizardStep(pm.getStudyBRPresentation(), mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
 		});
-		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep((BenefitRiskWizardPM<Arm>)pm, mainWindow), new Condition() {
+		wizardModel.add(new SelectOutcomeMeasuresAndArmsWizardStep(pm, pm.getStudyBRPresentation(), mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
 			}
@@ -149,11 +150,11 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 	}
 
 	private static class SelectStudyWizardStep extends PanelWizardStep {
-		public SelectStudyWizardStep(final BenefitRiskWizardPM<Arm> pm, AddisWindow mainWindow){
+		public SelectStudyWizardStep(final StudyCriteriaAndAlternativesPresentation pm, AddisWindow mainWindow){
 			super("Select Study","In this step you select which study you use as a basis for your analysis.");
 			add(new JLabel("Study : "));
 
-			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(),	pm.getStudyModel(), true);
+			JComboBox studyBox = AuxComponentFactory.createBoundComboBox(pm.getStudiesWithIndication(), pm.getStudyModel(), true);
 			add(studyBox);
 			pm.getStudyModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -165,14 +166,16 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 
 	private static class SelectOutcomeMeasuresAndArmsWizardStep extends PanelWizardStep {
 		private AddisWindow d_main;
-		private BenefitRiskWizardPM<Arm> d_pm;
+		private StudyCriteriaAndAlternativesPresentation d_studyPM;
+		private final BenefitRiskWizardPM d_pm;
 	
-		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM<Arm> pm, AddisWindow main) {
+		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, StudyCriteriaAndAlternativesPresentation studyCriteriaAndAlternativesPresentation, AddisWindow main) {
 			super("Select OutcomeMeasures and Arms","In this step you select the criteria (specific outcomemeasures) " +
 					"and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least " +
 					"two criteria and at least two alternatives must be included.");
+			d_pm = pm;
 			d_main = main;
-			d_pm = pm;			
+			d_studyPM = studyCriteriaAndAlternativesPresentation;	
 		}
 		
 		@Override
@@ -232,12 +235,12 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			outcomeMeasuresLabel.setFont(outcomeMeasuresLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(outcomeMeasuresLabel, cc.xy(1, 1));
 			int row = 1;
-			for (OutcomeMeasure out : d_pm.getStudyModel().getValue().getOutcomeMeasures()) {
+			for (OutcomeMeasure out : d_studyPM.getStudyModel().getValue().getOutcomeMeasures()) {
 				// Add outcome measure checkbox
 				row += 2;
 				LayoutUtil.addRow(layout);
-				ValueHolder<Boolean> enabledModel  = d_pm.getCriterionEnabledModel(out);
-				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_pm.getCriterionSelectedModel(out));
+				ValueHolder<Boolean> enabledModel  = d_studyPM.getCriterionEnabledModel(out);
+				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_studyPM.getCriterionSelectedModel(out));
 				builder.add(criteriaCheckBox, cc.xy(1, row));
 			}
 			
@@ -258,11 +261,11 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			builder.add(alternativesLabel, cc.xy(1, 1));
 			
 			int row = 1;
-			for(final Arm a : d_pm.getStudyModel().getValue().getArms() ){
+			for(final Arm a : d_studyPM.getStudyModel().getValue().getArms() ){
 				LayoutUtil.addRow(layout);
 
-				final ValueHolder<Boolean> selectedModel = d_pm.getAlternativeSelectedModel(a);
-				final ValueHolder<Boolean> enabledModel  = d_pm.getAlternativeEnabledModel(a);
+				final ValueHolder<Boolean> selectedModel = d_studyPM.getAlternativeSelectedModel(a);
+				final ValueHolder<Boolean> enabledModel  = d_studyPM.getAlternativeEnabledModel(a);
 				
 				JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.toString(), enabledModel, selectedModel);				
 				builder.add(armCheckbox, cc.xy(1, row += 2));
@@ -270,8 +273,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 
 			row = LayoutUtil.addRow(layout, row, "10dlu");
 			builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
-			ValueModel model = d_pm.getBaselineModel();
-			builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
+			ValueModel model = d_studyPM.getBaselineModel();
+			builder.add(AuxComponentFactory.createBoundComboBox(d_studyPM.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
 
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}		

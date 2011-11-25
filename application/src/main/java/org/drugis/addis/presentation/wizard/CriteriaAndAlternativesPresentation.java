@@ -4,6 +4,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map.Entry;
+
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -23,7 +27,7 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 	protected final HashMap<Alternative, ModifiableHolder<Boolean>> d_alternativeEnabledMap;
 	final SelectableOptionsModel<Alternative> d_selectedAlternatives;
 	protected final ModifiableHolder<AnalysisType> d_analysisTypeHolder;
-	protected final HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
+	protected final HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_criteriaEnabledMap;
 	protected final ModifiableHolder<Alternative> d_baselineModel;
 	protected final ValueHolder<Indication> d_indication;
 
@@ -33,7 +37,7 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 		d_selectedCriteria = new SelectableOptionsModel<OutcomeMeasure>();
 		d_alternativeEnabledMap = new HashMap<Alternative, ModifiableHolder<Boolean>>();
 		d_selectedAlternatives = new SelectableOptionsModel<Alternative>();
-		d_outcomeEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
+		d_criteriaEnabledMap = new HashMap<OutcomeMeasure, ModifiableHolder<Boolean>>();
 		d_baselineModel = new ModifiableHolder<Alternative>();
 		
 		PropertyChangeListener resetValuesListener = new PropertyChangeListener() {
@@ -41,10 +45,36 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 				reset();
 			}
 		};
-		reset();
 
 		d_indication.addValueChangeListener(resetValuesListener);
 		d_analysisTypeHolder.addValueChangeListener(resetValuesListener);
+		
+		ListDataListener resetAlternativeEnabledModels = new ListDataListener() {
+			public void contentsChanged(ListDataEvent e) {
+				updateAlternativesEnabled();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateAlternativesEnabled();
+			}
+			public void intervalRemoved(ListDataEvent e) {
+				updateAlternativesEnabled();
+			}
+		};
+		getSelectedCriteria().addListDataListener(resetAlternativeEnabledModels);
+		getSelectedAlternatives().addListDataListener(resetAlternativeEnabledModels);
+		
+		ListDataListener resetCriteriaEnabledModels = new ListDataListener() {
+			public void contentsChanged(ListDataEvent e) {
+				updateCriteriaEnabled();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateCriteriaEnabled();			
+			}
+			public void intervalRemoved(ListDataEvent e) {
+				updateCriteriaEnabled();
+			}
+		};
+		getSelectedCriteria().addListDataListener(resetCriteriaEnabledModels);
 	}
 	
 	protected abstract void reset();
@@ -66,10 +96,10 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 	}
 	
 	public ValueHolder<Boolean> getCriterionEnabledModel(OutcomeMeasure out) {
-		return d_outcomeEnabledMap.get(out);
+		return d_criteriaEnabledMap.get(out);
 	}
 
-	public abstract ValueHolder<Boolean> getCompleteModel();
+	public abstract ValueModel getCompleteModel();
 	
 	public BenefitRiskAnalysis<Alternative> saveAnalysis(Domain domain, String id) throws InvalidStateException, EntityIdExistsException {
 		BenefitRiskAnalysis<Alternative> brAnalysis = createAnalysis(id);
@@ -95,33 +125,66 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 		return d_baselineModel;
 	}
 	
-	protected void initOutcomeMeasures() {
+	protected void initCriteria() {
 		d_selectedCriteria.clear();
 		for (OutcomeMeasure om : getCriteriaListModel()) {
 			d_selectedCriteria.addOption(om, false);
 		}
 		// create outcome enabled models
 		for (OutcomeMeasure om : getCriteriaListModel()) {
-			ModifiableHolder<Boolean> val = new ModifiableHolder<Boolean>(getCriterionShouldBeEnabled(om));
-			d_outcomeEnabledMap.put(om, val);
+			d_criteriaEnabledMap.put(om, new ModifiableHolder<Boolean>(getCriterionShouldBeEnabled(om)));
 		}
 	}
 
 	protected void initAlternatives(Collection<Alternative> alternatives) {
+		d_selectedAlternatives.clear();
 		// create alternative selected models
-		for (Alternative d : alternatives) {
-			ModifiableHolder<Boolean> val = d_selectedAlternatives.addOption(d, false);
-//			val.addPropertyChangeListener(d_completeHolder);
+		for (Alternative alt : alternatives) {
+			d_selectedAlternatives.addOption(alt, false);
 		}
 		// create alternative enabled models (they use the selected models -- don't merge the loops!)
-		for (Alternative d : alternatives) {
-			d_alternativeEnabledMap.put(d, new ModifiableHolder<Boolean>(true));
-//			d_alternativeEnabledMap.put(d, createAlternativeEnabledModel(d));
+		for (Alternative alt : alternatives) {
+			d_alternativeEnabledMap.put(alt, new ModifiableHolder<Boolean>(getAlternativeShouldBeEnabled(alt)));
 		}
 	}
 	
-	private boolean getCriterionShouldBeEnabled(OutcomeMeasure out) {
-		if(getCriterionSelectedModel(out).getValue() == true) return true;
-		else return (d_analysisTypeHolder.getValue() == AnalysisType.SMAA) || (d_selectedCriteria.getSelectedOptions().size() < 2);
+	protected boolean getAlternativeShouldBeEnabled(Alternative alt) {
+		if (getAlternativeSelectedModel(alt).getValue() == true) {
+			return true;
+		}
+		if (d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) { 
+			return getSelectedAlternatives().size() < 2;
+		}
+		return true;
+	}
+
+	private boolean getCriterionShouldBeEnabled(OutcomeMeasure crit) {
+		if (getCriterionSelectedModel(crit).getValue() == true) {
+			return true;
+		}
+		if (d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) {
+			return getSelectedCriteria().size() < 2;
+		}
+		return true;
+	}
+	
+	private void updateCriteriaEnabled() {
+		for (Entry<OutcomeMeasure, ModifiableHolder<Boolean>> e : d_criteriaEnabledMap.entrySet()) {
+			boolean enabled = getCriterionShouldBeEnabled(e.getKey());
+			e.getValue().setValue(enabled);
+			if (!enabled && getCriterionSelectedModel(e.getKey()).getValue()) {
+				getCriterionSelectedModel(e.getKey()).setValue(false);
+			}
+		}
+	}
+
+	private void updateAlternativesEnabled() {
+		for (Entry<Alternative, ModifiableHolder<Boolean>> e : d_alternativeEnabledMap.entrySet()) {
+			boolean enabled = getAlternativeShouldBeEnabled(e.getKey());
+			e.getValue().setValue(enabled);
+			if (!enabled && getAlternativeSelectedModel(e.getKey()).getValue()) {
+				getAlternativeSelectedModel(e.getKey()).setValue(false);
+			}
+		}
 	}
 }

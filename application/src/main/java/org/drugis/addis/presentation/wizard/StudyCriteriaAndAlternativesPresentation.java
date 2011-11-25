@@ -2,8 +2,8 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -14,40 +14,72 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList.Filter;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.common.validation.ListMinimumSizeModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractConverter;
+import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<Arm> {
-
-	@SuppressWarnings("serial")
-	private class CompleteHolder extends ModifiableHolder<Boolean> implements PropertyChangeListener {
-		public CompleteHolder() {
-			super(false);
+	
+	public class IndicationFilter implements Filter<Study> {
+		private final Indication d_indication;
+		public IndicationFilter(Indication i) {
+			d_indication = i;
 		}
-
-		public void propertyChange(PropertyChangeEvent evt) {
-			setValue(isComplete());
-		}
-
-		private boolean isComplete() {
-			return getSelectedAlternatives().contains(getBaselineModel().getValue()) &&  
-			(d_selectedAlternatives.getSelectedOptions().size() >= 2) && 
-			(d_selectedCriteria.getSelectedOptions().size() >= 2);
+		public boolean accept(Study s) {
+			return s.getIndication().equals(d_indication);
 		}
 	}
 	
-	private ModifiableHolder<Study> d_studyModel;
-	private ArrayListModel<Arm> d_availableAlternatives;
-	private ArrayListModel<OutcomeMeasure> d_availableCriteria;
-	private CompleteHolder d_completeModel;
+	private final ModifiableHolder<Study> d_studyModel;
+	private final ArrayListModel<Arm> d_availableAlternatives;
+	private final ArrayListModel<OutcomeMeasure> d_availableCriteria;
+	private final ValueModel d_completeModel;
+	private final FilteredObservableList<Study> d_studiesWithIndicationHolder;
 
-	public StudyCriteriaAndAlternativesPresentation(ValueHolder<Indication> indication,	ModifiableHolder<AnalysisType> analysisType) {
+	public StudyCriteriaAndAlternativesPresentation(ValueHolder<Indication> indication,	ModifiableHolder<AnalysisType> analysisType, ObservableList<Study> studies) {
 		super(indication, analysisType);
 		d_studyModel = new ModifiableHolder<Study>();
 		d_availableAlternatives =  new ArrayListModel<Arm>();
 		d_availableCriteria = new ArrayListModel<OutcomeMeasure>();
-		d_completeModel = new CompleteHolder();
+		
+		d_studyModel.addValueChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				studyChanged();
+			}
+		});
+		
+		AbstractConverter baselineValidModel = new AbstractConverter(d_baselineModel) {
+			private static final long serialVersionUID = -8879640617811142054L;
+
+			@Override
+			public void setValue(Object newValue) {
+			}
+			
+			@Override
+			public Boolean convertFromSubject(Object subjectValue) {
+				return getSelectedAlternatives().contains(subjectValue);
+			}
+		};
+		
+		d_completeModel = new BooleanAndModel(Arrays.<ValueModel>asList(
+				new ListMinimumSizeModel(getSelectedAlternatives(), 2),
+				new ListMinimumSizeModel(getSelectedCriteria(), 2),
+				baselineValidModel));
+		
+		d_studiesWithIndicationHolder = new FilteredObservableList<Study>(studies, new IndicationFilter(d_indication.getValue()));
+		d_indication.addValueChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indication.getValue()));
+			}
+		});
 	}
 
 	@Override
@@ -56,7 +88,7 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	}
 
 	@Override
-	public ValueHolder<Boolean> getCompleteModel() {
+	public ValueModel getCompleteModel() {
 		return d_completeModel;
 	}
 	
@@ -72,19 +104,22 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	@Override
 	protected void reset() {
 		d_studyModel.setValue(null);
-		d_selectedCriteria.clear();
+	}
+
+	private void studyChanged() {
 		d_alternativeEnabledMap.clear();
-		d_selectedAlternatives.clear();
-		d_outcomeEnabledMap.clear();
-		d_baselineModel.setValue(null);	
-		d_completeModel.propertyChange(null);
+		d_criteriaEnabledMap.clear();
+		
+		d_availableCriteria.clear();
+		d_baselineModel.setValue(null);
 		if (d_indication.getValue() != null && d_studyModel.getValue() != null) {
 			initializeValues();
 		}
 	}
 
 	private void initializeValues() {
-		initOutcomeMeasures();
+		d_availableCriteria.addAll(d_studyModel.getValue().getOutcomeMeasures());
+		initCriteria();
 		initAlternatives(d_studyModel.getValue().getArms());
 	}
 
@@ -97,21 +132,21 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 		return sbr;
 	}
 	
-//	private boolean alternativeShouldBeEnabled(Arm alternative) {
-//		// e is an arm in single-study
-//		// safeguard added for spurious checks caused by listeners
-//		if(! (alternative instanceof Arm))
-//			return false;
-//		for(Entry<OutcomeMeasure, ModifiableHolder<Boolean>> entry: d_criteriaSelectedMap.entrySet()) {
-//			BasicMeasurement measurement = d_studyHolder.getValue().getMeasurement(entry.getKey(), (Arm) alternative);
-//			if (entry.getValue().getValue() && (measurement == null || !measurement.isComplete())) {
-//				return false;
-//			}
-//		}
-//		if(d_analysisTypeHolder.getValue() == AnalysisType.LyndOBrien) { 
-//			return (getAlternativeSelectedModel(alternative).getValue() == true) || nSelectedAlternatives() < 2;
-//		} else {
-//			return true;
-//		}
-//	}
+	@Override
+	protected boolean getAlternativeShouldBeEnabled(Arm alt) {
+		if (!super.getAlternativeShouldBeEnabled(alt)) {
+			return false;
+		}
+		for (OutcomeMeasure crit : getSelectedCriteria()) {
+			BasicMeasurement measurement = d_studyModel.getValue().getMeasurement(crit, alt);
+			if (measurement == null || !measurement.isComplete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public ObservableList<Study> getStudiesWithIndication() {
+		return d_studiesWithIndicationHolder;
+	}
 }

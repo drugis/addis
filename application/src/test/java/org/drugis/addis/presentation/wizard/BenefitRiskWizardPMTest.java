@@ -46,6 +46,7 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ValueHolder;
@@ -67,7 +68,6 @@ public class BenefitRiskWizardPMTest {
 	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_pm = new BenefitRiskWizardPM<DrugSet>(d_domain); 
 		d_indication = ExampleData.buildIndicationDepression();
 		d_study = ExampleData.buildStudyChouinard().clone();
 		
@@ -86,19 +86,20 @@ public class BenefitRiskWizardPMTest {
 		d_domain.getMetaAnalyses().add(ExampleData.buildMetaAnalysisHamd());
 		d_domain.getMetaAnalyses().add(ExampleData.buildNetworkMetaAnalysisCgi());
 
-		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm = new BenefitRiskWizardPM<DrugSet>(d_domain); 
+		d_pm.getIndicationModel().setValue(d_indication);
 	}
 	
 	@Test
 	public void testOutcomesListModelIncludesOutcomes() {
 		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
-		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		assertAllAndOnly(Arrays.asList(ExampleData.buildEndpointHamd(), ExampleData.buildEndpointCgi(),
-				ExampleData.buildAdverseEventConvulsion(), ExampleData.buildAdverseEventSexualDysfunction()), 
-				d_pm.getCriteriaListModel());
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		assertEquals(Arrays.asList(ExampleData.buildEndpointCgi(), ExampleData.buildEndpointHamd(), 
+				ExampleData.buildAdverseEventConvulsion()), 
+				pm.getCriteriaListModel());
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		assertAllAndOnly(Collections.singletonList(ExampleData.buildEndpointCVdeath()), d_pm.getCriteriaListModel());
+		assertEquals(Collections.emptyList(), pm.getCriteriaListModel());
 
 	}
 	
@@ -126,8 +127,8 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testAlternativeSelectedModelKeepsChanges() {
-		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
-		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
 		pm.getStudyModel().setValue(d_study);
 		
 		Arm a = d_study.getArms().get(0);
@@ -236,12 +237,9 @@ public class BenefitRiskWizardPMTest {
 	}
 
 	@Test
-	public void testCompletedStudyFalseWithLessThanTwoDrugs() {
-		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
-
-		pm.getIndicationModel().setValue(d_indication);
-		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-
+	public void testCompletedStudyFalseWithLessThanTwoArms() {
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study study = ExampleData.buildStudyChouinard().clone();
 		pm.getStudyModel().setValue(study);
@@ -251,15 +249,13 @@ public class BenefitRiskWizardPMTest {
 		
 		pm.getAlternativeSelectedModel(study.getArms().get(1)).setValue(true);
 		
-		assertFalse(pm.getCompleteModel().getValue());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
 	}
 	
 	@Test
 	public void testCompletedSingleStudyFalseWithLessThanTwoCriteria() {
-		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
-
-		pm.getIndicationModel().setValue(d_indication);
-		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
 
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study local = ExampleData.buildStudyChouinard().clone();
@@ -270,7 +266,7 @@ public class BenefitRiskWizardPMTest {
 		pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
 		pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
-		assertFalse(pm.getCompleteModel().getValue());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
 	}
 
 	@Test
@@ -306,10 +302,8 @@ public class BenefitRiskWizardPMTest {
 
 	@Test
 	public void testCompletedSingleStudyModelTrueWithTwoDrugsTwoCriteria() {
-		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
-
-		pm.getIndicationModel().setValue(d_indication);
-		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
 		// note: using local copy of chouinard (has 2 arms) so that test won't fail if setup is changed to different study
 		Study local = ExampleData.buildStudyChouinard().clone();
 		pm.getStudyModel().setValue(local);
@@ -319,9 +313,9 @@ public class BenefitRiskWizardPMTest {
 		pm.getAlternativeSelectedModel(local.getArms().get(0)).setValue(true);
 		pm.getAlternativeSelectedModel(local.getArms().get(1)).setValue(true);
 		
-		assertFalse(d_pm.getCompleteModel().getValue());
-		d_pm.getBaselineModel().setValue(local.getArms().get(0));
-		assertTrue(pm.getCompleteModel().getValue());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
+		pm.getBaselineModel().setValue(local.getArms().get(0));
+		assertTrue((Boolean)pm.getCompleteModel().getValue());
 	}
 	
 	@Test
@@ -333,20 +327,6 @@ public class BenefitRiskWizardPMTest {
 		d_pm.getMetaAnalysesSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(ExampleData.buildMetaAnalysisConv());
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationChronicHeartFailure());
-		assertTrue(d_pm.getSelectedCriteria().isEmpty());
-		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
-		assertNull(d_pm.getStudyModel().getValue());
-		assertFalse(d_pm.getCompleteModel().getValue());
-	}
-
-	@Test
-	public void testChangeEvidenceTypeShouldClearValues() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-		d_pm.getStudyModel().setValue(d_study);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
 		assertTrue(d_pm.getSelectedCriteria().isEmpty());
 		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
 		assertNull(d_pm.getStudyModel().getValue());
@@ -397,23 +377,7 @@ public class BenefitRiskWizardPMTest {
 			assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
 		}
 	}
-	
-	@Test
-	public void testChangeEvidenceTypeShouldCascadeToEnabledModels() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
-		d_pm.getStudyModel().setValue(d_study);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
 
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.Synthesis);
-	
-		for (OutcomeMeasure om: d_pm.getCriteriaListModel()) {
-			assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
-		}
-	}
-	
 	@Test
 	public void testChangeAnalysisTypeShouldCascadeToEnabledModels() {
 		d_pm.getIndicationModel().setValue(d_indication);
@@ -425,6 +389,22 @@ public class BenefitRiskWizardPMTest {
 	
 		for (OutcomeMeasure om: d_pm.getCriteriaListModel()) {
 			assertTrue(d_pm.getCriterionEnabledModel(om).getValue());
+		}
+	}
+	
+	@Test
+	public void testChangeAnalysisTypeShouldCascadeToEnabledModelsSingleStudy() {
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		pm.getStudyModel().setValue(ExampleData.buildStudyChouinard());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+		
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
+	
+		for (OutcomeMeasure om: pm.getCriteriaListModel()) {
+			assertTrue(pm.getCriterionEnabledModel(om).getValue());
 		}
 	}
 	
@@ -509,6 +489,18 @@ public class BenefitRiskWizardPMTest {
 		assertTrue(d_pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
 	}
 	
+	@Test
+	public void testLyndOBrienOutcomesRestrictionsSingleStudy(){
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
+		pm.getStudyModel().setValue(d_study);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		assertFalse(pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(false);
+		assertTrue(pm.getCriterionEnabledModel(ExampleData.buildAdverseEventConvulsion()).getValue());
+	}
 	
 	@Test
 	public void testSMAANoRestrictions(){
@@ -531,11 +523,9 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testSMAANoRestrictionsSingleStudy(){
-		BenefitRiskWizardPM<Arm> pm = (BenefitRiskWizardPM) d_pm;
-		
-		pm.getIndicationModel().setValue(d_indication);
-		pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-		pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA); 
 		Study study = ExampleData.buildStudyFava2002().clone();
 		pm.getStudyModel().setValue(study);
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
@@ -550,38 +540,44 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testChangeStudyShouldClearValues() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getStudyModel().setValue(d_study);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
+		pm.getStudyModel().setValue(d_study);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		
-		d_pm.getAlternativeSelectedModel(d_paroxSet).setValue(true);
-		d_pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_study.getArms().get(0)).setValue(true);
+		pm.getAlternativeSelectedModel(d_study.getArms().get(1)).setValue(true);
 		
-		d_pm.getStudyModel().setValue(ExampleData.buildStudyBennie().clone());
-		assertTrue(d_pm.getSelectedCriteria().isEmpty());
-		assertTrue(d_pm.getSelectedAlternatives().isEmpty());
-		assertFalse(d_pm.getCompleteModel().getValue());
-	}	
+		pm.getStudyModel().setValue(ExampleData.buildStudyBennie().clone());
+		assertTrue(pm.getSelectedCriteria().isEmpty());
+		assertTrue(pm.getSelectedAlternatives().isEmpty());
+		assertFalse((Boolean)pm.getCompleteModel().getValue());
+	}
 	
 	@Test
 	public void testNoDataShouldDisableAlternatives() {
-		d_pm.getIndicationModel().setValue(d_indication);
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
 		Study study = ExampleData.buildStudyFava2002().clone();
-		d_pm.getStudyModel().setValue(study);
+		study.getMeasurement(ExampleData.buildEndpointHamd(), study.getArms().get(0)).setSampleSize(null);
+		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi())); 
+		
+		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
+		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
+		
+		
+		pm.getStudyModel().setValue(study);
 
 		// break measurement in 1 arm
-		study.getMeasurement(ExampleData.buildEndpointHamd(), study.getArms().get(0)).setSampleSize(null);
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
 		
 		// that arm should now be disabled
-		assertFalse(d_pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
-		assertTrue(d_pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
+		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
 
 		// select entirely missing outcomemeasure; both arms should now be disabled
-		d_pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		assertFalse(d_pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
-		assertFalse(d_pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
+
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
+		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
 	}
 }

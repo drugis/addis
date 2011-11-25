@@ -41,7 +41,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityIdExistsException;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -52,8 +51,6 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.comparator.CriteriaComparator;
-import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -166,13 +163,14 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 	private CompleteHolder d_completeHolder;
 	private ModifiableHolder<BRAType> d_evidenceTypeHolder;
 	private ModifiableHolder<AnalysisType> d_analysisTypeHolder;
-	private FilteredObservableList<Study> d_studiesWithIndicationHolder;
 	private HashMap<OutcomeMeasure, ModifiableHolder<Boolean>> d_outcomeEnabledMap;
 	private MetaAnalysesSelectedHolder d_metaAnalysesSelectedHolder;
 	private ObservableList<OutcomeMeasure> d_outcomes = new ArrayListModel<OutcomeMeasure>();
 	private ModifiableHolder<Alternative> d_baselineModel;
 	
-	private StudyCriteriaAndAlternativesPresentation d_studyCritAlt;
+	private final StudyCriteriaAndAlternativesPresentation d_studyCritAlt;
+	private final MetaCriteriaAndAlternativesPresentation d_metaCritAlt;
+
 
 	public BenefitRiskWizardPM(Domain d) {
 		super(d);
@@ -201,24 +199,18 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 				initializeValues();
 			}
 		};
-		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				d_studiesWithIndicationHolder.setFilter(new IndicationFilter(d_indicationHolder.getValue()));
-			}
-		});
+
 		d_indicationHolder.addValueChangeListener(resetValuesListener);
 
 		d_evidenceTypeHolder.addValueChangeListener(resetValuesListener);
 		d_analysisTypeHolder.addValueChangeListener(resetValuesListener);
 
-		d_studiesWithIndicationHolder = new FilteredObservableList<Study>(d_domain.getStudies(), new IndicationFilter(d_indicationHolder.getValue()));
-
 		d_metaAnalysesSelectedHolder = new MetaAnalysesSelectedHolder();
 		d_metaAnalysesSelectedHolder.addValueChangeListener(d_completeHolder);
 		d_baselineModel.addValueChangeListener(d_completeHolder);
 		
-		d_studyCritAlt = new StudyCriteriaAndAlternativesPresentation(d_indicationHolder, d_analysisTypeHolder);
+		d_studyCritAlt = new StudyCriteriaAndAlternativesPresentation(d_indicationHolder, d_analysisTypeHolder, d_domain.getStudies());
+		d_metaCritAlt = new MetaCriteriaAndAlternativesPresentation(d_indicationHolder, d_analysisTypeHolder, d_domain.getMetaAnalyses());
 	}
 
 	private void initializeValues() {
@@ -327,7 +319,7 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 	}
 
 	public ValueHolder<Study> getStudyModel() {
-		return d_studyCritAlt.getStudyModel();
+		return getStudyBRPresentation().getStudyModel();
 	}
 
 
@@ -455,7 +447,7 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 
 	public BenefitRiskAnalysis<?> saveAnalysis(String id) throws InvalidStateException, EntityIdExistsException {
 		if(getEvidenceTypeHolder().getValue() == BRAType.SingleStudy) {
-			return d_studyCritAlt.saveAnalysis(d_domain, id);
+			return getStudyBRPresentation().saveAnalysis(d_domain, id);
 		}
 		
 		
@@ -529,10 +521,6 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		return d_selectedAlternatives.getSelectedOptions();
 	}
 
-	public ObservableList<Study> getStudiesWithIndication() {
-		return d_studiesWithIndicationHolder;
-	}	
-
 	public ValueModel getEvidenceTypeHolder() {
 		return d_evidenceTypeHolder;
 	}
@@ -552,22 +540,16 @@ public class BenefitRiskWizardPM<Alternative extends Comparable<Alternative>> ex
 		d_baselineModel.setValue(null);
 	}
 
-	public class IndicationFilter implements Filter<Study> {
-
-		private final Indication d_i;
-
-		public IndicationFilter(Indication i) {
-			d_i = i;
-		}
-
-		public boolean accept(Study s) {
-			return s.getIndication().equals(d_i);
-		}
-
-	}
-
 	public ValueModel getBaselineModel() {
 		return d_baselineModel;
+	}
+
+	public StudyCriteriaAndAlternativesPresentation getStudyBRPresentation() {
+		return d_studyCritAlt;
+	}
+
+	public  MetaCriteriaAndAlternativesPresentation getMetaBRPresentation() {
+		return d_metaCritAlt;
 	}
 
 }
