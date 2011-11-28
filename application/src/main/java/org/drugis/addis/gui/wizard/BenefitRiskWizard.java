@@ -40,8 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -50,6 +49,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.addis.presentation.wizard.CriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.MetaCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.StudyCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
@@ -102,8 +102,52 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 		});
 		
 		return wizardModel;
+		
+		
 	}
 
+
+	private static <Alternative extends Comparable<Alternative> & Entity> Component buildAlternativesPanel(FormLayout layout, CriteriaAndAlternativesPresentation<Alternative> critAltPM) {
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		
+		JLabel alternativesLabel = new JLabel("Alternatives");
+		alternativesLabel.setFont(alternativesLabel.getFont().deriveFont(Font.BOLD));
+		builder.add(alternativesLabel, cc.xy(1, 1));
+		
+		int row = 1;
+		for(final Alternative a : critAltPM.getAlternativesListModel()){
+			LayoutUtil.addRow(layout);
+
+			final ValueHolder<Boolean> selectedModel = critAltPM.getAlternativeSelectedModel(a);
+			final ValueHolder<Boolean> enabledModel  = critAltPM.getAlternativeEnabledModel(a);
+			
+			JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.getLabel(), enabledModel, selectedModel);				
+			builder.add(armCheckbox, cc.xy(1, row += 2));
+		}
+
+		row = LayoutUtil.addRow(layout, row, "10dlu");
+		builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
+		ValueModel model = critAltPM.getBaselineModel();
+		builder.add(AuxComponentFactory.createBoundComboBox(critAltPM.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
+
+		return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
+	}	
+	
+
+	private static <Alternative extends Comparable<Alternative>> int addCriterionCheckbox(OutcomeMeasure out,
+			CriteriaAndAlternativesPresentation<Alternative> critAltPM, FormLayout layout, PanelBuilder builder,
+			CellConstraints cc, int row) {
+		// Add outcome measure checkbox
+		row = LayoutUtil.addRow(layout, row);
+		
+		builder.add(AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), 
+				critAltPM.getCriterionEnabledModel(out), 
+				critAltPM.getCriterionSelectedModel(out)), cc.xyw(1, row, 3));
+		return row;
+	}
+
+	
 	private static class SelectIndicationWizardStep extends PanelWizardStep {
 		public SelectIndicationWizardStep(BenefitRiskWizardPM pm) {
 			
@@ -196,7 +240,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_main.leftTreeFocus(d_pm.getStudyBRPresentation().saveAnalysis(d_main.getDomain(), res));
+					d_main.leftTreeFocus(d_studyPM.saveAnalysis(d_main.getDomain(), res));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",
@@ -217,14 +261,14 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			CellConstraints cc = new CellConstraints();
 			
 			builder.add(buildOutcomeMeasuresPane(), cc.xy(1, 1));
-			builder.add(buildArmsPane(), cc.xy(3, 1));
+			builder.add(buildAlternativesPane(), cc.xy(3, 1));
 			
 			return builder.getPanel();
 		}
 
 		private Component buildOutcomeMeasuresPane() {
 			FormLayout layout = new FormLayout(
-					"left:pref",
+					"left:pref:grow, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
 					);	
 			
@@ -233,51 +277,25 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 			
 			JLabel outcomeMeasuresLabel = new JLabel("Criteria");
 			outcomeMeasuresLabel.setFont(outcomeMeasuresLabel.getFont().deriveFont(Font.BOLD));
-			builder.add(outcomeMeasuresLabel, cc.xy(1, 1));
+			builder.add(outcomeMeasuresLabel, cc.xyw(1, 1, 3));
 			int row = 1;
-			for (OutcomeMeasure out : d_studyPM.getStudyModel().getValue().getOutcomeMeasures()) {
+			for (OutcomeMeasure out : d_studyPM.getCriteriaListModel()) {
 				// Add outcome measure checkbox
-				row += 2;
-				LayoutUtil.addRow(layout);
-				ValueHolder<Boolean> enabledModel  = d_studyPM.getCriterionEnabledModel(out);
-				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_studyPM.getCriterionSelectedModel(out));
-				builder.add(criteriaCheckBox, cc.xy(1, row));
+				row = addCriterionCheckbox(out, d_studyPM, layout, builder, cc, row);
 			}
 			
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
-		private Component buildArmsPane() {
+		private Component buildAlternativesPane() {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
 					);	
-			
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc = new CellConstraints();
-			
-			JLabel alternativesLabel = new JLabel("Alternatives");
-			alternativesLabel.setFont(alternativesLabel.getFont().deriveFont(Font.BOLD));
-			builder.add(alternativesLabel, cc.xy(1, 1));
-			
-			int row = 1;
-			for(final Arm a : d_studyPM.getStudyModel().getValue().getArms() ){
-				LayoutUtil.addRow(layout);
 
-				final ValueHolder<Boolean> selectedModel = d_studyPM.getAlternativeSelectedModel(a);
-				final ValueHolder<Boolean> enabledModel  = d_studyPM.getAlternativeEnabledModel(a);
-				
-				JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.toString(), enabledModel, selectedModel);				
-				builder.add(armCheckbox, cc.xy(1, row += 2));
-			}
-
-			row = LayoutUtil.addRow(layout, row, "10dlu");
-			builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
-			ValueModel model = d_studyPM.getBaselineModel();
-			builder.add(AuxComponentFactory.createBoundComboBox(d_studyPM.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
-
-			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
-		}		
+			return buildAlternativesPanel(layout, d_studyPM);
+		}
+	
 	}
 
 	public static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
@@ -312,7 +330,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_mainWindow.leftTreeFocus(d_pm.getMetaBRPresentation().saveAnalysis(d_mainWindow.getDomain(), res));
+					d_mainWindow.leftTreeFocus(d_metaPM.saveAnalysis(d_mainWindow.getDomain(), res));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",
@@ -354,17 +372,10 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				if(d_metaPM.getMetaAnalyses(out).isEmpty())
 					continue;
 
-				// Add outcome measure checkbox
-				row += 2;
-				LayoutUtil.addRow(layout);
-				
-				ValueHolder<Boolean> enabledModel  = d_metaPM.getCriterionEnabledModel(out);
-				JCheckBox criteriaCheckBox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), enabledModel, d_metaPM.getCriterionSelectedModel(out));
-				builder.add(criteriaCheckBox, cc.xyw(1, row, 3));
+				row = addCriterionCheckbox(out, d_metaPM, layout, builder, cc, row);
 				
 				// Add radio-button panel
-				row += 2;
-				LayoutUtil.addRow(layout);
+				row = LayoutUtil.addRow(layout, row);
 				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
 			}
 			
@@ -394,29 +405,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);	
 			
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc = new CellConstraints();
-			
-			JLabel alternativesLabel = new JLabel("Alternatives");
-			alternativesLabel.setFont(alternativesLabel.getFont().deriveFont(Font.BOLD));
-			builder.add(alternativesLabel, cc.xy(1, 1));
-			
-			int row = 1;
-			for (DrugSet d : d_metaPM.getAlternativesListModel()) {
-				LayoutUtil.addRow(layout);
-				ValueHolder<Boolean> enabledModel  = d_metaPM.getAlternativeEnabledModel(d);
-				ValueHolder<Boolean> selectedModel = d_metaPM.getAlternativeSelectedModel(d);
-				
-				JCheckBox drugCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(d.getLabel(), enabledModel, selectedModel);
-				builder.add(drugCheckbox, cc.xy(1, row += 2));
-			}
-			
-			row = LayoutUtil.addRow(layout, row, "10dlu");
-			builder.add(new JLabel("Baseline:"), cc.xy(1, row += 2));
-			ValueModel model = d_metaPM.getBaselineModel();
-			builder.add(AuxComponentFactory.createBoundComboBox(d_metaPM.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
-			
-			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
+			return buildAlternativesPanel(layout, d_metaPM);
 		}
 	}
 }
