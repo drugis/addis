@@ -19,6 +19,8 @@ Versions
 
 1.11: Add [BRAT table][10] to benefit/risk view.
 
+1.10.1: Bugfix release
+
 1.10: Enable combination treatment. Add "free text" ('Other') activity.
    Allow multiple moments of measurement for each outcome. Add installer
    and double-click loading of .addis data files on Windows.
