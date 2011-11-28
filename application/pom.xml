@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.10.1-SNAPSHOT</version>
+		<version>1.10.1</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -51,7 +51,7 @@
 	</repositories>
 
 	<properties>
-        	<drugis-common.version>0.4.6</drugis-common.version>
+        	<drugis-common.version>0.4.7</drugis-common.version>
         	<jsmaa.version>0.8.5</jsmaa.version>
         	<mtc.version>0.10</mtc.version>
 	</properties> 
