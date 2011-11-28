@@ -17,7 +17,7 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
-1.11: Add [BRAT table][10] to benefit/risk view.
+1.11: Add [BRAT table][10] and its value tree to benefit/risk view, allow selection of baseline in meta-analyses.
 
 1.10.1: Bugfix release
 
