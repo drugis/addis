@@ -146,6 +146,7 @@ import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Units;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
+import org.drugis.common.beans.SortedSetModel;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -1238,11 +1239,10 @@ public class JAXBConvertor {
 		return newBr;
 	}
 
-	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(
-			org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
+	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
 		Indication indication = findNamedItem(domain.getIndications(), br.getIndication().getName());
 		DrugSet baseline = convertDrugSet(br.getBaseline(), domain);
-		List<DrugSet> drugs = new ArrayList<DrugSet>();
+		List<DrugSet> drugs = new SortedSetModel<DrugSet>();
 		for (AnalysisDrugs set : br.getAlternatives().getAlternative()) {
 			drugs.add(convertDrugSet(set, domain));
 		}

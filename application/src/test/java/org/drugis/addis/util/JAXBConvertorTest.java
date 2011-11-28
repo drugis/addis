@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,6 +135,7 @@ import org.drugis.addis.entities.data.Epochs;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
+import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasure;
@@ -1677,7 +1679,7 @@ public class JAXBConvertorTest {
 		doRoundTripTest(getTestData(TEST_DATA_A_1));
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testCombinationTreatmentRoundTripConversion() throws Exception {
 		doRoundTripTest(getTestData(TEST_DATA_3));
 	}
@@ -1689,12 +1691,42 @@ public class JAXBConvertorTest {
 		sortAnalysisArms(data);
 		sortBenefitRiskOutcomes(data);
 		sortCategoricalMeasurementCategories(data);
+		sortMetaBenefitRiskAnalysisAlternatives(data);
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		sortUsedBys(data);
 		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
 		assertEquals(data, roundTrip);
 	}
 		
+	private static void sortMetaBenefitRiskAnalysisAlternatives(AddisData data) {
+		for (Object bra : data.getBenefitRiskAnalyses().getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
+			if (bra instanceof org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) {
+				org.drugis.addis.entities.data.MetaBenefitRiskAnalysis mbra = (org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) bra;
+				List<AnalysisDrugs> alternatives = mbra.getAlternatives().getAlternative();
+				Collections.sort(alternatives, new Comparator<AnalysisDrugs>() {
+					@Override
+					public int compare(AnalysisDrugs ad1, AnalysisDrugs ad2) {
+						Iterator<NameReference> i1 = ad1.getDrug().iterator();
+						Iterator<NameReference> i2 = ad2.getDrug().iterator();
+						while (i1.hasNext() && i2.hasNext()) {
+							int compVal = i1.next().getName().compareTo(i2.next().getName());
+							if (compVal != 0) {
+								return compVal;
+							}
+						}
+						if (i1.hasNext()) {
+							return 1;
+						}
+						if (i2.hasNext()) {
+							return -1;
+						}
+						return 0;
+					}
+				});
+			}
+		}
+	}
+
 	private void sortUsedBys(AddisData data) {
 		for (org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
 			for(org.drugis.addis.entities.data.StudyActivity a : s.getActivities().getStudyActivity()) {

@@ -51,6 +51,7 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		super("benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		JDialog dialog = new JDialog(mainWindow, "Create Benefit-risk analysis", true);
 		Wizard wizard = new BenefitRiskWizard(mainWindow, new BenefitRiskWizardPM(domain));

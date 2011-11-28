@@ -15,7 +15,6 @@ import javax.swing.event.ListDataListener;
 
 import junit.framework.Assert;
 
-import org.drugis.addis.entities.AssertEntityEquals;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.common.event.ListDataEventMatcher;
 import org.easymock.EasyMock;
@@ -146,8 +145,8 @@ public class SelectableOptionsModelTest {
 	public void testSelectionsChangeList() {
 		ModifiableHolder<Boolean> bdeeg = d_model.addOption("Bladerdeeg", false);
 		ModifiableHolder<Boolean> gkaas = d_model.addOption("Geitenkaas", false);
-		ModifiableHolder<Boolean> komijn = d_model.addOption("Komijn", false);
-		ModifiableHolder<Boolean> makreel = d_model.addOption("Makreel", false);
+		d_model.addOption("Komijn", false);
+		d_model.addOption("Makreel", false);
 		
 		assertEquals(Collections.emptyList(), d_model.getSelectedOptions());
 		bdeeg.setValue(true);
