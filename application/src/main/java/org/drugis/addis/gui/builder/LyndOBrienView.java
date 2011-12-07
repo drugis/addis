@@ -28,7 +28,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D.Double;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -148,7 +147,7 @@ public class LyndOBrienView implements ViewBuilder {
 			d_pm.getModel().getTask().addTaskListener(this);
 			component.addListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					java.lang.Double mu = component.getMu();
+					Double mu = component.getMu();
 					setMuAndPValueLabel(mu);
 					
 				}
@@ -166,12 +165,12 @@ public class LyndOBrienView implements ViewBuilder {
 
 		public void taskEvent(TaskEvent event) {
 			if(event.getType() == EventType.TASK_PROGRESS || event.getType() == EventType.TASK_FINISHED) {
-				java.lang.Double mu = 1.0;
+				Double mu = 1.0;
 				setMuAndPValueLabel(mu);
 			}
 		}
 
-		private void setMuAndPValueLabel(java.lang.Double mu) {
+		private void setMuAndPValueLabel(Double mu) {
 			DecimalFormat df = new DecimalFormat("0.00");
 			d_pvalueLabel.setText("\u03BC = " + df.format(mu) + ", P-value: " + df.format(d_pm.getModel().getPValue(mu)));
 		}
@@ -188,11 +187,11 @@ public class LyndOBrienView implements ViewBuilder {
 	private class draggableMuChartPanel extends ChartPanel implements TaskListener {
 
 		private XYAnnotation d_prevAnnotation = null;
-		private ModifiableHolder<java.lang.Double> d_mu;
+		private ModifiableHolder<Double> d_mu;
 
 		public draggableMuChartPanel(JFreeChart chart) {
 			super(chart);
-			d_mu = new ModifiableHolder<java.lang.Double>(1.0);
+			d_mu = new ModifiableHolder<Double>(1.0);
 			drawMuLine(chart.getXYPlot(), d_mu.getValue());
 		}
 
@@ -200,11 +199,11 @@ public class LyndOBrienView implements ViewBuilder {
 			d_mu.addValueChangeListener(l);
 		}
 		
-		java.lang.Double getMu() {
+		Double getMu() {
 			return d_mu.getValue();
 		}
 
-		private Double convertToChartCoordinates(Point point) {
+		private Point2D.Double convertToChartCoordinates(Point point) {
 			ChartRenderingInfo info = getChartRenderingInfo();
 			Rectangle2D dataArea = info.getPlotInfo().getDataArea();
 	        Point2D p = translateScreenToJava2D(
@@ -221,7 +220,7 @@ public class LyndOBrienView implements ViewBuilder {
 		
 		public void mouseDragged(MouseEvent e){
 			Point point = e.getPoint();
-			Double chartXY = convertToChartCoordinates(point);
+			Point2D.Double chartXY = convertToChartCoordinates(point);
 			
 	        // if the mouse is in the positive quadrant, change mu so that it is drawn through the mouse position
 	        if (chartXY.x > 0 && chartXY.y > 0) {
