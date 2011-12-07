@@ -36,6 +36,7 @@ import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.ReadOnlyObservableList;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.TransformedObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
@@ -45,16 +46,16 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class SelectableOptionsModel<E extends Comparable<? super E>> {
 	public static class Option<E extends Comparable<? super E>> extends AbstractObservable implements Comparable<Option<E>> {
-		public static final String PROPERTY_SELECTED = null;
+		public static final String PROPERTY_TOGGLED = "toggled";
 		public final E item;
-		public final ModifiableHolder<Boolean> selected;
+		public final ModifiableHolder<Boolean> toggle;
 		
 		public Option(E it, boolean value) {
 			item = it;
-			selected = new ModifiableHolder<Boolean>(value);
-			selected.addPropertyChangeListener(new PropertyChangeListener() {
+			toggle = new ModifiableHolder<Boolean>(value);
+			toggle.addPropertyChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					firePropertyChange(PROPERTY_SELECTED, evt.getOldValue(), evt.getNewValue());
+					firePropertyChange(PROPERTY_TOGGLED, evt.getOldValue(), evt.getNewValue());
 				}
 			});
 		}
@@ -84,13 +85,13 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 	private ObservableList<E> d_selected;
 
 	public SelectableOptionsModel() {
-		ObservableList<Option<E>> d_contentAware = new ContentAwareListModel<Option<E>>(d_options);
-		FilteredObservableList<Option<E>> d_selectedOptions = new FilteredObservableList<Option<E>>(d_contentAware, new Filter<Option<E>>() {
+		ObservableList<Option<E>> contentAware = new ContentAwareListModel<Option<E>>(d_options);
+		FilteredObservableList<Option<E>> selectedOptions = new FilteredObservableList<Option<E>>(contentAware, new Filter<Option<E>>() {
 			public boolean accept(Option<E> obj) {
-				return obj.selected.getValue();
+				return obj.toggle.getValue();
 			}
 		});
-		d_selected = new TransformedObservableList<Option<E>, E>(d_selectedOptions, new Transform<Option<E>, E>() {
+		d_selected = new TransformedObservableList<Option<E>, E>(selectedOptions, new Transform<Option<E>, E>() {
 			public E transform(Option<E> a) {
 				return a.item;
 			}
@@ -112,7 +113,7 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 	public ModifiableHolder<Boolean> addOption(E option, boolean initialValue) {
 		Option<E> o = new Option<E>(option, initialValue);
 		d_options.add(o);
-		return o.selected;
+		return o.toggle;
 	}
 	
 	/**
@@ -131,9 +132,13 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 	public ModifiableHolder<Boolean> getSelectedModel(E option) {
 		int idx = Collections.binarySearch(d_options, new Option<E>(option, false));
 		if (idx >= 0) {
-			return d_options.get(idx).selected;
+			return d_options.get(idx).toggle;
 		}
 		return null;
+	}
+	
+	public ObservableList<Option<E>> getOptions() {
+		return new ReadOnlyObservableList<Option<E>>(d_options);
 	}
 	
 	/**

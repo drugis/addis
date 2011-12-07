@@ -26,7 +26,6 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +43,8 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.common.beans.AbstractObservableList;
 import org.drugis.common.event.ListDataEventProxy;
-import org.drugis.common.event.ListDataListenerManager;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -102,14 +101,14 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		});
 	}
 	
-	private static class SelectedDrugsHolder extends AbstractList<DrugSet> implements ObservableList<DrugSet> {
+	private static class SelectedDrugsHolder extends AbstractObservableList<DrugSet> {
 		ObservableList<DrugSet> d_list = new ArrayListModel<DrugSet>();
 		private ModifiableHolder<DrugSet> d_firstDrugHolder;
 		private ModifiableHolder<DrugSet> d_secondDrugHolder;
-		private ListDataListenerManager d_listenerManager = new ListDataEventProxy(this, d_list);
-
 
 		public SelectedDrugsHolder(ModifiableHolder<DrugSet> firstDrugHolder, ModifiableHolder<DrugSet> secondDrugHolder) {
+			d_list.addListDataListener(new ListDataEventProxy(d_manager));
+			
 			d_firstDrugHolder = firstDrugHolder;
 			d_secondDrugHolder = secondDrugHolder;
 			d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener() {
@@ -153,28 +152,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		public int size() {
 			return d_list.size();
 		}
-
-
-		@Override
-		public Object getElementAt(int index) {
-			return get(index);
-		}
-
-		@Override
-		public int getSize() {
-			return size();
-		}
-
-		@Override
-		public void addListDataListener(ListDataListener l) {
-			d_listenerManager.addListDataListener(l);
-		}
-		
-		@Override
-		public void removeListDataListener(ListDataListener l) {
-			d_listenerManager.removeListDataListener(l);
-		}
-		
 	}
 		
 	public ModifiableHolder<DrugSet> getFirstDrugModel() {
