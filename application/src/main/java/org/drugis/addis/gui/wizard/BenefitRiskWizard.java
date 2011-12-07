@@ -24,6 +24,7 @@
 
 package org.drugis.addis.gui.wizard;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -39,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -47,6 +49,8 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.gui.components.AddisScrollPane;
+import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
 import org.drugis.addis.presentation.wizard.CriteriaAndAlternativesPresentation;
@@ -68,8 +72,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-@SuppressWarnings("serial")
-public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> extends Wizard {
+public class BenefitRiskWizard extends Wizard {
+	private static final long serialVersionUID = -8142319787888932L;
+
 	private static final Dimension PREFERRED_COLUMN_SIZE = new Dimension(330, 370);
 
 	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
@@ -85,6 +90,11 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 	private static WizardModel buildModel(final BenefitRiskWizardPM pm, AddisWindow mainWindow) {
 		DynamicModel wizardModel = new DynamicModel();
 		wizardModel.add(new SelectIndicationWizardStep(pm));
+		wizardModel.add(new DescriptivesStep(pm), new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return pm.getIncludeDescriptivesModel().getValue();
+			}
+		});
 		wizardModel.add(new SelectStudyWizardStep(pm.getStudyBRPresentation(), mainWindow), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.SingleStudy;
@@ -147,23 +157,60 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 		return row;
 	}
 
+	private static class DescriptivesStep extends PanelWizardStep {
+		private static final long serialVersionUID = 5441828903910494369L;
+
+		public DescriptivesStep(BenefitRiskWizardPM pm) {
+			super("BRAT descriptives", 
+					"Define the decision context according to the BRAT framework");
+			setComplete(true);
+			
+			FormLayout layout = new FormLayout(
+					"right:pref, 3dlu, fill:0:grow",
+					"p"
+			);
+	
+			PanelBuilder builder = new PanelBuilder(layout);
+			CellConstraints cc = new CellConstraints();
+			
+			builder.setDefaultDialogBorder();
+			
+			int row = 1;
+			
+			for (AbstractBenefitRiskPresentation.DecisionContextField field : pm.getDecisionContextFields()) {
+				builder.addLabel(field.getName() + ": ", cc.xy(1, row));
+				builder.add(AuxComponentFactory.createTextArea(field.getModel(), true), cc.xy(3, row));
+				row = LayoutUtil.addRow(layout, row);
+				builder.add(AuxComponentFactory.createHtmlField(field.getHelpText()), cc.xy(3, row));
+				row = LayoutUtil.addRow(layout, row, "7dlu");
+			}
+			
+			this.setLayout(new BorderLayout());
+			JScrollPane scrollPane = new AddisScrollPane(builder.getPanel());
+		
+			add(scrollPane, BorderLayout.CENTER);
+		}
+	}
 	
 	private static class SelectIndicationWizardStep extends PanelWizardStep {
+		private static final long serialVersionUID = 2986876155242979527L;
+
 		public SelectIndicationWizardStep(BenefitRiskWizardPM pm) {
-			
-			super("Select Indication, Study and Analysis","Select the Indication, Study and Analysis type that you want to use for this meta analysis.");
+			super("Select indication",
+					"Select the indication, evidence type and analysis type that you want to use for this benefit-risk analysis.");
 
 			FormLayout layout = new FormLayout(
 					"right:pref, 3dlu, left:pref",
-					"p, 7dlu, p, 7dlu, p"
+					"p, 7dlu, p, 7dlu, p, 7dlu, p"
 			);	
 	
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
 			
+			int row = 1;
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationsModel(), pm.getIndicationModel(), true);
-			builder.add(new JLabel("Indication : "), cc.xy(1,1));
-			builder.add(indBox, cc.xy(3,1));
+			builder.add(new JLabel("Indication : "), cc.xy(row, row));
+			builder.add(indBox, cc.xy(3, row));
 			
 			pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -171,29 +218,36 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 				}
 			});
 
-			builder.add(new JLabel("Study type : "), cc.xy(1, 3));
+			row += 2;
+			builder.add(BasicComponentFactory.createCheckBox(pm.getIncludeDescriptivesModel(), "Include BRAT decision context definition"), cc.xyw(1, row, 3));
+			
+			row += 2;
+			builder.add(new JLabel("Study type : "), cc.xy(1, row));
 			JPanel studyTypeRadioButtonPanel = new JPanel();
 			studyTypeRadioButtonPanel.setLayout(new BoxLayout(studyTypeRadioButtonPanel,BoxLayout.Y_AXIS));
 			JRadioButton MetaAnalysisButton = BasicComponentFactory.createRadioButton(pm.getEvidenceTypeHolder(), BRAType.Synthesis, "Evidence synthesis");
 			JRadioButton StudyButton = BasicComponentFactory.createRadioButton(pm.getEvidenceTypeHolder(), BRAType.SingleStudy, "Single study");
 			studyTypeRadioButtonPanel.add(MetaAnalysisButton);
 		    studyTypeRadioButtonPanel.add(StudyButton);
-		    builder.add(studyTypeRadioButtonPanel, cc.xy(3, 3));
+		    builder.add(studyTypeRadioButtonPanel, cc.xy(3, row));
 		    
-			builder.add(new JLabel("Analysis type : "), cc.xy(1, 5));
+			row += 2;
+			builder.add(new JLabel("Analysis type : "), cc.xy(1, row));
 			JPanel analysisTypeRadioButtonPanel = new JPanel();
 			analysisTypeRadioButtonPanel.setLayout(new BoxLayout(analysisTypeRadioButtonPanel,BoxLayout.Y_AXIS));
 			JRadioButton SMAAButton = BasicComponentFactory.createRadioButton(pm.getAnalysisTypeHolder(), AnalysisType.SMAA, "SMAA");
 			JRadioButton LyndOBrienButton = BasicComponentFactory.createRadioButton(pm.getAnalysisTypeHolder(), AnalysisType.LyndOBrien, "Lynd & O'Brien");
 			analysisTypeRadioButtonPanel.add(SMAAButton);
 		    analysisTypeRadioButtonPanel.add(LyndOBrienButton);
-		    builder.add(analysisTypeRadioButtonPanel, cc.xy(3, 5));
+		    builder.add(analysisTypeRadioButtonPanel, cc.xy(3, row));
 		    
 			add(builder.getPanel());
 		}
 	}
 
 	private static class SelectStudyWizardStep extends PanelWizardStep {
+		private static final long serialVersionUID = -6351673911830174693L;
+
 		public SelectStudyWizardStep(final StudyCriteriaAndAlternativesPresentation pm, AddisWindow mainWindow){
 			super("Select Study","In this step you select which study you use as a basis for your analysis.");
 			add(new JLabel("Study : "));
@@ -209,6 +263,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 	}
 
 	private static class SelectOutcomeMeasuresAndArmsWizardStep extends PanelWizardStep {
+		private static final long serialVersionUID = -6712176504045317313L;
 		private AddisWindow d_main;
 		private StudyCriteriaAndAlternativesPresentation d_studyPM;
 		private final BenefitRiskWizardPM d_pm;
@@ -240,7 +295,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_main.leftTreeFocus(d_studyPM.saveAnalysis(d_main.getDomain(), res));
+					d_main.leftTreeFocus(d_studyPM.saveAnalysis(d_main.getDomain(), res, d_pm.getDecisionContext()));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",
@@ -299,6 +354,8 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 	}
 
 	public static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
+		private static final long serialVersionUID = -7893619121154004229L;
+
 		private AddisWindow d_mainWindow;
 		private BenefitRiskWizardPM d_pm;
 		private MetaCriteriaAndAlternativesPresentation d_metaPM;
@@ -330,7 +387,7 @@ public class BenefitRiskWizard<Alternative extends Comparable<Alternative>> exte
 					"Save analysis", JOptionPane.QUESTION_MESSAGE);
 			if (res != null) {
 				try {
-					d_mainWindow.leftTreeFocus(d_metaPM.saveAnalysis(d_mainWindow.getDomain(), res));
+					d_mainWindow.leftTreeFocus(d_metaPM.saveAnalysis(d_mainWindow.getDomain(), res, d_pm.getDecisionContext()));
 				} catch (EntityIdExistsException e) {
 					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
 							"There already exists an analysis with the given name, input another name",

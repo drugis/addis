@@ -38,6 +38,7 @@ import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
@@ -247,18 +248,18 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	public BenefitRiskAnalysis<DrugSet> createAnalysis(String id) throws InvalidStateException {
+	public BenefitRiskAnalysis<DrugSet> createAnalysis(String id, DecisionContext context) throws InvalidStateException {
 		DrugSet baseline = d_baselineModel.getValue();
 		List<DrugSet> alternatives = new ArrayList<DrugSet>(getSelectedAlternatives());
 		alternatives.remove(baseline);
-		System.out.println(baseline);
 		return new MetaBenefitRiskAnalysis(
 				id,
 				d_indicationModel.getValue(), 
 				getSelectedMetaAnalyses(),
 				baseline, 
 				alternatives,
-				d_analysisTypeHolder.getValue());
+				d_analysisTypeHolder.getValue(),
+				context);
 	}
 	@Override
 	public ValueModel getCompleteModel() {

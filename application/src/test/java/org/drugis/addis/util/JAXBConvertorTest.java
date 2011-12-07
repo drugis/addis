@@ -107,6 +107,7 @@ import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -1448,7 +1449,30 @@ public class JAXBConvertorTest {
 			domain.getStudies().add(JAXBConvertor.convertStudy(study, domain));
 		}
 	}
+	
+	@Test
+	public void testConvertDecisionContext() throws ConversionException, DatatypeConfigurationException {
+		final String comparator = "Comparator bla";
+		final String perspective = "Perspective";
+		final String therapy = "Purely psychosomatic";
+		final String horizon = "New horizons";
 		
+		DecisionContext entityContext = new DecisionContext();
+		entityContext.setComparator(comparator);
+		entityContext.setStakeholderPerspective(perspective);
+		entityContext.setTherapeuticContext(therapy);
+		entityContext.setTimeHorizon(horizon);
+		
+		org.drugis.addis.entities.data.DecisionContext dataContext = new org.drugis.addis.entities.data.DecisionContext();
+		dataContext.setComparator(comparator);
+		dataContext.setStakeholderPerspective(perspective);
+		dataContext.setTherapeuticContext(therapy);
+		dataContext.setTimeHorizon(horizon);
+		
+		assertEquals(dataContext, JAXBConvertor.convertDecisionContext(entityContext));
+		assertEntityEquals(entityContext, JAXBConvertor.convertDecisionContext(dataContext));
+	}
+	
 	@Test
 	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
@@ -1473,7 +1497,8 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
 				ExampleData.buildIndicationDepression().getName(), endpoints, adverseEvents, new String[]{}, arms, epochs, sas);
 		
-		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms[1], whichArms);
+		DecisionContext entityContext = new DecisionContext();
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms[1], whichArms, entityContext );
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
 		domain.getStudies().add(convertStudy);
@@ -1487,7 +1512,7 @@ public class JAXBConvertorTest {
 		
 		StudyBenefitRiskAnalysis expected = new StudyBenefitRiskAnalysis(name, 
 				ExampleData.buildIndicationDepression(), convertStudy,
-				criteria, alternatives.get(1), alternatives, AnalysisType.LyndOBrien);
+				criteria, alternatives.get(1), alternatives, AnalysisType.LyndOBrien, entityContext);
 		
 		assertEntityEquals(expected, JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
 		assertEquals(br, JAXBConvertor.convertStudyBenefitRiskAnalysis(expected));
@@ -1495,7 +1520,7 @@ public class JAXBConvertorTest {
 
 	private org.drugis.addis.entities.data.StudyBenefitRiskAnalysis buildStudyBR(
 			String name, org.drugis.addis.entities.data.Study study,
-			String[] endpoints, String[] adverseEvents, String baseline, String[] whichArms) {
+			String[] endpoints, String[] adverseEvents, String baseline, String[] whichArms, DecisionContext entityContext) {
 		RateMeasurement rm = new RateMeasurement();
 		rm.setRate(2);
 		rm.setSampleSize(50);
@@ -1529,6 +1554,9 @@ public class JAXBConvertorTest {
 		BaselineArmReference baselineRef = new BaselineArmReference();
 		baselineRef.setArm(JAXBConvertor.armReference(study.getName(), baseline));
 		br.setBaseline(baselineRef);
+		if (entityContext != null) {
+			br.setDecisionContext(JAXBConvertor.convertDecisionContext(entityContext));
+		}
 		return br;
 	}	
 	
@@ -1559,8 +1587,9 @@ public class JAXBConvertorTest {
 		};
 		String indication = ma1.d_pwma.getIndication().getName();
 		String[] meta = { pairWiseName, networkMetaName };
+		DecisionContext entityContext = new DecisionContext();
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br = buildMetaBR(
-				name, drugs, indication, meta);
+				name, drugs, indication, meta, entityContext);
 
 		List<MetaAnalysis> metaList = new ArrayList<MetaAnalysis>();
 		metaList.add(ma1ent);
@@ -1570,13 +1599,13 @@ public class JAXBConvertorTest {
 		DrugSet baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , baseline, 
-				drugsEnt, AnalysisType.SMAA);
+				drugsEnt, AnalysisType.SMAA, entityContext);
 		assertEntityEquals(expected, JAXBConvertor.convertMetaBenefitRiskAnalysis(br, domain));
 		assertEquals(br, JAXBConvertor.convertMetaBenefitRiskAnalysis(expected));
 	}
 
 	private org.drugis.addis.entities.data.MetaBenefitRiskAnalysis buildMetaBR(
-			String name, String[][] drugs, String indication, String[] meta) {
+			String name, String[][] drugs, String indication, String[] meta, DecisionContext entityContext) {
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
 		br.setName(name);
 		br.setAnalysisType(AnalysisType.SMAA);
@@ -1591,6 +1620,7 @@ public class JAXBConvertorTest {
 			mRefs.getMetaAnalysis().add(nameReference(mName));
 		}
 		br.setMetaAnalyses(mRefs);
+		br.setDecisionContext(JAXBConvertor.convertDecisionContext(entityContext));
 		return br;
 	}
 
@@ -1628,7 +1658,7 @@ public class JAXBConvertorTest {
 		
 		String[] whichArms = { "parox arm high", "parox arm low" };
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis studyBR = buildStudyBR(
-				name, study, endpoints, adverseEvents, whichArms[0], whichArms);
+				name, study, endpoints, adverseEvents, whichArms[0], whichArms, null);
 		
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
 		domain.getStudies().add(convertStudy);
@@ -1648,7 +1678,7 @@ public class JAXBConvertorTest {
 					new String[] { ExampleData.buildDrugParoxetine().getName() }
 				}, 
 				ExampleData.buildIndicationDepression().getName(),
-				new String[] { nwName, pwName });
+				new String[] { nwName, pwName }, null);
 		
 		BenefitRiskAnalyses analyses = new BenefitRiskAnalyses();
 		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(metaBR);

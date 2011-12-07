@@ -37,6 +37,7 @@ import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
@@ -158,8 +159,8 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 
 	public abstract ValueModel getCompleteModel();
 	
-	public BenefitRiskAnalysis<Alternative> saveAnalysis(Domain domain, String id) throws InvalidStateException, EntityIdExistsException {
-		BenefitRiskAnalysis<Alternative> brAnalysis = createAnalysis(id);
+	public BenefitRiskAnalysis<Alternative> saveAnalysis(Domain domain, String id, DecisionContext context) throws InvalidStateException, EntityIdExistsException {
+		BenefitRiskAnalysis<Alternative> brAnalysis = createAnalysis(id, context);
 
 		if(domain.getBenefitRiskAnalyses().contains(brAnalysis))
 			throw new EntityIdExistsException("Benefit Risk Analysis with this ID already exists in domain");
@@ -168,7 +169,7 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 		return brAnalysis;
 	}
 	
-	public abstract BenefitRiskAnalysis<Alternative> createAnalysis(String id) throws InvalidStateException;
+	public abstract BenefitRiskAnalysis<Alternative> createAnalysis(String id, DecisionContext context) throws InvalidStateException;
 
 	public ObservableList<Alternative> getSelectedAlternatives() {
 		return d_selectedAlternatives.getSelectedOptions();

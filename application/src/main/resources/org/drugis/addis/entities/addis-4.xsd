@@ -259,6 +259,7 @@
 			<xs:element name="baseline" type="AnalysisDrugs"/>
 			<xs:element name="alternatives" type="AlternativeDrugSets"/>
 			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
+			<xs:element name="decisionContext" type="DecisionContext" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>
@@ -275,10 +276,20 @@
 					<xs:field xpath="@name"/>
 				</xs:unique>
 			</xs:element>
+			<xs:element name="decisionContext" type="DecisionContext" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="analysisType" type="BenefitRiskAnalysisType"/>
 	</xs:complexType>
+	<xs:complexType name="DecisionContext">
+		<xs:sequence>
+			<xs:element name="therapeuticContext" type="xs:string"/>
+			<xs:element name="comparator" type="xs:string"/>
+			<xs:element name="timeHorizon" type="xs:string"/>
+			<xs:element name="stakeholderPerspective" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+
 
 	<!-- The terrible offspring of Study and its notes-->
 

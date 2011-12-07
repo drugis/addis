@@ -33,6 +33,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -120,11 +121,11 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	}
 
 	@Override
-	public StudyBenefitRiskAnalysis createAnalysis(String id) {
+	public StudyBenefitRiskAnalysis createAnalysis(String id, DecisionContext context) {
 		List<Arm> alternatives = getSelectedAlternatives();
 		List<OutcomeMeasure> studyAnalyses = getSelectedCriteria();
 		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationModel.getValue(), d_studyModel.getValue(), 
-				studyAnalyses, (Arm) d_baselineModel.getValue(), alternatives, d_analysisTypeHolder.getValue());
+				studyAnalyses, (Arm) d_baselineModel.getValue(), alternatives, d_analysisTypeHolder.getValue(), context);
 		return sbr;
 	}
 	

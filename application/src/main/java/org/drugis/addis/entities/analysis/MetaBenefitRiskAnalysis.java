@@ -89,6 +89,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	private DrugSet d_baseline;
 	private Map<OutcomeMeasure, AbstractBaselineModel<?>> d_baselineModelMap;
 	private AnalysisType d_analysisType;
+	private DecisionContext d_decisionContext;
 	
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
@@ -97,6 +98,11 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 	
 	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
 			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType) {
+		this(id, indication, metaAnalysis, baseline, drugs, analysisType, null); 
+	}
+
+	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
+			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType, DecisionContext context) {
 		super();
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
@@ -109,7 +115,7 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_drugs.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
-		
+		d_decisionContext = context;
 		setName(id);
 	}
 
@@ -184,7 +190,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		return EntityUtil.deepEqual(getBaseline(), o.getBaseline()) &&
 			EntityUtil.deepEqual(getIndication(), o.getIndication()) &&
 			EntityUtil.deepEqual(getMetaAnalyses(), o.getMetaAnalyses()) &&
-			EntityUtil.deepEqual(getDrugs(), o.getDrugs());
+			EntityUtil.deepEqual(getDrugs(), o.getDrugs()) &&
+			EntityUtil.deepEqual(getDecisionContext(), o.getDecisionContext());
 	}
 
 	public int compareTo(BenefitRiskAnalysis<?> other) {
@@ -346,6 +353,10 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 
 	public MeasurementSource<DrugSet> getMeasurementSource() {
 		return new MetaMeasurementSource();
+	}
+
+	public DecisionContext getDecisionContext() {
+		return d_decisionContext;
 	}
 	
 }

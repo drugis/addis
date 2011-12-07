@@ -53,6 +53,7 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.BRATTableModel;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
+import org.drugis.addis.presentation.AbstractBenefitRiskPresentation.DecisionContextField;
 import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.common.gui.LayoutUtil;
@@ -184,8 +185,18 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
+
+		if (d_pm.getBean().getDecisionContext() != null) {
+			row  = LayoutUtil.addRow(layout, row);
+			builder.addSeparator("Decision context", cc.xyw(1, row, 3));
+			for (DecisionContextField field : AbstractBenefitRiskPresentation.createDecisionContextFields(d_pm.getBean().getDecisionContext())) {
+				row  = LayoutUtil.addRow(layout, row);
+				builder.addLabel(field.getName() + ": ", cc.xy(1, row));
+				builder.add(AuxComponentFactory.createAutoWrapLabel(field.getModel()), cc.xy(3, row));
+			}
+		}
 		
-		return builder.getPanel();	
+		return builder.getPanel();
 	}
 	
 	protected BenefitRiskAnalysis<?> getAnalysis() {

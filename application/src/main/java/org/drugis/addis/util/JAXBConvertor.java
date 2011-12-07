@@ -97,6 +97,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -1203,7 +1204,7 @@ public class JAXBConvertor {
 		
 		Arm baseline = findArm(br.getBaseline().getArm().getName(), study.getArms());
 		
-		return new StudyBenefitRiskAnalysis(br.getName(), indication, study, criteria, baseline, alternatives, br.getAnalysisType());
+		return new StudyBenefitRiskAnalysis(br.getName(), indication, study, criteria, baseline, alternatives, br.getAnalysisType(), convertDecisionContext(br.getDecisionContext()));
 	}
 	
 	public static org.drugis.addis.entities.data.StudyBenefitRiskAnalysis convertStudyBenefitRiskAnalysis(StudyBenefitRiskAnalysis br) throws ConversionException {
@@ -1236,6 +1237,8 @@ public class JAXBConvertor {
 		baseline.setArm(armReference(br.getStudy().getName(), br.getBaseline().getName()));
 		newBr.setBaseline(baseline);
 		
+		newBr.setDecisionContext(convertDecisionContext(br.getDecisionContext()));
+
 		return newBr;
 	}
 
@@ -1251,7 +1254,7 @@ public class JAXBConvertor {
 			metaAnalysis.add(findMetaAnalysis(domain, ref.getName()));
 		}
 		drugs.remove(baseline);
-		return new MetaBenefitRiskAnalysis(br.getName(), indication, metaAnalysis, baseline, drugs, br.getAnalysisType());
+		return new MetaBenefitRiskAnalysis(br.getName(), indication, metaAnalysis, baseline, drugs, br.getAnalysisType(), convertDecisionContext(br.getDecisionContext()));
 	}
 	
 
@@ -1274,6 +1277,7 @@ public class JAXBConvertor {
 		}
 		
 		newBr.setMetaAnalyses(maRefs);
+		newBr.setDecisionContext(convertDecisionContext(br.getDecisionContext()));
 		return newBr;
 	}
 
@@ -1412,6 +1416,30 @@ public class JAXBConvertor {
 		converted.setValue(note.getText());
 		return converted;
 	}
+	
+	public static org.drugis.addis.entities.data.DecisionContext convertDecisionContext(DecisionContext entityContext) {
+		if (entityContext == null) {
+			return null;
+		}
+		org.drugis.addis.entities.data.DecisionContext context = new org.drugis.addis.entities.data.DecisionContext();
+		context.setComparator(entityContext.getComparator());
+		context.setStakeholderPerspective(entityContext.getStakeholderPerspective());
+		context.setTherapeuticContext(entityContext.getTherapeuticContext());
+		context.setTimeHorizon(entityContext.getTimeHorizon());
+		return context;
+	}
+
+	public static DecisionContext convertDecisionContext(org.drugis.addis.entities.data.DecisionContext dataContext) {
+		if (dataContext == null) {
+			return null;
+		}
+		DecisionContext context = new DecisionContext();
+		context.setComparator(dataContext.getComparator());
+		context.setStakeholderPerspective(dataContext.getStakeholderPerspective());
+		context.setTherapeuticContext(dataContext.getTherapeuticContext());
+		context.setTimeHorizon(dataContext.getTimeHorizon());
+		return context;
+	}
 
 	/**
 	 * Convert legacy XML ("version 0") to schema v1 compliant XML.
@@ -1481,5 +1509,4 @@ public class JAXBConvertor {
 		
 		return xml;
 	}
-
 }

@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -583,5 +584,16 @@ public class BenefitRiskWizardPMTest {
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
 		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
 		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
+	}
+	
+	@Test
+	public void testDecisionContext() {
+		assertNull(d_pm.getDecisionContext());
+		d_pm.getIncludeDescriptivesModel().setValue(true);
+		assertNotNull(d_pm.getDecisionContext());
+		assertSame(d_pm.getDecisionContext(), d_pm.getDecisionContext());
+		
+		d_pm.getDecisionContextFields().get(0).getModel().setValue("Test");
+		assertEquals("Test", d_pm.getDecisionContext().getTherapeuticContext());
 	}
 }

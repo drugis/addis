@@ -40,6 +40,7 @@ public interface BenefitRiskAnalysis<Alternative> extends Comparable<BenefitRisk
 	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_ANALYSIS_TYPE = "analysisType";
 	public static String PROPERTY_BASELINE = "baseline";
+	public static String PROPERTY_DECISION_CONTEXT = "decisionContext";
 
 	public enum AnalysisType { LyndOBrien, SMAA };
 	
@@ -58,4 +59,6 @@ public interface BenefitRiskAnalysis<Alternative> extends Comparable<BenefitRisk
 	public Distribution getMeasurement(OutcomeMeasure criterion, Alternative a);
 
 	public MeasurementSource<Alternative> getMeasurementSource();
+	
+	public DecisionContext getDecisionContext();
 }

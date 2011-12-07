@@ -58,6 +58,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	private ObservableList<Arm> d_alternatives;
 	private AnalysisType d_analysisType;
 	private final Arm d_baseline;
+	private DecisionContext d_decisionContext;
 	
 	private class StudyMeasurementSource extends AbstractMeasurementSource<Arm> {
 	}
@@ -69,6 +70,12 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 	
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
 			List<OutcomeMeasure> criteria, Arm baseline, List<Arm> alternatives, AnalysisType analysisType) {
+		this(name, indication, study, criteria, baseline, alternatives, analysisType, null);
+	}
+
+	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study,
+			List<OutcomeMeasure> criteria, Arm baseline, List<Arm> alternatives,
+			AnalysisType analysisType, DecisionContext context) {
 		d_baseline = baseline;
 		assertMeasurementsPresent(study, criteria, alternatives);
 		d_name = name;
@@ -80,7 +87,7 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		if(d_analysisType == AnalysisType.LyndOBrien && (d_criteria.size() != 2 || d_alternatives.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
-				
+		d_decisionContext = context;
 	}
 
 	private void assertMeasurementsPresent(Study study, List<OutcomeMeasure> criteria, List<Arm> alternatives) {
@@ -182,11 +189,15 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 			EntityUtil.deepEqual(getIndication(), o.getIndication()) &&
 			EntityUtil.deepEqual(getBaseline(), o.getBaseline()) &&
 			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
-			EntityUtil.deepEqual(getCriteria(), o.getCriteria());
+			EntityUtil.deepEqual(getCriteria(), o.getCriteria()) &&
+			EntityUtil.deepEqual(getDecisionContext(), o.getDecisionContext());
 	}
 
-	@Override
 	public Arm getBaseline() {
 		return d_baseline;
+	}
+
+	public DecisionContext getDecisionContext() {
+		return d_decisionContext;
 	}
 }

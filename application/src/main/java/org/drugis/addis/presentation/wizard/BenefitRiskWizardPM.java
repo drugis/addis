@@ -26,9 +26,12 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 
@@ -85,6 +88,9 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 	private final StudyCriteriaAndAlternativesPresentation d_studyCritAlt;
 	private final MetaCriteriaAndAlternativesPresentation d_metaCritAlt;
+	private ValueHolder<Boolean> d_includeDescriptives = new ModifiableHolder<Boolean>(false);
+	private List<AbstractBenefitRiskPresentation.DecisionContextField> d_decisionContextFields;
+	private DecisionContext d_decisionContext = new DecisionContext();
 
 
 	public BenefitRiskWizardPM(Domain d) {
@@ -96,6 +102,8 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		d_metaCritAlt = new MetaCriteriaAndAlternativesPresentation(d_indicationHolder, d_analysisTypeHolder, d_domain.getMetaAnalyses());
 		
 		d_completeHolder = new CompleteHolder(d_evidenceTypeHolder, d_studyCritAlt.getCompleteModel(), d_metaCritAlt.getCompleteModel());
+		
+		d_decisionContextFields = AbstractBenefitRiskPresentation.createDecisionContextFields(d_decisionContext);
 	}
 
 	public ValueHolder<Boolean> getCompleteModel() {
@@ -117,5 +125,18 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 	public  MetaCriteriaAndAlternativesPresentation getMetaBRPresentation() {
 		return d_metaCritAlt;
 	}
+	
+	public ValueHolder<Boolean> getIncludeDescriptivesModel() {
+		return d_includeDescriptives ;
+	}
+
+	public List<AbstractBenefitRiskPresentation.DecisionContextField> getDecisionContextFields() {
+		return d_decisionContextFields;
+	}
+
+	public DecisionContext getDecisionContext() {
+		return d_includeDescriptives.getValue() ? d_decisionContext : null;
+	}
+
 
 }
