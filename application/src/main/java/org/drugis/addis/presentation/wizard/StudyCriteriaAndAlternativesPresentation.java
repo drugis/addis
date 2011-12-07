@@ -101,9 +101,6 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	}
 
 	private void studyChanged() {
-		d_alternativeEnabledMap.clear();
-		d_criteriaEnabledMap.clear();
-		
 		d_selectedCriteria.clear();
 		d_selectedAlternatives.clear();
 		
@@ -133,7 +130,7 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	
 	@Override
 	protected boolean getAlternativeShouldBeEnabled(Arm alt) {
-		if (!super.getAlternativeShouldBeEnabled(alt)) {
+		if (!super.getAlternativeShouldBeEnabled(alt) || d_studyModel.getValue() == null) {
 			return false;
 		}
 		for (OutcomeMeasure crit : getSelectedCriteria()) {

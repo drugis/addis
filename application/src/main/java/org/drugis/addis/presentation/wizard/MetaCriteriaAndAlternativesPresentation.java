@@ -272,10 +272,6 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 
 	@Override
 	protected void reset() {
-		// enabled maps should be cleared first
-		d_alternativeEnabledMap.clear();
-		d_criteriaEnabledMap.clear();
-		
 		// selected criteria have to be cleared before availableCriteria and selectedMetaAnalyses
 		d_selectedCriteria.clear();
 		d_selectedAlternatives.clear();
