@@ -24,7 +24,9 @@
 
 package org.drugis.addis.gui.util;
 
+import java.awt.Canvas;
 import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -33,10 +35,12 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -45,6 +49,9 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import scala.actors.threadpool.Arrays;
 import sun.awt.datatransfer.DataTransferer;
@@ -60,8 +67,8 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 		Action action = new AbstractAction("copy") {
 			public void actionPerformed(ActionEvent event) {
-				TableCopyHandler hander = new TableCopyHandler(jtable);
-				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(hander, hander);
+				TableCopyHandler handler = new TableCopyHandler(jtable);
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(handler, handler);
 			}
 		};
 		jtable.registerKeyboardAction(action, copy, JComponent.WHEN_FOCUSED);
@@ -110,6 +117,7 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		public void endRow();
 		public void headerCell(String contents);
 		public void dataCell(String contents);
+		public boolean isPlainText();
 	}
 	
 	private static class TextTableStringBuilder implements TableStringBuilder {
@@ -131,6 +139,9 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		}
 		public String toString() {
 			return d_builder.toString();
+		}
+		public boolean isPlainText() {
+			return true;
 		}
 	}
 	
@@ -157,6 +168,9 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		public String toString() {
 			return d_builder.toString();
 		}
+		public boolean isPlainText() {
+			return false;
+		}
 	}
 
 	private Object getTableAsText() {
@@ -182,7 +196,7 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		for (int row : getRows()) {
 			builder.startRow();
 			for (int col = 0; col < d_table.getColumnCount(); ++col) {
-				builder.dataCell(getTextAt(row, col));
+				builder.dataCell(getTextAt(row, col, builder.isPlainText()));
 			}
 			builder.endRow();
 		}
@@ -202,12 +216,36 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		return d_table.getSelectedRows();
 	}
 
-	private String getTextAt(int row, int col) {
+	private String getTextAt(int row, int col, boolean plainText) {
 		Component c = getRendererComponent(row, col);
 		if (c instanceof JLabel) {
-			return ((JLabel)c).getText();
+			return stripHtml(((JLabel)c).getText(), plainText);
+		} else if (c instanceof Canvas) {
+			return plainText ? "" : "<img src=\"data:image/png;base64," + getMimeEncodedPng((Canvas) c) + "\"/>";
 		}
 		return d_table.getValueAt(row, col).toString();
+	}
+
+	private static String stripHtml(String str, boolean allTags) {
+		if (str.contains("<html>")) {
+			return str.replaceAll("<br[^>]*>", " ").replaceAll("<[^>]*>","").replaceAll("&nbsp;", " ");
+		} else {
+			return str;
+		}
+	}
+
+	private String getMimeEncodedPng(Canvas c) {
+		BufferedImage bufferedImage = new BufferedImage(c.getSize().width, c.getSize().height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics2d = bufferedImage.createGraphics();
+		graphics2d.setClip(0, 0, c.getSize().width, c.getSize().height);
+		c.paint(graphics2d);
+		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, "png", output);
+			return DatatypeConverter.printBase64Binary(output.toByteArray());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -217,6 +255,6 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 
 	private Component getRendererComponent(int row, int column) {
 		TableCellRenderer renderer = d_table.getCellRenderer(row, column);
-		return d_table.prepareRenderer(renderer, row, column);
+		return renderer.getTableCellRendererComponent(d_table, d_table.getValueAt(row, column), false, false, row, column);
 	}
 }

@@ -572,10 +572,6 @@ public class AddStudyWizard extends Wizard {
 			});
 		}
 		
-		class SourceTransferHandler extends TransferHandler {
-
-        }
-		
 		private ObservableList<StudyActivity> getStudyActivities() {
 			return d_pm.getNewStudyPM().getBean().getStudyActivities();
 		}
