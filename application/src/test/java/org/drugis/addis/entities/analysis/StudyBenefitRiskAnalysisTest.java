@@ -43,6 +43,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
@@ -52,6 +54,8 @@ import org.junit.Test;
 public class StudyBenefitRiskAnalysisTest {
 	private static final String NAME = "Je Moeder";
 	private StudyBenefitRiskAnalysis d_analysis;
+	private Arm d_baseline;
+	private Arm d_subject;
 
 	@Before
 	public void setUp() {
@@ -59,9 +63,11 @@ public class StudyBenefitRiskAnalysisTest {
 		Study study = ExampleData.buildStudyChouinard();
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointHamd());
-		criteria.add(ExampleData.buildAdverseEventConvulsion());
+		criteria.add(ExampleData.buildEndpointCgi());
 		List<Arm> alternatives = study.getArms();
 		d_analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA);
+		d_baseline = alternatives.get(0);
+		d_subject = alternatives.get(1);
 	}
 	
 	@Test
@@ -69,8 +75,8 @@ public class StudyBenefitRiskAnalysisTest {
 		assertEquals(NAME, d_analysis.getName());
 		assertEquals(ExampleData.buildStudyChouinard(), d_analysis.getStudy());
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
+		criteria.add(ExampleData.buildEndpointCgi());
 		criteria.add(ExampleData.buildEndpointHamd());
-		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		assertEquals(criteria, d_analysis.getCriteria());
 		assertEquals(ExampleData.buildStudyChouinard().getArms(), d_analysis.getAlternatives());
 		assertEquals(d_analysis.getAlternatives().get(0), d_analysis.getBaseline());
@@ -162,6 +168,21 @@ public class StudyBenefitRiskAnalysisTest {
 		} catch(IllegalArgumentException e)
 		{ caught = true;}
 		assertTrue(caught);
+	}
+	
+	
+	@Test
+	public void testRelativeEffectDistribution() {
+		OutcomeMeasure v = d_analysis.getCriteria().get(1);
+		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_analysis.getStudy().getMeasurement(v, d_baseline), 
+				(RateMeasurement) d_analysis.getStudy().getMeasurement(v, d_subject));
+		assertEquals(ratio.getDistribution(), d_analysis.getRelativeEffectDistribution(v, d_baseline, d_subject));
+		
+		OutcomeMeasure v2 = d_analysis.getCriteria().get(0);
+		BasicStandardisedMeanDifference diff = new BasicStandardisedMeanDifference(
+				(ContinuousMeasurement) d_analysis.getStudy().getMeasurement(v2, d_baseline), 
+				(ContinuousMeasurement) d_analysis.getStudy().getMeasurement(v2, d_subject));
+		assertEquals(diff.getDistribution(), d_analysis.getRelativeEffectDistribution(v2, d_baseline, d_subject));
 	}
 	
 }

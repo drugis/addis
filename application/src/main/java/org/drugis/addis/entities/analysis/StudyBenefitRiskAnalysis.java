@@ -32,6 +32,9 @@ import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.BasicMeasurement;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -39,6 +42,8 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
+import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
@@ -199,5 +204,17 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 
 	public DecisionContext getDecisionContext() {
 		return d_decisionContext;
+	}
+
+	public Distribution getRelativeEffectDistribution(OutcomeMeasure om, Arm baseline, Arm subject) {
+		BasicMeasurement baseMeas = getStudy().getMeasurement(om, baseline);
+		BasicMeasurement subjMeas = getStudy().getMeasurement(om, subject);
+		if (baseMeas instanceof BasicRateMeasurement) {
+			return new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas).getDistribution();
+		} 
+		if (baseMeas instanceof BasicContinuousMeasurement) {
+			return new BasicStandardisedMeanDifference((ContinuousMeasurement) baseMeas, (ContinuousMeasurement) subjMeas).getDistribution();
+		}
+		throw new IllegalStateException("Unknown error creating relative effect distribution in StudyBenefitRiskAnalysis");
 	}
 }

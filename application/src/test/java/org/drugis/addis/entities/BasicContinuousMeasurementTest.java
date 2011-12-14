@@ -72,8 +72,13 @@ public class BasicContinuousMeasurementTest {
 		assertFalse(m1.isComplete());
 		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(0.0, null, 100);
 		assertFalse(m2.isComplete());
-		BasicContinuousMeasurement m4 = new BasicContinuousMeasurement(null, 0.0, 100);
+		BasicContinuousMeasurement m3 = new BasicContinuousMeasurement(null, 0.0, 100);
+		assertFalse(m3.isComplete());
+		
+		BasicContinuousMeasurement m4 = new BasicContinuousMeasurement(2.3, 0.15, 0);
 		assertFalse(m4.isComplete());
+		BasicContinuousMeasurement m5 = new BasicContinuousMeasurement(2.3, -0.2, 30);
+		assertFalse(m5.isComplete());
 	}
 	
 	@Test

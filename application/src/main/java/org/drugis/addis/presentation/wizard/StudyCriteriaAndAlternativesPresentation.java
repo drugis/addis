@@ -30,8 +30,10 @@ import java.util.List;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -143,6 +145,45 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 		return true;
 	}
 
+	@Override
+	protected boolean getCriterionShouldBeEnabled(OutcomeMeasure crit) {
+		if (d_studyModel.getValue() == null) {
+			return false;
+		}
+		Study study = d_studyModel.getValue();
+		
+		// Check that there are at least 2 non-missing measurements
+		List<Arm> goodArms = new ArrayListModel<Arm>();
+		for (Arm arm : study.getArms()) {
+			if (study.getMeasurement(crit, arm) != null && study.getMeasurement(crit, arm).isComplete()) {
+				goodArms.add(arm);
+			}
+		}
+		if (goodArms.size() < 2) {
+			return false;
+		}
+		
+		// Check that at least one arm has non-zero measurement
+		if (crit.getVariableType() instanceof RateVariableType) {
+			boolean haveNonZero = false;
+			boolean haveNonSat = false;
+			for (Arm arm : goodArms) {
+				BasicRateMeasurement m = (BasicRateMeasurement) study.getMeasurement(crit, arm);
+				if (!m.getRate().equals(0)) {
+					haveNonZero = true;
+				}
+				if (!m.getRate().equals(m.getSampleSize())) {
+					haveNonSat = true;
+				}
+			}
+			if (!haveNonZero || !haveNonSat) {
+				return false;
+			}
+		}
+		
+		return super.getCriterionShouldBeEnabled(crit);
+	}
+	
 	public ObservableList<Study> getStudiesWithIndication() {
 		return d_studiesWithIndicationHolder;
 	}

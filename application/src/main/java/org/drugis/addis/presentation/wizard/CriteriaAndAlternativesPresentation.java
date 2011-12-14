@@ -208,7 +208,7 @@ public abstract class CriteriaAndAlternativesPresentation<Alternative extends Co
 		return true;
 	}
 
-	private boolean getCriterionShouldBeEnabled(OutcomeMeasure crit) {
+	protected boolean getCriterionShouldBeEnabled(OutcomeMeasure crit) {
 		if (getCriterionSelectedModel(crit).getValue() == true) {
 			return true;
 		}

@@ -57,6 +57,8 @@ public interface BenefitRiskAnalysis<Alternative> extends Comparable<BenefitRisk
 	public abstract String getName();
 	
 	public Distribution getMeasurement(OutcomeMeasure criterion, Alternative a);
+	
+	public Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative baseline, Alternative subject);
 
 	public MeasurementSource<Alternative> getMeasurementSource();
 	

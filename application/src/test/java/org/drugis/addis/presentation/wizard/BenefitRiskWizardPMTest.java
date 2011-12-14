@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
@@ -106,7 +105,6 @@ public class BenefitRiskWizardPMTest {
 	
 	@Test
 	public void testMetaAnalysesForEachOutcome() {
-		d_pm.getIndicationModel().setValue(d_indication);
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		for (OutcomeMeasure om : pm.getCriteriaListModel()) {
 			List<MetaAnalysis> analyses = new ArrayList<MetaAnalysis>();
@@ -127,19 +125,7 @@ public class BenefitRiskWizardPMTest {
 		pm.getCriterionSelectedModel(om).setValue(true);
 		assertEquals(pm.getCriterionSelectedModel(om).getValue(), origModel.getValue());
 	}
-	
-	@Test
-	public void testAlternativeSelectedModelKeepsChanges() {
-		d_pm.getEvidenceTypeHolder().setValue(BRAType.SingleStudy);
-		StudyCriteriaAndAlternativesPresentation pm = d_pm.getStudyBRPresentation();
-		pm.getStudyModel().setValue(d_study);
-		
-		Arm a = d_study.getArms().get(0);
-		ValueHolder<Boolean> origArm = pm.getAlternativeSelectedModel(a);
-		assertFalse(origArm.getValue());
-		pm.getAlternativeSelectedModel(a).setValue(true);
-		assertEquals(pm.getAlternativeSelectedModel(a).getValue(), origArm.getValue());
-	}
+
 
 	@Test
 	public void testOutcomeSelectedMultipleAnalysisShouldNotSelect() {

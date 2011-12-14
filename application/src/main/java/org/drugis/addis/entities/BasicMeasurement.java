@@ -54,6 +54,6 @@ public abstract class BasicMeasurement extends AbstractEntity implements Measure
 	
 	@Override
 	public boolean isComplete() {
-		return d_sampleSize != null;
+		return d_sampleSize != null && d_sampleSize > 0;
 	}
 }

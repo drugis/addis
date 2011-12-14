@@ -45,14 +45,12 @@ import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -166,15 +164,12 @@ public class BRATTableModelTest {
 	
 	@Test
 	public void testDifferences() {
-		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(1), d_baseline), 
-				(RateMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(1), d_subject));
-		assertEquals(ratio.getDistribution(), ((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
+		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(0), d_baseline, d_subject),
+				((BRATDifference)d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
+
+		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(1), d_baseline, d_subject),
+				((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
 		
-		BasicStandardisedMeanDifference diff = new BasicStandardisedMeanDifference(
-				(ContinuousMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(0), d_baseline), 
-				(ContinuousMeasurement) d_sba.getStudy().getMeasurement(d_sba.getCriteria().get(0), d_subject));
-		assertEquals(diff.getDistribution(), ((BRATDifference)d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
-	
 		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), d_mba.getAlternatives().get(0), d_mba.getAlternatives().get(1)),
 				((BRATDifference)d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	}

@@ -70,6 +70,16 @@ public class BasicRateMeasurementTest {
 		assertFalse(m1.isComplete());
 		BasicRateMeasurement m2 = new BasicRateMeasurement(null, 5);
 		assertFalse(m2.isComplete());
+		
+		BasicRateMeasurement m3 = new BasicRateMeasurement(0, 0);
+		assertFalse(m3.isComplete());
+		BasicRateMeasurement m4 = new BasicRateMeasurement(0, -1);
+		assertFalse(m4.isComplete());
+		BasicRateMeasurement m5 = new BasicRateMeasurement(-1, 5);
+		assertFalse(m5.isComplete());
+		
+		BasicRateMeasurement m6 = new BasicRateMeasurement(5, 4);
+		assertFalse(m6.isComplete());
 	}
 	
 	@Test

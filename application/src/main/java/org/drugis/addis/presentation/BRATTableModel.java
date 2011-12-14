@@ -31,16 +31,11 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicContinuousMeasurement;
-import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
@@ -49,8 +44,6 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.AxisType;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.forestplot.BinnedScale;
@@ -246,16 +239,9 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	private Distribution getDifference(OutcomeMeasure om) {
 		if (d_analysis instanceof StudyBenefitRiskAnalysis) {
 			StudyBenefitRiskAnalysis sba = (StudyBenefitRiskAnalysis) d_analysis;
-			BasicMeasurement baseMeas = sba.getStudy().getMeasurement(om, (Arm) getBaseline());
-			BasicMeasurement subjMeas = sba.getStudy().getMeasurement(om, (Arm) getSubject());
-			if (baseMeas instanceof BasicRateMeasurement) {
-				return new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas).getDistribution();
-			} else if (baseMeas instanceof BasicContinuousMeasurement) {
-				return new BasicStandardisedMeanDifference((ContinuousMeasurement) baseMeas, (ContinuousMeasurement) subjMeas).getDistribution();
-			}
+			return sba.getRelativeEffectDistribution(om, (Arm) getBaseline(), (Arm) getSubject());
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			mba.getMeasurement(om, (DrugSet) getBaseline());
 			return mba.getRelativeEffectDistribution(om, (DrugSet) getBaseline(), (DrugSet) getSubject());
 		}
 		return null;
