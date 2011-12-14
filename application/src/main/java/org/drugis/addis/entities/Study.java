@@ -759,8 +759,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public ObservableList<Arm> getMeasuredArms(Variable v, DrugSet d, WhenTaken wt) {
-		return new FilteredObservableList<Arm>(getArms(d),
-				new IsMeasuredFilter(v, wt));
+		return new FilteredObservableList<Arm>(getArms(d), new IsMeasuredFilter(v, wt));
 	}
 
 	private boolean isMeasured(Variable v, DrugSet d, WhenTaken wt) {
@@ -773,8 +772,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
-		return getMeasurement(v, a) != null
-		&& getMeasurement(v, a).isComplete();
+		return getMeasurement(v, a) != null	&& getMeasurement(v, a).isComplete();
 	}
 
 	private ObservableList<Arm> getArms(DrugSet d) {

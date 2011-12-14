@@ -26,6 +26,8 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -34,7 +36,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
@@ -185,4 +189,46 @@ public class StudyBenefitRiskAnalysisTest {
 		assertEquals(diff.getDistribution(), d_analysis.getRelativeEffectDistribution(v2, d_baseline, d_subject));
 	}
 	
+	@Test
+	public void testCorrectedRelativeEffectDistribution() {
+		OutcomeMeasure om = ExampleData.buildEndpointHamd();
+		((BasicRateMeasurement) d_analysis.getStudy().getMeasurement(om, d_baseline)).setRate(0);
+		
+		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_baseline), 
+				(RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_subject));
+		assertEquals(ratio.getCorrected().getDistribution(), d_analysis.getRelativeEffectDistribution(om, d_baseline, d_subject));
+	}
+	
+	@Test
+	public void testCorrectedRelativeEffectDistribution2() {
+		OutcomeMeasure om = ExampleData.buildEndpointHamd();
+		BasicRateMeasurement m = ((BasicRateMeasurement) d_analysis.getStudy().getMeasurement(om, d_subject));
+		m.setRate(m.getSampleSize());
+		
+		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_baseline), 
+				(RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_subject));
+		assertEquals(ratio.getCorrected().getDistribution(), d_analysis.getRelativeEffectDistribution(om, d_baseline, d_subject));
+	}
+	
+	@Test
+	public void testNullIfRelativeEffectDistributionUncorrectable() {
+		Indication indication = ExampleData.buildIndicationDepression();
+		Study study = ExampleData.buildStudyFava2002().clone();
+		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
+		criteria.add(ExampleData.buildEndpointHamd());
+		AdverseEvent om = ExampleData.buildAdverseEventConvulsion();
+		criteria.add(om);
+		List<Arm> alternatives = study.getArms();
+		
+		for (Arm a : alternatives) {
+			study.setMeasurement(om, a, new BasicRateMeasurement(0, 100));
+		}
+		((BasicRateMeasurement) study.getMeasurement(om, alternatives.get(0))).setRate(5);
+		
+		StudyBenefitRiskAnalysis analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA);
+
+		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(0), alternatives.get(1)));
+		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(0), alternatives.get(2)));
+		assertNull(analysis.getRelativeEffectDistribution(om, alternatives.get(1), alternatives.get(2)));
+	}
 }

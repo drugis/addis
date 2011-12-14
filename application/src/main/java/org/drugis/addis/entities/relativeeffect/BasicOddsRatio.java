@@ -87,7 +87,7 @@ public class BasicOddsRatio extends BasicRatio {
 
 	@Override
 	protected Integer getDegreesOfFreedom() {
-		return getSampleSize() -2;
+		return getSampleSize() - 2;
 	}
 
 	@Override

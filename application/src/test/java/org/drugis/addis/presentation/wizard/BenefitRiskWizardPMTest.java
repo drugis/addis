@@ -565,11 +565,10 @@ public class BenefitRiskWizardPMTest {
 		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
 		assertTrue(pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
 
-		// select entirely missing outcomemeasure; both arms should now be disabled
+		// select entirely missing outcomemeasure; criterion should now be disabled
 
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(0)).getValue());
-		assertFalse(pm.getAlternativeEnabledModel(study.getArms().get(1)).getValue());
+		assertFalse(pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).getValue());
 	}
 	
 	@Test

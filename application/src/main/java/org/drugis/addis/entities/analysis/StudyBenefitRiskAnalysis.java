@@ -210,7 +210,16 @@ public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitR
 		BasicMeasurement baseMeas = getStudy().getMeasurement(om, baseline);
 		BasicMeasurement subjMeas = getStudy().getMeasurement(om, subject);
 		if (baseMeas instanceof BasicRateMeasurement) {
-			return new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas).getDistribution();
+			BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas);
+			if (ratio.isDefined()) {
+				return ratio.getDistribution();
+			} else {
+				if (ratio.getCorrected().isDefined()) {
+					return ratio.getCorrected().getDistribution();
+				} else {
+					return null;
+				}
+			}
 		} 
 		if (baseMeas instanceof BasicContinuousMeasurement) {
 			return new BasicStandardisedMeanDifference((ContinuousMeasurement) baseMeas, (ContinuousMeasurement) subjMeas).getDistribution();
