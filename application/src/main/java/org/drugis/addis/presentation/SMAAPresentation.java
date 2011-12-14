@@ -65,6 +65,8 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 
 	private TaskProgressModel d_progressModel = new TaskProgressModel(new NullTask());
 
+	private BRSMAASimulationBuilder d_simBuilder;
+
 	public SMAAPresentation(AnalysisType a) {
 		d_a = a;
 		d_buildQueue = new BuildQueue();
@@ -80,6 +82,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		d_cwDS = new CentralWeightsDataset(emptyResults);
 		d_prefPresModel = new PreferencePresentationModel(d_smaaModel, false);
 		d_initializedModel.setValue(true);
+		d_simBuilder = new BRSMAASimulationBuilder(d_smaaModel, d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressModel);
 		
 		d_smaaModel.addModelListener(new SMAAModelListener() {
 			public void modelChanged(ModelChangeEvent type) {
@@ -89,8 +92,8 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		startSimulation();
 	}
 
-	private BRSMAASimulationBuilder createBuilder() {
-		return new BRSMAASimulationBuilder(d_smaaModel, d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressModel);
+	private BRSMAASimulationBuilder getBuilder() {
+		return d_simBuilder;
 	}
 	
 	public ValueHolder<Boolean> getInitializedModel() {
@@ -98,7 +101,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	}
 
 	protected void startSimulation() {
-		d_buildQueue.add(createBuilder());
+		d_buildQueue.add(getBuilder());
 	}
 
 	public PreferencePresentationModel getSmaaPreferenceModel() {
