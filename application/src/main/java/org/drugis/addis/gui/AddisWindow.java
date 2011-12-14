@@ -44,6 +44,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -55,6 +56,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -83,6 +85,9 @@ import org.drugis.common.gui.ViewBuilder;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class AddisWindow extends JFrame {
@@ -534,29 +539,42 @@ public class AddisWindow extends JFrame {
 
 	public void setRightPanelView(ViewBuilder view) {
 		d_rightPanelBuilder = view;
-		setRightPanelContents(view.buildPanel());
-	}
-	
-
-	public void repaintRightPanel() {
-		d_rightPanel.setVisible(false);
-		d_rightPanel.setVisible(true);
-		d_rightPanel.revalidate();
+		reloadRightPanel();
 	}
 
 	public void reloadRightPanel() {
-		if (d_rightPanelBuilder != null) {
-			d_rightPanel.setVisible(false);
-			setRightPanelContents(d_rightPanelBuilder.buildPanel());
-			d_rightPanel.setVisible(true);	
-		}
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (d_rightPanelBuilder != null) {
+					d_rightPanel.setVisible(false);
+					try {
+						JComponent panel = d_rightPanelBuilder.buildPanel();
+						setRightPanelContents(panel);
+						d_rightPanel.setVisible(true);
+					} catch (RuntimeException e) {
+						setRightPanelContents(buildErrorPanel());
+						d_rightPanel.setVisible(true);
+						throw e;
+					}
+				}
+			}
+		});
+	}
+	
+	private JPanel buildErrorPanel() {
+		FormLayout layout = new FormLayout("pref:grow:fill", "p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
+		
+		CellConstraints cc = new CellConstraints();
+		builder.add(new JLabel("Error building panel"), cc.xy(1, 1));
+		
+		return builder.getPanel();
 	}
 
 	private void setRightPanelContents(JComponent component) {
-		d_rightPanel.setVisible(false);
 		d_rightPanel.removeAll();
 		d_rightPanel.add(encapsulate(component), BorderLayout.CENTER);
-		d_rightPanel.setVisible(true);
 	}
 
 	
