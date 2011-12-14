@@ -28,6 +28,8 @@ import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -36,6 +38,13 @@ import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
 public class BRATDifferenceRenderer extends DistributionQuantileCellRenderer {
 	private static final long serialVersionUID = 3342307695543623211L;
 
+	TableCellRenderer d_altRenderer = new DefaultTableCellRenderer();
+	
+	Color d_selectGreen = new Color(0, 131, 0);
+	Color d_unselectGreen = new Color(0, 195, 0);
+	Color d_selectRed = new Color(134, 32, 41);
+	Color d_unselectRed = new Color(255, 48, 48);
+	
 	public BRATDifferenceRenderer() {
 		super(true);
 	}
@@ -49,18 +58,17 @@ public class BRATDifferenceRenderer extends DistributionQuantileCellRenderer {
 			Distribution d = diff.getDifference();
 			Component renderer = super.getTableCellRendererComponent(table, d, isSelected, hasFocus, row, column);
 			
+			Color green = isSelected ? d_selectGreen : d_unselectGreen;
+			Color red = isSelected ? d_selectRed : d_unselectRed;
+			
 			if (diff.getOutcomeMeasure().getDirection().equals(Direction.HIGHER_IS_BETTER)) {
-				renderer.setBackground(d.getQuantile(0.5) > 1 ? Color.GREEN : Color.RED);
+				renderer.setBackground(d.getQuantile(0.5) > 1 ? green : red);
 			} else {
-				renderer.setBackground(d.getQuantile(0.5) < 1 ? Color.GREEN : Color.RED);
+				renderer.setBackground(d.getQuantile(0.5) < 1 ? green : red);
 			}
 			return renderer;
 		}
-		Component renderer = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (value == null || value instanceof String) {
-			renderer.setBackground(Color.WHITE);
-		}
-		return renderer ;
+		return d_altRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
 
 }

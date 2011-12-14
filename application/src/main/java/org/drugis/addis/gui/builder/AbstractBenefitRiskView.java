@@ -144,8 +144,24 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		table.setDefaultRenderer(BRATDifference.class, new BRATDifferenceRenderer());
 		table.setDefaultRenderer(BRATForest.class, new BRATForestCellRenderer<PresentationType>());
 		table.setRowHeight((int) Math.max(ForestPlot.ROWHEIGHT + 2, new JLabel("<html>a<br/>b</html>").getPreferredSize().getHeight()));
+		
+		// Set minimum widths
 		table.getTableHeader().getColumnModel().getColumn(BRATTableModel.COLUMN_FOREST).setMinWidth(ForestPlot.BARWIDTH + BRATForestCellRenderer.PADDING * 2);
+		for (int i = 0; i < table.getColumnCount(); ++i) {
+			if (table.getColumnClass(i) == Distribution.class || table.getColumnClass(i) == BRATDifference.class) {
+				int minWidth = 0;
+				for (int j = 0; j < table.getRowCount(); ++j) {
+					minWidth = Math.max(getColumnMinWidth(table, j, i), minWidth);
+				}
+				table.getTableHeader().getColumnModel().getColumn(i).setMinWidth(minWidth);
+			}
+		}
 		return table;
+	}
+
+
+	private int getColumnMinWidth(JTable table, int row, int column) {
+		return table.getCellRenderer(row, column).getTableCellRendererComponent(table, table.getValueAt(row, column), false, false, row, column).getMinimumSize().width;
 	}
 
 	protected abstract JPanel buildOverviewPanel();

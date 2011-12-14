@@ -30,9 +30,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.forestplot.ForestPlot;
@@ -41,22 +42,31 @@ import org.drugis.addis.forestplot.RelativeEffectBar;
 import org.drugis.addis.presentation.ForestPlotPresentation;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 
-final class BRATForestCellRenderer<PresentationType> implements TableCellRenderer {
+final class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRenderer {
+	private static final long serialVersionUID = -6339099621262904161L;
 	public static final int PADDING = 20;
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		Component superRenderer = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		final Color bg = superRenderer.getBackground();
+		final Color fg = superRenderer.getForeground();
+		
 		final BRATForest forest = (BRATForest) value;
 		Canvas canvas = new Canvas() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void paint(Graphics g) {
+				g.setColor(bg);
+				Rectangle bounds = g.getClipBounds();
+				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+				
 				if (forest == null || forest.scale == null) {
 					return;
 				}
 				g.translate(PADDING, 0);
-				g.setColor(Color.BLACK);
+				g.setColor(fg);
 				if (forest.ci != null) {
 					final RelativeEffectBar bar = new RelativeEffectBar(forest.scale, ForestPlot.ROWVCENTER, forest.ci, ForestPlot.ROWHEIGHT / 3, forest.vt instanceof ContinuousVariableType);
 					bar.paint((Graphics2D) g);
@@ -68,7 +78,7 @@ final class BRATForestCellRenderer<PresentationType> implements TableCellRendere
 				}
 				g.translate(-PADDING, 0);
 			}
-			
+
 			@Override
 			public Dimension getSize() {
 				return new Dimension(ForestPlot.BARWIDTH, ForestPlot.ROWHEIGHT);

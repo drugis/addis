@@ -25,8 +25,12 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.Component;
+import java.awt.Insets;
 
+import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -38,6 +42,8 @@ public class DistributionQuantileCellRenderer extends DefaultTableCellRenderer {
 	private final boolean d_useTwoLines;
 	public DistributionQuantileCellRenderer(boolean useTwoLines) {
 		d_useTwoLines = useTwoLines;
+		
+		setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
 	public DistributionQuantileCellRenderer() {
@@ -52,7 +58,9 @@ public class DistributionQuantileCellRenderer extends DefaultTableCellRenderer {
 				(d_useTwoLines ? "<br>" : " ") + "(" + 
 				SummaryCellRenderer.format(d.getQuantile(0.025)) + ",&nbsp;" + 
 				SummaryCellRenderer.format(d.getQuantile(0.975)) + ")" + "</center></html>";
-			return super.getTableCellRendererComponent(table, str, isSelected, hasFocus, row, column);
+			JComponent renderer = (JComponent) super.getTableCellRendererComponent(table, str, isSelected, hasFocus, row, column);
+			renderer.setBorder(new EmptyBorder(new Insets(5, 5, 5, 5)));
+			return renderer;
 		}
 		return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
