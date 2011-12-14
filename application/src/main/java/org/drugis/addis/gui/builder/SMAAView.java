@@ -213,11 +213,11 @@ public class SMAAView implements ViewBuilder  {
 			
 			builder.add(getSmaaSimulationProgressBar(), cc.xy(1, 1));
 			
-			builder.add(view.buildPanel(), cc.xy(1, 3));
-			
+			JComponent smaaRaPanel = view.buildPanel();
+			builder.add(smaaRaPanel, cc.xy(1, 3));
 			
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
-			bbuilder.addButton(createSaveImageButton(findChartPanel(view.buildPanel())));
+			bbuilder.addButton(createSaveImageButton(findChartPanel(smaaRaPanel)));
 			
 			builder.add(bbuilder.getPanel(), cc.xy(1, 5));
 			
