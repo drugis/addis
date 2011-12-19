@@ -25,8 +25,11 @@
 package org.drugis.addis.gui.builder;
 
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -59,6 +62,7 @@ import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -94,16 +98,27 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 
 	protected JPanel buildBratPanel() {
 		FormLayout layout = new FormLayout("fill:0:grow",
-		"p, 3dlu, p");
+		"p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc = new CellConstraints();
 
 		builder.addSeparator("Value Tree", cc.xy(1, 1));
-		builder.add(new ValueTreeGraph(d_pm.getBean().getCriteria()), cc.xy(1, 3));
+		final ValueTreeGraph valueTree = new ValueTreeGraph(d_pm.getBean().getCriteria());
+		builder.add(valueTree, cc.xy(1, 3));
+		
+		JButton saveBtn = new JButton("Save Image");
+		saveBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				valueTree.saveImage(d_mainWindow);
+			}
+		});
+		ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
+		bbuilder.addButton(saveBtn);
+		builder.add(bbuilder.getPanel(), cc.xy(1, 5));
 
-		int row = 3;
+		int row = 5;
 		for (Alternative alternative : getNonBaselineAlternatives()) {
 			row = LayoutUtil.addRow(layout, row);
 			builder.addSeparator("Benefit-Risk summary: " + alternative.getLabel() + " vs "  + getBaseline().getLabel(), cc.xy(1, row));

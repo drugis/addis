@@ -29,11 +29,13 @@ import java.awt.Color;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.gui.util.JGraphUtil;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphLayoutCache;
@@ -46,13 +48,15 @@ import com.jgraph.layout.tree.JGraphTreeLayout;
 
 public class ValueTreeGraph extends JPanel {
 	private static final long serialVersionUID = 6066555189994560156L;
+	private JGraph d_graph;
 
 	public ValueTreeGraph(List<OutcomeMeasure> oms) {
 		super(new BorderLayout());
-		add(createGraph(oms), BorderLayout.CENTER);
+		d_graph = createGraph(oms);
+		add(d_graph, BorderLayout.CENTER);
 	}
 
-	private JGraph createGraph(List<OutcomeMeasure> oms) {
+	private static JGraph createGraph(List<OutcomeMeasure> oms) {
 		ValueTreeModel model = new ValueTreeModel(oms);
 		JGraphModelAdapter<Object, ValueTreeModel.Edge> jModel = new JGraphModelAdapter<Object, ValueTreeModel.Edge>(model);
 
@@ -83,5 +87,9 @@ public class ValueTreeGraph extends JPanel {
 		jgraph.getGraphLayoutCache().edit(facade.createNestedMap(true, true));
 
 		return jgraph;
+	}
+	
+	public void saveImage(JFrame frame) {
+		JGraphUtil.writeGraphImage(frame, d_graph);
 	}
 }
