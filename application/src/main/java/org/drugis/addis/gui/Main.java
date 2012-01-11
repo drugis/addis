@@ -75,16 +75,20 @@ public class Main extends AbstractObservable {
 	private String d_curFilename = null;
 	private String d_displayName = null;
 	private DomainChangedModel d_domainChanged;
+	private final boolean d_headless;
 
-	public Main(String[] args) {
+	public Main(String[] args, boolean headless) {
+		d_headless = headless;
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		
-		GUIHelper.initializeLookAndFeel();
-		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-		ToolTipManager.sharedInstance().setInitialDelay(0);
-
-		GUIFactory.configureJFreeChartLookAndFeel();
- 
+		if (!d_headless) {
+			GUIHelper.initializeLookAndFeel();
+			UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+			ToolTipManager.sharedInstance().setInitialDelay(0);
+	
+			GUIFactory.configureJFreeChartLookAndFeel();
+		}
+		
 		initializeDomain();
 		
 		if (args.length > 0) {
@@ -345,7 +349,7 @@ public class Main extends AbstractObservable {
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
 			@Override
 			public void run() {
-				Main main = new Main(args);
+				Main main = new Main(args, false);
 				main.startGUI();
 			}
 		};
@@ -387,10 +391,12 @@ public class Main extends AbstractObservable {
 	}
 
 	public void showMainWindow() {
-		d_window = new AddisWindow(this, getDomain());
-		d_window.pack();
-		GUIHelper.centerWindow(d_window);
-		d_window.setVisible(true);
+		if (!d_headless) {
+			d_window = new AddisWindow(this, getDomain());
+			d_window.pack();
+			GUIHelper.centerWindow(d_window);
+			d_window.setVisible(true);
+		}
 	}
 
 	public DomainChangedModel getDomainChangedModel() {
