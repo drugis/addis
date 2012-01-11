@@ -45,6 +45,7 @@ import org.drugis.addis.entities.data.AddisData;
 
 public class JAXBHandler {
 	public static class XmlFormatType {
+		public static final int INVALID = -1;
 		public static final int LEGACY_VERSION = 0;
 		public static final int CURRENT_VERSION = currentSchemaVersion();
 		
@@ -64,6 +65,10 @@ public class JAXBHandler {
 		
 		public boolean isFuture() {
 			return d_version > CURRENT_VERSION;
+		}
+		
+		public boolean isValid() {
+			return d_version > INVALID;
 		}
 	}
 	
@@ -123,12 +128,21 @@ public class JAXBHandler {
 		is.mark(1024);
 		byte[] buffer = new byte[1024];
 		int bytesRead = is.read(buffer);
+		if (bytesRead < 0) {
+			return new XmlFormatType(XmlFormatType.INVALID);
+		}
 		String str = new String(buffer, 0, bytesRead);
-		Pattern pattern = Pattern.compile("http://drugis.org/files/addis-([0-9]*).xsd");
-		Matcher matcher = pattern.matcher(str);
+		
+		Pattern addisPattern = Pattern.compile("^(<\\?xml[^\\?]*\\?>[\\s]*)?<addis-data[^>]*>");
+		Matcher addisMatcher = addisPattern.matcher(str);
+		if (!addisMatcher.find()) {
+			return new XmlFormatType(XmlFormatType.INVALID);
+		}
+		Pattern versionPattern = Pattern.compile("http://drugis.org/files/addis-([0-9]*).xsd");
+		Matcher versionMatcher = versionPattern.matcher(str);
 		XmlFormatType type = null;
-		if (matcher.find()) {
-			type = new XmlFormatType(Integer.parseInt(matcher.group(1)));
+		if (versionMatcher.find()) {
+			type = new XmlFormatType(Integer.parseInt(versionMatcher.group(1)));
 		} else {
 			type = new XmlFormatType(XmlFormatType.LEGACY_VERSION);
 		}

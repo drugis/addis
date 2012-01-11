@@ -33,13 +33,13 @@ import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -190,33 +190,48 @@ public class Main {
 		return d_domainMgr.getDomain();
 	}
 	
-	private void loadDomainFromXMLFile(String fileName) throws IOException,	ClassNotFoundException {
+	private boolean loadDomainFromXMLFile(String fileName) {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			FileInputStream in = new FileInputStream(f);
-			if (loadDomainFromInputStream(in).isLegacy()) {
+			XmlFormatType loadedVersion;
+			try {
+				FileInputStream in = new FileInputStream(f);
+				loadedVersion = loadDomainFromInputStream(in);
+			} catch (Exception e) {
+				ErrorDialog.showDialog(e, "Error loading file", "Error loading data from \"" + fileName + "\"", false);
+				return false;
+			}
+			if (!loadedVersion.isValid()) {
+				JOptionPane.showMessageDialog(d_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
+						"Error loading file", JOptionPane.ERROR_MESSAGE);
+				return false;
+			} else if (loadedVersion.isFuture()) {
+				JOptionPane.showMessageDialog(d_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
+						"Error loading file", JOptionPane.ERROR_MESSAGE);
+				return false;
+			} else if (loadedVersion.isLegacy()) {
 				askToConvertToNew(fileName);
+				return true;
 			} else {
 				setFileNameAndReset(fileName);
+				return true;
 			}
 		} else {
-			throw new FileNotFoundException(fileName + " not found");
+			JOptionPane.showMessageDialog(d_window, "File \"" + fileName + "\" not found.",
+					"Error loading file", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
 	}
 
 	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
 		BufferedInputStream fis = new BufferedInputStream(in);
 		XmlFormatType xmlType = JAXBHandler.determineXmlType(fis);
-		switch (xmlType.getVersion()) {
-		case XmlFormatType.LEGACY_VERSION:
+		if (!xmlType.isValid() || xmlType.isFuture()) {
+			return xmlType;
+		} else if (xmlType.isLegacy()) {
 			d_domainMgr.loadLegacyXMLDomain(fis);
-			break;
-		default: // SCHEMA*
-			if (xmlType.isFuture()) {
-				throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.");
-			}
+		} else {
 			d_domainMgr.loadXMLDomain(fis, xmlType.getVersion());
-			break;
 		}
 		attachDomainChangedModel();
 		return xmlType;
@@ -252,12 +267,13 @@ public class Main {
 	}
 
 	void newFileActions() {
-		resetDomain();
 		newDomain();
+		resetDomain();
 		showMainWindow();
 	}
 
 	public void newDomain() {
+		d_domainMgr.resetDomain(); // Create an empty domain.
 		setCurFilename(null);
 		setDisplayName(DISPLAY_NEW);		
 		setDataChanged(false);
@@ -265,7 +281,6 @@ public class Main {
 
 	private void resetDomain() {
 		ThreadHandler.getInstance().clear();	// Terminate all running threads.
-		d_domainMgr.resetDomain(); // Create an empty domain.
 		attachDomainChangedModel();
 		disposeMainWindow();
 	}
@@ -279,20 +294,19 @@ public class Main {
 	}
 
 	public int fileLoadActions() {
+		final boolean[] loaded = { false };
 		FileLoadDialog d = new FileLoadDialog(d_window, new String[][] {{"addis", "xml"}, {"addis"}, {"xml"}}, new String[] {"ADDIS or legacy XML files", "ADDIS data files", "ADDIS legacy XML files"}) {
 			@Override
 			public void doAction(String path, String extension) {
-				try {
+				if (loadDomainFromXMLFile(path)) {
 					resetDomain();
-					loadDomainFromXMLFile(path);
 					showMainWindow();
-				} catch (Exception e) {
-					throw new RuntimeException("Error loading data from " + path + ": " + e.getMessage(), e);
+					loaded[0] = true;
 				}
 			}
 		};
 		d.loadActions();
-		return d.getReturnValue();
+		return loaded[0] ? d.getReturnValue() : JFileChooser.ERROR_OPTION;
 	}
 
 	
