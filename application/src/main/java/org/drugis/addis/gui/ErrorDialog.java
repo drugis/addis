@@ -73,12 +73,12 @@ public class ErrorDialog {
                     if (label.startsWith("Show")) {
                         stackTrace.setVisible(true);
                         stackTraceButton.setText("Hide stack trace");
-                        dialog.pack( );
+                        dialog.pack();
                     }
                     else {
                     	stackTrace.setVisible(false);
                         stackTraceButton.setText("Show stack trace");
-                        dialog.pack( );
+                        dialog.pack();
                     }
                 }
             });

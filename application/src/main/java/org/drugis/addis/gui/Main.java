@@ -64,9 +64,9 @@ import org.drugis.common.threading.event.TaskFailedEvent;
 public class Main extends AbstractObservable {
 	
 	private static final String EXAMPLE_XML = "defaultData.addis";
-	public static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
-	private static final String DISPLAY_EXAMPLE = "Example Data";
-	private static final String DISPLAY_NEW = "New File";
+	private static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
+	static final String DISPLAY_EXAMPLE = "Example Data";
+	static final String DISPLAY_NEW = "New File";
 	public static final String PROPERTY_DISPLAY_NAME = "displayName";
 
 	private AddisWindow d_window;
@@ -300,17 +300,21 @@ public class Main extends AbstractObservable {
 		FileLoadDialog d = new FileLoadDialog(d_window, new String[][] {{"addis", "xml"}, {"addis"}, {"xml"}}, new String[] {"ADDIS or legacy XML files", "ADDIS data files", "ADDIS legacy XML files"}) {
 			@Override
 			public void doAction(String path, String extension) {
-				if (loadDomainFromXMLFile(path)) {
-					resetDomain();
-					showMainWindow();
-					loaded[0] = true;
-				}
+				loaded[0] = loadDomainFromFile(path);
 			}
 		};
 		d.loadActions();
 		return loaded[0] ? d.getReturnValue() : JFileChooser.ERROR_OPTION;
 	}
 
+	public boolean loadDomainFromFile(String path) {
+		if (loadDomainFromXMLFile(path)) {
+			resetDomain();
+			showMainWindow();
+			return true;
+		}
+		return false;
+	}
 	
 	public void saveDomainToFile(String path) {
 		try {
