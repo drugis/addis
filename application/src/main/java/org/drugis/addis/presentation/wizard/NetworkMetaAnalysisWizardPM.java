@@ -151,7 +151,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	public NetworkMetaAnalysis createMetaAnalysis(String name) {
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
-		List<? extends Study> studies = getSelectedStudiesModel();
+		List<Study> studies = getSelectedStudiesModel();
 		List<DrugSet> drugs = getSelectedDrugsModel();
 		Map<Study, Map<DrugSet, Arm>> armMap = getArmMap();
 		

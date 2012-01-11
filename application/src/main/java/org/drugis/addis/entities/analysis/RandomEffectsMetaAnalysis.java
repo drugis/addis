@@ -56,7 +56,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
 	 * if the list of studies is empty
 	 */
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<? extends Study> studies,
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<Study> studies,
 			DrugSet drug1, DrugSet drug2) 
 	throws IllegalArgumentException {
 		super(name, studies.get(0).getIndication(), om, studies, 
@@ -142,7 +142,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase());
 	}
 
-	private static List<? extends Study> getStudies(List<StudyArmsEntry> studyArms) {
+	private static List<Study> getStudies(List<StudyArmsEntry> studyArms) {
 		return StudyArmsEntry.getStudyList(studyArms);
 	}
 

@@ -31,16 +31,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.EntityUtil;
@@ -48,8 +50,10 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
+import org.drugis.mtc.ContinuousMeasurement;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
+import org.drugis.mtc.DichotomousMeasurement;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
@@ -68,7 +72,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	transient private InconsistencyModel d_inconsistencyModel;
 	transient private ConsistencyModel d_consistencyModel;
-	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement> d_builder;
+	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
 	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
@@ -79,10 +83,16 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private boolean d_isContinuous = false;
 	private RankProbabilitySummary d_rankProbabilitySummary;
 	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
+	private static final Transformer<DrugSet, String> s_transform = new Transformer<DrugSet, String>() {
+		@Override
+		public String transform(DrugSet input) {
+			return input.getLabel();
+		}
+	};
 	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<? extends Study> studies, Collection<DrugSet> drugs,
+			OutcomeMeasure om, List<Study> studies, Collection<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, sortDrugs(drugs), armMap);
 	}
@@ -120,43 +130,41 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
 		return nodeSplitModel;
 	}
-
-	private NetworkBuilder<? extends org.drugis.mtc.Measurement> createBuilder(List<? extends Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		for(Study s : studies){
-			for (DrugSet d : drugs) {
-				if(!s.getDrugs().contains(d))
-					continue;
-				for (Variable v : s.getOutcomeMeasures()) {
-					if (!v.equals(d_outcome))
-						continue;
-					Arm a = armMap.get(s).get(d);
-					Measurement m = s.getMeasurement(v, a);
-					if(m instanceof BasicRateMeasurement) {
-						BasicRateMeasurement brm = (BasicRateMeasurement)m;	
-						((DichotomousNetworkBuilder) getTypedBuilder(brm)).add(s.getName(), s.getDrugs(a).getLabel(),
-																			   brm.getRate(), brm.getSampleSize());
-					} else if (m instanceof BasicContinuousMeasurement) {
-						BasicContinuousMeasurement cm = (BasicContinuousMeasurement) m;
-						((ContinuousNetworkBuilder) getTypedBuilder(cm)).add(s.getName(), s.getDrugs(a).getLabel(),
-																	           cm.getMean(), cm.getStdDev(), cm.getSampleSize());
-					}
-				}
-				
-        	}
-        }
-		return d_builder;
+	
+	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+		if (d_outcome.getVariableType() instanceof RateVariableType) {
+			return createRateBuilder(studies, drugs, armMap);
+		} else if (d_outcome.getVariableType() instanceof ContinuousVariableType) {
+			return createContinuousBuilder(studies, drugs, armMap);
+		} else {
+			throw new IllegalStateException("Unexpected VariableType: " + d_outcome.getVariableType());
+		}
 	}
 	
-	private NetworkBuilder <? extends org.drugis.mtc.Measurement> getTypedBuilder(Measurement m) {
-		if(d_builder != null)
-			return d_builder;
-		else if (m instanceof BasicRateMeasurement)
-			return d_builder = new DichotomousNetworkBuilder();
-		else if (m instanceof BasicContinuousMeasurement){ 
-			d_isContinuous = true;
-			return d_builder = new ContinuousNetworkBuilder();
-		} else 
-			throw new IllegalStateException("Unknown type of measurement: "+m);	
+	private NetworkBuilder<ContinuousMeasurement, DrugSet> createContinuousBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform);
+		for(Study s : studies){
+			for (DrugSet d : drugs) {
+				if (s.getDrugs().contains(d)) {
+					BasicContinuousMeasurement cm = (BasicContinuousMeasurement) s.getMeasurement(d_outcome, armMap.get(s).get(d));
+					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), cm.getMean(), cm.getStdDev(), cm.getSampleSize());
+				}
+        	}
+        }
+		return builder;
+	}
+
+	private NetworkBuilder<DichotomousMeasurement, DrugSet> createRateBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform);
+		for(Study s : studies){
+			for (DrugSet d : drugs) {
+				if (s.getDrugs().contains(d)) {
+					BasicRateMeasurement brm = (BasicRateMeasurement) s.getMeasurement(d_outcome, armMap.get(s).get(d));
+					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), brm.getRate(), brm.getSampleSize());
+				}
+        	}
+        }
+		return builder;
 	}
 
 	public String getType() {
@@ -177,7 +185,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_consistencyModel;
 	}
 
-	public NetworkBuilder<? extends org.drugis.mtc.Measurement> getBuilder() {
+	public NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> getBuilder() {
 		if (d_builder == null) {
 			d_builder = createBuilder(d_studies, getIncludedDrugs(), d_armMap);
 		}
@@ -251,7 +259,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
-		Parameter param = consistencyModel.getRelativeEffect(new Treatment(d1.getLabel()), new Treatment(d2.getLabel()));
+		Parameter param = consistencyModel.getRelativeEffect(getTreatment(d1), getTreatment(d2));
 		NormalSummary estimate = getNormalSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
@@ -270,7 +278,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public Treatment getTreatment(DrugSet d) {
-		return getBuilder().getTreatment(d.getLabel());
+		return getBuilder().getTreatmentMap().get(d);
 	}
 
 	public List<BasicParameter> getSplitParameters() {

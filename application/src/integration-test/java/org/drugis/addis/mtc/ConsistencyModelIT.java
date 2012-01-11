@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ConsistencyModelIT {
-    private DichotomousNetworkBuilder d_builder;
+    private DichotomousNetworkBuilder<String> d_builder;
 	private Network<DichotomousMeasurement> d_network;
 	private ConsistencyModel d_model;
 
@@ -61,9 +61,9 @@ public class ConsistencyModelIT {
     @Test
     public void getResults() throws InterruptedException {
     	TaskUtil.run(d_model.getActivityTask());
-    	Treatment a = d_builder.getTreatment("A");
-    	Treatment b = d_builder.getTreatment("B");
-    	Treatment c = d_builder.getTreatment("C");
+    	Treatment a = d_builder.getTreatmentMap().get("A");
+    	Treatment b = d_builder.getTreatmentMap().get("B");
+    	Treatment c = d_builder.getTreatmentMap().get("C");
     	assertNotNull(d_model.getRelativeEffect(a, b));
     	assertNotNull(d_model.getRelativeEffect(b, a));
     	assertNotNull(d_model.getRelativeEffect(a, c));

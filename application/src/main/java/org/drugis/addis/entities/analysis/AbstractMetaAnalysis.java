@@ -60,7 +60,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	
 	protected OutcomeMeasure d_outcome;
 	protected Indication d_indication;
-	protected List<? extends Study> d_studies;
+	protected List<Study> d_studies;
 	protected List<DrugSet> d_drugs;
 	protected String d_name = "";
 	protected int d_totalSampleSize;
@@ -72,7 +72,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	
 	public AbstractMetaAnalysis(String name, 
 			Indication indication, OutcomeMeasure om,
-			List<? extends Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
+			List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
 	throws IllegalArgumentException {
 		checkDataConsistency(studies, indication, om);
 

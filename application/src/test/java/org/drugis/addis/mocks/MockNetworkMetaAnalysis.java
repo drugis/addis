@@ -49,7 +49,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	private ConsistencyModel d_mockConsistencyModel;
 
 	public MockNetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<? extends Study> studies, List<DrugSet> drugs,
+			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 		d_mockInconsistencyModel = new MockInconsistencyModel();
