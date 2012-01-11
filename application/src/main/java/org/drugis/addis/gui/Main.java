@@ -52,6 +52,7 @@ import org.drugis.addis.presentation.DomainChangedModel;
 import org.drugis.addis.util.JAXBHandler;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
@@ -60,12 +61,13 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskFailedEvent;
 
 @SuppressWarnings("serial")
-public class Main {
+public class Main extends AbstractObservable {
 	
 	private static final String EXAMPLE_XML = "defaultData.addis";
 	public static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
 	private static final String DISPLAY_EXAMPLE = "Example Data";
 	private static final String DISPLAY_NEW = "New File";
+	public static final String PROPERTY_DISPLAY_NAME = "displayName";
 
 	private AddisWindow d_window;
 
@@ -392,7 +394,9 @@ public class Main {
 	}
 
 	private void setDisplayName(String displayName) {
+		String oldValue = d_displayName;
 		d_displayName = displayName;
+		firePropertyChange(PROPERTY_DISPLAY_NAME, oldValue, displayName);
 	}
 
 	public String getDisplayName() {
