@@ -26,17 +26,26 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.DrugTreatment;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
-import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,12 +80,37 @@ public class NetworkMetaAnalysisTest {
 		Drug subj = ExampleData.buildDrugParoxetine();
 		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(new DrugSet(base), new DrugSet(subj), BasicOddsRatio.class);
 		NormalSummary summary = d_mockAnalysis.getNormalSummary(d_mockAnalysis.getConsistencyModel(), 
-				new BasicParameter(new Treatment(base.toString()), new Treatment(subj.toString())));
+				new BasicParameter(d_mockAnalysis.getTreatment(new DrugSet(base)), d_mockAnalysis.getTreatment(new DrugSet(subj))));
 		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary.getMean(), summary.getStandardDeviation());
 		assertNotNull(expected);
 		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
 		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
 		assertEquals(expected.getAxisType(), actual.getAxisType());
+	}
+	
+	@Test @Ignore
+	public void testTransformCombinationTreatment() {
+		Study study = ExampleData.buildStudyMcMurray().clone();
+		DrugTreatment ta1 = new DrugTreatment(ExampleData.buildDrugCandesartan(), null);
+		DrugTreatment ta2 = new DrugTreatment(ExampleData.buildDrugFluoxetine(), null);
+		StudyActivity activity = new StudyActivity("DRUGS", new TreatmentActivity(Arrays.asList(ta1, ta2)));
+		study.getStudyActivities().add(activity);
+		study.setStudyActivityAt(study.getArms().get(0), study.findTreatmentEpoch(), activity);
+		
+		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
+		Map<DrugSet, Arm> drugArmMap = new HashMap<DrugSet, Arm>();
+		for (Arm a : study.getArms()) {
+			drugArmMap.put(study.getDrugs(a), a);
+		}
+		armMap.put(study, drugArmMap);
+		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
+		
+		assertEquals("CandesartanFluoxetine", nma.getTreatment(new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()))).id());
+	}
+	
+	@Test @Ignore
+	public void testTransformTreatmentWithIllegalCharacters() {
+		fail();
 	}
 }

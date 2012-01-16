@@ -33,13 +33,13 @@ import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -52,6 +52,7 @@ import org.drugis.addis.presentation.DomainChangedModel;
 import org.drugis.addis.util.JAXBHandler;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.ImageLoader;
+import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
@@ -60,12 +61,13 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskFailedEvent;
 
 @SuppressWarnings("serial")
-public class Main {
+public class Main extends AbstractObservable {
 	
 	private static final String EXAMPLE_XML = "defaultData.addis";
-	public static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
-	private static final String DISPLAY_EXAMPLE = "Example Data";
-	private static final String DISPLAY_NEW = "New File";
+	private static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
+	static final String DISPLAY_EXAMPLE = "Example Data";
+	static final String DISPLAY_NEW = "New File";
+	public static final String PROPERTY_DISPLAY_NAME = "displayName";
 
 	private AddisWindow d_window;
 
@@ -73,16 +75,20 @@ public class Main {
 	private String d_curFilename = null;
 	private String d_displayName = null;
 	private DomainChangedModel d_domainChanged;
+	private final boolean d_headless;
 
-	public Main(String[] args) {
+	public Main(String[] args, boolean headless) {
+		d_headless = headless;
 		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		
-		GUIHelper.initializeLookAndFeel();
-		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
-		ToolTipManager.sharedInstance().setInitialDelay(0);
-
-		GUIFactory.configureJFreeChartLookAndFeel();
- 
+		if (!d_headless) {
+			GUIHelper.initializeLookAndFeel();
+			UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+			ToolTipManager.sharedInstance().setInitialDelay(0);
+	
+			GUIFactory.configureJFreeChartLookAndFeel();
+		}
+		
 		initializeDomain();
 		
 		if (args.length > 0) {
@@ -190,33 +196,48 @@ public class Main {
 		return d_domainMgr.getDomain();
 	}
 	
-	private void loadDomainFromXMLFile(String fileName) throws IOException,	ClassNotFoundException {
+	private boolean loadDomainFromXMLFile(String fileName) {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			FileInputStream in = new FileInputStream(f);
-			if (loadDomainFromInputStream(in).isLegacy()) {
+			XmlFormatType loadedVersion;
+			try {
+				FileInputStream in = new FileInputStream(f);
+				loadedVersion = loadDomainFromInputStream(in);
+			} catch (Exception e) {
+				ErrorDialog.showDialog(e, "Error loading file", "Error loading data from \"" + fileName + "\"", false);
+				return false;
+			}
+			if (!loadedVersion.isValid()) {
+				JOptionPane.showMessageDialog(d_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
+						"Error loading file", JOptionPane.ERROR_MESSAGE);
+				return false;
+			} else if (loadedVersion.isFuture()) {
+				JOptionPane.showMessageDialog(d_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
+						"Error loading file", JOptionPane.ERROR_MESSAGE);
+				return false;
+			} else if (loadedVersion.isLegacy()) {
 				askToConvertToNew(fileName);
+				return true;
 			} else {
 				setFileNameAndReset(fileName);
+				return true;
 			}
 		} else {
-			throw new FileNotFoundException(fileName + " not found");
+			JOptionPane.showMessageDialog(d_window, "File \"" + fileName + "\" not found.",
+					"Error loading file", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
 	}
 
 	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
 		BufferedInputStream fis = new BufferedInputStream(in);
 		XmlFormatType xmlType = JAXBHandler.determineXmlType(fis);
-		switch (xmlType.getVersion()) {
-		case XmlFormatType.LEGACY_VERSION:
+		if (!xmlType.isValid() || xmlType.isFuture()) {
+			return xmlType;
+		} else if (xmlType.isLegacy()) {
 			d_domainMgr.loadLegacyXMLDomain(fis);
-			break;
-		default: // SCHEMA*
-			if (xmlType.isFuture()) {
-				throw new IllegalArgumentException("The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.");
-			}
+		} else {
 			d_domainMgr.loadXMLDomain(fis, xmlType.getVersion());
-			break;
 		}
 		attachDomainChangedModel();
 		return xmlType;
@@ -252,12 +273,13 @@ public class Main {
 	}
 
 	void newFileActions() {
-		resetDomain();
 		newDomain();
+		resetDomain();
 		showMainWindow();
 	}
 
 	public void newDomain() {
+		d_domainMgr.resetDomain(); // Create an empty domain.
 		setCurFilename(null);
 		setDisplayName(DISPLAY_NEW);		
 		setDataChanged(false);
@@ -265,7 +287,6 @@ public class Main {
 
 	private void resetDomain() {
 		ThreadHandler.getInstance().clear();	// Terminate all running threads.
-		d_domainMgr.resetDomain(); // Create an empty domain.
 		attachDomainChangedModel();
 		disposeMainWindow();
 	}
@@ -279,22 +300,25 @@ public class Main {
 	}
 
 	public int fileLoadActions() {
+		final boolean[] loaded = { false };
 		FileLoadDialog d = new FileLoadDialog(d_window, new String[][] {{"addis", "xml"}, {"addis"}, {"xml"}}, new String[] {"ADDIS or legacy XML files", "ADDIS data files", "ADDIS legacy XML files"}) {
 			@Override
 			public void doAction(String path, String extension) {
-				try {
-					resetDomain();
-					loadDomainFromXMLFile(path);
-					showMainWindow();
-				} catch (Exception e) {
-					throw new RuntimeException("Error loading data from " + path + ": " + e.getMessage(), e);
-				}
+				loaded[0] = loadDomainFromFile(path);
 			}
 		};
 		d.loadActions();
-		return d.getReturnValue();
+		return loaded[0] ? d.getReturnValue() : JFileChooser.ERROR_OPTION;
 	}
 
+	public boolean loadDomainFromFile(String path) {
+		if (loadDomainFromXMLFile(path)) {
+			resetDomain();
+			showMainWindow();
+			return true;
+		}
+		return false;
+	}
 	
 	public void saveDomainToFile(String path) {
 		try {
@@ -325,7 +349,7 @@ public class Main {
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
 			@Override
 			public void run() {
-				Main main = new Main(args);
+				Main main = new Main(args, false);
 				main.startGUI();
 			}
 		};
@@ -367,10 +391,12 @@ public class Main {
 	}
 
 	public void showMainWindow() {
-		d_window = new AddisWindow(this, getDomain());
-		d_window.pack();
-		GUIHelper.centerWindow(d_window);
-		d_window.setVisible(true);
+		if (!d_headless) {
+			d_window = new AddisWindow(this, getDomain());
+			d_window.pack();
+			GUIHelper.centerWindow(d_window);
+			d_window.setVisible(true);
+		}
 	}
 
 	public DomainChangedModel getDomainChangedModel() {
@@ -378,7 +404,9 @@ public class Main {
 	}
 
 	private void setDisplayName(String displayName) {
+		String oldValue = d_displayName;
 		d_displayName = displayName;
+		firePropertyChange(PROPERTY_DISPLAY_NAME, oldValue, displayName);
 	}
 
 	public String getDisplayName() {

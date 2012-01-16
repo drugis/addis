@@ -63,7 +63,6 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.Summary;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -322,8 +321,8 @@ public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRi
 		for (MetaAnalysis ma : getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				for(DrugSet d: getNonBaselineAlternatives()) {
-					Parameter p = new BasicParameter(new Treatment(getBaseline().getLabel()), new Treatment(d.getLabel()));
 					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+					Parameter p = new BasicParameter(nma.getTreatment(getBaseline()), nma.getTreatment(d));
 					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
 				}
 			}

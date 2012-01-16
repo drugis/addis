@@ -90,7 +90,7 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 		
 		final AbstractAction loadAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
-				if(d_main.fileLoadActions() != JFileChooser.CANCEL_OPTION) {
+				if(d_main.fileLoadActions() == JFileChooser.APPROVE_OPTION) {
 					closeWelcome();
 				}
 			}

@@ -40,7 +40,7 @@ import org.junit.Test;
 public class ContinuousConsistencyModelIT {
 	/* This test apparently cannot run in sequence with NetworkMetaAnalysisTest so this is commented out entirely */
 
-	    private ContinuousNetworkBuilder d_builder;
+	    private ContinuousNetworkBuilder<String> d_builder;
 		private Network<ContinuousMeasurement> d_network;
 		private ConsistencyModel d_model;
 
@@ -63,9 +63,9 @@ public class ContinuousConsistencyModelIT {
 	    @Test
 	    public void getResults() throws InterruptedException {
 	    	TaskUtil.run(d_model.getActivityTask());
-	    	Treatment a = d_builder.getTreatment("A");
-	    	Treatment b = d_builder.getTreatment("B");
-	    	Treatment c = d_builder.getTreatment("C");
+	    	Treatment a = d_builder.getTreatmentMap().get("A");
+	    	Treatment b = d_builder.getTreatmentMap().get("B");
+	    	Treatment c = d_builder.getTreatmentMap().get("C");
 	    	assertNotNull(d_model.getRelativeEffect(a, b));
 	    	assertNotNull(d_model.getRelativeEffect(b, a));
 	    	assertNotNull(d_model.getRelativeEffect(a, c));

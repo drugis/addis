@@ -117,6 +117,14 @@ public class AddisWindow extends JFrame {
 				updateTitle();
 			}
 		});
+		
+		d_main.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals(Main.PROPERTY_DISPLAY_NAME)) {
+					updateTitle();
+				}
+			}
+		});
 
 		setIconImage(ImageLoader.getImage(FileNames.ICON_ADDIS_APP));
 		

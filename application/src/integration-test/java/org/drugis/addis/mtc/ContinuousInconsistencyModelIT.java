@@ -36,23 +36,18 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.Measurement;
-import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ContinuousInconsistencyModelIT {
-
-    private NetworkBuilder<? extends Measurement> d_builder;
 	private NetworkMetaAnalysis d_nma;
 	private InconsistencyModel d_model;
 
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
-    	d_builder = d_nma.getBuilder();
-        
+       
 		d_model = d_nma.getInconsistencyModel();
     }
     
@@ -62,9 +57,9 @@ public class ContinuousInconsistencyModelIT {
     	
     	assertEquals(1, d_nma.getInconsistencyFactors().size());
     	assertNotNull(d_nma.getNormalSummary(d_model, d_model.getInconsistencyFactors().get(0)));
-    	Treatment a = d_builder.getTreatment("Fluoxetine");
-    	Treatment b = d_builder.getTreatment("Paroxetine");
-    	Treatment c = d_builder.getTreatment("Sertraline");
+    	Treatment a = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugFluoxetine()));
+    	Treatment b = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugParoxetine()));
+    	Treatment c = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugSertraline()));
     	assertNotNull(d_model.getRelativeEffect(a, b));
     	assertNotNull(d_model.getRelativeEffect(b, a));
     	assertNotNull(d_model.getRelativeEffect(a, c));
