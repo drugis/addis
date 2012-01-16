@@ -51,9 +51,9 @@
 	</repositories>
 
 	<properties>
-        	<drugis-common.version>0.4.8-SNAPSHOT</drugis-common.version>
-        	<jsmaa.version>0.8.5</jsmaa.version>
-        	<mtc.version>0.10</mtc.version>
+		<drugis-common.version>0.4.8-SNAPSHOT</drugis-common.version>
+		<jsmaa.version>0.8.5</jsmaa.version>
+		<mtc.version>0.10</mtc.version>
 		<addis.schemaVersion>4</addis.schemaVersion>
 	</properties> 
     
