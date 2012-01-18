@@ -112,6 +112,7 @@ public class DoseTest {
 		FixedDose dose = new FixedDose(12.5, ExampleData.MILLIGRAMS_A_DAY);
 		assertEquals(dose, dose.clone());
 		assertNotSame(dose, dose.clone());
+		assertNotSame(dose.getDoseUnit(), dose.clone().getDoseUnit());
 	}
 	
 	@Test
@@ -120,6 +121,7 @@ public class DoseTest {
 		FlexibleDose dose = new FlexibleDose(q1, ExampleData.MILLIGRAMS_A_DAY);
 		assertEquals(dose, dose.clone());
 		assertNotSame(dose, dose.clone());
+		assertNotSame(dose.getDoseUnit(), dose.clone().getDoseUnit());
 	}
 	
 	@Test

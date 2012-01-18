@@ -80,7 +80,7 @@ public class FixedDose extends AbstractDose {
 
 	@Override
 	public AbstractDose clone() {
-		return new FixedDose(getQuantity(), getDoseUnit());
+		return new FixedDose(getQuantity(), getDoseUnit().clone());
 	}
 
 }
