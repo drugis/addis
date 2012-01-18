@@ -35,6 +35,7 @@ import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
@@ -138,6 +139,99 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		return newStudy;
 	}
+	
+	/**
+	 * Replace oldArm with newArm. All references to oldArm will be updated.
+	 * @param oldArm The arm to replace.
+	 * @param newArm The new arm.
+	 */
+	public void replaceArm(final Arm oldArm, final Arm newArm) {
+		transformUsedBy(new Transformer<UsedBy, UsedBy>(){
+			public UsedBy transform(UsedBy ub) {
+				if (ub.getArm().equals(oldArm)) {
+					return new UsedBy(newArm, ub.getEpoch());
+				}
+				return ub;
+			}
+		});
+		
+		transformMeasurementKeys(new Transformer<MeasurementKey, MeasurementKey>() {
+			public MeasurementKey transform(MeasurementKey key) {
+				if (key.getArm().equals(oldArm)) {
+					return new MeasurementKey(key.getVariable(), newArm, key.getWhenTaken());
+				}
+				return key;
+			}
+		});
+		
+		d_arms.set(d_arms.indexOf(oldArm), newArm);
+	}
+	
+	/**
+	 * Replace oldEpoch with newEpoch. All references to oldEpoch will be updated.
+	 * @param oldEpoch The epoch to replace.
+	 * @param newEpoch The new epoch.
+	 */
+	public void replaceEpoch(final Epoch oldEpoch, final Epoch newEpoch) {
+		transformUsedBy(new Transformer<UsedBy, UsedBy>(){
+			public UsedBy transform(UsedBy ub) {
+				if (ub.getEpoch().equals(oldEpoch)) {
+					return new UsedBy(ub.getArm(), newEpoch);
+				}
+				return ub;
+			}
+		});
+		
+		for (StudyOutcomeMeasure<?> som : getStudyOutcomeMeasures()) {
+			for (int i = 0; i < som.getWhenTaken().size(); ++i) {
+				WhenTaken oldWhenTaken = som.getWhenTaken().get(i);
+				if (oldWhenTaken.getEpoch().equals(oldEpoch)) {
+					WhenTaken newWhenTaken = new WhenTaken(oldWhenTaken.getDuration(), oldWhenTaken.getRelativeTo(), newEpoch);
+					replaceWhenTaken(som, oldWhenTaken, newWhenTaken);
+				}
+			}
+		}
+		
+		d_epochs.set(d_epochs.indexOf(oldEpoch), newEpoch);
+	}
+	
+
+	public <V extends Variable> void replaceWhenTaken(final StudyOutcomeMeasure<V> studyOutcomeMeasure, 
+			final WhenTaken oldWhenTaken, final WhenTaken newWhenTaken) {
+		transformMeasurementKeys(new Transformer<MeasurementKey, MeasurementKey>() {
+			public MeasurementKey transform(MeasurementKey input) {
+				if (input.getVariable().equals(studyOutcomeMeasure.getValue()) && input.getWhenTaken().equals(oldWhenTaken)) {
+					return new MeasurementKey(input.getVariable(), input.getArm(), newWhenTaken);
+				}
+				return input;
+			}
+		});
+		
+		ObservableList<WhenTaken> whenTakens = studyOutcomeMeasure.getWhenTaken();
+		whenTakens.set(whenTakens.indexOf(oldWhenTaken), newWhenTaken);
+	}
+	
+	private void transformMeasurementKeys(Transformer<MeasurementKey, MeasurementKey> transform) {
+		for (MeasurementKey oldKey : new HashSet<MeasurementKey>(d_measurements.keySet())) {
+			MeasurementKey newKey = transform.transform(oldKey);
+			if (oldKey != newKey) {
+				BasicMeasurement measurement = d_measurements.get(oldKey);
+				d_measurements.remove(oldKey);
+				d_measurements.put(newKey, measurement);
+			}
+		}
+	}
+
+	private void transformUsedBy(Transformer<UsedBy, UsedBy> transformer) {
+		for (StudyActivity sa : d_studyActivities) {
+			Set<UsedBy> newUsedBys = new HashSet<UsedBy>();
+			for (UsedBy oldUsedBy : sa.getUsedBy()) {
+				newUsedBys.add(transformer.transform(oldUsedBy));
+			}
+			sa.setUsedBy(newUsedBys);
+		}
+	}
+
 
 	private static <T> void replace(ObservableList<T> target, ObservableList<T> newValues) {
 		target.clear();
@@ -529,19 +623,19 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private boolean orphanKey(MeasurementKey k) {
-		if (findStudyOutcomeMeasure(k.d_variable) == null) {
+		if (findStudyOutcomeMeasure(k.getVariable()) == null) {
 			return true;
 		}
 		// OutcomeMeasure measurement
-		if (k.d_variable instanceof OutcomeMeasure) {
-			if (!d_arms.contains(k.d_arm)) {
+		if (k.getVariable() instanceof OutcomeMeasure) {
+			if (!d_arms.contains(k.getArm())) {
 				return true;
 			}
 			return false;
 		}
 		// PopulationChar measurements
-		if (k.d_variable instanceof PopulationCharacteristic) {
-			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {
+		if (k.getVariable() instanceof PopulationCharacteristic) {
+			if (k.getArm() != null && !d_arms.contains(k.getArm())) {
 				return true;
 			}
 			return false;

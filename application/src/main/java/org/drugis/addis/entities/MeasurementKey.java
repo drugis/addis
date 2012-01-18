@@ -31,8 +31,8 @@ import org.drugis.common.EqualsUtil;
 
 public class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
 
-	final Variable d_variable;
-	final Arm d_arm;
+	private final Variable d_variable;
+	private final Arm d_arm;
 	private final WhenTaken d_wt;
 
 	public MeasurementKey(Variable v, Arm a, WhenTaken wt) {

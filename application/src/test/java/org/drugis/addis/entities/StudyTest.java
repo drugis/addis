@@ -667,6 +667,67 @@ public class StudyTest {
 		assertNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), d_clone.getArms().get(0)));
 	}
 
+	@Test
+	public void testReplaceArm() {
+		Arm oldArm = d_clone.getArms().get(0);
+		Arm newArm = oldArm.clone();
+		newArm.setName("newNarm");
+		d_clone.replaceArm(oldArm, newArm);
+
+		assertSame(newArm, d_clone.getArms().get(0));
+		
+		// Check if StudyActivity references are updated
+		assertEquals(d_orig.getDrugs(oldArm), d_clone.getDrugs(newArm));
+		assertEquals(d_orig.getActivity(oldArm), d_clone.getActivity(newArm));
+		Epoch epoch = d_orig.getEpochs().get(0);
+		assertEquals(d_orig.getStudyActivityAt(oldArm, epoch), d_clone.getStudyActivityAt(newArm, epoch));
+
+		// Check if Measurement references are updated
+		Endpoint endpoint = d_orig.getEndpoints().get(0).getValue();
+		assertEquals(d_orig.getMeasurement(endpoint, oldArm), 
+				d_clone.getMeasurement(endpoint, newArm));	
+	}
+	
+	@Test
+	public void testReplaceEpoch() {
+		Epoch oldEpoch = d_clone.getEpochs().get(1);
+		Epoch newEpoch = oldEpoch.clone();
+		newEpoch.setName("AsnemaWat");
+		d_clone.replaceEpoch(oldEpoch, newEpoch);
+		
+		assertSame(newEpoch, d_clone.getEpochs().get(1));
+		
+		// check whether studyactivities are updated
+		Arm arm = d_orig.getArms().get(0);
+		assertNotNull(d_orig.getStudyActivityAt(arm, oldEpoch));
+		assertEquals(d_orig.getStudyActivityAt(arm, oldEpoch), d_clone.getStudyActivityAt(arm, newEpoch));
+		
+		// check whether measurements are updated
+		Endpoint endpoint = d_orig.getEndpoints().get(0).getValue();
+		assertEquals(d_orig.getMeasurement(endpoint, arm), d_clone.getMeasurement(endpoint, arm));
+		
+		// check whether StudyOutcomeMeasures are properly updated
+		WhenTaken whenTaken = d_orig.getEndpoints().get(0).getWhenTaken().get(0);
+		assertEquals(oldEpoch, whenTaken.getEpoch());
+		assertEquals(newEpoch, d_clone.getEndpoints().get(0).getWhenTaken().get(0).getEpoch());
+	}
+	
+	@Test
+	public void testReplaceMeasurementMoment() {
+		StudyOutcomeMeasure<Endpoint> som = d_clone.getEndpoints().get(0);
+		WhenTaken oldWhenTaken = som.getWhenTaken().get(0);
+		WhenTaken newWhenTaken = new WhenTaken(oldWhenTaken.getDuration(), RelativeTo.FROM_EPOCH_START, oldWhenTaken.getEpoch());
+		JUnitUtil.assertNotEquals(oldWhenTaken, newWhenTaken);
+		d_clone.replaceWhenTaken(som, oldWhenTaken, newWhenTaken);
+		
+		assertSame(newWhenTaken, som.getWhenTaken().get(0));
+		
+		// check whether measurements are updated
+		Arm arm = d_orig.getArms().get(0);
+		assertEquals(d_orig.getMeasurement(som.getValue(), arm, oldWhenTaken), 
+				d_clone.getMeasurement(som.getValue(), arm, newWhenTaken));
+	}
+	
 	private void removeTreatmentActivities() {
 		for (StudyActivity sa : d_clone.getStudyActivities()) {
 			if (sa.getActivity() instanceof TreatmentActivity) {
