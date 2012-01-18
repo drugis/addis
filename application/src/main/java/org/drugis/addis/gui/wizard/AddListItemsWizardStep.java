@@ -25,27 +25,37 @@
 package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.presentation.ListOfNamedValidator;
+import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.AddListItemsPresentation;
+import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.OkCancelDialog;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
@@ -59,10 +69,12 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	private JScrollPane d_scrollPane;
 	private ListOfNamedValidator<T> d_validator;
 	protected AddListItemsPresentation<T> d_pm;
+	private final JDialog d_parent;
 
-	public AddListItemsWizardStep(String name, String summary, AddListItemsPresentation<T> pm) {
+	public AddListItemsWizardStep(String name, String summary, AddListItemsPresentation<T> pm, JDialog dialog) {
 		super(name, summary);
 		d_pm = pm;
+		d_parent = dialog;
 		resetUnderlyingList();
 		d_pm.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -148,7 +160,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		add(d_scrollPane, BorderLayout.CENTER);
 	}
 
-	private int addComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, int idx) {
+	private int addComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, final int idx) {
 		rows = LayoutUtil.addRow(layout, rows);
 		
 		// add "remove" button 
@@ -158,9 +170,17 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		
 		// name input field
 		builder.addLabel("Name: ", cc.xy (3, rows));
-		JTextField nameField = BasicComponentFactory.createTextField(
-				getNameModel(d_pm.getList().get(idx)), false);
-		builder.add(nameField, cc.xy(5, rows));
+		JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel nameField = BasicComponentFactory.createLabel(getNameModel(idx));
+		namePanel.add(nameField);
+		JButton editNameButton = new JButton(ImageLoader.getIcon(FileNames.ICON_EDIT));
+		editNameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showRenameDialog(idx);
+			}
+		});
+		namePanel.add(editNameButton);
+		builder.add(namePanel, cc.xy(5, rows));
 		
 		// type specific input fields
 		addAdditionalFields(builder, cc, rows, idx);
@@ -172,10 +192,59 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		return rows;
 	}
 	
-	private ValueModel getNameModel(TypeWithName item) {
-		return new PresentationModel<TypeWithName>(item).getModel(TypeWithName.PROPERTY_NAME);
+	private void showRenameDialog(final int idx) {
+		JDialog renameDialog = new RenameDialog(d_parent, "Rename " + d_pm.getItemName(), true, idx);
+		renameDialog.setVisible(true);
+	}
+
+	private ValueModel getNameModel(final int idx) {
+		return new PresentationModel<TypeWithName>(d_pm.getList().get(idx)).getModel(TypeWithName.PROPERTY_NAME);
 	}
 	
+	private final class RenameDialog extends OkCancelDialog {
+		private final int d_idx;
+		private final ValueHolder<String> d_name;
+		private ValueModel d_okEnabledModel = new ModifiableHolder<Boolean>(true);
+
+		private RenameDialog(Dialog owner, String title, boolean modal, int idx) {
+			super(owner, title, modal);
+			d_idx = idx;
+			d_name = new ModifiableHolder<String>(d_pm.getList().get(d_idx).getName());
+			d_name.addValueChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					d_okEnabledModel.setValue(nameIsUnique());
+				}
+			});
+			initComponents();
+		}
+
+		private boolean nameIsUnique() {
+			for(int i = 0; i < d_pm.getList().size(); ++i) {
+				if (i != d_idx && d_name.getValue().equals(d_pm.getList().get(i).getName())) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		private void initComponents() {
+			getUserPanel().setLayout(new BorderLayout());
+			getUserPanel().add(BasicComponentFactory.createTextField(d_name, false), BorderLayout.CENTER);
+			pack();
+			
+			Bindings.bind(d_okButton, "enabled", d_okEnabledModel);
+		}
+
+		protected void commit() {
+			d_pm.getList().get(d_idx).setName(d_name.getValue());
+			setVisible(false);
+		}
+
+		protected void cancel() {
+			setVisible(false);
+		}
+	}
+
 	class RemoveItemListener extends AbstractAction {
 		int d_index;
 		

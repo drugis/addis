@@ -167,8 +167,8 @@ public class AddStudyWizard extends Wizard {
 		wizardModel.add(new SelectIndicationWizardStep(pm, mainWindow));
 		wizardModel.add(new EnterCharacteristicsWizardStep(pm));
 		
-		wizardModel.add(new AddArmsWizardStep(pm.getAddArmsModel()));
-		wizardModel.add(new AddEpochsWizardStep(pm.getAddEpochsModel()));
+		wizardModel.add(new AddArmsWizardStep(pm.getAddArmsModel(), dialog));
+		wizardModel.add(new AddEpochsWizardStep(pm.getAddEpochsModel(), dialog));
 		wizardModel.add(new AssignActivitiesWizardStep(pm, mainWindow, dialog));
 		
 		wizardModel.add(new SelectEndpointWizardStep(pm));
@@ -207,8 +207,8 @@ public class AddStudyWizard extends Wizard {
 	// -- Wizard Steps
 	
 	public static class AddArmsWizardStep extends AddListItemsWizardStep<Arm> {
-		public AddArmsWizardStep(AddArmsPresentation pm) {
-			super("Add arms", "Enter the arms for this study.", pm);
+		public AddArmsWizardStep(AddArmsPresentation pm, JDialog dialog) {
+			super("Add arms", "Enter the arms for this study.", pm, dialog);
 		}
 		
 		@Override
@@ -224,8 +224,8 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class AddEpochsWizardStep extends AddListItemsWizardStep<Epoch> {
-		public AddEpochsWizardStep(AddEpochsPresentation pm) {
-			super("Add epochs", "Enter the epochs for this study.", pm);
+		public AddEpochsWizardStep(AddEpochsPresentation pm, JDialog dialog) {
+			super("Add epochs", "Enter the epochs for this study.", pm, dialog);
 			rebuild();
 		}	
 		
