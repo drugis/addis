@@ -54,7 +54,6 @@ import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.PresentationModel;
@@ -150,7 +149,6 @@ public class NetworkTableModelTest {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Ignore
 	@Test
 	public void testGetValueContinuousModelRun() throws InterruptedException {
 		d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
@@ -173,7 +171,7 @@ public class NetworkTableModelTest {
 	}
 
 
-	private NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
+	public static NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
 		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {

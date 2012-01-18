@@ -31,11 +31,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections15.BidiMap;
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.collections15.bidimap.TreeBidiMap;
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -70,23 +74,48 @@ import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	
-	transient private InconsistencyModel d_inconsistencyModel;
-	transient private ConsistencyModel d_consistencyModel;
-	transient private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
+	private InconsistencyModel d_inconsistencyModel;
+	private ConsistencyModel d_consistencyModel;
+	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
 	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
 		new HashMap<Parameter, NodeSplitPValueSummary>();
-
-	private boolean d_isContinuous = false;
+	
 	private RankProbabilitySummary d_rankProbabilitySummary;
 	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
 	private static final Transformer<DrugSet, String> s_transform = new Transformer<DrugSet, String>() {
+		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();  
 		@Override
 		public String transform(DrugSet input) {
-			return input.getLabel();
+			List<String> names = new ArrayList<String>();
+			for (Drug drug : input.getContents()) {
+				names.add(getCleanName(drug));
+			}
+			return StringUtils.join(names, "_");
+		}
+
+		private String getCleanName(Drug drug) {
+			if (!nameLookup.containsKey(drug)) {
+				insertUniqueName(drug);
+			}
+			return nameLookup.get(drug);
+		}
+
+		private void insertUniqueName(Drug drug) {
+			String sanitized = sanitize(drug.getName());
+			String name = sanitized;
+			int i = 1;
+			while (nameLookup.containsValue(name)) {
+				name = sanitized + ++i;
+			}
+			nameLookup.put(drug, name);
+		}
+		
+		private String sanitize(String dirtyString) {
+			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
 		}
 	};
 	
@@ -132,12 +161,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		if (d_outcome.getVariableType() instanceof RateVariableType) {
-			return createRateBuilder(studies, drugs, armMap);
-		} else if (d_outcome.getVariableType() instanceof ContinuousVariableType) {
+		if (isContinuous()) {
 			return createContinuousBuilder(studies, drugs, armMap);
 		} else {
-			throw new IllegalStateException("Unexpected VariableType: " + d_outcome.getVariableType());
+			return createRateBuilder(studies, drugs, armMap);
 		}
 	}
 	
@@ -250,7 +277,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public boolean isContinuous() {
-		return d_isContinuous;
+		if (d_outcome.getVariableType() instanceof RateVariableType) {
+			return false;
+		} else if (d_outcome.getVariableType() instanceof ContinuousVariableType) {
+			return true;
+		} else {
+			throw new IllegalStateException("Unexpected VariableType: " + d_outcome.getVariableType());
+		}
 	}
 
 	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {

@@ -107,7 +107,7 @@ public class NetworkTableModel extends AbstractTableModel {
 		
 		double mu = re.getMean();
 		double sigma = re.getStandardDeviation();
-		Distribution dist = (d_pm.isContinuous()) ?  new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
+		Distribution dist = d_pm.isContinuous() ? new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
 		
 		return d_pmf.getLabeledModel(dist);
 	}
@@ -118,6 +118,6 @@ public class NetworkTableModel extends AbstractTableModel {
 	}
 
 	private Treatment getTreatment(int idx) {
-		return d_model.getTreatments().get(idx);
+		return d_pm.getBean().getTreatment(d_pm.getIncludedDrugs().get(idx));
 	}
 }
