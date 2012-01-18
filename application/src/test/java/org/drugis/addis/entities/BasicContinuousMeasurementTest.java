@@ -38,36 +38,32 @@ public class BasicContinuousMeasurementTest {
 	
 	@Before
 	public void setUp() {
-		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.0, 1);
+		d_basicContinuousMeasurement = new BasicContinuousMeasurement(0.0, 0.1, 1);
 	}
 
-	private BasicContinuousMeasurement getMeasurement() {
-		return d_basicContinuousMeasurement;
-	}
-	
 	@Test
 	public void testSetMean() {
-		JUnitUtil.testSetter(getMeasurement(),
+		JUnitUtil.testSetter(d_basicContinuousMeasurement,
 				BasicContinuousMeasurement.PROPERTY_MEAN, 0.0, 25.91);
 	}
 
 	@Test
 	public void testSetStdDev() {
-		JUnitUtil.testSetter(getMeasurement(), 
-				BasicContinuousMeasurement.PROPERTY_STDDEV, 0.0, 0.46);
+		JUnitUtil.testSetter(d_basicContinuousMeasurement, 
+				BasicContinuousMeasurement.PROPERTY_STDDEV, 0.1, 0.46);
 	}
 	
 	@Test
 	public void testToString() {
-		BasicContinuousMeasurement m = getMeasurement();
-		assertEquals("0.0 \u00B1 0.0 (1)", m.toString());
+		BasicContinuousMeasurement m = d_basicContinuousMeasurement;
+		assertEquals("0.0 \u00B1 0.1 (1)", m.toString());
 		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(null, null, 5);
 		assertEquals("N/A \u00B1 N/A (5)", m2.toString());
 	}
 	
 	@Test
 	public void testIsComplete() {
-		assertTrue(getMeasurement().isComplete());
+		assertTrue(d_basicContinuousMeasurement.isComplete());
 		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(0.0, 0.0, null);
 		assertFalse(m1.isComplete());
 		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(0.0, null, 100);
@@ -79,6 +75,12 @@ public class BasicContinuousMeasurementTest {
 		assertFalse(m4.isComplete());
 		BasicContinuousMeasurement m5 = new BasicContinuousMeasurement(2.3, -0.2, 30);
 		assertFalse(m5.isComplete());
+		BasicContinuousMeasurement m6 = new BasicContinuousMeasurement(2.3, 0.0, 30);
+		assertFalse(m6.isComplete());
+		BasicContinuousMeasurement m7 = new BasicContinuousMeasurement(2.3, 1.0, -30);
+		assertFalse(m7.isComplete());
+		BasicContinuousMeasurement m8 = new BasicContinuousMeasurement(-2.3, 1.0, 30);
+		assertTrue(m8.isComplete());
 	}
 	
 	@Test

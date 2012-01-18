@@ -110,7 +110,7 @@ public class BasicContinuousMeasurement extends BasicMeasurement implements Cont
 	
 	@Override
 	public boolean isComplete() {
-		return super.isComplete() && d_stdDev != null && d_mean != null && d_stdDev >= 0.0;
+		return super.isComplete() && d_stdDev != null && d_mean != null && d_stdDev > 0.0;
 	}
 	
 }
