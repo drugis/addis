@@ -56,7 +56,7 @@ public class RenameMonitorTest {
 	public void setUp() {
 		d_a = new Arm("test", 0);
 		d_l = new ArrayListModel<Arm>();
-		d_listPresentation = new AddArmsPresentation(d_l, null, 0);
+//		d_listPresentation = new AddArmsPresentation(null, d_l, null, 0);
 	}
 	
 	@Test

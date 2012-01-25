@@ -89,4 +89,10 @@ public class Arm extends AbstractNamedEntity<Arm> implements TypeWithNotes {
 		}
 		return false;
 	}
+
+	public Arm rename(String newName) {
+		Arm clone = clone();
+		clone.d_name = newName;
+		return clone;
+	}
 }

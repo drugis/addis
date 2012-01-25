@@ -72,4 +72,12 @@ public abstract class AddListItemsPresentation<T extends TypeWithName> extends A
 	public String nextItemName() {
 		return getItemName() + " " + (++d_itemsCreated);
 	}
+
+	/**
+	 * Rename elements of the list.
+	 * Since the "name" could be an index field, this has to be handled by the subclass.
+	 * @param idx Index of the item to be renamed.
+	 * @param newName Desired new name.
+	 */
+	public abstract void rename(int idx, String newName);
 }

@@ -29,15 +29,18 @@ import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -204,7 +207,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	private final class RenameDialog extends OkCancelDialog {
 		private final int d_idx;
 		private final ValueHolder<String> d_name;
-		private ValueModel d_okEnabledModel = new ModifiableHolder<Boolean>(true);
+		private ValueHolder<Boolean> d_okEnabledModel = new ModifiableHolder<Boolean>(true);
 
 		private RenameDialog(Dialog owner, String title, boolean modal, int idx) {
 			super(owner, title, modal);
@@ -212,7 +215,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 			d_name = new ModifiableHolder<String>(d_pm.getList().get(d_idx).getName());
 			d_name.addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					d_okEnabledModel.setValue(nameIsUnique());
+					d_okEnabledModel.setValue(!d_name.getValue().isEmpty() && nameIsUnique());
 				}
 			});
 			initComponents();
@@ -231,12 +234,21 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 			getUserPanel().setLayout(new BorderLayout());
 			getUserPanel().add(BasicComponentFactory.createTextField(d_name, false), BorderLayout.CENTER);
 			pack();
+
+			getUserPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit");
+			getUserPanel().getActionMap().put("submit", new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					if (d_okEnabledModel.getValue()) {
+						commit();
+					}
+				}
+			});
 			
 			Bindings.bind(d_okButton, "enabled", d_okEnabledModel);
 		}
 
 		protected void commit() {
-			d_pm.getList().get(d_idx).setName(d_name.getValue());
+			d_pm.rename(d_idx, d_name.getValue());
 			setVisible(false);
 		}
 

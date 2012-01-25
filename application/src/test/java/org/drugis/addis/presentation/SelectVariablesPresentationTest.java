@@ -35,6 +35,7 @@ import java.util.Collections;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Epoch;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
@@ -44,8 +45,6 @@ import org.drugis.common.JUnitUtil;
 import org.drugis.common.beans.SortedSetModel;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jgoodies.binding.list.ArrayListModel;
 
 public class SelectVariablesPresentationTest {
 	private static final String TYPENAME = "Adverse Event";
@@ -62,7 +61,7 @@ public class SelectVariablesPresentationTest {
 	public void setUp() {
 		d_list = new SortedSetModel<AdverseEvent>(Arrays.asList(d_ade1, d_ade2));
 		
-		AddEpochsPresentation aep = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "epoch", 1);
+		AddEpochsPresentation aep = new AddEpochsPresentation(new Study(), "epoch", 1);
 		aep.getList().add(new Epoch("test", EntityUtil.createDuration("P3D")));
 		WhenTakenFactory wtf = new WhenTakenFactory(aep);
 		d_pm = new SelectAdverseEventsPresentation(d_list, wtf, null);

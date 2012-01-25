@@ -26,6 +26,7 @@ package org.drugis.addis.presentation.wizard;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -306,5 +307,13 @@ public class AddStudyWizardPresentationTest {
 			actual.add(newStudy.getMeasurement(om, arm1, wt1));
 		}
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testSetStudyUpdatesAddArmsEpochsModels() {
+		Study study = new Study("Bla", ExampleData.buildIndicationDepression());
+		d_wizard.setNewStudy(study);
+		assertSame(study, d_wizard.getAddArmsModel().getStudy());
+		assertSame(study, d_wizard.getAddEpochsModel().getStudy());
 	}
 }

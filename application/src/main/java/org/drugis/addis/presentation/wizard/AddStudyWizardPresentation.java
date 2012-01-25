@@ -67,7 +67,6 @@ import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.SortedSetModel;
 
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -126,22 +125,23 @@ public class AddStudyWizardPresentation {
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
 		d_pmf = pmf;
+		d_newStudyPM = new StudyPresentation(new Study(), pmf);
 		d_mainWindow = mainWindow;
-		d_epochs = new AddEpochsPresentation(new ArrayListModel<Epoch>(), "Epoch", 1);
+		d_epochs = new AddEpochsPresentation(getNewStudy(), "Epoch", 1);
 		new RebuildIndicesMonitor<Epoch>(d_epochs); // registers itself as listener to d_epochs
 		WhenTakenFactory wtf = new WhenTakenFactory(d_epochs);
 		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), wtf, d_mainWindow);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), wtf, d_mainWindow);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), wtf, d_mainWindow);
-		d_arms = new AddArmsPresentation(new ArrayListModel<Arm>(), "Arm", 2);
+		d_arms = new AddArmsPresentation(getNewStudy(), "Arm", 2);
 		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		resetStudy();
 	}
 	
 	private void updateSelectionHolders() {
-		getAddArmsModel().setList(getArms());
-		getAddEpochsModel().setList(getEpochs());
-
+		getAddArmsModel().setStudy(getNewStudy());
+		getAddEpochsModel().setStudy(getNewStudy());
+		
 		d_endpointSelect.setSlots(getNewStudy().getEndpoints());
 		d_adverseEventSelect.setSlots(getNewStudy().getAdverseEvents());
 		d_populationCharSelect.setSlots(getNewStudy().getPopulationChars());

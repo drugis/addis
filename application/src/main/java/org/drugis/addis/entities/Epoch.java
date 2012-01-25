@@ -88,4 +88,10 @@ public class Epoch extends AbstractNamedEntity<Epoch> implements TypeWithNotes, 
 	public String toString() {
 		return getName() + " " + getDuration() + " " + getNotes();
 	}
+
+	public Epoch rename(String newName) {
+		Epoch clone = clone();
+		clone.d_name = newName;
+		return clone;
+	}
 }
