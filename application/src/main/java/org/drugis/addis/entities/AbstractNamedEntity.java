@@ -41,13 +41,6 @@ public abstract class AbstractNamedEntity<T extends TypeWithName> extends Abstra
 		return d_name;
 	}
 
-	public void setName(String name) {
-		String oldVal = d_name;
-		d_name = name;
-		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
-	}
-	
-
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "(" + getName() + ")";

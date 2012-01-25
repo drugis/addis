@@ -52,8 +52,11 @@ public class ArmTest {
 	}
 	
 	@Test
-	public void testSetName() {
-		JUnitUtil.testSetter(d_arm, Arm.PROPERTY_NAME, d_name, "New Name");
+	public void testRename() {
+		assertNotSame(d_arm, d_arm.rename(d_name));
+		assertEquals(d_arm, d_arm.rename(d_name));
+		
+		assertEquals("New name", d_arm.rename("New name").getName());
 	}
 	
 	@Test

@@ -69,7 +69,7 @@ public class WhenTakenTest {
 		WhenTaken wt2 = new WhenTaken(d_duration1, RelativeTo.FROM_EPOCH_START, d_epoch2);
 		assertTrue(d_wt.compareTo(wt2) < 0);
 		assertTrue(d_wt.compareTo(d_wt) == 0);
-		d_epoch1.setName(d_epoch2.getName());
+		d_wt.setEpoch(d_epoch2);
 		assertTrue(d_wt.compareTo(wt2) == 0);
 		wt2.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
 		assertTrue(d_wt.compareTo(wt2) < 0);

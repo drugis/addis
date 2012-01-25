@@ -25,10 +25,10 @@
 package org.drugis.addis.entities;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.addis.util.RebuildableHashSet;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -80,7 +80,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 
 	private Activity d_activity;
 	// FIXME: the hashCode() of UsedBy is non-static during the AddStudyWizard, so we cannot use this.
-	private RebuildableHashSet<UsedBy> d_usedBy = new RebuildableHashSet<UsedBy>();
+	private Set<UsedBy> d_usedBy = new HashSet<UsedBy>();
 	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
 	
 	public StudyActivity(String name, Activity activity) {
@@ -109,7 +109,7 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	 */
 	public void setUsedBy(Set<UsedBy> usedBy) {
 		Set<UsedBy> oldValue = d_usedBy;
-		d_usedBy = new RebuildableHashSet<UsedBy>(usedBy);
+		d_usedBy = new HashSet<UsedBy>(usedBy);
 		firePropertyChange(PROPERTY_USED_BY, oldValue, d_usedBy);
 	}
 
@@ -121,10 +121,6 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		return Collections.unmodifiableSet(d_usedBy);
 	}
 	
-	public void rebuildUsedBy() {
-		d_usedBy.rebuild();
-	}
-
 	public ObservableList<Note> getNotes() {
 		return d_notes ;
 	}
@@ -174,4 +170,9 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 		return true;
 	}
 
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
 }

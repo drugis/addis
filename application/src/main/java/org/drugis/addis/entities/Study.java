@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -39,7 +40,6 @@ import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
@@ -73,7 +73,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	private final ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
 	private final ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>();
 
-	private RebuildableTreeMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>();
+	private Map<MeasurementKey, BasicMeasurement> d_measurements = new TreeMap<MeasurementKey, BasicMeasurement>();
 	private final ObservableList<Note> d_notes = new ArrayListModel<Note>();
 
 	public Study() {
@@ -400,7 +400,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return d_chars;
 	}
 
-	@Override
 	public void setName(String name) {
 		String oldVal = d_name;
 		d_name = name;
@@ -780,10 +779,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		Epoch epoch = getEpochs().get(getEpochs().size() - 1);
 		this.setStudyActivityAt(arm, epoch, studyActivity);
 		return arm;
-	}
-
-	public void rehashMeasurements() {
-		d_measurements.rebuild();
 	}
 
 	/**

@@ -45,7 +45,6 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
-import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
@@ -85,22 +84,6 @@ public class AddStudyWizardPresentation {
 		}
 	}
 
-	private final class RebuildIndicesMonitor<T extends TypeWithName> extends RenameMonitor<T> {
-		private RebuildIndicesMonitor(AddListItemsPresentation<T> listPresentation) {
-			super(listPresentation);
-		}
-
-		@Override
-		protected void renameDetected() {
-			// rebuild usedBy sets
-			for (StudyActivity act : getNewStudy().getStudyActivities()) {
-				act.rebuildUsedBy();
-			}
-			// rebuild measurement hash maps
-			getNewStudy().rehashMeasurements();
-		}
-	}
-
 	public abstract class OutcomeMeasurementsModel {
 		abstract public TableModel getMeasurementTableModel();
 	}
@@ -117,24 +100,17 @@ public class AddStudyWizardPresentation {
 	
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
-	private ContentAwareListModel<StudyOutcomeMeasure<Endpoint>> d_endpointMonitor;
-	private ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>> d_adverseEventMonitor;
-	private ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>> d_popCharMonitor;
-
-	
 	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_newStudyPM = new StudyPresentation(new Study(), pmf);
 		d_mainWindow = mainWindow;
 		d_epochs = new AddEpochsPresentation(getNewStudy(), "Epoch", 1);
-		new RebuildIndicesMonitor<Epoch>(d_epochs); // registers itself as listener to d_epochs
 		WhenTakenFactory wtf = new WhenTakenFactory(d_epochs);
 		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), wtf, d_mainWindow);
 		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), wtf, d_mainWindow);
 		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), wtf, d_mainWindow);
 		d_arms = new AddArmsPresentation(getNewStudy(), "Arm", 2);
-		new RebuildIndicesMonitor<Arm>(d_arms); // registers itself as listener to d_arms
 		resetStudy();
 	}
 	
@@ -162,27 +138,9 @@ public class AddStudyWizardPresentation {
 		getAddArmsModel().getList().addListDataListener(removeOrphansListener);
 		getAddEpochsModel().getList().addListDataListener(removeOrphansListener);
 		
-		ListDataListener rehashMeasurementsListener = new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-			}
-			public void intervalAdded(ListDataEvent e) {
-			}
-			public void contentsChanged(ListDataEvent e) {
-				for (StudyActivity act : getNewStudy().getStudyActivities()) {
-					act.rebuildUsedBy();
-				}
-				getNewStudy().rehashMeasurements();
-			}
-		};
-		d_endpointMonitor = 
-			new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(getNewStudy().getEndpoints());
-		d_endpointMonitor.addListDataListener(rehashMeasurementsListener);
-		d_adverseEventMonitor  = 
-			new ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>>(getNewStudy().getAdverseEvents());
-		d_adverseEventMonitor.addListDataListener(rehashMeasurementsListener);
-		d_popCharMonitor  = 
-			new ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>>(getNewStudy().getPopulationChars());
-		d_popCharMonitor.addListDataListener(rehashMeasurementsListener);
+		new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(getNewStudy().getEndpoints());
+		new ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>>(getNewStudy().getAdverseEvents());
+		new ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>>(getNewStudy().getPopulationChars());
 	}
 	
 	void deleteOrphanUsedBys() {

@@ -45,6 +45,12 @@ public class Indication extends AbstractNamedEntity<Indication> implements Compa
 		return Collections.emptySet();
 	}
 
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
+	
 	public void setCode(Long code) {
 		Long oldVal = d_code;
 		d_code = code;

@@ -31,30 +31,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Epoch;
-import org.drugis.addis.entities.MeasurementKey;
-import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.StudyOutcomeMeasure;
-import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
-import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.util.EntityUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.pietschy.wizard.InvalidStateException;
@@ -184,129 +174,6 @@ public class AddStudyWizardPresentationTest {
 		assertEquals(usedBy, study.getStudyActivities().get(0).getUsedBy());
 		arms.remove(1);
 		assertFalse(usedBy.equals(study.getStudyActivities().get(0).getUsedBy()));
-	}
-
-	@Test
-	public void testRenameArmsShouldRebuildMeasurementMap() {
-		AddStudyWizardPresentation aswp =
-			new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null, ExampleData.buildStudyChouinard());
-		List<BasicMeasurement> expected = new ArrayList<BasicMeasurement>();
-		List<BasicMeasurement> actual = new ArrayList<BasicMeasurement>();
-		Arm arm0 = aswp.getAddArmsModel().getList().get(0);
-		Arm arm1 = aswp.getAddArmsModel().getList().get(1);
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			expected.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm0));
-			expected.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm1));
-		}
-		arm0.setName("newname0");
-		arm1.setName("newname1");
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			actual.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm0));
-			actual.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm1));
-		}
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void testRenameEpochsShouldRebuildMeasurementMap() {
-		Study study = ExampleData.buildStudyChouinard().clone();
-		// Add second measurement moment to each SOM
-		Random rnd = new Random();
-		for (OutcomeMeasure om : study.getOutcomeMeasures()) {
-			Epoch epoch = study.getEpochs().get(0);
-			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
-			study.setMeasurement(new MeasurementKey(om, study.getArms().get(0), wt), om.buildMeasurement(rnd.nextInt()));
-			study.setMeasurement(new MeasurementKey(om, study.getArms().get(1), wt), om.buildMeasurement(rnd.nextInt()));
-			for(StudyOutcomeMeasure<? extends OutcomeMeasure> som: study.getStudyOutcomeMeasures(om.getClass())) {
-				if (som.getValue().equals(om)) {
-					som.getWhenTaken().add(wt);
-				}
-			}
-		}
-		AddStudyWizardPresentation aswp =
-			new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null, study);
-		List<BasicMeasurement> expected = new ArrayList<BasicMeasurement>();
-		List<BasicMeasurement> actual = new ArrayList<BasicMeasurement>();
-		Arm arm0 = aswp.getAddArmsModel().getList().get(0);
-		Arm arm1 = aswp.getAddArmsModel().getList().get(1);
-		Epoch ep0 = aswp.getAddEpochsModel().getList().get(0);
-		Epoch ep1 = aswp.getAddEpochsModel().getList().get(1);
-		WhenTaken wt0 = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, aswp.getAddEpochsModel().getList().get(0));
-		WhenTaken wt1 = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, aswp.getAddEpochsModel().getList().get(1));
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			expected.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm0, wt0));
-			expected.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm0, wt1));
-			expected.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm1, wt0));
-			expected.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm1, wt1));
-		}
-		ep1.setName("NEWNAME2");
-		ep0.setName("NEWNAME1");
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			actual.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm0, wt0));
-			actual.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm0, wt1));
-			actual.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm1, wt0));
-			actual.add(aswp.getNewStudyPM().getBean().getMeasurement(om, arm1, wt1));
-		}
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * Test that the measurement keys get re-indexed when the WhenTakens change, so that they swap in the natural ordering.
-	 * If re-indexing doesn't happen, the keys may become lost in the map, making their values inaccessible (though still present).
-	 * The Measurement map is a TreeMap, so keys get lost only if the WhenTakens change their relative position.
-	 */
-	@Test
-	public void testEditWhenTakensShouldRebuildMeasurementMap() {
-		Study study = ExampleData.buildStudyChouinard().clone();
-		// Add second measurement moment to each SOM
-		Random rnd = new Random();
-		for (OutcomeMeasure om : study.getOutcomeMeasures()) {
-			Epoch epoch = study.getEpochs().get(0);
-			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
-			study.setMeasurement(new MeasurementKey(om, study.getArms().get(0), wt), om.buildMeasurement(rnd.nextInt()));
-			study.setMeasurement(new MeasurementKey(om, study.getArms().get(1), wt), om.buildMeasurement(rnd.nextInt()));
-			study.findStudyOutcomeMeasure(om).getWhenTaken().add(wt);
-		}
-		AddStudyWizardPresentation aswp = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null, study);
-
-		Arm arm0 = aswp.getAddArmsModel().getList().get(0);
-		Arm arm1 = aswp.getAddArmsModel().getList().get(1);
-		WhenTaken wt0 = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, aswp.getAddEpochsModel().getList().get(0));
-		WhenTaken wt1 = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, aswp.getAddEpochsModel().getList().get(1));
-
-		List<BasicMeasurement> expected = new ArrayList<BasicMeasurement>();
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			expected.add(aswp.getOldStudy().getMeasurement(om, arm0, wt0));
-			expected.add(aswp.getOldStudy().getMeasurement(om, arm0, wt1));
-			expected.add(aswp.getOldStudy().getMeasurement(om, arm1, wt0));
-			expected.add(aswp.getOldStudy().getMeasurement(om, arm1, wt1));
-		}
-
-		Study newStudy = aswp.getNewStudyPM().getBean();
-
-		// change whentakens in study
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			WhenTaken whenTaken0 = newStudy.findStudyOutcomeMeasure(om).getWhenTaken().get(0);
-			WhenTaken whenTaken1 = newStudy.findStudyOutcomeMeasure(om).getWhenTaken().get(1);
-			int before = whenTaken0.compareTo(whenTaken1);
-			whenTaken1.setRelativeTo(RelativeTo.FROM_EPOCH_START);
-			whenTaken1.setEpoch(newStudy.getEpochs().get(1));
-			int after = whenTaken0.compareTo(whenTaken1);
-
-			// The WhenTakens have to swap in their natural ordering for the test to work (Study uses a TreeMap).
-			assertFalse(Math.signum(before) == Math.signum(after));
-		}
-		wt0.setEpoch(newStudy.getEpochs().get(1));
-		wt0.setRelativeTo(RelativeTo.FROM_EPOCH_START);
-
-		List<BasicMeasurement> actual = new ArrayList<BasicMeasurement>();
-		for (OutcomeMeasure om : aswp.getOldStudy().getOutcomeMeasures()) {
-			actual.add(newStudy.getMeasurement(om, arm0, wt0));
-			actual.add(newStudy.getMeasurement(om, arm0, wt1));
-			actual.add(newStudy.getMeasurement(om, arm1, wt0));
-			actual.add(newStudy.getMeasurement(om, arm1, wt1));
-		}
-		assertEquals(expected, actual);
 	}
 	
 	@Test

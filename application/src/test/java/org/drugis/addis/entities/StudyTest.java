@@ -670,8 +670,7 @@ public class StudyTest {
 	@Test
 	public void testReplaceArm() {
 		Arm oldArm = d_clone.getArms().get(0);
-		Arm newArm = oldArm.clone();
-		newArm.setName("newNarm");
+		Arm newArm = oldArm.rename("newNarm");
 		d_clone.replaceArm(oldArm, newArm);
 
 		assertSame(newArm, d_clone.getArms().get(0));
@@ -691,8 +690,7 @@ public class StudyTest {
 	@Test
 	public void testReplaceEpoch() {
 		Epoch oldEpoch = d_clone.getEpochs().get(1);
-		Epoch newEpoch = oldEpoch.clone();
-		newEpoch.setName("AsnemaWat");
+		Epoch newEpoch = oldEpoch.rename("AsnemaWat");
 		d_clone.replaceEpoch(oldEpoch, newEpoch);
 		
 		assertSame(newEpoch, d_clone.getEpochs().get(1));
