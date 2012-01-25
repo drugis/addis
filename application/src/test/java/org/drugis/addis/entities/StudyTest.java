@@ -51,6 +51,8 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ObservableList;
+
 
 public class StudyTest {
 	private Study d_orig;
@@ -436,6 +438,9 @@ public class StudyTest {
 		vars1.add(v1);
 		vars1.add(v2);
 		s.getPopulationChars().addAll(Study.wrapVariables(vars1));
+		for (StudyOutcomeMeasure<PopulationCharacteristic> som : s.getPopulationChars()) {
+			som.getWhenTaken().add(s.defaultMeasurementMoment());
+		}
 		
 		BasicMeasurement m10 = new BasicContinuousMeasurement(3.0, 2.0, 150);
 		BasicMeasurement m11 = new BasicContinuousMeasurement(3.0, 2.0, 150);
@@ -519,6 +524,16 @@ public class StudyTest {
 		assertNotNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), oldArm));
 		d_clone.getArms().remove(0);
 		assertNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), oldArm));
+	}
+	
+	@Test
+	public void testWhenTakenOrphanMeasurementRemoval() {
+		ObservableList<WhenTaken> whenTakens = d_clone.getEndpoints().get(0).getWhenTaken();
+		WhenTaken oldWhenTaken = whenTakens.get(0);
+		Arm arm = d_clone.getArms().get(0);
+		assertNotNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), arm, oldWhenTaken));
+		whenTakens.remove(0);
+		assertNull(d_clone.getMeasurement(d_clone.getEndpoints().get(0).getValue(), arm, oldWhenTaken));
 	}
 	
 	@Test

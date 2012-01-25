@@ -587,7 +587,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private boolean orphanKey(MeasurementKey k) {
-		if (findStudyOutcomeMeasure(k.getVariable()) == null) {
+		StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(k.getVariable());
+		if (som == null) {
+			return true;
+		}
+		if (!som.getWhenTaken().contains(k.getWhenTaken())) {
 			return true;
 		}
 		// OutcomeMeasure measurement

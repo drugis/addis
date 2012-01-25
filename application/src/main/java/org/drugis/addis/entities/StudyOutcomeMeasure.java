@@ -24,6 +24,9 @@
 
 package org.drugis.addis.entities;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.apache.commons.collections15.Predicate;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.GuardedObservableList;
@@ -35,6 +38,8 @@ import com.jgoodies.binding.list.ObservableList;
 public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
 	public static final String PROPERTY_IS_PRIMARY = "isPrimary";
 
+	protected static final String PROPERTY_WHEN_TAKEN_CHANGED = "whenTakenChanged";
+
 	private Boolean d_isPrimary = false;
 	private ObservableList<WhenTaken> d_whenTaken = new GuardedObservableList<WhenTaken>(new ArrayListModel<WhenTaken>(),
 			new Predicate<WhenTaken>() {
@@ -45,6 +50,17 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 
 	public StudyOutcomeMeasure(T obj) {
 		super(obj);
+		d_whenTaken.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				firePropertyChange(PROPERTY_WHEN_TAKEN_CHANGED, false, true);
+			}
+			public void intervalAdded(ListDataEvent e) {
+				firePropertyChange(PROPERTY_WHEN_TAKEN_CHANGED, false, true);
+			}
+			public void contentsChanged(ListDataEvent e) {
+				firePropertyChange(PROPERTY_WHEN_TAKEN_CHANGED, false, true);
+			}
+		});
 	}
 
 	public StudyOutcomeMeasure(T obj, WhenTaken whenTaken) {
