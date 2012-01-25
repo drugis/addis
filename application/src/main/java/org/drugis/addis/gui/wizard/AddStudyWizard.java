@@ -163,21 +163,21 @@ public class AddStudyWizard extends Wizard {
 	
 	private static AbstractWizardModel buildModel(final AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog dialog) {
 		StaticModel wizardModel = new StaticModel();
-		wizardModel.add(new EnterIdTitleWizardStep(pm, dialog));
+		wizardModel.add(new EnterIdTitleWizardStep(dialog, pm));
 		wizardModel.add(new SelectIndicationWizardStep(pm, mainWindow));
 		wizardModel.add(new EnterCharacteristicsWizardStep(pm));
 		
-		wizardModel.add(new AddArmsWizardStep(pm.getAddArmsModel(), dialog));
-		wizardModel.add(new AddEpochsWizardStep(pm.getAddEpochsModel(), dialog));
-		wizardModel.add(new AssignActivitiesWizardStep(pm, mainWindow, dialog));
+		wizardModel.add(new AddArmsWizardStep(dialog, pm.getAddArmsModel()));
+		wizardModel.add(new AddEpochsWizardStep(dialog, pm.getAddEpochsModel()));
+		wizardModel.add(new AssignActivitiesWizardStep(dialog, pm, mainWindow));
 		
-		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SetEndpointMeasurementsWizardStep(pm, dialog));
-		wizardModel.add(new SelectAdverseEventWizardStep(pm));
-		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(pm, dialog));
-		wizardModel.add(new SelectPopulationCharsWizardStep(pm));
-		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(pm, dialog));
-		wizardModel.add(new ReviewStudyStep(pm, mainWindow, dialog));
+		wizardModel.add(new SelectEndpointWizardStep(dialog, pm));
+		wizardModel.add(new SetEndpointMeasurementsWizardStep(dialog, pm));
+		wizardModel.add(new SelectAdverseEventWizardStep(dialog, pm));
+		wizardModel.add(new SetAdverseEventMeasurementsWizardStep(dialog, pm));
+		wizardModel.add(new SelectPopulationCharsWizardStep(dialog, pm));
+		wizardModel.add(new SetPopulationCharMeasurementsWizardStep(dialog, pm));
+		wizardModel.add(new ReviewStudyStep(dialog, pm, mainWindow));
 		
 		wizardModel.setLastVisible(false);
 		// The measurements + variable lists are saved on viewing the measurement tables
@@ -207,7 +207,7 @@ public class AddStudyWizard extends Wizard {
 	// -- Wizard Steps
 	
 	public static class AddArmsWizardStep extends AddListItemsWizardStep<Arm> {
-		public AddArmsWizardStep(AddArmsPresentation pm, JDialog dialog) {
+		public AddArmsWizardStep(JDialog dialog, AddArmsPresentation pm) {
 			super("Add arms", "Enter the arms for this study.", pm, dialog);
 		}
 		
@@ -224,7 +224,7 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class AddEpochsWizardStep extends AddListItemsWizardStep<Epoch> {
-		public AddEpochsWizardStep(AddEpochsPresentation pm, JDialog dialog) {
+		public AddEpochsWizardStep(JDialog dialog, AddEpochsPresentation pm) {
 			super("Add epochs", "Enter the epochs for this study.", pm, dialog);
 			rebuild();
 		}	
@@ -327,7 +327,7 @@ public class AddStudyWizard extends Wizard {
 			}
 		}
 		
-		public AssignActivitiesWizardStep(AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog parent) {
+		public AssignActivitiesWizardStep(JDialog parent, AddStudyWizardPresentation pm, AddisWindow mainWindow) {
 			super("Assign activities", "Drag activities to their proper combination of (arm, epoch). Incomplete activities are shown in red.");
 			d_parent = parent;
 			d_mainWindow = mainWindow;
@@ -583,7 +583,7 @@ public class AddStudyWizard extends Wizard {
 		private final AddisWindow d_mainwindow;
 		private final JDialog d_dialog;
 
-		public ReviewStudyStep(AddStudyWizardPresentation pm, AddisWindow mainWindow, JDialog dialog) {
+		public ReviewStudyStep(JDialog dialog, AddStudyWizardPresentation pm, AddisWindow mainWindow) {
 			 super("Review study", "Please review the study to be created. " +
 					 "You can go back through the wizard to correct any mistakes, " +
 					 "but after the study has been added it cannot be changed.");
@@ -643,14 +643,14 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class SetEndpointMeasurementsWizardStep extends SetMeasurementsWizardStep {
-		public SetEndpointMeasurementsWizardStep(AddStudyWizardPresentation pm, JDialog dialog) {
+		public SetEndpointMeasurementsWizardStep(JDialog dialog, AddStudyWizardPresentation pm) {
 			super(pm, "Set Measurements", "Please enter the measurements for all arm-endpoint combinations.",
 					pm.getEndpointsModel(), dialog);
 		}
 	}
 	
 	public static class SetAdverseEventMeasurementsWizardStep extends SetMeasurementsWizardStep {
-		public SetAdverseEventMeasurementsWizardStep(AddStudyWizardPresentation pm, JDialog dialog){
+		public SetAdverseEventMeasurementsWizardStep(JDialog dialog, AddStudyWizardPresentation pm){
 			super(pm, "Input adverse event data", "Please enter the measurements for all arm-event combinations.",
 					pm.getAdverseEventsModel(), dialog);
 		}
@@ -658,7 +658,7 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class SetPopulationCharMeasurementsWizardStep extends SetMeasurementsWizardStep {
-		public SetPopulationCharMeasurementsWizardStep(AddStudyWizardPresentation pm, JDialog dialog){
+		public SetPopulationCharMeasurementsWizardStep(JDialog dialog, AddStudyWizardPresentation pm){
 			super(pm, "Input population data", "Please enter the measurements for all population baseline characteristics.",
 					pm.getPopulationCharsModel(), dialog);
 		}
@@ -666,8 +666,8 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class SelectEndpointWizardStep extends SelectFromOutcomeMeasureListWizardStep<Endpoint> {
-		public SelectEndpointWizardStep(AddStudyWizardPresentation pm) {
-			super(pm.getEndpointSelectModel(), pm.getAddEpochsModel());
+		public SelectEndpointWizardStep(JDialog parent, AddStudyWizardPresentation pm) {
+			super(parent, pm.getEndpointSelectModel(), pm.getAddEpochsModel());
 		}
 		
 		@Override
@@ -682,14 +682,14 @@ public class AddStudyWizard extends Wizard {
 	}
 	
 	public static class SelectPopulationCharsWizardStep extends SelectFromOutcomeMeasureListWizardStep<PopulationCharacteristic> {
-		public SelectPopulationCharsWizardStep(AddStudyWizardPresentation pm) {
-			super(pm.getPopulationCharSelectModel(), pm.getAddEpochsModel());
+		public SelectPopulationCharsWizardStep(JDialog parent, AddStudyWizardPresentation pm) {
+			super(parent, pm.getPopulationCharSelectModel(), pm.getAddEpochsModel());
 		}
 	}
 	
 	public static class SelectAdverseEventWizardStep extends SelectFromOutcomeMeasureListWizardStep<AdverseEvent> {
-		public SelectAdverseEventWizardStep(AddStudyWizardPresentation pm) {
-			super(pm.getAdverseEventSelectModel(), pm.getAddEpochsModel());
+		protected SelectAdverseEventWizardStep(JDialog parent, AddStudyWizardPresentation pm) {
+			super(parent, pm.getAdverseEventSelectModel(), pm.getAddEpochsModel());
 		}		
 	}
 	
@@ -943,7 +943,7 @@ public class AddStudyWizard extends Wizard {
 			}
 		}
 		
-		public EnterIdTitleWizardStep(AddStudyWizardPresentation pm, JDialog dialog) {
+		public EnterIdTitleWizardStep(JDialog dialog, AddStudyWizardPresentation pm) {
 			super("Select ID and Title","Set the ID and title of the study. Studies can also be extracted from Clinicaltrials.gov using the NCT-id.");
 			d_pm = pm;
 		}

@@ -40,8 +40,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -50,9 +48,6 @@ import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
-import org.drugis.common.beans.ContentAwareListModel;
-import org.drugis.common.event.ListDataEventMatcher;
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -635,23 +630,6 @@ public class StudyTest {
 	}
 	
 	@Test
-	public void testWhenTakenChangePropagatesToStudyOutcomeMeasureList(){
-		ContentAwareListModel<StudyOutcomeMeasure<Endpoint>> listModel = 
-			new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(d_clone.getEndpoints(), new String[] {StudyOutcomeMeasure.PROPERTY_WHEN_TAKEN_EDITED});
-		
-		ListDataListener listener = EasyMock.createStrictMock(ListDataListener.class);
-		listener.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel, ListDataEvent.CONTENTS_CHANGED, 0, 0)));
-		EasyMock.replay(listener);
-		
-		listModel.addListDataListener(listener);
-
-		WhenTaken whenTaken = d_clone.getEndpoints().get(0).getWhenTaken().get(0);
-		whenTaken.setRelativeTo(RelativeTo.FROM_EPOCH_START);
-		
-		EasyMock.verify(listener);
-	}
-	
-	@Test
 	public void testMeasurementMomentsNoDefaultEpoch() {
 		assertNotNull(d_clone.defaultMeasurementMoment());
 		assertNotNull(d_clone.baselineMeasurementMoment());
@@ -710,11 +688,20 @@ public class StudyTest {
 		assertEquals(newEpoch, d_clone.getEndpoints().get(0).getWhenTaken().get(0).getEpoch());
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testNonCommittedWhenTakenNotAllowed() {
+		StudyOutcomeMeasure<Endpoint> som = d_clone.getEndpoints().get(0);
+		WhenTaken oldWhenTaken = som.getWhenTaken().get(0);
+		WhenTaken newWhenTaken = new WhenTaken(oldWhenTaken.getDuration(), RelativeTo.FROM_EPOCH_START, oldWhenTaken.getEpoch());
+		d_clone.replaceWhenTaken(som, oldWhenTaken, newWhenTaken);
+	}
+	
 	@Test
 	public void testReplaceMeasurementMoment() {
 		StudyOutcomeMeasure<Endpoint> som = d_clone.getEndpoints().get(0);
 		WhenTaken oldWhenTaken = som.getWhenTaken().get(0);
 		WhenTaken newWhenTaken = new WhenTaken(oldWhenTaken.getDuration(), RelativeTo.FROM_EPOCH_START, oldWhenTaken.getEpoch());
+		newWhenTaken.commit();
 		JUnitUtil.assertNotEquals(oldWhenTaken, newWhenTaken);
 		d_clone.replaceWhenTaken(som, oldWhenTaken, newWhenTaken);
 		

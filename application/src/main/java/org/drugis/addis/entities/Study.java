@@ -194,6 +194,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 				WhenTaken oldWhenTaken = som.getWhenTaken().get(i);
 				if (oldWhenTaken.getEpoch().equals(oldEpoch)) {
 					WhenTaken newWhenTaken = new WhenTaken(oldWhenTaken.getDuration(), oldWhenTaken.getRelativeTo(), newEpoch);
+					newWhenTaken.commit();
 					replaceWhenTaken(som, oldWhenTaken, newWhenTaken);
 				}
 			}
@@ -205,6 +206,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public <V extends Variable> void replaceWhenTaken(final StudyOutcomeMeasure<V> studyOutcomeMeasure, 
 			final WhenTaken oldWhenTaken, final WhenTaken newWhenTaken) {
+		if (!newWhenTaken.isCommitted()) {
+			throw new IllegalArgumentException("The new WhenTaken must be committed");
+		}
 		updateMeasurementKeys(studyOutcomeMeasure, oldWhenTaken, newWhenTaken);
 		
 		ObservableList<WhenTaken> whenTakens = studyOutcomeMeasure.getWhenTaken();
@@ -664,14 +668,23 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public WhenTaken defaultMeasurementMoment() {
-		Epoch epoch = findTreatmentEpoch();
-		return epoch == null ? null : new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
+		return treatmentWhenTaken(RelativeTo.BEFORE_EPOCH_END);
+	}
+	
+	public WhenTaken baselineMeasurementMoment() {
+		return treatmentWhenTaken(RelativeTo.FROM_EPOCH_START);
 	}
 
-	public WhenTaken baselineMeasurementMoment() {
+	private WhenTaken treatmentWhenTaken(RelativeTo relativeTo) {
 		Epoch epoch = findTreatmentEpoch();
-		return epoch == null ? null : new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, epoch);
+		if (epoch == null) {
+			return null;
+		}
+		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), relativeTo, epoch);
+		whenTaken.commit();
+		return whenTaken;
 	}
+
 
 	private boolean isTreatmentEpoch(Epoch epoch) {
 		for (Arm arm : d_arms) {

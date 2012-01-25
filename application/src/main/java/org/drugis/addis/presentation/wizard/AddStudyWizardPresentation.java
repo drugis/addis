@@ -80,7 +80,9 @@ public class AddStudyWizardPresentation {
 		}
 		
 		public WhenTaken buildDefault() {
-			return new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.getList().get(0));
+			WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.getList().get(0));
+			whenTaken.commit();
+			return whenTaken;
 		}
 	}
 

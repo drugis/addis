@@ -24,11 +24,9 @@
 
 package org.drugis.addis.entities;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
+import org.apache.commons.collections15.Predicate;
 import org.drugis.common.EqualsUtil;
-import org.drugis.common.beans.ContentAwareListModel;
+import org.drugis.common.beans.GuardedObservableList;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -36,23 +34,17 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
 	public static final String PROPERTY_IS_PRIMARY = "isPrimary";
-	public static final String PROPERTY_WHEN_TAKEN_EDITED = "whenTakenEdited";
 
 	private Boolean d_isPrimary = false;
-	private ObservableList<WhenTaken> d_whenTaken = new ArrayListModel<WhenTaken>();
-	final private ContentAwareListModel<WhenTaken> d_whenTakenMonitor = new ContentAwareListModel<WhenTaken>(d_whenTaken);
+	private ObservableList<WhenTaken> d_whenTaken = new GuardedObservableList<WhenTaken>(new ArrayListModel<WhenTaken>(),
+			new Predicate<WhenTaken>() {
+				public boolean evaluate(WhenTaken wt) {
+					return wt.isCommitted();
+				}
+			});
 
 	public StudyOutcomeMeasure(T obj) {
 		super(obj);
-		d_whenTakenMonitor.addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-			}
-			public void intervalAdded(ListDataEvent e) {
-			}
-			public void contentsChanged(ListDataEvent e) {
-				firePropertyChange(PROPERTY_WHEN_TAKEN_EDITED, false, true);
-			}
-		});
 	}
 
 	public StudyOutcomeMeasure(T obj, WhenTaken whenTaken) {
@@ -68,7 +60,9 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 		clone.setIsPrimary(getIsPrimary());
 		clone.getNotes().addAll(getNotes());
 		for (WhenTaken wt : getWhenTaken()) {
-			clone.getWhenTaken().add(wt.clone());
+			WhenTaken wtClone = wt.clone();
+			wtClone.commit();
+			clone.getWhenTaken().add(wtClone);
 		}
 		return clone;
 	}

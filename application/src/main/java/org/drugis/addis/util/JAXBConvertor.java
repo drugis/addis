@@ -837,7 +837,9 @@ public class JAXBConvertor {
 	}
 	
 	private static WhenTaken convertWhenTaken(RelativeTime rt, List<Epoch> epochs) {
-		return new WhenTaken(rt.getHowLong(), rt.getRelativeTo(), findNamedItem(epochs, rt.getEpoch().getName()));
+		WhenTaken whenTaken = new WhenTaken(rt.getHowLong(), rt.getRelativeTo(), findNamedItem(epochs, rt.getEpoch().getName()));
+		whenTaken.commit();
+		return whenTaken;
 	}
 
 	private static RelativeTime convertWhenTaken(WhenTaken whenTaken) {

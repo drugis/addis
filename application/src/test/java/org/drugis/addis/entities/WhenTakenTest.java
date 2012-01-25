@@ -77,4 +77,32 @@ public class WhenTakenTest {
 		wt2.setDuration(EntityUtil.createDuration("P20D"));
 		assertTrue(d_wt.compareTo(wt2) > 0);
 	}
+	
+	@Test
+	public void testCloneRemovesCommit() {
+		d_wt.commit();
+		
+		WhenTaken wt = d_wt.clone();
+		wt.setEpoch(d_epoch2);
+		wt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+		wt.setDuration(EntityUtil.createDuration("PT12H"));
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testSetEpochNotAllowedAfterCommit() {
+		d_wt.commit();
+		d_wt.setEpoch(d_epoch2);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testSetRelativeToNotAllowedAfterCommit() {
+		d_wt.commit();
+		d_wt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testSetOffsetNotAllowedAfterCommit() {
+		d_wt.commit();
+		d_wt.setDuration(EntityUtil.createDuration("PT12H"));
+	}
 }

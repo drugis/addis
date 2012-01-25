@@ -201,7 +201,9 @@ public class ClinicaltrialsImporter {
 			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
 			noteStr = addIfAny(noteStr, "Safety issue", endp.getSafetyIssue());
 			om.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
-			om.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0)));
+			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0));
+			wt.commit();
+			om.getWhenTaken().add(wt);
 			study.getEndpoints().add(om);
 		}
 		
@@ -212,7 +214,9 @@ public class ClinicaltrialsImporter {
 			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
 			noteStr = addIfAny(noteStr, "Safety issue", endp.getSafetyIssue());
 			om.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
-			om.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0)));
+			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0));
+			wt.commit();
+			om.getWhenTaken().add(wt);
 			study.getEndpoints().add(om);
 		}
 	}

@@ -215,7 +215,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 			d_name = new ModifiableHolder<String>(d_pm.getList().get(d_idx).getName());
 			d_name.addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					d_okEnabledModel.setValue(!d_name.getValue().isEmpty() && nameIsUnique());
+					d_okEnabledModel.setValue(isCommitAllowed());
 				}
 			});
 			initComponents();
@@ -238,9 +238,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 			getUserPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit");
 			getUserPanel().getActionMap().put("submit", new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
-					if (d_okEnabledModel.getValue()) {
-						commit();
-					}
+					commit();
 				}
 			});
 			
@@ -248,12 +246,18 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		}
 
 		protected void commit() {
-			d_pm.rename(d_idx, d_name.getValue());
-			setVisible(false);
+			if (isCommitAllowed()) {
+				d_pm.rename(d_idx, d_name.getValue());
+				setVisible(false);
+			}
 		}
 
 		protected void cancel() {
 			setVisible(false);
+		}
+
+		private boolean isCommitAllowed() {
+			return !d_name.getValue().isEmpty() && nameIsUnique();
 		}
 	}
 
