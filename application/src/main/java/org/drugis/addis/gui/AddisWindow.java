@@ -58,8 +58,6 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -68,9 +66,9 @@ import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
-import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
@@ -226,25 +224,11 @@ public class AddisWindow extends JFrame {
 		d_leftPanelTree = new JTree(d_domainTreeModel);
 		d_leftPanelTree.setCellRenderer(new DomainTreeCellRenderer(getDomain()));
 		d_leftPanelTree.setRootVisible(false);
-		expandLeftPanelTree();
+		d_leftPanelTree.expandPath(new TreePath(new Object[] {d_domainTreeModel.getRoot(), d_domain.getCategory(Drug.class)}));
 
 		d_leftPanelTree.addTreeSelectionListener(new DomainTreeSelectionListener());
-		d_domainTreeModel.addTreeModelListener(new TreeModelListener() {
-			public void treeNodesChanged(TreeModelEvent arg0) {}
-			public void treeNodesInserted(TreeModelEvent arg0) {}
-			public void treeNodesRemoved(TreeModelEvent arg0) {}
-			public void treeStructureChanged(TreeModelEvent arg0) {
-				expandLeftPanelTree();
-			}
-		});
 
 		d_leftPanel = new JScrollPane(d_leftPanelTree);
-	}
-
-	private void expandLeftPanelTree() {
-		for (EntityCategory cat : getDomain().getCategories()) {
-			d_leftPanelTree.expandPath(new TreePath(new Object[] {d_domainTreeModel.getRoot(), cat}));
-		}
 	}
 
 	private void initMenu() {
@@ -380,15 +364,7 @@ public class AddisWindow extends JFrame {
 			} else {
 				showEditStudyWizard(study);
 			}
-		} else if (selected instanceof Indication) {
-			Indication indication = (Indication) selected;
-			showEditIndicationWizard(indication);
 		}
-	}
-
-	private void showEditIndicationWizard(Indication indication) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private JMenuItem createLoadItem() {

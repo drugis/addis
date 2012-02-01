@@ -25,6 +25,7 @@
 package org.drugis.addis.gui;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createStrictMock;
 import static org.easymock.EasyMock.notNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.swing.event.TreeModelEvent;
@@ -63,6 +65,7 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.common.event.TreeModelEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,7 +81,7 @@ public class DomainTreeModelTest {
 	private RandomEffectsMetaAnalysis d_firstMetaAnalysis;
 	
 	@Before
-	public void setUp() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
+	public void setUp() {
 		d_domain = new DomainImpl();
 		d_firstIndication = new Indication(8L, "Indication");		
 		d_firstEndpoint = new Endpoint("Endpoint", Endpoint.convertVarType(Variable.Type.RATE));
@@ -226,20 +229,40 @@ public class DomainTreeModelTest {
 	}
 	
 	@Test
-	public void testAddIndicationFires() {
-		TreeModelListener listener = createMock(TreeModelListener.class);
-		listener.treeStructureChanged((TreeModelEvent)notNull());
+	public void testChangeIndicationsFires() {
+		Indication indication1 = new Indication(10L, "Blah");
+		Indication indication2 = new Indication(11L, "XBlah");
+		Indication indication3 = new Indication(12L, "YBlah");
+		TreeModelEvent expectedEvent1 = new TreeModelEvent(d_treeModel,
+				new Object[] {d_treeModel.getRoot(), d_domain.getCategory(Indication.class)},
+				new int[] {0}, new Object[] {indication1});
+		TreeModelEvent expectedEvent2 = new TreeModelEvent(d_treeModel,
+				new Object[] {d_treeModel.getRoot(), d_domain.getCategory(Indication.class)},
+				new int[] {2}, new Object[] {indication2});
+		TreeModelEvent expectedEvent3 = new TreeModelEvent(d_treeModel,
+				new Object[] {d_treeModel.getRoot(), d_domain.getCategory(Indication.class)},
+				new int[] {3}, new Object[] {indication3});
+		TreeModelEvent expectedEvent4 = new TreeModelEvent(d_treeModel,
+				new Object[] {d_treeModel.getRoot(), d_domain.getCategory(Indication.class)},
+				new int[] {2}, null);
+		TreeModelListener listener = createStrictMock(TreeModelListener.class);
+		listener.treeNodesInserted(TreeModelEventMatcher.eqTreeModelEvent(expectedEvent1));
+		listener.treeNodesInserted(TreeModelEventMatcher.eqTreeModelEvent(expectedEvent2));
+		listener.treeNodesInserted(TreeModelEventMatcher.eqTreeModelEvent(expectedEvent3));
+		listener.treeNodesRemoved(TreeModelEventMatcher.eqTreeModelEvent(expectedEvent4));
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
-		d_domain.getIndications().add(new Indication(10L, "Blah"));
+		d_domain.getIndications().add(indication1);
+		d_domain.getIndications().addAll(Arrays.asList(indication2, indication3));
+		d_domain.getIndications().remove(indication2);
 		verify(listener);
 	}
 	
 	@Test
 	public void testAddEndpointFires() {
 		TreeModelListener listener = createMock(TreeModelListener.class);
-		listener.treeStructureChanged((TreeModelEvent)notNull());
+		listener.treeNodesInserted((TreeModelEvent)notNull());
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
@@ -250,7 +273,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testAddAdeFires() {
 		TreeModelListener listener = createMock(TreeModelListener.class);
-		listener.treeStructureChanged((TreeModelEvent)notNull());
+		listener.treeNodesInserted((TreeModelEvent)notNull());
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
@@ -262,7 +285,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testAddStudyFires() {
 		TreeModelListener listener = createMock(TreeModelListener.class);
-		listener.treeStructureChanged((TreeModelEvent)notNull());
+		listener.treeNodesInserted((TreeModelEvent)notNull());
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
@@ -273,7 +296,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testAddDrugFires() {
 		TreeModelListener listener = createMock(TreeModelListener.class);
-		listener.treeStructureChanged((TreeModelEvent)notNull());
+		listener.treeNodesInserted((TreeModelEvent)notNull());
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);
@@ -284,7 +307,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testAddPopCharFires() {
 		TreeModelListener listener = createMock(TreeModelListener.class);
-		listener.treeStructureChanged((TreeModelEvent)notNull());
+		listener.treeNodesInserted((TreeModelEvent)notNull());
 		replay(listener);
 		
 		d_treeModel.addTreeModelListener(listener);

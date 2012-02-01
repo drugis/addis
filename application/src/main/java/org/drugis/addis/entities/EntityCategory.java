@@ -24,7 +24,9 @@
 
 package org.drugis.addis.entities;
 
-
+/**
+ * Represents a category of entities within the Domain. 
+ */
 public class EntityCategory {
 	private final String d_property;
 	private final Class<? extends Entity> d_entityClass;
@@ -39,10 +41,16 @@ public class EntityCategory {
 		return d_entityClass.getSimpleName();
 	}
 	
+	/**
+	 * The property (of Domain) that has the contents of this category. 
+	 */
 	public String getPropertyName() {
 		return d_property;
 	}
 	
+	/**
+	 * The class of the contents of this category. 
+	 */
 	public Class<? extends Entity> getEntityClass() {
 		return d_entityClass;
 	}
