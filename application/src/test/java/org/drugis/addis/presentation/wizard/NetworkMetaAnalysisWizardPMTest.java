@@ -30,6 +30,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
@@ -320,5 +321,33 @@ public class NetworkMetaAnalysisWizardPMTest {
 				assertNotNull(ma.getArm(s, d));
 			}
 		}
-	}	
+	}
+	
+	@Test
+	public void testArmAndDrugSetExclusions() {
+		Study study = ExampleData.buildStudyMultipleArmsperDrug().clone();
+		study.createAndAddArm("Sertraline-0", 54, ExampleData.buildDrugSertraline(), null);
+		Arm parox0 = study.getArms().get(0);
+		assertEquals("Paroxetine-0", parox0.getName()); // Assumption check
+		study.getMeasurement(ExampleData.buildEndpointHamd(), parox0).setSampleSize(null);
+		d_domain.getStudies().remove(ExampleData.buildStudyMultipleArmsperDrug());
+		d_domain.getStudies().add(study);
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(Arrays.asList(new DrugSet[] {
+				d_fluoxSet,
+				d_paroxSet,
+				d_sertrSet}));
+
+		assertTrue(d_pm.getSelectedStudiesModel().contains(study));
+		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
+		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
+		assertNull(d_pm.getSelectedArmModel(study, d_sertrSet));
+		
+		assertEquals(Collections.singletonList(study.getArms().get(1)), d_pm.getArmsPerStudyPerDrug(study, d_paroxSet));
+		assertEquals(Collections.singletonList(study.getArms().get(2)), d_pm.getArmsPerStudyPerDrug(study, d_fluoxSet));
+		assertEquals(Collections.emptyList(), d_pm.getArmsPerStudyPerDrug(study, d_sertrSet));
+	}
 }

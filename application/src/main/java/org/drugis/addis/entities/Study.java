@@ -366,7 +366,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			if (sa.getActivity() instanceof TreatmentActivity) {
 				TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
 				for (AbstractDose d : ta.getDoses()) {
-					dep.add(d.getDoseUnit().getUnit());
+					if (d != null) {
+						dep.add(d.getDoseUnit().getUnit());
+					}
 				}
 			}
 		}

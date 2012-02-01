@@ -172,7 +172,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
-				if (s.getDrugs().contains(d)) {
+				if (armMap.get(s).containsKey(d)) {
 					BasicContinuousMeasurement cm = (BasicContinuousMeasurement) s.getMeasurement(d_outcome, armMap.get(s).get(d));
 					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 				}
@@ -185,7 +185,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
-				if (s.getDrugs().contains(d)) {
+				if (armMap.get(s).containsKey(d)) {
 					BasicRateMeasurement brm = (BasicRateMeasurement) s.getMeasurement(d_outcome, armMap.get(s).get(d));
 					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), brm.getRate(), brm.getSampleSize());
 				}

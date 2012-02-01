@@ -38,6 +38,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -215,7 +216,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		for(Study s : getStudyListModel().getSelectedStudiesModel()) {
 			d_selectedArms.put(s, new HashMap<DrugSet, ModifiableHolder<Arm>>());
 			for(DrugSet d : getSelectedDrugsModel()){
-				if(s.getDrugs().contains(d)){
+				if(s.getMeasuredDrugs(d_outcomeHolder.getValue()).contains(d)) {
 					d_selectedArms.get(s).put(d, new ModifiableHolder<Arm>(getDefaultArm(s, d)));
 				}
 			}
@@ -310,7 +311,8 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			d_drugs = drugs;
 		}
 		public boolean accept(Arm a) {
-			return d_study.getDrugs(a).equals(d_drugs);
+			BasicMeasurement measurement = d_study.getMeasurement(d_outcomeHolder.getValue(), a);
+			return d_study.getDrugs(a).equals(d_drugs) && measurement != null && measurement.isComplete();
 		}
 
 	}
