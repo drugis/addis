@@ -67,4 +67,10 @@ public class Unit extends AbstractNamedEntity<Unit> {
 		return getLabel();
 	}
 	
+	public void setName(String name) {
+		String oldValue = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldValue, name);
+	}
+	
 }
