@@ -836,8 +836,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return false;
 	}
 
-	private boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
-		return getMeasurement(v, a) != null	&& getMeasurement(v, a).isComplete();
+	public boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
+		return getMeasurement(v, a, wt) != null	&& getMeasurement(v, a, wt).isComplete();
 	}
 
 	private ObservableList<Arm> getArms(DrugSet d) {
