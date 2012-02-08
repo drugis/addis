@@ -25,11 +25,17 @@
 package org.drugis.addis.presentation;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -87,6 +93,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	private ObservableList<Study> d_studies;
 	private boolean d_rebuildNeeded;
 	private final ValueHolder<OutcomeMeasure> d_om;
+	private Map<DrugSet, Set<Study>> d_studiesMeasuringDrug;
 
 	
 	public StudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> om) {
@@ -119,17 +126,22 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		if (!d_rebuildNeeded) {
 			return;
 		}
+
+		initStudiesMeasuringDrug();
+		
+		// Add vertices
 		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
-		removeAllVertices(verts);
+		removeAllVertices(verts);		
 		for (DrugSet d : d_drugs) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
 		
+		// Add edges
 		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
 		removeAllEdges(edges);
 		for (int i = 0; i < (d_drugs.size() - 1); ++i) {
 			for (int j = i + 1; j < d_drugs.size(); ++j) {
-				List<Study> studies = getStudies(d_drugs.get(i), d_drugs.get(j));
+				Collection<Study> studies = getStudies(d_drugs.get(i), d_drugs.get(j));
 				if (studies.size() > 0) {
 					addEdge(findVertex(d_drugs.get(i)), findVertex(d_drugs.get(j)), new Edge(studies.size()));
 				}
@@ -139,13 +151,28 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		d_rebuildNeeded = false;
 	}
 
+	private void initStudiesMeasuringDrug() {
+		d_studiesMeasuringDrug = new HashMap<DrugSet, Set<Study>>(); 
+
+		for (DrugSet d : d_drugs) {
+			d_studiesMeasuringDrug.put(d, new HashSet<Study>());
+		}
+		
+		for (Study s : d_studies) {
+			for (DrugSet d : s.getMeasuredDrugs(d_om.getValue())) {
+				if (d_drugs.contains(d)) {
+					d_studiesMeasuringDrug.get(d).add(s);
+				}
+			}
+		}
+	}
+
 	public Vertex findVertex(DrugSet drug) {
 		for (Vertex v : vertexSet()) {
 			if (v.getDrug().equals(drug)) {
 				return v;
 			}
 		}
-		//throw new RuntimeException("No vertex for drug " + drug);
 		return null;
 	}
 
@@ -168,24 +195,14 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	/**
 	 * Return the studies with the correct indication and outcome that compare the given drugs.
 	 */
-	public List<Study> getStudies(DrugSet a, DrugSet b) {
-		return filter(b, getStudies(a));
+	public Collection<Study> getStudies(DrugSet a, DrugSet b) {
+		return CollectionUtils.intersection(getStudies(a), getStudies(b));
 	}
 	
 	/**
 	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
-	public List<Study> getStudies(DrugSet d) {
-		return filter(d, d_studies);
-	}
-
-	private List<Study> filter(DrugSet d, List<Study> allStudies) {
-		List<Study> studies = new ArrayList<Study>();
-		for (Study s : allStudies) {
-			if (s.getMeasuredDrugs(d_om.getValue()).contains(d)) {
-				studies.add(s);
-			}
-		}
-		return studies;
+	public Collection<Study> getStudies(DrugSet d) {
+		return d_studiesMeasuringDrug.get(d);
 	}
 }
