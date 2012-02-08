@@ -55,7 +55,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel>{
 	private StudyGraphModel d_selectedStudyGraph;
-	private ValueHolder<Boolean> d_studySelectionCompleteModel;
+	private ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
 
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
@@ -71,7 +71,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 				updateArmHolders();
 			}
 		});
-		d_studySelectionCompleteModel = new StudySelectionCompleteListener();
+		d_selectedStudyGraphConnectedModel = new StudySelectionCompleteListener();
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		return getStudyGraphModel().getSelectionCompleteModel();
 	}
 	
-	public ValueHolder<Boolean> getStudySelectionCompleteModel() {
-		return d_studySelectionCompleteModel;
+	public ValueHolder<Boolean> getSelectedStudyGraphConnectedModel() {
+		return d_selectedStudyGraphConnectedModel;
 	}
 	
 	@SuppressWarnings("serial")
@@ -171,6 +171,10 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	public ObservableList<Study> getSelectedStudiesModel() {
 		return getStudyListModel().getSelectedStudiesModel();
+	}
+
+	public void updateSelectedStudyGraphModel() {
+		d_selectedStudyGraph.drugsChanged();
 	}
 
 	@Override

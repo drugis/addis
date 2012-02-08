@@ -36,7 +36,7 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
-import org.drugis.addis.gui.wizard.MetaAnalysisWizard;
+import org.drugis.addis.gui.wizard.PairwiseMetaAnalysisWizard;
 import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -68,7 +68,7 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain,
 			ValueModel selectionModel) {
 		JDialog dialog = new JDialog(mainWindow, "Create DerSimonian-Laird random effects meta-analysis", true);
-		Wizard wizard = new MetaAnalysisWizard(mainWindow,
+		Wizard wizard = new PairwiseMetaAnalysisWizard(mainWindow,
 				new MetaAnalysisWizardPresentation(domain, mainWindow.getPresentationModelFactory()));
 		dialog.getContentPane().add(wizard);
 		dialog.setMinimumSize(new Dimension(700, 550));

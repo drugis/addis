@@ -27,9 +27,6 @@ package org.drugis.addis.presentation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -88,7 +85,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	private final ValueHolder<OutcomeMeasure> d_om;
 
 	
-	public StudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> om) { // FIXME: change to ObservableList once available.
+	public StudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> om) {
 		super(Edge.class);
 		
 		d_drugs = drugs;
@@ -96,31 +93,6 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		d_om = om;	
 		
 		drugsChanged();
-
-		ListDataListener drugsListener = new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				drugsChanged();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				drugsChanged();
-			}
-			public void contentsChanged(ListDataEvent e) {
-				drugsChanged();
-			}
-		};
-		ListDataListener studiesListener = new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				studiesChanged();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				studiesChanged();
-			}
-			public void contentsChanged(ListDataEvent e) {
-				studiesChanged();
-			}
-		};
-		d_drugs.addListDataListener(drugsListener);
-		d_studies.addListDataListener(studiesListener);
 	}
 	
 	public void drugsChanged() {

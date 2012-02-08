@@ -58,9 +58,9 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
-public class MetaAnalysisWizard extends Wizard {
+public class PairwiseMetaAnalysisWizard extends Wizard {
 	
-	public MetaAnalysisWizard(AddisWindow mainWindow, MetaAnalysisWizardPresentation pm) {
+	public PairwiseMetaAnalysisWizard(AddisWindow mainWindow, MetaAnalysisWizardPresentation pm) {
 		super(buildModel(pm, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
@@ -154,7 +154,9 @@ public class MetaAnalysisWizard extends Wizard {
 			return d_studyGraph;
 		}
 		
-		@Override public void prepare() {
+		@Override
+		public void prepare() {
+			d_pm.updateStudyGraphModel();
 			d_studyGraph.layoutGraph();
 		}
 

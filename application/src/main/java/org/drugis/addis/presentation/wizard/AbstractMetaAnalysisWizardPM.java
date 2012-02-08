@@ -205,6 +205,10 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	}
 
 	public abstract ObservableList<DrugSet> getSelectedDrugsModel();
+	
+	public void updateStudyGraphModel() {
+		d_studyGraphPresentationModel.drugsChanged();
+	}
 
 	public G getStudyGraphModel() {
 		return d_studyGraphPresentationModel;
@@ -316,5 +320,4 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		}
 
 	}
-	
 }
