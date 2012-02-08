@@ -14,6 +14,13 @@
 
 	<packaging>jar</packaging>
 
+	<properties>
+        	<drugis-common.version>0.4.8</drugis-common.version>
+        	<jsmaa.version>0.8.5</jsmaa.version>
+        	<mtc.version>0.10.1</mtc.version>
+		<addis.schemaVersion>4</addis.schemaVersion>
+	</properties> 
+
 	<repositories>
 		<repository>
   			<id>maven2-repository.dev.java.net</id>
@@ -49,13 +56,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
-	<properties>
-        	<drugis-common.version>0.4.8-SNAPSHOT</drugis-common.version>
-        	<jsmaa.version>0.8.5</jsmaa.version>
-        	<mtc.version>0.11-SNAPSHOT</mtc.version>
-		<addis.schemaVersion>4</addis.schemaVersion>
-	</properties> 
     
 	<dependencies>
 		<dependency>
