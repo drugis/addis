@@ -32,8 +32,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -45,7 +43,6 @@ import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.StudyPresentation;
-import org.drugis.common.BrowserLaunch;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -115,17 +112,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		builder.add(d80Button, cc.xy(5, row));
 		row = LayoutUtil.addRow(layout, row);
 		String str = "<html>Display the Summary of Efficacy Table according to the <a href='http://www.ema.europa.eu/ema/index.jsp?curl=pages/regulation/general/general_content_000121.jsp'>EMA D80</a> Clinical report template</html>";
-		JEditorPane jep = new JEditorPane("text/html", str);
-		jep.setEditable(false);
-		jep.setOpaque(false);
-		jep.addHyperlinkListener(new HyperlinkListener() {
-			@Override
-			public void hyperlinkUpdate(HyperlinkEvent e) {
-				if(HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-					BrowserLaunch.openURL(e.getURL().toExternalForm());
-				}
-			}
-		});
+		JEditorPane jep = AuxComponentFactory.createTextPaneWithHyperlinks(str);
 		builder.add(jep, cc.xy(5, row));
 		
 		return builder.getPanel();

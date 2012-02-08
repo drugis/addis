@@ -54,6 +54,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
@@ -67,6 +69,7 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.BrowserLaunch;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LinkLabel;
@@ -231,6 +234,33 @@ public class AuxComponentFactory {
 		return scroll;
 	}
 
+	public static JComponent createTextPane(String html, boolean scrollable) {
+		JTextPane area = new JTextPane();
+		area.setContentType("text/html");
+		area.setText(html);
+		area.setCaretPosition(0);
+		area.setEditable(false);
+		
+		if (!scrollable) {
+			area.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), 
+					BorderFactory.createEmptyBorder(4,4,4,4)));
+			return area;
+		}
+		
+		return putTextPaneInScrollPane(area);
+	}
+
+	private static JComponent putTextPaneInScrollPane(JTextPane area) {
+		JScrollPane pane = new JScrollPane(area);
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		pane.setPreferredSize(defaultTextPaneDimension(area));
+		
+		pane.setWheelScrollingEnabled(true);
+		pane.getVerticalScrollBar().setValue(0);
+		
+		return pane;
+	}
+	
 	public static JComponent createNoteView(Note note, boolean scrollable) {
 		JTextPane area = new JTextPane();
 		
@@ -250,7 +280,7 @@ public class AuxComponentFactory {
 			}
 			doc.insertString(doc.getLength(), (String)note.getText(), doc.getStyle("regular"));
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		area.setEditable(false);
@@ -260,14 +290,7 @@ public class AuxComponentFactory {
 			return area;
 		}
 		
-		JScrollPane pane = new JScrollPane(area);
-		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension(area));
-		
-		pane.setWheelScrollingEnabled(true);
-		pane.getVerticalScrollBar().setValue(0);
-		
-		return pane;
+		return putTextPaneInScrollPane(area);
 	}
 	
 	/**
@@ -277,7 +300,6 @@ public class AuxComponentFactory {
 		JLabel label = new JLabel("<html><div style='margin:0; padding: 10px;'>" + bodyText + "</div></html>", SwingConstants.CENTER);
 		label.setOpaque(true);
 		label.setBackground(COLOR_NOTE);
-		//label.setBorder(BorderFactory.createLineBorder(Color.gray));
 		label.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		return label;
 	}
@@ -295,5 +317,33 @@ public class AuxComponentFactory {
 			}
 		});
 		return button;
+	}
+
+	public static Dimension defaultTextPaneDimension(JTextPane area) {
+		return AuxComponentFactory.textPaneDimension(area, 230, 50);
+	}
+
+	public static Dimension textPaneDimension(JTextPane area, int dluX,
+			int dluY) {
+		return new Dimension(
+				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
+				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));
+	}
+
+	public static JTextPane createTextPaneWithHyperlinks(String str) {
+		JTextPane pane = new JTextPane();
+		pane.setContentType("text/html");
+		pane.setText(str);
+		pane.setEditable(false);
+		pane.setOpaque(false);
+		pane.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if(HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+					BrowserLaunch.openURL(e.getURL().toExternalForm());
+				}
+			}
+		});
+		return pane;
 	}
 }

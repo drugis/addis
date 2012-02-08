@@ -137,7 +137,6 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.util.DefaultUnitConverter;
 import com.toedter.calendar.JDateChooser;
 
 @SuppressWarnings("serial")
@@ -1119,23 +1118,12 @@ public class AddStudyWizard extends Wizard {
 		
 		JScrollPane pane = new JScrollPane(area);
 		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(textPaneDimension(area, 270, 70));
+		pane.setPreferredSize(AuxComponentFactory.textPaneDimension(area, 270, 70));
 		
 		pane.setWheelScrollingEnabled(true);
 		pane.getVerticalScrollBar().setValue(0);
 		
 		return pane;
-	}
-	
-	public static Dimension defaultTextPaneDimension(JTextPane area) {
-		return textPaneDimension(area, 230, 50);
-	}
-
-	private static Dimension textPaneDimension(JTextPane area, int dluX,
-			int dluY) {
-		return new Dimension(
-				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
-				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));
 	}
 	
 	public static void addStylesToDoc(StyledDocument doc) {

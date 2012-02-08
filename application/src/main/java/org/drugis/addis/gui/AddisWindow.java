@@ -80,6 +80,8 @@ import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 
+import cern.colt.Arrays;
+
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
@@ -306,7 +308,8 @@ public class AddisWindow extends JFrame {
 			
 			menuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					throw new RuntimeException("Test exception");
+					String longStr = Arrays.toString(new double[100]);
+					throw new RuntimeException("Test exception " + longStr);
 				}
 			});
 		}
