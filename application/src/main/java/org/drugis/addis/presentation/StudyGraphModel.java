@@ -27,6 +27,9 @@ package org.drugis.addis.presentation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -82,6 +85,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	
 	protected ObservableList<DrugSet> d_drugs;
 	private ObservableList<Study> d_studies;
+	private boolean d_rebuildNeeded;
 	private final ValueHolder<OutcomeMeasure> d_om;
 
 	
@@ -90,26 +94,39 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		
 		d_drugs = drugs;
 		d_studies = studies;
-		d_om = om;	
+		d_om = om;
 		
-		drugsChanged();
+		ListDataListener rebuildNeededListener = new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				d_rebuildNeeded = true;
+			}
+			public void intervalAdded(ListDataEvent e) {
+				d_rebuildNeeded = true;
+			}
+			public void contentsChanged(ListDataEvent e) {
+				d_rebuildNeeded = true;
+			}
+		};
+		
+		d_rebuildNeeded = true;
+		d_studies.addListDataListener(rebuildNeededListener);
+		d_drugs.addListDataListener(rebuildNeededListener);
+		
+		rebuildGraph();
 	}
 	
-	public void drugsChanged() {
+	public void rebuildGraph() {
+		if (!d_rebuildNeeded) {
+			return;
+		}
 		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
 		removeAllVertices(verts);
-
 		for (DrugSet d : d_drugs) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
 		
-		studiesChanged();
-	}
-
-	private void studiesChanged() {
 		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
 		removeAllEdges(edges);
-
 		for (int i = 0; i < (d_drugs.size() - 1); ++i) {
 			for (int j = i + 1; j < d_drugs.size(); ++j) {
 				List<Study> studies = getStudies(d_drugs.get(i), d_drugs.get(j));
@@ -118,6 +135,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 				}
 			}
 		}
+		
+		d_rebuildNeeded = false;
 	}
 
 	public Vertex findVertex(DrugSet drug) {

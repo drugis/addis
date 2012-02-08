@@ -207,7 +207,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	public abstract ObservableList<DrugSet> getSelectedDrugsModel();
 	
 	public void updateStudyGraphModel() {
-		d_studyGraphPresentationModel.drugsChanged();
+		d_studyGraphPresentationModel.rebuildGraph();
 	}
 
 	public G getStudyGraphModel() {

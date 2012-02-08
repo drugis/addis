@@ -174,7 +174,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	public void updateSelectedStudyGraphModel() {
-		d_selectedStudyGraph.drugsChanged();
+		d_selectedStudyGraph.rebuildGraph();
 	}
 
 	@Override
