@@ -97,4 +97,44 @@ public class EntityUtil {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	/**
+	 * Return a concrete super-type of the given type, or Entity.class.
+	 * If the given class is not an interface, return the given class itself.
+	 * If the given type is an interface, return Entity.class if the interface is a sub-type of Entity, and Object.class otherwise.
+	 * @param type The class to convert.
+	 * @return The concrete type.
+	 */
+	public static Class<?> getConcreteTypeOrEntity(Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type == boolean.class) {
+				return Boolean.class;
+			}
+			if (type == byte.class) {
+				return Byte.class;
+			}
+			if (type == char.class) {
+				return Character.class;
+			}
+			if (type == short.class) {
+				return Short.class;
+			}
+			if (type == int.class) {
+				return Integer.class;
+			}
+			if (type == long.class) {
+				return Long.class;
+			}
+			if (type == float.class) {
+				return Float.class;
+			}
+			if (type == double.class) {
+				return Double.class;
+			}
+		}
+		if (type.isInterface()) {
+			return Entity.class.isAssignableFrom(type) ? Entity.class : Object.class;
+		}
+		return type;
+	}
 }

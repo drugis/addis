@@ -38,8 +38,7 @@ public class DefaultStudyListPresentation implements StudyListPresentation {
 		d_list = list;
 	}
 	
-	public AbstractValueModel getCharacteristicVisibleModel(
-			Characteristic c) {
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
 		return d_characteristicVisibleMap.get(c);
 	}
 

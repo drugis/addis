@@ -38,6 +38,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.gui.AddisWindow;
@@ -144,7 +145,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 	}
 	protected JComponent buildAnalysesPart() {	
 		String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
-		return new EntitiesTablePanel(Arrays.asList(formatter), d_pm.getAnalysesModel(), d_mainWindow, d_pm.getFactory());
+		return new EntitiesTablePanel(MetaAnalysis.class, d_pm.getAnalysesModel(), Arrays.asList(formatter), d_mainWindow, d_pm.getFactory());
 	}
 
 	@Override

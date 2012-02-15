@@ -33,6 +33,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.StudyCharacteristics;
+import org.drugis.addis.util.EntityUtil;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -81,7 +82,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 		}
 		
 		if (columnIndex == 0) {
-			return d_pm.getIncludedStudies().get(rowIndex);
+			return d_pm.getIncludedStudies().get(rowIndex).getName();
 		}
 		Characteristic c = getCharacteristic(columnIndex);
 		StudyPresentation spm = (StudyPresentation) d_pmf.getModel(d_pm.getIncludedStudies().get(rowIndex));
@@ -94,6 +95,14 @@ public class StudyCharTableModel extends AbstractTableModel {
 			return "Study ID";
 		}
 		return getCharacteristic(columnIndex).getDescription();
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if (columnIndex == 0) {
+			return String.class;
+		}
+		return EntityUtil.getConcreteTypeOrEntity(getCharacteristic(columnIndex).getValueType());
 	}
 	
 	private Characteristic getCharacteristic(int columnIndex) {

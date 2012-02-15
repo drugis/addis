@@ -38,14 +38,18 @@ import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class EntitiesTablePanel extends TablePanel {
-	public EntitiesTablePanel(List<String> formatter, ObservableList<? extends Entity> observableList, final AddisWindow parent, PresentationModelFactory pmf) {
-		super(createTable(parent, new EntityTableModel(observableList, formatter, pmf)));
+	public EntitiesTablePanel(Class<? extends Entity> entityType, ObservableList<? extends Entity> observableList, List<String> formatter, final AddisWindow parent, PresentationModelFactory pmf) {
+		super(createTable(parent, new EntityTableModel(entityType, observableList, formatter, pmf)));
 	}
 
 	public static EnhancedTable createTable(final AddisWindow main, final TableModel model) {
 		EnhancedTable table = EnhancedTable.createWithSorter(model);
 		EnhancedTable.insertEntityRenderer(table);
 		table.autoSizeColumns();
+		
+		for (int i = 0; i < model.getColumnCount(); ++i) {
+			System.out.println(model.getColumnName(i) + " " + model.getColumnClass(i) + " " + table.getDefaultRenderer(model.getColumnClass(i)));
+		}
 		
 		if (main != null) {
 			table.addKeyListener(new EntityTableDeleteListener(main));

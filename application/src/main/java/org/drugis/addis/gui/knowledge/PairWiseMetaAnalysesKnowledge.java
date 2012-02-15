@@ -31,7 +31,6 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
@@ -47,7 +46,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	public PairWiseMetaAnalysesKnowledge() {
-		super("Pair-wise meta-analysis", "Pair-wise meta-analyses", null, PairWiseMetaAnalysis.class);
+		super("Pair-wise meta-analysis", "Pair-wise meta-analyses", null, RandomEffectsMetaAnalysis.class);
 	}
 	
 	@Override

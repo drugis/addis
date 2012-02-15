@@ -83,19 +83,15 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		d_name = name;
 		d_armMap = new ArmMap(armMap);
 		
-		setSampleSize();
+		for (Study s : d_studies) {
+			d_totalSampleSize += s.getSampleSize();
+		}
 	}
 	
 	public AbstractMetaAnalysis(String name, Indication indication, OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) { 
 		this(name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
 	}
 
-	private void setSampleSize() {
-		for (Study s : d_studies) {
-			d_totalSampleSize += s.getSampleSize();
-		}
-	}
-	
 	@Override
 	public String toString() {
 		return getName();
@@ -125,6 +121,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		return d_name;
 	}
 
+	@Override
 	public int getSampleSize() {
 		return d_totalSampleSize;
 	}
