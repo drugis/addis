@@ -26,44 +26,24 @@ package org.drugis.addis.gui.components;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.util.TableCopyHandler;
-import org.drugis.common.gui.GUIHelper;
 
 import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
 public class EnhancedTable extends JTable {
 	
-	/**
-	 * Create an Enhanced table with a default sorter and cell renderer, and then auto size the columns.
-	 * Note: this is pretty dangerous as the "default" renderer may not be appropriate and result in weird behavior from the auto-sizer.
-	 * @param model The table model.
-	 * @return A fully initialized EnhancedTable.
-	 */
-	@Deprecated
-	public static EnhancedTable createWithSorterAndAutoSize(TableModel model) {
-		EnhancedTable enhancedTable = createWithSorter(model);
-		
-		enhancedTable.setDefaultRenderer(Object.class, new MyRenderer());
-		enhancedTable.autoSizeColumns();
-		
-		return enhancedTable;
-	}
-
 	public static EnhancedTable createWithSorter(TableModel model) {
 		EnhancedTable enhancedTable = createBare(model);
 		
@@ -147,21 +127,4 @@ public class EnhancedTable extends JTable {
 			}
 		});
 	}
-
-	private static class MyRenderer extends DefaultTableCellRenderer {
-		
-		@Override
-		public void setValue(Object value) {
-			if (value instanceof Date) {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-				value = sdf.format((Date)value);
-			}
-			if (value == null) {
-				setToolTipText(null);
-			} else {
-				setToolTipText(GUIHelper.createToolTip(value.toString()));
-			}
-			super.setValue(value);			
-		}
-	}	
 }

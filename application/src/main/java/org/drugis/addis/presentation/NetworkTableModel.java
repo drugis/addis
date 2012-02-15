@@ -90,7 +90,7 @@ public class NetworkTableModel extends AbstractTableModel {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + d_pm.getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
+		return "\"" + d_pm.getIncludedDrugs().get(col).getLabel() + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row).getLabel() + "\"";
 	}
 	
 	public Object getValueAt(int row, int col) {

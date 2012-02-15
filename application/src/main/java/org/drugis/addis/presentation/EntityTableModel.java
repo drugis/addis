@@ -70,9 +70,9 @@ public class EntityTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
-		if (column == 0)
+		if (column == 0) {
 			return d_entities.get(row);
-		
+		}
 		try {
 			ValueModel model = d_pmf.getModel(d_entities.get(row)).getModel(d_props.get(column));
 			return model.getValue();

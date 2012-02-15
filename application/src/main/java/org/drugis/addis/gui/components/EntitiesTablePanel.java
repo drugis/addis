@@ -59,8 +59,9 @@ public class EntitiesTablePanel extends TablePanel {
 	}
 
 	private static EnhancedTable createTable(List<String> formatter, ObservableList<? extends Entity> observableList, PresentationModelFactory pmf) {
-		EnhancedTable createWithSorter = EnhancedTable.createWithSorter(new EntityTableModel(observableList, formatter, pmf));
-		createWithSorter.autoSizeColumns();
-		return createWithSorter;
+		EnhancedTable table = EnhancedTable.createWithSorter(new EntityTableModel(observableList, formatter, pmf));
+		EnhancedTable.insertEntityRenderer(table);
+		table.autoSizeColumns();
+		return table;
 	}
 }
