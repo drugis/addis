@@ -25,6 +25,7 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,7 +59,7 @@ public class ErrorDialog {
 		topPanel.add(new JLabel(indicatesBug ? "An unexpected error occurred:" : "An error occurred:"), BorderLayout.NORTH);
 		topPanel.add(AuxComponentFactory.createTextPane("<html><b>" + message + "</b></html>", true), BorderLayout.CENTER);
 		if (indicatesBug) {
-			JTextPane bugreport = AuxComponentFactory.createTextPaneWithHyperlinks(BUG_REPORTING_TEXT);
+			JTextPane bugreport = AuxComponentFactory.createTextPaneWithHyperlinks(BUG_REPORTING_TEXT, Color.WHITE, false);
 			topPanel.add(bugreport, BorderLayout.SOUTH);
 		}
 

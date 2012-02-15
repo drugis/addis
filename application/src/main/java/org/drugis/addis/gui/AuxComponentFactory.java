@@ -331,11 +331,16 @@ public class AuxComponentFactory {
 	}
 
 	public static JTextPane createTextPaneWithHyperlinks(String str) {
+		return createTextPaneWithHyperlinks(str, COLOR_NOTE, true);
+	}
+	
+	public static JTextPane createTextPaneWithHyperlinks(String str, Color bg, boolean opaque) {
 		JTextPane pane = new JTextPane();
+		pane.setBackground(bg);
 		pane.setContentType("text/html");
 		pane.setText(str);
 		pane.setEditable(false);
-		pane.setOpaque(false);
+		pane.setOpaque(opaque);
 		pane.addHyperlinkListener(new HyperlinkListener() {
 			@Override
 			public void hyperlinkUpdate(HyperlinkEvent e) {

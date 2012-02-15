@@ -24,14 +24,16 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -112,8 +114,10 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		builder.add(d80Button, cc.xy(5, row));
 		row = LayoutUtil.addRow(layout, row);
 		String str = "<html>Display the Summary of Efficacy Table according to the <a href='http://www.ema.europa.eu/ema/index.jsp?curl=pages/regulation/general/general_content_000121.jsp'>EMA D80</a> Clinical report template</html>";
-		JEditorPane jep = AuxComponentFactory.createTextPaneWithHyperlinks(str);
-		builder.add(jep, cc.xy(5, row));
+		JTextPane jep = AuxComponentFactory.createTextPaneWithHyperlinks(str);
+		// ScrollPane because otherwise the caret in the textpane causing the tab to scroll down to the JTextPane.
+		Component sp = new JScrollPane(jep, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		builder.add(sp, cc.xy(5, row));
 		
 		return builder.getPanel();
 	}
