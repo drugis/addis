@@ -27,7 +27,6 @@ package org.drugis.addis.gui.components;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.AddisWindow;
 
 public class EntityTableDeleteListener extends KeyAdapter {
@@ -47,9 +46,7 @@ public class EntityTableDeleteListener extends KeyAdapter {
 			}
 				
 			int row = studyTable.convertRowIndexToModel(studyTable.getSelectedRow());
-
-			Entity en = (Entity) studyTable.getModel().getValueAt(row, 0);
-			d_main.deleteEntity(en, true);
+			d_main.deleteEntity(EntityTablePanel.getEntityAt(studyTable, row), true);
 			
 			e.consume();
 		}

@@ -181,7 +181,7 @@ public class StudyCharTableModelTest {
 	
 	@Test
 	public void testGetColumnClass() {
-		assertEquals(String.class, d_model.getColumnClass(0));
+		assertEquals(Study.class, d_model.getColumnClass(0));
 		assertEquals(Integer.class, d_model.getColumnClass(StudyCharacteristics.values().indexOf(BasicStudyCharacteristic.CENTERS) + 1));
 		assertEquals(Date.class, d_model.getColumnClass(StudyCharacteristics.values().indexOf(BasicStudyCharacteristic.STUDY_START) + 1));	}
 }

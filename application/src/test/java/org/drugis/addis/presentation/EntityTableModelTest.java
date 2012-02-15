@@ -96,7 +96,7 @@ public class EntityTableModelTest {
 
 	@Test
 	public void testGetColumnClass() {
-		assertEquals(String.class, d_tableModel.getColumnClass(0));
+		assertEquals(Drug.class, d_tableModel.getColumnClass(0));
 		EntityTableModel differentTableModel = new EntityTableModel(Study.class, d_domain.getStudies(), 
 				Arrays.asList(Study.PROPERTY_ARMS, Study.PROPERTY_INDICATION), d_pmf);
 		assertEquals(Indication.class, differentTableModel.getColumnClass(1));

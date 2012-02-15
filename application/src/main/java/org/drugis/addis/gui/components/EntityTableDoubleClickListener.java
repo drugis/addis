@@ -23,7 +23,7 @@ public class EntityTableDoubleClickListener extends MouseAdapter {
 		if (e.getClickCount() > 1) {
 			JTable table = (JTable)e.getComponent();
 			int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
-			Entity entity = (Entity) table.getModel().getValueAt(row, 0);
+			Entity entity = EntityTablePanel.getEntityAt(table, row);
 			d_main.leftTreeFocus(entity);
 		}
 	}

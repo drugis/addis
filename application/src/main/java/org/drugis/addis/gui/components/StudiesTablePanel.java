@@ -42,7 +42,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public class StudiesTablePanel extends TablePanel {
 	public StudiesTablePanel(StudyListPresentation studyListPresentationModel, AddisWindow main) {
-		super(EntitiesTablePanel.createTable(main, new StudyCharTableModel(studyListPresentationModel, main.getPresentationModelFactory())));
+		super(EntityTablePanel.createTable(main, new StudyCharTableModel(studyListPresentationModel, main.getPresentationModelFactory())));
 		
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
 		bb.addButton(StudiesTablePanel.buildCustomizeButton(studyListPresentationModel, main));

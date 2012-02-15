@@ -75,6 +75,9 @@ public class EntityTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
+		if (d_props.get(column).equals("name")) {
+			return d_entities.get(row);
+		}
 		try {
 			ValueModel model = d_pmf.getModel(d_entities.get(row)).getModel(d_props.get(column));
 			return model.getValue();
@@ -97,6 +100,9 @@ public class EntityTableModel extends AbstractTableModel {
 	
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
+		if (d_props.get(columnIndex).equals("name")) {
+			return d_entityType;
+		}
 		try {
 			Class<?> propertyType = BeanUtils.getPropertyDescriptor(d_entityType, d_props.get(columnIndex)).getPropertyType();
 			return EntityUtil.getConcreteTypeOrEntity(propertyType);
