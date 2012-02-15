@@ -48,6 +48,7 @@ import org.drugis.addis.util.EntityUtil;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements PairWiseMetaAnalysis {
 
+	private static final String ANALYSIS_TYPE = "DerSimonian-Laird Random Effects Meta-Analysis";
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_CORRECTED = "isCorrected";
 	private boolean d_isCorrected = false;
@@ -59,7 +60,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<Study> studies,
 			DrugSet drug1, DrugSet drug2) 
 	throws IllegalArgumentException {
-		super(name, studies.get(0).getIndication(), om, studies, 
+		super(ANALYSIS_TYPE,
+				name, studies.get(0).getIndication(), om, studies, 
 				drugSetList(drug1, drug2), getArmMap(studies, drug1, drug2));
 		checkREDataConsistency(studies, drug1, drug2);
 	}
@@ -74,7 +76,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms, Boolean corr)
 	throws IllegalArgumentException {
-		super(name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
+		super(ANALYSIS_TYPE,
+				name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
 		
 		for (StudyArmsEntry sae : studyArms){
 			if(!sae.getStudy().getDrugs(sae.getBase()).equals(getFirstDrug())){
@@ -90,11 +93,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) {
 		this(name, om, studyArms, false);
 	}
-
-	public String getType() {
-		return "DerSimonian-Laird Random Effects";
-	}
-
+	
 	private static Map<Study, Map<DrugSet, Arm>> getArmMap(
 			List<? extends Study> studies, DrugSet drug1, DrugSet drug2) {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();

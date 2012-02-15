@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -53,7 +52,7 @@ import org.drugis.common.EqualsUtil;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class StudyBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<Arm> {
+public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 	public static String PROPERTY_STUDY = "study";
 	public static String PROPERTY_ARMS = "arms";
 	private Study d_study;

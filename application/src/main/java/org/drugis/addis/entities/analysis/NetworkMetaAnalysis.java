@@ -74,6 +74,7 @@ import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	
+	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyModel d_inconsistencyModel;
 	private ConsistencyModel d_consistencyModel;
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
@@ -123,7 +124,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<Study> studies, Collection<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
-		super(name, indication, om, studies, sortDrugs(drugs), armMap);
+		super(ANALYSIS_TYPE, name, indication, om, studies, sortDrugs(drugs), armMap);
 	}
 	
 	private static List<DrugSet> sortDrugs(Collection<DrugSet> drugs) {
@@ -134,7 +135,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
-		super(name, indication, om, armMap);
+		super(ANALYSIS_TYPE, name, indication, om, armMap);
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
@@ -192,10 +193,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
         	}
         }
 		return builder;
-	}
-
-	public String getType() {
-		return "Markov Chain Monte Carlo Network Meta-Analysis";
 	}
 
 	public synchronized InconsistencyModel getInconsistencyModel() {

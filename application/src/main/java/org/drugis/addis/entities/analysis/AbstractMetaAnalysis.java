@@ -65,16 +65,19 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	protected String d_name = "";
 	protected int d_totalSampleSize;
 	protected ArmMap d_armMap;
+	private final String d_type;
 	
-	protected AbstractMetaAnalysis() {
+	protected AbstractMetaAnalysis(String type) {
+		d_type = type;
 		d_armMap = new ArmMap();
 	}
 	
-	public AbstractMetaAnalysis(String name, 
-			Indication indication, OutcomeMeasure om,
-			List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
+	public AbstractMetaAnalysis(String type, 
+			String name, Indication indication,
+			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
 	throws IllegalArgumentException {
 		checkDataConsistency(studies, indication, om);
+		d_type = type;
 
 		d_drugs = drugs;
 		d_studies = studies;
@@ -88,8 +91,8 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 		}
 	}
 	
-	public AbstractMetaAnalysis(String name, Indication indication, OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) { 
-		this(name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
+	public AbstractMetaAnalysis(String type, String name, Indication indication, OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) { 
+		this(type, name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
 	}
 
 	@Override
@@ -136,6 +139,10 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 
 	public int getStudiesIncluded() {
 		return d_studies.size();
+	}
+	
+	public String getType() {
+		return d_type;
 	}
 
 	@Override
