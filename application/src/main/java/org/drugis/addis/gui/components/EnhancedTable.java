@@ -34,23 +34,18 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.util.TableCopyHandler;
-
-import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
 public class EnhancedTable extends JTable {
 	
 	public static EnhancedTable createWithSorter(TableModel model) {
 		EnhancedTable enhancedTable = createBare(model);
-		
-		TableSorter sort = new TableSorter(model);
-		sort.setTableHeader(enhancedTable.getTableHeader());
-		enhancedTable.setModel(sort);
-		
+		enhancedTable.setRowSorter(new TableRowSorter<TableModel>(model));
 		return enhancedTable;
 	}
 	
@@ -72,10 +67,6 @@ public class EnhancedTable extends JTable {
 		setBackground(Color.WHITE);
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableCopyHandler.registerCopyAction(this);
-	}
-	
-	public void setSortingStatus(int column, int order) {
-		((TableSorter)getModel()).setSortingStatus(column, order);
 	}
 
 	public void autoSizeColumns() {

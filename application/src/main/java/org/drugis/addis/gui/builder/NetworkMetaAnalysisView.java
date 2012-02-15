@@ -49,6 +49,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
 import org.drugis.addis.FileNames;
@@ -518,7 +519,7 @@ implements ViewBuilder {
 
 	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
 		ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
-		EnhancedTable convergenceTable = EnhancedTable.createWithSorter(tableModel);
+		EnhancedTable convergenceTable = EnhancedTable.createBare(tableModel);
 		convergenceTable.autoSizeColumns();
 		TablePanel pane = new TablePanel(convergenceTable);
 	
@@ -526,7 +527,8 @@ implements ViewBuilder {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
-					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
+					JTable table = (JTable)e.getComponent();
+					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
 					Parameter p = mtc.getResults().getParameters()[row];
 					showConvergencePlots(mtc, p);
 				}

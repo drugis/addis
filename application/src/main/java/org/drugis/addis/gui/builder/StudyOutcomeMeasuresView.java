@@ -28,11 +28,14 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AdverseEvent;
@@ -66,7 +69,6 @@ import org.drugis.common.gui.ViewBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.sun.java.components.TableSorter;
 
 public class StudyOutcomeMeasuresView implements ViewBuilder {
 	
@@ -138,7 +140,7 @@ public class StudyOutcomeMeasuresView implements ViewBuilder {
 			} else if (d_type == PopulationCharacteristic.class) {
 				measurementTable = EnhancedTable.createWithSorter(d_model.getPopulationCharTableModel());
 			}
-			measurementTable.setSortingStatus(0, TableSorter.ASCENDING);
+			measurementTable.getRowSorter().setSortKeys(Collections.singletonList(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
 			measurementTable.setDefaultRenderer(MissingMeasurementPresentation.class, new MeasurementCellRenderer());
 			measurementTable.autoSizeColumns();
 

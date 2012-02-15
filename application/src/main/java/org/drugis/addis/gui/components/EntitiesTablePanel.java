@@ -24,9 +24,10 @@
 
 package org.drugis.addis.gui.components;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
+
+import javax.swing.table.TableModel;
+
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.AddisWindow;
@@ -37,31 +38,20 @@ import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class EntitiesTablePanel extends TablePanel {
-	private final ObservableList<? extends Entity> d_entities;
-
 	public EntitiesTablePanel(List<String> formatter, ObservableList<? extends Entity> observableList, final AddisWindow parent, PresentationModelFactory pmf) {
-		super(createTable(formatter, observableList, pmf));
-		d_entities = observableList;
-				
-		if (parent != null)
-			getTable().addKeyListener(new EntityTableDeleteListener(parent));
-		
-		getTable().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() > 1) {
-					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
-					Entity entity = d_entities.get(row);
-					parent.leftTreeFocus(entity);
-				}
-			}
-		});
+		super(createTable(parent, new EntityTableModel(observableList, formatter, pmf)));
 	}
 
-	private static EnhancedTable createTable(List<String> formatter, ObservableList<? extends Entity> observableList, PresentationModelFactory pmf) {
-		EnhancedTable table = EnhancedTable.createWithSorter(new EntityTableModel(observableList, formatter, pmf));
+	public static EnhancedTable createTable(final AddisWindow main, final TableModel model) {
+		EnhancedTable table = EnhancedTable.createWithSorter(model);
 		EnhancedTable.insertEntityRenderer(table);
 		table.autoSizeColumns();
+		
+		if (main != null) {
+			table.addKeyListener(new EntityTableDeleteListener(main));
+			table.addMouseListener(new EntityTableDoubleClickListener(main));
+		}
+		
 		return table;
 	}
 }
