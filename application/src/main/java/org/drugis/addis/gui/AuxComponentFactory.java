@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -152,6 +153,7 @@ public class AuxComponentFactory {
 
 	public static JScrollPane createTextArea(ValueModel model, boolean editable) {
 		JTextArea area = BasicComponentFactory.createTextArea(model);
+		dontStealTabKey(area);
 		area.setEditable(editable);
 		area.setLineWrap(true);
 		area.setWrapStyleWord(true);
@@ -165,6 +167,15 @@ public class AuxComponentFactory {
 				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(200, area), 
 				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(50, area)));
 		return pane;
+	}
+	
+	public static void dontStealTabKey(final JTextArea area) {
+		area.setFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+				new JLabel().getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+		area.setFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+				new JLabel().getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
 	}
 
 	public static JComponent createCharacteristicView(StudyCharacteristicHolder model) {
