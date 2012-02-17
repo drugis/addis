@@ -52,21 +52,19 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.ContinuousMeasurement;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
-import org.drugis.mtc.DichotomousMeasurement;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -77,7 +75,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyModel d_inconsistencyModel;
 	private ConsistencyModel d_consistencyModel;
-	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
+	private NetworkBuilder<DrugSet> d_builder;
 	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
@@ -139,7 +137,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
-		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel((Network<? extends org.drugis.mtc.Measurement>) getBuilder().buildNetwork());
+		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 		d_normalSummaries.put(inconsistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(inconsistencyModel, new HashMap<Parameter, QuantileSummary>());
 		return inconsistencyModel;
@@ -161,7 +159,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return nodeSplitModel;
 	}
 	
-	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+	private NetworkBuilder<DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
 		if (isContinuous()) {
 			return createContinuousBuilder(studies, drugs, armMap);
 		} else {
@@ -169,7 +167,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 	}
 	
-	private NetworkBuilder<ContinuousMeasurement, DrugSet> createContinuousBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+	private NetworkBuilder<DrugSet> createContinuousBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
 		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
@@ -182,7 +180,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return builder;
 	}
 
-	private NetworkBuilder<DichotomousMeasurement, DrugSet> createRateBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+	private NetworkBuilder<DrugSet> createRateBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
 		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
@@ -209,14 +207,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_consistencyModel;
 	}
 
-	public NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> getBuilder() {
+	public NetworkBuilder<DrugSet> getBuilder() {
 		if (d_builder == null) {
 			d_builder = createBuilder(d_studies, getIncludedDrugs(), d_armMap);
 		}
 		return d_builder;
 	}
 	
-	public Network<?> getNetwork() {
+	public Network getNetwork() {
 		return d_builder.buildNetwork();
 	}
 	

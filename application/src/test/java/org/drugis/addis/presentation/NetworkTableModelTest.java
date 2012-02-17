@@ -50,7 +50,7 @@ import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;

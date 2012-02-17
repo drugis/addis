@@ -29,7 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -67,10 +67,10 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 		if (!(key instanceof String) && !(key instanceof Treatment)) {
 			return -1;
 		}
-		String treatment = key instanceof String ? (String) key : ((Treatment)key).id();
+		String treatment = key instanceof String ? (String) key : ((Treatment)key).getId();
 		int idx = 0;
 		for (Treatment t : d_summary.getTreatments()) {
-			if (t.id().equals(treatment)) {
+			if (t.getId().equals(treatment)) {
 				return idx; 
 			}
 			++idx;
@@ -85,7 +85,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	
 	@Override
 	public String getColumnKey(int column) {
-		return d_summary.getTreatments().get(column).id(); 
+		return d_summary.getTreatments().get(column).getId(); 
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	public List<String> getColumnKeys() {
 		List<String> keys = new ArrayList<String>();
 		for (Treatment t : d_summary.getTreatments()) {
-			keys.add(t.id());
+			keys.add(t.getId());
 		}
 		return keys;
 	}

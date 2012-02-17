@@ -39,7 +39,7 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 
 

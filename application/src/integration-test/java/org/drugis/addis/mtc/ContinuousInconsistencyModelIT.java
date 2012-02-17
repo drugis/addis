@@ -36,7 +36,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 

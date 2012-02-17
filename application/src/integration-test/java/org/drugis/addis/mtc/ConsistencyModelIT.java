@@ -29,17 +29,16 @@ import static org.junit.Assert.assertNotNull;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
-import org.drugis.mtc.DichotomousMeasurement;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.ModelFactory;
-import org.drugis.mtc.Network;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ConsistencyModelIT {
     private DichotomousNetworkBuilder<String> d_builder;
-	private Network<DichotomousMeasurement> d_network;
+	private Network d_network;
 	private ConsistencyModel d_model;
 
     @SuppressWarnings("unchecked")

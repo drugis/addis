@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,8 +48,6 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import scala.actors.threadpool.Arrays;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -115,7 +114,6 @@ public class StudyActivityPresentationTest {
 		JUnitUtil.assertNotEquals(new DrugTreatment(null, d_dose), d_treatment);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testActivityOptions() {
 		// Test empty initialization

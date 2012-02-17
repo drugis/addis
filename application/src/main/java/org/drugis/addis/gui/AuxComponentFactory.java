@@ -32,6 +32,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 
@@ -78,8 +79,6 @@ import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 
-import scala.actors.threadpool.Arrays;
-
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.formatter.EmptyNumberFormatter;
@@ -100,7 +99,6 @@ public class AuxComponentFactory {
 		return createBoundComboBox(values, model, false);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model, boolean isEntity) {
 		return createBoundComboBox(new ArrayListModel<T>(Arrays.asList(values)), model, isEntity);
 	}

@@ -60,8 +60,6 @@ import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.yadas.ParameterWriter;
 import org.drugis.mtc.yadas.YadasResults;
 
-import scala.collection.JavaConversions;
-
 abstract public class AbstractBaselineModel<T extends Measurement> implements MCMCModel {
 
 	public abstract Distribution getResult();
@@ -103,7 +101,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	private ActivityTask d_activityTask;
 	
 	public AbstractBaselineModel(List<T> measurements) {
-		d_results.setDirectParameters(JavaConversions.asBuffer(Collections.singletonList(d_muParam)).toList());
+		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
 		d_measurements = measurements;
 		d_burnInPhase.setReportingInterval(d_reportingInterval);

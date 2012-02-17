@@ -38,7 +38,7 @@ import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")

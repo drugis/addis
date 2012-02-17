@@ -59,9 +59,9 @@ import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.Summary;
 
 import com.jgoodies.binding.list.ObservableList;

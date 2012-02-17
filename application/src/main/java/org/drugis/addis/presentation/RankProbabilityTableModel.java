@@ -29,7 +29,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class RankProbabilityTableModel extends AbstractTableModel {
@@ -74,7 +74,7 @@ public class RankProbabilityTableModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Treatment treatment = d_summary.getTreatments().get(rowIndex);
 		if (columnIndex == 0) {
-			return treatment.id();
+			return treatment.getId();
 		} else {
 			return d_summary.getDefined() ? d_summary.getValue(treatment, columnIndex) : "";
 		}

@@ -28,12 +28,11 @@ import static org.junit.Assert.assertNotNull;
 
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.ContinuousMeasurement;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.ModelFactory;
-import org.drugis.mtc.Network;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +40,7 @@ public class ContinuousConsistencyModelIT {
 	/* This test apparently cannot run in sequence with NetworkMetaAnalysisTest so this is commented out entirely */
 
 	    private ContinuousNetworkBuilder<String> d_builder;
-		private Network<ContinuousMeasurement> d_network;
+		private Network d_network;
 		private ConsistencyModel d_model;
 
 	    @SuppressWarnings("unchecked")

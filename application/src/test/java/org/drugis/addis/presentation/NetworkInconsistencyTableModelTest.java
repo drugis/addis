@@ -44,7 +44,7 @@ import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.mocks.MockNormalSummary;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.InconsistencyParameter;
+import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.NormalSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;

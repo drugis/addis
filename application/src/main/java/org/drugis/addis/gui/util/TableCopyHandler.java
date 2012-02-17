@@ -37,6 +37,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -53,7 +54,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import scala.actors.threadpool.Arrays;
 import sun.awt.datatransfer.DataTransferer;
 
 public class TableCopyHandler implements Transferable, ClipboardOwner {
@@ -248,7 +248,6 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<DataFlavor> getSupportedFlavors() {
 		return Arrays.asList(getTransferDataFlavors());
 	}

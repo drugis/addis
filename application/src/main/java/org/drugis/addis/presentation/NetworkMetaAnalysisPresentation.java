@@ -24,6 +24,7 @@
 
 package org.drugis.addis.presentation;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +41,13 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.model.JAXBHandler;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -99,7 +101,13 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public String getNetworkXML() {
-		return getBean().getNetwork().toPrettyXML();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			JAXBHandler.writeNetwork(getBean().getNetwork(), out);
+			return out.toString("UTF-8");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public StudyGraphModel getStudyGraphModel() {

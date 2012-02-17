@@ -32,8 +32,8 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.NormalSummary;
 
 @SuppressWarnings("serial")
@@ -103,10 +103,10 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 			(InconsistencyParameter)model.getInconsistencyFactors().get(row);
 		if(col == 0){
 			String out = "";
-			for (int i=0; i<ip.treatmentList().size() - 1; ++i){
-				out += ip.treatmentList().get(i).id() + ", ";
+			for (int i = 0; i < ip.getCycle().size() - 1; ++i){
+				out += ip.getCycle().get(i).getId() + ", ";
 			}
-			return out.substring(0, out.length()-2);
+			return out.substring(0, out.length() - 2);
 		} else if (model.isReady()){
 			NormalSummary summary = d_pm.getNormalSummary(model, ip);
 			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());

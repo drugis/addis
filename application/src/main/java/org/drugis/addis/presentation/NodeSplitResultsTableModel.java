@@ -33,9 +33,9 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;

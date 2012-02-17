@@ -33,14 +33,12 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.yadas.YadasResults;
-
-import scala.collection.JavaConversions;
 
 public class MockConsistencyModel implements ConsistencyModel {
 
@@ -62,7 +60,7 @@ public class MockConsistencyModel implements ConsistencyModel {
 		d_results.setDirectParameters(createParameters(ts));
 	}
 
-	private scala.collection.immutable.List<Parameter> createParameters(List<Treatment> ts) {
+	private List<Parameter> createParameters(List<Treatment> ts) {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		for (Treatment t1: ts) {
 			for (Treatment t2: ts) {
@@ -71,7 +69,7 @@ public class MockConsistencyModel implements ConsistencyModel {
 				}
 			}
 		}
-		return JavaConversions.asBuffer(parameters).toList();
+		return parameters;
 	}
 
 	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
