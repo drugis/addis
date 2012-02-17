@@ -55,15 +55,21 @@ public class DomainTreeModel implements TreeModel {
 		}
 		
 		public void contentsChanged(ListDataEvent e) {
-			fireTreeStructureChanged(d_category);	
+			throw new IllegalStateException("Unexpected behavior from Category " + d_category + ": list elements being overwritten.");
 		}
 
 		public void intervalAdded(ListDataEvent e) {
-			fireTreeStructureChanged(d_category);	
+			if (e.getIndex0() != e.getIndex1()) {
+				throw new IllegalStateException("Unexpected behavior from Category " + d_category + ": list insertions not one-by-one.");
+			}
+			fireTreeNodeInserted(d_category, e.getIndex0());	
 		}
 
 		public void intervalRemoved(ListDataEvent e) {
-			fireTreeStructureChanged(d_category);	
+			if (e.getIndex0() != e.getIndex1()) {
+				throw new IllegalStateException("Unexpected behavior from Category " + d_category + ": list removals not one-by-one.");
+			}
+			fireTreeNodeRemoved(d_category, e.getIndex0());	
 		}
 	}
 	
@@ -90,8 +96,7 @@ public class DomainTreeModel implements TreeModel {
 		return null;
 	}
 	
-	private boolean isCategoryRequest(EntityCategory categoryNode, Object parent,
-			int childIndex) {
+	private boolean isCategoryRequest(EntityCategory categoryNode, Object parent, int childIndex) {
 		return categoryNode == parent && childIndex >= 0 && childIndex < d_domain.getCategoryContents(categoryNode).size();
 	}
 
@@ -162,11 +167,20 @@ public class DomainTreeModel implements TreeModel {
 		d_listeners.remove(listener);
 	}
 
-	private void fireTreeStructureChanged(EntityCategory category) {
+	private void fireTreeNodeInserted(EntityCategory category, int idx) {
 		for (TreeModelListener l : d_listeners) {
-			l.treeStructureChanged(new TreeModelEvent(this, new Object[]{d_root, category}));
+			l.treeNodesInserted(new TreeModelEvent(this, new Object[]{d_root, category}, new int[]{idx}, 
+					new Object[] {d_domain.getCategoryContents(category).get(idx)}));
 		}
 	}
+
+	private void fireTreeNodeRemoved(EntityCategory category, int idx) {
+		for (TreeModelListener l : d_listeners) {
+			l.treeNodesRemoved(new TreeModelEvent(this, new Object[]{d_root, category}, new int[]{idx}, null));
+		}
+	}
+
+
 
 	public void valueForPathChanged(TreePath path, Object node) {
 	}

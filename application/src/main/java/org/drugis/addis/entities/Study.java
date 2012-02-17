@@ -25,20 +25,21 @@
 package org.drugis.addis.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.addis.util.RebuildableTreeMap;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
@@ -72,7 +73,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	private final ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
 	private final ObservableList<StudyActivity> d_studyActivities = new ArrayListModel<StudyActivity>();
 
-	private RebuildableTreeMap<MeasurementKey, BasicMeasurement> d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>();
+	private Map<MeasurementKey, BasicMeasurement> d_measurements = new TreeMap<MeasurementKey, BasicMeasurement>();
 	private final ObservableList<Note> d_notes = new ArrayListModel<Note>();
 
 	public Study() {
@@ -115,57 +116,148 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		replace(newStudy.d_notes, d_notes);
 		newStudy.d_indication = d_indication.clone();
 
-		replace(newStudy.d_arms, cloneArms());
-
-		for (Epoch e : getEpochs()) {
-			newStudy.getEpochs().add(e.clone());
+		// First clone the basic structure
+		replace(newStudy.d_arms, d_arms);
+		replace(newStudy.d_epochs, d_epochs);
+		replace(newStudy.d_endpoints, cloneStudyOutcomeMeasures(d_endpoints));
+		replace(newStudy.d_adverseEvents, cloneStudyOutcomeMeasures(d_adverseEvents));
+		replace(newStudy.d_populationChars, cloneStudyOutcomeMeasures(d_populationChars));
+		for (StudyActivity sa : d_studyActivities) {
+			newStudy.d_studyActivities.add(sa.clone());
 		}
-
-		replace(newStudy.d_endpoints, cloneStudyOutcomeMeasures(getEndpoints(), newStudy.getEpochs()));
-		replace(newStudy.d_adverseEvents, cloneStudyOutcomeMeasures(getAdverseEvents(), newStudy.getEpochs()));
-		replace(newStudy.d_populationChars, cloneStudyOutcomeMeasures(getPopulationChars(), newStudy.getEpochs()));
-
-		for (StudyActivity sa : getStudyActivities()) {
-			newStudy.getStudyActivities().add(cloneStudyActivity(sa, newStudy.getArms(), newStudy.getEpochs()));
+		for (MeasurementKey key : d_measurements.keySet()) {
+			newStudy.d_measurements.put(key, d_measurements.get(key).clone());
 		}
-
-		// Copy measurements _AFTER_ the outcomes, since setEndpoints() etc
-		// removes orphan measurements from the study.
-		// Also copy AFTER the epochs/SAs because measurements need to be placed within their coordinate system.
-		newStudy.setMeasurements(cloneMeasurements(newStudy.getArms(), newStudy.getEpochs(), newStudy.getStudyOutcomeMeasures()));
-
 		newStudy.setCharacteristics(cloneCharacteristics());
 
+		// Now clone objects that act as keys
+		for (Arm arm : d_arms) {
+			newStudy.replaceArm(arm, arm.clone());
+		}
+		for (Epoch epoch : d_epochs) {
+			newStudy.replaceEpoch(epoch, epoch.clone());
+		}
+		// WhenTakens are already cloned by StudyOutcomeMeasure.clone(), but the old versions are referenced by MeasurementKeys
+		for (StudyOutcomeMeasure<?> som : newStudy.getStudyOutcomeMeasures()) {
+			for (WhenTaken wt : som.getWhenTaken()) {
+				newStudy.updateMeasurementKeys(som, wt, wt);
+			}
+		}
+		
 		return newStudy;
 	}
+	
+	/**
+	 * Replace oldArm with newArm. All references to oldArm will be updated.
+	 * @param oldArm The arm to replace.
+	 * @param newArm The new arm.
+	 */
+	public void replaceArm(final Arm oldArm, final Arm newArm) {
+		transformUsedBy(new Transformer<UsedBy, UsedBy>(){
+			public UsedBy transform(UsedBy ub) {
+				if (ub.getArm().equals(oldArm)) {
+					return new UsedBy(newArm, ub.getEpoch());
+				}
+				return ub;
+			}
+		});
+		
+		transformMeasurementKeys(new Transformer<MeasurementKey, MeasurementKey>() {
+			public MeasurementKey transform(MeasurementKey key) {
+				if (key.getArm().equals(oldArm)) {
+					return new MeasurementKey(key.getVariable(), newArm, key.getWhenTaken());
+				}
+				return key;
+			}
+		});
+		
+		d_arms.set(d_arms.indexOf(oldArm), newArm);
+	}
+	
+	/**
+	 * Replace oldEpoch with newEpoch. All references to oldEpoch will be updated.
+	 * @param oldEpoch The epoch to replace.
+	 * @param newEpoch The new epoch.
+	 */
+	public void replaceEpoch(final Epoch oldEpoch, final Epoch newEpoch) {
+		transformUsedBy(new Transformer<UsedBy, UsedBy>(){
+			public UsedBy transform(UsedBy ub) {
+				if (ub.getEpoch().equals(oldEpoch)) {
+					return new UsedBy(ub.getArm(), newEpoch);
+				}
+				return ub;
+			}
+		});
+		
+		for (StudyOutcomeMeasure<?> som : getStudyOutcomeMeasures()) {
+			for (int i = 0; i < som.getWhenTaken().size(); ++i) {
+				WhenTaken oldWhenTaken = som.getWhenTaken().get(i);
+				if (oldWhenTaken.getEpoch().equals(oldEpoch)) {
+					WhenTaken newWhenTaken = new WhenTaken(oldWhenTaken.getDuration(), oldWhenTaken.getRelativeTo(), newEpoch);
+					newWhenTaken.commit();
+					replaceWhenTaken(som, oldWhenTaken, newWhenTaken);
+				}
+			}
+		}
+		
+		d_epochs.set(d_epochs.indexOf(oldEpoch), newEpoch);
+	}
+	
 
-	private static <T> void replace(ObservableList<T> target, ObservableList<T> newValues) {
+	public <V extends Variable> void replaceWhenTaken(final StudyOutcomeMeasure<V> studyOutcomeMeasure, 
+			final WhenTaken oldWhenTaken, final WhenTaken newWhenTaken) {
+		if (!newWhenTaken.isCommitted()) {
+			throw new IllegalArgumentException("The new WhenTaken must be committed");
+		}
+		updateMeasurementKeys(studyOutcomeMeasure, oldWhenTaken, newWhenTaken);
+		
+		ObservableList<WhenTaken> whenTakens = studyOutcomeMeasure.getWhenTaken();
+		whenTakens.set(whenTakens.indexOf(oldWhenTaken), newWhenTaken);
+	}
+
+	private <V extends Variable> void updateMeasurementKeys(final StudyOutcomeMeasure<V> studyOutcomeMeasure,
+			final WhenTaken oldWhenTaken, final WhenTaken newWhenTaken) {
+		transformMeasurementKeys(new Transformer<MeasurementKey, MeasurementKey>() {
+			public MeasurementKey transform(MeasurementKey input) {
+				if (input.getVariable().equals(studyOutcomeMeasure.getValue()) && input.getWhenTaken().equals(oldWhenTaken)) {
+					return new MeasurementKey(input.getVariable(), input.getArm(), newWhenTaken);
+				}
+				return input;
+			}
+		});
+	}
+	
+	private void transformMeasurementKeys(Transformer<MeasurementKey, MeasurementKey> transform) {
+		for (MeasurementKey oldKey : new HashSet<MeasurementKey>(d_measurements.keySet())) {
+			MeasurementKey newKey = transform.transform(oldKey);
+			if (oldKey != newKey) {
+				BasicMeasurement measurement = d_measurements.get(oldKey);
+				d_measurements.remove(oldKey);
+				d_measurements.put(newKey, measurement);
+			}
+		}
+	}
+
+	private void transformUsedBy(Transformer<UsedBy, UsedBy> transformer) {
+		for (StudyActivity sa : d_studyActivities) {
+			Set<UsedBy> newUsedBys = new HashSet<UsedBy>();
+			for (UsedBy oldUsedBy : sa.getUsedBy()) {
+				newUsedBys.add(transformer.transform(oldUsedBy));
+			}
+			sa.setUsedBy(newUsedBys);
+		}
+	}
+
+
+	private static <T> void replace(ObservableList<T> target, Collection<T> newValues) {
 		target.clear();
 		target.addAll(newValues);
 	}
 
-	private StudyActivity cloneStudyActivity(StudyActivity sa, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
-		StudyActivity newSA = sa.clone();
-		Set<UsedBy> newUsedBys = new HashSet<UsedBy>();
-		for (UsedBy ub : sa.getUsedBy()) {
-			newUsedBys.add(fixUsedBy(ub, newArms, newEpochs));
-		}
-		newSA.setUsedBy(newUsedBys);
-		return newSA;
-	}
-
-	private UsedBy fixUsedBy(UsedBy ub, ObservableList<Arm> newArms, ObservableList<Epoch> newEpochs) {
-		return new UsedBy(newArms.get(newArms.indexOf(ub.getArm())), newEpochs.get(newEpochs.indexOf(ub.getEpoch())));
-	}
-
-	private <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(List<StudyOutcomeMeasure<T>> soms, List<Epoch> epochs) {
-		ObservableList<StudyOutcomeMeasure<T>> list = new ArrayListModel<StudyOutcomeMeasure<T>>();
+	private <T extends Variable> List<StudyOutcomeMeasure<T>> cloneStudyOutcomeMeasures(List<StudyOutcomeMeasure<T>> soms) {
+		List<StudyOutcomeMeasure<T>> list = new ArrayList<StudyOutcomeMeasure<T>>();
 		for (StudyOutcomeMeasure<T> som : soms) {
-			StudyOutcomeMeasure<T> clone = som.clone();
-			for (WhenTaken wt : clone.getWhenTaken()) {
-				wt.setEpoch(epochs.get(epochs.indexOf(wt.getEpoch())));
-			}
-			list.add(clone);
+			list.add(som.clone());
 		}
 		return list;
 	}
@@ -176,39 +268,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			cm.put(c, d_chars.get(c).clone());
 		}
 		return cm;
-	}
-
-	private Map<MeasurementKey, BasicMeasurement> cloneMeasurements(List<Arm> newArms, List<Epoch> newEpochs, List<StudyOutcomeMeasure<?>> newOMs) {
-		HashMap<MeasurementKey, BasicMeasurement> hashMap = new HashMap<MeasurementKey, BasicMeasurement>();
-		for (MeasurementKey key : d_measurements.keySet()) {
-			hashMap.put(fixKey(key, newArms, newEpochs, newOMs), d_measurements.get(key).clone());
-		}
-		return hashMap;
-	}
-
-	private MeasurementKey fixKey(MeasurementKey key, List<Arm> newArms, List<Epoch> newEpochs, List<StudyOutcomeMeasure<?>> newOMs) {
-		ObservableList<WhenTaken> newWT = findStudyOutcomeMeasure(newOMs, key.getVariable()).getWhenTaken();
-		WhenTaken wt = key.getWhenTaken();
-		return new MeasurementKey(key.getVariable(),
-			key.getArm() == null ? null : newArms.get(getArms().indexOf(key.getArm())),
-			newWT.get(newWT.indexOf(wt)));
-	}
-
-	private static StudyOutcomeMeasure<?> findStudyOutcomeMeasure(List<StudyOutcomeMeasure<?>> somList, Variable v) {
-		for (StudyOutcomeMeasure<?> som : somList) {
-			if (som.getValue().equals(v)) {
-				return som;
-			}
-		}
-		return null;
-	}
-
-	private ObservableList<Arm> cloneArms() {
-		ObservableList<Arm> newList = new ArrayListModel<Arm>();
-		for (Arm a : getArms()) {
-			newList.add(a.clone());
-		}
-		return newList;
 	}
 
 	public ObservableList<Arm> getArms() {
@@ -307,7 +366,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			if (sa.getActivity() instanceof TreatmentActivity) {
 				TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
 				for (AbstractDose d : ta.getDoses()) {
-					dep.add(d.getDoseUnit().getUnit());
+					if (d != null) {
+						dep.add(d.getDoseUnit().getUnit());
+					}
 				}
 			}
 		}
@@ -345,7 +406,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return d_chars;
 	}
 
-	@Override
 	public void setName(String name) {
 		String oldVal = d_name;
 		d_name = name;
@@ -529,19 +589,23 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private boolean orphanKey(MeasurementKey k) {
-		if (findStudyOutcomeMeasure(k.d_variable) == null) {
+		StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(k.getVariable());
+		if (som == null) {
+			return true;
+		}
+		if (!som.getWhenTaken().contains(k.getWhenTaken())) {
 			return true;
 		}
 		// OutcomeMeasure measurement
-		if (k.d_variable instanceof OutcomeMeasure) {
-			if (!d_arms.contains(k.d_arm)) {
+		if (k.getVariable() instanceof OutcomeMeasure) {
+			if (!d_arms.contains(k.getArm())) {
 				return true;
 			}
 			return false;
 		}
 		// PopulationChar measurements
-		if (k.d_variable instanceof PopulationCharacteristic) {
-			if (k.d_arm != null && !d_arms.contains(k.d_arm)) {
+		if (k.getVariable() instanceof PopulationCharacteristic) {
+			if (k.getArm() != null && !d_arms.contains(k.getArm())) {
 				return true;
 			}
 			return false;
@@ -560,10 +624,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public Map<MeasurementKey, BasicMeasurement> getMeasurements() {
 		return d_measurements;
-	}
-
-	private void setMeasurements(Map<MeasurementKey, BasicMeasurement> m) {
-		d_measurements = new RebuildableTreeMap<MeasurementKey, BasicMeasurement>(m);
 	}
 
 	public void setMeasurement(MeasurementKey key, BasicMeasurement value) {
@@ -614,14 +674,23 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public WhenTaken defaultMeasurementMoment() {
-		Epoch epoch = findTreatmentEpoch();
-		return epoch == null ? null : new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
+		return treatmentWhenTaken(RelativeTo.BEFORE_EPOCH_END);
+	}
+	
+	public WhenTaken baselineMeasurementMoment() {
+		return treatmentWhenTaken(RelativeTo.FROM_EPOCH_START);
 	}
 
-	public WhenTaken baselineMeasurementMoment() {
+	private WhenTaken treatmentWhenTaken(RelativeTo relativeTo) {
 		Epoch epoch = findTreatmentEpoch();
-		return epoch == null ? null : new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, epoch);
+		if (epoch == null) {
+			return null;
+		}
+		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), relativeTo, epoch);
+		whenTaken.commit();
+		return whenTaken;
 	}
+
 
 	private boolean isTreatmentEpoch(Epoch epoch) {
 		for (Arm arm : d_arms) {
@@ -731,10 +800,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return arm;
 	}
 
-	public void rehashMeasurements() {
-		d_measurements.rebuild();
-	}
-
 	/**
 	 * @param wt TODO
 	 * @return The Drugs that have at least one Arm with a complete measurement
@@ -771,8 +836,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return false;
 	}
 
-	private boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
-		return getMeasurement(v, a) != null	&& getMeasurement(v, a).isComplete();
+	public boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
+		return getMeasurement(v, a, wt) != null	&& getMeasurement(v, a, wt).isComplete();
 	}
 
 	private ObservableList<Arm> getArms(DrugSet d) {

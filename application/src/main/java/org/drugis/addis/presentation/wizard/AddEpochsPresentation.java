@@ -26,6 +26,7 @@ package org.drugis.addis.presentation.wizard;
 
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.util.EntityUtil;
 
@@ -33,8 +34,11 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 
-	public AddEpochsPresentation(ObservableList<Epoch> list, String itemName, int minElements) {
-		super(list, itemName, minElements);
+	private Study d_study;
+
+	public AddEpochsPresentation(Study study, String itemName, int minElements) {
+		super(study.getEpochs(), itemName, minElements);
+		d_study = study;
 	}
 
 	@Override
@@ -49,5 +53,20 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 
 	public DurationPresentation<Epoch> getDurationModel(int idx) {
 		return new DurationPresentation<Epoch>(getList().get(idx));
+	}
+
+	@Override
+	public void rename(int idx, String newName) {
+		Epoch oldEpoch = d_list.get(idx);
+		d_study.replaceEpoch(oldEpoch, oldEpoch.rename(newName));
+	}
+
+	public void setStudy(Study study) {
+		d_study = study;
+		setList(d_study.getEpochs());
+	}
+	
+	public Study getStudy() {
+		return d_study;
 	}
 }

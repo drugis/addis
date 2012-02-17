@@ -41,10 +41,12 @@ public class BRSMAASimulationBuilder extends SimulationBuilder<SMAAModel, SMAA2R
 	private CentralWeightTableModel d_cwTableModel;
 	private CentralWeightsDataset d_cwDataset;
 	private TaskProgressModel d_progressModel;
+	private SMAAModel d_mutableModel;
 
 	public BRSMAASimulationBuilder(SMAAModel model, RankAcceptabilityTableModel resTableModel, RankAcceptabilitiesDataset dataSet,
 				CentralWeightTableModel cwTableModel, CentralWeightsDataset cwDataSet, TaskProgressModel progressModel) {
 		super(model);
+		d_mutableModel = model;
 		d_resTableModel = resTableModel;
 		d_resDataset = dataSet;
 		d_cwTableModel = cwTableModel;
@@ -73,6 +75,10 @@ public class BRSMAASimulationBuilder extends SimulationBuilder<SMAAModel, SMAA2R
 	
 	public TaskProgressModel getTaskProgressModel() {
 		return d_progressModel;
+	}
+
+	public void resetModel() {
+		this.model = d_mutableModel.deepCopy();
 	}
 
 }

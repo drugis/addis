@@ -24,9 +24,11 @@
 
 package org.drugis.addis.gui.components;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
+
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
+
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.AddisWindow;
@@ -36,31 +38,34 @@ import org.drugis.addis.presentation.PresentationModelFactory;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class EntitiesTablePanel extends TablePanel {
-	private final ObservableList<? extends Entity> d_entities;
-
-	public EntitiesTablePanel(List<String> formatter, ObservableList<? extends Entity> observableList, final AddisWindow parent, PresentationModelFactory pmf) {
-		super(createTable(formatter, observableList, pmf));
-		d_entities = observableList;
-				
-		if (parent != null)
-			getTable().addKeyListener(new EntityTableDeleteListener(parent));
-		
-		getTable().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() > 1) {
-					int row = ((EnhancedTable)e.getComponent()).rowAtPoint(e.getPoint());
-					Entity entity = d_entities.get(row);
-					parent.leftTreeFocus(entity);
-				}
-			}
-		});
+public class EntityTablePanel extends TablePanel {
+	public EntityTablePanel(Class<? extends Entity> entityType, ObservableList<? extends Entity> observableList, List<String> formatter, final AddisWindow parent, PresentationModelFactory pmf) {
+		super(createTable(parent, new EntityTableModel(entityType, observableList, formatter, pmf)));
 	}
 
-	private static EnhancedTable createTable(List<String> formatter, ObservableList<? extends Entity> observableList, PresentationModelFactory pmf) {
-		EnhancedTable createWithSorter = EnhancedTable.createWithSorter(new EntityTableModel(observableList, formatter, pmf));
-		createWithSorter.autoSizeColumns();
-		return createWithSorter;
+	public static EnhancedTable createTable(final AddisWindow main, final TableModel model) {
+		EnhancedTable table = EnhancedTable.createWithSorter(model);
+		EnhancedTable.insertEntityRenderer(table);
+		table.autoSizeColumns();
+
+		if (main != null) {
+			table.addKeyListener(new EntityTableDeleteListener(main));
+			table.addMouseListener(new EntityTableDoubleClickListener(main));
+		}
+		
+		return table;
+	}
+	
+	public static Entity getEntityAt(JTable table, int row) {
+		return (Entity) table.getModel().getValueAt(row, findEntityColumn(table));
+	}
+
+	private static int findEntityColumn(JTable table) {
+		for (int i = 0; i < table.getColumnCount(); ++i) {
+			if (table.getColumnName(i).equals("Name") || table.getColumnName(i).equals("Study ID")) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

@@ -101,6 +101,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	}
 
 	protected void startSimulation() {
+		getBuilder().resetModel();
 		d_buildQueue.add(getBuilder());
 	}
 

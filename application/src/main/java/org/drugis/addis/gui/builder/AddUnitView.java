@@ -76,7 +76,7 @@ public class AddUnitView implements ViewBuilder{
 		
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Drug", cc.xyw(1, 1, 5));
+		builder.addSeparator("Unit", cc.xyw(1, 1, 5));
 		builder.addLabel("Name:", cc.xy(1, 3));
 		builder.add(d_name, cc.xy(3, 3));
 		builder.addLabel("Symbol:", cc.xy(1, 5));

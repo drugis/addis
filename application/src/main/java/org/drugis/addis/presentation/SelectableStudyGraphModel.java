@@ -63,8 +63,8 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 	}
 	
 	@Override
-	public void drugsChanged() {
-		super.drugsChanged();
+	public void rebuildGraph() {
+		super.rebuildGraph();
 		
 		if (d_selectedDrugs != null) {
 			d_selectedDrugs.clear();

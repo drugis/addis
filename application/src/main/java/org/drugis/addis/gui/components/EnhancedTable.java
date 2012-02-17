@@ -26,51 +26,61 @@ package org.drugis.addis.gui.components;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.util.TableCopyHandler;
-import org.drugis.common.gui.GUIHelper;
-
-import com.sun.java.components.TableSorter;
 
 @SuppressWarnings("serial")
 public class EnhancedTable extends JTable {
 	
-	/**
-	 * Create an Enhanced table with a default sorter and cell renderer, and then auto size the columns.
-	 * Note: this is pretty dangerous as the "default" renderer may not be appropriate and result in weird behavior from the auto-sizer.
-	 * @param model The table model.
-	 * @return A fully initialized EnhancedTable.
-	 */
-	@Deprecated
-	public static EnhancedTable createWithSorterAndAutoSize(TableModel model) {
-		EnhancedTable enhancedTable = createWithSorter(model);
-		
-		enhancedTable.setDefaultRenderer(Object.class, new MyRenderer());
-		enhancedTable.autoSizeColumns();
-		
-		return enhancedTable;
+	private static final class EntityRenderer implements TableCellRenderer {
+		private final TableCellRenderer d_defaultRenderer;
+
+		private EntityRenderer(TableCellRenderer defaultRenderer) {
+			d_defaultRenderer = defaultRenderer;
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			return d_defaultRenderer.getTableCellRendererComponent(table, getDescription(value, false), isSelected, hasFocus, row, column);
+		}
+
+		@SuppressWarnings("unchecked")
+		private String getDescription(Object value, boolean nested) {
+			if (value instanceof Entity) {
+				return ((Entity)value).getLabel();
+			}
+			if (value instanceof Collection) {
+				return getElementDescriptions((Collection<?>) value, nested);
+			}
+			return value == null ? "N/A" : value.toString();
+		}
+
+		private String getElementDescriptions(Collection<?> c, boolean nested) {
+			List<String> desc = new ArrayList<String>();
+			for (Object o : c) {
+				desc.add(getDescription(o, true));
+			}
+			String str = StringUtils.join(desc, ", ");
+			return nested ? ("[" + str + "]") : str;
+		}
 	}
 
 	public static EnhancedTable createWithSorter(TableModel model) {
 		EnhancedTable enhancedTable = createBare(model);
-		
-		TableSorter sort = new TableSorter(model);
-		sort.setTableHeader(enhancedTable.getTableHeader());
-		enhancedTable.setModel(sort);
-		
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+		enhancedTable.setRowSorter(sorter);
 		return enhancedTable;
 	}
 	
@@ -93,10 +103,6 @@ public class EnhancedTable extends JTable {
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableCopyHandler.registerCopyAction(this);
 	}
-	
-	public void setSortingStatus(int column, int order) {
-		((TableSorter)getModel()).setSortingStatus(column, order);
-	}
 
 	public void autoSizeColumns() {
 		if (d_tableHeader != null) {
@@ -117,51 +123,12 @@ public class EnhancedTable extends JTable {
 		autoSizeColumns();
 	}
 	
-	public static void insertEntityRenderer(EnhancedTable table) {
+	public static void insertEntityRenderer(JTable table) {
 		final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Object.class);
-		table.setDefaultRenderer(Object.class, new TableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value,
-					boolean isSelected, boolean hasFocus, int row, int column) {
-				return defaultRenderer.getTableCellRendererComponent(table, getDescription(value, false), isSelected, hasFocus, row, column);
-			}
-	
-			@SuppressWarnings("unchecked")
-			private String getDescription(Object value, boolean nested) {
-				if (value instanceof Entity) {
-					return ((Entity)value).getLabel();
-				}
-				if (value instanceof Collection) {
-					return getElementDescriptions((Collection<?>) value, nested);
-				}
-				return value == null ? "N/A" : value.toString();
-			}
-	
-			private String getElementDescriptions(Collection<?> c, boolean nested) {
-				List<String> desc = new ArrayList<String>();
-				for (Object o : c) {
-					desc.add(getDescription(o, true));
-				}
-				String str = StringUtils.join(desc, ", ");
-				return nested ? ("[" + str + "]") : str;
-			}
-		});
+		EntityRenderer renderer = new EntityRenderer(defaultRenderer);
+		table.setDefaultRenderer(Object.class, renderer);
+		// Entity is an interface, and if something returns a sub-interface of Entity, that is not a sub-type of Object
+		// Hence, we have to attach the renderer to Entity.class as well.
+		table.setDefaultRenderer(Entity.class, renderer);
 	}
-
-	private static class MyRenderer extends DefaultTableCellRenderer {
-		
-		@Override
-		public void setValue(Object value) {
-			if (value instanceof Date) {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-				value = sdf.format((Date)value);
-			}
-			if (value == null) {
-				setToolTipText(null);
-			} else {
-				setToolTipText(GUIHelper.createToolTip(value.toString()));
-			}
-			super.setValue(value);			
-		}
-	}	
 }

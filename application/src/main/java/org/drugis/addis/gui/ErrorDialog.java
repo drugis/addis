@@ -25,6 +25,7 @@
 package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,22 +38,33 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 import com.jgoodies.binding.value.ValueHolder;
 
 public class ErrorDialog {
-
+	private static final String BUG_REPORTING_TEXT = "<html>This is probably a bug. " +
+		"Help us improve ADDIS by reporting this problem to us.<br/>" +
+		"Attaching the stack trace and the .addis data file would be very helpful.<br/>" +
+		"See <a href=\"http://drugis.org/addis-bug\">http://drugis.org/addis-bug</a> for instructions.<br/><br/>" +
+		"Consider restarting ADDIS.</html>";
 	private static final long serialVersionUID = 954780612211006478L;
 
 	public static void showDialog(final Throwable e, String title) {
 		showDialog(e, title, e.getMessage(), true);
 	}
 
-	public static void showDialog(final Throwable e, String title, String message, boolean restartAdvised) {
-		final String smallMessage = "<html><b>" + message + "</b>" +
-			(restartAdvised ? "<br><br>Consider restarting ADDIS." : "") + "</html>";
+	public static void showDialog(final Throwable e, String title, String message, boolean indicatesBug) {
+		JPanel topPanel = new JPanel(new BorderLayout(0, 10));
+		topPanel.add(new JLabel(indicatesBug ? "An unexpected error occurred:" : "An error occurred:"), BorderLayout.NORTH);
+		topPanel.add(AuxComponentFactory.createTextPane("<html><b>" + message + "</b></html>", true), BorderLayout.CENTER);
+		if (indicatesBug) {
+			JTextPane bugreport = AuxComponentFactory.createTextPaneWithHyperlinks(BUG_REPORTING_TEXT, Color.WHITE, false);
+			topPanel.add(bugreport, BorderLayout.SOUTH);
+		}
+
 		final JPanel panel = new JPanel(new BorderLayout());
-		panel.add(new JLabel(smallMessage), BorderLayout.NORTH);
+		panel.add(topPanel, BorderLayout.NORTH);
 		final JScrollPane stackTrace = AuxComponentFactory.createTextArea(new ValueHolder(stackTrace(e)), false);
 		stackTrace.setPreferredSize(new Dimension(750, 300));
 		panel.add(stackTrace, BorderLayout.CENTER);

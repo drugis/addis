@@ -78,9 +78,9 @@ public class RankProbabilityDataSetTest {
 	
 	@Test
 	public void testGetColumnIndex() {
-		assertEquals(0, d_dataSet.getColumnIndex(d_ta));
-		assertEquals(1, d_dataSet.getColumnIndex(d_tb));
-		assertEquals(2, d_dataSet.getColumnIndex(d_tc));
+		assertEquals(0, d_dataSet.getColumnIndex(d_ta.id()));
+		assertEquals(1, d_dataSet.getColumnIndex(d_tb.id()));
+		assertEquals(2, d_dataSet.getColumnIndex(d_tc.id()));
 	}
 	
 	@Test
@@ -101,7 +101,7 @@ public class RankProbabilityDataSetTest {
 
 	@Test
 	public void testGetColumnKey() {
-		assertEquals(d_tb, d_dataSet.getColumnKey(1));
+		assertEquals(d_tb.id(), d_dataSet.getColumnKey(1));
 	}
 	
 	@Test
@@ -115,7 +115,7 @@ public class RankProbabilityDataSetTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetColumnKeys() {
-		List<Treatment> expected = Arrays.asList(new Treatment[] { d_ta, d_tb, d_tc });
+		List<String> expected = Arrays.asList(new String[] { d_ta.id(), d_tb.id(), d_tc.id() });
 		assertEquals(expected, d_dataSet.getColumnKeys());
 	}
 	

@@ -57,11 +57,12 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	private Duration d_offset;
 	private RelativeTo d_relativeTo;
 	private Epoch d_epoch;
+	private boolean d_committed = false;
 
 	public WhenTaken(Duration offset, RelativeTo relativeTo, Epoch epoch) {
-		assert (offset != null);
-		assert (epoch != null);
-		assert (relativeTo != null);
+		assert(offset != null);
+		assert(epoch != null);
+		assert(relativeTo != null);
 		d_offset = offset;
 		d_epoch = epoch;
 		d_relativeTo = relativeTo;
@@ -72,9 +73,16 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	public void setOffset(Duration duration) {
+		checkCommited();
 		Duration oldValue = d_offset;
 		d_offset = duration;
 		firePropertyChange(PROPERTY_OFFSET, oldValue, d_offset);
+	}
+
+	private void checkCommited() {
+		if (d_committed) {
+			throw new UnsupportedOperationException("Attempt to modify WhenTaken after commit.");
+		}
 	}
 
 	public RelativeTo getRelativeTo() {
@@ -82,6 +90,7 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	public void setRelativeTo(RelativeTo relativeTo) {
+		checkCommited();
 		RelativeTo oldValue = d_relativeTo;
 		d_relativeTo = relativeTo;
 		firePropertyChange(PROPERTY_RELATIVE_TO, oldValue, d_relativeTo);
@@ -92,6 +101,7 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 	
 	public void setEpoch(Epoch epoch) {
+		checkCommited();
 		Epoch oldValue = d_epoch;
 		d_epoch = epoch;
 		firePropertyChange(PROPERTY_EPOCH, oldValue, d_epoch);
@@ -159,7 +169,15 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	@Override
-	protected WhenTaken clone() {
+	public WhenTaken clone() {
 		return new WhenTaken(d_offset, d_relativeTo, d_epoch);
+	}
+
+	public void commit() {
+		d_committed = true;
+	}
+
+	public boolean isCommitted() {
+		return d_committed;
 	}
 }

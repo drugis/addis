@@ -26,13 +26,16 @@ package org.drugis.addis.presentation.wizard;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.list.ObservableList;
 
 public class AddArmsPresentation extends AddListItemsPresentation<Arm> {
+	private Study d_study;
 
-	public AddArmsPresentation(ObservableList<Arm> list, String itemName, int minElements) {
-		super(list, itemName, minElements);
+	public AddArmsPresentation(Study study, String itemName, int minElements) {
+		super(study.getArms(), itemName, minElements);
+		d_study = study;
 	}
 
 	@Override
@@ -44,5 +47,19 @@ public class AddArmsPresentation extends AddListItemsPresentation<Arm> {
 	public Arm createItem() {
 		return new Arm(nextItemName(), 0);
 	}
-
+	
+	public void setStudy(Study study) {
+		d_study = study;
+		setList(d_study.getArms());
+	}
+	
+	public Study getStudy() {
+		return d_study;
+	}
+	
+	@Override
+	public void rename(int idx, String newName) {
+		Arm oldArm = d_list.get(idx);
+		d_study.replaceArm(oldArm, oldArm.rename(newName));
+	}
 }

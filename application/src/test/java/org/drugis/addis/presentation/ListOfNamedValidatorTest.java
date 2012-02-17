@@ -29,8 +29,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
+import java.util.Set;
 
-import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.AbstractNamedEntity;
+import org.drugis.addis.entities.Entity;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,20 +41,37 @@ import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public class ListOfNamedValidatorTest {
-	private ObservableList<Arm> d_list;
-	private ListOfNamedValidator<Arm> d_validator;
+	private static class NamedType extends AbstractNamedEntity<NamedType> {
+		public NamedType(String name) {
+			super(name);
+		}
+		
+		public void setName(String newName) {
+			String oldName = d_name;
+			d_name = newName;
+			firePropertyChange(PROPERTY_NAME, oldName, newName);
+		}
+
+		@Override
+		public Set<? extends Entity> getDependencies() {
+			return null;
+		}
+	}
+	
+	private ObservableList<NamedType> d_list;
+	private ListOfNamedValidator<NamedType> d_validator;
 
 	@Before
 	public void setUp() {
-		d_list = new ArrayListModel<Arm>();
-		d_list.add(new Arm("My arm!", 0));
-		d_validator = new ListOfNamedValidator<Arm>(d_list, 2);
+		d_list = new ArrayListModel<NamedType>();
+		d_list.add(new NamedType("My NamedType!"));
+		d_validator = new ListOfNamedValidator<NamedType>(d_list, 2);
 	}
 	
 	@Test
 	public void testMinElements() {
 		assertFalse(d_validator.getValue());
-		d_list.add(new Arm("His arm!", 0));
+		d_list.add(new NamedType("His NamedType!"));
 		assertTrue(d_validator.getValue());
 	}
 	
@@ -60,7 +79,7 @@ public class ListOfNamedValidatorTest {
 	public void testAddElementsFiresChange() {
 		PropertyChangeListener mockListener = JUnitUtil.mockListener(d_validator, "value", null, Boolean.TRUE);
 		d_validator.addPropertyChangeListener(mockListener);
-		d_list.add(new Arm("His arm!", 0));
+		d_list.add(new NamedType("His NamedType!"));
 		verify(mockListener);
 		d_validator.removeValueChangeListener(mockListener);
 		
@@ -72,31 +91,31 @@ public class ListOfNamedValidatorTest {
 	
 	@Test
 	public void testNamesShouldBeUniqueAndNotEmpty() {
-		Arm arm = new Arm("My arm!", 0);
-		d_list.add(arm);
+		NamedType NamedType = new NamedType("My NamedType!");
+		d_list.add(NamedType);
 		assertFalse(d_validator.getValue());
-		arm.setName("His Arm!");
+		NamedType.setName("His NamedType!");
 		assertTrue(d_validator.getValue());
-		arm.setName("");
+		NamedType.setName("");
 		assertFalse(d_validator.getValue());
 	}
 	
 	@Test
 	public void testNameChangeFiresChange() {
-		Arm arm = new Arm("My arm!", 0);
-		d_list.add(arm);
+		NamedType NamedType = new NamedType("My NamedType!");
+		d_list.add(NamedType);
 
 		PropertyChangeListener mockListener = JUnitUtil.mockListener(d_validator, "value", null, Boolean.TRUE);
 		d_validator.addPropertyChangeListener(mockListener);
-		arm.setName("His Arm!");
+		NamedType.setName("His NamedType!");
 		verify(mockListener);
 		d_validator.removeValueChangeListener(mockListener);
 		
 		// also test listening to elements initially in the list.
-		d_validator = new ListOfNamedValidator<Arm>(d_list, 2);
+		d_validator = new ListOfNamedValidator<NamedType>(d_list, 2);
 		mockListener = JUnitUtil.mockListener(d_validator, "value", null, Boolean.FALSE);
 		d_validator.addPropertyChangeListener(mockListener);
-		d_list.get(0).setName("His Arm!");
+		d_list.get(0).setName("His NamedType!");
 		verify(mockListener);
 		d_validator.removeValueChangeListener(mockListener);
 	}

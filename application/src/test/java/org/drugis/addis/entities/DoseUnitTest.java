@@ -24,8 +24,10 @@
 
 package org.drugis.addis.entities;
 
-import static org.junit.Assert.*;
-import static org.drugis.addis.entities.AssertEntityEquals.*;
+import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -70,25 +72,25 @@ public class DoseUnitTest {
 	}
 	
 	@Test
-	public void testClone() {
+	public void testClone() throws DatatypeConfigurationException {
 		DoseUnit cloned = d_mgDay.clone();
 		assertEntityEquals(d_mgDay, cloned);
-		assertFalse(cloned == d_mgDay);
+		assertNotSame(d_mgDay, cloned);
 
 		cloned.setScaleModifier(ScaleModifier.KILO);
-		assertFalse(EntityUtil.deepEqual(d_mgDay, cloned));
+		JUnitUtil.assertNotEquals(d_mgDay.getScaleModifier(), cloned.getScaleModifier());
 		cloned.setScaleModifier(ScaleModifier.MILLI);
-		assertEntityEquals(d_mgDay, cloned);
+		assertEquals(d_mgDay.getScaleModifier(), cloned.getScaleModifier());
 		
 		cloned.setUnit(new Unit("nonsense", "ns"));
-		assertFalse(EntityUtil.deepEqual(d_mgDay, cloned));
-		cloned.setUnit(new Unit("gram", "g"));
-		assertEntityEquals(d_mgDay, cloned);
+		JUnitUtil.assertNotEquals(d_mgDay.getUnit(), cloned.getUnit());
+		cloned.setUnit(d_mgDay.getUnit());
+		assertEquals(d_mgDay.getUnit(), cloned.getUnit());
 
-		try {
-			cloned.setPerTime(DatatypeFactory.newInstance().newDuration("P2D"));
-		} catch (DatatypeConfigurationException e) {}
-		assertFalse(EntityUtil.deepEqual(d_mgDay, cloned));
+		cloned.setPerTime(DatatypeFactory.newInstance().newDuration("P2D"));
+		JUnitUtil.assertNotEquals(d_mgDay.getPerTime(), cloned.getPerTime());
+		cloned.setPerTime(d_mgDay.getPerTime());
+		assertEquals(d_mgDay.getPerTime(), cloned.getPerTime());
 	}
 	
 }

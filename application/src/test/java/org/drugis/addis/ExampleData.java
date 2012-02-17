@@ -321,9 +321,6 @@ public class ExampleData {
 		BasicRateMeasurement pConv = (BasicRateMeasurement) buildAdverseEventConvulsion().buildMeasurement(parox);
 		pConv.setRate(10);
 		pConv.setSampleSize(40);
-		
-		study.setMeasurement(hamd, parox, pHamd);
-		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
 
 		// Fluoxetine data
 		dose = new FixedDose(27.5, ExampleData.MILLIGRAMS_A_DAY);
@@ -337,6 +334,8 @@ public class ExampleData {
 		addBaselineMeasurementMoment(study, Endpoint.class);
 		addDefaultMeasurementMoments(study);
 		
+		study.setMeasurement(hamd, parox, pHamd);
+		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);		
 		study.setMeasurement(hamd, fluox, fHamd);
 		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
 		return study;

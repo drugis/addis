@@ -74,4 +74,6 @@ public interface Variable extends Entity, Comparable<Variable>, TypeWithName {
 	 * @return An appropriate type of Measurement.
 	 */
 	public BasicMeasurement buildMeasurement(int size);
+	
+	public void setName(String name);
 }

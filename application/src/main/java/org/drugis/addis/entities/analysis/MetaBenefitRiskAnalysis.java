@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DrugSet;
@@ -67,7 +66,7 @@ import org.drugis.mtc.summary.Summary;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public class MetaBenefitRiskAnalysis extends AbstractEntity implements BenefitRiskAnalysis<DrugSet> {
+public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	private final class MetaMeasurementSource extends AbstractMeasurementSource<DrugSet> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {

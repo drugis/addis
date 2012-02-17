@@ -133,4 +133,10 @@ public abstract class AbstractVariable extends AbstractNamedEntity<Variable> imp
 		return s_types.indexOf(getClass()) - s_types.indexOf(other.getClass());
 	}
 	
+
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
 }

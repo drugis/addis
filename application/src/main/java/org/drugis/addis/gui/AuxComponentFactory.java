@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -54,6 +55,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
@@ -67,6 +70,7 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.BrowserLaunch;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LinkLabel;
@@ -149,6 +153,7 @@ public class AuxComponentFactory {
 
 	public static JScrollPane createTextArea(ValueModel model, boolean editable) {
 		JTextArea area = BasicComponentFactory.createTextArea(model);
+		dontStealTabKey(area);
 		area.setEditable(editable);
 		area.setLineWrap(true);
 		area.setWrapStyleWord(true);
@@ -162,6 +167,15 @@ public class AuxComponentFactory {
 				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(200, area), 
 				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(50, area)));
 		return pane;
+	}
+	
+	public static void dontStealTabKey(final JTextArea area) {
+		area.setFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+				new JLabel().getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+		area.setFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+				new JLabel().getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
 	}
 
 	public static JComponent createCharacteristicView(StudyCharacteristicHolder model) {
@@ -231,6 +245,33 @@ public class AuxComponentFactory {
 		return scroll;
 	}
 
+	public static JComponent createTextPane(String html, boolean scrollable) {
+		JTextPane area = new JTextPane();
+		area.setContentType("text/html");
+		area.setText(html);
+		area.setCaretPosition(0);
+		area.setEditable(false);
+		
+		if (!scrollable) {
+			area.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), 
+					BorderFactory.createEmptyBorder(4,4,4,4)));
+			return area;
+		}
+		
+		return putTextPaneInScrollPane(area);
+	}
+
+	private static JComponent putTextPaneInScrollPane(JTextPane area) {
+		JScrollPane pane = new JScrollPane(area);
+		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		pane.setPreferredSize(defaultTextPaneDimension(area));
+		
+		pane.setWheelScrollingEnabled(true);
+		pane.getVerticalScrollBar().setValue(0);
+		
+		return pane;
+	}
+	
 	public static JComponent createNoteView(Note note, boolean scrollable) {
 		JTextPane area = new JTextPane();
 		
@@ -250,7 +291,7 @@ public class AuxComponentFactory {
 			}
 			doc.insertString(doc.getLength(), (String)note.getText(), doc.getStyle("regular"));
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		area.setEditable(false);
@@ -260,14 +301,7 @@ public class AuxComponentFactory {
 			return area;
 		}
 		
-		JScrollPane pane = new JScrollPane(area);
-		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(AddStudyWizard.defaultTextPaneDimension(area));
-		
-		pane.setWheelScrollingEnabled(true);
-		pane.getVerticalScrollBar().setValue(0);
-		
-		return pane;
+		return putTextPaneInScrollPane(area);
 	}
 	
 	/**
@@ -277,7 +311,6 @@ public class AuxComponentFactory {
 		JLabel label = new JLabel("<html><div style='margin:0; padding: 10px;'>" + bodyText + "</div></html>", SwingConstants.CENTER);
 		label.setOpaque(true);
 		label.setBackground(COLOR_NOTE);
-		//label.setBorder(BorderFactory.createLineBorder(Color.gray));
 		label.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		return label;
 	}
@@ -295,5 +328,38 @@ public class AuxComponentFactory {
 			}
 		});
 		return button;
+	}
+
+	public static Dimension defaultTextPaneDimension(JTextPane area) {
+		return AuxComponentFactory.textPaneDimension(area, 230, 50);
+	}
+
+	public static Dimension textPaneDimension(JTextPane area, int dluX,
+			int dluY) {
+		return new Dimension(
+				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
+				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));
+	}
+
+	public static JTextPane createTextPaneWithHyperlinks(String str) {
+		return createTextPaneWithHyperlinks(str, COLOR_NOTE, true);
+	}
+	
+	public static JTextPane createTextPaneWithHyperlinks(String str, Color bg, boolean opaque) {
+		JTextPane pane = new JTextPane();
+		pane.setBackground(bg);
+		pane.setContentType("text/html");
+		pane.setText(str);
+		pane.setEditable(false);
+		pane.setOpaque(opaque);
+		pane.addHyperlinkListener(new HyperlinkListener() {
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if(HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
+					BrowserLaunch.openURL(e.getURL().toExternalForm());
+				}
+			}
+		});
+		return pane;
 	}
 }

@@ -179,6 +179,7 @@ public class StudyGraphModelTest {
 		d_drugListHolder.addListDataListener(l);
 		d_drugListHolder.clear();
 		
+		d_pm.rebuildGraph();
 		assertTrue(d_pm.vertexSet().isEmpty());
 		verify(l);
 	}
@@ -193,6 +194,8 @@ public class StudyGraphModelTest {
 		assertTrue(d_pm.edgeSet().isEmpty());
 		
 		studyListHolder.addAll(d_domain.getStudies(ExampleData.buildEndpointHamd()));
+		
+		d_pm.rebuildGraph();
 		assertEquals(3, d_pm.vertexSet().size());
 		assertEquals(2, d_pm.edgeSet().size());
 	}

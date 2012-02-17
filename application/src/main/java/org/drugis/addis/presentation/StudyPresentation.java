@@ -170,12 +170,12 @@ public class StudyPresentation extends PresentationModel<Study> {
 		List<OutcomeMeasure> adverseEvents = new ArrayList<OutcomeMeasure>();
 		adverseEvents.addAll(Study.extractVariables(getBean().getAdverseEvents()));
 		return adverseEvents;
-	}	
-
+	}
+	
 	public PopulationCharTableModel getPopulationCharTableModel() {
 		return new PopulationCharTableModel(getBean(), d_pmf);
 	}
-
+	
 	public TableModel getEndpointTableModel() {
 		return new StudyMeasurementTableModel(getBean(), d_pmf, Endpoint.class, false);
 	}

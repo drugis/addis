@@ -64,11 +64,18 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	@SuppressWarnings("unchecked")
 	@Override
 	public int getColumnIndex(Comparable key) {
-		if (!(key instanceof Treatment)) {
+		if (!(key instanceof String) && !(key instanceof Treatment)) {
 			return -1;
 		}
-		Treatment treatment = (Treatment) key;
-		return d_summary.getTreatments().indexOf(treatment);
+		String treatment = key instanceof String ? (String) key : ((Treatment)key).id();
+		int idx = 0;
+		for (Treatment t : d_summary.getTreatments()) {
+			if (t.id().equals(treatment)) {
+				return idx; 
+			}
+			++idx;
+		}
+		return -1;
 	}
 	
 	@Override
@@ -77,8 +84,8 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	}
 	
 	@Override
-	public Treatment getColumnKey(int column) {
-		return d_summary.getTreatments().get(column); 
+	public String getColumnKey(int column) {
+		return d_summary.getTreatments().get(column).id(); 
 	}
 	
 	@Override
@@ -91,10 +98,10 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	}
 	
 	@Override
-	public List<Treatment> getColumnKeys() {
-		List<Treatment> keys = new ArrayList<Treatment>();
+	public List<String> getColumnKeys() {
+		List<String> keys = new ArrayList<String>();
 		for (Treatment t : d_summary.getTreatments()) {
-			keys.add(t);
+			keys.add(t.id());
 		}
 		return keys;
 	}

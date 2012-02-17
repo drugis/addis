@@ -28,6 +28,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.event.TableModelEvent;
@@ -37,14 +38,21 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.Study;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jgoodies.binding.list.ArrayListModel;
 
 public class EntityTableModelTest {
 	Domain d_domain;
 	EntityTableModel d_tableModel;
 	List<String> d_properties;
+	private PresentationModelFactory d_pmf;
 	
 	@Before
 	public void setUp() {
@@ -53,13 +61,15 @@ public class EntityTableModelTest {
 		d_properties = new ArrayList<String>();
 		d_properties.add("name");
 		d_properties.add("atcCode");
-//		List<PresentationModel<? extends Entity>> pm = new ArrayList<PresentationModel<? extends Entity>>();
-//		PresentationModelFactory pmf = new PresentationModelFactory(d_domain);
-//		for (Drug d : d_domain.getDrugs())
-//			pm.add(pmf.getModel(d));
-		d_tableModel = new EntityTableModel(
+		d_pmf = new PresentationModelFactory(d_domain);
+		d_tableModel = new EntityTableModel(Drug.class, 
 				d_domain.getCategoryContents(d_domain.getCategory(Drug.class)),
-				d_properties, new PresentationModelFactory(d_domain));
+				d_properties, d_pmf);
+	}
+	
+	@Test
+	public void testEmptyEntityList() {
+		new EntityTableModel(Drug.class, new ArrayListModel<Drug>(), d_properties, d_pmf);
 	}
 	
 	@Test
@@ -84,6 +94,18 @@ public class EntityTableModelTest {
 		assertEquals("Atc Code", d_tableModel.getColumnName(1));
 	}
 
+	@Test
+	public void testGetColumnClass() {
+		assertEquals(Drug.class, d_tableModel.getColumnClass(0));
+		EntityTableModel differentTableModel = new EntityTableModel(Study.class, d_domain.getStudies(), 
+				Arrays.asList(Study.PROPERTY_ARMS, Study.PROPERTY_INDICATION), d_pmf);
+		assertEquals(Indication.class, differentTableModel.getColumnClass(1));
+		assertEquals(Object.class, differentTableModel.getColumnClass(0));
+		EntityTableModel interfaceTableModel = new EntityTableModel(Endpoint.class, d_domain.getStudies(), 
+				Arrays.asList(Endpoint.PROPERTY_VARIABLE_TYPE), d_pmf);
+		assertEquals(Entity.class, interfaceTableModel.getColumnClass(0));	
+	}
+	
 	@Test
 	public void testDrugAddedUpdatesTable() {
 		int prevSize = d_tableModel.getRowCount();

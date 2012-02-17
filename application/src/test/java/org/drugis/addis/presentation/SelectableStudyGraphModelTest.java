@@ -87,6 +87,7 @@ public class SelectableStudyGraphModelTest {
 		selDrugs.addListDataListener(mock);
 		d_drugListHolder.clear();
 		d_drugListHolder.addAll(list);
+		d_pm.rebuildGraph();
 		verify(mock);
 	}
 	

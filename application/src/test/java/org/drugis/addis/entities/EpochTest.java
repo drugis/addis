@@ -26,6 +26,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -92,8 +93,13 @@ public class EpochTest {
 	}
 	
 	@Test
-	public void testSetName() {
-		JUnitUtil.testSetter(d_null, Epoch.PROPERTY_NAME, null, "Randomization");
+	public void testRename() {
+		Epoch epoch = new Epoch("Main phase", null);
+		
+		assertNotSame(epoch, epoch.rename("Main phase"));
+		assertEquals(epoch, epoch.rename("Main phase"));
+		
+		assertEquals("New name", epoch.rename("New name").getName());
 	}
 
 	@Test

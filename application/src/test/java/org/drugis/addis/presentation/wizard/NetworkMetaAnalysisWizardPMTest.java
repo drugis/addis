@@ -30,6 +30,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
@@ -85,6 +86,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.updateStudyGraphModel();
 		assertTrue((Boolean)completeModel.getValue());
 		
 		ArrayList<DrugSet> newList = new ArrayList<DrugSet>();
@@ -112,6 +114,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.updateStudyGraphModel();
 		
 		ArrayList<Study> newList = new ArrayList<Study>();
 		newList.addAll(d_pm.getStudiesEndpointAndIndication());
@@ -163,6 +166,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.updateStudyGraphModel();
+		
+		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(2, graphModel.edgeSet().size());
 		
@@ -171,7 +177,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		selectionList.add(d_paroxSet);
 		d_pm.getSelectedDrugsModel().clear();
 		d_pm.getSelectedDrugsModel().addAll(selectionList);
-
+		
+		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(0, graphModel.edgeSet().size());
 	}
@@ -186,7 +193,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-
+		d_pm.updateStudyGraphModel();
+		
+		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(1, graphModel.edgeSet().size());
 		
@@ -195,7 +204,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		d_pm.updateStudyGraphModel();
 		
+		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(2, graphModel.edgeSet().size());
 	}
@@ -249,7 +260,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		
+		d_pm.updateStudyGraphModel();
+
 		// Remove Parox studies
 		ArrayList<Study> studyList = new ArrayList<Study>();
 		studyList.add(ExampleData.buildStudyBennie());
@@ -260,16 +272,19 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyChouinard()).setValue(false);
 		
+		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(1, graphModel.edgeSet().size());
 	}
 	
 	@Test
-	public void testStudySelectionCompleteModel() {
+	public void testSelectedStudyGraphConnectedModel() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-
-		ValueHolder<Boolean> completeModel = d_pm.getStudySelectionCompleteModel();
+		d_pm.updateStudyGraphModel();
+		
+		d_pm.updateSelectedStudyGraphModel();
+		ValueHolder<Boolean> completeModel = d_pm.getSelectedStudyGraphConnectedModel();
 		assertTrue(completeModel.getValue());
 		
 		PropertyChangeListener mock = JUnitUtil.mockAnyTimesListener(completeModel, "value", true, false);
@@ -285,6 +300,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getStudyListModel().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyChouinard()).setValue(false);
 		
+		d_pm.updateSelectedStudyGraphModel();
 		verify(mock);
 		assertFalse(completeModel.getValue());
 	}
@@ -320,5 +336,33 @@ public class NetworkMetaAnalysisWizardPMTest {
 				assertNotNull(ma.getArm(s, d));
 			}
 		}
-	}	
+	}
+	
+	@Test
+	public void testArmAndDrugSetExclusions() {
+		Study study = ExampleData.buildStudyMultipleArmsperDrug().clone();
+		study.createAndAddArm("Sertraline-0", 54, ExampleData.buildDrugSertraline(), null);
+		Arm parox0 = study.getArms().get(0);
+		assertEquals("Paroxetine-0", parox0.getName()); // Assumption check
+		study.getMeasurement(ExampleData.buildEndpointHamd(), parox0).setSampleSize(null);
+		d_domain.getStudies().remove(ExampleData.buildStudyMultipleArmsperDrug());
+		d_domain.getStudies().add(study);
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.getSelectedDrugsModel().clear();
+		d_pm.getSelectedDrugsModel().addAll(Arrays.asList(new DrugSet[] {
+				d_fluoxSet,
+				d_paroxSet,
+				d_sertrSet}));
+
+		assertTrue(d_pm.getSelectedStudiesModel().contains(study));
+		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
+		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
+		assertNull(d_pm.getSelectedArmModel(study, d_sertrSet));
+		
+		assertEquals(Collections.singletonList(study.getArms().get(1)), d_pm.getArmsPerStudyPerDrug(study, d_paroxSet));
+		assertEquals(Collections.singletonList(study.getArms().get(2)), d_pm.getArmsPerStudyPerDrug(study, d_fluoxSet));
+		assertEquals(Collections.emptyList(), d_pm.getArmsPerStudyPerDrug(study, d_sertrSet));
+	}
 }

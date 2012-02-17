@@ -25,19 +25,26 @@
 package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.Variable;
@@ -49,10 +56,14 @@ import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.SelectFromFiniteListPresentation;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.WhenTakenPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.ImageLoader;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.OkCancelDialog;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -95,9 +106,11 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 	private PanelBuilder d_builder;
 	private JScrollPane d_scrollPane;
 	private final AddEpochsPresentation d_epm;
+	private final JDialog d_parent;
 		
-	public SelectFromOutcomeMeasureListWizardStep(SelectFromFiniteListPresentation<T> pm, AddEpochsPresentation epm) {
+	public SelectFromOutcomeMeasureListWizardStep(JDialog parent, SelectFromFiniteListPresentation<T> pm, AddEpochsPresentation epm) {
 		super(pm.getTitle(), pm.getDescription());
+		d_parent = parent;
 		d_epm = epm;
 		setLayout(new BorderLayout());
 		d_pm = pm;
@@ -185,25 +198,27 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 		return row;	
 	}
 
-	
 	private int createMeasurementMomentsRow(ModifiableHolder<T> slot, final PanelBuilder builder, FormLayout layout, int row) {
 		CellConstraints cc = new CellConstraints();
 		row = LayoutUtil.addRow(layout, row);
-		builder.add(new MeasurementMomentsPanel<T>((StudyOutcomeMeasure<T>) slot, d_epm), cc.xyw(1, row, 7));
+		builder.add(new MeasurementMomentsPanel<T>(d_parent, (StudyOutcomeMeasure<T>) slot, d_epm), cc.xyw(3, row, 5));
 		return row;
 	}
 	
 	private static class MeasurementMomentsPanel<T extends Variable> extends JPanel {
+		private final JDialog d_parent;
 		private final StudyOutcomeMeasure<T> d_slot;
 		private final AddEpochsPresentation d_epm;
 
-		public MeasurementMomentsPanel(StudyOutcomeMeasure<T> slot, AddEpochsPresentation epm) {
+		public MeasurementMomentsPanel(JDialog parent, StudyOutcomeMeasure<T> slot, AddEpochsPresentation epm) {
+			d_parent = parent;
 			d_slot = slot;
 			d_epm = epm;
+			setLayout(new FlowLayout(FlowLayout.LEFT));
 			add(buildPanel());
 		}
 
-		private void rebuild(ModifiableHolder<T> slot) {
+		private void rebuild() {
 			setVisible(false);
 			removeAll();
 			add(buildPanel());
@@ -212,56 +227,176 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 	
 		private JComponent buildPanel() {
 			FormLayout momentLayout = new FormLayout(
-					"max(30dlu;pref), 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref, 3dlu, left:pref",
+					"right:pref, 3dlu, left:pref, 3dlu, left:pref, 3dlu, left:pref",
 					"p, 3dlu, p"
 					);			
 			final PanelBuilder momentPanelBuilder = new PanelBuilder(momentLayout);
 			CellConstraints cc = new CellConstraints();
-			int row2 = 1;
+			int row = 1;
 			final StudyOutcomeMeasure<T> som = ((StudyOutcomeMeasure<T>)d_slot);
 			
-			for (WhenTaken wt : som.getWhenTaken()) {
-				WhenTakenPresentation wtp = new WhenTakenPresentation(wt, d_epm.getList());
-				row2 = LayoutUtil.addRow(momentLayout, row2);
-	
-				momentPanelBuilder.add(new JLabel("Measurement moment: "), cc.xy(1, row2));
-	
-				DurationPresentation<WhenTaken> durationModel = wtp.getOffsetPresentation();
-	
-				// duration quantity input
-				final JTextField quantityField = BasicComponentFactory.createFormattedTextField(
-						new PropertyAdapter<DurationPresentation<WhenTaken>>(durationModel, DurationPresentation.PROPERTY_DURATION_QUANTITY, true),
-						new DefaultFormatter());
-				quantityField.setColumns(4);
-				momentPanelBuilder.add(quantityField, cc.xy(3, row2));
-	
-				// duration units input
-				final JComboBox unitsField = AuxComponentFactory.createBoundComboBox(
-						DurationPresentation.DateUnits.values(), 
-						new PropertyAdapter<DurationPresentation<WhenTaken>>(durationModel, DurationPresentation.PROPERTY_DURATION_UNITS, true));
-				momentPanelBuilder.add(unitsField, cc.xy(5, row2));
+			for (final WhenTaken wt : som.getWhenTaken()) {
+				row = LayoutUtil.addRow(momentLayout, row);
+				momentPanelBuilder.addLabel("Measurement moment: ", cc.xy(1, row));
+				momentPanelBuilder.addLabel(wt.toString(), cc.xy(3, row));
+				JButton editButton = new JButton(ImageLoader.getIcon(FileNames.ICON_EDIT));
+				editButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, wt, (StudyOutcomeMeasure<T>) d_slot, d_epm);
+						GUIHelper.centerWindow(dialog, d_parent);
+						dialog.setVisible(true);
+						rebuild();
+					}
+				});
+				momentPanelBuilder.add(editButton, cc.xy(5, row));
 				
-				final JComboBox relativeTofield = AuxComponentFactory.createBoundComboBox(
-						RelativeTo.values(), 
-						new PropertyAdapter<WhenTaken>(wt, WhenTaken.PROPERTY_RELATIVE_TO, true));
-				momentPanelBuilder.add(relativeTofield, cc.xy(7, row2));
-				
-				final JComboBox epochField = AuxComponentFactory.createBoundComboBox(d_epm.getList(),
-						new PropertyAdapter<WhenTaken>(wt, WhenTaken.PROPERTY_EPOCH), true);
-				momentPanelBuilder.add(epochField, cc.xy(9, row2));
-				
+				JButton deleteButton = new JButton(ImageLoader.getIcon(FileNames.ICON_DELETE));
+				deleteButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						d_slot.getWhenTaken().remove(wt);
+						rebuild();
+					}
+				});
+				momentPanelBuilder.add(deleteButton, cc.xy(7, row));
 			}
 			
-			row2 = LayoutUtil.addRow(momentLayout, row2);
+			row = LayoutUtil.addRow(momentLayout, row);
 			JButton addWhenTakenButton = new JButton("Add measurement moment");
 			addWhenTakenButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					som.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, som.getWhenTaken().get(0).getEpoch()));
-					rebuild(d_slot);
+					AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, (StudyOutcomeMeasure<T>) d_slot, d_epm);
+					GUIHelper.centerWindow(dialog, d_parent);
+					dialog.setVisible(true);
+					rebuild();
 				}
 			});
-			momentPanelBuilder.add(addWhenTakenButton, cc.xy(1, row2));
+			momentPanelBuilder.add(addWhenTakenButton, cc.xy(1, row));
+			return momentPanelBuilder.getPanel();
+		}
+	}
+	
+	private static class AddWhenTakenDialog<T extends Variable> extends OkCancelDialog {
+
+		private final StudyOutcomeMeasure<T> d_som;
+		private final WhenTaken d_old;
+		private final WhenTaken d_wt;
+		private final ValueHolder<Boolean> d_validModel = new ModifiableHolder<Boolean>();
+		private final AddEpochsPresentation d_epm;
+
+		public AddWhenTakenDialog(JDialog parent, WhenTaken wt, StudyOutcomeMeasure<T> som, AddEpochsPresentation epm) {
+			super(parent, true);
+			d_old = wt;
+			d_som = som;
+			d_epm = epm;
+			
+			if (d_old == null) {
+				d_wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epm.getStudy().findTreatmentEpoch());
+			} else {
+				d_wt = wt.clone();
+			}
+			
+			d_wt.addPropertyChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					d_validModel.setValue(isUnique());
+				}
+			});
+			d_validModel.setValue(isUnique());
+			
+			Bindings.bind(d_okButton, "enabled", d_validModel);
+
+			getUserPanel().add(new MeasurementMomentsEditorPanel<T>(d_wt, epm));
+			
+			getUserPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit");
+			getUserPanel().getActionMap().put("submit", new AbstractAction() {
+				public void actionPerformed(ActionEvent e) {
+					commit();
+				}
+			});
+			
+			pack();
+		}
+		
+		public AddWhenTakenDialog(JDialog parent, StudyOutcomeMeasure<T> som, AddEpochsPresentation epm) {
+			this(parent, null, som, epm);
+		}
+
+		private boolean isUnique() {
+			if (!d_som.getWhenTaken().contains(d_wt)) {
+				return true;
+			} else {
+				return d_wt.equals(d_old);
+			}
+		}
+		
+		@Override
+		protected void cancel() {
+			setVisible(false);
+		}
+
+		@Override
+		protected void commit() {
+			if (isUnique()) {
+				d_wt.commit();
+				if (d_old == null) {
+					d_som.getWhenTaken().add(d_wt);
+				} else {
+					d_epm.getStudy().replaceWhenTaken(d_som, d_old, d_wt);
+				}
+				setVisible(false);
+			}
+		}
+		
+	}
+	
+	private static class MeasurementMomentsEditorPanel<T extends Variable> extends JPanel {
+		private final AddEpochsPresentation d_epm;
+		private final WhenTaken d_wt;
+
+		public MeasurementMomentsEditorPanel(WhenTaken wt, AddEpochsPresentation epm) {
+			d_wt = wt;
+			d_epm = epm;
+			add(buildPanel());
+		}
+	
+		private JComponent buildPanel() {
+			FormLayout momentLayout = new FormLayout(
+					"max(30dlu;pref), 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref, 3dlu, left:pref",
+					"p"
+					);			
+			final PanelBuilder momentPanelBuilder = new PanelBuilder(momentLayout);
+			CellConstraints cc = new CellConstraints();
+			int row2 = 1;
+			
+			WhenTakenPresentation wtp = new WhenTakenPresentation(d_wt, d_epm.getList());
+			row2 = LayoutUtil.addRow(momentLayout, row2);
+
+			momentPanelBuilder.add(new JLabel("Measurement moment: "), cc.xy(1, row2));
+
+			DurationPresentation<WhenTaken> durationModel = wtp.getOffsetPresentation();
+
+			// duration quantity input
+			final JTextField quantityField = BasicComponentFactory.createFormattedTextField(
+					new PropertyAdapter<DurationPresentation<WhenTaken>>(durationModel, DurationPresentation.PROPERTY_DURATION_QUANTITY, true),
+					new DefaultFormatter());
+			quantityField.setColumns(4);
+			momentPanelBuilder.add(quantityField, cc.xy(3, row2));
+
+			// duration units input
+			final JComboBox unitsField = AuxComponentFactory.createBoundComboBox(
+					DurationPresentation.DateUnits.values(), 
+					new PropertyAdapter<DurationPresentation<WhenTaken>>(durationModel, DurationPresentation.PROPERTY_DURATION_UNITS, true));
+			momentPanelBuilder.add(unitsField, cc.xy(5, row2));
+			
+			final JComboBox relativeTofield = AuxComponentFactory.createBoundComboBox(
+					RelativeTo.values(), 
+					new PropertyAdapter<WhenTaken>(d_wt, WhenTaken.PROPERTY_RELATIVE_TO, true));
+			momentPanelBuilder.add(relativeTofield, cc.xy(7, row2));
+			
+			final JComboBox epochField = AuxComponentFactory.createBoundComboBox(d_epm.getList(),
+					new PropertyAdapter<WhenTaken>(d_wt, WhenTaken.PROPERTY_EPOCH), true);
+			momentPanelBuilder.add(epochField, cc.xy(9, row2));
+
 			return momentPanelBuilder.getPanel();
 		}
 	}

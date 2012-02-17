@@ -38,6 +38,7 @@ import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
+import org.jgraph.graph.DefaultGraphCell;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgrapht.ext.JGraphModelAdapter;
 
@@ -91,6 +92,20 @@ public class StudyGraph extends JPanel {
 		d_jgraph.getGraphLayoutCache().edit(nested);
 		
 		d_jgraph.repaint();
+	}
+	
+	/**
+	 * Update vertex attributes.
+	 * @see MyDefaultCellViewFactory.addVertexAttributes
+	 */
+	public void resetVertexAttributes() {
+		for (int i = 0; i < d_jgraph.getModel().getRootCount(); ++i) {
+			DefaultGraphCell cell = (DefaultGraphCell) d_jgraph.getModel().getRootAt(i);
+			if (cell.getUserObject() instanceof Vertex) {
+				getCellFactory().addVertexAttributes(d_jgraph.getAttributes(cell), (Vertex)cell.getUserObject());
+			}
+		}
+		d_jgraph.refresh();
 	}
 
 	protected MyDefaultCellViewFactory getCellFactory() {

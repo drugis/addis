@@ -32,7 +32,9 @@ import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Characteristic;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
+import org.drugis.addis.util.EntityUtil;
 
 import com.jgoodies.binding.value.ValueModel;
 
@@ -94,6 +96,14 @@ public class StudyCharTableModel extends AbstractTableModel {
 			return "Study ID";
 		}
 		return getCharacteristic(columnIndex).getDescription();
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if (columnIndex == 0) {
+			return Study.class;
+		}
+		return EntityUtil.getConcreteTypeOrEntity(getCharacteristic(columnIndex).getValueType());
 	}
 	
 	private Characteristic getCharacteristic(int columnIndex) {

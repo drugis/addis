@@ -26,6 +26,7 @@ package org.drugis.addis.entities.analysis;
 
 import java.util.List;
 
+import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -33,7 +34,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public interface BenefitRiskAnalysis<Alternative> extends Comparable<BenefitRiskAnalysis<?>>, Entity {
+public abstract class BenefitRiskAnalysis<Alternative> extends AbstractEntity implements Comparable<BenefitRiskAnalysis<?>>, Entity {
 	public static String PROPERTY_NAME = "name";
 	public static String PROPERTY_INDICATION = "indication";
 	public static String PROPERTY_CRITERIA = "criteria";
@@ -42,7 +43,7 @@ public interface BenefitRiskAnalysis<Alternative> extends Comparable<BenefitRisk
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_DECISION_CONTEXT = "decisionContext";
 
-	public enum AnalysisType { LyndOBrien, SMAA };
+	public static enum AnalysisType { LyndOBrien, SMAA };
 	
 	public abstract AnalysisType getAnalysisType();
 	
@@ -56,11 +57,11 @@ public interface BenefitRiskAnalysis<Alternative> extends Comparable<BenefitRisk
 
 	public abstract String getName();
 	
-	public Distribution getMeasurement(OutcomeMeasure criterion, Alternative a);
+	public abstract Distribution getMeasurement(OutcomeMeasure criterion, Alternative a);
 	
-	public Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative baseline, Alternative subject);
+	public abstract Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative baseline, Alternative subject);
 
-	public MeasurementSource<Alternative> getMeasurementSource();
+	public abstract MeasurementSource<Alternative> getMeasurementSource();
 	
-	public DecisionContext getDecisionContext();
+	public abstract DecisionContext getDecisionContext();
 }

@@ -82,7 +82,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			row = LayoutUtil.addRow(d_layout, row);
 			
 			for (DrugSet drug: d_pm.getSelectedDrugsModel()) {
-				if (curStudy.getDrugs().contains(drug)) {
+				if (!d_pm.getArmsPerStudyPerDrug(curStudy, drug).isEmpty()) {
 					row = createArmSelect(row, curStudy, drug, cc);
 				}
 			}

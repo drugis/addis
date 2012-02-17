@@ -668,7 +668,9 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		StudyOutcomeMeasure<Variable> sOm1 = new StudyOutcomeMeasure<Variable>(ep);
-		sOm1.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
+		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
+		wt.commit();
+		sOm1.getWhenTaken().add(wt);
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm1), om);
 		
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
@@ -679,7 +681,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(ade, (org.drugis.addis.entities.OutcomeMeasure)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		StudyOutcomeMeasure<Variable> sOm2 = new StudyOutcomeMeasure<Variable>(ade);
-		sOm2.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
+		sOm2.getWhenTaken().add(wt);
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm2), om);
 		
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
@@ -688,7 +690,7 @@ public class JAXBConvertorTest {
 		
 		assertEntityEquals(pc, (PopulationCharacteristic)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		StudyOutcomeMeasure<Variable> sOm3 = new StudyOutcomeMeasure<Variable>(pc);
-		sOm3.getWhenTaken().add(new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch));
+		sOm3.getWhenTaken().add(wt);
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm3), om);
 	}
 	
@@ -713,6 +715,7 @@ public class JAXBConvertorTest {
 		epochs.add(epoch);
 		
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
+		wt.commit();
 		epSom.getWhenTaken().add(wt);
 		vars.put("X", epSom);
 		vars.put("Y", new StudyOutcomeMeasure<Variable>(ExampleData.buildAdverseEventDiarrhea()));
@@ -795,7 +798,8 @@ public class JAXBConvertorTest {
 		epochs.add(mainPhase);
 
 		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, mainPhase);
-
+		whenTaken.commit();
+		
 		Map<String, StudyOutcomeMeasure<?>> oms = new HashMap<String, StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
 		PopulationCharacteristic pc = new PopulationCharacteristic("Hair Length", new ContinuousVariableType());

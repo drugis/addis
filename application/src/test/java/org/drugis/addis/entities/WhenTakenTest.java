@@ -69,12 +69,40 @@ public class WhenTakenTest {
 		WhenTaken wt2 = new WhenTaken(d_duration1, RelativeTo.FROM_EPOCH_START, d_epoch2);
 		assertTrue(d_wt.compareTo(wt2) < 0);
 		assertTrue(d_wt.compareTo(d_wt) == 0);
-		d_epoch1.setName(d_epoch2.getName());
+		d_wt.setEpoch(d_epoch2);
 		assertTrue(d_wt.compareTo(wt2) == 0);
 		wt2.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
 		assertTrue(d_wt.compareTo(wt2) < 0);
 		wt2.setRelativeTo(RelativeTo.FROM_EPOCH_START);
 		wt2.setDuration(EntityUtil.createDuration("P20D"));
 		assertTrue(d_wt.compareTo(wt2) > 0);
+	}
+	
+	@Test
+	public void testCloneRemovesCommit() {
+		d_wt.commit();
+		
+		WhenTaken wt = d_wt.clone();
+		wt.setEpoch(d_epoch2);
+		wt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+		wt.setDuration(EntityUtil.createDuration("PT12H"));
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testSetEpochNotAllowedAfterCommit() {
+		d_wt.commit();
+		d_wt.setEpoch(d_epoch2);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testSetRelativeToNotAllowedAfterCommit() {
+		d_wt.commit();
+		d_wt.setRelativeTo(RelativeTo.BEFORE_EPOCH_END);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testSetOffsetNotAllowedAfterCommit() {
+		d_wt.commit();
+		d_wt.setDuration(EntityUtil.createDuration("PT12H"));
 	}
 }

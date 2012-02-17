@@ -24,6 +24,7 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.IntrospectionException;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -31,7 +32,9 @@ import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.util.EntityUtil;
 
+import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.beans.PropertyNotFoundException;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
@@ -39,12 +42,14 @@ import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class EntityTableModel extends AbstractTableModel {
+	private Class<? extends Entity> d_entityType;
 	ObservableList<? extends Entity> d_entities;
 	List<String> d_props;
 	private final PresentationModelFactory d_pmf;
 
-	public EntityTableModel(ObservableList<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf) {
+	public EntityTableModel(Class<? extends Entity> entityType, ObservableList<? extends Entity> entities, List<String> properties, PresentationModelFactory pmf) {
 		d_entities = entities;
+		d_entityType = entityType;
 		d_props = properties;
 		d_pmf = pmf;
 		
@@ -70,9 +75,9 @@ public class EntityTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int column) {
-		if (column == 0)
+		if (d_props.get(column).equals("name")) {
 			return d_entities.get(row);
-		
+		}
 		try {
 			ValueModel model = d_pmf.getModel(d_entities.get(row)).getModel(d_props.get(column));
 			return model.getValue();
@@ -90,7 +95,20 @@ public class EntityTableModel extends AbstractTableModel {
 				++i;
 			}
 		}
-			
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if (d_props.get(columnIndex).equals("name")) {
+			return d_entityType;
+		}
+		try {
+			Class<?> propertyType = BeanUtils.getPropertyDescriptor(d_entityType, d_props.get(columnIndex)).getPropertyType();
+			return EntityUtil.getConcreteTypeOrEntity(propertyType);
+		} catch (IntrospectionException e) {
+			System.err.println(e);
+			return Object.class;
+		}
 	}
 }

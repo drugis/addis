@@ -71,7 +71,7 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 		}
 		d_drugList.clear();
 		d_drugList.addAll(drugs);
-		d_studyGraph.layoutGraph();
+		d_studyGraph.resetVertexAttributes();
 	}
 
 }

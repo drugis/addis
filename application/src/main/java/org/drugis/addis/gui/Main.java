@@ -62,7 +62,13 @@ import org.drugis.common.threading.event.TaskFailedEvent;
 
 @SuppressWarnings("serial")
 public class Main extends AbstractObservable {
-	
+	public static class ErrorDialogExceptionHandler {
+		public void handle(Throwable e) {
+			e.printStackTrace();
+			ErrorDialog.showDialog(e, "Unexpected error.");
+		}
+	}
+
 	private static final String EXAMPLE_XML = "defaultData.addis";
 	private static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
 	static final String DISPLAY_EXAMPLE = "Example Data";
@@ -338,6 +344,8 @@ public class Main extends AbstractObservable {
 	}
 
 	public static void main(final String[] args) {
+		System.setProperty("sun.awt.exception.handler", ErrorDialogExceptionHandler.class.getName());
+		
 		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {

@@ -109,7 +109,7 @@ public class FlexibleDose extends AbstractDose {
 
 	@Override
 	public AbstractDose clone() {
-		return new FlexibleDose(getFlexibleDose(), getDoseUnit());
+		return new FlexibleDose(getFlexibleDose(), getDoseUnit().clone());
 	}
 
 }

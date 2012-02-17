@@ -90,7 +90,7 @@ public class NetworkTableModel extends AbstractTableModel {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + d_pm.getIncludedDrugs().get(col) + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row) + "\"";
+		return "\"" + d_pm.getIncludedDrugs().get(col).getLabel() + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row).getLabel() + "\"";
 	}
 	
 	public Object getValueAt(int row, int col) {
@@ -107,7 +107,7 @@ public class NetworkTableModel extends AbstractTableModel {
 		
 		double mu = re.getMean();
 		double sigma = re.getStandardDeviation();
-		Distribution dist = (d_pm.isContinuous()) ?  new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
+		Distribution dist = d_pm.isContinuous() ? new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
 		
 		return d_pmf.getLabeledModel(dist);
 	}
@@ -118,6 +118,6 @@ public class NetworkTableModel extends AbstractTableModel {
 	}
 
 	private Treatment getTreatment(int idx) {
-		return d_model.getTreatments().get(idx);
+		return d_pm.getBean().getTreatment(d_pm.getIncludedDrugs().get(idx));
 	}
 }

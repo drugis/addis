@@ -22,30 +22,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util;
+package org.drugis.addis.gui.components;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import org.drugis.addis.entities.Arm;
-import org.junit.Test;
+import javax.swing.JTable;
 
-public class RebuildableHashSetTest {
-	
-	@Test
-	public void testRebuild() {
-		Arm arm1 = new Arm("Arm1", 0);
-		Arm arm2 = new Arm("Arm2", 0);
-		
-		RebuildableHashSet<Arm> set = new RebuildableHashSet<Arm>();
-		set.add(arm1);
-		set.add(arm2);
-		
-		arm1.setName("Arm8");
-		assertFalse(set.contains(arm1));
-		
-		set.rebuild();
-		assertTrue(set.contains(arm1));
+import org.drugis.addis.entities.Entity;
+import org.drugis.addis.gui.AddisWindow;
+
+public class EntityTableDoubleClickListener extends MouseAdapter {
+	private final AddisWindow d_main;
+
+	public EntityTableDoubleClickListener(AddisWindow main) {
+		d_main = main;
 	}
-	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (e.getClickCount() > 1) {
+			JTable table = (JTable)e.getComponent();
+			int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
+			Entity entity = EntityTablePanel.getEntityAt(table, row);
+			d_main.leftTreeFocus(entity);
+		}
+	}
 }

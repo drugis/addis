@@ -54,7 +54,6 @@ import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.NormalSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jgoodies.binding.PresentationModel;
@@ -92,18 +91,21 @@ public class NetworkTableModelTest {
 	public void testValueAt() {
 		assertTrue(d_tableModel.getColumnCount() > 0);
 		assertTrue(d_tableModel.getRowCount() > 0);
-		for(int x = 0; x < d_tableModel.getColumnCount(); ++x) {
-			for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
-				if(x == y){
-					assertEquals(d_analysis.getIncludedDrugs().get(x), ((PresentationModel<Drug>) d_tableModel.getValueAt(x, y)).getBean());
-					assertEquals(null, d_tableModel.getDescriptionAt(x, y));
-				} else {
-					assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(x, y)).getLabelModel().getString());
-					String expected = "\""+d_analysis.getIncludedDrugs().get(y)+"\" relative to \""+d_analysis.getIncludedDrugs().get(x)+"\"";
-					assertEquals(expected, d_tableModel.getDescriptionAt(x, y));
-				}
-			}
-		}	
+
+		assertEquals(null, d_tableModel.getDescriptionAt(0, 0));
+		assertEquals(null, d_tableModel.getDescriptionAt(1, 1));
+		assertEquals(null, d_tableModel.getDescriptionAt(2, 2));
+		assertEquals(d_analysis.getIncludedDrugs().get(0), ((PresentationModel<Drug>) d_tableModel.getValueAt(0, 0)).getBean());
+		assertEquals(d_analysis.getIncludedDrugs().get(1), ((PresentationModel<Drug>) d_tableModel.getValueAt(1, 1)).getBean());
+		assertEquals(d_analysis.getIncludedDrugs().get(2), ((PresentationModel<Drug>) d_tableModel.getValueAt(2, 2)).getBean());
+
+		assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(0, 1)).getLabelModel().getString());
+		assertEquals("\"Paroxetine\" relative to \"Fluoxetine\"", d_tableModel.getDescriptionAt(0, 1));
+		assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(1, 0)).getLabelModel().getString());
+		assertEquals("\"Fluoxetine\" relative to \"Paroxetine\"", d_tableModel.getDescriptionAt(1, 0));
+		assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(2, 0)).getLabelModel().getString());
+		assertEquals("\"Fluoxetine\" relative to \"Sertraline\"", d_tableModel.getDescriptionAt(2, 0));
+
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -150,7 +152,6 @@ public class NetworkTableModelTest {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Ignore
 	@Test
 	public void testGetValueContinuousModelRun() throws InterruptedException {
 		d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
@@ -173,7 +174,7 @@ public class NetworkTableModelTest {
 	}
 
 
-	private NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
+	public static NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
 		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {

@@ -74,4 +74,9 @@ public class Drug extends AbstractNamedEntity<Drug> implements Comparable<Drug> 
 		return Collections.emptySet();
 	}
 
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
 }

@@ -48,7 +48,7 @@ public class BasicRiskDifferenceTest {
 	private static final int s_cooper1977nC = 40;
 	private static final double s_cooper1977RD = 0.245;
 	private static final double s_cooper1977RDvar = 0.009;
-		
+	
 	BasicRateMeasurement d_cooper1977Num;
 	BasicRateMeasurement d_cooper1977Den;
 	BasicRiskDifference d_cooperRD;
@@ -56,7 +56,7 @@ public class BasicRiskDifferenceTest {
 	BasicRateMeasurement d_numerator;
 	BasicRateMeasurement d_denominator;
 	BasicRiskDifference d_riskDif;
-			
+	
 	@Before
 	public void setUp() {
 		Arm pnum = new Arm("Num", s_sizeNum);

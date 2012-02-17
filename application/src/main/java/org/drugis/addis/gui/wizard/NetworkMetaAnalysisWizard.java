@@ -61,10 +61,12 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SelectDrugsWizardStep(pm, main));
 		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, main);
+		selectStudiesStep.setComplete(true);
 		wizardModel.add(selectStudiesStep);
-		Bindings.bind(selectStudiesStep, "complete", pm.getStudySelectionCompleteModel());
 		wizardModel.add(new SelectArmsWizardStep(pm));
-		wizardModel.add(new OverviewWizardStep(pm, main));
+		OverviewWizardStep overviewStep = new OverviewWizardStep(pm, main);
+		Bindings.bind(overviewStep, "complete", pm.getSelectedStudyGraphConnectedModel());
+		wizardModel.add(overviewStep);
 		return wizardModel;
 	}
 	
@@ -99,7 +101,9 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 			return d_studyGraph;
 		}
 		
-		@Override public void prepare() {
+		@Override
+		public void prepare() {
+			((NetworkMetaAnalysisWizardPM) d_pm).updateSelectedStudyGraphModel();
 			d_studyGraph.layoutGraph();
 		}
 	}
@@ -107,9 +111,11 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
 
 		private SelectableStudyGraph d_studyGraph;
+		private final NetworkMetaAnalysisWizardPM d_pm;
 
 		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 			super("Select Drugs","Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
+			d_pm = pm;
 					
 			setLayout(new BorderLayout());
 			    
@@ -137,6 +143,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		}
 		
 		@Override public void prepare() {
+			d_pm.updateStudyGraphModel();
 			d_studyGraph.layoutGraph();
 		}
 	}

@@ -59,6 +59,11 @@ public class MyDefaultCellViewFactory extends DefaultCellViewFactory {
 		return super.createVertexView(cell);
 	}
 	
+	/**
+	 * Set custom attributes for the given Vertex.
+	 * @param map AttributeMap to write the attributes to.
+	 * @param v The vertex.
+	 */
 	protected void addVertexAttributes(AttributeMap map, Vertex v) {
 	}
 }

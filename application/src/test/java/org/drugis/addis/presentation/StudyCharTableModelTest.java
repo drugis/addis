@@ -28,6 +28,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.event.TableModelEvent;
@@ -177,6 +178,12 @@ public class StudyCharTableModelTest {
 			++column;
 		}
 	}
+	
+	@Test
+	public void testGetColumnClass() {
+		assertEquals(Study.class, d_model.getColumnClass(0));
+		assertEquals(Integer.class, d_model.getColumnClass(StudyCharacteristics.values().indexOf(BasicStudyCharacteristic.CENTERS) + 1));
+		assertEquals(Date.class, d_model.getColumnClass(StudyCharacteristics.values().indexOf(BasicStudyCharacteristic.STUDY_START) + 1));	}
 }
 
 
