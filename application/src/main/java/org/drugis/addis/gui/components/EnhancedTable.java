@@ -131,4 +131,10 @@ public class EnhancedTable extends JTable {
 		// Hence, we have to attach the renderer to Entity.class as well.
 		table.setDefaultRenderer(Entity.class, renderer);
 	}
+	
+	@Override
+	public EnhancedTableHeader getTableHeader() {
+		return d_tableHeader;
+	}
+	
 }
