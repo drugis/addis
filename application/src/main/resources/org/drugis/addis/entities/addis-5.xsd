@@ -248,7 +248,9 @@
 			<xs:extension base="MetaAnalysis">
 				<xs:sequence>
 					<xs:element maxOccurs="unbounded" minOccurs="2" name="alternative" type="Alternative"/>
-					<xs:element minOccurs="0" name="summaryData" type="SummaryData"/>
+					<xs:element minOccurs="0" name="consistencyResults" type="ConsistencyResults"/>
+					<xs:element minOccurs="0" name="inconsistencyResults" type="InconsistencyResults"/>
+					<xs:element minOccurs="0" name="nodeSplitResults" type="NodeSplitResults"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -516,15 +518,28 @@
 			<xs:element name="arm" type="ArmReference"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="SummaryData">
+	<xs:complexType name="ConsistencyResults">
 		<xs:sequence>
+			<xs:element minOccurs="0" name="rankProbabilitySummary" type="RankProbabilityMatrix"/>
 			<xs:element minOccurs="0" name="relativeEffectsSummary" type="RelativeEffectsSummary"/>
-			<xs:element minOccurs="0" maxOccurs="unbounded" name="quantileSummary" type="ParameterSummary"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="InconsistencyResults">
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NodeSplitResults">
+		<xs:sequence>
+			<xs:element name="splitNode" type="AlternativePair"/>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Warning: assumed that baseline is first alternative, and that the order of the remaining alternatives is as listed in the NMA -->
 	<xs:complexType name="RelativeEffectsSummary">
 		<xs:sequence>
-			<xs:element name="baseline" type="Drugs"/>
 			<xs:element name="means" type="MeansType"/>
 			<xs:element name="covariance" type="CovarianceMatrixType"/>
 		</xs:sequence>
@@ -540,11 +555,17 @@
 			<xs:element name="psrf" minOccurs="0" maxOccurs="1" type="xs:double"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="RelativeEffectParameter">
+	<xs:complexType name="AlternativePair">
 		<xs:sequence>
 			<xs:element minOccurs="2" maxOccurs="2" name="alternative" type="Drugs"/>
 		</xs:sequence>
-		<xs:attribute name="whichEvidence" type="EvidenceTypeEnum" default="ALL"/>
+	</xs:complexType>
+	<xs:complexType name="RelativeEffectParameter">
+		<xs:complexContent>
+			<xs:extension base="AlternativePair">
+				<xs:attribute name="whichEvidence" type="EvidenceTypeEnum" default="ALL"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="InconsistencyParameter">
 		<xs:sequence>
@@ -771,4 +792,9 @@
 		</xs:attribute>
 		<xs:attribute name="value" type="xs:double"/>
 	</xs:complexType>
+	
+	<!-- A square matrix of rank probabilities given in row-major order -->
+	<xs:simpleType name="RankProbabilityMatrix">
+		<xs:list itemType="xs:double"/>
+	</xs:simpleType>
 </xs:schema>
