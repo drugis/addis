@@ -520,6 +520,7 @@
 	</xs:complexType>
 	<xs:complexType name="ConsistencyResults">
 		<xs:sequence>
+			<xs:element name="mcmcSettings" type="MCMCSettings"/>
 			<xs:element minOccurs="0" name="rankProbabilitySummary" type="RankProbabilityMatrix"/>
 			<xs:element minOccurs="0" name="relativeEffectsSummary" type="RelativeEffectsSummary"/>
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
@@ -527,14 +528,24 @@
 	</xs:complexType>
 	<xs:complexType name="InconsistencyResults">
 		<xs:sequence>
+			<xs:element name="mcmcSettings" type="MCMCSettings"/>
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="NodeSplitResults">
 		<xs:sequence>
+			<xs:element name="mcmcSettings" type="MCMCSettings"/>
 			<xs:element name="splitNode" type="AlternativePair"/>
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
 		</xs:sequence>
+		<xs:attribute name="pValue" type="xs:double"/>
+	</xs:complexType>
+	<xs:complexType name="MCMCSettings">
+		<xs:attribute name="tuningIterations" type="xs:long"/>
+		<xs:attribute name="simulationIterations" type="xs:long"/>
+		<xs:attribute name="inferenceIterations" type="xs:long"/>
+		<xs:attribute name="thinningInterval" type="xs:long"/>
+		<xs:attribute name="varianceScalingFactor" type="xs:double"/>
 	</xs:complexType>
 
 	<!-- Warning: assumed that baseline is first alternative, and that the order of the remaining alternatives is as listed in the NMA -->
@@ -552,8 +563,8 @@
 				<xs:element name="inconsistency" type="InconsistencyParameter"/>
 			</xs:choice>
 			<xs:element name="quantile" minOccurs="0" maxOccurs="unbounded" type="QuantileType"/>
-			<xs:element name="psrf" minOccurs="0" maxOccurs="1" type="xs:double"/>
 		</xs:sequence>
+		<xs:attribute name="psrf" use="optional" type="xs:double"/>
 	</xs:complexType>
 	<xs:complexType name="AlternativePair">
 		<xs:sequence>
@@ -793,7 +804,7 @@
 		<xs:attribute name="value" type="xs:double"/>
 	</xs:complexType>
 	
-	<!-- A square matrix of rank probabilities given in row-major order -->
+	<!-- A square matrix of rank probabilities given in row-major order, where the columns indicate ranks and rows the alternatives -->
 	<xs:simpleType name="RankProbabilityMatrix">
 		<xs:list itemType="xs:double"/>
 	</xs:simpleType>
