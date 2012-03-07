@@ -37,13 +37,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
@@ -89,7 +87,7 @@ public class BenefitRiskWizard extends Wizard {
 
 	private static WizardModel buildModel(final BenefitRiskWizardPM pm, AddisWindow mainWindow) {
 		DynamicModel wizardModel = new DynamicModel();
-		wizardModel.add(new SelectIndicationWizardStep(pm));
+		wizardModel.add(new FirstWizardStep(pm));
 		wizardModel.add(new DescriptivesStep(pm), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return pm.getIncludeDescriptivesModel().getValue();
@@ -192,24 +190,28 @@ public class BenefitRiskWizard extends Wizard {
 		}
 	}
 	
-	private static class SelectIndicationWizardStep extends PanelWizardStep {
+	private static class FirstWizardStep extends PanelWizardStep {
 		private static final long serialVersionUID = 2986876155242979527L;
 
-		public SelectIndicationWizardStep(BenefitRiskWizardPM pm) {
+		public FirstWizardStep(BenefitRiskWizardPM pm) {
 			super("Select indication",
 					"Select the indication, evidence type and analysis type that you want to use for this benefit-risk analysis.");
 
 			FormLayout layout = new FormLayout(
-					"right:pref, 3dlu, left:pref",
-					"p, 7dlu, p, 7dlu, p, 7dlu, p"
+					"right:pref, 3dlu, left:pref:grow",
+					"p, 7dlu, p, 7dlu, p, 7dlu, p, 7dlu, p"
 			);	
 	
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
 			
 			int row = 1;
+			
+			builder.add(IndicationAndNameInputPanel.create(this, pm), cc.xyw(1, row, 3));
+			
+			
 			JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationsModel(), pm.getIndicationModel(), true);
-			builder.add(new JLabel("Indication : "), cc.xy(row, row));
+			builder.add(new JLabel("Indication : "), cc.xy(1, row));
 			builder.add(indBox, cc.xy(3, row));
 			
 			pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
@@ -286,26 +288,9 @@ public class BenefitRiskWizard extends Wizard {
 		
 		@Override
 		public void applyState() throws InvalidStateException {
-			saveAsAnalysis();
+			d_main.leftTreeFocus(d_pm.saveAnalysis());
 		}
 		
-		private void saveAsAnalysis() throws InvalidStateException {
-			String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
-					"Input name for new analysis", 
-					"Save analysis", JOptionPane.QUESTION_MESSAGE);
-			if (res != null) {
-				try {
-					d_main.leftTreeFocus(d_studyPM.saveAnalysis(d_main.getDomain(), res, d_pm.getDecisionContext()));
-				} catch (EntityIdExistsException e) {
-					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
-							"There already exists an analysis with the given name, input another name",
-							"Unable to save analysis", JOptionPane.ERROR_MESSAGE);
-					saveAsAnalysis();
-				}
-			} else {
-				throw new InvalidStateException();
-			}
-		}
 		private JPanel buildPanel() {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
@@ -378,25 +363,7 @@ public class BenefitRiskWizard extends Wizard {
 		
 		@Override
 		public void applyState() throws InvalidStateException {
-			saveAsAnalysis();
-		}
-
-		private void saveAsAnalysis() throws InvalidStateException {
-			String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
-					"Input name for new analysis", 
-					"Save analysis", JOptionPane.QUESTION_MESSAGE);
-			if (res != null) {
-				try {
-					d_mainWindow.leftTreeFocus(d_metaPM.saveAnalysis(d_mainWindow.getDomain(), res, d_pm.getDecisionContext()));
-				} catch (EntityIdExistsException e) {
-					JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
-							"There already exists an analysis with the given name, input another name",
-							"Unable to save analysis", JOptionPane.ERROR_MESSAGE);
-					saveAsAnalysis();
-				}
-			} else {
-				throw new InvalidStateException();
-			}
+			d_mainWindow.leftTreeFocus(d_pm.saveAnalysis());
 		}
 
 		private JComponent buildPanel() {

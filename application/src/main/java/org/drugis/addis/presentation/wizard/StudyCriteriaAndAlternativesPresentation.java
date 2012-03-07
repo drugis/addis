@@ -123,10 +123,10 @@ public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlterna
 	}
 
 	@Override
-	public StudyBenefitRiskAnalysis createAnalysis(String id, DecisionContext context) {
+	public StudyBenefitRiskAnalysis createAnalysis(String name, DecisionContext context) {
 		List<Arm> alternatives = getSelectedAlternatives();
 		List<OutcomeMeasure> studyAnalyses = getSelectedCriteria();
-		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(id, d_indicationModel.getValue(), d_studyModel.getValue(), 
+		StudyBenefitRiskAnalysis sbr = new StudyBenefitRiskAnalysis(name, d_indicationModel.getValue(), d_studyModel.getValue(), 
 				studyAnalyses, (Arm) d_baselineModel.getValue(), alternatives, d_analysisTypeHolder.getValue(), context);
 		return sbr;
 	}

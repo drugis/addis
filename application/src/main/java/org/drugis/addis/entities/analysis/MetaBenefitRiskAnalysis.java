@@ -80,7 +80,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		}
 	}
 
-	private String d_name;
 	private Indication d_indication;
 	private List<MetaAnalysis> d_metaAnalyses;
 	private ObservableList<DrugSet> d_drugs;
@@ -94,14 +93,14 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 
 	
-	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
 			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType) {
-		this(id, indication, metaAnalysis, baseline, drugs, analysisType, null); 
+		this(name, indication, metaAnalysis, baseline, drugs, analysisType, null); 
 	}
 
-	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
 			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType, DecisionContext context) {
-		super();
+		super(name);
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
 		d_drugs = new SortedSetModel<DrugSet>(drugs);
@@ -114,7 +113,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 		d_decisionContext = context;
-		setName(id);
 	}
 
 	public Indication getIndication() {
@@ -162,12 +160,9 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		return dependencies;
 	}
 
+	@Deprecated
 	void setName(String name) {
 		d_name = name;
-	}
-
-	public String getName() {
-		return d_name;
 	}
 
 	@Override
@@ -192,13 +187,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			EntityUtil.deepEqual(getDecisionContext(), o.getDecisionContext());
 	}
 
-	public int compareTo(BenefitRiskAnalysis<?> other) {
-		if (other == null) {
-			return 1;
-		}
-		return getName().compareTo(other.getName());
-	}
-	
 	@Override
 	public String toString() {
 		return getName();
@@ -356,5 +344,4 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	public DecisionContext getDecisionContext() {
 		return d_decisionContext;
 	}
-	
 }

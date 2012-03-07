@@ -32,13 +32,10 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
-public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis> {
-	public static final String PROPERTY_NAME = "name";	
-	public String getName();
-	public void setName(String name);
-	
+public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis>, TypeWithName {
 	public static final String PROPERTY_TYPE = "type";
 	public String getType();
 	

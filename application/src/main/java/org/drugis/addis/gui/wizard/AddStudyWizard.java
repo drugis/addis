@@ -985,7 +985,6 @@ public class AddStudyWizard extends Wizard {
 				d_idField.addCaretListener(new ImportButtonEnableListener());
 				final Border border = d_idField.getBorder();
 				d_idField.addCaretListener(new CaretListener() {
-					
 					public void caretUpdate(CaretEvent e) {
 						if (!d_pm.isIdAvailable()){
 							d_idField.setBorder(BorderFactory.createLineBorder(Color.RED, 2));

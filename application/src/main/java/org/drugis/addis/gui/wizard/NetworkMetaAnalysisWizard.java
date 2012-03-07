@@ -57,7 +57,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 
 	private static WizardModel buildModel(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 		StaticModel wizardModel = new StaticModel();
-		wizardModel.add(new SelectIndicationWizardStep(pm));
+		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, main));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SelectDrugsWizardStep(pm, main));
 		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, main);
