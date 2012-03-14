@@ -31,12 +31,12 @@ public class TransformedMultivariateNormalSummaryTest {
 	private static final double EPSILON = 0.000001;
 
 	private ExampleResults d_results;
-	private MultivariateNormalSummary d_nested;
+	private MCMCMultivariateNormalSummary d_nested;
 
 	@Before
 	public void setUp() throws IOException {
 		d_results = new ExampleResults();
-		d_nested = new MultivariateNormalSummary(d_results, d_results.getParameters());
+		d_nested = new MCMCMultivariateNormalSummary(d_results, d_results.getParameters());
 	}
 
 	@Test

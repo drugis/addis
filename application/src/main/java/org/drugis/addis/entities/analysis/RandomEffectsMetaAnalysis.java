@@ -37,14 +37,20 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
+import org.drugis.mtc.summary.SimpleMultivariateNormalSummary;
 
 public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements PairWiseMetaAnalysis {
 
@@ -233,6 +239,17 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public MultivariateNormalSummary getRelativeEffectsSummary() {
+		Class<? extends RelativeEffect<?>> type = (d_outcome.getVariableType() instanceof RateVariableType) ? 
+				BasicOddsRatio.class : BasicMeanDifference.class;
+		RelativeEffect<Measurement> effect = getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
+		GaussianBase distribution = (GaussianBase) effect.getDistribution();
+		return new SimpleMultivariateNormalSummary(
+				new double[]{ distribution.getMu() },
+				new double[][] { { distribution.getSigma() * distribution.getSigma() } });
 	}
 	
 }

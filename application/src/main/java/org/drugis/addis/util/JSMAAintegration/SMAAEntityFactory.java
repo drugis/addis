@@ -114,8 +114,8 @@ public class SMAAEntityFactory<AltType extends Entity> {
 					MetaBenefitRiskAnalysis mbr = (MetaBenefitRiskAnalysis)brAnalysis;
 					BaselineGaussianMeasurement baseline = smaaModel.getImpactMatrix().getBaseline(crit);
 					GaussianMeasurement relative = new GaussianMeasurement(
-							mbr.getRelativeEffectDistribution((DrugSet) a, om).getMu(),
-							mbr.getRelativeEffectDistribution((DrugSet) a, om).getSigma());
+							mbr.getRelativeEffectDistribution(om, ((DrugSet) a)).getMu(),
+							mbr.getRelativeEffectDistribution(om, ((DrugSet) a)).getSigma());
 					CardinalMeasurement m = null; 
 					if (om.getVariableType() instanceof RateVariableType) {
 						m = new RelativeLogitNormalMeasurement(baseline, relative);

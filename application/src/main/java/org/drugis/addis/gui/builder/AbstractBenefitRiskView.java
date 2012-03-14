@@ -123,9 +123,9 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 			row = LayoutUtil.addRow(layout, row);
 			builder.addSeparator("Benefit-Risk summary: " + alternative.getLabel() + " vs "  + getBaseline().getLabel(), cc.xy(1, row));
 			row = LayoutUtil.addRow(layout, row);
-			builder.add(new TablePanel(createSummaryTable(d_pm.createBRATTableModel(getBaseline(), alternative))), cc.xy(1, row));
+			builder.add(new TablePanel(createSummaryTable(d_pm.createBRATTableModel(alternative))), cc.xy(1, row));
 			row = LayoutUtil.addRow(layout, row);
-			builder.add(createSummaryLabel(d_pm.createBRATTableModel(getBaseline(), alternative)), cc.xy(1, row));
+			builder.add(createSummaryLabel(d_pm.createBRATTableModel(alternative)), cc.xy(1, row));
 		}
 		return builder.getPanel();
 	}

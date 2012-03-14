@@ -35,7 +35,7 @@ public class MultivariateNormalSummaryTest {
 	
 	@Test
 	public void testDefined() {
-		Summary x = new MultivariateNormalSummary(d_results, d_results.getParameters());
+		Summary x = new MCMCMultivariateNormalSummary(d_results, d_results.getParameters());
 		assertFalse(x.getDefined());
 		d_results.makeSamplesAvailable();
 		assertTrue(x.getDefined());
@@ -43,7 +43,7 @@ public class MultivariateNormalSummaryTest {
 	
 	@Test
 	public void testCalculationsAfterEvent() {
-		MultivariateNormalSummary summary = new MultivariateNormalSummary(d_results, d_results.getParameters());
+		MultivariateNormalSummary summary = new MCMCMultivariateNormalSummary(d_results, d_results.getParameters());
 		d_results.makeSamplesAvailable();
 		verifyResults(summary);
 	}
@@ -51,14 +51,14 @@ public class MultivariateNormalSummaryTest {
 	@Test
 	public void testCalculationsOnConstruction() {
 		d_results.makeSamplesAvailable();
-		MultivariateNormalSummary summary = new MultivariateNormalSummary(d_results, d_results.getParameters());
+		MultivariateNormalSummary summary = new MCMCMultivariateNormalSummary(d_results, d_results.getParameters());
 		verifyResults(summary);
 	}
 	
 	@Test
 	public void testCalculationsReorderedParameters() {
 		Parameter[] parameters = new Parameter[] { d_results.getParameters()[1], d_results.getParameters()[0] };
-		MultivariateNormalSummary summary = new MultivariateNormalSummary(d_results, parameters);
+		MultivariateNormalSummary summary = new MCMCMultivariateNormalSummary(d_results, parameters);
 		d_results.makeSamplesAvailable();
 		
 		assertArrayEquals(new double[] { MEANS[1], MEANS[0] }, summary.getMeanVector(), EPSILON);
@@ -68,7 +68,7 @@ public class MultivariateNormalSummaryTest {
 	
 	@Test
 	public void testResultsPreservedOnClear() {
-		MultivariateNormalSummary summary = new MultivariateNormalSummary(d_results, d_results.getParameters());
+		MultivariateNormalSummary summary = new MCMCMultivariateNormalSummary(d_results, d_results.getParameters());
 		d_results.makeSamplesAvailable();
 		d_results.clear();
 		verifyResults(summary);
@@ -76,7 +76,7 @@ public class MultivariateNormalSummaryTest {
 	
 	@Test
 	public void testPropertyChangeOnAvailable() {
-		MultivariateNormalSummary x = new MultivariateNormalSummary(d_results, d_results.getParameters());
+		MCMCMultivariateNormalSummary x = new MCMCMultivariateNormalSummary(d_results, d_results.getParameters());
 		final List<String> properties = new ArrayList<String>();
 		x.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {

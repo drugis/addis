@@ -108,16 +108,14 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	
 	private static final long serialVersionUID = 4201230853343429062L;
 	private final AnalysisType d_analysis;
-	private final Alternative d_baseline;
 	private final Alternative d_subject;
 	private LinearScale d_linScale;
 	private LogScale d_logScale;
 	private LinearScale d_linScaleFull;
 	private LogScale d_logScaleFull;
 
-	public BRATTableModel(AnalysisType bean, Alternative baseline, Alternative subject) {
+	public BRATTableModel(AnalysisType bean, Alternative subject) {
 		d_analysis = bean;
-		d_baseline = baseline;
 		d_subject = subject;
 		d_analysis.getMeasurementSource().addMeasurementsChangedListener(new Listener() {
 			public void notifyMeasurementsChanged() {
@@ -239,10 +237,10 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	private Distribution getDifference(OutcomeMeasure om) {
 		if (d_analysis instanceof StudyBenefitRiskAnalysis) {
 			StudyBenefitRiskAnalysis sba = (StudyBenefitRiskAnalysis) d_analysis;
-			return sba.getRelativeEffectDistribution(om, (Arm) getBaseline(), (Arm) getSubject());
+			return sba.getRelativeEffectDistribution(om, (Arm) getSubject());
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			return mba.getRelativeEffectDistribution(om, (DrugSet) getBaseline(), (DrugSet) getSubject());
+			return mba.getRelativeEffectDistribution(om, (DrugSet) getSubject());
 		}
 		return null;
 	}
@@ -336,7 +334,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 	}
 
 	public Alternative getBaseline() {
-		return d_baseline;
+		return d_analysis.getBaseline();
 	}
 
 	public Alternative getSubject() {

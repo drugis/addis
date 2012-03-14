@@ -111,8 +111,8 @@ extends PresentationModel<AnalysisType> {
 		return d_lyndOBrienPresentation;
 	}
 	
-	public BRATTableModel<Alternative, AnalysisType> createBRATTableModel(Alternative baseline, Alternative subject) {
-		return new BRATTableModel<Alternative, AnalysisType>(getBean(), baseline, subject);
+	public BRATTableModel<Alternative, AnalysisType> createBRATTableModel(Alternative subject) {
+		return new BRATTableModel<Alternative, AnalysisType>(getBean(), subject);
 	}
 
 	public static List<DecisionContextField> createDecisionContextFields(DecisionContext decisionContext) {

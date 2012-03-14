@@ -67,11 +67,12 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
-import org.drugis.mtc.summary.MultivariateNormalSummary;
+import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
 	
@@ -155,7 +156,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		for (int i = 0; i < getIncludedDrugs().size() - 1; ++i) {
 			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(getIncludedDrugs().get(0)), getTreatment(getIncludedDrugs().get(i + 1)));
 		}
-		d_relativeEffectsSummary = new MultivariateNormalSummary(consistencyModel.getResults(), parameters);
+		d_relativeEffectsSummary = new MCMCMultivariateNormalSummary(consistencyModel.getResults(), parameters);
 		return consistencyModel;
 	}
 	

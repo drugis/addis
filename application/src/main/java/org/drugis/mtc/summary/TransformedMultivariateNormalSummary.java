@@ -7,7 +7,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.drugis.common.beans.AbstractObservable;
 
-public class TransformedMultivariateNormalSummary extends AbstractObservable implements Summary {
+public class TransformedMultivariateNormalSummary extends AbstractObservable implements MultivariateNormalSummary {
 
 	private final MultivariateNormalSummary d_nested;
 	private final RealMatrix d_transform;

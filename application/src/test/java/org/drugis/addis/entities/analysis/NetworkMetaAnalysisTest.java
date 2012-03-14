@@ -49,6 +49,7 @@ import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +87,7 @@ public class NetworkMetaAnalysisTest {
 				d_analysis.getConsistencyModel().getRelativeEffect(d_analysis.getTreatment(fluox), d_analysis.getTreatment(parox)),
 				d_analysis.getConsistencyModel().getRelativeEffect(d_analysis.getTreatment(fluox), d_analysis.getTreatment(sertr))
 		};
-		assertArrayEquals(expected, d_analysis.getRelativeEffectsSummary().getParameters());
+		assertArrayEquals(expected, ((MCMCMultivariateNormalSummary)d_analysis.getRelativeEffectsSummary()).getParameters());
 	}
 	
 	@Test

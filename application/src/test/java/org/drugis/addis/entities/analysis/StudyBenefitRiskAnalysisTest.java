@@ -180,13 +180,13 @@ public class StudyBenefitRiskAnalysisTest {
 		OutcomeMeasure v = d_analysis.getCriteria().get(1);
 		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_analysis.getStudy().getMeasurement(v, d_baseline), 
 				(RateMeasurement) d_analysis.getStudy().getMeasurement(v, d_subject));
-		assertEquals(ratio.getDistribution(), d_analysis.getRelativeEffectDistribution(v, d_baseline, d_subject));
+		assertEquals(ratio.getDistribution(), d_analysis.getRelativeEffectDistribution(v, d_subject));
 		
 		OutcomeMeasure v2 = d_analysis.getCriteria().get(0);
 		BasicStandardisedMeanDifference diff = new BasicStandardisedMeanDifference(
 				(ContinuousMeasurement) d_analysis.getStudy().getMeasurement(v2, d_baseline), 
 				(ContinuousMeasurement) d_analysis.getStudy().getMeasurement(v2, d_subject));
-		assertEquals(diff.getDistribution(), d_analysis.getRelativeEffectDistribution(v2, d_baseline, d_subject));
+		assertEquals(diff.getDistribution(), d_analysis.getRelativeEffectDistribution(v2, d_subject));
 	}
 	
 	@Test
@@ -196,7 +196,7 @@ public class StudyBenefitRiskAnalysisTest {
 		
 		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_baseline), 
 				(RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_subject));
-		assertEquals(ratio.getCorrected().getDistribution(), d_analysis.getRelativeEffectDistribution(om, d_baseline, d_subject));
+		assertEquals(ratio.getCorrected().getDistribution(), d_analysis.getRelativeEffectDistribution(om, d_subject));
 	}
 	
 	@Test
@@ -207,7 +207,7 @@ public class StudyBenefitRiskAnalysisTest {
 		
 		BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_baseline), 
 				(RateMeasurement) d_analysis.getStudy().getMeasurement(om, d_subject));
-		assertEquals(ratio.getCorrected().getDistribution(), d_analysis.getRelativeEffectDistribution(om, d_baseline, d_subject));
+		assertEquals(ratio.getCorrected().getDistribution(), d_analysis.getRelativeEffectDistribution(om, d_subject));
 	}
 	
 	@Test
@@ -227,8 +227,8 @@ public class StudyBenefitRiskAnalysisTest {
 		
 		StudyBenefitRiskAnalysis analysis = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives, AnalysisType.SMAA);
 
-		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(0), alternatives.get(1)));
-		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(0), alternatives.get(2)));
-		assertNull(analysis.getRelativeEffectDistribution(om, alternatives.get(1), alternatives.get(2)));
+		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(1)));
+		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(2)));
+		assertNull(analysis.getRelativeEffectDistribution(om, alternatives.get(2)));
 	}
 }
