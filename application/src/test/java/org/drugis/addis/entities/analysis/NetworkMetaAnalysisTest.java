@@ -26,6 +26,7 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -47,6 +48,7 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,18 @@ public class NetworkMetaAnalysisTest {
 	@Test
 	public void testGetType() {
 		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
+	}
+	
+	@Test
+	public void testRelativeEffectsSummary() {
+		DrugSet fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
+		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
+		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
+		Parameter[] expected = new Parameter[] {
+				d_analysis.getConsistencyModel().getRelativeEffect(d_analysis.getTreatment(fluox), d_analysis.getTreatment(parox)),
+				d_analysis.getConsistencyModel().getRelativeEffect(d_analysis.getTreatment(fluox), d_analysis.getTreatment(sertr))
+		};
+		assertArrayEquals(expected, d_analysis.getRelativeEffectsSummary().getParameters());
 	}
 	
 	@Test

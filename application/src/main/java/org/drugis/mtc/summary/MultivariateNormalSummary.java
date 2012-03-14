@@ -22,22 +22,26 @@ public class MultivariateNormalSummary extends AbstractObservable implements MCM
 	private final Parameter[] d_parameters;
 	private double[][] d_covMatrix;
 	private double[] d_means;
-	private boolean d_isdefined = false;
+	private boolean d_isDefined = false;
 
 	public MultivariateNormalSummary(MCMCResults results, Parameter[] parameters) {
 		d_results = results;
 		d_parameters = parameters;
-		d_means = new double[d_parameters.length];
-		d_covMatrix = new double[d_parameters.length][d_parameters.length]; 
+		d_means = new double[getParameters().length];
+		d_covMatrix = new double[getParameters().length][getParameters().length]; 
 		calculateResults();
 		d_results.addResultsListener(this);
 	}
 
-	@Override
-	public boolean getDefined() {
-		return d_isdefined;
+
+	public Parameter[] getParameters() {
+		return d_parameters;
 	}
 
+	@Override
+	public boolean getDefined() {
+		return d_isDefined;
+	}
 	@Override
 	public void resultsEvent(MCMCResultsEvent event) {
 		calculateResults();
@@ -60,22 +64,22 @@ public class MultivariateNormalSummary extends AbstractObservable implements MCM
 			return;
 		}
 		List<List<Double>> sampleCache = new ArrayList<List<Double>>();
-		for (int i = 0; i < d_parameters.length; ++i) {
-			List<Double> samples = SummaryUtil.getAllChainsLastHalfSamples(d_results, d_parameters[i]);
+		for (int i = 0; i < getParameters().length; ++i) {
+			List<Double> samples = SummaryUtil.getAllChainsLastHalfSamples(d_results, getParameters()[i]);
 			sampleCache.add(samples);
 			d_means[i] = SummaryUtil.evaluate(s_mean, samples);
 		}
-		StorelessCovariance cov = new StorelessCovariance(d_parameters.length);
-		double[] rowData = new double[d_parameters.length];
+		StorelessCovariance cov = new StorelessCovariance(getParameters().length);
+		double[] rowData = new double[getParameters().length];
 		for (int row = 0; row < sampleCache.get(0).size(); ++row) {
-			for (int col = 0; col < d_parameters.length; ++col) {
+			for (int col = 0; col < getParameters().length; ++col) {
 				rowData[col] = sampleCache.get(col).get(row);
 			}
 			cov.increment(rowData);
 		}
 		d_covMatrix = cov.getData();
-		d_isdefined = true;
-		firePropertyChange(PROPERTY_DEFINED, null, d_isdefined);
+		d_isDefined = true;
+		firePropertyChange(PROPERTY_DEFINED, null, d_isDefined);
 		firePropertyChange(PROPERTY_MEAN_VECTOR, null, d_means);
 		firePropertyChange(PROPERTY_COVARIANCE_MATRIX, null, d_covMatrix);
 	}

@@ -67,6 +67,7 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -80,6 +81,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
 	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
+	protected MultivariateNormalSummary d_relativeEffectsSummary;
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
@@ -149,6 +151,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
 		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
+		Parameter[] parameters = new Parameter[getIncludedDrugs().size() - 1]; // first DrugSet is baseline-> excluded
+		for (int i = 0; i < getIncludedDrugs().size() - 1; ++i) {
+			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(getIncludedDrugs().get(0)), getTreatment(getIncludedDrugs().get(i + 1)));
+		}
+		d_relativeEffectsSummary = new MultivariateNormalSummary(consistencyModel.getResults(), parameters);
 		return consistencyModel;
 	}
 	
@@ -254,6 +261,18 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return summary;
 	}
 	
+	/**
+	 * Return a multivariate summary of the effects for all treatments relative to the baseline. 
+	 * The order in which the relative effects are given is based on the natural ordering of the
+	 * treatments. The first treatment is used as the baseline.  
+	 * 
+	 * @see getIncludedDrugs() for the ordered list of treatments
+	 * @return A multivariate summary of all the relative effects. 
+	 */
+	public MultivariateNormalSummary getRelativeEffectsSummary() {
+		return d_relativeEffectsSummary;
+	}
+
 	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary(Parameter p) {
 		NodeSplitPValueSummary summary = d_nodeSplitPValueSummaries.get(p);
 		if(summary == null) {
