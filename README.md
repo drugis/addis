@@ -17,6 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.12.1: Input name of analyses in the first step of the wizard, not in a
+   pop-up dialog at the very end.
+
 1.12: Add [BRAT table][10] and its value tree to benefit-risk view,
    allow selection of baseline in benefit-risk analysis, enable BRAT
    description of benefit-risk analysis, improve performance of network
