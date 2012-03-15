@@ -208,17 +208,6 @@ public class BenefitRiskWizard extends Wizard {
 			int row = 1;
 			
 			builder.add(IndicationAndNameInputPanel.create(this, pm), cc.xyw(1, row, 3));
-			
-			
-			JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationsModel(), pm.getIndicationModel(), true);
-			builder.add(new JLabel("Indication : "), cc.xy(1, row));
-			builder.add(indBox, cc.xy(3, row));
-			
-			pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					setComplete(evt.getNewValue() != null);
-				}
-			});
 
 			row += 2;
 			builder.add(BasicComponentFactory.createCheckBox(pm.getIncludeDescriptivesModel(), "Include BRAT decision context definition"), cc.xyw(1, row, 3));
