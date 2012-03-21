@@ -89,6 +89,20 @@ In order to compile ADDIS, you need:
 
 Building is automatic with "mvn package".
 
+Developing ADDIS using Eclipse
+------------------------------
+
+First, let Maven configure your workspace for use with Maven:
+
+	$ mvn eclipse:configure-workspace -Declipse.workspace=WORKSPACE_DIR
+
+Use Maven to generate the eclipse project:
+
+	$ cd SOURCE_DIR
+	$ mvn eclipse:eclipse
+
+Then import the project into Eclipse (File -> Import -> Existing projects).
+
 License
 -------
 
