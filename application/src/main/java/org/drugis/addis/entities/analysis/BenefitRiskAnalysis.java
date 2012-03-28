@@ -56,6 +56,8 @@ public abstract class BenefitRiskAnalysis<Alternative> extends AbstractNamedEnti
 
 	public abstract ObservableList<Alternative> getAlternatives();
 	
+	public abstract List<Alternative> getNonBaselineAlternatives();
+	
 	public abstract Alternative getBaseline();
 
 	public abstract Distribution getMeasurement(OutcomeMeasure criterion, Alternative a);

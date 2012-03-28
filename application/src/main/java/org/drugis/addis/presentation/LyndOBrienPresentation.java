@@ -35,14 +35,14 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 
 public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> {
-	AnalysisType d_a;
+	AnalysisType d_brAnalysis;
 	StudyBenefitRiskAnalysis sbr;
 	private LyndOBrienModelImpl d_model;
 	private TaskProgressModel d_tpm;
 	private ValueHolder<Boolean> d_initializedModel = new ModifiableHolder<Boolean>(false);
 	
 	public LyndOBrienPresentation(AnalysisType at) {
-		d_a = at;
+		d_brAnalysis = at;
 	}
 	
 	public LyndOBrienModel getModel() {
@@ -54,7 +54,7 @@ public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType ext
 	}
 
 	public void startLyndOBrien() {
-		d_model = new LyndOBrienModelImpl(new BenefitRiskDistributionImpl<Alternative>(d_a));
+		d_model = new LyndOBrienModelImpl(new BenefitRiskDistributionImpl<Alternative>(d_brAnalysis));
 		d_tpm = new TaskProgressModel(d_model.getTask());
 		d_initializedModel.setValue(true);
 		ThreadHandler.getInstance().scheduleTask(d_model.getTask());
