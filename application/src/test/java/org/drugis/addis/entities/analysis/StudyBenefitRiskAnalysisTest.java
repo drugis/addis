@@ -120,8 +120,7 @@ public class StudyBenefitRiskAnalysisTest {
 		assertEquals(0, d_analysis.compareTo(d_analysis));
 		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertTrue(d_analysis.compareTo(otherBRAnalysis) < 0);
-		otherBRAnalysis.setName("Je Loeder");
-		assertTrue(d_analysis.compareTo(otherBRAnalysis) > 0);
+		assertTrue(otherBRAnalysis.compareTo(d_analysis) > 0);
 	}
 	
 	@Test
@@ -229,6 +228,8 @@ public class StudyBenefitRiskAnalysisTest {
 
 		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(1)));
 		assertNotNull(analysis.getRelativeEffectDistribution(om, alternatives.get(2)));
-		assertNull(analysis.getRelativeEffectDistribution(om, alternatives.get(2)));
+
+		StudyBenefitRiskAnalysis analysis2 = new StudyBenefitRiskAnalysis(NAME, indication, study, criteria, alternatives.get(1), alternatives, AnalysisType.SMAA);
+		assertNull(analysis2.getRelativeEffectDistribution(om, alternatives.get(2)));
 	}
 }

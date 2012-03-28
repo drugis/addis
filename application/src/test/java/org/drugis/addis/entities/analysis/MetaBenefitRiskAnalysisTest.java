@@ -58,23 +58,25 @@ public class MetaBenefitRiskAnalysisTest {
 		d_BRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testEquals(){
 		assertFalse(d_BRAnalysis.equals("nope, no meta Analysis"));
-		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
+		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertTrue(d_BRAnalysis.equals(otherBRAnalysis));
-		otherBRAnalysis.setName("some new name");
+		otherBRAnalysis = ExampleData.buildStudyBenefitRiskAnalysis();
 		assertFalse(d_BRAnalysis.equals(otherBRAnalysis));
 		assertTrue(d_BRAnalysis.equals(d_BRAnalysis));
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Test 
 	public void testCompareTo(){
 		assertTrue(d_BRAnalysis.compareTo(null) > 0);
 		assertEquals(0, d_BRAnalysis.compareTo(d_BRAnalysis));
-		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
+		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertEquals(0, d_BRAnalysis.compareTo(otherBRAnalysis));
-		otherBRAnalysis.setName("some new name");
+		otherBRAnalysis = ExampleData.buildStudyBenefitRiskAnalysis();
 		assertTrue(d_BRAnalysis.compareTo(otherBRAnalysis) > 0);
 	}
 	

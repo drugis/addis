@@ -202,7 +202,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		boolean drugsSwapped = !d1.equals(getFirstDrug());
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
 		
-		for (int i=0; i<d_studies.size(); ++i ){ 
+		for (int i = 0; i < d_studies.size(); ++i){ 
 			RelativeEffect<? extends Measurement> re;
 			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type, d_isCorrected);
 			if (re.isDefined())

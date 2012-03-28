@@ -26,12 +26,12 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.ExampleData;
@@ -48,11 +48,11 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.BasicParameter;
-import org.drugis.mtc.Parameter;
-import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.uci.ics.jung.graph.util.Pair;
 
 public class NetworkMetaAnalysisTest {
 	private NetworkMetaAnalysis d_analysis;
@@ -78,16 +78,17 @@ public class NetworkMetaAnalysisTest {
 		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testRelativeEffectsSummary() {
+	public void testRelativeEffectsList() {
 		DrugSet fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
 		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
 		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
-		Parameter[] expected = new Parameter[] {
-				d_analysis.getConsistencyModel().getRelativeEffect(d_analysis.getTreatment(fluox), d_analysis.getTreatment(parox)),
-				d_analysis.getConsistencyModel().getRelativeEffect(d_analysis.getTreatment(fluox), d_analysis.getTreatment(sertr))
-		};
-		assertArrayEquals(expected, ((MCMCMultivariateNormalSummary)d_analysis.getRelativeEffectsSummary()).getParameters());
+		List<Pair<DrugSet>> expected = Arrays.asList(
+				new Pair<DrugSet>(fluox, parox),
+				new Pair<DrugSet>(fluox, sertr)
+		);
+		assertEquals(expected, d_analysis.getRelativeEffectsList());
 	}
 	
 	@Test

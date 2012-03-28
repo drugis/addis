@@ -967,7 +967,7 @@ public class ExampleData {
 		
 		List<Arm> arms = study.getArms();
 	
-		return new MockStudyBenefitRiskAnalysis("testBenefitRiskAnalysis",
+		return new MockStudyBenefitRiskAnalysis("StudyBenefitRiskAnalysis",
 										indication, study, outcomeMeasureList, arms, AnalysisType.SMAA);										
 	}
 	
@@ -981,7 +981,7 @@ public class ExampleData {
 		
 		List<Arm> arms = study.getArms();
 	
-		return new MockStudyBenefitRiskAnalysis("testBenefitRiskAnalysis",
+		return new MockStudyBenefitRiskAnalysis("LyndOBrienBenefitRiskAnalysis",
 										indication, study, outcomeMeasureList, arms, AnalysisType.LyndOBrien);										
 	}
 

@@ -75,6 +75,8 @@ import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 
+import edu.uci.ics.jung.graph.util.Pair;
+
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
@@ -153,9 +155,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
 		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
-		Parameter[] parameters = new Parameter[getIncludedDrugs().size() - 1]; // first DrugSet is baseline-> excluded
-		for (int i = 0; i < getIncludedDrugs().size() - 1; ++i) {
-			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(getIncludedDrugs().get(0)), getTreatment(getIncludedDrugs().get(i + 1)));
+		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
+		Parameter[] parameters = new Parameter[relEffects.size()]; 
+		for (int i = 0; i < relEffects.size(); ++i) {
+			Pair<DrugSet> relEffect = relEffects.get(i);
+			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(relEffect.getFirst()), getTreatment(relEffect.getSecond()));
 		}
 		d_relativeEffectsSummary.setNested(new MCMCMultivariateNormalSummary(consistencyModel.getResults(), parameters));
 		return consistencyModel;
@@ -268,11 +272,23 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	 * The order in which the relative effects are given is based on the natural ordering of the
 	 * treatments. The first treatment is used as the baseline.  
 	 * 
-	 * @see getIncludedDrugs() for the ordered list of treatments
+	 * @see getRelativeEffectsList()
 	 * @return A multivariate summary of all the relative effects. 
 	 */
 	public MultivariateNormalSummary getRelativeEffectsSummary() {
 		return d_relativeEffectsSummary;
+	}
+	
+	/**
+	 * @return A list of all <baseline, subject> pairs, where the subjects are given in their natural order  
+	 */
+	public List<Pair<DrugSet>> getRelativeEffectsList() {
+		List<Pair<DrugSet>> list = new ArrayList<Pair<DrugSet>>(getIncludedDrugs().size() - 1); // first DrugSet is baseline-> excluded
+		for (int i = 0; i < getIncludedDrugs().size() - 1; ++i) {
+			Pair<DrugSet> relEffect = new Pair<DrugSet>(getIncludedDrugs().get(0), getIncludedDrugs().get(i + 1));
+			list.add(relEffect);
+		}
+		return list;
 	}
 
 	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary(Parameter p) {
