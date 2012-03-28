@@ -15,7 +15,7 @@ import org.drugis.mtc.test.ExampleResults;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MultivariateNormalSummaryTest {
+public class MCMCMultivariateNormalSummaryTest {
 	// calculation in R: half <- data[c(251:500,751:1000),]; mean(half); cov(half): last half of each chain.
 	// note that in R, vectors are indexed starting at 1.
 	private static final double[] MEANS = new double[] { 1.3401944, 0.1945938, 1.0246009 };

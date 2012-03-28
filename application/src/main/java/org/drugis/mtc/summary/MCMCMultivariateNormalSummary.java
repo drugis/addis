@@ -84,8 +84,9 @@ public class MCMCMultivariateNormalSummary extends AbstractObservable implements
 			cov.increment(rowData);
 		}
 		d_covMatrix = cov.getData();
+		boolean wasDefined = d_isDefined;
 		d_isDefined = true;
-		firePropertyChange(PROPERTY_DEFINED, null, d_isDefined);
+		firePropertyChange(PROPERTY_DEFINED, wasDefined, d_isDefined);
 		firePropertyChange(PROPERTY_MEAN_VECTOR, null, d_means);
 		firePropertyChange(PROPERTY_COVARIANCE_MATRIX, null, d_covMatrix);
 	}

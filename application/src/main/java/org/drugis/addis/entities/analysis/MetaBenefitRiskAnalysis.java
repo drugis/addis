@@ -118,7 +118,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		d_decisionContext = context;
 		for (MetaAnalysis ma : d_metaAnalyses) {
 			double[][] transformation = createTransform(ma);
-			ma.getIncludedDrugs().get(0);
 			d_relativeEffects.put(ma, new TransformedMultivariateNormalSummary(ma.getRelativeEffectsSummary(), transformation));
 		}
 	}

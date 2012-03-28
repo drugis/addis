@@ -70,11 +70,12 @@ import org.drugis.mtc.Treatment;
 import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 
-public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
+public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyModel d_inconsistencyModel;
@@ -82,7 +83,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
 	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
-	protected MultivariateNormalSummary d_relativeEffectsSummary;
+	protected final ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
@@ -129,7 +130,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(ANALYSIS_TYPE, name, indication, om, studies, sortDrugs(drugs), armMap);
 	}
-	
+
 	private static List<DrugSet> sortDrugs(Collection<DrugSet> drugs) {
 		ArrayList<DrugSet> list = new ArrayList<DrugSet>(drugs);
 		Collections.sort(list);
@@ -156,7 +157,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		for (int i = 0; i < getIncludedDrugs().size() - 1; ++i) {
 			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(getIncludedDrugs().get(0)), getTreatment(getIncludedDrugs().get(i + 1)));
 		}
-		d_relativeEffectsSummary = new MCMCMultivariateNormalSummary(consistencyModel.getResults(), parameters);
+		d_relativeEffectsSummary.setNested(new MCMCMultivariateNormalSummary(consistencyModel.getResults(), parameters));
 		return consistencyModel;
 	}
 	

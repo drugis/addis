@@ -5,8 +5,6 @@ public interface MultivariateNormalSummary extends Summary {
 	public static final String PROPERTY_MEAN_VECTOR = "meanVector";
 	public static final String PROPERTY_COVARIANCE_MATRIX = "covarianceMatrix";
 
-	public abstract boolean getDefined();
-
 	public abstract double[] getMeanVector();
 
 	public abstract double[][] getCovarianceMatrix();
