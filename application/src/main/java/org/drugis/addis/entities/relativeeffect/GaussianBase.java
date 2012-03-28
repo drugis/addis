@@ -24,9 +24,7 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.NormalDistribution;
-import org.apache.commons.math.distribution.NormalDistributionImpl;
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.drugis.common.beans.AbstractObservable;
 
 public abstract class GaussianBase extends AbstractObservable implements Distribution {
@@ -41,27 +39,19 @@ public abstract class GaussianBase extends AbstractObservable implements Distrib
 		d_mu = mu;
 		d_sigma = sigma;
 		if (getSigma() != 0.0) {
-			d_dist = new NormalDistributionImpl(d_mu, d_sigma);
+			d_dist = new NormalDistribution(d_mu, d_sigma);
 		}
 	}
 
 	protected double calculateQuantile(double p) {
-		try {
-			if (getSigma() == 0.0) {
-				return getMu();
-			}
-			return d_dist.inverseCumulativeProbability(p);
-		} catch (MathException e) {
-			throw new RuntimeException(e);
+		if (getSigma() == 0.0) {
+			return getMu();
 		}
+		return d_dist.inverseCumulativeProbability(p);
 	}
 
 	protected double calculateCumulativeProbability(double x) {
-		try {
-			return d_dist.cumulativeProbability(x);
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
+		return d_dist.cumulativeProbability(x);
 	}
 	
 	public double getSigma() {

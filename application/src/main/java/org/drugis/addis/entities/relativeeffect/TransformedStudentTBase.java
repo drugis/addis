@@ -24,9 +24,7 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.TDistribution;
-import org.apache.commons.math.distribution.TDistributionImpl;
+import org.apache.commons.math3.distribution.TDistribution;
 import org.drugis.common.beans.AbstractObservable;
 
 public abstract class TransformedStudentTBase extends AbstractObservable implements	Distribution {
@@ -44,23 +42,15 @@ public abstract class TransformedStudentTBase extends AbstractObservable impleme
 		d_mu = mu;
 		d_sigma = sigma;
 		d_degreesOfFreedom = degreesOfFreedom;
-		d_dist = new TDistributionImpl(getDegreesOfFreedom());
+		d_dist = new TDistribution(getDegreesOfFreedom());
 	}
 
 	protected double calculateQuantile(double p) {
-		try {
-			return d_dist.inverseCumulativeProbability(p) * d_sigma + d_mu;
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
+		return d_dist.inverseCumulativeProbability(p) * d_sigma + d_mu;
 	}
 
 	protected double calculateCumulativeProbability(double x) {
-		try {
-			return d_dist.cumulativeProbability((x - d_mu) / d_sigma);
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
+		return d_dist.cumulativeProbability((x - d_mu) / d_sigma);
 	}
 
 	public double getMu() {
