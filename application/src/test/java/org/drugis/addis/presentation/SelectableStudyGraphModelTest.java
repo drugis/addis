@@ -27,6 +27,7 @@ package org.drugis.addis.presentation;
 import static org.easymock.EasyMock.createStrictMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -101,4 +102,13 @@ public class SelectableStudyGraphModelTest {
 		
 		assertFalse(d_pm.isSelectionConnected());
 	}
+	
+	@Test
+	public void testDontResetSelectedDrugsWhenNoChanges() {
+		d_pm.getSelectedDrugsModel().remove(0);
+		List<DrugSet> expected = new ArrayList<DrugSet>(d_pm.getSelectedDrugsModel());
+		d_pm.rebuildGraph();
+		assertEquals(expected, d_pm.getSelectedDrugsModel());
+	}
+	
 }
