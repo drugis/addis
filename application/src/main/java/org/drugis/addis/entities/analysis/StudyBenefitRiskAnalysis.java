@@ -56,7 +56,6 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 	public static String PROPERTY_STUDY = "study";
 	public static String PROPERTY_ARMS = "arms";
 	private Study d_study;
-	private String d_name;
 	private Indication d_indication;
 	private List<OutcomeMeasure> d_criteria;
 	private ObservableList<Arm> d_alternatives;
@@ -80,9 +79,9 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 	public StudyBenefitRiskAnalysis(String name, Indication indication, Study study,
 			List<OutcomeMeasure> criteria, Arm baseline, List<Arm> alternatives,
 			AnalysisType analysisType, DecisionContext context) {
+		super(name);
 		d_baseline = baseline;
 		assertMeasurementsPresent(study, criteria, alternatives);
-		d_name = name;
 		d_indication = indication;
 		d_study = study;
 		setCriteria(criteria);
@@ -143,18 +142,8 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 		}
 	}
 
-	public String getName() {
-		return d_name;
-	}
-
 	public List<OutcomeMeasure> getCriteria() {
 		return d_criteria;
-	}
-
-	public int compareTo(BenefitRiskAnalysis<?> o) {
-		if (o == null)
-			return 1;
-		return d_name.compareTo(o.getName());
 	}
 
 	public Study getStudy() {
@@ -205,8 +194,8 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 		return d_decisionContext;
 	}
 
-	public Distribution getRelativeEffectDistribution(OutcomeMeasure om, Arm baseline, Arm subject) {
-		BasicMeasurement baseMeas = getStudy().getMeasurement(om, baseline);
+	public Distribution getRelativeEffectDistribution(OutcomeMeasure om, Arm subject) {
+		BasicMeasurement baseMeas = getStudy().getMeasurement(om, d_baseline);
 		BasicMeasurement subjMeas = getStudy().getMeasurement(om, subject);
 		if (baseMeas instanceof BasicRateMeasurement) {
 			BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas);

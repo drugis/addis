@@ -44,13 +44,11 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
@@ -62,7 +60,9 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.Summary;
+import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
 import com.jgoodies.binding.list.ObservableList;
 
@@ -80,7 +80,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		}
 	}
 
-	private String d_name;
 	private Indication d_indication;
 	private List<MetaAnalysis> d_metaAnalyses;
 	private ObservableList<DrugSet> d_drugs;
@@ -88,20 +87,22 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	private Map<OutcomeMeasure, AbstractBaselineModel<?>> d_baselineModelMap;
 	private AnalysisType d_analysisType;
 	private DecisionContext d_decisionContext;
+	private Map<MetaAnalysis, TransformedMultivariateNormalSummary> d_relativeEffects =
+		new HashMap<MetaAnalysis, TransformedMultivariateNormalSummary>();
 	
 	public static String PROPERTY_DRUGS = "drugs";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 
 	
-	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
 			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType) {
-		this(id, indication, metaAnalysis, baseline, drugs, analysisType, null); 
+		this(name, indication, metaAnalysis, baseline, drugs, analysisType, null); 
 	}
 
-	public MetaBenefitRiskAnalysis(String id, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
 			DrugSet baseline, List<DrugSet> drugs, AnalysisType analysisType, DecisionContext context) {
-		super();
+		super(name);
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
 		d_drugs = new SortedSetModel<DrugSet>(drugs);
@@ -114,7 +115,47 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 		d_decisionContext = context;
-		setName(id);
+		for (MetaAnalysis ma : d_metaAnalyses) {
+			double[][] transformation = createTransform(ma);
+			d_relativeEffects.put(ma, new TransformedMultivariateNormalSummary(ma.getRelativeEffectsSummary(), transformation));
+		}
+	}
+
+	/** 
+	 * Fill in a transformation matrix to change the baseline of the relative effects.
+	 * For the algorithm see docs/transform.pdf in the repository.
+	 */
+	private double[][] createTransform(MetaAnalysis ma) {
+		final List<DrugSet> rowAlternatives = getNonBaselineAlternatives();
+		final List<DrugSet> columnAlternatives = new ArrayList<DrugSet>(ma.getIncludedDrugs());
+
+		final DrugSet rowBaseline = d_baseline;
+		final DrugSet columnBaseline = columnAlternatives.remove(0); // first drugSet in metaAnalysis is baseline by definition
+		
+		final int nRows = rowAlternatives.size();
+		final int nCols = columnAlternatives.size();
+
+		double[][] transformation = new double[nRows][nCols];
+		
+		// Change of baseline (from x to y): d_{y,z} = -d_{x,y} + d_{x,z}
+
+		// fill the column where the rowBaseline occurs with -1 (if baselines differ)
+		if (!rowBaseline.equals(columnBaseline)) {
+			int minusColumn = columnAlternatives.indexOf(rowBaseline);
+			for (int i = 0; i < nRows; ++i) {
+				transformation[i][minusColumn] = -1;
+			}
+		}
+		
+		// +1 where row- and column-drugsets match
+		for (int i = 0; i < nRows; ++i) {
+			int oneColumn = columnAlternatives.indexOf(rowAlternatives.get(i));
+			if (oneColumn >= 0) {
+				transformation[i][oneColumn] = 1;
+			}
+		}
+		
+		return transformation;
 	}
 
 	public Indication getIndication() {
@@ -162,12 +203,9 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		return dependencies;
 	}
 
+	@Deprecated
 	void setName(String name) {
 		d_name = name;
-	}
-
-	public String getName() {
-		return d_name;
 	}
 
 	@Override
@@ -192,13 +230,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			EntityUtil.deepEqual(getDecisionContext(), o.getDecisionContext());
 	}
 
-	public int compareTo(BenefitRiskAnalysis<?> other) {
-		if (other == null) {
-			return 1;
-		}
-		return getName().compareTo(other.getName());
-	}
-	
 	@Override
 	public String toString() {
 		return getName();
@@ -207,32 +238,35 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	public DrugSet getBaseline() {
 		return d_baseline;
 	}
-	
-	private RelativeEffect<? extends Measurement> getRelativeEffect(OutcomeMeasure om, DrugSet baseline, DrugSet subject) {
+
+	private MetaAnalysis findMetaAnalysis(OutcomeMeasure om) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
-			if(ma.getOutcomeMeasure().equals(om)){
-				if (!subject.equals(baseline)) {
-					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getVariableType() instanceof RateVariableType) ? BasicOddsRatio.class : BasicMeanDifference.class;
-					return ma.getRelativeEffect(baseline, subject, type);
-				}
-				else {
-					return (om.getVariableType() instanceof RateVariableType) ?  NetworkRelativeEffect.buildOddsRatio(0.0, 0.0) : NetworkRelativeEffect.buildMeanDifference(0.0, 0.0); 
-				}
+			if(ma.getOutcomeMeasure().equals(om)) {
+				return ma;
 			}
-			
 		}
-		throw new IllegalArgumentException("No analyses comparing drug " + subject + " and Outcome " + om + " in this Benefit-Risk analysis");
+		return null;
 	}
 	
-	/**
-	 * The effect of d on om relative to the baseline treatment. 
-	 */
-	public GaussianBase getRelativeEffectDistribution(DrugSet d, OutcomeMeasure om) {
-		return getRelativeEffectDistribution(om, getBaseline(), d);
+	public GaussianBase getRelativeEffectDistribution(OutcomeMeasure om, DrugSet subject) {
+		if (subject.equals(d_baseline)) {
+			return createDistribution(om, 0.0, 0.0); 
+		}
+		MetaAnalysis ma = findMetaAnalysis(om);
+		if (ma == null) {
+			throw new IllegalArgumentException("No meta-analysis for outcome " + om);
+		}
+		MultivariateNormalSummary summary = d_relativeEffects.get(ma);
+		if (summary.getDefined()) {
+			int index = getNonBaselineAlternatives().indexOf(subject);
+			return createDistribution(om, summary.getMeanVector()[index], Math.sqrt(summary.getCovarianceMatrix()[index][index]));
+		} else {
+			return null;
+		}
 	}
 
-	public GaussianBase getRelativeEffectDistribution(OutcomeMeasure om, DrugSet baseline, DrugSet subject) {
-		return (GaussianBase) getRelativeEffect(om, baseline, subject).getDistribution();
+	private GaussianBase createDistribution(OutcomeMeasure om, double mu, double sigma) {
+		return (om.getVariableType() instanceof RateVariableType) ? new LogGaussian(mu, sigma) : new Gaussian(mu, sigma);
 	}
 	
 	/**
@@ -290,7 +324,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	 */
 	private GaussianBase getAbsoluteEffectDistribution(DrugSet d, OutcomeMeasure om) {
 		GaussianBase baseline = getBaselineDistribution(om);
-		GaussianBase relative = getRelativeEffectDistribution(d, om);
+		GaussianBase relative = getRelativeEffectDistribution(om, d);
 		if (baseline == null || relative == null) return null;
 		return baseline.plus(relative);
 	}
@@ -356,5 +390,4 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	public DecisionContext getDecisionContext() {
 		return d_decisionContext;
 	}
-	
 }

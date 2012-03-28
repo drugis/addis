@@ -58,23 +58,25 @@ public class MetaBenefitRiskAnalysisTest {
 		d_BRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testEquals(){
 		assertFalse(d_BRAnalysis.equals("nope, no meta Analysis"));
-		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
+		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertTrue(d_BRAnalysis.equals(otherBRAnalysis));
-		otherBRAnalysis.setName("some new name");
+		otherBRAnalysis = ExampleData.buildStudyBenefitRiskAnalysis();
 		assertFalse(d_BRAnalysis.equals(otherBRAnalysis));
 		assertTrue(d_BRAnalysis.equals(d_BRAnalysis));
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Test 
 	public void testCompareTo(){
 		assertTrue(d_BRAnalysis.compareTo(null) > 0);
 		assertEquals(0, d_BRAnalysis.compareTo(d_BRAnalysis));
-		MetaBenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
+		BenefitRiskAnalysis otherBRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		assertEquals(0, d_BRAnalysis.compareTo(otherBRAnalysis));
-		otherBRAnalysis.setName("some new name");
+		otherBRAnalysis = ExampleData.buildStudyBenefitRiskAnalysis();
 		assertTrue(d_BRAnalysis.compareTo(otherBRAnalysis) > 0);
 	}
 	
@@ -88,7 +90,7 @@ public class MetaBenefitRiskAnalysisTest {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		
 		Drug fluox = ExampleData.buildDrugFluoxetine();
-		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(new DrugSet(fluox), om);
+		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(om, new DrugSet(fluox));
 		
 		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
 				new DrugSet(ExampleData.buildDrugParoxetine()), new DrugSet(fluox), BasicOddsRatio.class);
@@ -106,7 +108,7 @@ public class MetaBenefitRiskAnalysisTest {
 		Drug parox = ExampleData.buildDrugParoxetine();
 		
 		LogGaussian baseline = (LogGaussian)d_BRAnalysis.getBaselineDistribution(om);
-		LogGaussian relative = (LogGaussian)d_BRAnalysis.getRelativeEffectDistribution(new DrugSet(fluox), om);
+		LogGaussian relative = (LogGaussian)d_BRAnalysis.getRelativeEffectDistribution(om, new DrugSet(fluox));
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
@@ -127,7 +129,7 @@ public class MetaBenefitRiskAnalysisTest {
 		MetaBenefitRiskAnalysis br = ExampleData.realBuildContinuousMockBenefitRisk();
 		
 		Gaussian baseline = (Gaussian)br.getBaselineDistribution(om);
-		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(new DrugSet(parox), om);
+		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(om, new DrugSet(parox));
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 

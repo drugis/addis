@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.ExampleData;
@@ -50,6 +51,8 @@ import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.summary.NormalSummary;
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.uci.ics.jung.graph.util.Pair;
 
 public class NetworkMetaAnalysisTest {
 	private NetworkMetaAnalysis d_analysis;
@@ -73,6 +76,19 @@ public class NetworkMetaAnalysisTest {
 	@Test
 	public void testGetType() {
 		assertEquals("Markov Chain Monte Carlo Network Meta-Analysis", d_analysis.getType());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRelativeEffectsList() {
+		DrugSet fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
+		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
+		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
+		List<Pair<DrugSet>> expected = Arrays.asList(
+				new Pair<DrugSet>(fluox, parox),
+				new Pair<DrugSet>(fluox, sertr)
+		);
+		assertEquals(expected, d_analysis.getRelativeEffectsList());
 	}
 	
 	@Test

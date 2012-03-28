@@ -323,7 +323,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		Arm arm = arms.get(0); // The currently unused arm 
 		d_pm.getSelectedArmModel(multiple, d_paroxSet).setValue(arm);
 		
-		NetworkMetaAnalysis ma = d_pm.createMetaAnalysis("name");
+		NetworkMetaAnalysis ma = d_pm.createAnalysis("name");
 		
 		assertEquals(d_pm.getSelectedDrugsModel(), ma.getIncludedDrugs());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),

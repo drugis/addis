@@ -22,30 +22,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation.wizard;
+package org.drugis.addis.gui.wizard;
 
-import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.beans.SortedSetModel;
+import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.presentation.wizard.AnalysisWizardPresentation;
+import org.pietschy.wizard.PanelWizardStep;
 
-public class AbstractWizardWithSelectableIndicationPM implements WizardWithSelectableIndicationPresentation {
+@SuppressWarnings("serial")
+public class SelectIndicationAndNameWizardStep extends PanelWizardStep {
 
-	protected Domain d_domain;
-	protected ModifiableHolder<Indication> d_indicationHolder;
-
-	public AbstractWizardWithSelectableIndicationPM(Domain d) {
-		d_domain = d;
-		d_indicationHolder = new ModifiableHolder<Indication>();
+	public SelectIndicationAndNameWizardStep(AnalysisWizardPresentation pm, AddisWindow main) {
+		super("Select Indication and name","Select an Indication and the name that you want to use for this meta analysis.");
+		add(IndicationAndNameInputPanel.create(this, pm));
 	}
-
-	public ValueHolder<Indication> getIndicationModel() {
-		return d_indicationHolder; 
-	}
-
-	public SortedSetModel<Indication> getIndicationsModel() {
-		return d_domain.getIndications();
-	}
-
 }

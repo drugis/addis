@@ -86,7 +86,7 @@ public class BRRelativeMeasurementTableModelTest {
 			for (int j=0; j < d_brAnalysis.getCriteria().size(); ++j) {
 				DrugSet drug = drugs.get(i);
 				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
-				GaussianBase expected = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(drug, om);
+				GaussianBase expected = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(om, drug);
 				GaussianBase actual = (GaussianBase) d_pm.getValueAt(j, i + 1);
 				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
 				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);

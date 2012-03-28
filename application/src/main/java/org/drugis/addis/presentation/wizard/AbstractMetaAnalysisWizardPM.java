@@ -41,7 +41,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -60,7 +59,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> extends AbstractWizardWithSelectableIndicationPM {
+public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> extends AbstractAnalysisWizardPresentation<MetaAnalysis> {
 
 	protected PresentationModelFactory d_pmf;
 	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
@@ -74,7 +73,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	private ObservableList<Study> d_selectableStudies;
 	
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
-		super(d);
+		super(d, d.getMetaAnalyses());
 		d_pmf = pmf;
 	
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
@@ -131,7 +130,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	private void updateOutcomes() {
 		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>();
 		if (d_indicationHolder.getValue() != null) {
-			for (Study s : d_domain.getStudies(this.d_indicationHolder.getValue())) {
+			for (Study s : d_domain.getStudies(d_indicationHolder.getValue())) {
 				outcomeSet.addAll(Study.extractVariables(s.getEndpoints()));
 				outcomeSet.addAll(Study.extractVariables(s.getAdverseEvents()));
 			}			
@@ -242,14 +241,6 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	public SelectableStudyListPresentation getStudyListModel() {
 		return d_studyListPm;
 	}
-
-	public MetaAnalysis saveMetaAnalysis(String name) throws EntityIdExistsException {
-		MetaAnalysis ma = createMetaAnalysis(name);		
-		d_domain.getMetaAnalyses().add(ma);
-		return ma;
-	}
-
-	public abstract MetaAnalysis createMetaAnalysis(String name);
 
 	protected ObservableList<Study> getSelectableStudies() {
 		return d_selectableStudies;

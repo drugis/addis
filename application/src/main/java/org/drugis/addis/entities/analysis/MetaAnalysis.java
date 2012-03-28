@@ -32,13 +32,11 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 
-public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis> {
-	public static final String PROPERTY_NAME = "name";	
-	public String getName();
-	public void setName(String name);
-	
+public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis>, TypeWithName {
 	public static final String PROPERTY_TYPE = "type";
 	public String getType();
 	
@@ -58,4 +56,13 @@ public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis> {
 	public List<Study> getIncludedStudies();
 	public RelativeEffect<? extends Measurement> getRelativeEffect(
 			DrugSet baseline, DrugSet d, Class<? extends RelativeEffect<?>> type);
+	/**
+	 * Return a multivariate summary of the effects for all treatments relative to the baseline. 
+	 * The order in which the relative effects are given is based on the natural ordering of the
+	 * treatments. The first treatment is used as the baseline.  
+	 * 
+	 * @see getIncludedDrugs() for the ordered list of treatments
+	 * @return A multivariate summary of all the relative effects. 
+	 */
+	public MultivariateNormalSummary getRelativeEffectsSummary();
 }

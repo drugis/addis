@@ -77,9 +77,9 @@ public class BRATTableModelTest {
 	@Before
 	public void setUp() {
 		d_mba = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_btmMeta = new BRATTableModel<DrugSet, MetaBenefitRiskAnalysis>(d_mba, d_mba.getAlternatives().get(0), d_mba.getAlternatives().get(1));
+		d_btmMeta = new BRATTableModel<DrugSet, MetaBenefitRiskAnalysis>(d_mba, new DrugSet(ExampleData.buildDrugFluoxetine()));
 		StudyBenefitRiskAnalysis sba = ExampleData.buildStudyBenefitRiskAnalysis();
-		d_btmMockStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(sba, sba.getAlternatives().get(0), sba.getAlternatives().get(1));
+		d_btmMockStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(sba, sba.getAlternatives().get(1));
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointHamd());
 		criteria.add(ExampleData.buildEndpointCgi());
@@ -87,9 +87,9 @@ public class BRATTableModelTest {
 		ObservableList<Arm> arms = ExampleData.buildStudyChouinard().getArms();
 		d_sba = new StudyBenefitRiskAnalysis("Test SBA", ExampleData.buildIndicationDepression(), 
 				ExampleData.buildStudyChouinard(), criteria, arms, AnalysisType.SMAA);
-		d_baseline = arms.get(1);
-		d_subject = arms.get(0);
-		d_btmStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(d_sba, d_baseline, d_subject);
+		d_baseline = arms.get(0);
+		d_subject = arms.get(1);
+		d_btmStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(d_sba, d_subject);
 	}
 	
 	@Test
@@ -133,10 +133,10 @@ public class BRATTableModelTest {
 		assertEquals("", d_btmMeta.getColumnName(COLUMN_BR));
 		assertEquals("Outcome", d_btmMeta.getColumnName(COLUMN_CRITERIA));
 		assertEquals("Type", d_btmMeta.getColumnName(COLUMN_OUTCOME_TYPE));
-		assertEquals("Fluoxetine", d_btmMeta.getColumnName(COLUMN_BASELINE));
-		assertEquals("Paroxetine", d_btmMeta.getColumnName(COLUMN_SUBJECT));
-		assertEquals("Fluoxetine 27.5 mg/day", d_btmStudy.getColumnName(COLUMN_BASELINE));
-		assertEquals("Paroxetine 25.5 mg/day", d_btmStudy.getColumnName(COLUMN_SUBJECT));
+		assertEquals("Paroxetine", d_btmMeta.getColumnName(COLUMN_BASELINE));
+		assertEquals("Fluoxetine", d_btmMeta.getColumnName(COLUMN_SUBJECT));
+		assertEquals("Paroxetine 25.5 mg/day", d_btmStudy.getColumnName(COLUMN_BASELINE));
+		assertEquals("Fluoxetine 27.5 mg/day", d_btmStudy.getColumnName(COLUMN_SUBJECT));
 		assertEquals("Difference (95% CI)", d_btmMeta.getColumnName(COLUMN_DIFFERENCE));
 		assertEquals("", d_btmMeta.getColumnName(COLUMN_BR));
 	}
@@ -156,27 +156,27 @@ public class BRATTableModelTest {
 	
 	@Test
 	public void testRisks() {
-		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(0), d_sba.getArms().get(1)), d_btmStudy.getValueAt(0, COLUMN_BASELINE));
-		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(1), d_sba.getArms().get(1)), d_btmStudy.getValueAt(1, COLUMN_BASELINE));
-		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(0), d_sba.getArms().get(0)), d_btmStudy.getValueAt(0, COLUMN_SUBJECT));
-		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(1), d_sba.getArms().get(0)), d_btmStudy.getValueAt(1, COLUMN_SUBJECT));
+		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(0), d_sba.getArms().get(0)), d_btmStudy.getValueAt(0, COLUMN_BASELINE));
+		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(1), d_sba.getArms().get(0)), d_btmStudy.getValueAt(1, COLUMN_BASELINE));
+		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(0), d_sba.getArms().get(1)), d_btmStudy.getValueAt(0, COLUMN_SUBJECT));
+		assertEquals(d_sba.getMeasurement(d_sba.getCriteria().get(1), d_sba.getArms().get(1)), d_btmStudy.getValueAt(1, COLUMN_SUBJECT));
 	}
 	
 	@Test
 	public void testDifferences() {
-		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(0), d_baseline, d_subject),
+		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(0), d_subject),
 				((BRATDifference)d_btmStudy.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 
-		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(1), d_baseline, d_subject),
+		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(1), d_subject),
 				((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
 		
-		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), d_mba.getAlternatives().get(0), d_mba.getAlternatives().get(1)),
+		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), new DrugSet(ExampleData.buildDrugFluoxetine())),
 				((BRATDifference)d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	}
 
 	@Test
 	public void testForestConfidenceIntervals() {
-		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), d_mba.getAlternatives().get(0), d_mba.getAlternatives().get(1));
+		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), new DrugSet(ExampleData.buildDrugFluoxetine()));
 		assertEquals((Double)relEff.getQuantile(0.025), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getLowerBound());
 		assertEquals((Double)relEff.getQuantile(0.5), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getPointEstimate());
 		assertEquals((Double)relEff.getQuantile(0.975), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getUpperBound());

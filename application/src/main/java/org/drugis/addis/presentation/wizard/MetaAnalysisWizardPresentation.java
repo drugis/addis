@@ -186,17 +186,6 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
 	}
 	
-	public RandomEffectsMetaAnalysis createMetaAnalysis(String name) {
-		RandomEffectsMetaAnalysis ma = null;
-		if (d_pm == null) {
-			ma = buildMetaAnalysis();
-		} else {
-			ma = d_pm.getBean();
-		}
-		ma.setName(name);
-		return ma;
-	}
-	
 	public ValueModel getMetaAnalysisCompleteModel() {
 		return d_metaAnalysisCompleteListener;
 	}
@@ -235,5 +224,17 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	@Override
 	protected StudyGraphModel buildStudyGraphPresentation() {
 		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder,  d_outcomeHolder);				
+	}
+
+	@Override
+	public RandomEffectsMetaAnalysis createAnalysis(String name) {
+		RandomEffectsMetaAnalysis ma = null;
+		if (d_pm == null) {
+			ma = buildMetaAnalysis();
+		} else {
+			ma = d_pm.getBean();
+		}
+		ma.setName(name);
+		return ma;
 	}	
 }

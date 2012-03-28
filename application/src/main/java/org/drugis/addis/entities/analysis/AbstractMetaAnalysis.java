@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.AbstractNamedEntity;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
@@ -44,7 +44,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
-public abstract class AbstractMetaAnalysis extends AbstractEntity implements MetaAnalysis {
+public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnalysis> implements MetaAnalysis {
 	
 	private static class ArmMap extends HashMap<Study, Map<DrugSet, Arm>> {
 		private static final long serialVersionUID = -8579169115557701584L;
@@ -68,6 +68,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 	private final String d_type;
 	
 	protected AbstractMetaAnalysis(String type) {
+		super(null);
 		d_type = type;
 		d_armMap = new ArmMap();
 	}
@@ -76,6 +77,7 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 			String name, Indication indication,
 			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
 	throws IllegalArgumentException {
+		super(name);
 		checkDataConsistency(studies, indication, om);
 		d_type = type;
 
@@ -166,15 +168,6 @@ public abstract class AbstractMetaAnalysis extends AbstractEntity implements Met
 			return (other.getClass() == getClass()) && other.getName().equals(getName());
 		}
 		return false;
-	}
-	
-	@Override
-	public int hashCode() {
-		return getName().hashCode();
-	}
-
-	public int compareTo(MetaAnalysis o) {
-		return getName().compareTo(o.getName());
 	}
 	
 	public List<DrugSet> getIncludedDrugs() {
