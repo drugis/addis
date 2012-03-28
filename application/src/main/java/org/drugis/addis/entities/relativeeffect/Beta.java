@@ -24,9 +24,7 @@
 
 package org.drugis.addis.entities.relativeeffect;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.BetaDistribution;
-import org.apache.commons.math.distribution.BetaDistributionImpl;
+import org.apache.commons.math3.distribution.BetaDistribution;
 import org.drugis.common.beans.AbstractObservable;
 
 public class Beta extends AbstractObservable implements Distribution {
@@ -42,7 +40,7 @@ public class Beta extends AbstractObservable implements Distribution {
 		if (beta <= 0) throw new IllegalArgumentException("beta must be > 0"); 
 		d_alpha = alpha;
 		d_beta = beta;
-		d_dist = new BetaDistributionImpl(d_alpha, d_beta);
+		d_dist = new BetaDistribution(d_alpha, d_beta);
 	}
 
 	public AxisType getAxisType() {
@@ -58,11 +56,7 @@ public class Beta extends AbstractObservable implements Distribution {
 	}
 
 	public double getQuantile(double p) {
-		try {
-			return d_dist.inverseCumulativeProbability(p);
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
+		return d_dist.inverseCumulativeProbability(p);
 	}
 
 	@Override
@@ -76,10 +70,6 @@ public class Beta extends AbstractObservable implements Distribution {
 
 	@Override
 	public double getCumulativeProbability(double x) {
-		try {
-			return d_dist.cumulativeProbability(x);
-		} catch (MathException e) {
-			throw new RuntimeException(e);
-		}
+		return d_dist.cumulativeProbability(x);
 	}
 }

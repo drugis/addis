@@ -93,26 +93,19 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 		}
 	}
 
-	private void initRiskBenefits(BenefitRiskAnalysis<Alternative> a) {
-		Alternative alternative = a.getAlternatives().get(0);
-		OutcomeMeasure criterion = a.getCriteria().get(0);
-		d_baseBenefit = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
+	private void initRiskBenefits(BenefitRiskAnalysis<Alternative> brAnalysis) {
+		Alternative baseline = brAnalysis.getBaseline();
+		Alternative subject = brAnalysis.getNonBaselineAlternatives().get(0);
+		OutcomeMeasure criterion0 = brAnalysis.getCriteria().get(0);
+		OutcomeMeasure criterion1 = brAnalysis.getCriteria().get(1);
 
-		alternative = a.getAlternatives().get(1);
-		criterion = a.getCriteria().get(0);
-		d_subjBenefit = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
-
-		alternative = a.getAlternatives().get(0);
-		criterion = a.getCriteria().get(1);
-		d_baseRisk = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
-
-		alternative = a.getAlternatives().get(1);
-		criterion = a.getCriteria().get(1);
-		d_subjRisk = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(a, alternative, criterion));
+		d_baseBenefit = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(brAnalysis, baseline, criterion0));
+		d_subjBenefit = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(brAnalysis, subject, criterion0));
+		d_baseRisk = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(brAnalysis, baseline, criterion1));
+		d_subjRisk = SMAAEntityFactory.createCardinalMeasurement(getMeasurement(brAnalysis, subject, criterion1));
 	}
 
-	private Distribution getMeasurement(BenefitRiskAnalysis<Alternative> analysis, Alternative alternative,
-			OutcomeMeasure criterion) {
+	private Distribution getMeasurement(BenefitRiskAnalysis<Alternative> analysis, Alternative alternative, OutcomeMeasure criterion) {
 		Distribution measurement = analysis.getMeasurement(criterion, alternative);
 		if (measurement instanceof LogGaussian) {
 			LogGaussian logDist = (LogGaussian)measurement;

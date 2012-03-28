@@ -97,8 +97,8 @@ public class LyndOBrienView implements ViewBuilder {
 
 		String alternativeName = "";
 		String baselineName = "";
-		Object baseline = d_BRpm.getBean().getAlternatives().get(0);
-		Object alternative = d_BRpm.getBean().getAlternatives().get(1);
+		Object baseline = d_BRpm.getBean().getBaseline();
+		Object alternative = d_BRpm.getBean().getNonBaselineAlternatives().get(0);
 		if(d_BRpm.getBean() instanceof StudyBenefitRiskAnalysis) {
 			Study s = ((StudyBenefitRiskAnalysis) d_BRpm.getBean()).getStudy();
 			Arm baseArm = (Arm)baseline;
@@ -112,8 +112,8 @@ public class LyndOBrienView implements ViewBuilder {
 		
 		builder.add(AuxComponentFactory.createHtmlField("Results of Monte Carlo simulations based on the difference-distributions of" +
 				" the alternatives and criteria. Results in the NW quadrant indicate that " + 
-				alternativeName +" is better and" +
-				" results in the SE quadrant indicate that "+ baselineName  + " is better."), cc.xy(1,7));
+				baselineName +" is better and" +
+				" results in the SE quadrant indicate that "+ alternativeName  + " is better."), cc.xy(1,7));
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
 		
 		JScrollPane pvalue = new JScrollPane(createWaiter(new PvalueplotBuilder()));
@@ -121,7 +121,7 @@ public class LyndOBrienView implements ViewBuilder {
 		builder.add(pvalue, cc.xy(1,11));
 		
 		builder.add(AuxComponentFactory.createHtmlField("Probability for a given acceptability threshold " +
-				"\u03BC that " + baselineName + " is superior to " + alternativeName + ". Indicates the" +
+				"\u03BC that " + alternativeName + " is superior to " + baselineName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
 		

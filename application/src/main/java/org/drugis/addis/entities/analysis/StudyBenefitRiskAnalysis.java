@@ -214,4 +214,11 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 		}
 		throw new IllegalStateException("Unknown error creating relative effect distribution in StudyBenefitRiskAnalysis");
 	}
+
+	@Override
+	public List<Arm> getNonBaselineAlternatives() {
+		List<Arm> list = new ArrayList<Arm>(d_alternatives);
+		list.remove(getBaseline());
+		return list;
+	}
 }

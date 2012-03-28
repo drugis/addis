@@ -91,7 +91,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	
 	protected ObservableList<DrugSet> d_drugs;
 	private ObservableList<Study> d_studies;
-	private boolean d_rebuildNeeded;
+	protected boolean d_rebuildNeeded;
 	private final ValueHolder<OutcomeMeasure> d_om;
 	private Map<DrugSet, Set<Study>> d_studiesMeasuringDrug;
 

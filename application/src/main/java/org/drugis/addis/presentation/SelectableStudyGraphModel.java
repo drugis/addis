@@ -64,6 +64,9 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 	
 	@Override
 	public void rebuildGraph() {
+		if (!d_rebuildNeeded) {
+			return;
+		}
 		super.rebuildGraph();
 		
 		if (d_selectedDrugs != null) {

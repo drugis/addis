@@ -1,4 +1,4 @@
- 1. edit pom.xml, */pom.xml and change version
+ 1. ./scripts/changeVersion.sh $NEW_VERSION
 
  2. edit README.md to reflect changes in the new version
 
@@ -24,6 +24,6 @@
     $ git checkout master
     (only branch for major releases, tag for all releases)
 
- 9. edit pom.xml and change version to appropriate -SNAPSHOT
+ 9. ./scripts/changeVersion.sh $NEW_SNAPSHOT_VERSION
 
 10. commit your changes to git

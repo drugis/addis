@@ -15,6 +15,8 @@ modern operating systems ship with a suitable JRE.</p>
 
 <h2>Versions</h2>
 
+<p>1.12.2: Bugfix release.</p>
+
 <p>1.12.1: Input name of analyses in the first step of the wizard, not in a
    pop-up dialog at the very end.</p>
 
@@ -87,6 +89,21 @@ of the <a href="https://github.com/gertvv/addis">ADDIS Git repository</a>.</p>
 </ul>
 
 <p>Building is automatic with "mvn package".</p>
+
+<h2>Developing ADDIS using Eclipse</h2>
+
+<p>First, let Maven configure your workspace for use with Maven:</p>
+
+<pre><code>$ mvn eclipse:configure-workspace -Declipse.workspace=WORKSPACE_DIR
+</code></pre>
+
+<p>Use Maven to generate the eclipse project:</p>
+
+<pre><code>$ cd SOURCE_DIR
+$ mvn eclipse:eclipse
+</code></pre>
+
+<p>Then import the project into Eclipse (File -> Import -> Existing projects).</p>
 
 <h2>License</h2>
 
