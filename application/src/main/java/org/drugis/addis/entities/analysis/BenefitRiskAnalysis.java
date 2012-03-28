@@ -60,7 +60,7 @@ public abstract class BenefitRiskAnalysis<Alternative> extends AbstractNamedEnti
 
 	public abstract Distribution getMeasurement(OutcomeMeasure criterion, Alternative a);
 	
-	public abstract Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative baseline, Alternative subject);
+	public abstract Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative subject);
 
 	public abstract MeasurementSource<Alternative> getMeasurementSource();
 	

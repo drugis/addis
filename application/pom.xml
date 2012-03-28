@@ -15,11 +15,12 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<drugis-common.version>0.4.8</drugis-common.version>
+		<drugis-common.version>0.4.9-SNAPSHOT</drugis-common.version>
 		<jsmaa.version>0.8.5</jsmaa.version>
 		<mtc.version>0.10.1</mtc.version>
 		<addis.schemaVersion>4</addis.schemaVersion>
-	</properties> 
+		<jung.version>2.0.1</jung.version>
+ 	</properties> 
 
 	<repositories>
 		<repository>
@@ -122,8 +123,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
+			<artifactId>commons-math3</artifactId>
+			<version>3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.pietschy</groupId>
@@ -191,6 +192,11 @@
 			<groupId>org.antlr</groupId>
 			<artifactId>stringtemplate</artifactId>
 			<version>4.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-api</artifactId>
+			<version>${jung.version}</version>
 		</dependency>
 	</dependencies>
     <build>

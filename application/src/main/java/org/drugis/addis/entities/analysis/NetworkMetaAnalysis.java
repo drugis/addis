@@ -67,12 +67,17 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.Treatment;
+import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 
-public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis{
+import edu.uci.ics.jung.graph.util.Pair;
+
+public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyModel d_inconsistencyModel;
@@ -80,6 +85,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
 	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
+	protected final ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
@@ -126,7 +132,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(ANALYSIS_TYPE, name, indication, om, studies, sortDrugs(drugs), armMap);
 	}
-	
+
 	private static List<DrugSet> sortDrugs(Collection<DrugSet> drugs) {
 		ArrayList<DrugSet> list = new ArrayList<DrugSet>(drugs);
 		Collections.sort(list);
@@ -149,6 +155,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
 		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
+		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
+		Parameter[] parameters = new Parameter[relEffects.size()]; 
+		for (int i = 0; i < relEffects.size(); ++i) {
+			Pair<DrugSet> relEffect = relEffects.get(i);
+			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(relEffect.getFirst()), getTreatment(relEffect.getSecond()));
+		}
+		d_relativeEffectsSummary.setNested(new MCMCMultivariateNormalSummary(consistencyModel.getResults(), parameters));
 		return consistencyModel;
 	}
 	
@@ -254,6 +267,30 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return summary;
 	}
 	
+	/**
+	 * Return a multivariate summary of the effects for all treatments relative to the baseline. 
+	 * The order in which the relative effects are given is based on the natural ordering of the
+	 * treatments. The first treatment is used as the baseline.  
+	 * 
+	 * @see getRelativeEffectsList()
+	 * @return A multivariate summary of all the relative effects. 
+	 */
+	public MultivariateNormalSummary getRelativeEffectsSummary() {
+		return d_relativeEffectsSummary;
+	}
+	
+	/**
+	 * @return A list of all <baseline, subject> pairs, where the subjects are given in their natural order  
+	 */
+	public List<Pair<DrugSet>> getRelativeEffectsList() {
+		List<Pair<DrugSet>> list = new ArrayList<Pair<DrugSet>>(getIncludedDrugs().size() - 1); // first DrugSet is baseline-> excluded
+		for (int i = 0; i < getIncludedDrugs().size() - 1; ++i) {
+			Pair<DrugSet> relEffect = new Pair<DrugSet>(getIncludedDrugs().get(0), getIncludedDrugs().get(i + 1));
+			list.add(relEffect);
+		}
+		return list;
+	}
+
 	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary(Parameter p) {
 		NodeSplitPValueSummary summary = d_nodeSplitPValueSummaries.get(p);
 		if(summary == null) {

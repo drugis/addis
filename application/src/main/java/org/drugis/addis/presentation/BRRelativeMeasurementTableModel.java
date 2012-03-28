@@ -80,6 +80,6 @@ public class BRRelativeMeasurementTableModel extends AbstractTableModel {
 		if (columnIndex == 0) return om.toString();
 
 		DrugSet a = d_br.getNonBaselineAlternatives().get(columnIndex - 1);
-		return d_br.getRelativeEffectDistribution(a, om);
+		return d_br.getRelativeEffectDistribution(om, a);
 	}
 }

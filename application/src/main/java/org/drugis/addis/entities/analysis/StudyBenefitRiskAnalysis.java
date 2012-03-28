@@ -194,8 +194,8 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 		return d_decisionContext;
 	}
 
-	public Distribution getRelativeEffectDistribution(OutcomeMeasure om, Arm baseline, Arm subject) {
-		BasicMeasurement baseMeas = getStudy().getMeasurement(om, baseline);
+	public Distribution getRelativeEffectDistribution(OutcomeMeasure om, Arm subject) {
+		BasicMeasurement baseMeas = getStudy().getMeasurement(om, d_baseline);
 		BasicMeasurement subjMeas = getStudy().getMeasurement(om, subject);
 		if (baseMeas instanceof BasicRateMeasurement) {
 			BasicOddsRatio ratio = new BasicOddsRatio((RateMeasurement) baseMeas, (RateMeasurement) subjMeas);

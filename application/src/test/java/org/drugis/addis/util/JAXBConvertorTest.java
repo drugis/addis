@@ -980,10 +980,14 @@ public class JAXBConvertorTest {
 		cm1.setMean(0.2);
 		cm1.setStdDev(0.01);
 		cm1.setSampleSize(110);
-		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, rm1);
-		org.drugis.addis.entities.data.Measurement m2 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, cm1);
+		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(fluoxArmName, "endpoint-" + endpointName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, rm1);
+		org.drugis.addis.entities.data.Measurement m2 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, rm1);
+		org.drugis.addis.entities.data.Measurement m3 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, cm1);
+
+		// note: order is important!
 		list.add(m1);
 		list.add(m2);
+		list.add(m3);
 				
 		return study;
 	}
@@ -1142,10 +1146,11 @@ public class JAXBConvertorTest {
 		study2.setStudyActivityAt(fluoxArm, epoch2, combTreatmentActivity);
 		study2.setStudyActivityAt(paroxArm, epoch2, paroxTreatmentActivity);
 		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(ExampleData.buildEndpointHamd(), fluoxArm, new BasicRateMeasurement(10, 110));
 		study2.setMeasurement(ExampleData.buildAgeVariable(), new BasicContinuousMeasurement(0.2, 0.01, 110));
 		
-		assertEquals(study, JAXBConvertor.convertStudy(study2));
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
+		assertEquals(study, JAXBConvertor.convertStudy(study2));
 	}
 
 	@Test
