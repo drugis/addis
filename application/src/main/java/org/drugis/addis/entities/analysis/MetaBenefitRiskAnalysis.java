@@ -44,13 +44,11 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
@@ -62,6 +60,7 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
@@ -239,25 +238,31 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	public DrugSet getBaseline() {
 		return d_baseline;
 	}
-	
-	private RelativeEffect<? extends Measurement> getRelativeEffect(OutcomeMeasure om, DrugSet baseline, DrugSet subject) {
+
+	private MetaAnalysis findMetaAnalysis(OutcomeMeasure om) {
 		for(MetaAnalysis ma : getMetaAnalyses()){
-			if(ma.getOutcomeMeasure().equals(om)){
-				if (!subject.equals(baseline)) {
-					Class<? extends RelativeEffect<? extends Measurement>> type = (om.getVariableType() instanceof RateVariableType) ? BasicOddsRatio.class : BasicMeanDifference.class;
-					return ma.getRelativeEffect(baseline, subject, type);
-				}
-				else {
-					return (om.getVariableType() instanceof RateVariableType) ?  NetworkRelativeEffect.buildOddsRatio(0.0, 0.0) : NetworkRelativeEffect.buildMeanDifference(0.0, 0.0); 
-				}
+			if(ma.getOutcomeMeasure().equals(om)) {
+				return ma;
 			}
-			
 		}
-		throw new IllegalArgumentException("No analyses comparing drug " + subject + " and Outcome " + om + " in this Benefit-Risk analysis");
+		return null;
 	}
 	
 	public GaussianBase getRelativeEffectDistribution(OutcomeMeasure om, DrugSet subject) {
-		return (GaussianBase) getRelativeEffect(om, d_baseline, subject).getDistribution();
+		if (subject.equals(d_baseline)) {
+			return createDistribution(om, 0.0, 0.0); 
+		}
+		MetaAnalysis ma = findMetaAnalysis(om);
+		if (ma == null) {
+			throw new IllegalArgumentException("No meta-analysis for outcome " + om);
+		}
+		MultivariateNormalSummary summary = d_relativeEffects.get(ma);
+		int index = getNonBaselineAlternatives().indexOf(subject);
+		return createDistribution(om, summary.getMeanVector()[index], Math.sqrt(summary.getCovarianceMatrix()[index][index]));
+	}
+
+	private GaussianBase createDistribution(OutcomeMeasure om, double mu, double sigma) {
+		return (om.getVariableType() instanceof RateVariableType) ? new LogGaussian(mu, sigma) : new Gaussian(mu, sigma);
 	}
 	
 	/**
