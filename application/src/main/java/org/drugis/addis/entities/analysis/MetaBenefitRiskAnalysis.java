@@ -257,8 +257,12 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			throw new IllegalArgumentException("No meta-analysis for outcome " + om);
 		}
 		MultivariateNormalSummary summary = d_relativeEffects.get(ma);
-		int index = getNonBaselineAlternatives().indexOf(subject);
-		return createDistribution(om, summary.getMeanVector()[index], Math.sqrt(summary.getCovarianceMatrix()[index][index]));
+		if (summary.getDefined()) {
+			int index = getNonBaselineAlternatives().indexOf(subject);
+			return createDistribution(om, summary.getMeanVector()[index], Math.sqrt(summary.getCovarianceMatrix()[index][index]));
+		} else {
+			return null;
+		}
 	}
 
 	private GaussianBase createDistribution(OutcomeMeasure om, double mu, double sigma) {
