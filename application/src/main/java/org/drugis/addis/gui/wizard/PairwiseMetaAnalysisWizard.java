@@ -67,7 +67,8 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 	
 	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 		StaticModel wizardModel = new StaticModel();
-		wizardModel.add(new SelectIndicationWizardStep(pm));
+		SelectIndicationAndNameWizardStep selectIndicationStep = new SelectIndicationAndNameWizardStep(pm, mainWindow);
+		wizardModel.add(selectIndicationStep);
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SelectDrugsWizardStep(pm, mainWindow));
 		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, mainWindow);

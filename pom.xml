@@ -4,7 +4,7 @@
 
 	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
-	<version>1.12.1-SNAPSHOT</version>
+	<version>1.12.3-SNAPSHOT</version>
 	<name>ADDIS project</name>
 
 	<packaging>pom</packaging>
@@ -30,35 +30,6 @@
 					<addGroupIdToProjectName>true</addGroupIdToProjectName>
 				</configuration>
 			</plugin>
-
-			<!-- attach source to release
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
-
-			<!-- attach javadoc to release
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
 
 			<!-- output project version to file -->
 			<plugin>

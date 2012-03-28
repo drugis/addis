@@ -28,9 +28,9 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.beans.SortedSetModel;
 
-public interface WizardWithSelectableIndicationPresentation {
-
+public interface AnalysisWizardPresentation {
 	public abstract ValueHolder<Indication> getIndicationModel();
 	public abstract SortedSetModel<Indication> getIndicationsModel();
-
+	public abstract ValueHolder<String> getNameModel();
+	public abstract ValueHolder<Boolean> getNameValidModel();
 }

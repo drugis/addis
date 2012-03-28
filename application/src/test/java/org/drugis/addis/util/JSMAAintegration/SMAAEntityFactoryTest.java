@@ -75,7 +75,7 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCardinalMeasurementRate() {
-		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(new DrugSet(ExampleData.buildDrugFluoxetine()), ExampleData.buildEndpointHamd());
+		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new DrugSet(ExampleData.buildDrugFluoxetine()));
 		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
 		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 		assertTrue(actual instanceof LogNormalMeasurement);
@@ -92,7 +92,7 @@ public class SMAAEntityFactoryTest {
 				if (d.equals(d_brAnalysis.getBaseline()))
 					continue;
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));
-				GaussianBase relDistr = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(d, om);
+				GaussianBase relDistr = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(om, d);
 				GaussianBase basDistr = (GaussianBase) d_brAnalysis.getBaselineDistribution(om);
 				assertTrue(actualMeasurement instanceof RelativeLogitNormalMeasurement);
 				assertEquals(relDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getMean(), 0.0001);

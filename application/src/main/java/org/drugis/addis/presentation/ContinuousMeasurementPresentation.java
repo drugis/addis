@@ -26,9 +26,7 @@ package org.drugis.addis.presentation;
 
 import java.text.DecimalFormat;
 
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.NormalDistribution;
-import org.apache.commons.math.distribution.NormalDistributionImpl;
+import org.apache.commons.math3.distribution.NormalDistribution;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.common.Interval;
 
@@ -57,15 +55,10 @@ extends PresentationModel<T> implements LabeledPresentation {
 	
 	public String normConfIntervalString() {
 		DecimalFormat df = new DecimalFormat("###0.00");
-		NormalDistribution distribution = new NormalDistributionImpl(getBean().getMean(), getBean().getStdDev());
+		NormalDistribution distribution = new NormalDistribution(getBean().getMean(), getBean().getStdDev());
 		Interval<Double> confInterval;
-		try {
-			confInterval = new Interval<Double>(distribution.inverseCumulativeProbability(0.025),
-					distribution.inverseCumulativeProbability(0.975));
-		} catch (MathException e) {
-			e.printStackTrace();
-			return null;
-		}
+		confInterval = new Interval<Double>(distribution.inverseCumulativeProbability(0.025),
+				distribution.inverseCumulativeProbability(0.975));
 
 		return df.format(getBean().getMean()) + 
 				" (" + df.format(confInterval.getLowerBound()) + ", " + df.format(confInterval.getUpperBound()) + ")";

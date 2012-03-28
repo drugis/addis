@@ -29,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
@@ -37,7 +38,7 @@ import org.drugis.addis.presentation.ValueHolder;
 
 import com.jgoodies.binding.value.ValueModel;
 
-public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationPM {
+public class BenefitRiskWizardPM extends AbstractAnalysisWizardPresentation<BenefitRiskAnalysis<?>> {
 
 	@SuppressWarnings("serial")
 	public static class CompleteHolder extends ModifiableHolder<Boolean> implements PropertyChangeListener {
@@ -94,7 +95,7 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 
 
 	public BenefitRiskWizardPM(Domain d) {
-		super(d);
+		super(d, d.getBenefitRiskAnalyses());
 		d_evidenceTypeHolder = new ModifiableHolder<BRAType>(BRAType.Synthesis);
 		d_analysisTypeHolder = new ModifiableHolder<AnalysisType>(AnalysisType.SMAA);
 		
@@ -138,5 +139,10 @@ public class BenefitRiskWizardPM extends AbstractWizardWithSelectableIndicationP
 		return d_includeDescriptives.getValue() ? d_decisionContext : null;
 	}
 
-
+	@Override
+	public BenefitRiskAnalysis<?> createAnalysis(String name) {
+		return d_evidenceTypeHolder.getValue().equals(BRAType.SingleStudy) ? 
+				d_studyCritAlt.createAnalysis(name, d_decisionContext) :
+				d_metaCritAlt.createAnalysis(name, d_decisionContext);
+	}
 }

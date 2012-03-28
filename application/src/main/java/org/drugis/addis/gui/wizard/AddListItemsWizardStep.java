@@ -211,6 +211,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 
 		private RenameDialog(Dialog owner, String title, boolean modal, int idx) {
 			super(owner, title, modal);
+			setLocationRelativeTo(owner);
 			d_idx = idx;
 			d_name = new ModifiableHolder<String>(d_pm.getList().get(d_idx).getName());
 			d_name.addValueChangeListener(new PropertyChangeListener() {

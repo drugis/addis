@@ -17,6 +17,11 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.12.2: Bugfix release.
+
+1.12.1: Input name of analyses in the first step of the wizard, not in a
+   pop-up dialog at the very end.
+
 1.12: Add [BRAT table][10] and its value tree to benefit-risk view,
    allow selection of baseline in benefit-risk analysis, enable BRAT
    description of benefit-risk analysis, improve performance of network
@@ -85,6 +90,20 @@ In order to compile ADDIS, you need:
  - Other dependencies should be downloaded automatically by Maven2
 
 Building is automatic with "mvn package".
+
+Developing ADDIS using Eclipse
+------------------------------
+
+First, let Maven configure your workspace for use with Maven:
+
+	$ mvn eclipse:configure-workspace -Declipse.workspace=WORKSPACE_DIR
+
+Use Maven to generate the eclipse project:
+
+	$ cd SOURCE_DIR
+	$ mvn eclipse:eclipse
+
+Then import the project into Eclipse (File -> Import -> Existing projects).
 
 License
 -------

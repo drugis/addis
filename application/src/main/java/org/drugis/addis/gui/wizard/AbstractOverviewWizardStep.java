@@ -24,13 +24,9 @@
 
 package org.drugis.addis.gui.wizard;
 
-import javax.swing.JOptionPane;
-
-import org.drugis.addis.entities.EntityIdExistsException;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
-import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 
 @SuppressWarnings("serial")
@@ -44,28 +40,8 @@ public abstract class AbstractOverviewWizardStep<G extends StudyGraphModel> exte
 		d_mainWindow = main;
 	}
 
-
 	@Override
-	public void applyState()
-	throws InvalidStateException {
-		saveAsAnalysis();
-	}
-
-	private void saveAsAnalysis() throws InvalidStateException {
-		String res = JOptionPane.showInputDialog(this.getTopLevelAncestor(),
-				"Input name for new analysis", 
-				"Save analysis", JOptionPane.QUESTION_MESSAGE);
-		if (res != null) {
-			try {
-				d_mainWindow.leftTreeFocus(d_pm.saveMetaAnalysis(res));
-			} catch (EntityIdExistsException e) {
-				JOptionPane.showMessageDialog(this.getTopLevelAncestor(), 
-						"There already exists an analysis with the given name, input another name",
-						"Unable to save analysis", JOptionPane.ERROR_MESSAGE);
-				saveAsAnalysis();
-			}
-		} else {
-			throw new InvalidStateException();
-		}
+	public void applyState() {
+		d_mainWindow.leftTreeFocus(d_pm.saveAnalysis());
 	}
 }

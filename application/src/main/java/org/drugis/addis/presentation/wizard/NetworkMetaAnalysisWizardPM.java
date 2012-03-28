@@ -148,7 +148,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	public NetworkMetaAnalysis createMetaAnalysis(String name) {
+	public NetworkMetaAnalysis createAnalysis(String name) {
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<Study> studies = getSelectedStudiesModel();

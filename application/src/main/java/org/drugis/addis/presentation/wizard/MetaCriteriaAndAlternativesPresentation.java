@@ -52,7 +52,6 @@ import org.drugis.common.beans.TransformedObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.validation.BooleanAndModel;
-import org.pietschy.wizard.InvalidStateException;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -248,7 +247,7 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	public BenefitRiskAnalysis<DrugSet> createAnalysis(String id, DecisionContext context) throws InvalidStateException {
+	public BenefitRiskAnalysis<DrugSet> createAnalysis(String id, DecisionContext context) {
 		DrugSet baseline = d_baselineModel.getValue();
 		List<DrugSet> alternatives = new ArrayList<DrugSet>(getSelectedAlternatives());
 		alternatives.remove(baseline);
