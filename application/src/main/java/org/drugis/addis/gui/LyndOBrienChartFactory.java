@@ -24,7 +24,9 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
 import org.drugis.addis.lyndobrien.AcceptabilityCurveDataset;
@@ -51,6 +53,9 @@ public class LyndOBrienChartFactory {
 		chart.getXYPlot().setDomainZeroBaselineVisible(true);
 		chart.getXYPlot().setRangeZeroBaselineVisible(true);
 		
+		// Explicitly set the stroke-width to avoid a rendering error in Linux
+		Stroke stroke = new BasicStroke(1.0f);
+		chart.getXYPlot().setDomainZeroBaselineStroke(stroke);
 		return chart;
 	}
 	
