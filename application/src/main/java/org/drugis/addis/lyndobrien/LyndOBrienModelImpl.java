@@ -32,16 +32,20 @@ import org.drugis.common.threading.AbstractIterativeComputation;
 import org.drugis.common.threading.IterativeTask;
 import org.drugis.common.threading.Task;
 
+import fi.smaa.common.RandomUtil;
+
 public class LyndOBrienModelImpl extends AbstractIterativeComputation implements LyndOBrienModel {
 	private BenefitRiskDistribution d_brd;
 	private static final int SIMULATION_ITERATIONS = 3000;
 	private static final int REPORTING_INTERVAL = 100;
 	private List<Sample> d_data;
 	private IterativeTask d_task;
+	private RandomUtil d_random;
 
 	public LyndOBrienModelImpl(BenefitRiskDistribution brd) {
 		super(SIMULATION_ITERATIONS);
 		d_brd = brd;
+		d_random = new RandomUtil();
 		d_data = new ArrayList<Sample>();
 		d_task = new IterativeTask(this, "Lynd & O'Brien Simulation");
 		d_task.setReportingInterval(REPORTING_INTERVAL);
@@ -85,7 +89,7 @@ public class LyndOBrienModelImpl extends AbstractIterativeComputation implements
 
 	@Override
 	public void doStep() {
-		d_data.add(d_brd.nextSample());
+		d_data.add(d_brd.nextSample(d_random));
 	}
 
 	public int getSimulationIterations() {
