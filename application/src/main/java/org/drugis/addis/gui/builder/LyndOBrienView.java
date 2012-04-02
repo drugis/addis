@@ -222,9 +222,8 @@ public class LyndOBrienView implements ViewBuilder {
 			Point point = e.getPoint();
 			Point2D.Double chartXY = convertToChartCoordinates(point);
 			
-	        // if the mouse is in the ZW or NE quadrant, change mu so that it is drawn through the mouse position
-	        if ((chartXY.x > 0 && chartXY.y > 0) ||
-	        	(chartXY.x < 0 && chartXY.y < 0)) {
+	        // if the mouse is in the positive quadrant, change mu so that it is drawn through the mouse position
+	        if (chartXY.x > 0 && chartXY.y > 0) {
 				double mu = chartXY.y / chartXY.x;
 				drawMuLine(getChart().getXYPlot(), mu);
 			}
