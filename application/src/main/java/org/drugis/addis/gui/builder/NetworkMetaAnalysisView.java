@@ -33,10 +33,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,6 +105,8 @@ import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.util.MCMCResultsWriter;
+import org.drugis.mtc.gui.*;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -596,34 +604,26 @@ implements ViewBuilder {
 	}
 	
 	private JButton createSaveDataButton() {
-		JButton button = new JButton("Save MTC Data Set");
-		button.setToolTipText("Save data set for analysis using drugis.org MTC");
+		JButton button = new JButton("Open in GeMTC");
+		button.setToolTipText("Open for analysis in drugis.org GeMTC");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "xml", "XML files") {
-					@Override
-					public void doAction(String path, String extension) {
-						writeXML(path, d_pm.getNetworkXML());
-					}
-				};
-				dialog.saveActions();
+				openGeMTC();
 			}
 		});
 		return button;
 	}
 	
-	private void writeXML(String path, String networkXML) {
-		try {
-			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(path));
-			out.write(networkXML);
-			out.close();
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	private void openGeMTC() { 
+		SwingUtilities.invokeLater(new Runnable() {		
+			public void run() {
+				InputStream networkXML = new ByteArrayInputStream(d_pm.getNetworkXML().getBytes());
+				MainWindow geMTC = new MainWindow(networkXML);
+				geMTC.setVisible(true);
+			}
+		});
 	}
-
+	
 	@SuppressWarnings("serial")
 	public JComponent buildStudyGraphPart() {
 		FormLayout layout = new FormLayout(

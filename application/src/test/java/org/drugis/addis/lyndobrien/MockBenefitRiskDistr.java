@@ -32,6 +32,8 @@ import java.util.StringTokenizer;
 
 import org.drugis.addis.entities.relativeeffect.AxisType;
 
+import fi.smaa.common.RandomUtil;
+
 public class MockBenefitRiskDistr implements BenefitRiskDistribution {
 	private double[][] d_samples;
 	private int d_currentSample = 0;
@@ -63,7 +65,7 @@ public class MockBenefitRiskDistr implements BenefitRiskDistribution {
 		return AxisType.LINEAR;
 	}
 
-	public Sample nextSample() {
+	public Sample nextSample(RandomUtil random) {
 		int idx = d_currentSample;
 		++d_currentSample;
 		return new Sample(d_samples[0][idx], d_samples[1][idx]); 
