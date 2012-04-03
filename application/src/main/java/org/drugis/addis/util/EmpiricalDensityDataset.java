@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.math.stat.descriptive.rank.Percentile;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MCMCResultsListener;
