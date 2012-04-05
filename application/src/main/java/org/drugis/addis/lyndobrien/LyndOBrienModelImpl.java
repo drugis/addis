@@ -45,7 +45,7 @@ public class LyndOBrienModelImpl extends AbstractIterativeComputation implements
 	public LyndOBrienModelImpl(BenefitRiskDistribution brd) {
 		super(SIMULATION_ITERATIONS);
 		d_brd = brd;
-		d_random = new RandomUtil();
+		d_random = RandomUtil.createWithRandomSeed();
 		d_data = new ArrayList<Sample>();
 		d_task = new IterativeTask(this, "Lynd & O'Brien Simulation");
 		d_task.setReportingInterval(REPORTING_INTERVAL);
