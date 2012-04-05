@@ -43,7 +43,6 @@ import javax.swing.SwingConstants;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.util.CopyrightInfo;
-import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
@@ -90,7 +89,7 @@ public class AboutDialog extends JDialog {
 
 		panel.add(licPanel, BorderLayout.CENTER);
 		JLabel label = new JLabel();
-		label.setIcon(ImageLoader.getIcon(FileNames.ICON_DOCTOR));
+		label.setIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_DOCTOR));
 		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.add(label, BorderLayout.EAST);
 		

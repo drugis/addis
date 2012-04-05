@@ -15,9 +15,9 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<drugis-common.version>0.4.9</drugis-common.version>
-		<jsmaa.version>0.8.5</jsmaa.version>
-		<mtc.version>0.12</mtc.version>
+		<drugis-common.version>0.5-SNAPSHOT</drugis-common.version>
+		<jsmaa.version>0.9-SNAPSHOT</jsmaa.version>
+		<mtc.version>0.12.1-SNAPSHOT</mtc.version>
 		<addis.schemaVersion>4</addis.schemaVersion>
 		<jung.version>2.0.1</jung.version>
  	</properties> 
@@ -89,6 +89,12 @@
 			<groupId>org.drugis.mtc</groupId>
 			<artifactId>mtc-mcmc</artifactId>
 			<version>${mtc.version}</version>
+			
+		</dependency>
+		<dependency>
+			<groupId>org.drugis.mtc</groupId>
+			<artifactId>mtc-gui</artifactId>
+			<version>${mtc.version}</version>	
 		</dependency>
 		<dependency>
 			<groupId>org.drugis.mtc</groupId>

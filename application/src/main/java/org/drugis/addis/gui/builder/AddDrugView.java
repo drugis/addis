@@ -37,10 +37,10 @@ import javax.swing.JTextField;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.util.AtcParser;
 import org.drugis.addis.util.RunnableReadyModel;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.ViewBuilder;
 
 import com.jgoodies.binding.PresentationModel;
@@ -71,7 +71,7 @@ public class AddDrugView implements ViewBuilder {
 		d_name.setColumns(15);
 		d_validator.add(d_name);
 		d_loadButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search ATC Code");
-		d_loadButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+		d_loadButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
 		d_atcCodeTextField = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
 		d_validator.add(d_atcCodeTextField);
 		

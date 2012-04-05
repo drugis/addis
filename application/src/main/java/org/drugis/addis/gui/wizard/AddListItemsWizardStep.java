@@ -47,11 +47,11 @@ import javax.swing.event.ListDataListener;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ListOfNamedValidator;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.AddListItemsPresentation;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
 import org.pietschy.wizard.PanelWizardStep;
@@ -176,7 +176,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel nameField = BasicComponentFactory.createLabel(getNameModel(idx));
 		namePanel.add(nameField);
-		JButton editNameButton = new JButton(ImageLoader.getIcon(FileNames.ICON_EDIT));
+		JButton editNameButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_EDIT));
 		editNameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showRenameDialog(idx);

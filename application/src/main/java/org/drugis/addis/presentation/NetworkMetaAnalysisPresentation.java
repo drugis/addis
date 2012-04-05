@@ -24,7 +24,6 @@
 
 package org.drugis.addis.presentation;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,7 @@ import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.model.JAXBHandler;
+import org.drugis.mtc.model.Network;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
@@ -98,16 +97,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	
 	public InconsistencyModel getInconsistencyModel() {
 		return getBean().getInconsistencyModel();
-	}
-
-	public String getNetworkXML() {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			JAXBHandler.writeNetwork(getBean().getNetwork(), out);
-			return out.toString("UTF-8");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public StudyGraphModel getStudyGraphModel() {
@@ -189,5 +178,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public boolean isContinuous() {
 		return getBean().isContinuous();
+	}
+
+	public Network getNetwork() {
+		return getBean().getNetwork();
 	}
 }
