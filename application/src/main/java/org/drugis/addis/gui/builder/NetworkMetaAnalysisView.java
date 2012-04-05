@@ -33,16 +33,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +60,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.ConvergencePlotsDialog;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
@@ -83,7 +79,6 @@ import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
@@ -101,12 +96,11 @@ import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.util.MCMCResultsWriter;
-import org.drugis.mtc.gui.*;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -227,7 +221,7 @@ implements ViewBuilder {
 		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
 		
 		builder.add(memory, cc.xy(4, row));
-		JButton clearButton = new JButton(ImageLoader.getIcon(FileNames.ICON_DELETE));
+		JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		clearButton.setToolTipText("Clear results");
 		Bindings.bind(clearButton, "enabled", resultsAvailableModel);
 		clearButton.addActionListener(new ActionListener() {
@@ -239,7 +233,7 @@ implements ViewBuilder {
 			}
 		});
 		builder.add(clearButton, cc.xy(6, row));
-		final JButton saveButton = new JButton(ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
+		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		saveButton.setToolTipText("Save to R-file");
 		Bindings.bind(saveButton, "enabled", resultsAvailableModel);
 		saveButton.addActionListener(buildRButtonActionListener(model));
@@ -474,7 +468,7 @@ implements ViewBuilder {
 	}
 
 	private Component buildNodeSplitRunAllButton() {
-		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setText("Run all node-split models");
 		button.setToolTipText("Run all simulations");
 		final List<Task> tasks = new ArrayList<Task>();

@@ -43,7 +43,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.common.ImageLoader;
+import org.drugis.addis.gui.Main;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -88,7 +88,7 @@ public class NotesView extends JPanel {
 		if (d_editable) {
 			final ValueModel model = new ValueHolder(DEFAULT_NOTE_TEXT);
 			JScrollPane editNote = AuxComponentFactory.createTextArea(model, true);
-			final JButton addNoteButton = new JButton(ImageLoader.getIcon(FileNames.ICON_NOTE_NEW));
+			final JButton addNoteButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_NOTE_NEW));
 			addNoteButton.setEnabled(false);
 			
 			final JTextArea area = (JTextArea) editNote.getViewport().getView();
