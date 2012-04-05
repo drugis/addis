@@ -72,7 +72,6 @@ import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.BrowserLaunch;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
@@ -318,7 +317,7 @@ public class AuxComponentFactory {
 	}
 
 	public static JButton createStartButton(final Task task) {
-		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

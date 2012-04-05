@@ -44,12 +44,12 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntityTablePanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SummaryCellRenderer;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.task.TaskProgressBar;
@@ -123,7 +123,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 	}
 	
 	private JButton createRunAllButton() {
-		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setText("Run all required sub-analyses");
 		button.setToolTipText("Run all simulations");
 		button.addActionListener(new ActionListener() {
