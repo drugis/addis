@@ -62,6 +62,7 @@ import org.drugis.common.threading.event.TaskFailedEvent;
 
 @SuppressWarnings("serial")
 public class Main extends AbstractObservable {
+	public static final ImageLoader IMAGELOADER = new ImageLoader("/org/drugis/addis/gfx/");
 	public static class ErrorDialogExceptionHandler {
 		public void handle(Throwable e) {
 			e.printStackTrace();
@@ -85,7 +86,6 @@ public class Main extends AbstractObservable {
 
 	public Main(String[] args, boolean headless) {
 		d_headless = headless;
-		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		
 		if (!d_headless) {
 			GUIHelper.initializeLookAndFeel();

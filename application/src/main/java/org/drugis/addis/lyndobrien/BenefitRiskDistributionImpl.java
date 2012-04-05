@@ -33,6 +33,7 @@ import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 
+import fi.smaa.common.RandomUtil;
 import fi.smaa.jsmaa.model.CardinalMeasurement;
 
 /**
@@ -122,9 +123,9 @@ public class BenefitRiskDistributionImpl<Alternative extends Entity> implements 
 	}
 
 	
-	public Sample nextSample() {
-		return new Sample(d_benefitMultiplier * (d_subjBenefit.sample() - d_baseBenefit.sample()),
-				          d_riskMultiplier * (d_subjRisk.sample() - d_baseRisk.sample()));
+	public Sample nextSample(RandomUtil random) {
+		return new Sample(d_benefitMultiplier * (d_subjBenefit.sample(random) - d_baseBenefit.sample(random)),
+				          d_riskMultiplier * (d_subjRisk.sample(random) - d_baseRisk.sample(random)));
 	}
 
 }

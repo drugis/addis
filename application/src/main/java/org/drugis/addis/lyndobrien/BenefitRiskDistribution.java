@@ -24,6 +24,8 @@
 
 package org.drugis.addis.lyndobrien;
 
+import fi.smaa.common.RandomUtil;
+
 
 public interface BenefitRiskDistribution {
 	public class Sample {
@@ -36,7 +38,7 @@ public interface BenefitRiskDistribution {
 		}
 	}
 	
-	public Sample nextSample();
+	public Sample nextSample(RandomUtil random);
 	public String getBenefitAxisName();
 	public String getRiskAxisName();
 }

@@ -100,6 +100,7 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.ErrorDialog;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.gui.components.MeasurementTable;
@@ -116,7 +117,6 @@ import org.drugis.addis.presentation.wizard.StudyActivityPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
 import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.addis.util.RunnableReadyModel;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.AbstractWizardModel;
@@ -822,7 +822,7 @@ public class AddStudyWizard extends Wizard {
 			inputField.setToolTipText("You can enter multiple PubMed IDs delimited by comma");
 			
 			final JButton d_importButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search PubMed ID based on the trial ID");
-			d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+			d_importButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
 			d_importButton.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent arg0) {
 					PubMedIdsRetriever pubMedRetriever = new PubMedIdsRetriever(d_importButton);
@@ -1043,13 +1043,13 @@ public class AddStudyWizard extends Wizard {
 		
 		public class StartLoadingAnimation implements Runnable {
 			public void run() {
-				d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_LOADING));
+				d_importButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
 				d_importButton.setEnabled(false);
 			}
 		}
 		public class StopLoadingAnimation implements Runnable {
 			public void run() {
-				d_importButton.setDisabledIcon(ImageLoader.getIcon(FileNames.ICON_IMPORT));
+				d_importButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_IMPORT));
 				d_importButton.setEnabled(true);
 			}		 
 		}
@@ -1137,7 +1137,7 @@ public class AddStudyWizard extends Wizard {
        
        // The image must first be wrapped in a style
        Style style = doc.addStyle("tip", null);
-       StyleConstants.setIcon(style, ImageLoader.getIcon(FileNames.ICON_TIP)); 
+       StyleConstants.setIcon(style, Main.IMAGELOADER.getIcon(FileNames.ICON_TIP)); 
 	}
 
 }
