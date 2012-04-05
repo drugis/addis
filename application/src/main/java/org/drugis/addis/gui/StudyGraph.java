@@ -51,7 +51,7 @@ import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
 public class StudyGraph extends JPanel {
 	protected StudyGraphModel d_pm;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected JGraphModelAdapter d_model;
 	private AttributeMap d_vertexAttributes;
 
@@ -68,7 +68,7 @@ public class StudyGraph extends JPanel {
 		CellConstants.setBorder(d_vertexAttributes, BorderFactory.createLineBorder(Color.BLACK, 2));
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void layoutGraph() {
 		// in the JGraphModelAdapter, the Vertex size is set. Therefore, this must be done every time the graph is redrawn
 		d_model = new JGraphModelAdapter<Vertex, Edge>(d_pm);

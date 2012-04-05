@@ -537,7 +537,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return extractVariables(getStudyOutcomeMeasures(type));
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> getStudyOutcomeMeasures(Class<T> type) {
 		if (type == Endpoint.class) {
 			return (ObservableList) getEndpoints();

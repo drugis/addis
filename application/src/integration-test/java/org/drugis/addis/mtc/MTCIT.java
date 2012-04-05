@@ -43,10 +43,9 @@ public class MTCIT {
 	private Network d_network;
 	private InconsistencyModel d_model;
 
-    @SuppressWarnings("unchecked")
 	@Before
     public void setUp() {
-    	d_builder = new DichotomousNetworkBuilder();
+    	d_builder = new DichotomousNetworkBuilder<String>();
         d_builder.add("1", "A", 5, 100);
         d_builder.add("1", "B", 23, 100);
         d_builder.add("2", "B", 12, 43);

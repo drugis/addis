@@ -48,7 +48,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class PropertyListHolder<E> extends ModifiableHolder<List<E>> implements PropertyChangeListener {
 	private final AbstractValueModel d_vm;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public PropertyListHolder(Object bean, String propertyName, Class<E> objType) {
 		PresentationModel pm = new PresentationModel(bean);
 		d_vm = pm.getModel(propertyName);
@@ -73,7 +73,7 @@ public class PropertyListHolder<E> extends ModifiableHolder<List<E>> implements 
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<E> getValue() {
 		if (d_vm.getValue() instanceof Set) {

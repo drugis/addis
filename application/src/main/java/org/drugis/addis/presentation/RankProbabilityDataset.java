@@ -47,7 +47,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 		d_summary.addPropertyChangeListener(listener);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public int getRowIndex(Comparable key) {
 		if (!(key instanceof String)) {
@@ -61,7 +61,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 		return idx;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public int getColumnIndex(Comparable key) {
 		if (!(key instanceof String) && !(key instanceof Treatment)) {
@@ -121,7 +121,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 		return d_summary.getValue(d_summary.getTreatments().get(column), row + 1);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Number getValue(Comparable rowKey, Comparable columnKey) {
 		return getValue(getRowIndex(rowKey), getColumnIndex(columnKey));

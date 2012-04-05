@@ -47,7 +47,7 @@ import org.junit.Test;
 
 import com.jgoodies.binding.PresentationModel;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class PresentationModelFactoryTest {
 	
 	private PresentationModelFactory d_manager;

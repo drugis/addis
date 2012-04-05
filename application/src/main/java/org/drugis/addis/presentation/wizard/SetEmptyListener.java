@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.drugis.addis.presentation.ModifiableHolder;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class SetEmptyListener implements PropertyChangeListener {
 	private List<ModifiableHolder> holders;
 	

@@ -63,7 +63,7 @@ public class PresentationModelFactory {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> PresentationModel<T> getModel(T obj) {
 		PresentationModel mod = d_cache.get(obj);
 		if ((mod != null) && (mod.getBean() == obj)) {
@@ -79,7 +79,7 @@ public class PresentationModelFactory {
 		d_cache.clear();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof Variable) {
 			return new VariablePresentation((Variable)obj,

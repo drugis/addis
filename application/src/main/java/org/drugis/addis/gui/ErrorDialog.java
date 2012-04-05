@@ -48,7 +48,6 @@ public class ErrorDialog {
 		"Attaching the stack trace and the .addis data file would be very helpful.<br/>" +
 		"See <a href=\"http://drugis.org/addis-bug\">http://drugis.org/addis-bug</a> for instructions.<br/><br/>" +
 		"Consider restarting ADDIS.</html>";
-	private static final long serialVersionUID = 954780612211006478L;
 
 	public static void showDialog(final Throwable e, String title) {
 		showDialog(e, title, e.getMessage(), true);
