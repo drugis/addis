@@ -33,11 +33,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -611,8 +609,7 @@ implements ViewBuilder {
 	private void openGeMTC() { 
 		SwingUtilities.invokeLater(new Runnable() {		
 			public void run() {
-				InputStream networkXML = new ByteArrayInputStream(d_pm.getNetworkXML().getBytes());
-				MainWindow geMTC = new MainWindow(networkXML);
+				MainWindow geMTC = new MainWindow(d_pm.getNetwork());
 				geMTC.setVisible(true);
 			}
 		});
