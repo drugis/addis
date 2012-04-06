@@ -93,9 +93,28 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		throw new IllegalArgumentException("Unhandled distribution: " + re);
 	}
 	
+	public SMAAModel createStudyBenefitRiskModel(StudyBenefitRiskAnalysis brAnalysis) {
+		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
+		addCriteriaAndAlternatives(smaaModel, brAnalysis);
+
+		for (Arm a : brAnalysis.getAlternatives()) {
+		}
+		return smaaModel;
+	}
+	
+	public void addCriteriaAndAlternatives(SMAAModel smaaModel, BenefitRiskAnalysis<AltType> brAnalysis) {
+		for (AltType a : brAnalysis.getAlternatives()) {
+			smaaModel.addAlternative(getAlternative(brAnalysis, a));
+		}
+		for (OutcomeMeasure om : brAnalysis.getCriteria()) {
+			CardinalCriterion crit = getCriterion(om);
+			smaaModel.addCriterion(crit);
+		}
+	}
+	
 	public SMAAModel createSmaaModel(BenefitRiskAnalysis<AltType> brAnalysis) {
 		SMAAModel smaaModel = new SMAAModel(brAnalysis.getName());
-				
+			
 		for (AltType a : brAnalysis.getAlternatives()) {
 			smaaModel.addAlternative(getAlternative(brAnalysis, a));
 		}
@@ -132,8 +151,7 @@ public class SMAAEntityFactory<AltType extends Entity> {
 		return smaaModel;
 	}
 
-	private Alternative getAlternative(BenefitRiskAnalysis<AltType> brAnalysis,
-			AltType a) {
+	private Alternative getAlternative(BenefitRiskAnalysis<AltType> brAnalysis, AltType a) {
 		Alternative alternative;
 		if (brAnalysis instanceof StudyBenefitRiskAnalysis) {
 			alternative = getAlternative(((StudyBenefitRiskAnalysis)brAnalysis).getStudy(), (Arm)a);
