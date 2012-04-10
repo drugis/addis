@@ -264,6 +264,17 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get a summary of the effects on the given criterion of the non-baseline alternatives relative to the baseline.
+	 * @param om The criterion to get the summary for.
+	 * @return A MultivariateNormalSummary (mean and covariance) of the relative effects.
+	 * @see MetaBenefitRiskAnalysis#getNonBaselineAlternatives() The non-baseline alternatives.
+	 * @see MetaBenefitRiskAnalysis#getBaseline() The baseline.
+	 */
+	public MultivariateNormalSummary getRelativeEffectsSummary(OutcomeMeasure om) {
+		return d_relativeEffects.get(findMetaAnalysis(om));
+	}
 
 	private GaussianBase createDistribution(OutcomeMeasure om, double mu, double sigma) {
 		return (om.getVariableType() instanceof RateVariableType) ? new LogGaussian(mu, sigma) : new Gaussian(mu, sigma);

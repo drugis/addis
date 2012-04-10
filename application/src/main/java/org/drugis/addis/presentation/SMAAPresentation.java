@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.util.JSMAAintegration.AbstractBenefitRiskSMAAFactory;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
 import org.drugis.common.gui.task.TaskProgressModel;
@@ -47,6 +48,7 @@ import fi.smaa.jsmaa.model.SMAAModelListener;
 import fi.smaa.jsmaa.model.xml.JSMAABinding;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
+import fi.smaa.jsmaa.simulator.SMAASimulation;
 
 public class SMAAPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> 
 {
@@ -60,7 +62,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	protected CentralWeightTableModel d_cwTM;
 	protected PreferencePresentationModel d_prefPresModel;
 	protected SMAAModel d_smaaModel;
-	protected SMAAEntityFactory<Alternative> d_smaaf;
+	protected AbstractBenefitRiskSMAAFactory<Alternative> d_smaaf;
 	private ValueHolder<Boolean> d_initializedModel= new ModifiableHolder<Boolean>(false);
 
 	private TaskProgressModel d_progressModel = new TaskProgressModel(new NullTask());
@@ -69,12 +71,12 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 
 	public SMAAPresentation(AnalysisType a) {
 		d_a = a;
+		d_smaaf = SMAAEntityFactory.createFactory(d_a);
 		d_buildQueue = new BuildQueue();
 	}
 
 	public void startSMAA() {
-		d_smaaf = new SMAAEntityFactory<Alternative>();
-		d_smaaModel = d_smaaf.createSmaaModel(d_a);
+		d_smaaModel = d_smaaf.createSMAAModel();
 		SMAA2Results emptyResults = new SMAA2Results(d_smaaModel.getAlternatives(), d_smaaModel.getCriteria(), 10);
 		d_rankAccepDS = new RankAcceptabilitiesDataset(emptyResults);
 		d_rankAccepTM = new RankAcceptabilityTableModel(emptyResults);
