@@ -65,7 +65,9 @@ public class LyndOBrienModelImpl extends AbstractIterativeComputation implements
 
 	public Double getPValue(double mu) {
 		double belowMu = 0;
-		for(Sample s: d_data) {
+		final int n = d_data.size();
+		for(int i = 0; i < n; ++i) {
+			Sample s = d_data.get(i);
 			if(s.benefit < 0) {
 				if((s.risk / s.benefit) > mu) {
 					++belowMu;
@@ -80,7 +82,7 @@ public class LyndOBrienModelImpl extends AbstractIterativeComputation implements
 				}
 			}
 		}
-		return belowMu / d_data.size();
+		return belowMu / n;
 	}
 
 	public Task getTask() {
