@@ -38,13 +38,6 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 			CriterionMeasurement m = createMeasurement(smaaModel.getAlternatives(), om);
 			measurements.setCriterionMeasurement(getCriterion(om), m);
 		}
-		System.out.println(measurements.getCriterionMeasurement(smaaModel.getCriteria().get(1)));
-		System.out.println(((PerCriterionMeasurements) smaaModel.getMeasurements()).getCriterionMeasurement(smaaModel.getCriteria().get(1)));
-		final SMAAModel clone = smaaModel.deepCopy();
-		final CriterionMeasurement criterionMeasurement = ((PerCriterionMeasurements) clone.getMeasurements()).getCriterionMeasurement(clone.getCriteria().get(1));
-		System.out.println(criterionMeasurement);
-		System.out.println(((RelativeLogitGaussianCriterionMeasurement)criterionMeasurement).getGaussianMeasurement().getRelativeMeasurement().getCovarianceMatrix());
-		System.out.println(criterionMeasurement.getRange());
 		return smaaModel;
 	}
 
