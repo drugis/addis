@@ -27,7 +27,6 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,8 +40,6 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
@@ -50,7 +47,6 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -144,11 +140,6 @@ public class NetworkTableModelTest {
 		normalSummary.resultsEvent(new MCMCResultsEvent(null));
 		
 		EasyMock.verify(mock);
-	}
-	
-	private String distributionToString(Distribution distr) {
-		DecimalFormat df = new DecimalFormat("##0.00");
-		return "" + df.format(distr.getQuantile(0.50)) + " (" + df.format(distr.getQuantile(0.025)) + ", " + df.format(distr.getQuantile(0.975)) +")"; 
 	}
 	
 	@SuppressWarnings("unchecked")

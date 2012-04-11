@@ -48,7 +48,7 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.parameterization.BasicParameter;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -96,9 +96,11 @@ public class NetworkMetaAnalysisTest {
 		Drug base = ExampleData.buildDrugFluoxetine();
 		Drug subj = ExampleData.buildDrugParoxetine();
 		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(new DrugSet(base), new DrugSet(subj), BasicOddsRatio.class);
-		NormalSummary summary = d_mockAnalysis.getNormalSummary(d_mockAnalysis.getConsistencyModel(), 
+		QuantileSummary summary = d_mockAnalysis.getQuantileSummary(d_mockAnalysis.getConsistencyModel(), 
 				new BasicParameter(d_mockAnalysis.getTreatment(new DrugSet(base)), d_mockAnalysis.getTreatment(new DrugSet(subj))));
-		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary.getMean(), summary.getStandardDeviation());
+		double mean = summary.getQuantile(1);
+		double stdev = (summary.getQuantile(2) - mean) / 1.960 ;
+		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(mean, stdev);
 		assertNotNull(expected);
 		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
