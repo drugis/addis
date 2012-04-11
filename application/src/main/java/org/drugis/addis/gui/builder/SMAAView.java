@@ -120,6 +120,8 @@ public class SMAAView implements ViewBuilder  {
 				dialog.saveActions();
 			}
 		});
+		expButton.setEnabled(false);
+		expButton.setToolTipText("Temporarily disabled, while JSMAA is under development.");
 		return expButton;
 	}
 
