@@ -36,7 +36,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -50,15 +49,11 @@ import fi.smaa.jsmaa.model.IndependentMeasurements;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
-	private MetaBenefitRiskAnalysis d_brAnalysis;
-	
 	private StudyBenefitRiskSMAAFactory d_smaaFactoryArm;
 	private StudyBenefitRiskAnalysis d_brAnalysisStudy;
 
 	@Before
 	public void setup() {
-		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
-		
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointCgi());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());

@@ -48,7 +48,6 @@ import fi.smaa.jsmaa.model.SMAAModelListener;
 import fi.smaa.jsmaa.model.xml.JSMAABinding;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
-import fi.smaa.jsmaa.simulator.SMAASimulation;
 
 public class SMAAPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> 
 {
