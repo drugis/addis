@@ -36,10 +36,10 @@ import com.jgraph.components.labels.MultiLineVertexView;
 @SuppressWarnings("serial")	
 public class MyDefaultCellViewFactory extends DefaultCellViewFactory {
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private JGraphModelAdapter d_model;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public MyDefaultCellViewFactory(JGraphModelAdapter model) {
 		this.d_model = model;
 	}

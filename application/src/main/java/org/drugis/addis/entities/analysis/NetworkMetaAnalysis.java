@@ -256,7 +256,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return summary;
 	}
 	
-	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip){
+	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip) {
 		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
 		if (summary == null) {
 			summary = new NormalSummary(networkModel.getResults(), ip);

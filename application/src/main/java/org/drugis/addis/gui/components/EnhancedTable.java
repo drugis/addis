@@ -56,7 +56,6 @@ public class EnhancedTable extends JTable {
 			return d_defaultRenderer.getTableCellRendererComponent(table, getDescription(value, false), isSelected, hasFocus, row, column);
 		}
 
-		@SuppressWarnings("unchecked")
 		private String getDescription(Object value, boolean nested) {
 			if (value instanceof Entity) {
 				return ((Entity)value).getLabel();

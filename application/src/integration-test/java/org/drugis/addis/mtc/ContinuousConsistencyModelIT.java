@@ -43,10 +43,9 @@ public class ContinuousConsistencyModelIT {
 		private Network d_network;
 		private ConsistencyModel d_model;
 
-	    @SuppressWarnings("unchecked")
 		@Before
 	    public void setUp() {
-	        d_builder = new ContinuousNetworkBuilder();
+	        d_builder = new ContinuousNetworkBuilder<String>();
 	        d_builder.add("1", "A", 12.0, 3.0, 100);
 	        d_builder.add("1", "B", 23.0, 2.0, 100);
 	        d_builder.add("2", "B", 12.1, 9.0, 43);

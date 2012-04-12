@@ -58,7 +58,7 @@ public class MetaBenefitRiskAnalysisTest {
 		d_BRAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testEquals(){
 		assertFalse(d_BRAnalysis.equals("nope, no meta Analysis"));
@@ -69,7 +69,7 @@ public class MetaBenefitRiskAnalysisTest {
 		assertTrue(d_BRAnalysis.equals(d_BRAnalysis));
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Test 
 	public void testCompareTo(){
 		assertTrue(d_BRAnalysis.compareTo(null) > 0);

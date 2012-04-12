@@ -89,7 +89,6 @@ public class PropertyListHolderTest {
 		EasyMock.verify(mockListener);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testListHolderSetsValuesInUnderlyingProperty() {
 		Study study = new Study("X", new Indication(8L, "EIGHT"));
@@ -108,7 +107,7 @@ public class PropertyListHolderTest {
 	
 	// FIXME: tests below should test for proper support of PROPERTY that is a Set rather than a List.
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testListHolderSetsValuesInUnderlyingSetProperty() {
 		ValueModel valueHolderModel = new ValueHolder(new HashSet<String>());

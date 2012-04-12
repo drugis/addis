@@ -65,7 +65,7 @@ public class MockGraphics2D extends AbstractGraphics2D {
 		JUnitUtil.assertAllAndOnly(d_expected, d_actual);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void addRenderingHints(Map arg0) {
 		throw new RuntimeException("Not Implemented");
@@ -143,7 +143,7 @@ public class MockGraphics2D extends AbstractGraphics2D {
 		throw new RuntimeException("Not Implemented");
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void setRenderingHints(Map arg0) {
 		throw new RuntimeException("Not Implemented");

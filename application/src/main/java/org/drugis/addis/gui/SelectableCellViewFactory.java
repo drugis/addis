@@ -39,7 +39,7 @@ public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 
 	private ObservableList<DrugSet> d_selectedDrugs;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public SelectableCellViewFactory(JGraphModelAdapter model, ObservableList<DrugSet> observableList) {
 		super(model);
 		

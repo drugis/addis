@@ -24,101 +24,119 @@
 
 package org.drugis.addis.util.JSMAAintegration;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
 import org.junit.Before;
 import org.junit.Test;
 
 import fi.smaa.jsmaa.model.BetaMeasurement;
-import fi.smaa.jsmaa.model.CardinalCriterion;
-import fi.smaa.jsmaa.model.CardinalMeasurement;
 import fi.smaa.jsmaa.model.GaussianMeasurement;
-import fi.smaa.jsmaa.model.LogNormalMeasurement;
-import fi.smaa.jsmaa.model.RelativeLogitNormalMeasurement;
+import fi.smaa.jsmaa.model.IndependentMeasurements;
 import fi.smaa.jsmaa.model.SMAAModel;
 
 public class SMAAEntityFactoryTest {
-	private SMAAEntityFactory<DrugSet> d_smaaFactory;
-	private MetaBenefitRiskAnalysis d_brAnalysis;
-	
-	private SMAAEntityFactory<Arm> d_smaaFactoryArm;
+	private StudyBenefitRiskSMAAFactory d_smaaFactoryArm;
 	private StudyBenefitRiskAnalysis d_brAnalysisStudy;
 
 	@Before
 	public void setup() {
-		d_smaaFactory = new SMAAEntityFactory<DrugSet>();
-		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
-		
-		d_smaaFactoryArm = new SMAAEntityFactory<Arm>();
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointCgi());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
 		List<Arm> alternatives = ExampleData.buildStudyChouinard().getArms();
 		d_brAnalysisStudy = new StudyBenefitRiskAnalysis("Study Analysis", ExampleData.buildIndicationDepression(),
 				ExampleData.buildStudyChouinard(), criteria, alternatives, AnalysisType.SMAA);
+		d_smaaFactoryArm = new StudyBenefitRiskSMAAFactory(d_brAnalysisStudy);
 	}
 	
 	@Test
-	public void testCreateCardinalMeasurementRate() {
-		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new DrugSet(ExampleData.buildDrugFluoxetine()));
-		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
-		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
-		assertTrue(actual instanceof LogNormalMeasurement);
-		assertEquals(Math.log(relativeEffect.getQuantile(0.50)),((LogNormalMeasurement) actual).getMean(), 0.0001);
-		assertEquals(relativeEffect.getSigma(),((LogNormalMeasurement) actual).getStDev(), 0.0001);
+	public void testCreateMeanVector() {
+		DrugSet a1 = new DrugSet(ExampleData.buildDrugFluoxetine());
+		DrugSet a2 = new DrugSet(ExampleData.buildDrugParoxetine());
+		DrugSet a3 = new DrugSet(ExampleData.buildDrugEscitalopram());
+		DrugSet a4 = new DrugSet(ExampleData.buildDrugSertraline());
+		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
+		double m[] = new double [] {1.2, 0.3, -8.4};
+		assertArrayEquals(new double[] {0.0, m[0], m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a1, m), 0.0);
+		assertArrayEquals(new double[] {m[0], 0.0, m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a2, m), 0.0);
+		assertArrayEquals(new double[] {m[0], m[1], m[2], 0.0}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a4, m), 0.0);
 	}
-	
 	
 	@Test
-	public void testCreateSmaaModel() {
-		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
-		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
-			for(DrugSet d : d_brAnalysis.getDrugs()){
-				if (d.equals(d_brAnalysis.getBaseline()))
-					continue;
-				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));
-				GaussianBase relDistr = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(om, d);
-				GaussianBase basDistr = (GaussianBase) d_brAnalysis.getBaselineDistribution(om);
-				assertTrue(actualMeasurement instanceof RelativeLogitNormalMeasurement);
-				assertEquals(relDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getMean(), 0.0001);
-				assertEquals(relDistr.getSigma(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getStDev(), 0.0001);
-				assertEquals(basDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getBaseline().getMean(), 0.0001);
-				assertEquals(basDistr.getSigma(), ((RelativeLogitNormalMeasurement) actualMeasurement).getBaseline().getStDev(), 0.0001);
-			}
-		}
+	public void testCreateCovarianceMatrix() {
+		DrugSet a1 = new DrugSet(ExampleData.buildDrugFluoxetine());
+		DrugSet a2 = new DrugSet(ExampleData.buildDrugParoxetine());
+		DrugSet a3 = new DrugSet(ExampleData.buildDrugEscitalopram());
+		DrugSet a4 = new DrugSet(ExampleData.buildDrugSertraline());
+		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
+		double m[][] = new double [][] {{1.2, 0.3, -8.4}, {1.8, -1.4, 0.5}, {1.0, 0.3, 0.4}};
+		
+		double m1[][] = new double[][] {{0.0, 0.0, 0.0, 0.0}, {0.0, 1.2, 0.3, -8.4}, {0.0, 1.8, -1.4, 0.5}, {0.0, 1.0, 0.3, 0.4}};
+		double m3[][] = new double[][] {{1.2, 0.3, 0.0, -8.4}, {1.8, -1.4, 0.0, 0.5}, {0.0, 0.0, 0.0, 0.0}, {1.0, 0.3, 0.0, 0.4}};
+		assertArrayEquals(m1, MetaBenefitRiskSMAAFactory.createCovarianceMatrix(alts, a1, m));
+		assertArrayEquals(m3, MetaBenefitRiskSMAAFactory.createCovarianceMatrix(alts, a3, m));
 	}
-	
-	@Test 
-	public void testGetOutcomeMeasure() {
-		d_smaaFactory.createSmaaModel(d_brAnalysis);
-		for (OutcomeMeasure om : d_brAnalysis.getCriteria()) {
-			CardinalCriterion crit = d_smaaFactory.getCriterion(om);
-			assertEquals(om, d_smaaFactory.getOutcomeMeasure(crit));
-		}
-	}
+//	
+//	@Test
+//	public void testCreateCardinalMeasurementRate() {
+//		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new DrugSet(ExampleData.buildDrugFluoxetine()));
+//		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
+//		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
+//		assertTrue(actual instanceof LogNormalMeasurement);
+//		assertEquals(Math.log(relativeEffect.getQuantile(0.50)),((LogNormalMeasurement) actual).getMean(), 0.0001);
+//		assertEquals(relativeEffect.getSigma(),((LogNormalMeasurement) actual).getStDev(), 0.0001);
+//	}
+//	
+//	
+//	@Test
+//	public void testCreateSmaaModel() {
+//		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
+//		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
+//			for(DrugSet d : d_brAnalysis.getDrugs()){
+//				if (d.equals(d_brAnalysis.getBaseline()))
+//					continue;
+//				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getImpactMatrix().getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));
+//				GaussianBase relDistr = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(om, d);
+//				GaussianBase basDistr = (GaussianBase) d_brAnalysis.getBaselineDistribution(om);
+//				assertTrue(actualMeasurement instanceof RelativeLogitNormalMeasurement);
+//				assertEquals(relDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getMean(), 0.0001);
+//				assertEquals(relDistr.getSigma(), ((RelativeLogitNormalMeasurement) actualMeasurement).getRelative().getStDev(), 0.0001);
+//				assertEquals(basDistr.getMu(), ((RelativeLogitNormalMeasurement) actualMeasurement).getBaseline().getMean(), 0.0001);
+//				assertEquals(basDistr.getSigma(), ((RelativeLogitNormalMeasurement) actualMeasurement).getBaseline().getStDev(), 0.0001);
+//			}
+//		}
+//	}
+//	
+//	@Test 
+//	public void testGetOutcomeMeasure() {
+//		d_smaaFactory.createSmaaModel(d_brAnalysis);
+//		for (OutcomeMeasure om : d_brAnalysis.getCriteria()) {
+//			CardinalCriterion crit = d_smaaFactory.getCriterion(om);
+//			assertEquals(om, d_smaaFactory.getOutcomeMeasure(crit));
+//		}
+//	}
 	
 	@Test
 	public void testCreateSmaaModelStudy() {
-		SMAAModel smaaModel = d_smaaFactoryArm.createSmaaModel(d_brAnalysisStudy);
+		SMAAModel smaaModel = d_smaaFactoryArm.createSMAAModel();
 		for(OutcomeMeasure om : d_brAnalysisStudy.getCriteria()){
 			for(Arm d : d_brAnalysisStudy.getAlternatives()){
 				fi.smaa.jsmaa.model.Measurement actualMeasurement = 
-					smaaModel.getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d_brAnalysisStudy.getStudy(), d));
+					((IndependentMeasurements) smaaModel.getMeasurements()).getMeasurement(d_smaaFactoryArm.getCriterion(om), d_smaaFactoryArm.getAlternative(d));
 				Distribution expDistribution = d_brAnalysisStudy.getMeasurement(om, d);
 				if (om.equals(ExampleData.buildEndpointCgi())) {
 					TransformedStudentTBase expected = (TransformedStudentTBase)expDistribution;

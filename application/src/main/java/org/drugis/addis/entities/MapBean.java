@@ -94,7 +94,7 @@ abstract public class MapBean<K, V> extends AbstractEntity implements Map<K, V> 
 		return d_map.values();
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean equals(Object obj) {
 		if(obj != null && obj instanceof MapBean) {
 			MapBean other = (MapBean) obj;

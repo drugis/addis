@@ -69,13 +69,13 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 public class SMAAView implements ViewBuilder  {
 	public static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private SMAAPresentation d_pm;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private final AbstractBenefitRiskPresentation d_BRpm;
 	private final AddisWindow d_mainWindow;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public SMAAView(AbstractBenefitRiskPresentation pm, AddisWindow mainWindow) {
 		d_pm = pm.getSMAAPresentation();
 		d_mainWindow = mainWindow;
