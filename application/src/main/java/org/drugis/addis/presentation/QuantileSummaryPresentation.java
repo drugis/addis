@@ -35,7 +35,8 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class QuantileSummaryPresentation extends PresentationModel<QuantileSummary> implements LabeledPresentation {
-
+	private boolean d_transformContinuous = true;
+	
 	public class LabelModel extends DefaultLabelModel {
 		
 		public LabelModel() {
@@ -55,7 +56,7 @@ public class QuantileSummaryPresentation extends PresentationModel<QuantileSumma
 		}
 
 		private double transformContinuous(double val) {
-			return getBean().isContinuous() ? val : Math.exp(val);
+			return (getBean().isContinuous()  || !doTransformContinuous()) ? val : Math.exp(val);
 		}
 	}
 	
@@ -70,6 +71,14 @@ public class QuantileSummaryPresentation extends PresentationModel<QuantileSumma
 	@Override
 	public String toString() {
 		return (String) getLabelModel().getValue();
+	}
+
+	public boolean doTransformContinuous() {
+		return d_transformContinuous;
+	}
+
+	public void setTransformContinuous(boolean transform) {
+		d_transformContinuous = transform;
 	}
 
 }
