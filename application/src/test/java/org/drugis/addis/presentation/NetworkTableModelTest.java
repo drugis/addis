@@ -27,7 +27,6 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,17 +40,14 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
-import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
-import org.drugis.addis.mocks.MockNormalSummary;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -122,8 +118,8 @@ public class NetworkTableModelTest {
 				} else {
 					Treatment t1 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(i));
 					Treatment t2 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(j));
-					NormalSummary relEffect = d_analysis.getNormalSummary(model, model.getRelativeEffect(t1, t2));
-					assertEquals(distributionToString(new LogGaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_tableModel.getValueAt(i, j)).getLabelModel().getString());
+					QuantileSummary relEffect = d_analysis.getQuantileSummary(model, model.getRelativeEffect(t1, t2));
+					assertEquals(d_pmf.getLabeledModel(relEffect).getLabelModel().getString(), ((LabeledPresentation) d_tableModel.getValueAt(i, j)).getLabelModel().getString());
 				}
 			}
 		}
@@ -135,20 +131,15 @@ public class NetworkTableModelTest {
 		TaskUtil.run(model.getActivityTask());
 		Treatment d1 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0));
 		Treatment d2 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1));
-		MockNormalSummary normalSummary = (MockNormalSummary)d_analysis.getNormalSummary(model, model.getRelativeEffect(d1, d2));
+		QuantileSummary normalSummary = d_analysis.getQuantileSummary(model, model.getRelativeEffect(d1, d2));
 		
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
 		d_tableModel.addTableModelListener(mock);
 		
 		// fire some event
-		normalSummary.fireChange();
+		normalSummary.resultsEvent(new MCMCResultsEvent(null));
 		
 		EasyMock.verify(mock);
-	}
-	
-	private String distributionToString(Distribution distr) {
-		DecimalFormat df = new DecimalFormat("##0.00");
-		return "" + df.format(distr.getQuantile(0.50)) + " (" + df.format(distr.getQuantile(0.025)) + ", " + df.format(distr.getQuantile(0.975)) +")"; 
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -166,8 +157,8 @@ public class NetworkTableModelTest {
 				} else {
 					Treatment t1 = d_contAnalysis.getTreatment(d_contAnalysis.getIncludedDrugs().get(i));
 					Treatment t2 = d_contAnalysis.getTreatment(d_contAnalysis.getIncludedDrugs().get(j));
-					NormalSummary relEffect = d_contAnalysis.getNormalSummary(model, model.getRelativeEffect(t1, t2));
-					assertEquals(distributionToString(new Gaussian(relEffect.getMean(), relEffect.getStandardDeviation())), ((LabeledPresentation) d_contTableModel.getValueAt(i, j)).getLabelModel().getString());
+					QuantileSummary relEffect = d_contAnalysis.getQuantileSummary(model, model.getRelativeEffect(t1, t2));
+					assertEquals(d_pmf.getLabeledModel(relEffect).getLabelModel().getString(), ((LabeledPresentation) d_contTableModel.getValueAt(i, j)).getLabelModel().getString());
 				}
 			}
 		}	

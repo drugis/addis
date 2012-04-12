@@ -255,7 +255,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return summary;
 	}
-	
+
+	@Deprecated
 	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip) {
 		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
 		if (summary == null) {
@@ -325,12 +326,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Parameter param = consistencyModel.getRelativeEffect(getTreatment(d1), getTreatment(d2));
-		NormalSummary estimate = getNormalSummary(consistencyModel, param);
+		QuantileSummary estimate = getQuantileSummary(consistencyModel, param);
 		
+		double mean = estimate.getQuantile(1);
+		double stdev = (estimate.getQuantile(2) - mean) / 1.960 ;
 		if (isContinuous()) {
-			return NetworkRelativeEffect.buildMeanDifference(estimate.getMean(), estimate.getStandardDeviation());
+			return NetworkRelativeEffect.buildMeanDifference(mean, stdev);
 		} else {
-			return NetworkRelativeEffect.buildOddsRatio(estimate.getMean(), estimate.getStandardDeviation());
+			return NetworkRelativeEffect.buildOddsRatio(mean, stdev);
 		}
 	}
 	

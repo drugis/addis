@@ -33,13 +33,10 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
-import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
 public class NetworkTableModel extends AbstractTableModel {
@@ -74,8 +71,8 @@ public class NetworkTableModel extends AbstractTableModel {
 	}
 
 	private void attachListener(MixedTreatmentComparison networkModel, DrugSet d1, DrugSet d2) {
-		NormalSummary normalSummary = getSummary(d_model.getTreatment(d1), d_model.getTreatment(d2));
-		normalSummary.addPropertyChangeListener(d_listener);
+		QuantileSummary quantileSummary = getSummary(d_model.getTreatment(d1), d_model.getTreatment(d2));
+		quantileSummary.addPropertyChangeListener(d_listener);
 	}
 
 	public int getColumnCount() {
@@ -99,22 +96,17 @@ public class NetworkTableModel extends AbstractTableModel {
 		} if (!d_networkModel.isReady()) {
 			return d_na;
 		}
-
-		NormalSummary re = getSummary(getTreatment(row), getTreatment(col));
+		QuantileSummary re = getSummary(getTreatment(row), getTreatment(col));
 		if (!re.getDefined()) {
 			return d_na;
 		}
-		
-		double mu = re.getMean();
-		double sigma = re.getStandardDeviation();
-		Distribution dist = d_pm.isContinuous() ? new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
-		
-		return d_pmf.getLabeledModel(dist);
+		return d_pmf.getLabeledModel(re);
 	}
 
-	private NormalSummary getSummary(final Treatment drug1,
-			final Treatment drug2) {
-		return d_pm.getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+	private QuantileSummary getSummary(final Treatment drug1, final Treatment drug2) {
+		QuantileSummary summary = d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+		summary.setContinuous(d_pm.isContinuous());
+		return summary;
 	}
 
 	private Treatment getTreatment(int idx) {

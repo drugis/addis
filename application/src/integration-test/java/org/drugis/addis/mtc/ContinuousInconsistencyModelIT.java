@@ -56,7 +56,7 @@ public class ContinuousInconsistencyModelIT {
     	TaskUtil.run(d_model.getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyFactors().size());
-    	assertNotNull(d_nma.getNormalSummary(d_model, d_model.getInconsistencyFactors().get(0)));
+    	assertNotNull(d_nma.getQuantileSummary(d_model, d_model.getInconsistencyFactors().get(0)));
     	Treatment a = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugFluoxetine()));
     	Treatment b = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugParoxetine()));
     	Treatment c = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugSertraline()));
