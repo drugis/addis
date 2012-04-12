@@ -48,7 +48,6 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
-import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.data.category.CategoryDataset;
 
@@ -166,11 +165,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public List<Parameter> getInconsistencyFactors() {
 		return getBean().getInconsistencyFactors();
-	}
-
-	@Deprecated
-	public NormalSummary getNormalSummary(MixedTreatmentComparison model, Parameter p) {
-		return getBean().getNormalSummary(model, p);
 	}
 
 	public List<DrugSet> getIncludedDrugs() {
