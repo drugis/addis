@@ -25,30 +25,29 @@
 package org.drugis.addis.entities.relativeeffect;
 
 import org.drugis.addis.entities.Measurement;
+import org.drugis.mtc.summary.QuantileSummary;
 
 public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelativeEffect<T> implements RelativeEffect<T> {
-	private Distribution d_distribution;
+	private QuantileSummary d_quantiles;
 	private final boolean d_defined;
+	private boolean d_coninuous = false;
 	
-	public NetworkRelativeEffect(Distribution d) {
-		d_distribution = d;
+	public NetworkRelativeEffect(QuantileSummary q, boolean continuous) {
+		d_coninuous = continuous;
+		d_quantiles = q;
 		d_defined = true;
 	}
 	
 	public NetworkRelativeEffect() {
 		d_defined = false;
 	}
-
-	static public NetworkRelativeEffect<? extends Measurement> buildOddsRatio(double mu, double sigma) {
-		return new NetworkRelativeEffect<Measurement>(new LogGaussian(mu, sigma));
-	}
 	
-	static public NetworkRelativeEffect<? extends Measurement> buildMeanDifference(double mu, double sigma) {
-		return new NetworkRelativeEffect<Measurement>(new Gaussian(mu, sigma));
+	static public NetworkRelativeEffect<? extends Measurement> buildOddsRatio(QuantileSummary estimate) {
+		return new NetworkRelativeEffect<Measurement>(estimate, true);
 	}
 
-	public Distribution getDistribution() {
-		return d_distribution;
+	static public NetworkRelativeEffect<? extends Measurement> buildMeanDifference(QuantileSummary estimate) {
+		return new NetworkRelativeEffect<Measurement>(estimate, false);
 	}
 
 	public String getName() {
@@ -61,12 +60,35 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 	
 	@Override
 	public double getNeutralValue() {
-		if (d_distribution instanceof LogGaussian) {
+		if (d_coninuous) {
 			return 1;
-		} else if (d_distribution instanceof Gaussian) {
+		} else { 
 			return 0;
-		} else {
-			throw new IllegalStateException("Unknown distribution type " + d_distribution.getClass());
+		}
+	}
+	
+	@Override 
+	public ConfidenceInterval getConfidenceInterval() {
+		if (!isDefined()) {
+			return new ConfidenceInterval(Double.NaN, Double.NaN, Double.NaN);
+		}
+		if(d_coninuous) { 
+			return new ConfidenceInterval(Math.exp(d_quantiles.getQuantile(1)), Math.exp(d_quantiles.getQuantile(0)), Math.exp(d_quantiles.getQuantile(2)));
+		} else { 
+			return new ConfidenceInterval(d_quantiles.getQuantile(1), d_quantiles.getQuantile(0), d_quantiles.getQuantile(2));
+		}
+		
+	}
+
+	@Override
+	@Deprecated
+	public Distribution getDistribution() {
+		double mean = d_quantiles.getQuantile(1);
+		double stdev = (d_quantiles.getQuantile(2) - mean) / 1.960 ;
+		if(d_coninuous) { 
+			return new Gaussian(mean, stdev);
+		} else { 
+			return new LogGaussian(mean, stdev);
 		}
 	} 
 	

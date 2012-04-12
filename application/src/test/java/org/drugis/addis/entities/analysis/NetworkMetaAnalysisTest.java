@@ -98,9 +98,7 @@ public class NetworkMetaAnalysisTest {
 		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(new DrugSet(base), new DrugSet(subj), BasicOddsRatio.class);
 		QuantileSummary summary = d_mockAnalysis.getQuantileSummary(d_mockAnalysis.getConsistencyModel(), 
 				new BasicParameter(d_mockAnalysis.getTreatment(new DrugSet(base)), d_mockAnalysis.getTreatment(new DrugSet(subj))));
-		double mean = summary.getQuantile(1);
-		double stdev = (summary.getQuantile(2) - mean) / 1.960 ;
-		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(mean, stdev);
+		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary);
 		assertNotNull(expected);
 		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());

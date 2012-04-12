@@ -328,12 +328,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		Parameter param = consistencyModel.getRelativeEffect(getTreatment(d1), getTreatment(d2));
 		QuantileSummary estimate = getQuantileSummary(consistencyModel, param);
 		
-		double mean = estimate.getQuantile(1);
-		double stdev = (estimate.getQuantile(2) - mean) / 1.960 ;
 		if (isContinuous()) {
-			return NetworkRelativeEffect.buildMeanDifference(mean, stdev);
+			return NetworkRelativeEffect.buildMeanDifference(estimate);
 		} else {
-			return NetworkRelativeEffect.buildOddsRatio(mean, stdev);
+			return NetworkRelativeEffect.buildOddsRatio(estimate);
 		}
 	}
 	
