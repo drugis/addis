@@ -49,12 +49,12 @@ public class QuantileSummaryPresentation extends PresentationModel<QuantileSumma
 			double mean = getBean().getQuantile(1);
 			double lowerCI = getBean().getQuantile(0);
 			double upperCI = getBean().getQuantile(2);
-			return format.format(applyExpIfNecessary(mean)) + 
-					" (" + format.format(applyExpIfNecessary(lowerCI)) + ", " + 
-					format.format(applyExpIfNecessary(upperCI)) + ")";
+			return format.format(transformContinuous(mean)) + 
+					" (" + format.format(transformContinuous(lowerCI)) + ", " + 
+					format.format(transformContinuous(upperCI)) + ")";
 		}
 
-		private double applyExpIfNecessary(double val) {
+		private double transformContinuous(double val) {
 			return getBean().isContinuous() ? val : Math.exp(val);
 		}
 	}
