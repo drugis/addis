@@ -164,7 +164,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		
 		transformMeasurementKeys(new Transformer<MeasurementKey, MeasurementKey>() {
 			public MeasurementKey transform(MeasurementKey key) {
-				if (key.getArm().equals(oldArm)) {
+				if (key.getArm() != null && key.getArm().equals(oldArm)) {
 					return new MeasurementKey(key.getVariable(), newArm, key.getWhenTaken());
 				}
 				return key;
