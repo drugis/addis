@@ -100,13 +100,15 @@ public class NetworkTableModel extends AbstractTableModel {
 		if (!re.getDefined()) {
 			return d_na;
 		}
+
 		return d_pmf.getLabeledModel(re);
 	}
-
+	
 	private QuantileSummary getSummary(final Treatment drug1, final Treatment drug2) {
-		QuantileSummary summary = d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
-		summary.setContinuous(d_pm.isContinuous());
-		return summary;
+		QuantileSummary quantileSummary = d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+		QuantileSummaryPresentation pm = (QuantileSummaryPresentation)d_pmf.getModel(quantileSummary);
+		pm.isLogTransformed(!d_pm.isContinuous());
+		return quantileSummary;
 	}
 
 	private Treatment getTreatment(int idx) {

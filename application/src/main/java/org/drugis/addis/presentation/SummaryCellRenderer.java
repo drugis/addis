@@ -77,8 +77,8 @@ public class SummaryCellRenderer implements TableCellRenderer {
 		
 		String str = "N/A";
 		if (re != null && re.getDefined()) {
-			str = format(re.getQuantile(1)) + " (" + 
-				format(re.getQuantile(0)) + ", " + format(re.getQuantile(2)) + ")";
+			str = format(re.getQuantile(re.indexOf(0.5))) + " (" + 
+				format(re.getQuantile(re.indexOf(0.025))) + ", " + format(re.getQuantile(re.indexOf(0.975))) + ")";
 		}
 		return str;
 	}

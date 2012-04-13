@@ -58,7 +58,7 @@ public class MockQuantileSummary extends QuantileSummary {
 		d_quantiles = new double[3];
 		d_quantiles[1] = RANDOM.nextDouble() * 4 - 2;
 		d_quantiles[2] = d_quantiles[1] + RANDOM.nextDouble() * 1.5;
-		d_quantiles[0] = d_quantiles[2] - d_quantiles[1];
+		d_quantiles[0] = d_quantiles[1] - (d_quantiles[2] - d_quantiles[1]);
 		d_defined = true;
 		firePropertyChange(PROPERTY_DEFINED, null, d_defined);
 	}

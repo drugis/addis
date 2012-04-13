@@ -110,7 +110,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 			QuantileSummary summary = d_pm.getQuantileSummary(model, ip);
 			if (summary.getDefined()) { 
 				QuantileSummaryPresentation labeledModel = (QuantileSummaryPresentation) d_pmf.getLabeledModel(summary);
-				labeledModel.setTransformContinuous(false);
+				labeledModel.isLogTransformed(false);
 				return labeledModel.getLabelModel().getValue();
 			} 
 			return NA;

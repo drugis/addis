@@ -35,7 +35,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class QuantileSummaryPresentation extends PresentationModel<QuantileSummary> implements LabeledPresentation {
-	private boolean d_transformContinuous = true;
+	private boolean d_isLogTransformed = true;
 	
 	public class LabelModel extends DefaultLabelModel {
 		
@@ -47,16 +47,16 @@ public class QuantileSummaryPresentation extends PresentationModel<QuantileSumma
 		public Object getValue() {			
 			DecimalFormat format = new DecimalFormat("###0.00");
 			
-			double mean = getBean().getQuantile(1);
-			double lowerCI = getBean().getQuantile(0);
-			double upperCI = getBean().getQuantile(2);
+			double mean = getBean().getQuantile(getBean().indexOf(0.5));
+			double lowerCI = getBean().getQuantile(getBean().indexOf(0.025));
+			double upperCI = getBean().getQuantile(getBean().indexOf(0.975));
 			return format.format(transformContinuous(mean)) + 
 					" (" + format.format(transformContinuous(lowerCI)) + ", " + 
 					format.format(transformContinuous(upperCI)) + ")";
 		}
 
 		private double transformContinuous(double val) {
-			return (getBean().isContinuous()  || !doTransformContinuous()) ? val : Math.exp(val);
+			return (!logTransformed()) ? val : Math.exp(val);
 		}
 	}
 	
@@ -73,12 +73,12 @@ public class QuantileSummaryPresentation extends PresentationModel<QuantileSumma
 		return (String) getLabelModel().getValue();
 	}
 
-	public boolean doTransformContinuous() {
-		return d_transformContinuous;
+	public boolean logTransformed() {
+		return d_isLogTransformed;
 	}
 
-	public void setTransformContinuous(boolean transform) {
-		d_transformContinuous = transform;
+	public void isLogTransformed(boolean transform) {
+		d_isLogTransformed = transform;
 	}
 
 }

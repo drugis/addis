@@ -30,10 +30,10 @@ import org.drugis.mtc.summary.QuantileSummary;
 public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelativeEffect<T> implements RelativeEffect<T> {
 	private QuantileSummary d_quantiles;
 	private final boolean d_defined;
-	private boolean d_coninuous = false;
+	private boolean d_isLogTransformed = false;
 	
-	public NetworkRelativeEffect(QuantileSummary q, boolean continuous) {
-		d_coninuous = continuous;
+	public NetworkRelativeEffect(QuantileSummary q, boolean isLogTransformed) {
+		d_isLogTransformed = isLogTransformed;
 		d_quantiles = q;
 		d_defined = true;
 	}
@@ -60,7 +60,7 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 	
 	@Override
 	public double getNeutralValue() {
-		if (d_coninuous) {
+		if (d_isLogTransformed) {
 			return 1;
 		} else { 
 			return 0;
@@ -72,10 +72,10 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 		if (!isDefined()) {
 			return new ConfidenceInterval(Double.NaN, Double.NaN, Double.NaN);
 		}
-		if(d_coninuous) { 
-			return new ConfidenceInterval(Math.exp(d_quantiles.getQuantile(1)), Math.exp(d_quantiles.getQuantile(0)), Math.exp(d_quantiles.getQuantile(2)));
+		if(d_isLogTransformed) { 
+			return new ConfidenceInterval(Math.exp(d_quantiles.getQuantile(d_quantiles.indexOf(0.5))), Math.exp(d_quantiles.getQuantile(d_quantiles.indexOf(0.025))), Math.exp(d_quantiles.getQuantile(d_quantiles.indexOf((0.975)))));
 		} else { 
-			return new ConfidenceInterval(d_quantiles.getQuantile(1), d_quantiles.getQuantile(0), d_quantiles.getQuantile(2));
+			return new ConfidenceInterval(d_quantiles.getQuantile(d_quantiles.indexOf(0.5)), d_quantiles.getQuantile(d_quantiles.indexOf(0.025)), d_quantiles.getQuantile(d_quantiles.indexOf(0.975)));
 		}
 		
 	}
@@ -83,9 +83,9 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 	@Override
 	@Deprecated
 	public Distribution getDistribution() {
-		double mean = d_quantiles.getQuantile(1);
-		double stdev = (d_quantiles.getQuantile(2) - mean) / 1.960 ;
-		if(d_coninuous) { 
+		double mean = d_quantiles.getQuantile(d_quantiles.indexOf(0.5));
+		double stdev = (d_quantiles.getQuantile(d_quantiles.indexOf(0.975)) - d_quantiles.getQuantile(d_quantiles.indexOf(0.025))) / (2 * 1.960);
+		if(d_isLogTransformed) { 
 			return new Gaussian(mean, stdev);
 		} else { 
 			return new LogGaussian(mean, stdev);
