@@ -32,6 +32,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -53,11 +54,11 @@ final class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRen
 		final Color fg = superRenderer.getForeground();
 		
 		final BRATForest forest = (BRATForest) value;
-		Canvas canvas = new Canvas() {
+		JPanel panel = new JPanel() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void paint(Graphics g) {
+			public void paintComponent(Graphics g) {
 				g.setColor(bg);
 				Rectangle bounds = g.getClipBounds();
 				g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -78,7 +79,7 @@ final class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRen
 				}
 				g.translate(-PADDING, 0);
 			}
-
+			
 			@Override
 			public Dimension getSize() {
 				return new Dimension(ForestPlot.BARWIDTH, ForestPlot.ROWHEIGHT);
@@ -94,6 +95,7 @@ final class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRen
 				return getSize();
 			}
 		};
-		return canvas;
+		
+		return panel;
 	}
 }
