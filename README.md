@@ -17,6 +17,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.12.3: Bugfix release.
+
 1.12.2: Bugfix release.
 
 1.12.1: Input name of analyses in the first step of the wizard, not in a
