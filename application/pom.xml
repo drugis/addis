@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.12.3-SNAPSHOT</version>
+		<version>1.12.4-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -16,7 +16,7 @@
 
 	<properties>
 		<drugis-common.version>0.5-SNAPSHOT</drugis-common.version>
-		<jsmaa.version>0.9-SNAPSHOT</jsmaa.version>
+		<jsmaa.version>0.9-ADDIS-1.12.3</jsmaa.version>
 		<mtc.version>0.12.1-SNAPSHOT</mtc.version>
 		<addis.schemaVersion>4</addis.schemaVersion>
 		<jung.version>2.0.1</jung.version>
@@ -193,6 +193,12 @@
 			<artifactId>jung-api</artifactId>
 			<version>${jung.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-awt-util</artifactId>
+            <version>1.7</version>
+        </dependency>
+
 	</dependencies>
     <build>
 		<finalName>addis-${project.version}</finalName>
