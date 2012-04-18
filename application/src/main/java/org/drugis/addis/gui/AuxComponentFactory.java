@@ -77,6 +77,8 @@ import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -327,6 +329,17 @@ public class AuxComponentFactory {
 		return button;
 	}
 
+	public static Component createExtendSimulationButton(final InconsistencyModel model) {
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		button.setToolTipText("Extend simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.setExtendSimulation(ExtendSimulation.EXTEND);
+			}
+		});
+		return button;
+	}
+
 	public static Dimension defaultTextPaneDimension(JTextPane area) {
 		return AuxComponentFactory.textPaneDimension(area, 230, 50);
 	}
@@ -359,4 +372,5 @@ public class AuxComponentFactory {
 		});
 		return pane;
 	}
+
 }

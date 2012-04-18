@@ -261,19 +261,21 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();		
 		CellConstraints cc = new CellConstraints();
 		
 		int row = 1;
-		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, 3));
+		int colSpan = 5;
+		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
 		builder.add(AuxComponentFactory.createStartButton(inconsistencyModel.getActivityTask()), cc.xy(1, row));
-		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(3, row));
+		builder.add(AuxComponentFactory.createExtendSimulationButton(inconsistencyModel), cc.xy(3, row));
+		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(5, row));
 		row += 2;
 		
 		String inconsistencyText = "In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, " +
@@ -285,13 +287,13 @@ implements ViewBuilder {
 				"101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.";
 		JComponent inconsistencyNote = AuxComponentFactory.createHtmlField(inconsistencyText);
 		
-		builder.add(inconsistencyNote, cc.xyw(1, row, 3));
+		builder.add(inconsistencyNote, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
-		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, 3));
+		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(inconsistencyTablePanel, cc.xyw(1, row, 3));
+		builder.add(inconsistencyTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
@@ -312,9 +314,9 @@ implements ViewBuilder {
 			}
 		});
 		
-		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, 3));
+		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
+		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
@@ -322,9 +324,9 @@ implements ViewBuilder {
 		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
 		
-		builder.addSeparator("Variance Calculation", cc.xyw(1, row, 3));
+		builder.addSeparator("Variance Calculation", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(mixedComparisonTablePanel, cc.xyw(1, row, 3));
+		builder.add(mixedComparisonTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
@@ -333,11 +335,11 @@ implements ViewBuilder {
 				})
 			);
 		
-		builder.addSeparator("Convergence", cc.xyw(1, row, 3));
+		builder.addSeparator("Convergence", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
+		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xyw(1, row, 3));
+		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		return builder.getPanel();

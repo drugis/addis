@@ -75,5 +75,4 @@ public class BaselineMeanDifferenceModel extends AbstractBaselineModel<Continuou
 	protected double getStdDevPrior() {
 		return 20.0; // FIXME
 	}
-
 }
