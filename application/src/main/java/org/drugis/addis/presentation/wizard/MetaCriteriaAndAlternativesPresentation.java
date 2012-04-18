@@ -339,8 +339,9 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 
 	private boolean getAlternativeIncludedInAllSelectedAnalyses(DrugSet alternative) {
 		boolean noAnalysesSelected = true;
+		List<OutcomeMeasure> selectedCriteria = getSelectedCriteria();
 		for (CriterionAnalysisPair pair : d_selectedMetaAnalysesPairs) {
-			if (pair.getAnalysis() != null) {
+			if (selectedCriteria.contains(pair.getCriterion()) && pair.getAnalysis() != null) {
 				noAnalysesSelected = false;
 				if (!pair.getAnalysis().getIncludedDrugs().contains(alternative)) {
 					return false;
