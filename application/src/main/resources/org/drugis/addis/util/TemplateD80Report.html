@@ -63,134 +63,135 @@
   <tbody>
     <tr class='bold'>
       <td class='first'>Title:</td>
-      <td colspan='$colspan$'>$title$</td>
+      <td colspan='@{colspan}'>@{title}</td>
     </tr>
     <tr>
       <td>Study identifier</td>
-      <td colspan='$colspan$'>$studyid$</td>
+      <td colspan='@{colspan}'>@{studyid}</td>
     </tr>
     <tr>
       <td rowspan='4'>Design</td>
-      <td colspan='$colspan$'>&lt;free text&gt;</td>
+      <td colspan='@{colspan}'>&lt;free text&gt;</td>
     </tr>
     <tr>
       <td>Duration of main phase:</td>
-      <td colspan='$smallercolspan$'>$mainphase$</td>
+      <td colspan='@{smallercolspan}'>@{mainphase}</td>
     </tr>
     <tr>
       <td>Duration of Run-in phase:</td>
-      <td colspan='$smallercolspan$'>$runinphase$</td>
+      <td colspan='@{smallercolspan}'>@{runinphase}</td>
     </tr>
     <tr>
       <td>Duration of Extension phase:</td>
-      <td colspan='$smallercolspan$'>$extensionphase$</td>
+      <td colspan='@{smallercolspan}'>@{extensionphase}</td>
     </tr>
     <tr>
       <td>Hypothesis</td>
-      <td colspan='$colspan$'>&lt;Superiority&gt; &lt;Equivalence&gt; &lt;Non-inferiority&gt; &lt;Exploratory: specify&gt;</td>
+      <td colspan='@{colspan}'>&lt;Superiority&gt; &lt;Equivalence&gt; &lt;Non-inferiority&gt; &lt;Exploratory: specify&gt;</td>
     </tr>
     <tr>
       <td>Treatments groups</td>
-      <td colspan='$colspan$'>
+      <td colspan='@{colspan}'>
 	<table class='nested'>
-	    $arms:{ it|
+		@foreach{it : arms}
 	    <tr>
-		<td class='left'>$it.name$</td>
-	        <td>$it.treatment$ &nbsp; $it.duration$ &nbsp; $it.nrRandomized$</td>
+		<td class='left'>@{it.name}</td>
+	        <td>@{it.treatment} &nbsp; @{it.duration} &nbsp; @{it.nrRandomized}</td>
 	    </tr>
-	    }$
+		@end{}
 	</table>
       </td>
       
     </tr>
     <tr>
       <td>Endpoints and definitions</td>
-      <td colspan='$colspan$'>
+      <td colspan='@{colspan}'>
 	<table class='nested'>
-	    $endpoints:{ it|
+		@foreach{it : endpoints}
 	    <tr>
-		<td class='left'>$it.primary$</td>
-	        <td class='left'>$it.name$</td>
+		<td class='left'>@{it.primary}</td>
+	        <td class='left'>@{it.name}</td>
 		<td>&lt;free text&gt;</td>
 	    </tr>
-	    }$
+		@end{}
 	</table>
       </td>
     </tr>
     <tr>
       <td>Database lock</td>
-      <td colspan='$colspan$'>&lt;date&gt;</td>
+      <td colspan='@{colspan}'>&lt;date&gt;</td>
     </tr>
     <tr class='bold'>
-      <td colspan='$fullcolspan$'>Results and Analysis</td>
+      <td colspan='@{fullcolspan}'>Results and Analysis</td>
     </tr>
     <tr>
       <td class='bold'>Analysis description</td>
-      <td colspan='$colspan$' class='bold'>Primary Analysis</td>
+      <td colspan='@{colspan}' class='bold'>Primary Analysis</td>
     </tr>
     <tr>
       <td>Analysis population and time point description</td>
-      <td colspan='$colspan$'>&lt;Intent to treat&gt; &lt;Per protocol&gt; &lt;other specify&gt; &lt;time point&gt;</td>
+      <td colspan='@{colspan}'>&lt;Intent to treat&gt; &lt;Per protocol&gt; &lt;other specify&gt; &lt;time point&gt;</td>
     </tr>
     <tr>
-      <td rowspan='$rowspanstatistics$'>Descriptive statistics and estimate variability</td>
+      <td rowspan='@{rowspanstatistics}'>Descriptive statistics and estimate variability</td>
       <td>Treatment group</td>
-	$arms:{ it|
-      	<td>$it.name$</td>
-	}$
+	@foreach{it : arms}
+      	<td>@{it.name}</td>
+	@end{}
     </tr>
     <tr>
       <td>Number of subject</td>
-	$arms:{ it|
-      <td>$it.nrRandomized$</td>
-	}$
+	@foreach{it : arms}
+      <td>@{it.nrRandomized}</td>
+	@end{}
     </tr>
-	$endpoints:{ ep|
+	@foreach{ep : endpoints}
     <tr>
-      <td>$ep.name$</td>
-	$ep.measurements:{ ms|
-      <td>$ms$</td>
-	}$
+      <td>@{ep.name}</td>
+	@foreach{ms : ep.measurements}
+      <td>@{ms}</td>
+	@end{}
     </tr>
-	}$
+	@end{}
 	
 	<!-- effect estimates -->
     <tr>
-      <td rowspan='$nEndpointRows$'>Effect estimate per comparison</td>
-	$endpoints:{ep| <!-- start endpoints -->
-      <td rowspan='4'>$ep.name$</td>
+      <td rowspan='@{nEndpointRows}'>Effect estimate per comparison</td>
+	@foreach{ep : endpoints} <!-- start endpoints -->
+      <td rowspan='4'>@{ep.name}</td>
       <td>Comparison groups</td>
-      $rest(arms):{arm|
-        <td>$arm.name$</td>
-      }$ <!-- arms -->
+	  @code{ armsRest = java.util.Arrays.copyOfRange( arms, 1, arms.length); }
+	  @foreach{arm : armsRest}
+        <td>@{arm.name}</td>
+	  @end{} <!-- arms -->
     </tr>
     <tr>
-      <td>$ep.testStatisticType$</td>
-      $ep.testStatistics:{stat|
-        <td>$stat$</td>
-      }$ <!-- test statistics -->
+      <td>@{ep.testStatisticType}</td>
+	  @foreach{stat : ep.testStatistics}
+        <td>@{stat}</td>
+	  @end{} <!-- test statistics -->
     </tr>
     <tr>
       <td>Confidence Interval</td>
-      $ep.variabilityStatistics:{stat|
-        <td>$stat$</td>
-      }$ <!-- variability statistics -->
+	  @foreach{stat : ep.variabilityStatistics}
+        <td>@{stat}</td>
+	  @end{} <!-- variability statistics -->
     </tr>
     <tr>
       <td>P-value</td>
-      $ep.pValueStatistics:{stat|
-        <td>$stat$</td>
-      }$ <!-- P-Value statistics -->
+	  @foreach{stat : ep.pValueStatistics}
+        <td>@{stat}</td>
+	  @end{} <!-- P-Value statistics -->
     </tr>
-    }$ <!-- endpoints -->
+	@end{} <!-- endpoints -->
 
     <tr>
       <td>Notes</td>
-      <td colspan='$colspan$'>&lt;free text&gt;</td>
+      <td colspan='@{colspan}'>&lt;free text&gt;</td>
     </tr>
     <tr>
       <td>Analysis description</td>
-      <td colspan='$colspan$'>&lt;Secondary analysis&gt; &lt;Co-primary Analysis&gt; &lt;Other, specify: &gt;</td>
+      <td colspan='@{colspan}'>&lt;Secondary analysis&gt; &lt;Co-primary Analysis&gt; &lt;Other, specify: &gt;</td>
     </tr>
   </tbody>
 </table>
