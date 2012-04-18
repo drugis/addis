@@ -17,6 +17,9 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.12.3: Improved node-splitting models (thanks to GeMTC 0.12), fix
+redraw problems on Mac OS X.
+
 1.12.2: Bugfix release.
 
 1.12.1: Input name of analyses in the first step of the wizard, not in a
