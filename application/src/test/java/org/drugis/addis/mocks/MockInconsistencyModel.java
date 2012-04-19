@@ -114,11 +114,5 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	protected void finished() {
 		d_results.simulationFinished();
 	}
-
-	@Override
-	public void setExtendSimulation(ExtendSimulation s) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
