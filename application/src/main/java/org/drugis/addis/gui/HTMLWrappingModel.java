@@ -43,7 +43,7 @@ public class HTMLWrappingModel extends AbstractValueModel {
 		});
 	}
 	public Object getValue() {
-		String text = ((String) d_nested.getValue()).replaceAll("\n", "<br/>");
+		String text = ((String) d_nested.getValue().toString()).replaceAll("\n", "<br/>");
 		return "<html><div style='text-align:left;'>" + text + "</div></html>";
 	}
 	public void setValue(Object newValue) {
