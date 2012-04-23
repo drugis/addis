@@ -75,8 +75,8 @@ import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
-import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
+import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
@@ -92,6 +92,7 @@ import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.gui.MainWindow;
@@ -271,10 +272,16 @@ implements ViewBuilder {
 		int colSpan = 5;
 		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, colSpan));
 		row += 2;
+
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		builder.add(AuxComponentFactory.createStartButton(inconsistencyModel.getActivityTask()), cc.xy(1, row));
-		builder.add(AuxComponentFactory.createExtendSimulationButton(inconsistencyModel), cc.xy(3, row));
+		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(inconsistencyModel.getResults());
+
+		builder.add(AuxComponentFactory.createStartStopButton(inconsistencyModel.getActivityTask(), inconsistencyModel), cc.xy(1, row));
+		JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(inconsistencyModel);
+		Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
+		
+		builder.add(extendSimulationButton, cc.xy(3, row));
 		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(5, row));
 		row += 2;
 		
@@ -318,7 +325,7 @@ implements ViewBuilder {
 		row += 2;
 		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
-		
+	
 		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
 		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
 		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
@@ -346,20 +353,29 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildConsistencyTab() {
-		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 		
 		int row = 1;
-		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, 3));
+		int colSpan = 5;
+		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, colSpan));
 		
 		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		builder.add(AuxComponentFactory.createStartButton(consistencyModel.getActivityTask()), cc.xy(1, row));
+		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(consistencyModel.getResults());
+
+		
+		builder.add(AuxComponentFactory.createStartStopButton(consistencyModel.getActivityTask(), consistencyModel), cc.xy(1, row));
+		JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(consistencyModel);
+		Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
+		builder.add(extendSimulationButton, cc.xy(3, row));
+
+		
 		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
-		builder.add(conProgressBar, cc.xy(3, row));
+		builder.add(conProgressBar, cc.xy(5, row));
 		
 		row += 2;
 		String consistencyText = "If there is no relevant inconsistency in the evidence, a consistency model can be used to draw " +
@@ -372,37 +388,37 @@ implements ViewBuilder {
 				"each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. " +
 				"Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.";
 		JComponent consistencyNote = AuxComponentFactory.createHtmlField(consistencyText);
-		builder.add(consistencyNote, cc.xyw(1, row, 3));
+		builder.add(consistencyNote, cc.xyw(1, row, colSpan));
 		
 		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
 		consistencyModel.getActivityTask().addTaskListener(
 				new AnalysisFinishedListener(new TablePanel[] {consistencyTablePanel}));
 
 		row += 2;
-		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xyw(1, row, 3));
+		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(consistencyTablePanel, cc.xyw(1, row, 3));
-		row += 2;
-		
-		builder.add(createRankProbChart(), cc.xyw(1, row, 3));
+		builder.add(consistencyTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.add(createRankProbTable(), cc.xyw(1, row, 3));
+		builder.add(createRankProbChart(), cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.addSeparator("Variance Parameters", cc.xyw(1, row, 3));
+		builder.add(createRankProbTable(), cc.xyw(1, row, colSpan));
+		row += 2;
+		
+		builder.addSeparator("Variance Parameters", cc.xyw(1, row, colSpan));
 		row += 2;
 		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());		
-		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, 3));
+		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.addSeparator("Convergence", cc.xyw(1, row, 3));
+		builder.addSeparator("Convergence", cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
+		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xyw(1, row, 3));
+		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		return builder.getPanel();
@@ -410,15 +426,15 @@ implements ViewBuilder {
 	
 	private JComponent buildNodeSplitTab() {
 		final FormLayout layout = new FormLayout(
-				"pref, 3dlu, fill:0:grow",
+				"pref, 3dlu, pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
-		final int width = 3;
+		final int colSpan = 5;
 		
 		int row = 1;
-		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, width));
+		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		builder.add(
@@ -429,38 +445,45 @@ implements ViewBuilder {
 						"as the combined evidence. In addition a P-value is shown; a large value indicates no significant inconsistency was found. " +
 						"See S. Dias et al. (2010), <em>Checking consistency in mixed treatment comparison meta-analysis</em>, " +
 						"Statistics in Medicine, 29(7-8, Sp. Iss. SI): 932-944. <a href=\"http://dx.doi.org/10.1002/sim.3767\">doi:10.1002/sim.3767</a>.</p>"),
-				cc.xyw(1, row, width));
+				cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.add(buildNodeSplitRunAllButton(), cc.xyw(1, row, width));
+		builder.add(buildNodeSplitRunAllButton(), cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, width));
+		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, colSpan));
 
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.addSeparator(p.getName(), cc.xyw(1, row, width));
+			builder.addSeparator(p.getName(), cc.xyw(1, row, colSpan));
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			NodeSplitModel model = d_pm.getNodeSplitModel(p);
-			builder.add(AuxComponentFactory.createStartButton(model.getActivityTask()), cc.xy(1, row));
-			builder.add(new TaskProgressBar(d_pm.getProgressModel(model)), cc.xy(3, row));
+			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
+			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
+
+			
+			builder.add(AuxComponentFactory.createStartStopButton(model.getActivityTask(), model), cc.xy(1, row));
+			JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(model);
+			Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
+			builder.add(extendSimulationButton, cc.xy(3, row));
+			
+			builder.add(new TaskProgressBar(d_pm.getProgressModel(model)), cc.xy(5, row));
 
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, width));
+			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, colSpan));
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.addSeparator("Convergence", cc.xyw(1, row, width));
+			builder.addSeparator("Convergence", cc.xyw(1, row, colSpan));
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, width));
+			builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, colSpan));
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, width));
+			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, colSpan));
 			
 		}
 		
@@ -474,6 +497,8 @@ implements ViewBuilder {
 		final List<Task> tasks = new ArrayList<Task>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			tasks.add(d_pm.getNodeSplitModel(p).getActivityTask());
+			d_pm.getNodeSplitModel(p).setExtendSimulation(ExtendSimulation.FINISH); // Automatically finish the simulations when running all NodeSplit models
+
 		}
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

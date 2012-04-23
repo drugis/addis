@@ -78,6 +78,7 @@ import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -328,9 +329,31 @@ public class AuxComponentFactory {
 		});
 		return button;
 	}
+	
+	public static JButton createStartStopButton(final Task task, final MixedTreatmentComparison model) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(task.isStarted()) { 
+					button.setEnabled(false);
+					model.setExtendSimulation(ExtendSimulation.FINISH);
+					if(model.isReady()) { 
+						model.setExtendSimulation(ExtendSimulation.FINISH);
+					} else { 
+						ThreadHandler.getInstance().abortTask(task);
+					}
+				} else { 
+					button.setToolTipText("Stop simulation");
+					button.setIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
+					ThreadHandler.getInstance().scheduleTask(task);
+				}
+			}
+		});
+		return button;
+	}	
 
-	public static Component createExtendSimulationButton(final InconsistencyModel model) {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+	public static JButton createExtendSimulationButton(final MixedTreatmentComparison model) {
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_EXTEND_CHART));
 		button.setToolTipText("Extend simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -372,5 +395,7 @@ public class AuxComponentFactory {
 		});
 		return pane;
 	}
+
+
 
 }
