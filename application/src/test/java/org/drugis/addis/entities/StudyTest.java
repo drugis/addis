@@ -239,8 +239,7 @@ public class StudyTest {
 		study.getOutcomeMeasures().iterator().next().setVariableType(new ContinuousVariableType());
 		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
 	}
-	
-	
+
 	@Test
 	public void testEquals() {
 		String name1 = "Study A";

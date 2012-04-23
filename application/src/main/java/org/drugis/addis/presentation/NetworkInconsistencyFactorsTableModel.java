@@ -30,11 +30,10 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
 public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
@@ -73,8 +72,8 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		
 		List<Parameter> parameterList = d_pm.getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			NormalSummary normalSummary = d_pm.getNormalSummary(getModel(), p);
-			normalSummary.addPropertyChangeListener(d_listener);
+			QuantileSummary summary = d_pm.getQuantileSummary(getModel(), p);
+			summary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
 	}
@@ -94,7 +93,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		return 0;
 	}
 	
-	public String getValueAt(int row, int col) {
+	public Object getValueAt(int row, int col) {
 		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
 			return NA;
 		}
@@ -107,10 +106,14 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 				out += ip.getCycle().get(i).getId() + ", ";
 			}
 			return out.substring(0, out.length() - 2);
-		} else if (model.isReady()){
-			NormalSummary summary = d_pm.getNormalSummary(model, ip);
-			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
-			return (String) d_pmf.getLabeledModel(dist).getLabelModel().getValue();
+		} else if (model.isReady()) {
+			QuantileSummary summary = d_pm.getQuantileSummary(model, ip);
+			if (summary.getDefined()) { 
+				QuantileSummaryPresentation labeledModel = (QuantileSummaryPresentation) d_pmf.getLabeledModel(summary);
+				labeledModel.isLogTransformed(false);
+				return labeledModel.getLabelModel().getValue();
+			} 
+			return NA;
 		} else
 			return NA;
 	}
