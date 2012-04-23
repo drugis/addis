@@ -43,7 +43,8 @@ public class HTMLWrappingModel extends AbstractValueModel {
 		});
 	}
 	public Object getValue() {
-		return "<html><div style='text-align:left; '>" + d_nested.getValue() + "</div></html>";
+		String text = ((String) d_nested.getValue().toString()).replaceAll("\n", "<br/>");
+		return "<html><div style='text-align:left;'>" + text + "</div></html>";
 	}
 	public void setValue(Object newValue) {
 		throw new IllegalAccessError(this.getClass().getName()+" is read-only!");

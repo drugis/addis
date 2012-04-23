@@ -367,7 +367,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 				for(DrugSet d: getNonBaselineAlternatives()) {
 					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
 					Parameter p = new BasicParameter(nma.getTreatment(getBaseline()), nma.getTreatment(d));
-					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
+					summaryList.add(nma.getQuantileSummary(nma.getConsistencyModel(), p));
 				}
 			}
 		}

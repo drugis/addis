@@ -66,12 +66,11 @@ import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
-import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
-import org.drugis.mtc.summary.MultivariateNormalSummary;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
@@ -81,8 +80,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private InconsistencyModel d_inconsistencyModel;
 	private ConsistencyModel d_consistencyModel;
 	private NetworkBuilder<DrugSet> d_builder;
-	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
-		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
 	protected final ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
@@ -144,14 +141,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	private InconsistencyModel createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
-		d_normalSummaries.put(inconsistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(inconsistencyModel, new HashMap<Parameter, QuantileSummary>());
 		return inconsistencyModel;
 	}
 	
 	private ConsistencyModel createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
 		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
 		Parameter[] parameters = new Parameter[relEffects.size()]; 
@@ -165,7 +160,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	private NodeSplitModel createNodeSplitModel(BasicParameter node) {
 		NodeSplitModel nodeSplitModel = (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
-		d_normalSummaries.put(nodeSplitModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(nodeSplitModel, new HashMap<Parameter, QuantileSummary>());
 		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
@@ -255,16 +249,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return summary;
 	}
-	
-	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip) {
-		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
-		if (summary == null) {
-			summary = new NormalSummary(networkModel.getResults(), ip);
-			d_normalSummaries.get(networkModel).put(ip, summary);
-		}
-		return summary;
-	}
-	
+
 	/**
 	 * Return a multivariate summary of the effects for all treatments relative to the baseline. 
 	 * The order in which the relative effects are given is based on the natural ordering of the
@@ -325,12 +310,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Parameter param = consistencyModel.getRelativeEffect(getTreatment(d1), getTreatment(d2));
-		NormalSummary estimate = getNormalSummary(consistencyModel, param);
+		QuantileSummary estimate = getQuantileSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
-			return NetworkRelativeEffect.buildMeanDifference(estimate.getMean(), estimate.getStandardDeviation());
+			return NetworkRelativeEffect.buildMeanDifference(estimate);
 		} else {
-			return NetworkRelativeEffect.buildOddsRatio(estimate.getMean(), estimate.getStandardDeviation());
+			return NetworkRelativeEffect.buildOddsRatio(estimate);
 		}
 	}
 	

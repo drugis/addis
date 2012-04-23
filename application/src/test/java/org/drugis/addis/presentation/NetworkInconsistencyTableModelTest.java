@@ -33,19 +33,16 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
-import org.drugis.addis.mocks.MockNormalSummary;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,9 +84,9 @@ public class NetworkInconsistencyTableModelTest {
 			InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
 			assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(y, 0));
 		
-			NormalSummary summary = d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);
-			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
-			assertEquals(d_pmf.getLabeledModel(dist).getLabelModel().getValue(), d_tableModel.getValueAt(y, 1));
+			QuantileSummary summary = d_analysis.getQuantileSummary(d_analysis.getInconsistencyModel(), ip);
+			Object valueAt = d_tableModel.getValueAt(y, 1);
+			assertEquals(d_pmf.getLabeledModel(summary).getLabelModel().getValue(), valueAt);
 		}
 	}
 	
@@ -107,11 +104,8 @@ public class NetworkInconsistencyTableModelTest {
 		for(int y = 0; y < d_contTableModel.getRowCount(); ++y) {
 			InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
 			assertEquals("Fluoxetine, Sertraline, Paroxetine", d_contTableModel.getValueAt(y, 0));
-			NormalSummary icModel = d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);					
-			BasicContinuousMeasurement contMeas = new BasicContinuousMeasurement(icModel.getMean(), icModel.getStandardDeviation(), 0);
-			ContinuousMeasurementPresentation<BasicContinuousMeasurement> pm = 
-								(ContinuousMeasurementPresentation<BasicContinuousMeasurement>) d_pmf.getModel(contMeas);
-			assertEquals(pm.normConfIntervalString(), d_contTableModel.getValueAt(y, 1));
+			QuantileSummary icModel = d_analysis.getQuantileSummary(d_analysis.getInconsistencyModel(), ip);					
+			assertEquals(d_pmf.getLabeledModel(icModel).getLabelModel().getString(), d_contTableModel.getValueAt(y, 1));
 		}
 	}
 	
@@ -134,13 +128,13 @@ public class NetworkInconsistencyTableModelTest {
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
 		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
 		InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(0);
-		MockNormalSummary summary = (MockNormalSummary) d_analysis.getNormalSummary(d_analysis.getInconsistencyModel(), ip);
+		QuantileSummary summary = d_analysis.getQuantileSummary(d_analysis.getInconsistencyModel(), ip);
 		
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
 		d_tableModel.addTableModelListener(mock);
 		
 		// fire some event
-		summary.fireChange();
+		summary.resultsEvent(null);
 		
 		EasyMock.verify(mock);
 	}

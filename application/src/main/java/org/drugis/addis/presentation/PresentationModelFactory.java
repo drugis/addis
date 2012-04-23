@@ -135,6 +135,9 @@ public class PresentationModelFactory {
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);
 		}
+		if (obj instanceof QuantileSummary) {
+			return new QuantileSummaryPresentation((QuantileSummary) obj);
+		}
 		return new PresentationModel(obj);
 	}
 

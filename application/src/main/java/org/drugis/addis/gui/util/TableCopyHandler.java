@@ -36,6 +36,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -52,7 +53,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
+//import org.apache.commons.io.output.ByteArrayOutputStream;
+
 
 import sun.awt.datatransfer.DataTransferer;
 
