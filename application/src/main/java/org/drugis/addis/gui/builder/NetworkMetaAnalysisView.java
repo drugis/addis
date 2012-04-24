@@ -73,6 +73,7 @@ import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.mcmc.MCMCModelFinished;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
@@ -218,11 +219,12 @@ implements ViewBuilder {
 		builder.add(new JLabel(name), cc.xy(2, row));
 		
 		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
+		final MCMCModelFinished modelFinished = new MCMCModelFinished(model);
 		
 		builder.add(memory, cc.xy(4, row));
 		JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		clearButton.setToolTipText("Clear results");
-		Bindings.bind(clearButton, "enabled", resultsAvailableModel);
+		Bindings.bind(clearButton, "enabled", modelFinished);
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.getResults().clear();
@@ -234,7 +236,7 @@ implements ViewBuilder {
 		builder.add(clearButton, cc.xy(6, row));
 		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		saveButton.setToolTipText("Save to R-file");
-		Bindings.bind(saveButton, "enabled", resultsAvailableModel);
+		Bindings.bind(saveButton, "enabled", modelFinished);
 		saveButton.addActionListener(buildRButtonActionListener(model));
 		builder.add(saveButton, cc.xy(8, row));
 		return row;
@@ -275,13 +277,7 @@ implements ViewBuilder {
 
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(inconsistencyModel.getResults());
-
-		builder.add(AuxComponentFactory.createStartStopButton(inconsistencyModel.getActivityTask(), inconsistencyModel), cc.xy(1, row));
-		JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(inconsistencyModel);
-		Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
-		
-		builder.add(extendSimulationButton, cc.xy(3, row));
+		createSimulationControls(builder, cc, row, inconsistencyModel);
 		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(5, row));
 		row += 2;
 		
@@ -351,7 +347,8 @@ implements ViewBuilder {
 		
 		return builder.getPanel();
 	}
-	
+
+
 	private JComponent buildConsistencyTab() {
 		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
@@ -365,15 +362,7 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(consistencyModel.getResults());
-
-		
-		builder.add(AuxComponentFactory.createStartStopButton(consistencyModel.getActivityTask(), consistencyModel), cc.xy(1, row));
-		JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(consistencyModel);
-		Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
-		builder.add(extendSimulationButton, cc.xy(3, row));
-
-		
+		createSimulationControls(builder, cc, row, consistencyModel);
 		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
 		builder.add(conProgressBar, cc.xy(5, row));
 		
@@ -463,7 +452,6 @@ implements ViewBuilder {
 			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
 			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
 
-			
 			builder.add(AuxComponentFactory.createStartStopButton(model.getActivityTask(), model), cc.xy(1, row));
 			JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(model);
 			Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
@@ -497,15 +485,35 @@ implements ViewBuilder {
 		final List<Task> tasks = new ArrayList<Task>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			tasks.add(d_pm.getNodeSplitModel(p).getActivityTask());
-			d_pm.getNodeSplitModel(p).setExtendSimulation(ExtendSimulation.FINISH); // Automatically finish the simulations when running all NodeSplit models
 
 		}
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				for (BasicParameter p : d_pm.getSplitParameters()) {
+					d_pm.getNodeSplitModel(p).setExtendSimulation(ExtendSimulation.FINISH); // Automatically finish the simulations when running all NodeSplit models
+				}
 				ThreadHandler.getInstance().scheduleTasks(tasks);
 			}
 		});
 		return button;
+	}
+
+	private void createSimulationControls(PanelBuilder builder, CellConstraints cc, int row, final MixedTreatmentComparison mtc) {
+		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(mtc.getResults());
+
+		final JButton startStopButton = AuxComponentFactory.createStartStopButton(mtc.getActivityTask(), mtc);
+		builder.add(startStopButton, cc.xy(1, row));
+		final JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(mtc);
+		Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
+		startStopButton.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName() == "enabled" && !((JButton)evt.getSource()).isEnabled()) {
+					extendSimulationButton.setEnabled(false); // FIXME does not stay disabled if button is pressed when still running
+				}
+			}
+		});
+		builder.add(extendSimulationButton, cc.xy(3, row));
 	}
 
 	private JComponent buildNodeSplitResultsTable() {

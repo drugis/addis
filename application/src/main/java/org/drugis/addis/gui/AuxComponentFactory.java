@@ -77,7 +77,6 @@ import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 
@@ -332,16 +331,12 @@ public class AuxComponentFactory {
 	
 	public static JButton createStartStopButton(final Task task, final MixedTreatmentComparison model) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		button.setToolTipText("Run simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
 					button.setEnabled(false);
 					model.setExtendSimulation(ExtendSimulation.FINISH);
-					if(model.isReady()) { 
-						model.setExtendSimulation(ExtendSimulation.FINISH);
-					} else { 
-						ThreadHandler.getInstance().abortTask(task);
-					}
 				} else { 
 					button.setToolTipText("Stop simulation");
 					button.setIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
