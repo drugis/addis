@@ -348,7 +348,7 @@ public class AuxComponentFactory {
 	}	
 
 	public static JButton createExtendSimulationButton(final MixedTreatmentComparison model) {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_EXTEND_CHART));
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
 		button.setToolTipText("Extend simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
