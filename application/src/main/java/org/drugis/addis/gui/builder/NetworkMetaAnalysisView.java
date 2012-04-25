@@ -450,11 +450,9 @@ implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			row += 2;
 			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
-			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
 
 			builder.add(AuxComponentFactory.createStartStopButton(model.getActivityTask(), model), cc.xy(1, row));
 			JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(model);
-			Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
 			builder.add(extendSimulationButton, cc.xy(3, row));
 			
 			builder.add(new TaskProgressBar(d_pm.getProgressModel(model)), cc.xy(5, row));
@@ -499,12 +497,10 @@ implements ViewBuilder {
 	}
 
 	private void createSimulationControls(PanelBuilder builder, CellConstraints cc, int row, final MixedTreatmentComparison mtc) {
-		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(mtc.getResults());
 
 		final JButton startStopButton = AuxComponentFactory.createStartStopButton(mtc.getActivityTask(), mtc);
 		builder.add(startStopButton, cc.xy(1, row));
 		final JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(mtc);
-		Bindings.bind(extendSimulationButton, "enabled", resultsAvailableModel);
 		startStopButton.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
