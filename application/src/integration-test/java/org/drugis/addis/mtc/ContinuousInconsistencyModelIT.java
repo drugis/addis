@@ -36,6 +36,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +54,7 @@ public class ContinuousInconsistencyModelIT {
     
     @Test
     public void getResults() throws InterruptedException {
+    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
     	TaskUtil.run(d_model.getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyFactors().size());

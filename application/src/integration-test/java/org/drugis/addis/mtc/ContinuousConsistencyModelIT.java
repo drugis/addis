@@ -31,6 +31,7 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.ModelFactory;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
@@ -60,6 +61,7 @@ public class ContinuousConsistencyModelIT {
 	    
 	    @Test
 	    public void getResults() throws InterruptedException {
+	    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
 	    	TaskUtil.run(d_model.getActivityTask());
 	    	Treatment a = d_builder.getTreatmentMap().get("A");
 	    	Treatment b = d_builder.getTreatmentMap().get("B");
