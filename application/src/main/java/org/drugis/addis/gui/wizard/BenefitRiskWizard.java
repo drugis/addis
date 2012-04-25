@@ -124,7 +124,7 @@ public class BenefitRiskWizard extends Wizard {
 		builder.add(alternativesLabel, cc.xy(1, 1));
 		
 		int row = 1;
-		for(final Alternative a : critAltPM.getAlternativesListModel()){
+		for (final Alternative a : critAltPM.getAlternativesListModel()){
 			LayoutUtil.addRow(layout);
 
 			final ValueHolder<Boolean> selectedModel = critAltPM.getAlternativeSelectedModel(a);
@@ -370,40 +370,40 @@ public class BenefitRiskWizard extends Wizard {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, fill:0:grow",
 					"p, 3dlu, p, 3dlu, p"
-					);	
-			
+					);
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			JLabel criteriaLabel = new JLabel("Criteria");
 			criteriaLabel.setFont(
-				criteriaLabel.getFont().deriveFont(Font.BOLD));
+					criteriaLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(criteriaLabel, cc.xy(1, 1));
 
 
-			if ( checkValidMetaAnalysesAvailable( d_pm ) ) {
+			if (checkSuitableMetaAnalysesAvailable(d_pm)) {
 				int row = 1;
-				for(OutcomeMeasure out : d_metaPM.getCriteriaListModel()){
-					if(d_metaPM.getMetaAnalyses(out).isEmpty())
-						continue;
+				for (OutcomeMeasure out : d_metaPM.getCriteriaListModel()){
+					if (!d_metaPM.getMetaAnalyses(out).isEmpty()) {
+						row = addCriterionCheckbox(out, d_metaPM, layout, builder, cc, row);
 
-					row = addCriterionCheckbox(out, d_metaPM, layout, builder, cc, row);
-
-					// Add radio-button panel
-					row = LayoutUtil.addRow(layout, row);
-					builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
+						// Add radio-button panel
+						row = LayoutUtil.addRow(layout, row);
+						builder.add(buildRadioButtonAnalysisPanel(out),
+								cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
+					}
 				}
 			} else {
-				String warnHTMLText = "<i>Note</i>: To create a benefit-risk analysis, first create at least two " +
-						"meta-analyses with at least two overlapping alternatives.";
-				JComponent htmlField = AuxComponentFactory.createHtmlField( warnHTMLText );
-				htmlField.setPreferredSize( new Dimension( PREFERRED_COLUMN_SIZE.width - 5, 100 ) );
+				String warnHTMLText = "<i>Note</i>: To create a benefit-risk analysis, first create " +
+						"at least two meta-analyses with at least two overlapping alternatives.";
+				JComponent htmlField = AuxComponentFactory.createHtmlField(warnHTMLText);
+				htmlField.setPreferredSize(new Dimension(PREFERRED_COLUMN_SIZE.width - 5, 100));
 
 				int row = 1;
 				row = LayoutUtil.addRow(layout, row);
-				builder.add(htmlField, cc.xyw( 1, row, 3 ));
+				builder.add(htmlField, cc.xyw(1, row, 3));
 			}
-			
+
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
@@ -416,7 +416,7 @@ public class BenefitRiskWizard extends Wizard {
 			ValueHolder<Boolean> enabledModel = d_metaPM.getCriterionSelectedModel(out);
 			
 			// Add the radio buttons
-			for(MetaAnalysis ma : d_metaPM.getMetaAnalyses(out)){
+			for (MetaAnalysis ma : d_metaPM.getMetaAnalyses(out)){
 				ValueHolder<MetaAnalysis> selectedModel = d_metaPM.getMetaAnalysesSelectedModel(out);
 				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), ma, selectedModel, enabledModel);
 				radioButtonPanel.add(radioButton);
@@ -433,21 +433,25 @@ public class BenefitRiskWizard extends Wizard {
 			return buildAlternativesPanel(layout, d_metaPM);
 		}
 
-		private static boolean checkValidMetaAnalysesAvailable(BenefitRiskWizardPM pm) {
+		private static boolean checkSuitableMetaAnalysesAvailable(BenefitRiskWizardPM pm) {
 			MetaCriteriaAndAlternativesPresentation metaPM = pm.getMetaBRPresentation();
 			List<OutcomeMeasure> outcomeMeasures = metaPM.getCriteriaListModel();
 
-			if (outcomeMeasures.size() < 2) return false;
+			if (outcomeMeasures.size() < 2) {
+				return false;
+			}
 
 			final OutcomeMeasure firstOM = outcomeMeasures.get(0);
 			boolean foundDifferentOM = false;
-			for(OutcomeMeasure om : outcomeMeasures) {
-				if (!firstOM.deepEquals( om )) {
+			for (OutcomeMeasure om : outcomeMeasures) {
+				if (!firstOM.deepEquals(om)) {
 					foundDifferentOM = true;
 					break;
 				}
 			}
-			if (!foundDifferentOM) return false;
+			if (!foundDifferentOM) {
+				return false;
+			}
 
 			return true;
 		}
