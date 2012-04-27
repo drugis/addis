@@ -77,7 +77,8 @@ import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-
+import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.formatter.EmptyNumberFormatter;
@@ -317,11 +318,38 @@ public class AuxComponentFactory {
 	}
 
 	public static JButton createStartButton(final Task task) {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				button.setEnabled(false);
 				ThreadHandler.getInstance().scheduleTask(task);
+			}
+		});
+		return button;
+	}
+	
+	public static JButton createStopButton(final Task task, final MixedTreatmentComparison model) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
+		button.setToolTipText("Stop simulation");
+		button.setEnabled(false);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(task.isStarted()) { 
+					model.setExtendSimulation(ExtendSimulation.FINISH);
+				}
+			}
+		});
+		return button;
+	}	
+
+	public static JButton createExtendSimulationButton(final MixedTreatmentComparison model) {
+		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
+		button.setEnabled(false);
+		button.setToolTipText("Extend simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;

@@ -38,7 +38,6 @@ import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.Unit;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
-import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.common.gui.LayoutUtil;
@@ -56,7 +55,6 @@ public class DoseView implements ViewBuilder {
 	private DosePresentation d_model;
 	private JComboBox d_scaleModifierCB;
 	private JComboBox d_unitCB;
-	private NotEmptyValidator d_validator;
 	private JFormattedTextField d_quantityMin;
 	private JFormattedTextField d_quantityMax;
 	private final List<Unit> d_unitOptions;
@@ -87,10 +85,6 @@ public class DoseView implements ViewBuilder {
 		ComboBoxPopupOnFocusListener.add(d_unitCB);
 		ComboBoxPopupOnFocusListener.add(d_scaleModifierCB);
 		
-		if (d_validator != null) {
-			d_validator.add(d_quantityMin);
-			d_validator.add(d_unitCB);			
-		}		
 	}
 
 	public JComponent buildPanel() {
