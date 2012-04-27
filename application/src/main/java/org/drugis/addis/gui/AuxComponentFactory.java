@@ -79,7 +79,6 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
-
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.formatter.EmptyNumberFormatter;
@@ -388,7 +387,4 @@ public class AuxComponentFactory {
 		});
 		return pane;
 	}
-
-
-
 }
