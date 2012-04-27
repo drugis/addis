@@ -492,7 +492,6 @@ implements ViewBuilder {
 		bb.addButton(startButton);
 		bb.addButton(stopButton);
 		bb.addButton(extendSimulationButton);
-		attachSimulationListeners(mtc, startButton);
 		attachSimulationListeners(mtc, stopButton);
 		attachSimulationListeners(mtc, extendSimulationButton);
 
