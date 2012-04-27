@@ -46,7 +46,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -93,7 +92,6 @@ import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.gui.MainWindow;
@@ -264,21 +262,20 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();		
 		CellConstraints cc = new CellConstraints();
 		
 		int row = 1;
-		int colSpan = 5;
+		int colSpan = 3;
 		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, colSpan));
 		row += 2;
 
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
 		createSimulationControls(builder, cc, row, inconsistencyModel);
-		builder.add(new TaskProgressBar(d_pm.getProgressModel(inconsistencyModel)), cc.xy(5, row));
 		row += 2;
 		
 		String inconsistencyText = "In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, " +
@@ -350,21 +347,19 @@ implements ViewBuilder {
 
 
 	private JComponent buildConsistencyTab() {
-		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
 		CellConstraints cc =  new CellConstraints();
 		
 		int row = 1;
-		int colSpan = 5;
+		int colSpan = 3;
 		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, colSpan));
 		
 		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
 		createSimulationControls(builder, cc, row, consistencyModel);
-		JProgressBar conProgressBar = new TaskProgressBar(d_pm.getProgressModel(consistencyModel));
-		builder.add(conProgressBar, cc.xy(5, row));
 		
 		row += 2;
 		String consistencyText = "If there is no relevant inconsistency in the evidence, a consistency model can be used to draw " +
@@ -415,12 +410,12 @@ implements ViewBuilder {
 	
 	private JComponent buildNodeSplitTab() {
 		final FormLayout layout = new FormLayout(
-				"pref, 3dlu, pref, 3dlu, fill:0:grow",
+				"pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();
-		final int colSpan = 5;
+		final int colSpan = 3;
 		
 		int row = 1;
 		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, colSpan));
@@ -450,13 +445,9 @@ implements ViewBuilder {
 			LayoutUtil.addRow(layout);
 			row += 2;
 			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
-
-			builder.add(AuxComponentFactory.createStartStopButton(model.getActivityTask(), model), cc.xy(1, row));
-			JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(model);
-			builder.add(extendSimulationButton, cc.xy(3, row));
 			
-			builder.add(new TaskProgressBar(d_pm.getProgressModel(model)), cc.xy(5, row));
-
+			createSimulationControls(builder, cc, row, model);
+			
 			LayoutUtil.addRow(layout);
 			row += 2;
 			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, colSpan));
@@ -487,9 +478,6 @@ implements ViewBuilder {
 		}
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (BasicParameter p : d_pm.getSplitParameters()) {
-					d_pm.getNodeSplitModel(p).setExtendSimulation(ExtendSimulation.FINISH); // Automatically finish the simulations when running all NodeSplit models
-				}
 				ThreadHandler.getInstance().scheduleTasks(tasks);
 			}
 		});
@@ -497,48 +485,41 @@ implements ViewBuilder {
 	}
 
 	private void createSimulationControls(PanelBuilder builder, CellConstraints cc, int row, final MixedTreatmentComparison mtc) {
-
-		final JButton startStopButton = AuxComponentFactory.createStartStopButton(mtc.getActivityTask(), mtc);
-		builder.add(startStopButton, cc.xy(1, row));
+		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
+		final JButton startButton = AuxComponentFactory.createStartButton(mtc.getActivityTask());
+		final JButton stopButton = AuxComponentFactory.createStopButton(mtc.getActivityTask(), mtc);
 		final JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(mtc);
+		bb.addButton(startButton);
+		bb.addButton(stopButton);
+		bb.addButton(extendSimulationButton);
+		attachSimulationListeners(mtc, startButton);
+		attachSimulationListeners(mtc, stopButton);
 		attachSimulationListeners(mtc, extendSimulationButton);
-		attachSimulationListeners(mtc, startStopButton);
 
-		builder.add(extendSimulationButton, cc.xy(3, row));
+		builder.add(bb.getPanel(), cc.xy(1, row));
+		
+		builder.add(new TaskProgressBar(d_pm.getProgressModel(mtc)), cc.xy(3, row));
+
 	}
 
-	private void attachSimulationListeners(
-			final MixedTreatmentComparison model, final JButton button) {
-		for(Task t : model.getActivityTask().getModel().getStates()) { 
-			if(t.equals(model.getActivityTask().getModel().getStartState())) {
+	private void attachSimulationListeners(final MixedTreatmentComparison model, final JButton button) {
+		for (Task t : model.getActivityTask().getModel().getStates()) { 		
+			if (t.toString().equals("Assess convergence")) {
 				t.addTaskListener(new TaskListener() {
 					public void taskEvent(TaskEvent event) {
-						if(event.getType() == EventType.TASK_STARTED) {
-							button.setEnabled(false);
-						}
-					}
-				});
-			}
-			if(t.toString().equals("assess convergence")) {
-				t.addTaskListener(new TaskListener() {
-					
-					@Override
-					public void taskEvent(TaskEvent event) {
-						if(event.getType() == EventType.TASK_STARTED) {
+						if (event.getType() == EventType.TASK_STARTED) {
 							button.setEnabled(true);
 						}
-						if(event.getType() == EventType.TASK_RESTARTED) {
+						if (event.getType() == EventType.TASK_RESTARTED) {
 							button.setEnabled(false);
 						}
 					}
 				});
 			}
-			if(t.equals(model.getActivityTask().getModel().getEndState())) {
+			if (t.equals(model.getActivityTask().getModel().getEndState())) {
 				t.addTaskListener(new TaskListener() {
-					
-					@Override
 					public void taskEvent(TaskEvent event) {
-						if(event.getType() == EventType.TASK_FINISHED) {
+						if (event.getType() == EventType.TASK_FINISHED) {
 							button.setEnabled(false);
 						}
 					}

@@ -319,27 +319,25 @@ public class AuxComponentFactory {
 	}
 
 	public static JButton createStartButton(final Task task) {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				button.setEnabled(false);
 				ThreadHandler.getInstance().scheduleTask(task);
 			}
 		});
 		return button;
 	}
 	
-	public static JButton createStartStopButton(final Task task, final MixedTreatmentComparison model) {
-		final JButton button = new JButton(Main.IMAGELOADER.getIcon(task.isStarted() ? FileNames.ICON_STOP : FileNames.ICON_RUN));
-		button.setToolTipText(task.isStarted() ? "Stop simulation" : "Run simulation");
+	public static JButton createStopButton(final Task task, final MixedTreatmentComparison model) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
+		button.setToolTipText("Stop simulation");
+		button.setEnabled(false);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
 					model.setExtendSimulation(ExtendSimulation.FINISH);
-				} else { 
-					button.setToolTipText("Stop simulation");
-					button.setIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
-					ThreadHandler.getInstance().scheduleTask(task);
 				}
 			}
 		});
@@ -348,6 +346,7 @@ public class AuxComponentFactory {
 
 	public static JButton createExtendSimulationButton(final MixedTreatmentComparison model) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
+		button.setEnabled(false);
 		button.setToolTipText("Extend simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
