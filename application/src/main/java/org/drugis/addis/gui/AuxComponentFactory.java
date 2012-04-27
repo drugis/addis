@@ -38,7 +38,6 @@ import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -331,12 +330,11 @@ public class AuxComponentFactory {
 	}
 	
 	public static JButton createStartStopButton(final Task task, final MixedTreatmentComparison model) {
-		final JButton button = new JButton(Main.IMAGELOADER.getIcon(task.isStarted() ? FileNames.ICON_STOP : FileNames.ICON_RUN)) ;
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(task.isStarted() ? FileNames.ICON_STOP : FileNames.ICON_RUN));
 		button.setToolTipText(task.isStarted() ? "Stop simulation" : "Run simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					button.setEnabled(false);
 					model.setExtendSimulation(ExtendSimulation.FINISH);
 				} else { 
 					button.setToolTipText("Stop simulation");

@@ -501,16 +501,52 @@ implements ViewBuilder {
 		final JButton startStopButton = AuxComponentFactory.createStartStopButton(mtc.getActivityTask(), mtc);
 		builder.add(startStopButton, cc.xy(1, row));
 		final JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(mtc);
-		startStopButton.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if(evt.getPropertyName() == "enabled" && !((JButton)evt.getSource()).isEnabled()) {
-					extendSimulationButton.setEnabled(false); // FIXME does not stay disabled if button is pressed when still running
-				}
-			}
-		});
+		attachSimulationListeners(mtc, extendSimulationButton);
+		attachSimulationListeners(mtc, startStopButton);
+
 		builder.add(extendSimulationButton, cc.xy(3, row));
 	}
+
+	private void attachSimulationListeners(
+			final MixedTreatmentComparison model, final JButton button) {
+		for(Task t : model.getActivityTask().getModel().getStates()) { 
+			if(t.equals(model.getActivityTask().getModel().getStartState())) {
+				t.addTaskListener(new TaskListener() {
+					public void taskEvent(TaskEvent event) {
+						if(event.getType() == EventType.TASK_STARTED) {
+							button.setEnabled(false);
+						}
+					}
+				});
+			}
+			if(t.toString().equals("assess convergence")) {
+				t.addTaskListener(new TaskListener() {
+					
+					@Override
+					public void taskEvent(TaskEvent event) {
+						if(event.getType() == EventType.TASK_STARTED) {
+							button.setEnabled(true);
+						}
+						if(event.getType() == EventType.TASK_RESTARTED) {
+							button.setEnabled(false);
+						}
+					}
+				});
+			}
+			if(t.equals(model.getActivityTask().getModel().getEndState())) {
+				t.addTaskListener(new TaskListener() {
+					
+					@Override
+					public void taskEvent(TaskEvent event) {
+						if(event.getType() == EventType.TASK_FINISHED) {
+							button.setEnabled(false);
+						}
+					}
+				});
+			}
+		}
+	}
+	
 
 	private JComponent buildNodeSplitResultsTable() {
 		NodeSplitResultsTableModel tableModel = new NodeSplitResultsTableModel(d_pm);

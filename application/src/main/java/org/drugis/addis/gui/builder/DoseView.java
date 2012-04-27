@@ -38,7 +38,6 @@ import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.Unit;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
-import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.DosePresentation;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.common.gui.LayoutUtil;
