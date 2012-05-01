@@ -88,6 +88,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	private RankProbabilitySummary d_rankProbabilitySummary;
 	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
+	
+	private static final Transformer<DrugSet, String> s_descTransform = new Transformer<DrugSet, String>() {
+		@Override
+		public String transform(DrugSet input) {
+			return input.getLabel();
+		}
+	};
 	private static final Transformer<DrugSet, String> s_transform = new Transformer<DrugSet, String>() {
 		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();  
 		@Override
@@ -175,7 +182,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	private NetworkBuilder<DrugSet> createContinuousBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform);
+		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
@@ -188,7 +195,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private NetworkBuilder<DrugSet> createRateBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform);
+		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
