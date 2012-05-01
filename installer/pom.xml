@@ -19,7 +19,14 @@
 		<izpack-maven-plugin.version>1.0-alpha-5</izpack-maven-plugin.version>
 		<izpack.dir>${project.build.directory}/izpack</izpack.dir>
 	</properties>
-  
+
+	<repositories>
+		<repository>
+			<id>JBoss repository [DEPRECATED]</id>
+			<url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.izpack</groupId>
@@ -79,7 +86,7 @@
 				<execution>
 					<phase>package</phase>
 					<goals>
-						<goal>izpack</goal>
+					<goal>izpack</goal>
 					</goals>
 					<configuration>
 						<izpackBasedir>${izpack.dir}</izpackBasedir>
@@ -93,7 +100,18 @@
               				<artifactId>izpack-standalone-compiler</artifactId>
               				<version>${izpack-standalone.version}</version>
             			</dependency>
+				<dependency>
+				   	<groupId>net.sf.saxon</groupId>
+				   	<artifactId>saxon</artifactId>
+				   	<version>9.1.0.8</version>
+				</dependency>
+				<dependency>
+				   	<groupId>net.sf.saxon</groupId>
+				   	<artifactId>saxon-dom</artifactId>
+				   	<version>9.1.0.8</version>
+				</dependency>
           		</dependencies>
+
         	</plugin>
 		</plugins>
 	</build>
