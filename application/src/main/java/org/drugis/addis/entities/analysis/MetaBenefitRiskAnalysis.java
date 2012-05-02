@@ -78,6 +78,12 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 				s.addPropertyChangeListener(l);
 			}
 		}
+		
+		private List<Summary> getEffectSummaries() {
+			List<Summary> summaryList = getAbsoluteEffectSummaries();
+			summaryList.addAll(d_relativeEffects.values());
+			return summaryList;
+		}
 	}
 
 	private Indication d_indication;
@@ -379,12 +385,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		for (OutcomeMeasure om : getCriteria()) {
 			summaryList.add(getBaselineModel(om).getSummary());
 		}
-		return summaryList;
-	}
-
-	public List<Summary> getEffectSummaries() {
-		List<Summary> summaryList = getAbsoluteEffectSummaries();
-		summaryList.addAll(getRelativeEffectSummaries());
 		return summaryList;
 	}
 
