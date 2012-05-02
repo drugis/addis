@@ -59,7 +59,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		super(bean, pmf);
 		
 		d_pmf = pmf;
-		initSimulations();
 	}
 
 	@Override
