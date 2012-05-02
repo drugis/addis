@@ -807,8 +807,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 */
 	public Set<DrugSet> getMeasuredDrugs(Variable v, WhenTaken wt) {
 		Set<DrugSet> drugs = new HashSet<DrugSet>();
-		for (DrugSet d : getDrugs()) {
-			if (isMeasured(v, d, wt)) {
+		for (DrugSet d : getDrugs()) {		
+			if (wt != null && isMeasured(v, d, wt)) {
 				drugs.add(d);
 			}
 		}
@@ -838,6 +838,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public boolean isMeasured(Variable v, Arm a, WhenTaken wt) {
 		return getMeasurement(v, a, wt) != null	&& getMeasurement(v, a, wt).isComplete();
+	}
+	
+
+	public boolean isMeasured(Variable v, Arm a) {
+		return getMeasurement(v, a) != null	&& getMeasurement(v, a).isComplete();
 	}
 
 	private ObservableList<Arm> getArms(DrugSet d) {

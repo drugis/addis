@@ -736,6 +736,15 @@ public class StudyTest {
 				d_clone.getMeasurement(som.getValue(), arm, newWhenTaken));
 	}
 	
+	@Test
+	public void testNoDefaultMeasurement() { 
+		for(StudyActivity activity : d_clone.getStudyActivities()) {
+			activity.setUsedBy(Collections.<UsedBy> emptySet());
+		}
+		assertNull(d_clone.defaultMeasurementMoment());
+		assertEquals(Collections.<DrugSet> emptySet(), d_clone.getMeasuredDrugs(d_clone.getEndpoints().get(0).getValue()));
+	}
+	
 	private void removeTreatmentActivities() {
 		for (StudyActivity sa : d_clone.getStudyActivities()) {
 			if (sa.getActivity() instanceof TreatmentActivity) {
