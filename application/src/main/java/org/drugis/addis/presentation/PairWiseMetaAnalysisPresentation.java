@@ -28,11 +28,11 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
-public class RandomEffectsMetaAnalysisPresentation
+public class PairWiseMetaAnalysisPresentation
 extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
 implements StudyListPresentation {
 
-	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
+	public PairWiseMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 	}
 	

@@ -51,7 +51,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.RelativeEffectCanvas;
-import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -60,12 +60,12 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class RandomEffectsMetaAnalysisView extends AbstractMetaAnalysisView<RandomEffectsMetaAnalysisPresentation>
+public class PairWiseMetaAnalysisView extends AbstractMetaAnalysisView<PairWiseMetaAnalysisPresentation>
 implements ViewBuilder {
 	
 	private boolean d_isWizard;
 
-	public RandomEffectsMetaAnalysisView(RandomEffectsMetaAnalysisPresentation pm, AddisWindow mainWindow) {
+	public PairWiseMetaAnalysisView(PairWiseMetaAnalysisPresentation pm, AddisWindow mainWindow) {
 		super(pm, mainWindow);
 		d_isWizard = false;
 	}
@@ -89,14 +89,7 @@ implements ViewBuilder {
 		builder.add(buildStudiesPart(), cc.xy(1, 7));
 		
 		tabbedPane.addTab("Overview", builder.getPanel());
-		
-		layout = new FormLayout(
-				"fill:0:grow",
-				"p, 3dlu, p");
-		builder = new PanelBuilder(layout);
-
-		builder.add(getPlotsPanel(false), cc.xy(1, 3));
-		tabbedPane.addTab("Results", builder.getPanel());
+		tabbedPane.addTab("Results", getPlotsPanel(false));
 
 		return tabbedPane;
 	}
@@ -116,11 +109,11 @@ implements ViewBuilder {
 	private JComponent buildContinuousPlotsPart() {
 		
 		FormLayout layout = new FormLayout(
-				"fill:0:grow", "p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"pref:grow:fill",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		builder.setBorder(BorderFactory.createEmptyBorder());
 		
 		CellConstraints cc = new CellConstraints();
 		builder.addSeparator("Mean difference", cc.xy(1, 1));
