@@ -28,6 +28,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -42,8 +43,10 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntityTablePanel;
@@ -52,8 +55,6 @@ import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.task.TaskProgressBar;
-import org.drugis.common.threading.Task;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -112,11 +113,13 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		builder.addSeparator("Sub-analyses are required. Please run them.", cc.xyw(1, 1, 3));
 		builder.add(createRunAllButton(), cc.xyw(1, 3, 3));
 		int row = 3;
-		for (Task t : d_pm.getMeasurementTasks()) {
+
+		Iterator<MCMCWrapper> iter = d_pm.getWrappedModels().iterator();
+		while (iter.hasNext()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AuxComponentFactory.createStartButton(t), cc.xy(1, row));
-			builder.add(new TaskProgressBar(d_pm.getProgressModel(t)), cc.xy(3, row));
+			MCMCWrapper next = iter.next();
+			AnalysisComponentFactory.createSimulationControls(next,builder, row, d_mainWindow, true);
 		}
 		
 		return builder.getPanel();

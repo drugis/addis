@@ -26,11 +26,8 @@ package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
@@ -43,20 +40,17 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.ConvergencePlotsDialog;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
@@ -64,14 +58,12 @@ import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
-import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
-import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.mcmc.MCMCModelFinished;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
@@ -81,7 +73,6 @@ import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
-import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
@@ -93,7 +84,6 @@ import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
-import org.drugis.mtc.Parameter;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -114,12 +104,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
-	private static final String CONVERGENCE_TEXT = "<p>Convergence is assessed using the Brooks-Gelman-Rubin method. " +
-			"This method compares within-chain and between-chain variance to calculate the <em>Potential Scale Reduction Factor</em> " +
-			"(PSRF). A PSRF close to one indicates approximate convergence has been reached. See S.P. Brooks and A. Gelman (1998), " +
-			"<em>General methods for monitoring convergence of iterative simulations</em>, Journal of Computational and Graphical " +
-			"Statistics, 7(4): 434-455. <a href=\"http://www.jstor.org/stable/1390675\">JSTOR 1390675</a>." +
-			"</p><p>Double click a parameter in the table below to see the convergence plots.</p>";
+
 
 	private static class AnalysisFinishedListener implements TaskListener {
 		private final TablePanel[] d_tablePanels;
@@ -220,23 +205,27 @@ implements ViewBuilder {
 		final MCMCModelFinished modelFinished = new MCMCModelFinished(model);
 		
 		builder.add(memory, cc.xy(4, row));
-		JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		clearButton.setToolTipText("Clear results");
 		Bindings.bind(clearButton, "enabled", modelFinished);
-		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.getResults().clear();
-				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
-				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
-				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
-			}
-		});
+
 		builder.add(clearButton, cc.xy(6, row));
 		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		saveButton.setToolTipText("Save to R-file");
 		Bindings.bind(saveButton, "enabled", modelFinished);
 		saveButton.addActionListener(buildRButtonActionListener(model));
 		builder.add(saveButton, cc.xy(8, row));
+		
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.getResults().clear();
+				clearButton.setEnabled(false);
+				saveButton.setEnabled(false);
+				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
+				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
+				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
+			}
+		});
 		return row;
 	}
 
@@ -276,7 +265,7 @@ implements ViewBuilder {
 
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		createSimulationControls(builder, cc, row, inconsistencyModel);
+		AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), builder, row, d_mainWindow, false);
 
 		row += 2;
 		
@@ -336,13 +325,7 @@ implements ViewBuilder {
 						inconsistencyTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
-		
-		builder.addSeparator("Convergence", cc.xyw(1, row, 3));
-		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, 3));
-		row += 2;
-		builder.add(buildConvergenceTable(inconsistencyModel, d_pm.getInconsistencyModelConstructedModel()), cc.xyw(1, row, 3));
-		row += 2;
+
 		
 		return builder.getPanel();
 	}
@@ -361,7 +344,7 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		createSimulationControls(builder, cc, row, consistencyModel);
+		AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), builder, row, d_mainWindow, false);
 		
 		row += 2;
 		String consistencyText = "If there is no relevant inconsistency in the evidence, a consistency model can be used to draw " +
@@ -397,16 +380,7 @@ implements ViewBuilder {
 		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());		
 		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, colSpan));
-		row += 2;
-		
-		builder.addSeparator("Convergence", cc.xyw(1, row, colSpan));
-		row += 2;
-		
-		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, colSpan));
-		row += 2;
-		builder.add(buildConvergenceTable(consistencyModel, d_pm.getConsistencyModelConstructedModel()), cc.xyw(1, row, colSpan));
-		row += 2;
-		
+
 		return builder.getPanel();
 	}
 	
@@ -440,30 +414,20 @@ implements ViewBuilder {
 		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, colSpan));
 
 		for (BasicParameter p : d_pm.getSplitParameters()) {
-			LayoutUtil.addRow(layout);
-			row += 2;
-			builder.addSeparator(p.getName(), cc.xyw(1, row, colSpan));
+
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
 			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
 			
-			createSimulationControls(builder, cc, row, model);
+			AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), builder, row, d_mainWindow, true);
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
 			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, colSpan));
 			
 			LayoutUtil.addRow(layout);
-			row += 2;
-			builder.addSeparator("Convergence", cc.xyw(1, row, colSpan));
-			LayoutUtil.addRow(layout);
-			row += 2;
-			builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xyw(1, row, colSpan));
-			LayoutUtil.addRow(layout);
-			row += 2;
-			builder.add(buildConvergenceTable(model, d_pm.getNodesplitModelConstructedModel(p)), cc.xyw(1, row, colSpan));
-			
+			row += 2;	
 		}
 		
 		return builder.getPanel();
@@ -485,50 +449,6 @@ implements ViewBuilder {
 		});
 		return button;
 	}
-
-	private void createSimulationControls(PanelBuilder builder, CellConstraints cc, int row, final MixedTreatmentComparison mtc) {
-		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
-		final JButton startButton = AuxComponentFactory.createStartButton(mtc.getActivityTask());
-		final JButton stopButton = AuxComponentFactory.createStopButton(mtc.getActivityTask(), mtc);
-		final JButton extendSimulationButton = AuxComponentFactory.createExtendSimulationButton(mtc);
-		bb.addButton(startButton);
-		bb.addButton(stopButton);
-		bb.addButton(extendSimulationButton);
-		attachSimulationListeners(mtc, stopButton);
-		attachSimulationListeners(mtc, extendSimulationButton);
-
-		builder.add(bb.getPanel(), cc.xy(1, row));
-		
-		builder.add(new TaskProgressBar(d_pm.getProgressModel(mtc)), cc.xy(3, row));
-
-	}
-
-	private void attachSimulationListeners(final MixedTreatmentComparison model, final JButton button) {
-		for (Task t : model.getActivityTask().getModel().getStates()) { 		
-			if (t.toString().equals("Assess convergence")) {
-				t.addTaskListener(new TaskListener() {
-					public void taskEvent(TaskEvent event) {
-						if (event.getType() == EventType.TASK_STARTED) {
-							button.setEnabled(true);
-						}
-						if (event.getType() == EventType.TASK_RESTARTED) {
-							button.setEnabled(false);
-						}
-					}
-				});
-			}
-			if (t.equals(model.getActivityTask().getModel().getEndState())) {
-				t.addTaskListener(new TaskListener() {
-					public void taskEvent(TaskEvent event) {
-						if (event.getType() == EventType.TASK_FINISHED) {
-							button.setEnabled(false);
-						}
-					}
-				});
-			}
-		}
-	}
-	
 
 	private JComponent buildNodeSplitResultsTable() {
 		NodeSplitResultsTableModel tableModel = new NodeSplitResultsTableModel(d_pm);
@@ -566,41 +486,7 @@ implements ViewBuilder {
         return new ChartPanel(chart);	
 	}
 
-	private JComponent buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
-		ConvergenceDiagnosticTableModel tableModel = new ConvergenceDiagnosticTableModel(mtc, modelConstructed);
-		EnhancedTable convergenceTable = EnhancedTable.createBare(tableModel);
-		convergenceTable.autoSizeColumns();
-		TablePanel pane = new TablePanel(convergenceTable);
-	
-		convergenceTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() > 1) {
-					JTable table = (JTable)e.getComponent();
-					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
-					Parameter p = mtc.getResults().getParameters()[row];
-					showConvergencePlots(mtc, p);
-				}
-			}
-		});
-		return pane;
-	}
 
-	protected void showConvergencePlots(MixedTreatmentComparison mtc, Parameter p) {
-		if(mtc.getResults().getNumberOfSamples() > 0) {
-			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc, p);
-			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));
-			dialog.setMinimumSize(new Dimension(d_mainWindow.getMinimumSize().width - 100, d_mainWindow.getMinimumSize().height - 100));
-			dialog.setModal(true);
-			dialog.setLocationRelativeTo(d_mainWindow);
-			dialog.setLocationByPlatform(true);
-			dialog.pack();
-			dialog.setVisible(true);
-		} else {
-			JOptionPane.showMessageDialog(d_mainWindow, "Convergence plots cannot be shown because the results of " +
-					"this analysis has been discarded to save memory.", "No results available", JOptionPane.WARNING_MESSAGE);
-		}
-	}
 
 	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();

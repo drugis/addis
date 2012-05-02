@@ -28,6 +28,8 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ArrayListModel;
@@ -36,7 +38,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 
 @SuppressWarnings("serial")
-public class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
+public abstract class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
 implements StudyListPresentation {
 
 	protected PresentationModelFactory d_mgr;
@@ -71,4 +73,6 @@ implements StudyListPresentation {
 	public VariableType getAnalysisType() {
 		return getBean().getOutcomeMeasure().getVariableType();
 	}
+	
+	public abstract TaskProgressModel getProgressModel(MixedTreatmentComparison mtc);
 }
