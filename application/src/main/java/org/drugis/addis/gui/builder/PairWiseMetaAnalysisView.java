@@ -62,51 +62,51 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class PairWiseMetaAnalysisView extends AbstractMetaAnalysisView<PairWiseMetaAnalysisPresentation>
 implements ViewBuilder {
-	
-	private boolean d_isWizard;
 
 	public PairWiseMetaAnalysisView(PairWiseMetaAnalysisPresentation pm, AddisWindow mainWindow) {
 		super(pm, mainWindow);
-		d_isWizard = false;
 	}
 
 	public JComponent buildPanel() {
+		JTabbedPane tabbedPane = new AddisTabbedPane();
+
+		tabbedPane.addTab("Overview", buildOverviewPanel());
+		tabbedPane.addTab("Results", getPlotsPanel(false));
+
+		return tabbedPane;
+	}
+
+	private JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		builder.setOpaque(true);
-		
+	
 		CellConstraints cc =  new CellConstraints();		
 
-		JTabbedPane tabbedPane = new AddisTabbedPane();
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(PairWiseMetaAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(buildPropertiesPart(), cc.xy(1, 3));
 
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural(), cc.xy(1, 5));
 		builder.add(buildStudiesPart(), cc.xy(1, 7));
 		
-		tabbedPane.addTab("Overview", builder.getPanel());
-		tabbedPane.addTab("Results", getPlotsPanel(false));
-
-		return tabbedPane;
+		return builder.getPanel();
 	}
 
-	public JComponent getPlotsPanel(boolean isOverview) {
-		d_isWizard = isOverview;
+	public JComponent getPlotsPanel(boolean isWizard) {
 		if (d_pm.getAnalysisType() instanceof RateVariableType) {
-			return buildRatePlotsPart();
+			return buildRatePlotsPart(isWizard);
 		}
 		if (d_pm.getAnalysisType() instanceof ContinuousVariableType) {
-			return buildContinuousPlotsPart();
+			return buildContinuousPlotsPart(isWizard);
 		}
 		throw new RuntimeException("Unexpected case: " +
 				d_pm.getAnalysisType() + " is not a supported type of endpoint");
 	}
 
-	private JComponent buildContinuousPlotsPart() {
+	private JComponent buildContinuousPlotsPart(boolean isWizard) {
 		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
@@ -118,16 +118,16 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		builder.addSeparator("Mean difference", cc.xy(1, 1));
 		
-		builder.add(buildRelativeEffectPart(BasicMeanDifference.class), cc.xy(1, 3));
+		builder.add(buildRelativeEffectPart(BasicMeanDifference.class, isWizard), cc.xy(1, 3));
 		
-		if (!d_isWizard) {
+		if (!isWizard) {
 			builder.addSeparator("Standardised mean difference", cc.xy(1, 5));
-			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class), cc.xy(1, 7));
+			builder.add(buildRelativeEffectPart(BasicStandardisedMeanDifference.class, isWizard), cc.xy(1, 7));
 		}
 		return builder.getPanel();
 	}
 
-	private JComponent buildRatePlotsPart() {
+	private JComponent buildRatePlotsPart(boolean isWizard) {
 		
 		FormLayout layout = new FormLayout(
 				"pref:grow:fill",
@@ -139,20 +139,20 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator("Odds ratio", cc.xy(1, 1));
-		builder.add(buildRelativeEffectPart(BasicOddsRatio.class), cc.xy(1,5));
+		builder.add(buildRelativeEffectPart(BasicOddsRatio.class, isWizard), cc.xy(1,5));
 		
-		if (!d_isWizard) {
+		if (!isWizard) {
 			builder.addSeparator("Risk ratio", cc.xy(1, 7));
-			builder.add(buildRelativeEffectPart(BasicRiskRatio.class), cc.xy(1, 9));
+			builder.add(buildRelativeEffectPart(BasicRiskRatio.class, isWizard), cc.xy(1, 9));
 		
 			builder.addSeparator("Risk difference", cc.xy(1, 11));
-			builder.add(buildRelativeEffectPart(BasicRiskDifference.class), cc.xy(1, 13));
+			builder.add(buildRelativeEffectPart(BasicRiskDifference.class, isWizard), cc.xy(1, 13));
 		}
 		return builder.getPanel();
 	}
 
 	@SuppressWarnings("serial")
-	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type) {
+	private JComponent buildRelativeEffectPart(Class<? extends RelativeEffect<?>> type, boolean isWizard) {
 		FormLayout layout1 = new FormLayout(
 				"left:0:grow",
 				"p, 3dlu, p, 3dlu, p");
@@ -176,7 +176,7 @@ implements ViewBuilder {
 		
 		encapsulating.add(scrollPane,cc.xy(1, 1));
 		
-		if (!d_isWizard) {
+		if (!isWizard) {
 			JButton saveBtn = new JButton("Save Image");
 			saveBtn.addActionListener(new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
