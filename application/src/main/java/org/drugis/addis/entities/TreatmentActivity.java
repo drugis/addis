@@ -24,7 +24,6 @@
 
 package org.drugis.addis.entities;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +53,15 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
-		return new HashSet<Entity>(getDrugs());
+		final HashSet<Entity> dep = new HashSet<Entity>();
+		for (DrugTreatment d : d_treatments) {
+			dep.add(d.getDrug());
+			final AbstractDose dose = d.getDose();
+			if (dose != null && dose.getDoseUnit() != null) {
+				dep.add(dose.getDoseUnit().getUnit());
+			}
+		}
+		return dep;
 	}
 
 	@Override
@@ -78,15 +85,7 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 		}
 		return clone;
 	}
-	
-	public List<Drug> getDrugs() {
-		List<Drug> drugs = new ArrayList<Drug>();
-		for(DrugTreatment ta : d_treatments) {
-			drugs.add(ta.getDrug());
-		}
-		return drugs;
-	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof TreatmentActivity) {
@@ -94,14 +93,6 @@ public class TreatmentActivity extends AbstractEntity implements Activity {
 			return EqualsUtil.equal(other.getTreatments(), getTreatments());
 		}
 		return false;	
-	}
-
-	public  List<AbstractDose> getDoses() {
-		List<AbstractDose> doses = new ArrayList<AbstractDose>();
-		for(DrugTreatment ta : d_treatments) {
-			doses.add(ta.getDose());
-		}
-		return doses;
 	}
 	
 	public ObservableList<DrugTreatment> getTreatments() {
