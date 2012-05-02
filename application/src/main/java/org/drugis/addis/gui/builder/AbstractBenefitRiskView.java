@@ -84,7 +84,6 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		}
 		
 	}
-	
 
 	public JComponent buildPanel() {
 		JTabbedPane tabbedPane = new AddisTabbedPane();

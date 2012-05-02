@@ -72,7 +72,7 @@ import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.presentation.mcmc.MCMCModelFinished;
+import org.drugis.addis.presentation.mcmc.TaskFinishedModel;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
@@ -217,7 +217,7 @@ implements ViewBuilder {
 		builder.add(new JLabel(name), cc.xy(2, row));
 		
 		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
-		final MCMCModelFinished modelFinished = new MCMCModelFinished(model);
+		final TaskFinishedModel modelFinished = new TaskFinishedModel(model.getActivityTask());
 		
 		builder.add(memory, cc.xy(4, row));
 		JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));

@@ -83,6 +83,7 @@ extends PresentationModel<AnalysisType> {
 		super(bean);
 		d_pmf = pmf;
 		
+		initSimulations();
 		if (bean.getAnalysisType().equals(org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType.SMAA)) {
 			d_smaaPresentation = new SMAAPresentation<Alternative, AnalysisType>(getBean());
 			startSMAA();
@@ -98,9 +99,7 @@ extends PresentationModel<AnalysisType> {
 	public PresentationModelFactory getFactory() {
 		return d_pmf;
 	}
-
-	public abstract void startAllSimulations();
-
+	
 	public abstract ValueHolder<Boolean> getMeasurementsReadyModel();
 
 	public SMAAPresentation<Alternative, AnalysisType> getSMAAPresentation() {
@@ -114,6 +113,8 @@ extends PresentationModel<AnalysisType> {
 	public BRATTableModel<Alternative, AnalysisType> createBRATTableModel(Alternative subject) {
 		return new BRATTableModel<Alternative, AnalysisType>(getBean(), subject);
 	}
+
+	protected abstract void initSimulations();
 
 	public static List<DecisionContextField> createDecisionContextFields(DecisionContext decisionContext) {
 		PresentationModel<DecisionContext> dcModel = new PresentationModel<DecisionContext>(decisionContext);

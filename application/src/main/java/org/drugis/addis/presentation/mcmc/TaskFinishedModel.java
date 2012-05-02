@@ -28,18 +28,16 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.mtc.MCMCModel;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class MCMCModelFinished extends AbstractValueModel implements ValueHolder<Boolean>, TaskListener {
-
+public class TaskFinishedModel extends AbstractValueModel implements ValueHolder<Boolean>, TaskListener {
 	private boolean d_val;
 
-	public MCMCModelFinished(MCMCModel model) {
-		d_val = model.getActivityTask().isFinished() || model.getActivityTask().isAborted();
-		model.getActivityTask().addTaskListener(this);
+	public TaskFinishedModel(Task task) {
+		d_val = task.isFinished() || task.isAborted();
+		task.addTaskListener(this);
 	}
 
 	public Boolean getValue() {

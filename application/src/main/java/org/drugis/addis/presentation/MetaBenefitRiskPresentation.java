@@ -37,25 +37,33 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
+import org.drugis.addis.presentation.mcmc.TaskFinishedModel;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MCMCModel;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	
-	private AllSummariesDefinedModel d_allSummariesDefinedModel;
-	private List<MCMCModel> d_baselineModels = new ArrayList<MCMCModel>();
-	private Map<Task, TaskProgressModel> d_progressModels = new HashMap<Task, TaskProgressModel>();
+	private ValueHolder<Boolean> d_measurementsReadyModel;
+	private List<MCMCModel> d_baselineModels;
+	private Map<Task, TaskProgressModel> d_progressModels;
 
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
 		
 		d_pmf = pmf;
+		initSimulations();
+	}
+
+	@Override
+	protected void initSimulations() {
 		initAllBaselineModels();
 		initAllProgressModels();
 	}
@@ -93,10 +101,20 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
-		if (d_allSummariesDefinedModel == null) {
-			d_allSummariesDefinedModel = new AllSummariesDefinedModel(getBean().getEffectSummaries());
+		if (d_measurementsReadyModel != null) {
+			return d_measurementsReadyModel;
 		}
-		return d_allSummariesDefinedModel;
+		
+		List<ValueModel> models = new ArrayList<ValueModel>();
+		for (MCMCModel model : d_baselineModels) {
+			models.add(new TaskFinishedModel(model.getActivityTask()));
+		}
+		for (Task task : getBean().getNetworkTasks()) {
+			models.add(new TaskFinishedModel(task));
+		}
+		d_measurementsReadyModel = new ValueModelWrapper<Boolean>(new BooleanAndModel(models));
+		
+		return d_measurementsReadyModel;
 	}
 	
 	public List<Task> getMeasurementTasks() {
@@ -105,7 +123,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		return tasks;
 	}
 	
-	@Override
 	public synchronized void startAllSimulations() {
 		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
 	}
@@ -119,6 +136,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 	
 	private void initAllBaselineModels() {
+		d_baselineModels = new ArrayList<MCMCModel>();
 		AbstractBaselineModel<?> model;
 		for (OutcomeMeasure om : getBean().getCriteria()) {
 			model = getBean().getBaselineModel(om);
@@ -126,8 +144,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		}
 	}
 	
-
 	private void initAllProgressModels() {
+		d_progressModels = new HashMap<Task, TaskProgressModel>();
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
