@@ -1161,9 +1161,9 @@ public class JAXBConvertor {
 		for(org.drugis.addis.entities.data.MetaAnalysis ma : analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
 			if(ma instanceof org.drugis.addis.entities.data.NetworkMetaAnalysis) {
 				list.add(convertNetworkMetaAnalysis((org.drugis.addis.entities.data.NetworkMetaAnalysis)ma, domain));
-			}else if(ma instanceof PairwiseMetaAnalysis) {
+			} else if(ma instanceof PairwiseMetaAnalysis) {
 				list.add(convertPairWiseMetaAnalysis((PairwiseMetaAnalysis)ma, domain));
-			}else {
+			} else {
 				throw new ConversionException("Unsupported MetaAnalysis Type" + ma);
 			}
 		}

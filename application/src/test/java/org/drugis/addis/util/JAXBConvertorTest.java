@@ -68,6 +68,9 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousVariableType;
@@ -86,6 +89,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.MeasurementKey;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
@@ -94,26 +98,22 @@ import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.StudyOutcomeMeasure;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
-import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.Variable.Type;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.Alternative;
@@ -1319,7 +1319,7 @@ public class JAXBConvertorTest {
 		assertEntityEquals(expected, JAXBConvertor.convertNetworkMetaAnalysis(ma.d_nwma, domain));
 		assertEquals(ma.d_nwma, JAXBConvertor.convertNetworkMetaAnalysis(expected));
 	}
-
+	
 	private MetaAnalysisWithStudies buildNetworkMetaAnalysis(String name) throws DatatypeConfigurationException, ConversionException {
 		String study_one = "A Network Meta analysis study 1";
 		String study_two = "A Network Meta analysis study 2";
@@ -1418,7 +1418,7 @@ public class JAXBConvertorTest {
 		
 		return new MetaAnalysisWithStudies(nma, studiesl);
 	}
-
+	
 	private void buildArmEpochTreatmentActivityCombination(Arms arms, Epochs epochs,
 			StudyActivities sas, int armSize, String fluoxArmName,
 			String mainPhaseName, String treatmentName, TreatmentActivity fluoxFixedDose) throws ConversionException
