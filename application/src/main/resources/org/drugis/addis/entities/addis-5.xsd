@@ -250,7 +250,7 @@
 					<xs:element maxOccurs="unbounded" minOccurs="2" name="alternative" type="Alternative"/>
 					<xs:element minOccurs="0" name="consistencyResults" type="ConsistencyResults"/>
 					<xs:element minOccurs="0" name="inconsistencyResults" type="InconsistencyResults"/>
-					<xs:element minOccurs="0" name="nodeSplitResults" type="NodeSplitResults"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="nodeSplitResults" type="NodeSplitResults"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
