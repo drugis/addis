@@ -1,0 +1,30 @@
+\documentclass[a4paper]{article}
+
+\title{Transform relative effect vector to different baseline}
+
+\begin{document}
+
+\maketitle
+
+Say we have a vector of relative effects $d$ against baseline $x$: $X = (d(x, w_1), d(x, w_2), \dots)^T$, and $X$ is normally distributed:
+$$
+X \sim \mathcal{N}(\mu, \Sigma)
+$$
+
+We want to change the baseline to $y$: $Y = (d(y, z_1), d(y, z_2), \dots)^T$, and derive a normal distribution like:
+$$
+Y \sim \mathcal{N}(\mu', \Sigma')
+$$
+
+Then, if we derive a matrix $B$ such that $Y = BX$, we have $\mu' = B\mu$ and $\Sigma' = B\Sigma B^T$. We can define $B$ as:
+$$
+B_{i,j} = \left\{
+\begin{array}{ll}
+-1 & \mathrm{if}\; w_j = y \\
+1 & \mathrm{if}\; w_i = z_j \\
+0 & \mathrm{otherwise}\\
+\end{array}
+\right.
+$$
+
+\end{document}
