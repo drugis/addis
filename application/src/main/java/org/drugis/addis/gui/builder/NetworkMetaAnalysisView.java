@@ -65,8 +65,8 @@ import org.drugis.addis.presentation.NetworkTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
-import org.drugis.addis.presentation.mcmc.MCMCModelFinished;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
+import org.drugis.addis.presentation.mcmc.TaskFinishedModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
@@ -203,7 +203,7 @@ implements ViewBuilder {
 		builder.add(new JLabel(name), cc.xy(2, row));
 		
 		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
-		final MCMCModelFinished modelFinished = new MCMCModelFinished(model);
+		final TaskFinishedModel modelFinished = new TaskFinishedModel(model.getActivityTask());
 		
 		builder.add(memory, cc.xy(4, row));
 		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
@@ -284,10 +284,10 @@ implements ViewBuilder {
 		builder.add(inconsistencyNote, cc.xyw(1, row, 3));
 		row += 2;
 		
-		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
+		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(inconsistencyModel);
 		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(inconsistencyTablePanel, cc.xyw(1, row, 3));
+		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
@@ -313,19 +313,19 @@ implements ViewBuilder {
 		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 	
-		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
-		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
-		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
-		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
+		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
+		EnhancedTable varianceTable = new EnhancedTable(varianceTableModel, 300);
+		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
+		final TablePanel varianceTablePanel = new TablePanel(varianceTable);
 		
 		builder.addSeparator("Variance Calculation", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(mixedComparisonTablePanel, cc.xyw(1, row, 3));
+		builder.add(varianceTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
 				new AnalysisFinishedListener(new TablePanel[] {
-						inconsistencyTablePanel, inconsistencyFactorsTablePanel
+						relativeEffectsTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
 
@@ -363,14 +363,14 @@ implements ViewBuilder {
 		JComponent consistencyNote = AuxComponentFactory.createHtmlField(consistencyText);
 		builder.add(consistencyNote, cc.xyw(1, row, colSpan));
 		
-		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
+		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(consistencyModel);
 		consistencyModel.getActivityTask().addTaskListener(
-				new AnalysisFinishedListener(new TablePanel[] {consistencyTablePanel}));
+				new AnalysisFinishedListener(new TablePanel[] {relativeEffectsTablePanel}));
 
 		row += 2;
 		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(consistencyTablePanel, cc.xyw(1, row, colSpan));
+		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		builder.add(createRankProbChart(), cc.xyw(1, row, colSpan));

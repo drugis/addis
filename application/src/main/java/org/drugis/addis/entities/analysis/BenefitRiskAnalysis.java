@@ -64,6 +64,9 @@ public abstract class BenefitRiskAnalysis<Alternative> extends AbstractNamedEnti
 	
 	public abstract Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative subject);
 
+	/**
+	 * The MeasurementSource should fire an event when the measurements that are the input for the BR analysis change.
+	 */
 	public abstract MeasurementSource<Alternative> getMeasurementSource();
 	
 	public abstract DecisionContext getDecisionContext();

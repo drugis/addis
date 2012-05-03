@@ -22,39 +22,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation.mcmc;
+package org.drugis.addis.presentation;
 
-import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.mtc.MCMCModel;
-
-import com.jgoodies.binding.value.AbstractValueModel;
+import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
-public class MCMCModelFinished extends AbstractValueModel implements ValueHolder<Boolean>, TaskListener {
 
-	private boolean d_val;
+public class PairWiseMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
+implements StudyListPresentation {
 
-	public MCMCModelFinished(MCMCModel model) {
-		d_val = model.getActivityTask().isFinished() || model.getActivityTask().isAborted();
-		model.getActivityTask().addTaskListener(this);
+	public PairWiseMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
+		super(bean, mgr);
+	}
+	
+	public LabeledPresentation getFirstDrugModel() {
+		return d_mgr.getLabeledModel(getBean().getFirstDrug());
+	}
+	
+	public LabeledPresentation getSecondDrugModel() {
+		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
 	}
 
-	public Boolean getValue() {
-		return d_val;
-	}
-
-	public void setValue(Object newValue) {
-		throw new IllegalAccessError("MCMCModelFinished is read-only");
-	}
-
-	@Override
-	public void taskEvent(TaskEvent event) {
-		boolean oldval = d_val;
-		Task t = event.getSource();
-		d_val = t.isFinished() || t.isAborted();
-		fireValueChange(oldval, d_val);
+	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
+		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
+		return pm;
 	}
 }

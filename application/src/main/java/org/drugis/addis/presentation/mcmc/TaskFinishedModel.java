@@ -22,29 +22,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.presentation.mcmc;
 
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.TaskListener;
+import org.drugis.common.threading.event.TaskEvent;
+
+import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class RandomEffectsMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
-implements StudyListPresentation {
+public class TaskFinishedModel extends AbstractValueModel implements ValueHolder<Boolean>, TaskListener {
+	private boolean d_val;
 
-	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
-		super(bean, mgr);
-	}
-	
-	public LabeledPresentation getFirstDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getFirstDrug());
-	}
-	
-	public LabeledPresentation getSecondDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
+	public TaskFinishedModel(Task task) {
+		d_val = task.isFinished() || task.isAborted();
+		task.addTaskListener(this);
 	}
 
-	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
-		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
-		return pm;
+	public Boolean getValue() {
+		return d_val;
+	}
+
+	public void setValue(Object newValue) {
+		throw new IllegalAccessError("MCMCModelFinished is read-only");
+	}
+
+	@Override
+	public void taskEvent(TaskEvent event) {
+		boolean oldval = d_val;
+		Task t = event.getSource();
+		d_val = t.isFinished() || t.isAborted();
+		fireValueChange(oldval, d_val);
 	}
 }

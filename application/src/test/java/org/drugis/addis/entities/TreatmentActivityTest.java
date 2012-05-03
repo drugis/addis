@@ -27,6 +27,9 @@ package org.drugis.addis.entities;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drugis.addis.ExampleData;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
@@ -77,5 +80,18 @@ public class TreatmentActivityTest {
 		ct.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), ExampleData.MILLIGRAMS_A_DAY));
 		assertEquals(ct, d_orig);
 		JUnitUtil.assertNotEquals(d_empty, d_orig);
+	}
+	
+	@Test
+	public void testDependencies() {
+		Drug drug = ExampleData.buildDrugCandesartan();
+		final TreatmentActivity ta = new TreatmentActivity(new DrugTreatment(drug, new UnknownDose()));
+		Set<Entity> expected = new HashSet<Entity>();
+		expected.add(drug);
+		assertEquals(expected, ta.getDependencies());
+		
+		ta.addTreatment(drug, new FixedDose(3.0, ExampleData.KILOGRAMS_PER_HOUR));
+		expected.add(ExampleData.KILOGRAMS_PER_HOUR.getUnit());
+		assertEquals(expected, ta.getDependencies());		
 	}
 }

@@ -39,19 +39,21 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
+import org.drugis.addis.presentation.mcmc.TaskFinishedModel;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
-	
-	private static AllSummariesDefinedModel d_allSummariesDefinedModel;
-	private HashMap<Task, MCMCWrapper> d_models = new HashMap<Task, MCMCWrapper>();
+	private ValueHolder<Boolean> d_measurementsReadyModel;
+	private HashMap<Task, MCMCWrapper> d_models;
 	
 	public static class WrappedBaselineModel extends MCMCWrapper {
 
@@ -59,10 +61,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 			super(model, om, name);
 		}
 
-
 		@Override
 		public ValueHolder<Boolean> isModelConstructed() {
-			return d_allSummariesDefinedModel;
+			return new UnmodifiableHolder<Boolean>(true);
 		}
 				
 		@Override
@@ -77,6 +78,11 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		super(bean, pmf);
 		
 		d_pmf = pmf;
+	}
+	
+	@Override
+	protected void initSimulations() {
+		d_models = new HashMap<Task, MCMCWrapper>();
 		initAllBaselineModels();
 		initNetworkMetaProgressModels();
 	}
@@ -114,10 +120,17 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
-		if (d_allSummariesDefinedModel == null) {
-			d_allSummariesDefinedModel = new AllSummariesDefinedModel(getBean().getEffectSummaries());
+		if (d_measurementsReadyModel != null) {
+			return d_measurementsReadyModel;
 		}
-		return d_allSummariesDefinedModel;
+		
+		List<ValueModel> models = new ArrayList<ValueModel>();
+		for (Task task : d_models.keySet()) {
+			models.add(new TaskFinishedModel(task));
+		}
+		d_measurementsReadyModel = new ValueModelWrapper<Boolean>(new BooleanAndModel(models));
+		
+		return d_measurementsReadyModel;
 	}
 	
 	public List<Task> getMeasurementTasks() {
@@ -125,11 +138,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		tasks.addAll(getBean().getNetworkTasks());
 		return tasks;
 	}
-	
-	@Override
-	public synchronized void startAllSimulations() {
-		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
-	}
+
 
 	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
@@ -188,5 +197,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	public Collection<MCMCWrapper> getWrappedModels() {
 		return new TreeSet<MCMCWrapper>( d_models.values() );
+	}
+
+	public synchronized void startAllSimulations() {
+		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
 	}
 }

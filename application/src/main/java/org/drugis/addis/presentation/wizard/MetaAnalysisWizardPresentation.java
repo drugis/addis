@@ -41,7 +41,7 @@ import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.common.beans.AbstractObservableList;
 import org.drugis.common.event.ListDataEventProxy;
@@ -56,7 +56,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private ModifiableHolder<DrugSet> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private ObservableList<DrugSet> d_selectedDrugs;
-	private RandomEffectsMetaAnalysisPresentation d_pm;
+	private PairWiseMetaAnalysisPresentation d_pm;
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 				
@@ -215,9 +215,9 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}		
 	}
 
-	public RandomEffectsMetaAnalysisPresentation getMetaAnalysisModel() {
+	public PairWiseMetaAnalysisPresentation getMetaAnalysisModel() {
 		RandomEffectsMetaAnalysis buildMetaAnalysis = buildMetaAnalysis();
-		d_pm = (RandomEffectsMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis);
+		d_pm = (PairWiseMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis);
 		return d_pm;
 	}
 

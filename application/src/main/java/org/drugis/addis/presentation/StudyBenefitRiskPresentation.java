@@ -30,8 +30,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 
 @SuppressWarnings("serial")
-public class StudyBenefitRiskPresentation extends
-		AbstractBenefitRiskPresentation<Arm, StudyBenefitRiskAnalysis> {
+public class StudyBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Arm, StudyBenefitRiskAnalysis> {
 
 	public StudyBenefitRiskPresentation(StudyBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
@@ -39,9 +38,6 @@ public class StudyBenefitRiskPresentation extends
 
 	public TableModel getMeasurementTableModel() {
 		return new BenefitRiskMeasurementTableModel<Arm>(getBean());
-	}
-
-	public synchronized void startAllSimulations() {
 	}
 
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
@@ -56,5 +52,9 @@ public class StudyBenefitRiskPresentation extends
 	@Override
 	protected void startLyndOBrien() {
 		getLyndOBrienPresentation().startLyndOBrien();
+	}
+
+	@Override
+	protected void initSimulations() {
 	}
 }

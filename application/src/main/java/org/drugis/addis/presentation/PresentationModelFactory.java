@@ -121,7 +121,7 @@ public class PresentationModelFactory {
 			return new DrugSetPresentation((DrugSet) obj, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
-			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
+			return new PairWiseMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
 		}
 		if (obj instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);

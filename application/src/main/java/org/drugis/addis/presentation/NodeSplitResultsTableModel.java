@@ -33,7 +33,7 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.NodeSplitModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -66,34 +66,29 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 		};
 		
 		if(d_pm.getSplitParameters().size() > 0) {
-			initialiseTable();
+			initializeTable();
 		}
 	}
 
-	private void initialiseTable() {
+	private void initializeTable() {
 		d_rowcount = d_pm.getSplitParameters().size();
 		d_parameters = new ArrayList<BasicParameter>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			d_parameters.add(p);
-			Summary value = d_pm.getQuantileSummary(d_pm.getConsistencyModel(), p);
-			value.addPropertyChangeListener(d_listener);
-			d_quantileSummaries.put(p, value);
-			
-			NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
-			Parameter direct = splitModel.getDirectEffect();
-			Parameter indirect = splitModel.getIndirectEffect();
-			QuantileSummary valueDirect = d_pm.getQuantileSummary(splitModel, direct);
-			valueDirect.addPropertyChangeListener(d_listener);
-			d_quantileSummaries.put(direct, valueDirect);
-			
-			QuantileSummary valueIndirect = d_pm.getQuantileSummary(splitModel, indirect);
-			valueIndirect.addPropertyChangeListener(d_listener);
-			d_quantileSummaries.put(indirect, valueIndirect);
+			attachQuantileSummary(d_pm.getConsistencyModel(), p);
+			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getDirectEffect());
+			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getIndirectEffect());
 			
 			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitPValueSummary(p);
 			valuePvalue.addPropertyChangeListener(d_listener);
 			d_pValueSummaries.put(p, valuePvalue);
 		}
+	}
+
+	private void attachQuantileSummary(MixedTreatmentComparison model, Parameter param) {
+		QuantileSummary summary = d_pm.getQuantileSummary(model, param);
+		summary.addPropertyChangeListener(d_listener);
+		d_quantileSummaries.put(param, summary);
 	}
 	
 	@Override

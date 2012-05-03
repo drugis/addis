@@ -42,20 +42,15 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 	}
 
 	private CriterionMeasurement createMeasurement(List<Alternative> alts, OutcomeMeasure om) {
-		System.out.println(om);
 		GaussianMeasurement baseline = new GaussianMeasurement(
 				d_brAnalysis.getBaselineDistribution(om).getMu(),
 				d_brAnalysis.getBaselineDistribution(om).getSigma());
-		System.out.println(baseline);
 		MultivariateNormalSummary reSummary = d_brAnalysis.getRelativeEffectsSummary(om);
-		System.out.println(reSummary);
 		MultivariateGaussianCriterionMeasurement delta = new MultivariateGaussianCriterionMeasurement(alts);
 		double[] meanVector = createMeanVector(d_brAnalysis.getAlternatives(), d_brAnalysis.getBaseline(), reSummary.getMeanVector());
 		double[][] covMatrix = createCovarianceMatrix(d_brAnalysis.getAlternatives(), d_brAnalysis.getBaseline(), reSummary.getCovarianceMatrix());
 		delta.setMeanVector(new ArrayRealVector(meanVector));
 		delta.setCovarianceMatrix(new Array2DRowRealMatrix(covMatrix));
-		System.out.println(delta.getMeanVector());
-		System.out.println(delta.getCovarianceMatrix());
 		RelativeGaussianCriterionMeasurement relative = new RelativeGaussianCriterionMeasurement(delta, baseline);
 
 		CriterionMeasurement m = null;
@@ -64,7 +59,6 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 		} else if (om.getVariableType() instanceof ContinuousVariableType) {
 			m = relative;
 		}
-		System.out.println(m);
 		return m;
 	}
 

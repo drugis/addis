@@ -72,7 +72,7 @@ public class PresentationModelFactoryTest {
 		assertEquals(anal, m.getBean());
 		PresentationModel m2 = d_manager.getModel(anal);
 		assertTrue(m == m2);
-		assertTrue(m instanceof RandomEffectsMetaAnalysisPresentation);
+		assertTrue(m instanceof PairWiseMetaAnalysisPresentation);
 	}
 	
 	@Test

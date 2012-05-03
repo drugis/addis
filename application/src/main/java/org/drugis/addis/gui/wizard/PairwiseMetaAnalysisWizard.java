@@ -42,8 +42,8 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.StudyGraph;
-import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
-import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.gui.builder.PairWiseMetaAnalysisView;
+import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.pietschy.wizard.PanelWizardStep;
@@ -90,9 +90,9 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 
 			setLayout(new BorderLayout()); // needed for placement
 			
-			RandomEffectsMetaAnalysisPresentation pm = ((MetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
-			final RandomEffectsMetaAnalysisView mav = new RandomEffectsMetaAnalysisView(
-					(RandomEffectsMetaAnalysisPresentation)pm, d_mainWindow);
+			PairWiseMetaAnalysisPresentation pm = ((MetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
+			final PairWiseMetaAnalysisView mav = new PairWiseMetaAnalysisView(
+					(PairWiseMetaAnalysisPresentation)pm, d_mainWindow);
 			final JComponent panel = mav.getPlotsPanel(true);
 
 			if(d_pm.getOutcomeMeasureModel().getValue().getVariableType() instanceof RateVariableType){

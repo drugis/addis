@@ -46,13 +46,10 @@ import org.drugis.common.threading.IterativeTask;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.SimpleTask;
 import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.common.threading.activity.Transition;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
@@ -64,7 +61,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 
 	public abstract Distribution getResult();
 
-	private int d_burnInIter = 20000;
+	private int d_tuningIter = 20000;
 	private int d_simulationIter = 50000;
 	private int d_reportingInterval = 100;
 	protected List<T> d_measurements;
@@ -84,19 +81,25 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		}
 	}, "building model");
 	
-	private IterativeTask d_burnInPhase = new IterativeTask(new AbstractIterativeComputation(d_burnInIter) {
+	private IterativeTask d_tuningPhase = new IterativeTask(new AbstractIterativeComputation(d_tuningIter) {
 		@Override
 		public void doStep() {
 			update();
 		}
-	}, "burn-in");
+	}, "Tuning");
 	
 	private IterativeTask d_simulationPhase = new IterativeTask(new AbstractIterativeComputation(d_simulationIter) {
 		public void doStep() {
 			update();
 			output();
 		}
-	}, "simulation");
+	}, "Simulation");
+	
+	private SimpleTask d_calculateResultsPhase = new SimpleSuspendableTask(new Runnable() {
+		public void run() {
+			d_results.simulationFinished();
+		}
+	}, "Calculating summaries");
 	
 	private ActivityTask d_activityTask;
 	
@@ -104,13 +107,14 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
 		d_measurements = measurements;
-		d_burnInPhase.setReportingInterval(d_reportingInterval);
+		d_tuningPhase.setReportingInterval(d_reportingInterval);
 		d_simulationPhase.setReportingInterval(d_reportingInterval);
 		List<Transition> transitions = new ArrayList<Transition>();
-		transitions.add(new DirectTransition(d_buildModelPhase, d_burnInPhase));
-		transitions.add(new DirectTransition(d_burnInPhase, d_simulationPhase));
+		transitions.add(new DirectTransition(d_buildModelPhase, d_tuningPhase));
+		transitions.add(new DirectTransition(d_tuningPhase, d_simulationPhase));
+		transitions.add(new DirectTransition(d_simulationPhase, d_calculateResultsPhase));
 		d_activityTask = new ActivityTask(
-				new ActivityModel(d_buildModelPhase, d_simulationPhase, transitions), 
+				new ActivityModel(d_buildModelPhase, d_calculateResultsPhase, transitions), 
 				"MCMC model");
 	}
 
@@ -123,7 +127,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 	
 	Task getBurnInPhase() {
-		return d_burnInPhase;
+		return d_tuningPhase;
 	}
 	
 	Task getSimulationPhase() {
@@ -145,7 +149,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	public int getBurnInIterations() {
-		return d_burnInIter;
+		return d_tuningIter;
 	}
 
 	public int getSimulationIterations() {
@@ -153,7 +157,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	public void setBurnInIterations(int it) {
-		d_burnInIter = it;
+		d_tuningIter = it;
 	}
 
 	public void setSimulationIterations(int it) {
@@ -220,16 +224,8 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		
 		d_updates = new ArrayList<MCMCUpdate>();
 		for (MCMCParameter param : parameters) {
-			d_updates.add(new UpdateTuner(param, d_burnInIter / 50, 30, 1, Math.exp(-1)));
+			d_updates.add(new UpdateTuner(param, d_tuningIter / 50, 30, 1, Math.exp(-1)));
 		}
-		
-		d_simulationPhase.addTaskListener(new TaskListener() {
-			public void taskEvent(TaskEvent event) {
-				if (event.getType().equals(EventType.TASK_FINISHED)) {
-					d_results.simulationFinished();
-				}
-			}
-		});
 	}
 	
 	public MCMCResults getResults() {

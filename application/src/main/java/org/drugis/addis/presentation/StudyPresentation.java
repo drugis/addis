@@ -37,6 +37,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -79,7 +80,8 @@ public class StudyPresentation extends PresentationModel<Study> {
 				Dosing dosing = DerivedStudyCharacteristic.Dosing.FIXED;
 				for (Arm a : getBean().getArms()) {
 					if (getBean().getTreatment(a) != null) {
-						for (AbstractDose dose : getBean().getTreatment(a).getDoses()) {
+						for (DrugTreatment treatment : getBean().getTreatment(a).getTreatments()) {
+							AbstractDose dose = treatment.getDose();
 							if (dose != null && dose instanceof FlexibleDose) {
 								dosing = DerivedStudyCharacteristic.Dosing.FLEXIBLE;
 							}
