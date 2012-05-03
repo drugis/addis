@@ -41,6 +41,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -265,7 +266,9 @@ implements ViewBuilder {
 
 		
 		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), builder, row, d_mainWindow, false);
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), row, d_mainWindow, false);
+		builder.add(simulationControls, cc.xyw(1, row, 3));
+
 
 		row += 2;
 		
@@ -344,8 +347,9 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), builder, row, d_mainWindow, false);
-		
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), row, d_mainWindow, false);
+		builder.add(simulationControls, cc.xyw(1, row, 3));
+
 		row += 2;
 		String consistencyText = "If there is no relevant inconsistency in the evidence, a consistency model can be used to draw " +
 				"conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a " +
@@ -420,7 +424,9 @@ implements ViewBuilder {
 			row += 2;
 			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
 			
-			AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), builder, row, d_mainWindow, true);
+			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), row, d_mainWindow, true);
+			builder.add(simulationControls, cc.xyw(1, row, 3));
+
 			
 			LayoutUtil.addRow(layout);
 			row += 2;

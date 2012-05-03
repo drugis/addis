@@ -94,8 +94,11 @@ public class ConvergenceSummaryDialog extends JDialog  {
 				if (e.getClickCount() > 1) {
 					JTable table = (JTable)e.getComponent();
 					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
-					Parameter p = mtc.getResults().getParameters()[row];
-					showConvergencePlots(mtc, p);
+					Parameter[] parameters = mtc.getResults().getParameters();
+					if (row <= parameters.length) {
+						Parameter p = parameters[row];
+						showConvergencePlots(mtc, p);
+					}
 				}
 			}
 		});

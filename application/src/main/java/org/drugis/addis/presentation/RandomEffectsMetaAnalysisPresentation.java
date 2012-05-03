@@ -26,12 +26,9 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.common.gui.task.TaskProgressModel;
-import org.drugis.mtc.MixedTreatmentComparison;
 
 @SuppressWarnings("serial")
-public class RandomEffectsMetaAnalysisPresentation
-extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
+public class RandomEffectsMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
 implements StudyListPresentation {
 
 	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
@@ -49,10 +46,5 @@ implements StudyListPresentation {
 	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
 		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
 		return pm;
-	}
-
-	@Override
-	public TaskProgressModel getProgressModel(MixedTreatmentComparison mtc) {
-		return null;
 	}
 }

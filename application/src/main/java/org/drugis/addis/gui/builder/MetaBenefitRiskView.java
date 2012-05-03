@@ -28,7 +28,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -114,12 +113,10 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		builder.add(createRunAllButton(), cc.xyw(1, 3, 3));
 		int row = 3;
 
-		Iterator<MCMCWrapper> iter = d_pm.getWrappedModels().iterator();
-		while (iter.hasNext()) {
+		for (MCMCWrapper mw : d_pm.getWrappedModels()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			MCMCWrapper next = iter.next();
-			AnalysisComponentFactory.createSimulationControls(next,builder, row, d_mainWindow, true);
+			builder.add(AnalysisComponentFactory.createSimulationControls(mw, row, d_mainWindow, true), cc.xyw(1, row, 3));
 		}
 		
 		return builder.getPanel();
