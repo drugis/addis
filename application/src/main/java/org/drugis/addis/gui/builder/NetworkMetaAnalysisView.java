@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -46,7 +47,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
@@ -56,18 +59,18 @@ import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.gui.renderer.NetworkRelativeEffectTableCellRenderer;
+import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
-import org.drugis.addis.presentation.NetworkTableModel;
+import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
-import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
@@ -93,6 +96,7 @@ import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
+import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.util.MCMCResultsWriter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -294,9 +298,9 @@ implements ViewBuilder {
 		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
-		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
-				d_pm, d_mainWindow.getPresentationModelFactory());
+		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm);
 		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
+		table.setDefaultRenderer(Summary.class, new SummaryCellRenderer(false));
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 		
 		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
@@ -589,11 +593,22 @@ implements ViewBuilder {
 
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
-	 * @param networkModel Model for which to display results.
+	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
-	private NetworkMetaAnalysisTablePanel createNetworkTablePanel( MixedTreatmentComparison networkModel ) {
-			NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(d_pm, d_mainWindow.getPresentationModelFactory(), networkModel);
-		return new NetworkMetaAnalysisTablePanel(d_mainWindow, networkAnalysisTableModel);
+	private TablePanel createNetworkTablePanel(MixedTreatmentComparison mtc) {
+		JTable table = new JTable(new NetworkRelativeEffectTableModel(d_pm, mtc));
+		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
+		table.setTableHeader(null);
+		setColumnWidths(table);
+		return new TablePanel(table);
+	}
+	
+	private void setColumnWidths(JTable table) {
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		for (TableColumn c : Collections.list(table.getColumnModel().getColumns())) {
+			c.setMinWidth(170);
+			c.setPreferredWidth(170);
+		}
 	}
 }

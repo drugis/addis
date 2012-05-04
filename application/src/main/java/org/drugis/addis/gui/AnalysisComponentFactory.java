@@ -66,7 +66,6 @@ public class AnalysisComponentFactory {
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
-		panelBuilder.setDefaultDialogBorder();
 		
 		int panelRow = 1;
 		if (withSeparator) {

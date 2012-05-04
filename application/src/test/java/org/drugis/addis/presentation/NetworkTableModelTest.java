@@ -27,6 +27,7 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -38,7 +39,6 @@ import javax.swing.event.TableModelListener;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
@@ -46,24 +46,18 @@ import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCResultsEvent;
+import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.jgoodies.binding.PresentationModel;
-
 public class NetworkTableModelTest {
-
-	
 	private PresentationModelFactory d_pmf;
-	private NetworkTableModel d_tableModel;
-	private NetworkMetaAnalysis d_contAnalysis;
+	private NetworkRelativeEffectTableModel d_tableModel;
 	private NetworkMetaAnalysis d_analysis;
-	private NetworkTableModel d_contTableModel;
 
 	@Before
 	public void setUp() {
@@ -71,7 +65,7 @@ public class NetworkTableModelTest {
 		ExampleData.initDefaultData(domain);
 		d_analysis = buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
-		d_tableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_pmf, d_analysis.getConsistencyModel());
+		d_tableModel = new NetworkRelativeEffectTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_analysis.getConsistencyModel());
 	}
 	
 	@Test
@@ -84,7 +78,6 @@ public class NetworkTableModelTest {
 		assertEquals(d_analysis.getIncludedDrugs().size(), d_tableModel.getRowCount());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testValueAt() {
 		assertTrue(d_tableModel.getColumnCount() > 0);
@@ -93,39 +86,25 @@ public class NetworkTableModelTest {
 		assertEquals(null, d_tableModel.getDescriptionAt(0, 0));
 		assertEquals(null, d_tableModel.getDescriptionAt(1, 1));
 		assertEquals(null, d_tableModel.getDescriptionAt(2, 2));
-		assertEquals(d_analysis.getIncludedDrugs().get(0), ((PresentationModel<Drug>) d_tableModel.getValueAt(0, 0)).getBean());
-		assertEquals(d_analysis.getIncludedDrugs().get(1), ((PresentationModel<Drug>) d_tableModel.getValueAt(1, 1)).getBean());
-		assertEquals(d_analysis.getIncludedDrugs().get(2), ((PresentationModel<Drug>) d_tableModel.getValueAt(2, 2)).getBean());
+		assertEquals(d_analysis.getIncludedDrugs().get(0), d_tableModel.getValueAt(0, 0));
+		assertEquals(d_analysis.getIncludedDrugs().get(1), d_tableModel.getValueAt(1, 1));
+		assertEquals(d_analysis.getIncludedDrugs().get(2), d_tableModel.getValueAt(2, 2));
 
-		assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(0, 1)).getLabelModel().getString());
+		
+		ConsistencyModel consModel = d_analysis.getConsistencyModel();
+		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1)));
+		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)));
+		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(2)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)));
+
+		assertSame(d_analysis.getQuantileSummary(consModel, relativeEffect01), d_tableModel.getValueAt(0, 1));
 		assertEquals("\"Paroxetine\" relative to \"Fluoxetine\"", d_tableModel.getDescriptionAt(0, 1));
-		assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(1, 0)).getLabelModel().getString());
+		assertSame(d_analysis.getQuantileSummary(consModel, relativeEffect10), d_tableModel.getValueAt(1, 0));
 		assertEquals("\"Fluoxetine\" relative to \"Paroxetine\"", d_tableModel.getDescriptionAt(1, 0));
-		assertEquals("N/A", ((LabeledPresentation) d_tableModel.getValueAt(2, 0)).getLabelModel().getString());
+		assertSame(d_analysis.getQuantileSummary(consModel, relativeEffect20), d_tableModel.getValueAt(2, 0));
 		assertEquals("\"Fluoxetine\" relative to \"Sertraline\"", d_tableModel.getDescriptionAt(2, 0));
 
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetValueAtAfterModelRun() throws InterruptedException {
-		ConsistencyModel model = d_analysis.getConsistencyModel();
-		TaskUtil.run(model.getActivityTask());
-		assertTrue(model.getActivityTask().isFinished());
-
-		for(int i = 0; i < d_analysis.getIncludedDrugs().size(); ++i){
-			for(int j = 0; j < d_analysis.getIncludedDrugs().size(); ++j){
-				if(i == j){
-					assertEquals(d_analysis.getIncludedDrugs().get(i), ((PresentationModel<Drug>) d_tableModel.getValueAt(i, j)).getBean());
-				} else {
-					Treatment t1 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(i));
-					Treatment t2 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(j));
-					QuantileSummary relEffect = d_analysis.getQuantileSummary(model, model.getRelativeEffect(t1, t2));
-					assertEquals(d_pmf.getLabeledModel(relEffect).getLabelModel().getString(), ((LabeledPresentation) d_tableModel.getValueAt(i, j)).getLabelModel().getString());
-				}
-			}
-		}
-	}
 	
 	@Test
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
@@ -144,28 +123,6 @@ public class NetworkTableModelTest {
 		EasyMock.verify(mock);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetValueContinuousModelRun() throws InterruptedException {
-		d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
-		InconsistencyModel model = d_contAnalysis.getInconsistencyModel();
-		d_contTableModel = new NetworkTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_contAnalysis), d_pmf, model);
-		TaskUtil.run(model.getActivityTask());
-
-		for(int i = 0; i < d_contAnalysis.getIncludedDrugs().size(); ++i){
-			for(int j = 0; j < d_contAnalysis.getIncludedDrugs().size(); ++j){
-				if(i == j){
-					assertEquals(d_contAnalysis.getIncludedDrugs().get(i), ((PresentationModel<Drug>) d_contTableModel.getValueAt(i, j)).getBean());
-				} else {
-					Treatment t1 = d_contAnalysis.getTreatment(d_contAnalysis.getIncludedDrugs().get(i));
-					Treatment t2 = d_contAnalysis.getTreatment(d_contAnalysis.getIncludedDrugs().get(j));
-					QuantileSummary relEffect = d_contAnalysis.getQuantileSummary(model, model.getRelativeEffect(t1, t2));
-					assertEquals(d_pmf.getLabeledModel(relEffect).getLabelModel().getString(), ((LabeledPresentation) d_contTableModel.getValueAt(i, j)).getLabelModel().getString());
-				}
-			}
-		}	
-	}
-
 
 	public static NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {

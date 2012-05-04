@@ -47,7 +47,6 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.mtc.summary.QuantileSummary;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -136,9 +135,6 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);
-		}
-		if (obj instanceof QuantileSummary) {
-			return new QuantileSummaryPresentation((QuantileSummary) obj);
 		}
 		return new PresentationModel(obj);
 	}
