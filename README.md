@@ -17,7 +17,7 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 1.12.4:
- * The network meta-analysis simulation can be continued if it has not
+  * The network meta-analysis simulation can be continued if it has not
    converged yet.
      * There is a new UI for checking convergence, which is also available on
      the benefit-risk screen.
