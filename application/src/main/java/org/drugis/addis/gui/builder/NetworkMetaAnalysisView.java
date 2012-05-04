@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +81,7 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
-import org.drugis.common.threading.status.TaskFinishedModel;
+import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
@@ -206,12 +208,12 @@ implements ViewBuilder {
 		builder.add(new JLabel(name), cc.xy(2, row));
 		
 		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
-		final TaskFinishedModel modelFinished = new TaskFinishedModel(model.getActivityTask());
+		final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
 		
 		builder.add(memory, cc.xy(4, row));
 		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		clearButton.setToolTipText("Clear results");
-		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelFinished, resultsAvailableModel));
+		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
 		Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
 		builder.add(clearButton, cc.xy(6, row));
 		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +44,7 @@ import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.status.TaskFinishedModel;
+import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 
@@ -126,7 +128,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		
 		List<ValueModel> models = new ArrayList<ValueModel>();
 		for (Task task : d_models.keySet()) {
-			models.add(new TaskFinishedModel(task));
+			models.add(new TaskTerminatedModel(task));
 		}
 		d_measurementsReadyModel = new ValueModelWrapper<Boolean>(new BooleanAndModel(models));
 		
