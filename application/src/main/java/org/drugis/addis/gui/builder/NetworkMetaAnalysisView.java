@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -66,7 +67,6 @@ import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
-import org.drugis.addis.presentation.mcmc.TaskFinishedModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
@@ -79,6 +79,8 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.common.threading.status.TaskFinishedModel;
+import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
@@ -98,6 +100,7 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -192,7 +195,7 @@ implements ViewBuilder {
 		
 		return builder.getPanel();
 	}
-
+	
 	private int buildMemoryUsage(final MCMCModel model, String name, PanelBuilder builder, FormLayout layout, int row) {
 		LayoutUtil.addRow(layout);
 		row += 2;
@@ -208,20 +211,19 @@ implements ViewBuilder {
 		builder.add(memory, cc.xy(4, row));
 		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		clearButton.setToolTipText("Clear results");
-		Bindings.bind(clearButton, "enabled", modelFinished);
-
+		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelFinished, resultsAvailableModel));
+		Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
 		builder.add(clearButton, cc.xy(6, row));
 		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		saveButton.setToolTipText("Save to R-file");
-		Bindings.bind(saveButton, "enabled", modelFinished);
+		Bindings.bind(saveButton, "enabled", modelFinishedAndResults);
+		
 		saveButton.addActionListener(buildRButtonActionListener(model));
 		builder.add(saveButton, cc.xy(8, row));
 		
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.getResults().clear();
-				clearButton.setEnabled(false);
-				saveButton.setEnabled(false);
 				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
 				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
 				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));

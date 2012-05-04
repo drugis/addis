@@ -13,20 +13,22 @@ import javax.swing.JPanel;
 import org.drugis.addis.FileNames;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.common.threading.status.ActivityTaskInPhase;
+import org.drugis.common.threading.status.TaskFinishedModel;
+import org.drugis.common.threading.status.TaskStartableModel;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.common.validation.BooleanNotModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class AnalysisComponentFactory {
-
-	/// GUI functions
 	
 	public static JPanel createSimulationControls(
 			final MCMCWrapper model, 
@@ -59,8 +61,16 @@ public class AnalysisComponentFactory {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		final JButton extendSimulationButton = createExtendSimulationButton(model);
 		final JButton stopButton = createStopButton(model.getActivityTask(), model);
-		attachSimulationListeners(model, stopButton);
-		attachSimulationListeners(model, extendSimulationButton);
+		
+		ValueModel inAssessConvergence = new ActivityTaskInPhase(model.getActivityTask(), MixedTreatmentComparison.ASSESS_CONVERGENCE_PHASE);
+		ValueModel notTaskFinished = new BooleanNotModel(new TaskFinishedModel(model.getActivityTask()));
+		
+		ValueModel shouldAssessConvergence = new BooleanAndModel(inAssessConvergence, notTaskFinished);
+		
+		Bindings.bind(extendSimulationButton, "enabled", shouldAssessConvergence);
+		Bindings.bind(stopButton, "enabled", shouldAssessConvergence);
+
+		
 		JPanel questionPanel = new JPanel(flowLayout);
 		questionPanel.add(new JLabel("Has the simulation converged?"));
 		questionPanel.add(stopButton);
@@ -72,6 +82,9 @@ public class AnalysisComponentFactory {
 			JFrame main, CellConstraints cc,
 			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence) {
 		final JButton startButton = createStartButton(model.getActivityTask(), model);
+		final ValueModel taskStartable = new TaskStartableModel(model.getActivityTask());
+		
+		Bindings.bind(startButton, "enabled", taskStartable);
 		panelBuilder.add(startButton, cc.xy(1, panelRow));
 		if(hasConvergence) { 
 			panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xy(3, panelRow));
@@ -87,7 +100,6 @@ public class AnalysisComponentFactory {
 		button.setEnabled(!task.isFinished() && !task.isStarted());
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				button.setEnabled(false);
 				ThreadHandler.getInstance().scheduleTask(task);
 			}
 		});
@@ -98,7 +110,6 @@ public class AnalysisComponentFactory {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_TICK));
 		button.setText("Yes, finish");
 		button.setToolTipText("Finish the simulation");
-		button.setEnabled(getButtonEnabledState(model, MixedTreatmentComparison.ASSESS_CONVERGENCE_PHASE, true));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
@@ -113,7 +124,7 @@ public class AnalysisComponentFactory {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
 		button.setText("No, extend");
 		button.setToolTipText("Extend the simulation");
-		button.setEnabled(getButtonEnabledState(model, MixedTreatmentComparison.ASSESS_CONVERGENCE_PHASE, true));
+		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.EXTEND);
@@ -134,41 +145,6 @@ public class AnalysisComponentFactory {
 			}
 		});
 		return button;
-	}
-
-	///// Non-GUI functions
-
-	private static void attachSimulationListeners(final MCMCWrapper model, final JButton button) {
-		for (Task t : model.getActivityTask().getModel().getStates()) { 		
-			if (t.toString().equals(MixedTreatmentComparison.ASSESS_CONVERGENCE_PHASE)) {
-				t.addTaskListener(new TaskListener() {
-					public void taskEvent(TaskEvent event) {
-						if (event.getType() == EventType.TASK_STARTED) {
-							button.setEnabled(true);
-						}
-						if (event.getType() == EventType.TASK_RESTARTED) {
-							button.setEnabled(false);
-						}
-					}
-				});
-			}
-			if (t.equals(model.getActivityTask().getModel().getEndState())) {
-				t.addTaskListener(new TaskListener() {
-					public void taskEvent(TaskEvent event) {
-						if (event.getType() == EventType.TASK_FINISHED) {
-							button.setEnabled(false);
-						}
-					}
-				});
-			}
-		}
-	}
-	private static boolean getButtonEnabledState(final MCMCWrapper model, String taskName, boolean shouldBeStarted) {
-		boolean shouldEnable = false;
-		for (Task t : model.getActivityTask().getModel().getStates()) { 		
-			shouldEnable = shouldEnable || (t.toString().equals(taskName) && (t.isStarted() == shouldBeStarted));
-		}
-		return shouldEnable;
 	}
 
 	private static boolean hasConvergence(MCMCWrapper model) {

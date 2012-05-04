@@ -39,10 +39,10 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
-import org.drugis.addis.presentation.mcmc.TaskFinishedModel;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.status.TaskFinishedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 
@@ -84,7 +84,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	protected void initSimulations() {
 		d_models = new HashMap<Task, MCMCWrapper>();
 		initAllBaselineModels();
-		initNetworkMetaProgressModels();
+		initNetworkMetaAnalysisModels();
 	}
 
 	@Override
@@ -143,7 +143,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MCMCWrapper model : d_models.values()) {
-			tasks.add(model.getActivityTask());
+			if(model.getModel() instanceof AbstractBaselineModel) {
+				tasks.add(model.getActivityTask());
+			}
 		}
 		return tasks;
 	}
@@ -158,7 +160,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 	
 
-	private void initNetworkMetaProgressModels() {
+	private void initNetworkMetaAnalysisModels() {
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
