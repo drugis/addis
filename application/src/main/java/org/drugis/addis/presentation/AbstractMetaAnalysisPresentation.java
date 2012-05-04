@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +38,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 
 @SuppressWarnings("serial")
-public class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
+public abstract class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
 implements StudyListPresentation {
 
 	protected PresentationModelFactory d_mgr;

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +44,10 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntityTablePanel;
@@ -52,8 +56,6 @@ import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SummaryCellRenderer;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.task.TaskProgressBar;
-import org.drugis.common.threading.Task;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -112,11 +114,11 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		builder.addSeparator("Sub-analyses are required. Please run them.", cc.xyw(1, 1, 3));
 		builder.add(createRunAllButton(), cc.xyw(1, 3, 3));
 		int row = 3;
-		for (Task t : d_pm.getMeasurementTasks()) {
+
+		for (MCMCWrapper mw : d_pm.getWrappedModels()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AuxComponentFactory.createStartButton(t), cc.xy(1, row));
-			builder.add(new TaskProgressBar(d_pm.getProgressModel(t)), cc.xy(3, row));
+			builder.add(AnalysisComponentFactory.createSimulationControls(mw, row, d_mainWindow, true), cc.xyw(1, row, 3));
 		}
 		
 		return builder.getPanel();

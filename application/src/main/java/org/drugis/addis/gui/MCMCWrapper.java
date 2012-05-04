@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,37 +24,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation.mcmc;
+package org.drugis.addis.gui;
 
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
-import org.drugis.common.threading.event.TaskEvent;
+import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.common.threading.activity.ActivityTask;
+import org.drugis.mtc.MCMCModel;
 
-import com.jgoodies.binding.value.AbstractValueModel;
+public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
+	private final MCMCModel d_model;
+	private final String d_name;
+	protected final OutcomeMeasure d_om;
+	private TaskProgressModel d_taskProgressModel;
 
-@SuppressWarnings("serial")
-public class TaskFinishedModel extends AbstractValueModel implements ValueHolder<Boolean>, TaskListener {
-	private boolean d_val;
-
-	public TaskFinishedModel(Task task) {
-		d_val = task.isFinished() || task.isAborted();
-		task.addTaskListener(this);
+	public MCMCWrapper(MCMCModel model, OutcomeMeasure om, String name) { 
+		d_model = model;
+		d_om = om;
+		d_taskProgressModel = new TaskProgressModel(getActivityTask());
+		d_name = name;
+	}
+	
+	public ActivityTask getActivityTask() {
+		return d_model.getActivityTask();
 	}
 
-	public Boolean getValue() {
-		return d_val;
+	public TaskProgressModel getProgressModel() {
+		return d_taskProgressModel;
 	}
+	
+	public MCMCModel getModel() {
+		return d_model;
+	} 
 
-	public void setValue(Object newValue) {
-		throw new IllegalAccessError("MCMCModelFinished is read-only");
+	public abstract ValueHolder<Boolean> isModelConstructed();	
+
+	public OutcomeMeasure getOutcomeMeasure() {
+		return d_om;
 	}
-
+	
 	@Override
-	public void taskEvent(TaskEvent event) {
-		boolean oldval = d_val;
-		Task t = event.getSource();
-		d_val = t.isFinished() || t.isAborted();
-		fireValueChange(oldval, d_val);
+	public String toString() { 
+		return d_name;
 	}
 }
