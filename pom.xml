@@ -4,7 +4,7 @@
 
 	<groupId>org.drugis</groupId>
 	<artifactId>addis</artifactId>
-	<version>1.12.4-RC1</version>
+	<version>1.12.4-RC2</version>
 	<name>ADDIS project</name>
 
 	<packaging>pom</packaging>
