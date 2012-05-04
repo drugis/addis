@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.gui.renderer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -90,4 +90,26 @@ public class SummaryCellRendererTest {
 				);
 	}
 	
+	@Test
+	public void testRenderWithExpTransform() throws IOException {
+		SummaryCellRenderer summaryCellRenderer = new SummaryCellRenderer(true);
+		DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+		ExampleResults results = new ExampleResults();
+		results.makeSamplesAvailable();
+
+		assertEquals(
+				defaultRenderer.getTableCellRendererComponent(new JTable(), "3.88 (2.10, 6.50)" , true, true, 1, 1).toString(),
+				summaryCellRenderer.getTableCellRendererComponent(new JTable(), new QuantileSummary(results, results.getParameters()[0]), true, true, 2, 2).toString()
+				);
+		
+		assertEquals(
+				defaultRenderer.getTableCellRendererComponent(new JTable(), "LogNormal(1.34, 0.29)" , true, true, 1, 1).toString(),
+				summaryCellRenderer.getTableCellRendererComponent(new JTable(), new NormalSummary(results, results.getParameters()[0]), true, true, 1, 1).toString()
+				);
+		
+		assertEquals(
+				defaultRenderer.getTableCellRendererComponent(new JTable(), "0.05" , true, true, 1, 1).toString(),
+				summaryCellRenderer.getTableCellRendererComponent(new JTable(), new NodeSplitPValueSummary(results, results.getParameters()[0], results.getParameters()[1]), true, true, 3, 3).toString()
+				);
+	}
 }

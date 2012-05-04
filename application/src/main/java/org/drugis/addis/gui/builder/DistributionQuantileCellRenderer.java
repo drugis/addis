@@ -36,7 +36,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.presentation.SummaryCellRenderer;
+import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 
 @SuppressWarnings("serial")
 public class DistributionQuantileCellRenderer extends DefaultTableCellRenderer {
