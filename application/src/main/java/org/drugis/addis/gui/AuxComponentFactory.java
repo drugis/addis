@@ -29,8 +29,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,7 +36,6 @@ import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -62,7 +59,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
-import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PubMedId;
@@ -75,10 +71,7 @@ import org.drugis.common.BrowserLaunch;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
-import org.drugis.common.threading.Task;
-import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.formatter.EmptyNumberFormatter;
@@ -315,44 +308,6 @@ public class AuxComponentFactory {
 	
 	public static JLabel createAutoWrapLabel(ValueModel value) {
 		return BasicComponentFactory.createLabel(new HTMLWrappingModel(value));
-	}
-
-	public static JButton createStartButton(final Task task) {
-		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
-		button.setToolTipText("Run simulation");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				button.setEnabled(false);
-				ThreadHandler.getInstance().scheduleTask(task);
-			}
-		});
-		return button;
-	}
-	
-	public static JButton createStopButton(final Task task, final MixedTreatmentComparison model) {
-		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
-		button.setToolTipText("Stop simulation");
-		button.setEnabled(false);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(task.isStarted()) { 
-					model.setExtendSimulation(ExtendSimulation.FINISH);
-				}
-			}
-		});
-		return button;
-	}	
-
-	public static JButton createExtendSimulationButton(final MixedTreatmentComparison model) {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
-		button.setEnabled(false);
-		button.setToolTipText("Extend simulation");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.setExtendSimulation(ExtendSimulation.EXTEND);
-			}
-		});
-		return button;
 	}
 
 	public static Dimension defaultTextPaneDimension(JTextPane area) {

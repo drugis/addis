@@ -35,13 +35,11 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.common.gui.task.TaskProgressModel;
-import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
@@ -55,42 +53,47 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
-	ValueHolder<Boolean> d_inconsistencyModelConstructed;
-	private Map<MixedTreatmentComparison,TaskProgressModel> d_progressModels;
-	private ValueHolder<Boolean> d_consistencyModelConstructed;
-	private Map<BasicParameter, ValueHolder<Boolean>> d_nodesplitModelsConstructed;
+	private Map<MixedTreatmentComparison, WrappedNetworkMetaAnalysis> d_models;
 	
-	static class ModelConstructionFinishedModel extends UnmodifiableHolder<Boolean> implements TaskListener {
-		private Task d_task;
-		public ModelConstructionFinishedModel(MixedTreatmentComparison model) {
-			super(model.getActivityTask().getModel().getStartState().isFinished());
-			d_task = model.getActivityTask().getModel().getStartState();
-			d_task.addTaskListener(this);
-		}
-
-		public void taskEvent(TaskEvent event) {
-			if (event.getType().equals(EventType.TASK_FINISHED)) {
-				fireValueChange(false, true);
-			}
-		}
-
-		public Boolean getValue() {
-			return d_task.isFinished();
-		}
-	}
-
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_inconsistencyModelConstructed = new ModelConstructionFinishedModel(getInconsistencyModel());
-		d_consistencyModelConstructed = new ModelConstructionFinishedModel(getConsistencyModel());
-		d_progressModels = new HashMap<MixedTreatmentComparison, TaskProgressModel>();
-		d_nodesplitModelsConstructed = new HashMap<BasicParameter, ValueHolder<Boolean>>();
-		addModel(getConsistencyModel());
-		addModel(getInconsistencyModel());
+		d_models = new HashMap<MixedTreatmentComparison, WrappedNetworkMetaAnalysis>();
+		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 Consistency Model");
+		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 Inconsistency Model");
 		for (BasicParameter p : getBean().getSplitParameters()) {
 			NodeSplitModel m = getBean().getNodeSplitModel(p);
-			addModel(m);
-			d_nodesplitModelsConstructed.put(p, new ModelConstructionFinishedModel(m));
+			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 Node Split on " + p.getName());
+		}
+	}
+	
+	public static class WrappedNetworkMetaAnalysis extends MCMCWrapper {
+		private ModelConstructionFinishedModel d_modelConstructionFinished;
+		public WrappedNetworkMetaAnalysis(MCMCModel model, OutcomeMeasure om, String name) {
+			super(model, om, name);
+			d_modelConstructionFinished = new ModelConstructionFinishedModel((MixedTreatmentComparison) getModel());
+		}
+	
+		@Override
+		public TaskProgressModel getProgressModel() {
+			return new TaskProgressModel(getActivityTask());
+		}
+
+		@Override
+		public ValueHolder<Boolean> isModelConstructed() {
+			return d_modelConstructionFinished;
+		}
+		
+
+		@Override
+		public int compareTo(MCMCWrapper o) {
+			int omCompare = d_om.compareTo(o.getOutcomeMeasure());
+			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
+			return (omCompare == 0) ? modelComp : omCompare;
+		}
+
+		@Override
+		public OutcomeMeasure getOutcomeMeasure() {
+			return d_om;
 		}
 	}
 	
@@ -113,15 +116,15 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
-		return d_inconsistencyModelConstructed;
+		return d_models.get(getBean().getInconsistencyModel()).isModelConstructed();
 	}
 	
 	public ValueHolder<Boolean> getConsistencyModelConstructedModel() {
-		return d_consistencyModelConstructed;
+		return d_models.get(getBean().getConsistencyModel()).isModelConstructed();
 	}
 
 	public ValueHolder<Boolean> getNodesplitModelConstructedModel(BasicParameter p) {
-		return d_nodesplitModelsConstructed.get(p);
+		return d_models.get(getBean().getNodeSplitModel(p)).isModelConstructed();
 	}
 
 	
@@ -136,15 +139,15 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public TaskProgressModel getProgressModel(MixedTreatmentComparison mtc) {
-		return d_progressModels.get(mtc);
+		return d_models.get(mtc).getProgressModel();
 	}
 	
 	public QuantileSummary getQuantileSummary(MixedTreatmentComparison m, Parameter p) {
 		return getBean().getQuantileSummary(m, p);
 	}
 	
-	private TaskProgressModel addModel(MixedTreatmentComparison mtc) {
-		return d_progressModels.put(mtc, new TaskProgressModel(mtc.getActivityTask()));
+	private void addModel(MixedTreatmentComparison mtc, OutcomeMeasure om, String name) {
+		d_models.put(mtc, new WrappedNetworkMetaAnalysis(mtc, om, name));
 	}
 
 	public List<BasicParameter> getSplitParameters() {
@@ -177,5 +180,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public Network getNetwork() {
 		return getBean().getNetwork();
+	}
+	
+	public MCMCWrapper getWrappedModel(MixedTreatmentComparison m) {
+		return d_models.get(m);
 	}
 }

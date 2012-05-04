@@ -64,7 +64,7 @@ public class StudyMeasurementTableModel extends AbstractTableModel {
 		if(isVariableColumn(columnIndex)) {
 			return String.class;
 		} else if (isMeasurementMomentColumn(columnIndex)) { 
-			return String.class;
+			return WhenTaken.class;
 		} else {
 			return MissingMeasurementPresentation.class;
 		}

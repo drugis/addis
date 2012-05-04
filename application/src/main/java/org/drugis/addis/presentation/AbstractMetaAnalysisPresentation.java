@@ -36,7 +36,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 
 @SuppressWarnings("serial")
-public class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
+public abstract class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
 implements StudyListPresentation {
 
 	protected PresentationModelFactory d_mgr;
