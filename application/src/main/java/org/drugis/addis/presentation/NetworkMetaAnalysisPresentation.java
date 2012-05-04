@@ -39,9 +39,9 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
@@ -69,10 +69,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 	
 	public static class WrappedNetworkMetaAnalysis extends MCMCWrapper {
-		private ModelConstructionFinishedModel d_modelConstructionFinished;
-		public WrappedNetworkMetaAnalysis(MCMCModel model, OutcomeMeasure om, String name) {
+		private ValueHolder<Boolean> d_modelConstructionFinished;
+		public WrappedNetworkMetaAnalysis(MixedTreatmentComparison model, OutcomeMeasure om, String name) {
 			super(model, om, name);
-			d_modelConstructionFinished = new ModelConstructionFinishedModel((MixedTreatmentComparison) getModel());
+			d_modelConstructionFinished = new ValueModelWrapper<Boolean>(
+					new TaskTerminatedModel(model.getActivityTask().getModel().getStartState()));
 		}
 	
 		@Override
