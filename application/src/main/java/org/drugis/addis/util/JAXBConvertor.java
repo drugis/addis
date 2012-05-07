@@ -42,10 +42,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
@@ -60,6 +60,9 @@ import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
 import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousVariableType;
@@ -88,16 +91,13 @@ import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Status;
-import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
@@ -125,9 +125,13 @@ import org.drugis.addis.entities.data.ContinuousVariable;
 import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.Drugs;
 import org.drugis.addis.entities.data.Endpoints;
+import org.drugis.addis.entities.data.EvidenceTypeEnum;
 import org.drugis.addis.entities.data.IdReference;
+import org.drugis.addis.entities.data.InconsistencyParameter;
+import org.drugis.addis.entities.data.InconsistencyResults;
 import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.IntegerWithNotes;
+import org.drugis.addis.entities.data.MCMCSettings;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
@@ -136,10 +140,13 @@ import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
 import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
+import org.drugis.addis.entities.data.ParameterSummary;
 import org.drugis.addis.entities.data.PopulationCharacteristics;
+import org.drugis.addis.entities.data.QuantileType;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
+import org.drugis.addis.entities.data.RelativeEffectParameter;
 import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
@@ -147,9 +154,19 @@ import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Units;
+import org.drugis.addis.entities.data.VarianceParameter;
+import org.drugis.addis.entities.data.VarianceParameterType;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
+import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.parameterization.InconsistencyVariance;
+import org.drugis.mtc.parameterization.RandomEffectsVariance;
+import org.drugis.mtc.summary.ConvergenceSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -1117,8 +1134,58 @@ public class JAXBConvertor {
 			alt.setArms(arms);
 			nma.getAlternative().add(alt);
 		}
-		
+		// Begin saving results
+		nma.setInconsistencyResults(convertInconsistencyResults(ma));
+
 		return nma; 
+	}
+
+	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
+		InconsistencyResults inconsResults = new InconsistencyResults();
+		MCMCSettings inconsistencySettings = convertMCMCSettings(ma.getInconsistencyModel());
+		inconsResults.setMcmcSettings(inconsistencySettings);
+		for (Parameter p : ma.getInconsistencyModel().getResults().getParameters()) { 
+			inconsResults.getSummary().add(convertParameterSummary(p, ma.getInconsistencyModel(), ma));
+		}
+		return inconsResults;
+	}
+	
+	private static ParameterSummary convertParameterSummary(Parameter p, MixedTreatmentComparison mtc, NetworkMetaAnalysis nma) { 
+		ParameterSummary ps = new ParameterSummary();
+		RelativeEffectParameter rel = new RelativeEffectParameter();
+		rel.setWhichEvidence(EvidenceTypeEnum.ALL); // FIXME for NodeSplit parameters 
+		ps.setRelativeEffect(rel);
+		ps.setPsrf(new ConvergenceSummary(mtc.getResults(), p).getScaleReduction());
+		if (p instanceof InconsistencyParameter) { 
+			ps.getInconsistency().getAlternative().addAll(((InconsistencyParameter) p).getAlternative());
+		} else if (p instanceof InconsistencyVariance) { 
+			VarianceParameter value = new VarianceParameter();
+			value.setName(VarianceParameterType.VAR_W);
+			ps.setVariance(value);
+		} else if (p instanceof RandomEffectsVariance) { 
+			VarianceParameter value = new VarianceParameter();
+			value.setName(VarianceParameterType.VAR_D);
+			ps.setVariance(value);
+		} else if (p instanceof BasicParameter) { 
+			QuantileSummary qs = nma.getQuantileSummary(mtc, p);
+			for(int i = 0; qs.getSize() > i; ++i) {
+				QuantileType q = new QuantileType();
+				q.setLevel(qs.getProbability(i));
+				q.setValue(qs.getQuantile(i));
+				ps.getQuantile().add(q);
+			}
+		}
+		return ps;
+	}
+	
+	private static MCMCSettings convertMCMCSettings(MCMCModel mcmc) {
+		MCMCSettings s = new MCMCSettings();
+		s.setSimulationIterations((long)mcmc.getSimulationIterations());
+		s.setTuningIterations((long)mcmc.getBurnInIterations());
+		s.setThinningInterval((long) 1);
+		s.setInferenceIterations((long)mcmc.getSimulationIterations() / 2);
+		s.setVarianceScalingFactor(2.5);
+		return s;
 	}
 	
 	static Epoch findEpoch(String name, Study study) throws ConversionException {

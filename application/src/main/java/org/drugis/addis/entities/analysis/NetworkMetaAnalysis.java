@@ -129,7 +129,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
 		}
 	};
-	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<Study> studies, Collection<DrugSet> drugs,
