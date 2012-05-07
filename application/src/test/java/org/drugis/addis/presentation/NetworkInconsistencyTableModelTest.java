@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,19 +28,13 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
@@ -61,7 +57,7 @@ public class NetworkInconsistencyTableModelTest {
 		d_pmf = new PresentationModelFactory(domain);
 		
 		NetworkMetaAnalysisPresentation pm = (NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis);
-		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) pm, d_pmf);
+		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) pm);
 	}
 	
 	@Test
@@ -79,49 +75,18 @@ public class NetworkInconsistencyTableModelTest {
 	@Test
 	public void testValueAt() throws InterruptedException {
 		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
-		
-		for(int y = 0; y < d_tableModel.getRowCount(); ++y) {
-			InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
-			assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(y, 0));
-		
-			QuantileSummary summary = d_analysis.getQuantileSummary(d_analysis.getInconsistencyModel(), ip);
-			Object valueAt = d_tableModel.getValueAt(y, 1);
-			assertEquals(d_pmf.getLabeledModel(summary).getLabelModel().getValue(), valueAt);
-		}
+
+		InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(0);
+		assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(0, 0));
+
+		QuantileSummary summary = d_analysis.getQuantileSummary(d_analysis.getInconsistencyModel(), ip);
+		Object valueAt = d_tableModel.getValueAt(0, 1);
+		assertEquals(summary, valueAt);
 	}
 	
 	@Test
-	public void testValueNA() throws InterruptedException {
+	public void testValueNA() {
 		assertEquals("N/A", d_tableModel.getValueAt(0, 1));
-	}
-	
-	@Test
-	public void testContinuousValueAt() throws InterruptedException {
-		NetworkMetaAnalysis d_contAnalysis = buildMockContinuousNetworkMetaAnalysis();
-		NetworkInconsistencyFactorsTableModel d_contTableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) d_pmf.getModel(d_contAnalysis), d_pmf);
-		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
-		
-		for(int y = 0; y < d_contTableModel.getRowCount(); ++y) {
-			InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(y);
-			assertEquals("Fluoxetine, Sertraline, Paroxetine", d_contTableModel.getValueAt(y, 0));
-			QuantileSummary icModel = d_analysis.getQuantileSummary(d_analysis.getInconsistencyModel(), ip);					
-			assertEquals(d_pmf.getLabeledModel(icModel).getLabelModel().getString(), d_contTableModel.getValueAt(y, 1));
-		}
-	}
-	
-	private NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
-		List<Study> studies = Arrays.asList(new Study[] {
-				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()), 
-				new DrugSet(ExampleData.buildDrugSertraline())});
-		
-		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
-				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),
-				studies, drugs, ExampleData.buildMap(studies, drugs));
-		
-		return analysis;
 	}
 	
 	@Test

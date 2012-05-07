@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +36,9 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.RandomEffectsMetaAnalysisView;
+import org.drugis.addis.gui.builder.PairWiseMetaAnalysisView;
 import org.drugis.addis.gui.wizard.PairwiseMetaAnalysisWizard;
-import org.drugis.addis.presentation.RandomEffectsMetaAnalysisPresentation;
+import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
@@ -90,8 +92,8 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
-		return new RandomEffectsMetaAnalysisView(
-				(RandomEffectsMetaAnalysisPresentation)main.getPresentationModelFactory().getModel(((RandomEffectsMetaAnalysis) entity)), 
+		return new PairWiseMetaAnalysisView(
+				(PairWiseMetaAnalysisPresentation)main.getPresentationModelFactory().getModel(((RandomEffectsMetaAnalysis) entity)), 
 				main);
 	}
 }

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -358,19 +360,12 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	@Override
 	public Set<Entity> getDependencies() {
-		HashSet<Entity> dep = EntityUtil.flatten(getDrugs());
+		Set<Entity> dep = new HashSet<Entity>();
 		dep.addAll(getOutcomeMeasures());
 		dep.addAll(extractVariables(getPopulationChars()));
 		dep.add(d_indication.getValue());
 		for (StudyActivity sa : getStudyActivities()) {
-			if (sa.getActivity() instanceof TreatmentActivity) {
-				TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
-				for (AbstractDose d : ta.getDoses()) {
-					if (d != null) {
-						dep.add(d.getDoseUnit().getUnit());
-					}
-				}
-			}
+			dep.addAll(sa.getDependencies());
 		}
 		return dep;
 	}
@@ -724,9 +719,17 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public DrugSet getDrugs(Arm a) {
 		Activity activity = getActivity(a);
 		if (activity instanceof TreatmentActivity) {
-			return new DrugSet(((TreatmentActivity) activity).getDrugs());
+			return getDrugSet((TreatmentActivity) activity);
 		}
 		return new DrugSet();
+	}
+
+	private DrugSet getDrugSet(TreatmentActivity activity) {
+		List<Drug> drugs = new ArrayList<Drug>();
+		for(DrugTreatment ta : activity.getTreatments()) {
+			drugs.add(ta.getDrug());
+		}
+		return new DrugSet(drugs);
 	}
 
 	@Override

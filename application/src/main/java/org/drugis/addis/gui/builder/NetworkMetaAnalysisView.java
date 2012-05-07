@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +36,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -43,7 +47,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
@@ -53,19 +59,18 @@ import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.NetworkMetaAnalysisTablePanel;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.gui.renderer.NetworkRelativeEffectTableCellRenderer;
+import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
-import org.drugis.addis.presentation.NetworkTableModel;
+import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
 import org.drugis.addis.presentation.NetworkVarianceTableModel;
 import org.drugis.addis.presentation.NodeSplitResultsTableModel;
-import org.drugis.addis.presentation.SummaryCellRenderer;
-import org.drugis.addis.presentation.mcmc.MCMCModelFinished;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
@@ -79,6 +84,8 @@ import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
+import org.drugis.common.threading.status.TaskTerminatedModel;
+import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
@@ -89,6 +96,7 @@ import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
+import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.util.MCMCResultsWriter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -98,6 +106,7 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -192,7 +201,7 @@ implements ViewBuilder {
 		
 		return builder.getPanel();
 	}
-
+	
 	private int buildMemoryUsage(final MCMCModel model, String name, PanelBuilder builder, FormLayout layout, int row) {
 		LayoutUtil.addRow(layout);
 		row += 2;
@@ -203,25 +212,24 @@ implements ViewBuilder {
 		builder.add(new JLabel(name), cc.xy(2, row));
 		
 		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
-		final MCMCModelFinished modelFinished = new MCMCModelFinished(model);
+		final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
 		
 		builder.add(memory, cc.xy(4, row));
 		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		clearButton.setToolTipText("Clear results");
-		Bindings.bind(clearButton, "enabled", modelFinished);
-
+		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
+		Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
 		builder.add(clearButton, cc.xy(6, row));
 		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		saveButton.setToolTipText("Save to R-file");
-		Bindings.bind(saveButton, "enabled", modelFinished);
+		Bindings.bind(saveButton, "enabled", modelFinishedAndResults);
+		
 		saveButton.addActionListener(buildRButtonActionListener(model));
 		builder.add(saveButton, cc.xy(8, row));
 		
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.getResults().clear();
-				clearButton.setEnabled(false);
-				saveButton.setEnabled(false);
 				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
 				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
 				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
@@ -284,15 +292,15 @@ implements ViewBuilder {
 		builder.add(inconsistencyNote, cc.xyw(1, row, 3));
 		row += 2;
 		
-		TablePanel inconsistencyTablePanel = createNetworkTablePanel(inconsistencyModel);
+		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(inconsistencyModel);
 		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(inconsistencyTablePanel, cc.xyw(1, row, 3));
+		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
-		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
-				d_pm, d_mainWindow.getPresentationModelFactory());
+		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm);
 		EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
+		table.setDefaultRenderer(Summary.class, new SummaryCellRenderer(false));
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 		
 		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
@@ -313,19 +321,19 @@ implements ViewBuilder {
 		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 	
-		NetworkVarianceTableModel mixedComparisonTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
-		EnhancedTable mixedComparisontable = new EnhancedTable(mixedComparisonTableModel, 300);
-		mixedComparisontable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
-		final TablePanel mixedComparisonTablePanel = new TablePanel(mixedComparisontable);
+		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
+		EnhancedTable varianceTable = new EnhancedTable(varianceTableModel, 300);
+		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
+		final TablePanel varianceTablePanel = new TablePanel(varianceTable);
 		
 		builder.addSeparator("Variance Calculation", cc.xyw(1, row, 3));
 		row += 2;
-		builder.add(mixedComparisonTablePanel, cc.xyw(1, row, 3));
+		builder.add(varianceTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
 				new AnalysisFinishedListener(new TablePanel[] {
-						inconsistencyTablePanel, inconsistencyFactorsTablePanel
+						relativeEffectsTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
 
@@ -363,14 +371,14 @@ implements ViewBuilder {
 		JComponent consistencyNote = AuxComponentFactory.createHtmlField(consistencyText);
 		builder.add(consistencyNote, cc.xyw(1, row, colSpan));
 		
-		TablePanel consistencyTablePanel = createNetworkTablePanel(consistencyModel);
+		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(consistencyModel);
 		consistencyModel.getActivityTask().addTaskListener(
-				new AnalysisFinishedListener(new TablePanel[] {consistencyTablePanel}));
+				new AnalysisFinishedListener(new TablePanel[] {relativeEffectsTablePanel}));
 
 		row += 2;
 		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(consistencyTablePanel, cc.xyw(1, row, colSpan));
+		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		builder.add(createRankProbChart(), cc.xyw(1, row, colSpan));
@@ -585,11 +593,22 @@ implements ViewBuilder {
 
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
-	 * @param networkModel Model for which to display results.
+	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
-	private NetworkMetaAnalysisTablePanel createNetworkTablePanel( MixedTreatmentComparison networkModel ) {
-			NetworkTableModel networkAnalysisTableModel = new NetworkTableModel(d_pm, d_mainWindow.getPresentationModelFactory(), networkModel);
-		return new NetworkMetaAnalysisTablePanel(d_mainWindow, networkAnalysisTableModel);
+	private TablePanel createNetworkTablePanel(MixedTreatmentComparison mtc) {
+		JTable table = new JTable(new NetworkRelativeEffectTableModel(d_pm, mtc));
+		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
+		table.setTableHeader(null);
+		setColumnWidths(table);
+		return new TablePanel(table);
+	}
+	
+	private void setColumnWidths(JTable table) {
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		for (TableColumn c : Collections.list(table.getColumnModel().getColumns())) {
+			c.setMinWidth(170);
+			c.setPreferredWidth(170);
+		}
 	}
 }

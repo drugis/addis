@@ -1,3 +1,29 @@
+/*
+ * This file is part of ADDIS (Aggregate Data Drug Information System).
+ * ADDIS is distributed from http://drugis.org/.
+ * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Ahmad Kamal, Daniel Reid.
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.drugis.addis.util.JSMAAintegration;
 
 import java.util.Collections;
@@ -42,20 +68,15 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 	}
 
 	private CriterionMeasurement createMeasurement(List<Alternative> alts, OutcomeMeasure om) {
-		System.out.println(om);
 		GaussianMeasurement baseline = new GaussianMeasurement(
 				d_brAnalysis.getBaselineDistribution(om).getMu(),
 				d_brAnalysis.getBaselineDistribution(om).getSigma());
-		System.out.println(baseline);
 		MultivariateNormalSummary reSummary = d_brAnalysis.getRelativeEffectsSummary(om);
-		System.out.println(reSummary);
 		MultivariateGaussianCriterionMeasurement delta = new MultivariateGaussianCriterionMeasurement(alts);
 		double[] meanVector = createMeanVector(d_brAnalysis.getAlternatives(), d_brAnalysis.getBaseline(), reSummary.getMeanVector());
 		double[][] covMatrix = createCovarianceMatrix(d_brAnalysis.getAlternatives(), d_brAnalysis.getBaseline(), reSummary.getCovarianceMatrix());
 		delta.setMeanVector(new ArrayRealVector(meanVector));
 		delta.setCovarianceMatrix(new Array2DRowRealMatrix(covMatrix));
-		System.out.println(delta.getMeanVector());
-		System.out.println(delta.getCovarianceMatrix());
 		RelativeGaussianCriterionMeasurement relative = new RelativeGaussianCriterionMeasurement(delta, baseline);
 
 		CriterionMeasurement m = null;
@@ -64,7 +85,6 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 		} else if (om.getVariableType() instanceof ContinuousVariableType) {
 			m = relative;
 		}
-		System.out.println(m);
 		return m;
 	}
 

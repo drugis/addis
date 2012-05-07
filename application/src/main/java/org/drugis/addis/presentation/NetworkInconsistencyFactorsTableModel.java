@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,18 +36,17 @@ import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.QuantileSummary;
+import org.drugis.mtc.summary.Summary;
 
 @SuppressWarnings("serial")
 public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private static final String NA = "N/A";
 	private NetworkMetaAnalysisPresentation d_pm;
-	private PresentationModelFactory d_pmf;
 	private PropertyChangeListener d_listener;
 	private boolean d_listenersAttached;
 
-	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
+	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm) {
 		d_pm = pm;
-		d_pmf = pmf;
 		
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -79,6 +80,12 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	}
 	
 	@Override
+	public Class<?> getColumnClass(int column) {
+		return column == 0 ? String.class : Summary.class;
+		
+	}
+	
+	@Override
 	public String getColumnName(int column) {
 		return column == 0 ? "Cycle" : "Confidence Interval";
 	}
@@ -94,28 +101,21 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	}
 	
 	public Object getValueAt(int row, int col) {
-		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
+		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
 			return NA;
 		}
+		
 		InconsistencyModel model = getModel();
-		InconsistencyParameter ip = 
-			(InconsistencyParameter)model.getInconsistencyFactors().get(row);
-		if(col == 0){
+		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
+		if(col == 0){ // FIXME: use apache commons for this operation, and add a cell renderer!
 			String out = "";
 			for (int i = 0; i < ip.getCycle().size() - 1; ++i){
 				out += ip.getCycle().get(i).getId() + ", ";
 			}
 			return out.substring(0, out.length() - 2);
-		} else if (model.isReady()) {
-			QuantileSummary summary = d_pm.getQuantileSummary(model, ip);
-			if (summary.getDefined()) { 
-				QuantileSummaryPresentation labeledModel = (QuantileSummaryPresentation) d_pmf.getLabeledModel(summary);
-				labeledModel.isLogTransformed(false);
-				return labeledModel.getLabelModel().getValue();
-			} 
-			return NA;
-		} else
-			return NA;
+		} else {
+			return d_pm.getQuantileSummary(model, ip);
+		}
 	}
 
 	private InconsistencyModel getModel() {

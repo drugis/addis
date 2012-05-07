@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +66,9 @@ public abstract class BenefitRiskAnalysis<Alternative> extends AbstractNamedEnti
 	
 	public abstract Distribution getRelativeEffectDistribution(OutcomeMeasure criterion, Alternative subject);
 
+	/**
+	 * The MeasurementSource should fire an event when the measurements that are the input for the BR analysis change.
+	 */
 	public abstract MeasurementSource<Alternative> getMeasurementSource();
 	
 	public abstract DecisionContext getDecisionContext();

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,27 +26,37 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-@SuppressWarnings("serial")
-public class RandomEffectsMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
-implements StudyListPresentation {
+import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueModel;
 
-	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
-		super(bean, mgr);
-	}
-	
-	public LabeledPresentation getFirstDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getFirstDrug());
-	}
-	
-	public LabeledPresentation getSecondDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
+/**
+ * Wrap a ValueModel to conform to the typed ValueHolder<T> interface.
+ * Does NOT make the ValueModel type safe. 
+ */
+public class ValueModelWrapper<T> extends AbstractValueModel implements ValueHolder<T> {
+	private static final long serialVersionUID = 1485871079580004731L;
+	private final ValueModel d_model;
+
+	public ValueModelWrapper(ValueModel model) {
+		d_model = model;
+		model.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				firePropertyChange("value", event.getOldValue(), event.getNewValue());
+			}
+		});
 	}
 
-	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
-		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
-		return pm;
+	@SuppressWarnings("unchecked")
+	@Override
+	public T getValue() {
+		return (T) d_model.getValue();
+	}
+
+	@Override
+	public void setValue(Object newValue) {
+		d_model.setValue(newValue);
 	}
 }

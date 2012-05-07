@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,10 +61,8 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<DrugSet> {
-	private final class AutoSelectMetaAnalysisListener implements
-			ListDataListener {
-		public void intervalRemoved(ListDataEvent e) {
-		}
+	private final class AutoSelectMetaAnalysisListener implements ListDataListener {
+		public void intervalRemoved(ListDataEvent e) { }
 
 		public void intervalAdded(ListDataEvent e) {
 			autoSelectInterval(e.getIndex0(), e.getIndex1());
@@ -216,12 +216,25 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 
 		d_selectedMetaAnalysesPairs = new ContentAwareListModel<CriterionAnalysisPair>(new ArrayListModel<CriterionAnalysisPair>(), 
 				new String[] {CriterionAnalysisPair.PROPERTY_ANALYSIS});
-		FilteredObservableList<CriterionAnalysisPair> pairsWithIncludedCriterion = 
-			new FilteredObservableList<CriterionAnalysisPair>(d_selectedMetaAnalysesPairs, new Filter<CriterionAnalysisPair>() {
+		
+		// Filter the CriterionAnalysisPair list to include only selected criteria.
+		final Filter<CriterionAnalysisPair> criterionSelectedFilter = new Filter<CriterionAnalysisPair>() {
 			public boolean accept(CriterionAnalysisPair obj) {
 				return getSelectedCriteria().contains(obj.getCriterion());
 			}
+		};
+		final FilteredObservableList<CriterionAnalysisPair> pairsWithIncludedCriterion = 
+			new FilteredObservableList<CriterionAnalysisPair>(d_selectedMetaAnalysesPairs, criterionSelectedFilter);
+		// Re-calculate the filtered list when the selected criteria change.
+		getSelectedCriteria().addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) { update(); }
+			public void intervalAdded(ListDataEvent e) { update(); }
+			public void contentsChanged(ListDataEvent e) { update(); }
+			private void update() {
+				pairsWithIncludedCriterion.setFilter(criterionSelectedFilter);
+			}
 		});
+		
 		d_selectedMetaAnalyses = new TransformedObservableList<CriterionAnalysisPair, MetaAnalysis>(pairsWithIncludedCriterion, 
 				new Transform<CriterionAnalysisPair, MetaAnalysis>() {
 					public MetaAnalysis transform(CriterionAnalysisPair pair) {
@@ -236,6 +249,7 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		
 		getSelectedCriteria().addListDataListener(new AutoSelectMetaAnalysisListener());
 	}
+
 
 	public ObservableList<MetaAnalysis> getSelectedMetaAnalyses() {
 		return d_selectedMetaAnalyses;

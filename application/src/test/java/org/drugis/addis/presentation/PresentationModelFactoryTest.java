@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +74,7 @@ public class PresentationModelFactoryTest {
 		assertEquals(anal, m.getBean());
 		PresentationModel m2 = d_manager.getModel(anal);
 		assertTrue(m == m2);
-		assertTrue(m instanceof RandomEffectsMetaAnalysisPresentation);
+		assertTrue(m instanceof PairWiseMetaAnalysisPresentation);
 	}
 	
 	@Test

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +79,12 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			for (Summary s : getEffectSummaries()) {
 				s.addPropertyChangeListener(l);
 			}
+		}
+		
+		private List<Summary> getEffectSummaries() {
+			List<Summary> summaryList = getAbsoluteEffectSummaries();
+			summaryList.addAll(d_relativeEffects.values());
+			return summaryList;
 		}
 	}
 
@@ -379,12 +387,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		for (OutcomeMeasure om : getCriteria()) {
 			summaryList.add(getBaselineModel(om).getSummary());
 		}
-		return summaryList;
-	}
-
-	public List<Summary> getEffectSummaries() {
-		List<Summary> summaryList = getAbsoluteEffectSummaries();
-		summaryList.addAll(getRelativeEffectSummaries());
 		return summaryList;
 	}
 

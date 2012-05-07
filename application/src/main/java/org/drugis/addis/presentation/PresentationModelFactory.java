@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +47,6 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.mtc.summary.QuantileSummary;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -121,7 +122,7 @@ public class PresentationModelFactory {
 			return new DrugSetPresentation((DrugSet) obj, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
-			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
+			return new PairWiseMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
 		}
 		if (obj instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);
@@ -134,9 +135,6 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof Distribution) {
 			return new DistributionPresentation((Distribution) obj);
-		}
-		if (obj instanceof QuantileSummary) {
-			return new QuantileSummaryPresentation((QuantileSummary) obj);
 		}
 		return new PresentationModel(obj);
 	}
