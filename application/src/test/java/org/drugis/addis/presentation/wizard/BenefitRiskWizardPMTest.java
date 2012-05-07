@@ -455,7 +455,7 @@ public class BenefitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testLyndOBrienAlternativesRestrictions(){
+	public void testLyndOBrienAlternativesRestrictions() {
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien);
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
@@ -473,7 +473,7 @@ public class BenefitRiskWizardPMTest {
 	}
 
 	@Test
-	public void testLyndOBrienOutcomesRestrictions(){
+	public void testLyndOBrienOutcomesRestrictions() {
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
@@ -582,5 +582,26 @@ public class BenefitRiskWizardPMTest {
 		
 		d_pm.getDecisionContextFields().get(0).getModel().setValue("Test");
 		assertEquals("Test", d_pm.getDecisionContext().getTherapeuticContext());
+	}
+	
+	@Test
+	public void testDeselectedCriterionWithSelectedMetaAnalysisShouldBeExcluded() {
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien);
+
+		// Set a meta-analysis for HAM-D, but deselect HAM-D afterwards
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(false);
+		
+		// Select two (other) criteria
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+
+		// Select two alternatives
+		pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		
+		assertEquals(Arrays.asList(ExampleData.buildNetworkMetaAnalysisCgi(), null), pm.getSelectedMetaAnalyses());
 	}
 }
