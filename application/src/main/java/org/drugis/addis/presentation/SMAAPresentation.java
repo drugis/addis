@@ -139,6 +139,10 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
 		return d_smaaf.getOutcomeMeasure(crit);
 	}
+	
+	public AbstractBenefitRiskSMAAFactory<Alternative> getSMAAFactory() {
+		return d_smaaf;
+	}
 
 	public void saveSmaa(String filename) {
 		try {
