@@ -16,25 +16,14 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
-1.12.4:
-  * The network meta-analysis simulation can be continued if it has not
-   converged yet.
-     * There is a new UI for checking convergence, which is also available on
-     the benefit-risk screen.
-     * The default length of the simulation is now shorter.
-  * The benefit-risk analysis now uses the full covariance information from
-    the MTC, finally bringing ADDIS and JSMAA in line with our JCE paper.  
-  * The results of a network meta-analysis are now shown according to the
-    quantiles, rather than a normal approximation. This should be more robust
-    (statistically).
-  * We switched to the new (0.12) version of GeMTC, a complete rewrite.
-     * Exporting to GeMTC has been improved (treatment descriptions included)
-     * The GeMTC GUI is now shown directly rather than just saving the file.
-  * Removed unnecessary dependencies: download reduced from 30MB to 15MB.
-  * Quite a lot of bug fixes.
 
-1.12.3: Improved node-splitting models (thanks to GeMTC 0.12), fix redraw
-  problems on Mac OS X.
+1.12.4: The network meta-analysis simulation can be continued if it has
+   not converged yet, and there is a new GUI for checking convergence.
+   The benefit-risk analysis now uses the full covariance information
+   from network meta-analysis. Reduced download from 30MB to 15MB.
+   Bugfixes.
+
+1.12.3: Bugfix release.
 
 1.12.2: Bugfix release.
 
