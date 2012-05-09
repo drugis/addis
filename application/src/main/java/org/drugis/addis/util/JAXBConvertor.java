@@ -34,6 +34,7 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -127,7 +128,6 @@ import org.drugis.addis.entities.data.Drugs;
 import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.EvidenceTypeEnum;
 import org.drugis.addis.entities.data.IdReference;
-import org.drugis.addis.entities.data.InconsistencyParameter;
 import org.drugis.addis.entities.data.InconsistencyResults;
 import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.IntegerWithNotes;
@@ -147,6 +147,7 @@ import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.RelativeEffectParameter;
+import org.drugis.addis.entities.data.RelativeEffectQuantileSummary;
 import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
@@ -159,9 +160,11 @@ import org.drugis.addis.entities.data.VarianceParameterType;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
+import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.parameterization.InconsistencyVariance;
 import org.drugis.mtc.parameterization.RandomEffectsVariance;
@@ -169,6 +172,8 @@ import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+
+import edu.uci.ics.jung.graph.util.Pair;
 
 public class JAXBConvertor {
 	@SuppressWarnings("serial")
@@ -1052,7 +1057,7 @@ public class JAXBConvertor {
 		}
 		for(DrugSet d : reMa.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
-			alt.setDrugs(convertDrugSet(d));
+			alt.setDrugs(convertAnalysisDrugSet(d));
 			AnalysisArms arms = new AnalysisArms();
 			for(StudyArmsEntry item : reMa.getStudyArms()) {
 				Arm arm = null;
@@ -1069,7 +1074,7 @@ public class JAXBConvertor {
 		return pwma ;
 	}
 
-	private static AnalysisDrugs convertDrugSet(DrugSet d) {
+	private static AnalysisDrugs convertAnalysisDrugSet(DrugSet d) {
 		AnalysisDrugs drugs = new AnalysisDrugs();
 		for (Drug drug : d.getContents()) {
 			drugs.getDrug().add(nameReference(drug.getName()));				
@@ -1122,7 +1127,7 @@ public class JAXBConvertor {
 		}
 		for(DrugSet d : ma.getIncludedDrugs()) {
 			Alternative alt = new Alternative();
-			alt.setDrugs(convertDrugSet(d));
+			alt.setDrugs(convertAnalysisDrugSet(d));
 			AnalysisArms arms = new AnalysisArms();
 			
 			for(Study study : ma.getIncludedStudies()) {
@@ -1136,28 +1141,34 @@ public class JAXBConvertor {
 		}
 		// Begin saving results
 		nma.setInconsistencyResults(convertInconsistencyResults(ma));
-
+		
 		return nma; 
 	}
 
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
 		InconsistencyResults inconsResults = new InconsistencyResults();
-		MCMCSettings inconsistencySettings = convertMCMCSettings(ma.getInconsistencyModel());
+		InconsistencyModel inconsistencyModel = ma.getInconsistencyModel();
+		MCMCSettings inconsistencySettings = convertMCMCSettings(inconsistencyModel);
 		inconsResults.setMcmcSettings(inconsistencySettings);
-		for (Parameter p : ma.getInconsistencyModel().getResults().getParameters()) { 
-			inconsResults.getSummary().add(convertParameterSummary(p, ma.getInconsistencyModel(), ma));
+		for (Parameter p : inconsistencyModel.getResults().getParameters()) { 
+			inconsResults.getSummary().add(convertParameterSummary(p, inconsistencyModel, ma));
 		}
+		inconsResults.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary().addAll(convertRelativeEffectParameters(ma, inconsistencyModel));
 		return inconsResults;
 	}
-	
+
 	private static ParameterSummary convertParameterSummary(Parameter p, MixedTreatmentComparison mtc, NetworkMetaAnalysis nma) { 
 		ParameterSummary ps = new ParameterSummary();
-		RelativeEffectParameter rel = new RelativeEffectParameter();
-		rel.setWhichEvidence(EvidenceTypeEnum.ALL); // FIXME for NodeSplit parameters 
-		ps.setRelativeEffect(rel);
 		ps.setPsrf(new ConvergenceSummary(mtc.getResults(), p).getScaleReduction());
-		if (p instanceof InconsistencyParameter) { 
-			ps.getInconsistency().getAlternative().addAll(((InconsistencyParameter) p).getAlternative());
+		if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) { 
+			org.drugis.mtc.parameterization.InconsistencyParameter ip = (org.drugis.mtc.parameterization.InconsistencyParameter)p;
+			for (Treatment t : ip.getCycle()) { 
+				Drugs drugs = new Drugs();
+				for (Drug d : nma.getDrugSet(t).getContents()) {
+					drugs.getDrug().add(convertDrug(d));
+				}
+				ps.getInconsistency().getAlternative().add(drugs);
+			}
 		} else if (p instanceof InconsistencyVariance) { 
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_W);
@@ -1166,26 +1177,66 @@ public class JAXBConvertor {
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_D);
 			ps.setVariance(value);
-		} else if (p instanceof BasicParameter) { 
+		} else if (p instanceof BasicParameter) {
 			QuantileSummary qs = nma.getQuantileSummary(mtc, p);
-			for(int i = 0; qs.getSize() > i; ++i) {
-				QuantileType q = new QuantileType();
-				q.setLevel(qs.getProbability(i));
-				q.setValue(qs.getQuantile(i));
-				ps.getQuantile().add(q);
-			}
+			
+			ps.getQuantile().addAll(convertQuantileSummary(qs));
 		}
 		return ps;
+	}
+
+	private static List<QuantileType> convertQuantileSummary(QuantileSummary qs) {
+		List<QuantileType> l = new ArrayList<QuantileType>();
+		for(int i = 0; qs.getSize() > i; ++i) {
+			QuantileType q = new QuantileType();
+			q.setLevel(qs.getProbability(i));
+			q.setValue(qs.getQuantile(i));
+			l.add(q);
+		}
+		return l;
+	}
+
+	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MixedTreatmentComparison mtc) {
+		List<DrugSet> includedDrugs = ma.getIncludedDrugs();
+		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
+		for (int i = 0; i < includedDrugs.size() - 2; ++i) {
+			for (int j = i + 1; j < includedDrugs.size() - 1; ++j) {
+				Pair<DrugSet> relEffect = new Pair<DrugSet>(includedDrugs.get(i), includedDrugs.get(j));
+				RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
+				qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
+				qs.getQuantile().addAll(convertQuantileSummary(ma.getQuantileSummary(mtc, relEffect)));
+				reqs.add(qs);
+			}
+		}
+		return reqs; // TODO make it accept RelativeEffectsQuantileSummaries 
+	}
+	
+	private static RelativeEffectParameter convertRelativeEffectsParameter(Pair<DrugSet> pair) {
+		RelativeEffectParameter rel = new RelativeEffectParameter();
+		rel.setWhichEvidence(EvidenceTypeEnum.ALL); // FIXME for NodeSplit parameters 
+		Drugs first = convertDrugSet(pair.getFirst());
+		Drugs second = convertDrugSet(pair.getSecond());
+		rel.getAlternative().addAll(Arrays.asList(first, second));
+
+		return rel;
 	}
 	
 	private static MCMCSettings convertMCMCSettings(MCMCModel mcmc) {
 		MCMCSettings s = new MCMCSettings();
 		s.setSimulationIterations((long)mcmc.getSimulationIterations());
 		s.setTuningIterations((long)mcmc.getBurnInIterations());
-		s.setThinningInterval((long) 1);
+		s.setThinningInterval((long) 1); // FIXME Magic number
 		s.setInferenceIterations((long)mcmc.getSimulationIterations() / 2);
-		s.setVarianceScalingFactor(2.5);
+		s.setVarianceScalingFactor(2.5); // FIXME Magic number
 		return s;
+	}
+	
+	static Drugs convertDrugSet(DrugSet d) { 
+		Drugs drugs = new Drugs();
+		for (Drug drug : d.getContents()) {
+			drugs.getDrug().add(convertDrug(drug));				
+		}
+		return drugs;
 	}
 	
 	static Epoch findEpoch(String name, Study study) throws ConversionException {
@@ -1333,12 +1384,12 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis newBr = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
 		newBr.setName(br.getName());
 		newBr.setAnalysisType(br.getAnalysisType());
-		newBr.setBaseline(convertDrugSet(br.getBaseline()));
+		newBr.setBaseline(convertAnalysisDrugSet(br.getBaseline()));
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
 		AlternativeDrugSets alternatives = new AlternativeDrugSets();
 		for(DrugSet d : br.getDrugs()) {
-			alternatives.getAlternative().add(convertDrugSet(d));
+			alternatives.getAlternative().add(convertAnalysisDrugSet(d));
 		}
 		newBr.setAlternatives(alternatives);
 		

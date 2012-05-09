@@ -169,20 +169,20 @@ public class JAXBConvertorTest {
 
 	private JAXBContext d_jaxb;
 	private Unmarshaller d_unmarshaller;
-	
+
 	@Before
-	public void setup() throws JAXBException{
-		d_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data" );
+	public void setup() throws JAXBException {
+		d_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
 		d_unmarshaller = d_jaxb.createUnmarshaller();
 	}
-	
+
 	@Test
 	public void testConvertContinuousEndpoint() throws ConversionException {
 		String name = "Onset of erection";
 		String desc = "Time to onset of erection of >= 60 % rigidity";
 		String unit = "Minutes";
 		Direction dir = Direction.LOWER_IS_BETTER;
-		
+
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName(name);
 		m.setDescription(desc);
@@ -190,48 +190,51 @@ public class JAXBConvertorTest {
 		m.setDirection(dir);
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
-		
-		Endpoint e = new Endpoint(name, Endpoint.convertVarType(Type.CONTINUOUS), dir);
+
+		Endpoint e = new Endpoint(name,
+				Endpoint.convertVarType(Type.CONTINUOUS), dir);
 		e.setDescription(desc);
-		((ContinuousVariableType) e.getVariableType()).setUnitOfMeasurement(unit);
-		
+		((ContinuousVariableType) e.getVariableType())
+				.setUnitOfMeasurement(unit);
+
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
 		assertEquals(m, JAXBConvertor.convertEndpoint(e));
 	}
-	
+
 	@Test
 	public void testConvertRateEndpoint() throws ConversionException {
 		String name = "Efficacy";
 		String desc = "Erection of >= 60% rigidity within 1 hr of medication";
 		Direction dir = Direction.HIGHER_IS_BETTER;
-		
+
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName(name);
 		m.setDescription(desc);
 		RateVariable value = new RateVariable();
 		m.setDirection(dir);
 		m.setRate(value);
-		
+
 		Endpoint e = new Endpoint(name, Endpoint.convertVarType(Type.RATE), dir);
 		e.setDescription(desc);
-		
+
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
-		
+
 		m.setDirection(Direction.LOWER_IS_BETTER);
 		e.setDirection(org.drugis.addis.entities.OutcomeMeasure.Direction.LOWER_IS_BETTER);
-		
+
 		assertEntityEquals(e, JAXBConvertor.convertEndpoint(m));
 		assertEquals(m, JAXBConvertor.convertEndpoint(e));
 	}
-	
-	@Test(expected=ConversionException.class)
-	public void testConvertCategoricalEndpointThrows() throws ConversionException {
+
+	@Test(expected = ConversionException.class)
+	public void testConvertCategoricalEndpointThrows()
+			throws ConversionException {
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName("Gender");
 		m.setDescription("Which gender you turn out to be after taking medication");
 		CategoricalVariable value = new CategoricalVariable();
 		m.setCategorical(value);
-		
+
 		JAXBConvertor.convertEndpoint(m);
 	}
 
@@ -240,7 +243,7 @@ public class JAXBConvertorTest {
 		String name = "Onset of erection";
 		String desc = "Time to onset of erection of >= 60 % rigidity";
 		String unit = "Minutes";
-		
+
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName(name);
 		m.setDescription(desc);
@@ -248,47 +251,51 @@ public class JAXBConvertorTest {
 		m.setDirection(Direction.LOWER_IS_BETTER);
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
-		
-		org.drugis.addis.entities.OutcomeMeasure e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.CONTINUOUS));
+
+		org.drugis.addis.entities.OutcomeMeasure e = new AdverseEvent(name,
+				AdverseEvent.convertVarType(Type.CONTINUOUS));
 		e.setDescription(desc);
-		((ContinuousVariableType) e.getVariableType()).setUnitOfMeasurement(unit);
-		
+		((ContinuousVariableType) e.getVariableType())
+				.setUnitOfMeasurement(unit);
+
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
 		assertEquals(m, JAXBConvertor.convertAdverseEvent(e));
 	}
-	
+
 	@Test
 	public void testConvertRateAdverseEvent() throws ConversionException {
 		String name = "Seizure";
 		String desc = "Its bad hmmkay";
-		
+
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName(name);
 		m.setDescription(desc);
 		RateVariable value = new RateVariable();
 		m.setDirection(Direction.LOWER_IS_BETTER);
 		m.setRate(value);
-		
-		AdverseEvent e = new AdverseEvent(name, AdverseEvent.convertVarType(Type.RATE));
+
+		AdverseEvent e = new AdverseEvent(name,
+				AdverseEvent.convertVarType(Type.RATE));
 		e.setDescription(desc);
-		
+
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
-		
+
 		m.setDirection(Direction.HIGHER_IS_BETTER);
 		e.setDirection(org.drugis.addis.entities.OutcomeMeasure.Direction.HIGHER_IS_BETTER);
-		
+
 		assertEntityEquals(e, JAXBConvertor.convertAdverseEvent(m));
 		assertEquals(m, JAXBConvertor.convertAdverseEvent(e));
 	}
-	
-	@Test(expected=ConversionException.class)
-	public void testConvertCategoricalAdverseEventThrows() throws ConversionException {
+
+	@Test(expected = ConversionException.class)
+	public void testConvertCategoricalAdverseEventThrows()
+			throws ConversionException {
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName("Efficacy");
 		m.setDescription("Erection of >= 60% rigidity within 1 hr of medication");
 		CategoricalVariable value = new CategoricalVariable();
 		m.setCategorical(value);
-		
+
 		JAXBConvertor.convertAdverseEvent(m);
 	}
 
@@ -297,22 +304,24 @@ public class JAXBConvertorTest {
 		String name = "Age";
 		String desc = "Age (years since birth)";
 		String unit = "Years";
-		
+
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName(name);
 		m.setDescription(desc);
 		ContinuousVariable value = new ContinuousVariable();
 		value.setUnitOfMeasurement(unit);
 		m.setContinuous(value);
-		
-		PopulationCharacteristic p = new PopulationCharacteristic(name, new ContinuousVariableType());
-		((ContinuousVariableType) p.getVariableType()).setUnitOfMeasurement(unit);
+
+		PopulationCharacteristic p = new PopulationCharacteristic(name,
+				new ContinuousVariableType());
+		((ContinuousVariableType) p.getVariableType())
+				.setUnitOfMeasurement(unit);
 		p.setDescription(desc);
-		
+
 		assertEntityEquals(p, JAXBConvertor.convertPopulationCharacteristic(m));
 		assertEquals(m, JAXBConvertor.convertPopulationCharacteristic(p));
 	}
-	
+
 	@Test
 	public void testConvertRatePopChar() throws ConversionException {
 		String name = "Seizure";
@@ -321,20 +330,22 @@ public class JAXBConvertorTest {
 		m.setName(name);
 		m.setDescription(description);
 		m.setRate(new RateVariable());
-		
-		PopulationCharacteristic p = new PopulationCharacteristic(name, new RateVariableType());
+
+		PopulationCharacteristic p = new PopulationCharacteristic(name,
+				new RateVariableType());
 		p.setDescription(description);
-		
+
 		assertEntityEquals(p, JAXBConvertor.convertPopulationCharacteristic(m));
 		assertEquals(m, JAXBConvertor.convertPopulationCharacteristic(p));
 	}
-	
+
 	@Test
 	public void testConvertCategoricalPopChar() throws ConversionException {
 		String name = "Smoking habits";
 		String desc = "Classification of smoking habits";
-		String[] categories = new String[] {"Non-smoker", "Smoker", "Ex-smoker"};
-		
+		String[] categories = new String[] { "Non-smoker", "Smoker",
+				"Ex-smoker" };
+
 		OutcomeMeasure m = new OutcomeMeasure();
 		m.setName(name);
 		m.setDescription(desc);
@@ -343,11 +354,13 @@ public class JAXBConvertorTest {
 			var.getCategory().add(s);
 		}
 		m.setCategorical(var);
-		
-		PopulationCharacteristic catChar = new PopulationCharacteristic(name, new CategoricalVariableType(Arrays.asList(categories)));
+
+		PopulationCharacteristic catChar = new PopulationCharacteristic(name,
+				new CategoricalVariableType(Arrays.asList(categories)));
 		catChar.setDescription(desc);
-		
-		assertEntityEquals(catChar, JAXBConvertor.convertPopulationCharacteristic(m));
+
+		assertEntityEquals(catChar,
+				JAXBConvertor.convertPopulationCharacteristic(m));
 		assertEquals(m, JAXBConvertor.convertPopulationCharacteristic(catChar));
 	}
 
@@ -355,60 +368,60 @@ public class JAXBConvertorTest {
 	public void testConvertIndication() {
 		String name = "Erectile Dysfunction";
 		long code = 12;
-		
-		org.drugis.addis.entities.data.Indication i1 = new org.drugis.addis.entities.data.Indication(); 
+
+		org.drugis.addis.entities.data.Indication i1 = new org.drugis.addis.entities.data.Indication();
 		i1.setCode(code);
 		i1.setName(name);
-	
+
 		Indication i2 = new Indication(code, name);
-		
+
 		assertEntityEquals(i2, JAXBConvertor.convertIndication(i1));
 		assertEquals(i1, JAXBConvertor.convertIndication(i2));
 	}
-	
+
 	@Test
 	public void testConvertDrug() {
 		String name = "Sildenafil";
 		String code = "G04BE03";
-		
-		org.drugis.addis.entities.data.Drug d1 = new org.drugis.addis.entities.data.Drug(); 
+
+		org.drugis.addis.entities.data.Drug d1 = new org.drugis.addis.entities.data.Drug();
 		d1.setAtcCode(code);
 		d1.setName(name);
-	
+
 		Drug d2 = new Drug(name, code);
-		
+
 		assertEntityEquals(d2, JAXBConvertor.convertDrug(d1));
 		assertEquals(d1, JAXBConvertor.convertDrug(d2));
 	}
-	
+
 	@Test
 	public void testConvertArm() throws ConversionException {
 		int size = 99;
 		String name = "Sildenafil";
 
-		
 		org.drugis.addis.entities.data.Arm arm1 = new org.drugis.addis.entities.data.Arm();
 		arm1.setName(name + "-12");
 		arm1.setSize(size);
 		Notes armNotes = new Notes();
-		Note note = new Note(Source.CLINICALTRIALS, "This is an arm note content");
+		Note note = new Note(Source.CLINICALTRIALS,
+				"This is an arm note content");
 		armNotes.getNote().add(JAXBConvertor.convertNote(note));
 		arm1.setNotes(armNotes);
-		
+
 		Arm arm2 = new Arm(name + "-12", size);
 		arm2.getNotes().add(note);
-		
+
 		assertEntityEquals(arm2, JAXBConvertor.convertArm(arm1));
 		assertEquals(arm1, JAXBConvertor.convertArm(arm2));
 	}
-	
+
 	@Test
 	public void testConvertTreatmentActivity() throws ConversionException {
 		String name = "Sildenafil";
 		String code = "G04BE03";
 		double quantity = 12.5;
 		double maxQuantity = 34.5;
-		
+
 		Domain domain = new DomainImpl();
 		Drug drug = new Drug(name, code);
 		domain.getDrugs().add(drug);
@@ -416,32 +429,40 @@ public class JAXBConvertorTest {
 		// fixdose part
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
-		fixDose.setDoseUnit(JAXBConvertor.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));		
-		
+		fixDose.setDoseUnit(JAXBConvertor
+				.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
+
 		org.drugis.addis.entities.data.DrugTreatment dt = new org.drugis.addis.entities.data.DrugTreatment();
 		dt.setDrug(nameReference(name));
-		dt.setFixedDose(fixDose);		
+		dt.setFixedDose(fixDose);
 		TreatmentActivity ta = buildFixedDoseTreatmentActivity(drug, quantity);
-		
-		assertTrue(EntityUtil.deepEqual(ta, JAXBConvertor.convertTreatmentActivity(wrapTreatment(dt), domain)));
-		assertEquals(wrapTreatment(dt), JAXBConvertor.convertActivity(ta).getTreatment());		
+
+		assertTrue(EntityUtil.deepEqual(ta, JAXBConvertor
+				.convertTreatmentActivity(wrapTreatment(dt), domain)));
+		assertEquals(wrapTreatment(dt), JAXBConvertor.convertActivity(ta)
+				.getTreatment());
 
 		// flexdose part
 		org.drugis.addis.entities.data.FlexibleDose flexDose = new org.drugis.addis.entities.data.FlexibleDose();
 		flexDose.setMinDose(quantity);
 		flexDose.setMaxDose(maxQuantity);
-		flexDose.setDoseUnit(JAXBConvertor.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
+		flexDose.setDoseUnit(JAXBConvertor
+				.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
 
 		org.drugis.addis.entities.data.DrugTreatment dt2 = new org.drugis.addis.entities.data.DrugTreatment();
 		dt2.setDrug(nameReference(name));
-		dt2.setFlexibleDose(flexDose);	
-		TreatmentActivity ta2 = buildFlexibleDoseTreatmentActivity(drug, quantity, maxQuantity);
-		assertTrue(EntityUtil.deepEqual(ta2, JAXBConvertor.convertTreatmentActivity(wrapTreatment(dt2), domain)));
-		assertEquals(wrapTreatment(dt2), JAXBConvertor.convertActivity(ta2).getTreatment());
+		dt2.setFlexibleDose(flexDose);
+		TreatmentActivity ta2 = buildFlexibleDoseTreatmentActivity(drug,
+				quantity, maxQuantity);
+		assertTrue(EntityUtil.deepEqual(ta2, JAXBConvertor
+				.convertTreatmentActivity(wrapTreatment(dt2), domain)));
+		assertEquals(wrapTreatment(dt2), JAXBConvertor.convertActivity(ta2)
+				.getTreatment());
 
 	}
 
-	private static Treatment wrapTreatment(org.drugis.addis.entities.data.DrugTreatment dt2) {
+	private static Treatment wrapTreatment(
+			org.drugis.addis.entities.data.DrugTreatment dt2) {
 		Treatment t2 = new org.drugis.addis.entities.data.Treatment();
 		t2.getDrugTreatment().add(dt2);
 		return t2;
@@ -451,36 +472,37 @@ public class JAXBConvertorTest {
 	public void testConvertEpoch() throws DatatypeConfigurationException {
 		String name = "Randomization";
 		Duration duration = DatatypeFactory.newInstance().newDuration("P42D");
-		
+
 		Epoch e = new Epoch(name, duration);
 		org.drugis.addis.entities.data.Epoch de = new org.drugis.addis.entities.data.Epoch();
 		de.setName(name);
 		de.setDuration(duration);
 		de.setNotes(new Notes());
-		
+
 		assertEquals(de, JAXBConvertor.convertEpoch(e));
 		assertTrue(EntityUtil.deepEqual(e, JAXBConvertor.convertEpoch(de)));
 	}
-	
+
 	@Test
-	public void testConvertStudyActivity() throws ConversionException, DatatypeConfigurationException {
+	public void testConvertStudyActivity() throws ConversionException,
+			DatatypeConfigurationException {
 		String drugName1 = "Sildenafil";
 		String drugName2 = "Paroxeflox";
 		String code1 = "G04BE03";
 		String code2 = "G04BE04";
 		double quantity = 12.5;
-		
+
 		Domain domain = new DomainImpl();
 		Drug drug1 = new Drug(drugName1, code1);
 		Drug drug2 = new Drug(drugName2, code2);
 		domain.getDrugs().add(drug1);
 		domain.getDrugs().add(drug2);
-		
+
 		// test with predefined activity
 		String activityName = "Randomization";
 		PredefinedActivity activity = PredefinedActivity.RANDOMIZATION;
 		StudyActivity sa = new StudyActivity(activityName, activity);
-		
+
 		org.drugis.addis.entities.data.StudyActivity saData = new org.drugis.addis.entities.data.StudyActivity();
 		org.drugis.addis.entities.data.Activity activData = new org.drugis.addis.entities.data.Activity();
 		activData.setPredefined(activity);
@@ -488,25 +510,30 @@ public class JAXBConvertorTest {
 		saData.setActivity(activData);
 		saData.setNotes(new Notes());
 
-		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
+		assertTrue(EntityUtil
+				.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData,
+						new Study(), domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
-		
+
 		// test with treatmentactivity
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
-		fixDose.setDoseUnit(JAXBConvertor.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));		
+		fixDose.setDoseUnit(JAXBConvertor
+				.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
 		org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(drugName1));
-		t.setFixedDose(fixDose);		
+		t.setFixedDose(fixDose);
 		TreatmentActivity ta1 = buildFixedDoseTreatmentActivity(drug1, quantity);
-		
+
 		sa = new StudyActivity(activityName, ta1);
 		saData.getActivity().setPredefined(null);
 		saData.getActivity().setTreatment(wrapTreatment(t));
 
-		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
+		assertTrue(EntityUtil
+				.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData,
+						new Study(), domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
-		
+
 		// test with Combination Treatment
 		org.drugis.addis.entities.data.DrugTreatment t2 = new org.drugis.addis.entities.data.DrugTreatment();
 		t2.setDrug(nameReference(drugName2));
@@ -514,16 +541,18 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.Treatment ctData = new org.drugis.addis.entities.data.Treatment();
 		ctData.getDrugTreatment().add(t);
 		ctData.getDrugTreatment().add(t2);
-		
+
 		TreatmentActivity ct = new TreatmentActivity();
 		ct.getTreatments().add(JAXBConvertor.convertDrugTreatment(t, domain));
 		ct.getTreatments().add(JAXBConvertor.convertDrugTreatment(t2, domain));
 		sa = new StudyActivity(activityName, ct);
 		saData.getActivity().setTreatment(ctData);
-		
-		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, new Study(), domain)));
+
+		assertTrue(EntityUtil
+				.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData,
+						new Study(), domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
-		
+
 		// test UsedBys
 		String armName1 = "armName1";
 		String armName2 = "armName2";
@@ -531,29 +560,34 @@ public class JAXBConvertorTest {
 		Arm arm2 = new Arm(armName2, 200);
 		String epochName1 = "epoch 1";
 		String epochName2 = "epoch 2";
-		Epoch epoch1 = new Epoch(epochName1, DatatypeFactory.newInstance().newDuration("P24D"));
+		Epoch epoch1 = new Epoch(epochName1, DatatypeFactory.newInstance()
+				.newDuration("P24D"));
 		Epoch epoch2 = new Epoch(epochName2, null);
 		sa.setUsedBy(Collections.singleton(new UsedBy(arm1, epoch1)));
-		
+
 		// dummy study containing arms & epochs
-		Study s = new Study("studyname", ExampleData.buildIndicationChronicHeartFailure());
+		Study s = new Study("studyname",
+				ExampleData.buildIndicationChronicHeartFailure());
 		s.getEpochs().add(epoch1);
 		s.getEpochs().add(epoch2);
 		s.getArms().add(arm1);
 		s.getArms().add(arm2);
-		
+
 		ActivityUsedBy usedByData = buildActivityUsedby(armName1, epochName1);
 		saData.getUsedBy().add(usedByData);
 
-		assertTrue(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, s, domain)));
+		assertTrue(EntityUtil.deepEqual(sa,
+				JAXBConvertor.convertStudyActivity(saData, s, domain)));
 		assertEquals(saData, JAXBConvertor.convertStudyActivity(sa));
-		
+
 		Set<UsedBy> usedBy = new HashSet<UsedBy>(sa.getUsedBy());
 		usedBy.add(new UsedBy(arm2, epoch2));
 		sa.setUsedBy(usedBy);
-		assertFalse(EntityUtil.deepEqual(sa, JAXBConvertor.convertStudyActivity(saData, s, domain)));
-		JUnitUtil.assertNotEquals(saData, JAXBConvertor.convertStudyActivity(sa));
-		
+		assertFalse(EntityUtil.deepEqual(sa,
+				JAXBConvertor.convertStudyActivity(saData, s, domain)));
+		JUnitUtil.assertNotEquals(saData,
+				JAXBConvertor.convertStudyActivity(sa));
+
 	}
 
 	private ActivityUsedBy buildActivityUsedby(String armName, String epochName) {
@@ -562,9 +596,11 @@ public class JAXBConvertorTest {
 		usedByData.setEpoch(epochName);
 		return usedByData;
 	}
-	
-	private TreatmentActivity buildFixedDoseTreatmentActivity(Drug drug, double quantity) {
-		return new TreatmentActivity(buildFixedDoseDrugTreatment(drug, quantity));
+
+	private TreatmentActivity buildFixedDoseTreatmentActivity(Drug drug,
+			double quantity) {
+		return new TreatmentActivity(
+				buildFixedDoseDrugTreatment(drug, quantity));
 	}
 
 	private DrugTreatment buildFixedDoseDrugTreatment(Drug drug, double quantity) {
@@ -573,11 +609,13 @@ public class JAXBConvertorTest {
 		return dt;
 	}
 
-	private TreatmentActivity buildFlexibleDoseTreatmentActivity(Drug drug, double minQuantity, double maxQuantity) {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double> (minQuantity, maxQuantity), ExampleData.MILLIGRAMS_A_DAY);
+	private TreatmentActivity buildFlexibleDoseTreatmentActivity(Drug drug,
+			double minQuantity, double maxQuantity) {
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(minQuantity,
+				maxQuantity), ExampleData.MILLIGRAMS_A_DAY);
 		return new TreatmentActivity(new DrugTreatment(drug, dose));
 	}
-	
+
 	@Test
 	public void testConvertStudyChars() {
 		Allocation alloc = Allocation.RANDOMIZED;
@@ -599,7 +637,7 @@ public class JAXBConvertorTest {
 		for (PubMedId id : pmids) {
 			pmints.add(new BigInteger(id.getId()));
 		}
-		
+
 		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
 		chars1.setTitle(JAXBConvertor.stringWithNotes(title));
 		chars1.setAllocation(JAXBConvertor.allocationWithNotes(alloc));
@@ -617,133 +655,173 @@ public class JAXBConvertorTest {
 		chars1.setSource(JAXBConvertor.sourceWithNotes(source));
 		chars1.setCreationDate(JAXBConvertor.dateWithNotes(created.getTime()));
 
-		
 		CharacteristicsMap chars2 = new CharacteristicsMap();
-		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(title));
-		chars2.put(BasicStudyCharacteristic.ALLOCATION, new ObjectWithNotes<Object>(alloc));
-		chars2.put(BasicStudyCharacteristic.BLINDING, new ObjectWithNotes<Object>(blind));
-		chars2.put(BasicStudyCharacteristic.CENTERS, new ObjectWithNotes<Object>(centers));
-		chars2.put(BasicStudyCharacteristic.OBJECTIVE, new ObjectWithNotes<Object>(objective));
-		chars2.put(BasicStudyCharacteristic.STUDY_START, new ObjectWithNotes<Object>(studyStart.getTime()));
-		chars2.put(BasicStudyCharacteristic.STUDY_END, new ObjectWithNotes<Object>(studyEnd.getTime()));
-		chars2.put(BasicStudyCharacteristic.INCLUSION, new ObjectWithNotes<Object>(incl));
-		chars2.put(BasicStudyCharacteristic.EXCLUSION, new ObjectWithNotes<Object>(excl));
-		chars2.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(pmids)); // References
-		chars2.put(BasicStudyCharacteristic.STATUS, new ObjectWithNotes<Object>(status));
-		chars2.put(BasicStudyCharacteristic.SOURCE, new ObjectWithNotes<Object>(source));
-		chars2.put(BasicStudyCharacteristic.CREATION_DATE, new ObjectWithNotes<Object>(created.getTime()));
-		
-		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
+		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(
+				title));
+		chars2.put(BasicStudyCharacteristic.ALLOCATION,
+				new ObjectWithNotes<Object>(alloc));
+		chars2.put(BasicStudyCharacteristic.BLINDING,
+				new ObjectWithNotes<Object>(blind));
+		chars2.put(BasicStudyCharacteristic.CENTERS,
+				new ObjectWithNotes<Object>(centers));
+		chars2.put(BasicStudyCharacteristic.OBJECTIVE,
+				new ObjectWithNotes<Object>(objective));
+		chars2.put(BasicStudyCharacteristic.STUDY_START,
+				new ObjectWithNotes<Object>(studyStart.getTime()));
+		chars2.put(BasicStudyCharacteristic.STUDY_END,
+				new ObjectWithNotes<Object>(studyEnd.getTime()));
+		chars2.put(BasicStudyCharacteristic.INCLUSION,
+				new ObjectWithNotes<Object>(incl));
+		chars2.put(BasicStudyCharacteristic.EXCLUSION,
+				new ObjectWithNotes<Object>(excl));
+		chars2.put(BasicStudyCharacteristic.PUBMED,
+				new ObjectWithNotes<Object>(pmids)); // References
+		chars2.put(BasicStudyCharacteristic.STATUS,
+				new ObjectWithNotes<Object>(status));
+		chars2.put(BasicStudyCharacteristic.SOURCE,
+				new ObjectWithNotes<Object>(source));
+		chars2.put(BasicStudyCharacteristic.CREATION_DATE,
+				new ObjectWithNotes<Object>(created.getTime()));
+
+		assertEntityEquals(chars2,
+				JAXBConvertor.convertStudyCharacteristics(chars1));
 		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
 	}
-	
+
 	@Test
 	public void testConvertCharacteristicsWithNulls() {
 		String title = "title";
 		org.drugis.addis.entities.data.Characteristics chars1 = new org.drugis.addis.entities.data.Characteristics();
 		initializeCharacteristics(chars1, title);
-		
+
 		CharacteristicsMap chars2 = new CharacteristicsMap();
-		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(title));
-		chars2.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(new PubMedIdList()));
-		chars2.put(BasicStudyCharacteristic.CENTERS, new ObjectWithNotes<Object>(null));
-		
+		chars2.put(BasicStudyCharacteristic.TITLE, new ObjectWithNotes<Object>(
+				title));
+		chars2.put(BasicStudyCharacteristic.PUBMED,
+				new ObjectWithNotes<Object>(new PubMedIdList()));
+		chars2.put(BasicStudyCharacteristic.CENTERS,
+				new ObjectWithNotes<Object>(null));
+
 		assertEquals(chars1, JAXBConvertor.convertStudyCharacteristics(chars2));
-		assertEntityEquals(chars2, JAXBConvertor.convertStudyCharacteristics(chars1));
+		assertEntityEquals(chars2,
+				JAXBConvertor.convertStudyCharacteristics(chars1));
 	}
-	
+
 	@Test
 	public void testConvertStudyOutcomeMeasure() throws ConversionException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		Epoch epoch = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
+		Epoch epoch = new Epoch("Measurement phase",
+				EntityUtil.createDuration("P2D"));
 		List<Epoch> epochs = new ArrayList<Epoch>();
 		epochs.add(epoch);
-		
+
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		org.drugis.addis.entities.data.StudyOutcomeMeasure om = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		om.setNotes(new Notes());
 		om.setEndpoint(nameReference(ep.getName()));
 		om.setPrimary(false);
-		RelativeTime rt = buildRelativeTime(epoch.getName(), EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
+		RelativeTime rt = buildRelativeTime(epoch.getName(),
+				EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
 		om.getWhenTaken().add(rt);
-		
-		assertEntityEquals(ep, (Endpoint)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
-		StudyOutcomeMeasure<Variable> sOm1 = new StudyOutcomeMeasure<Variable>(ep);
-		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
+
+		assertEntityEquals(ep, (Endpoint) JAXBConvertor
+				.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
+		StudyOutcomeMeasure<Variable> sOm1 = new StudyOutcomeMeasure<Variable>(
+				ep);
+		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"),
+				RelativeTo.BEFORE_EPOCH_END, epoch);
 		wt.commit();
 		sOm1.getWhenTaken().add(wt);
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm1), om);
-		
+
 		AdverseEvent ade = ExampleData.buildAdverseEventDiarrhea();
 		domain.getAdverseEvents().add(ade);
 		om.setEndpoint(null);
 		om.setAdverseEvent(nameReference(ade.getName()));
 		om.setPrimary(false);
-		
-		assertEntityEquals(ade, (org.drugis.addis.entities.OutcomeMeasure)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
-		StudyOutcomeMeasure<Variable> sOm2 = new StudyOutcomeMeasure<Variable>(ade);
+
+		assertEntityEquals(ade,
+				(org.drugis.addis.entities.OutcomeMeasure) JAXBConvertor
+						.convertStudyOutcomeMeasure(om, epochs, domain)
+						.getValue());
+		StudyOutcomeMeasure<Variable> sOm2 = new StudyOutcomeMeasure<Variable>(
+				ade);
 		sOm2.getWhenTaken().add(wt);
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm2), om);
-		
+
 		PopulationCharacteristic pc = ExampleData.buildGenderVariable();
 		om.setAdverseEvent(null);
 		om.setPopulationCharacteristic(nameReference(pc.getName()));
-		
-		assertEntityEquals(pc, (PopulationCharacteristic)JAXBConvertor.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
-		StudyOutcomeMeasure<Variable> sOm3 = new StudyOutcomeMeasure<Variable>(pc);
+
+		assertEntityEquals(pc, (PopulationCharacteristic) JAXBConvertor
+				.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
+		StudyOutcomeMeasure<Variable> sOm3 = new StudyOutcomeMeasure<Variable>(
+				pc);
 		sOm3.getWhenTaken().add(wt);
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasure(sOm3), om);
 	}
-	
-	@Test(expected=ConversionException.class)
-	public void testConvertStudyOutcomeMeasureThrows() throws ConversionException {
+
+	@Test(expected = ConversionException.class)
+	public void testConvertStudyOutcomeMeasureThrows()
+			throws ConversionException {
 		Domain domain = new DomainImpl();
 		org.drugis.addis.entities.data.StudyOutcomeMeasure om = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		JAXBConvertor.convertStudyOutcomeMeasure(om, null, domain);
 	}
-	
+
 	@Test
 	public void testConvertStudyOutcomeMeasures() throws ConversionException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		Endpoint ep = ExampleData.buildEndpointHamd();
 		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
-		
+
 		LinkedHashMap<String, StudyOutcomeMeasure<?>> vars = new LinkedHashMap<String, StudyOutcomeMeasure<?>>();
-		StudyOutcomeMeasure<Variable> epSom = new StudyOutcomeMeasure<Variable>(ep);
-		Epoch epoch = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
+		StudyOutcomeMeasure<Variable> epSom = new StudyOutcomeMeasure<Variable>(
+				ep);
+		Epoch epoch = new Epoch("Measurement phase",
+				EntityUtil.createDuration("P2D"));
 		List<Epoch> epochs = new ArrayList<Epoch>();
 		epochs.add(epoch);
-		
-		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, epoch);
+
+		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"),
+				RelativeTo.BEFORE_EPOCH_END, epoch);
 		wt.commit();
 		epSom.getWhenTaken().add(wt);
 		vars.put("X", epSom);
-		vars.put("Y", new StudyOutcomeMeasure<Variable>(ExampleData.buildAdverseEventDiarrhea()));
+		vars.put(
+				"Y",
+				new StudyOutcomeMeasure<Variable>(ExampleData
+						.buildAdverseEventDiarrhea()));
 
 		org.drugis.addis.entities.data.StudyOutcomeMeasure epRef = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		epRef.setNotes(new Notes());
 		epRef.setId("X");
 		epRef.setEndpoint(nameReference(ep.getName()));
 		epRef.setPrimary(false);
-		epRef.getWhenTaken().add(buildRelativeTime(epoch.getName(), wt.getDuration(), wt.getRelativeTo()));
+		epRef.getWhenTaken().add(
+				buildRelativeTime(epoch.getName(), wt.getDuration(),
+						wt.getRelativeTo()));
 
 		org.drugis.addis.entities.data.StudyOutcomeMeasure adeRef = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
 		adeRef.setNotes(new Notes());
 		adeRef.setId("Y");
-		adeRef.setAdverseEvent(nameReference(ExampleData.buildAdverseEventDiarrhea().getName()));
+		adeRef.setAdverseEvent(nameReference(ExampleData
+				.buildAdverseEventDiarrhea().getName()));
 		adeRef.setPrimary(false);
 		StudyOutcomeMeasures oms = new StudyOutcomeMeasures();
 		oms.getStudyOutcomeMeasure().add(epRef);
 		oms.getStudyOutcomeMeasure().add(adeRef);
 
-		assertEquals(vars, JAXBConvertor.convertStudyOutcomeMeasures(oms, epochs, domain));
+		assertEquals(vars,
+				JAXBConvertor.convertStudyOutcomeMeasures(oms, epochs, domain));
 		assertEquals(JAXBConvertor.convertStudyOutcomeMeasures(vars), oms);
 	}
-	
+
 	/**
-	 *	Test whether the numerical measurements (so NOT measurement time etc) are converted properly 
+	 * Test whether the numerical measurements (so NOT measurement time etc) are
+	 * converted properly
 	 */
 	@Test
 	public void testConvertMeasurementData() throws ConversionException {
@@ -752,12 +830,13 @@ public class JAXBConvertorTest {
 		int s = 42;
 		rm.setRate(c);
 		rm.setSampleSize(s);
-		
-		org.drugis.addis.entities.data.Measurement meas = buildRateMeasurement(null, null, rm);
+
+		org.drugis.addis.entities.data.Measurement meas = buildRateMeasurement(
+				null, null, rm);
 		BasicRateMeasurement expected1 = new BasicRateMeasurement(c, s);
 		assertEntityEquals(expected1, JAXBConvertor.convertMeasurement(meas));
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected1));
-		
+
 		org.drugis.addis.entities.data.ContinuousMeasurement cm = new org.drugis.addis.entities.data.ContinuousMeasurement();
 		double m = 3.14;
 		double e = 2.71;
@@ -765,10 +844,11 @@ public class JAXBConvertorTest {
 		cm.setStdDev(e);
 		cm.setSampleSize(s);
 		meas = buildContinuousMeasurement(null, null, cm);
-		BasicContinuousMeasurement expected2 = new BasicContinuousMeasurement(m, e, s);
+		BasicContinuousMeasurement expected2 = new BasicContinuousMeasurement(
+				m, e, s);
 		assertEntityEquals(expected2, JAXBConvertor.convertMeasurement(meas));
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected2));
-		
+
 		List<CategoryMeasurement> cms = new ArrayList<CategoryMeasurement>();
 		CategoryMeasurement c1 = new CategoryMeasurement();
 		c1.setName("Cats");
@@ -783,11 +863,12 @@ public class JAXBConvertorTest {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		map.put("Dogs", 2145);
 		map.put("Cats", 18);
-		FrequencyMeasurement expected3 = new FrequencyMeasurement(Arrays.asList((new String[] {"Cats", "Dogs"})), map);	
+		FrequencyMeasurement expected3 = new FrequencyMeasurement(
+				Arrays.asList((new String[] { "Cats", "Dogs" })), map);
 		assertEntityEquals(expected3, JAXBConvertor.convertMeasurement(meas));
 		assertEquals(meas, JAXBConvertor.convertMeasurement(expected3));
 	}
-	
+
 	@Test
 	public void testConvertMeasurements() throws ConversionException {
 		List<Arm> arms = new ArrayList<Arm>();
@@ -796,50 +877,69 @@ public class JAXBConvertorTest {
 		Arm arm8 = new Arm("LSD", 42);
 		arms.add(arm8);
 		List<Epoch> epochs = new ArrayList<Epoch>();
-		Epoch mainPhase = new Epoch("Measurement phase", EntityUtil.createDuration("P2D"));
+		Epoch mainPhase = new Epoch("Measurement phase",
+				EntityUtil.createDuration("P2D"));
 		epochs.add(mainPhase);
 
-		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, mainPhase);
+		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"),
+				RelativeTo.BEFORE_EPOCH_END, mainPhase);
 		whenTaken.commit();
-		
+
 		Map<String, StudyOutcomeMeasure<?>> oms = new HashMap<String, StudyOutcomeMeasure<?>>();
 		String pcName = "popChar-hair";
-		PopulationCharacteristic pc = new PopulationCharacteristic("Hair Length", new ContinuousVariableType());
+		PopulationCharacteristic pc = new PopulationCharacteristic(
+				"Hair Length", new ContinuousVariableType());
 		oms.put(pcName, new StudyOutcomeMeasure<Variable>(pc, whenTaken));
 		String epName = "endpoint-tripping";
-		Endpoint ep = new Endpoint("Tripping achieved", Endpoint.convertVarType(Type.RATE), Direction.HIGHER_IS_BETTER);
+		Endpoint ep = new Endpoint("Tripping achieved",
+				Endpoint.convertVarType(Type.RATE), Direction.HIGHER_IS_BETTER);
 		oms.put(epName, new StudyOutcomeMeasure<Variable>(ep, whenTaken));
 		String aeName = "ade-nojob";
-		AdverseEvent ae = new AdverseEvent("Job loss", AdverseEvent.convertVarType(Type.RATE));
+		AdverseEvent ae = new AdverseEvent("Job loss",
+				AdverseEvent.convertVarType(Type.RATE));
 		oms.put(aeName, new StudyOutcomeMeasure<Variable>(ae, whenTaken));
-		
+
 		org.drugis.addis.entities.data.RateMeasurement rm1 = new org.drugis.addis.entities.data.RateMeasurement();
 		rm1.setRate(10);
 		rm1.setSampleSize(100);
 		BasicRateMeasurement crm1 = new BasicRateMeasurement(10, 100);
-		
+
 		org.drugis.addis.entities.data.RateMeasurement rm2 = new org.drugis.addis.entities.data.RateMeasurement();
 		rm2.setRate(20);
 		rm2.setSampleSize(100);
 		BasicRateMeasurement crm2 = new BasicRateMeasurement(20, 100);
-		
+
 		org.drugis.addis.entities.data.ContinuousMeasurement cm1 = new org.drugis.addis.entities.data.ContinuousMeasurement();
 		cm1.setMean(1.5);
 		cm1.setStdDev(1.0);
 		cm1.setSampleSize(100);
-		BasicContinuousMeasurement ccm1 = new BasicContinuousMeasurement(1.5, 1.0, 100);
-		
+		BasicContinuousMeasurement ccm1 = new BasicContinuousMeasurement(1.5,
+				1.0, 100);
+
 		Measurements measurements = new Measurements();
-		List<org.drugis.addis.entities.data.Measurement> list = measurements.getMeasurement();
-		list.add(buildRateMeasurement(arm5.getName(), epName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm1));		
-		list.add(buildRateMeasurement(arm8.getName(), epName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm2));
-		list.add(buildRateMeasurement(arm5.getName(), aeName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm2));
-		list.add(buildRateMeasurement(arm8.getName(), aeName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), rm1));
-		list.add(buildContinuousMeasurement(arm5.getName(), pcName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
-		list.add(buildContinuousMeasurement(arm8.getName(), pcName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
-		list.add(buildContinuousMeasurement(null, pcName, "Measurement phase", whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
-		
-		
+		List<org.drugis.addis.entities.data.Measurement> list = measurements
+				.getMeasurement();
+		list.add(buildRateMeasurement(arm5.getName(), epName,
+				"Measurement phase", whenTaken.getDuration(),
+				whenTaken.getRelativeTo(), rm1));
+		list.add(buildRateMeasurement(arm8.getName(), epName,
+				"Measurement phase", whenTaken.getDuration(),
+				whenTaken.getRelativeTo(), rm2));
+		list.add(buildRateMeasurement(arm5.getName(), aeName,
+				"Measurement phase", whenTaken.getDuration(),
+				whenTaken.getRelativeTo(), rm2));
+		list.add(buildRateMeasurement(arm8.getName(), aeName,
+				"Measurement phase", whenTaken.getDuration(),
+				whenTaken.getRelativeTo(), rm1));
+		list.add(buildContinuousMeasurement(arm5.getName(), pcName,
+				"Measurement phase", whenTaken.getDuration(),
+				whenTaken.getRelativeTo(), cm1));
+		list.add(buildContinuousMeasurement(arm8.getName(), pcName,
+				"Measurement phase", whenTaken.getDuration(),
+				whenTaken.getRelativeTo(), cm1));
+		list.add(buildContinuousMeasurement(null, pcName, "Measurement phase",
+				whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
+
 		Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
 		expected.put(new MeasurementKey(ep, arm5, whenTaken), crm1);
 		expected.put(new MeasurementKey(ep, arm8, whenTaken), crm2);
@@ -848,19 +948,28 @@ public class JAXBConvertorTest {
 		expected.put(new MeasurementKey(pc, arm5, whenTaken), ccm1);
 		expected.put(new MeasurementKey(pc, arm8, whenTaken), ccm1);
 		expected.put(new MeasurementKey(pc, null, whenTaken), ccm1);
-		
-		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements, arms, epochs, oms));
-		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor.convertMeasurements(expected, oms).getMeasurement());
+
+		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements,
+				arms, epochs, oms));
+		JUnitUtil.assertAllAndOnly(measurements.getMeasurement(), JAXBConvertor
+				.convertMeasurements(expected, oms).getMeasurement());
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, String epochName, Duration duration, RelativeTo relativeTo, org.drugis.addis.entities.data.ContinuousMeasurement cm) {
-		org.drugis.addis.entities.data.Measurement m = buildContinuousMeasurement(armName, omName, cm);
+	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(
+			String armName, String omName, String epochName, Duration duration,
+			RelativeTo relativeTo,
+			org.drugis.addis.entities.data.ContinuousMeasurement cm) {
+		org.drugis.addis.entities.data.Measurement m = buildContinuousMeasurement(
+				armName, omName, cm);
 		m.setWhenTaken(buildRelativeTime(epochName, duration, relativeTo));
 		return m;
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(String armName, String omName, org.drugis.addis.entities.data.ContinuousMeasurement cm) {
-		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
+	private org.drugis.addis.entities.data.Measurement buildContinuousMeasurement(
+			String armName, String omName,
+			org.drugis.addis.entities.data.ContinuousMeasurement cm) {
+		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,
+				omName);
 		m.setContinuousMeasurement(cm);
 		return m;
 	}
@@ -874,61 +983,72 @@ public class JAXBConvertorTest {
 		return rt;
 	}
 
-	private org.drugis.addis.entities.data.Measurement initMeasurement(String armName, String omName) {
+	private org.drugis.addis.entities.data.Measurement initMeasurement(
+			String armName, String omName) {
 		org.drugis.addis.entities.data.Measurement m = new org.drugis.addis.entities.data.Measurement();
 		if (armName != null) {
 			m.setArm(JAXBConvertor.nameReference(armName));
 		}
-		if(omName != null) {
+		if (omName != null) {
 			m.setStudyOutcomeMeasure(JAXBConvertor.stringIdReference(omName));
 		}
 		return m;
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, String epochName, Duration duration, RelativeTo relativeTo, org.drugis.addis.entities.data.RateMeasurement rm) {
-		org.drugis.addis.entities.data.Measurement m = buildRateMeasurement(armName, omName, rm);
+	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(
+			String armName, String omName, String epochName, Duration duration,
+			RelativeTo relativeTo,
+			org.drugis.addis.entities.data.RateMeasurement rm) {
+		org.drugis.addis.entities.data.Measurement m = buildRateMeasurement(
+				armName, omName, rm);
 		m.setWhenTaken(buildRelativeTime(epochName, duration, relativeTo));
 		return m;
 	}
 
-	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(String armName, String omName, org.drugis.addis.entities.data.RateMeasurement rm) {
-		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
+	private org.drugis.addis.entities.data.Measurement buildRateMeasurement(
+			String armName, String omName,
+			org.drugis.addis.entities.data.RateMeasurement rm) {
+		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,
+				omName);
 		m.setRateMeasurement(rm);
 		return m;
 	}
 
 	@SuppressWarnings("unused")
-	private org.drugis.addis.entities.data.Measurement buildCategoricalMeasurement(String armName, String omName, List<CategoryMeasurement> cmList, String epochName, Duration duration, RelativeTo relativeTo) {
-		org.drugis.addis.entities.data.Measurement m = buildCategoricalMeasurement(armName, omName, cmList);
+	private org.drugis.addis.entities.data.Measurement buildCategoricalMeasurement(
+			String armName, String omName, List<CategoryMeasurement> cmList,
+			String epochName, Duration duration, RelativeTo relativeTo) {
+		org.drugis.addis.entities.data.Measurement m = buildCategoricalMeasurement(
+				armName, omName, cmList);
 		m.setWhenTaken(buildRelativeTime(epochName, duration, relativeTo));
 		return m;
 	}
 
 	private org.drugis.addis.entities.data.Measurement buildCategoricalMeasurement(
 			String armName, String omName, List<CategoryMeasurement> cmList) {
-		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,	omName);
+		org.drugis.addis.entities.data.Measurement m = initMeasurement(armName,
+				omName);
 		CategoricalMeasurement cms = new CategoricalMeasurement();
-		for (CategoryMeasurement cm: cmList) {
+		for (CategoryMeasurement cm : cmList) {
 			cms.getCategory().add(cm);
 		}
 		m.setCategoricalMeasurement(cms);
 		return m;
 	}
 
-	public org.drugis.addis.entities.data.Study buildStudy(String name) throws DatatypeConfigurationException, ConversionException {
-		String indicationName = ExampleData.buildIndicationDepression().getName();
-		String[] endpointName = new String[] { 
-				ExampleData.buildEndpointHamd().getName(), 
-				ExampleData.buildEndpointCgi().getName()
-			};
-		String[] adverseEventName = new String[] {
-				ExampleData.buildAdverseEventConvulsion().getName()
-			};
-		String[] popCharName = new String[] {
-				ExampleData.buildAgeVariable().getName()
-			};
+	public org.drugis.addis.entities.data.Study buildStudy(String name)
+			throws DatatypeConfigurationException, ConversionException {
+		String indicationName = ExampleData.buildIndicationDepression()
+				.getName();
+		String[] endpointNames = new String[] {
+				ExampleData.buildEndpointHamd().getName(),
+				ExampleData.buildEndpointCgi().getName() };
+		String[] adverseEventName = new String[] { ExampleData
+				.buildAdverseEventConvulsion().getName() };
+		String[] popCharNames = new String[] { ExampleData.buildAgeVariable()
+				.getName() };
 		String title = "WHOO";
-		
+
 		// Arms
 		Arms arms = new Arms();
 		String fluoxArmName = "fluox arm";
@@ -938,20 +1058,35 @@ public class JAXBConvertorTest {
 
 		String randomizationEpochName = "Randomization";
 		String mainEpochName = "Main phase";
-		
+
 		Epochs epochs = new Epochs();
 		epochs.getEpoch().add(buildEpoch(randomizationEpochName, null));
-		epochs.getEpoch().add(buildEpoch(mainEpochName, DatatypeFactory.newInstance().newDuration("P2D")));
+		epochs.getEpoch().add(
+				buildEpoch(mainEpochName, DatatypeFactory.newInstance()
+						.newDuration("P2D")));
 
 		StudyActivities sas = new StudyActivities();
-		sas.getStudyActivity().add(buildStudyActivity("Randomization", PredefinedActivity.RANDOMIZATION));
-		DrugTreatment fluoxActivity = new DrugTreatment(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, ExampleData.MILLIGRAMS_A_DAY));
-		DrugTreatment sertrActivity = new DrugTreatment(ExampleData.buildDrugSertraline(), new FixedDose(12.5, ExampleData.MILLIGRAMS_A_DAY));
-		List<DrugTreatment> combTreatment = Arrays.asList(fluoxActivity, sertrActivity);
-		sas.getStudyActivity().add(buildStudyActivity("Fluox + Sertr fixed dose", new TreatmentActivity(combTreatment)));
-		DrugTreatment paroxActivity = new DrugTreatment(ExampleData.buildDrugParoxetine(), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY));
-		sas.getStudyActivity().add(buildStudyActivity("Parox fixed dose", new TreatmentActivity(paroxActivity)));
-		
+		sas.getStudyActivity().add(
+				buildStudyActivity("Randomization",
+						PredefinedActivity.RANDOMIZATION));
+		DrugTreatment fluoxActivity = new DrugTreatment(
+				ExampleData.buildDrugFluoxetine(), new FixedDose(12.5,
+						ExampleData.MILLIGRAMS_A_DAY));
+		DrugTreatment sertrActivity = new DrugTreatment(
+				ExampleData.buildDrugSertraline(), new FixedDose(12.5,
+						ExampleData.MILLIGRAMS_A_DAY));
+		List<DrugTreatment> combTreatment = Arrays.asList(fluoxActivity,
+				sertrActivity);
+		sas.getStudyActivity().add(
+				buildStudyActivity("Fluox + Sertr fixed dose",
+						new TreatmentActivity(combTreatment)));
+		DrugTreatment paroxActivity = new DrugTreatment(
+				ExampleData.buildDrugParoxetine(), new FixedDose(12.0,
+						ExampleData.MILLIGRAMS_A_DAY));
+		sas.getStudyActivity().add(
+				buildStudyActivity("Parox fixed dose", new TreatmentActivity(
+						paroxActivity)));
+
 		ActivityUsedBy aub0 = buildActivityUsedby(fluoxArmName,
 				randomizationEpochName);
 		ActivityUsedBy aub1 = buildActivityUsedby(paroxArmName,
@@ -960,21 +1095,22 @@ public class JAXBConvertorTest {
 		ActivityUsedBy aub2 = buildActivityUsedby(fluoxArmName, mainEpochName);
 
 		ActivityUsedBy aub3 = buildActivityUsedby(paroxArmName, mainEpochName);
-		
+
 		sas.getStudyActivity().get(0).getUsedBy().add(aub0);
 		sas.getStudyActivity().get(0).getUsedBy().add(aub1);
 		sas.getStudyActivity().get(1).getUsedBy().add(aub2);
 		sas.getStudyActivity().get(2).getUsedBy().add(aub3);
-		
+
 		org.drugis.addis.entities.data.Study study = buildStudySkeleton(name,
-				title, indicationName, endpointName, adverseEventName,
-				popCharName, arms, epochs, sas);
-		
+				title, indicationName, endpointNames, adverseEventName,
+				popCharNames, arms, epochs, sas);
+
 		study.getCharacteristics().setCenters(JAXBConvertor.intWithNotes(3));
-		study.getCharacteristics().setAllocation(JAXBConvertor.allocationWithNotes(Allocation.RANDOMIZED));
-		
-		// Measurements
-		List<org.drugis.addis.entities.data.Measurement> list = study.getMeasurements().getMeasurement();
+		study.getCharacteristics().setAllocation(
+				JAXBConvertor.allocationWithNotes(Allocation.RANDOMIZED));
+
+		List<org.drugis.addis.entities.data.Measurement> dataMeasurements = study
+				.getMeasurements().getMeasurement();
 		RateMeasurement rm1 = new RateMeasurement();
 		rm1.setRate(10);
 		rm1.setSampleSize(110);
@@ -982,28 +1118,45 @@ public class JAXBConvertorTest {
 		cm1.setMean(0.2);
 		cm1.setStdDev(0.01);
 		cm1.setSampleSize(110);
-		org.drugis.addis.entities.data.Measurement m1 = buildRateMeasurement(fluoxArmName, "endpoint-" + endpointName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, rm1);
-		org.drugis.addis.entities.data.Measurement m2 = buildRateMeasurement(paroxArmName, "endpoint-" + endpointName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, rm1);
-		org.drugis.addis.entities.data.Measurement m3 = buildContinuousMeasurement(null, "popChar-" + popCharName[0], "Main phase", EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, cm1);
 
 		// note: order is important!
-		list.add(m1);
-		list.add(m2);
-		list.add(m3);
-				
+		addRateMeasurement(rm1, fluoxArmName, "endpoint-" + endpointNames[0], dataMeasurements);
+		addRateMeasurement(rm1, paroxArmName, "endpoint-" + endpointNames[0], dataMeasurements);
+		addContinuousMeasurement(cm1, null, "popChar-" + popCharNames[0], dataMeasurements);
 		return study;
 	}
 
-	private org.drugis.addis.entities.data.StudyActivity buildStudyActivity(String name, Activity activity) throws ConversionException {
+	private void addRateMeasurement(RateMeasurement rm, String armName,
+			String omName, List<org.drugis.addis.entities.data.Measurement> dataMeasurements) {
+		org.drugis.addis.entities.data.Measurement m = buildRateMeasurement(
+				armName, omName, "Main phase",
+				EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END,
+				rm);
+		dataMeasurements.add(m);
+	}
+	
+	private void addContinuousMeasurement(ContinuousMeasurement rm, String armName,
+			String omName, List<org.drugis.addis.entities.data.Measurement> dataMeasurements) {
+		org.drugis.addis.entities.data.Measurement m = buildContinuousMeasurement(
+				armName, omName, "Main phase",
+				EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END,
+				rm);
+		dataMeasurements.add(m);
+	}
+
+	private org.drugis.addis.entities.data.StudyActivity buildStudyActivity(
+			String name, Activity activity) throws ConversionException {
 		org.drugis.addis.entities.data.StudyActivity sa = new org.drugis.addis.entities.data.StudyActivity();
 		sa.setName(name);
-		org.drugis.addis.entities.data.Activity a = JAXBConvertor.convertActivity(activity);
+		org.drugis.addis.entities.data.Activity a = JAXBConvertor
+				.convertActivity(activity);
 		sa.setActivity(a);
 		sa.setNotes(new Notes());
 		return sa;
 	}
 
-	private org.drugis.addis.entities.data.Epoch buildEpoch(String epochName1, Duration d) {
+	private org.drugis.addis.entities.data.Epoch buildEpoch(String epochName1,
+			Duration d) {
 		org.drugis.addis.entities.data.Epoch e = new org.drugis.addis.entities.data.Epoch();
 		e.setName(epochName1);
 		e.setDuration(d);
@@ -1011,7 +1164,8 @@ public class JAXBConvertorTest {
 		return e;
 	}
 
-	private org.drugis.addis.entities.data.Arm buildArmData(String name, int size) {
+	private org.drugis.addis.entities.data.Arm buildArmData(String name,
+			int size) {
 		org.drugis.addis.entities.data.Arm a = new org.drugis.addis.entities.data.Arm();
 		a.setName(name);
 		a.setSize(size);
@@ -1019,9 +1173,12 @@ public class JAXBConvertorTest {
 		return a;
 	}
 
-	private void initializeCharacteristics(Characteristics characteristics, String title) {
-		characteristics.setAllocation(JAXBConvertor.allocationWithNotes(Allocation.UNKNOWN));
-		characteristics.setBlinding(JAXBConvertor.blindingWithNotes(Blinding.UNKNOWN));
+	private void initializeCharacteristics(Characteristics characteristics,
+			String title) {
+		characteristics.setAllocation(JAXBConvertor
+				.allocationWithNotes(Allocation.UNKNOWN));
+		characteristics.setBlinding(JAXBConvertor
+				.blindingWithNotes(Blinding.UNKNOWN));
 		characteristics.setCenters(JAXBConvertor.intWithNotes(null));
 		characteristics.setCreationDate(JAXBConvertor.dateWithNotes(null));
 		characteristics.setExclusion(JAXBConvertor.stringWithNotes(null));
@@ -1029,25 +1186,46 @@ public class JAXBConvertorTest {
 		characteristics.setObjective(JAXBConvertor.stringWithNotes(null));
 		characteristics.setReferences(new References());
 		characteristics.setSource(JAXBConvertor.sourceWithNotes(Source.MANUAL));
-		characteristics.setStatus(JAXBConvertor.statusWithNotes(Status.UNKNOWN));
+		characteristics
+				.setStatus(JAXBConvertor.statusWithNotes(Status.UNKNOWN));
 		characteristics.setStudyEnd(JAXBConvertor.dateWithNotes(null));
 		characteristics.setStudyStart(JAXBConvertor.dateWithNotes(null));
 		characteristics.setTitle(JAXBConvertor.stringWithNotes(title));
 	}
 
+	private org.drugis.addis.entities.data.Study buildStudySkeletonWithMeasurements(
+			String name, String title, String indicationName,
+			String[] endpointNames, String[] adverseEventName,
+			String[] popCharNames, Arms arms, Epochs epochs, StudyActivities sas, List<String> armNames) 
+	{
+		org.drugis.addis.entities.data.Study study = 
+				buildStudySkeleton(name, title, indicationName, endpointNames, adverseEventName, popCharNames, arms, epochs, sas);
+	
+		ContinuousMeasurement cm = new ContinuousMeasurement();
+		cm.setMean(0.5);
+		cm.setSampleSize(50);
+		cm.setStdDev(1.0);
+		for (String armName : armNames) {
+			addContinuousMeasurement(cm, armName, "endpoint-" + endpointNames[0], study
+					.getMeasurements().getMeasurement());
+		}
+		return study;
+	}
+	
 	private org.drugis.addis.entities.data.Study buildStudySkeleton(
 			String name, String title, String indicationName,
 			String[] endpointName, String[] adverseEventName,
 			String[] popCharName, Arms arms, Epochs epochs, StudyActivities sas) {
 		org.drugis.addis.entities.data.Study study = new org.drugis.addis.entities.data.Study();
 		study.setName(name);
-		NameReferenceWithNotes indicationRef = JAXBConvertor.nameReferenceWithNotes(indicationName);
+		NameReferenceWithNotes indicationRef = JAXBConvertor
+				.nameReferenceWithNotes(indicationName);
 		study.setIndication(indicationRef);
-		
-		// Outcome measures
+
+		// Outcome measures (empty)
 		StudyOutcomeMeasures studyOutcomeMeasures = new StudyOutcomeMeasures();
 		study.setStudyOutcomeMeasures(studyOutcomeMeasures);
-		
+
 		// Outcome measures: Endpoints
 		for (String epName : endpointName) {
 			org.drugis.addis.entities.data.StudyOutcomeMeasure ep = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
@@ -1055,10 +1233,9 @@ public class JAXBConvertorTest {
 			ep.setId("endpoint-" + epName);
 			ep.setEndpoint(nameReference(epName));
 			ep.setPrimary(false);
-			ep.getWhenTaken();
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ep);
 		}
-		
+
 		// Outcome measures: Adverse events
 		for (String aeName : adverseEventName) {
 			org.drugis.addis.entities.data.StudyOutcomeMeasure ae = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
@@ -1069,7 +1246,7 @@ public class JAXBConvertorTest {
 			ae.setPrimary(false);
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(ae);
 		}
-		
+
 		// Outcome measures: Population chars
 		for (String pcName : popCharName) {
 			org.drugis.addis.entities.data.StudyOutcomeMeasure pc = new org.drugis.addis.entities.data.StudyOutcomeMeasure();
@@ -1080,39 +1257,40 @@ public class JAXBConvertorTest {
 			pc.getWhenTaken();
 			studyOutcomeMeasures.getStudyOutcomeMeasure().add(pc);
 		}
-		
+
 		// Arms
 		study.setArms(arms);
-		
+
 		// Epochs
 		study.setEpochs(epochs);
-		
+
 		// StudyActivities
 		study.setActivities(sas);
-		
+
 		// Study characteristics
 		Characteristics chars = new Characteristics();
 		study.setCharacteristics(chars);
 		initializeCharacteristics(study.getCharacteristics(), title);
-		
+
 		// Measurements (empty)
 		Measurements measurements = new Measurements();
 		study.setMeasurements(measurements);
-		
+
 		study.setNotes(new Notes());
-		
+
 		return study;
 	}
 
 	@Test
-	public void testConvertStudy() throws ConversionException, DatatypeConfigurationException {
+	public void testConvertStudy() throws ConversionException,
+			DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		
+
 		String name = "My fancy study";
 		org.drugis.addis.entities.data.Study study = buildStudy(name);
-		
-		//----------------------------------------
+
+		// ----------------------------------------
 		Study study2 = new Study();
 		study2.setName(name);
 		study2.setIndication(ExampleData.buildIndicationDepression());
@@ -1120,37 +1298,59 @@ public class JAXBConvertorTest {
 		Epoch epoch2 = new Epoch("Main phase", EntityUtil.createDuration("P2D"));
 		study2.getEpochs().add(epoch1);
 		study2.getEpochs().add(epoch2);
-		study2.getEndpoints().add(new org.drugis.addis.entities.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointHamd()));
-		study2.getEndpoints().add(new org.drugis.addis.entities.StudyOutcomeMeasure<Endpoint>(ExampleData.buildEndpointCgi()));
-		study2.getAdverseEvents().add(new org.drugis.addis.entities.StudyOutcomeMeasure<AdverseEvent>(ExampleData.buildAdverseEventConvulsion()));
+		study2.getEndpoints().add(
+				new org.drugis.addis.entities.StudyOutcomeMeasure<Endpoint>(
+						ExampleData.buildEndpointHamd()));
+		study2.getEndpoints().add(
+				new org.drugis.addis.entities.StudyOutcomeMeasure<Endpoint>(
+						ExampleData.buildEndpointCgi()));
+		study2.getAdverseEvents()
+				.add(new org.drugis.addis.entities.StudyOutcomeMeasure<AdverseEvent>(
+						ExampleData.buildAdverseEventConvulsion()));
 		study2.addVariable(ExampleData.buildAgeVariable());
 		Arm fluoxArm = new Arm("fluox arm", 100);
 		study2.getArms().add(fluoxArm);
 		Arm paroxArm = new Arm("parox arm", 42);
 		study2.getArms().add(paroxArm);
-		
-		StudyActivity randomizationActivity = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
-		DrugTreatment fluoxDrugTreatment = new DrugTreatment(ExampleData.buildDrugFluoxetine(), new FixedDose(12.5, ExampleData.MILLIGRAMS_A_DAY));
-		DrugTreatment sertrDrugTreatment = new DrugTreatment(ExampleData.buildDrugSertraline(), new FixedDose(12.5, ExampleData.MILLIGRAMS_A_DAY));;
-		StudyActivity combTreatmentActivity = new StudyActivity("Fluox + Sertr fixed dose", new TreatmentActivity(Arrays.asList(fluoxDrugTreatment, sertrDrugTreatment)));
-		StudyActivity paroxTreatmentActivity = new StudyActivity("Parox fixed dose", new TreatmentActivity(new DrugTreatment(ExampleData.buildDrugParoxetine(), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY))));
+
+		StudyActivity randomizationActivity = new StudyActivity(
+				"Randomization", PredefinedActivity.RANDOMIZATION);
+		DrugTreatment fluoxDrugTreatment = new DrugTreatment(
+				ExampleData.buildDrugFluoxetine(), new FixedDose(12.5,
+						ExampleData.MILLIGRAMS_A_DAY));
+		DrugTreatment sertrDrugTreatment = new DrugTreatment(
+				ExampleData.buildDrugSertraline(), new FixedDose(12.5,
+						ExampleData.MILLIGRAMS_A_DAY));
+		;
+		StudyActivity combTreatmentActivity = new StudyActivity(
+				"Fluox + Sertr fixed dose", new TreatmentActivity(
+						Arrays.asList(fluoxDrugTreatment, sertrDrugTreatment)));
+		StudyActivity paroxTreatmentActivity = new StudyActivity(
+				"Parox fixed dose", new TreatmentActivity(new DrugTreatment(
+						ExampleData.buildDrugParoxetine(), new FixedDose(12.0,
+								ExampleData.MILLIGRAMS_A_DAY))));
 		study2.getStudyActivities().add(randomizationActivity);
 		study2.getStudyActivities().add(combTreatmentActivity);
 		study2.getStudyActivities().add(paroxTreatmentActivity);
-		
+
 		study2.setCharacteristic(BasicStudyCharacteristic.TITLE, "WHOO");
 		study2.setCharacteristic(BasicStudyCharacteristic.CENTERS, 3);
-		study2.setCharacteristic(BasicStudyCharacteristic.ALLOCATION, Allocation.RANDOMIZED);
-		study2.setCharacteristic(BasicStudyCharacteristic.PUBMED, new PubMedIdList());
+		study2.setCharacteristic(BasicStudyCharacteristic.ALLOCATION,
+				Allocation.RANDOMIZED);
+		study2.setCharacteristic(BasicStudyCharacteristic.PUBMED,
+				new PubMedIdList());
 		study2.setCharacteristic(BasicStudyCharacteristic.CREATION_DATE, null);
 		study2.setStudyActivityAt(fluoxArm, epoch1, randomizationActivity);
 		study2.setStudyActivityAt(paroxArm, epoch1, randomizationActivity);
 		study2.setStudyActivityAt(fluoxArm, epoch2, combTreatmentActivity);
 		study2.setStudyActivityAt(paroxArm, epoch2, paroxTreatmentActivity);
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm, new BasicRateMeasurement(10, 110));
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), fluoxArm, new BasicRateMeasurement(10, 110));
-		study2.setMeasurement(ExampleData.buildAgeVariable(), new BasicContinuousMeasurement(0.2, 0.01, 110));
-		
+		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm,
+				new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(ExampleData.buildEndpointHamd(), fluoxArm,
+				new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(ExampleData.buildAgeVariable(),
+				new BasicContinuousMeasurement(0.2, 0.01, 110));
+
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 		assertEquals(study, JAXBConvertor.convertStudy(study2));
 	}
@@ -1161,105 +1361,135 @@ public class JAXBConvertorTest {
 		note.setSource(Source.CLINICALTRIALS);
 		String text = "Some text here";
 		note.setValue(text);
-		
+
 		Note expected = new Note(Source.CLINICALTRIALS, text);
-		
+
 		assertEquals(expected, JAXBConvertor.convertNote(note));
 		assertEquals(note, JAXBConvertor.convertNote(expected));
 	}
-	
+
 	@Test
-	public void testConvertStudyWithNotes() throws ConversionException, DatatypeConfigurationException {
+	public void testConvertStudyWithNotes() throws ConversionException,
+			DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		
+
 		String name = "My fancy study";
 		org.drugis.addis.entities.data.Study studyData = buildStudy(name);
 		Study studyEntity = JAXBConvertor.convertStudy(studyData, domain);
-		
+
 		Note armNote = new Note(Source.CLINICALTRIALS, "Some text here");
-		studyData.getArms().getArm().get(0).getNotes().getNote().add(JAXBConvertor.convertNote(armNote));
-		studyData.getArms().getArm().get(1).getNotes().getNote().add(JAXBConvertor.convertNote(armNote));
+		studyData.getArms().getArm().get(0).getNotes().getNote()
+				.add(JAXBConvertor.convertNote(armNote));
+		studyData.getArms().getArm().get(1).getNotes().getNote()
+				.add(JAXBConvertor.convertNote(armNote));
 		studyEntity.getArms().get(0).getNotes().add(armNote);
 		studyEntity.getArms().get(1).getNotes().add(armNote);
-		
-		Note adeNote = new Note(Source.MANUAL, "I would not like to suffer from this!");
-		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(2).getNotes().getNote().add(JAXBConvertor.convertNote(adeNote));
+
+		Note adeNote = new Note(Source.MANUAL,
+				"I would not like to suffer from this!");
+		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(2)
+				.getNotes().getNote().add(JAXBConvertor.convertNote(adeNote));
 		studyEntity.getAdverseEvents().get(0).getNotes().add(adeNote);
 		Note hamdNote = new Note(Source.MANUAL, "Mmm... HAM!");
-		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(0).getNotes().getNote().add(JAXBConvertor.convertNote(hamdNote));
+		studyData.getStudyOutcomeMeasures().getStudyOutcomeMeasure().get(0)
+				.getNotes().getNote().add(JAXBConvertor.convertNote(hamdNote));
 		studyEntity.getEndpoints().get(0).getNotes().add(hamdNote);
-		Note charNote = new Note(Source.CLINICALTRIALS, "A randomized double blind trial of something");
-		studyData.getCharacteristics().getAllocation().getNotes().getNote().add(JAXBConvertor.convertNote(charNote));
-		studyEntity.getCharacteristics().get(BasicStudyCharacteristic.ALLOCATION).getNotes().add(charNote);
-		
-		Note indicationNote = new Note(Source.CLINICALTRIALS, "Depression! Aah!");
-		studyData.getIndication().getNotes().getNote().add(JAXBConvertor.convertNote(indicationNote));
+		Note charNote = new Note(Source.CLINICALTRIALS,
+				"A randomized double blind trial of something");
+		studyData.getCharacteristics().getAllocation().getNotes().getNote()
+				.add(JAXBConvertor.convertNote(charNote));
+		studyEntity.getCharacteristics()
+				.get(BasicStudyCharacteristic.ALLOCATION).getNotes()
+				.add(charNote);
+
+		Note indicationNote = new Note(Source.CLINICALTRIALS,
+				"Depression! Aah!");
+		studyData.getIndication().getNotes().getNote()
+				.add(JAXBConvertor.convertNote(indicationNote));
 		studyEntity.getIndicationWithNotes().getNotes().add(indicationNote);
-		
+
 		Note idNote = new Note(Source.CLINICALTRIALS, "NCT1337");
 		studyData.getNotes().getNote().add(JAXBConvertor.convertNote(idNote));
 		studyEntity.getNotes().add(idNote);
-		
-		assertEntityEquals(studyEntity, JAXBConvertor.convertStudy(studyData, domain));
+
+		assertEntityEquals(studyEntity,
+				JAXBConvertor.convertStudy(studyData, domain));
 		assertEquals(studyData, JAXBConvertor.convertStudy(studyEntity));
 	}
-	
+
 	private class MetaAnalysisWithStudies {
 		public org.drugis.addis.entities.data.PairwiseMetaAnalysis d_pwma;
 		public org.drugis.addis.entities.data.NetworkMetaAnalysis d_nwma;
 		public List<org.drugis.addis.entities.data.Study> d_studies;
-		
-		public MetaAnalysisWithStudies(org.drugis.addis.entities.data.PairwiseMetaAnalysis ma, List<org.drugis.addis.entities.data.Study> s) {
+
+		public MetaAnalysisWithStudies(
+				org.drugis.addis.entities.data.PairwiseMetaAnalysis ma,
+				List<org.drugis.addis.entities.data.Study> s) {
 			d_pwma = ma;
 			d_studies = s;
 		}
-		
-		public MetaAnalysisWithStudies(org.drugis.addis.entities.data.NetworkMetaAnalysis ma, List<org.drugis.addis.entities.data.Study> s) {
+
+		public MetaAnalysisWithStudies(
+				org.drugis.addis.entities.data.NetworkMetaAnalysis ma,
+				List<org.drugis.addis.entities.data.Study> s) {
 			d_nwma = ma;
 			d_studies = s;
 		}
 	}
-	
+
 	@Test
-	public void testConvertPairWiseMetaAnalysis() throws ConversionException, DatatypeConfigurationException {
+	public void testConvertPairWiseMetaAnalysis() throws ConversionException,
+			DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		
+
 		String name = "Fluox-Venla Diarrhea for PMA";
 		MetaAnalysisWithStudies ma = buildPairWiseMetaAnalysis(name);
-		
-		//-----------------------------------
+
+		// -----------------------------------
 		Study study = JAXBConvertor.convertStudy(ma.d_studies.get(0), domain);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(study, study.getArms().get(0), study.getArms().get(1)));
+		armsList.add(new StudyArmsEntry(study, study.getArms().get(0), study
+				.getArms().get(1)));
 		domain.getStudies().add(study);
-		
-		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(name, ExampleData.buildEndpointHamd(), armsList);
-		
-		assertEntityEquals(pwma, JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));
-		
+
+		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(name,
+				ExampleData.buildEndpointHamd(), armsList);
+
+		assertEntityEquals(pwma,
+				JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));
+
 		assertEquals(ma.d_pwma, JAXBConvertor.convertPairWiseMetaAnalysis(pwma));
 	}
 
-	private MetaAnalysisWithStudies buildPairWiseMetaAnalysis(String name) throws DatatypeConfigurationException, ConversionException {
+	private MetaAnalysisWithStudies buildPairWiseMetaAnalysis(String name)
+			throws DatatypeConfigurationException, ConversionException {
 		String study_name = "My fancy pair-wise study";
 		org.drugis.addis.entities.data.Study study = buildStudy(study_name);
 
 		org.drugis.addis.entities.data.PairwiseMetaAnalysis pwma = new org.drugis.addis.entities.data.PairwiseMetaAnalysis();
-		pwma.setName(name);		
-		pwma.setIndication(nameReference(ExampleData.buildIndicationDepression().getName()));
-		pwma.setEndpoint(nameReference(ExampleData.buildEndpointHamd().getName()));
+		pwma.setName(name);
+		pwma.setIndication(nameReference(ExampleData
+				.buildIndicationDepression().getName()));
+		pwma.setEndpoint(nameReference(ExampleData.buildEndpointHamd()
+				.getName()));
 		// Base
 		Alternative combi = new Alternative();
 		if (combi.getDrugs() == null) {
 			combi.setDrugs(new AnalysisDrugs());
 		}
 		combi.getDrugs().getDrug().clear();
-		combi.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
-		combi.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugSertraline().getName()));
+		combi.getDrugs()
+				.getDrug()
+				.add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
+		combi.getDrugs()
+				.getDrug()
+				.add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms combiArms = new AnalysisArms();
-		combiArms.getArm().add(JAXBConvertor.armReference(study_name, study.getArms().getArm().get(0).getName()));
+		combiArms.getArm().add(
+				JAXBConvertor.armReference(study_name, study.getArms().getArm()
+						.get(0).getName()));
 		combi.setArms(combiArms);
 		pwma.getAlternative().add(combi);
 		// Subject
@@ -1268,23 +1498,30 @@ public class JAXBConvertorTest {
 			parox.setDrugs(new AnalysisDrugs());
 		}
 		parox.getDrugs().getDrug().clear();
-		parox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugParoxetine().getName()));
+		parox.getDrugs()
+				.getDrug()
+				.add(nameReference(ExampleData.buildDrugParoxetine().getName()));
 		AnalysisArms paroxArms = new AnalysisArms();
-		paroxArms.getArm().add(JAXBConvertor.armReference(study_name, study.getArms().getArm().get(1).getName()));
+		paroxArms.getArm().add(
+				JAXBConvertor.armReference(study_name, study.getArms().getArm()
+						.get(1).getName()));
 		parox.setArms(paroxArms);
 		pwma.getAlternative().add(parox);
-		
-		return new MetaAnalysisWithStudies(pwma, Collections.singletonList(study));
+
+		return new MetaAnalysisWithStudies(pwma,
+				Collections.singletonList(study));
 	}
 
 	@Test
-	public void testConvertNetworkMetaAnalysis() throws Exception, InstantiationException, InvocationTargetException, NoSuchMethodException {
+	public void testConvertNetworkMetaAnalysis() throws Exception,
+			InstantiationException, InvocationTargetException,
+			NoSuchMethodException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		String name = "CGI network meta-analysis";
-		
+
 		MetaAnalysisWithStudies ma = buildNetworkMetaAnalysis(name);
-		
+
 		List<Study> studies = new ArrayList<Study>();
 		for (org.drugis.addis.entities.data.Study study : ma.d_studies) {
 			Study studyEnt = JAXBConvertor.convertStudy(study, domain);
@@ -1292,14 +1529,16 @@ public class JAXBConvertorTest {
 			studies.add(studyEnt);
 		}
 
-		DrugSet combi = new DrugSet(Arrays.asList(ExampleData.buildDrugFluoxetine(), ExampleData.buildDrugSertraline()));
+		DrugSet combi = new DrugSet(Arrays.asList(
+				ExampleData.buildDrugFluoxetine(),
+				ExampleData.buildDrugSertraline()));
 		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
 		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
 		SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
 		drugs.add(combi);
 		drugs.add(parox);
 		drugs.add(sertr);
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet,Arm>>();
+		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
 		Map<DrugSet, Arm> study1map = new HashMap<DrugSet, Arm>();
 		study1map.put(combi, studies.get(0).getArms().get(0));
 		study1map.put(sertr, studies.get(0).getArms().get(1));
@@ -1313,21 +1552,25 @@ public class JAXBConvertorTest {
 		study3map.put(parox, studies.get(2).getArms().get(1));
 		study3map.put(combi, studies.get(2).getArms().get(2));
 		armMap.put(studies.get(2), study3map);
-		
-		Collections.sort(studies); // So the reading *by definition* puts the studies in their natural order
-		NetworkMetaAnalysis expected = new NetworkMetaAnalysis(name, ExampleData.buildIndicationDepression(),
+
+		Collections.sort(studies); // So the reading *by definition* puts the
+									// studies in their natural order
+		NetworkMetaAnalysis expected = new NetworkMetaAnalysis(name,
+				ExampleData.buildIndicationDepression(),
 				ExampleData.buildEndpointCgi(), studies, drugs, armMap);
-		
-		assertEntityEquals(expected, JAXBConvertor.convertNetworkMetaAnalysis(ma.d_nwma, domain));
-		assertEquals(ma.d_nwma, JAXBConvertor.convertNetworkMetaAnalysis(expected));
+
+		assertEntityEquals(expected,
+				JAXBConvertor.convertNetworkMetaAnalysis(ma.d_nwma, domain));
+		assertEquals(ma.d_nwma,
+				JAXBConvertor.convertNetworkMetaAnalysis(expected));
 	}
-	
+
 	private MetaAnalysisWithStudies buildNetworkMetaAnalysis(String name) throws DatatypeConfigurationException, ConversionException {
-		String study_one = "A Network Meta analysis study 1";
-		String study_two = "A Network Meta analysis study 2";
-		String study_three = "A Network Meta analysis study 3";
+		String study1Name = "A Network Meta analysis study 1";
+		String study2Name = "A Network Meta analysis study 2";
+		String study3Name = "A Network Meta analysis study 3";
 		
-		String[] endpoints = new String[] { ExampleData.buildEndpointHamd().getName(), ExampleData.buildEndpointCgi().getName() };
+		String[] endpointNames = new String[] { ExampleData.buildEndpointHamd().getName(), ExampleData.buildEndpointCgi().getName() };
 		
 		Arms arms1 = new Arms();
 		Epochs epochs1 = new Epochs();
@@ -1342,31 +1585,36 @@ public class JAXBConvertorTest {
 		TreatmentActivity combiFixedDose = new TreatmentActivity(Arrays.asList(fluox, venla));
 		TreatmentActivity sertraFixedDose = buildFixedDoseTreatmentActivity(ExampleData.buildDrugSertraline(), 12.5);
 		TreatmentActivity paroxFixedDose =  buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12.5);
+		List<String> armList1 = new ArrayList<String>(Arrays.asList(combiArmName, sertraArmName));
 		buildArmEpochTreatmentActivityCombination(arms1, epochs1, sas1, 20, combiArmName, mainPhaseName, treatmentName, combiFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms1, epochs1, sas1, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
-		
+
 		String indicationName = ExampleData.buildIndicationDepression().getName();
-		org.drugis.addis.entities.data.Study study1 = buildStudySkeleton(study_one, study_one, 
-				indicationName, endpoints, new String[] {}, new String[] {}, arms1, epochs1, sas1);
-		
+		String[] popCharNames = new String[] {ExampleData.buildAgeVariable().getName()};
+		String[] adverseEventNames = new String[] {};
+		org.drugis.addis.entities.data.Study study1 = buildStudySkeletonWithMeasurements(study1Name, study1Name, 
+				indicationName, endpointNames, adverseEventNames , popCharNames, arms1, epochs1, sas1, armList1);
+
 		Arms arms2 = new Arms();
 		Epochs epochs2 = new Epochs();
 		StudyActivities sas2 = new StudyActivities();
+		List<String> armList2 = new ArrayList<String>(Arrays.asList(paroxArmName, sertraArmName));
 		buildArmEpochTreatmentActivityCombination(arms2, epochs2, sas2, 20, paroxArmName, mainPhaseName, treatmentName, paroxFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms2, epochs2, sas2, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
-
-		org.drugis.addis.entities.data.Study study2 = buildStudySkeleton(study_two, study_two, 
-				indicationName, endpoints, new String[] {}, new String[] {}, arms2, epochs2, sas2);
+		
+		org.drugis.addis.entities.data.Study study2 = buildStudySkeletonWithMeasurements(study2Name, study2Name, 
+				indicationName, endpointNames, adverseEventNames, popCharNames, arms2, epochs2, sas2, armList2);
 		
 		Arms arms3 = new Arms();
 		Epochs epochs3 = new Epochs();
 		StudyActivities sas3 = new StudyActivities();
+		List<String> armList3 = new ArrayList<String>(Arrays.asList(sertraArmName, sertraArmName, combiArmName));
 		buildArmEpochTreatmentActivityCombination(arms3, epochs3, sas3, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms3, epochs3, sas3, 20, paroxArmName, mainPhaseName, treatmentName, paroxFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms3, epochs3, sas3, 20, combiArmName, mainPhaseName, treatmentName, combiFixedDose);
 
-		org.drugis.addis.entities.data.Study study3 = buildStudySkeleton(study_three, study_three, 
-				indicationName, endpoints, new String[] {}, new String[] {}, arms3, epochs3, sas3);
+		org.drugis.addis.entities.data.Study study3 = buildStudySkeletonWithMeasurements(study3Name, study3Name, 
+				indicationName, endpointNames, adverseEventNames, popCharNames, arms3, epochs3, sas3, armList3);
 
 		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
 		nma.setName(name);		
@@ -1388,8 +1636,8 @@ public class JAXBConvertorTest {
 		combi.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
 		combi.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms combiArms = new AnalysisArms();
-		combiArms.getArm().add(JAXBConvertor.armReference(study_one, arms1.getArm().get(0).getName())); // study 1
-		combiArms.getArm().add(JAXBConvertor.armReference(study_three, arms3.getArm().get(2).getName())); // study 3
+		combiArms.getArm().add(JAXBConvertor.armReference(study1Name, arms1.getArm().get(0).getName())); // study 1
+		combiArms.getArm().add(JAXBConvertor.armReference(study3Name, arms3.getArm().get(2).getName())); // study 3
 		combi.setArms(combiArms);
 		nma.getAlternative().add(combi);
 		// Paroxetine		
@@ -1400,8 +1648,8 @@ public class JAXBConvertorTest {
 		parox.getDrugs().getDrug().clear();
 		parox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugParoxetine().getName()));
 		AnalysisArms paroxArms = new AnalysisArms();
-		paroxArms.getArm().add(JAXBConvertor.armReference(study_two, arms2.getArm().get(0).getName())); // study 2
-		paroxArms.getArm().add(JAXBConvertor.armReference(study_three, arms3.getArm().get(1).getName())); // study 3
+		paroxArms.getArm().add(JAXBConvertor.armReference(study2Name, arms2.getArm().get(0).getName())); // study 2
+		paroxArms.getArm().add(JAXBConvertor.armReference(study3Name, arms3.getArm().get(1).getName())); // study 3
 		parox.setArms(paroxArms);
 		nma.getAlternative().add(parox);
 		// Sertraline
@@ -1412,45 +1660,52 @@ public class JAXBConvertorTest {
 		setr.getDrugs().getDrug().clear();
 		setr.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms sertrArms  = new AnalysisArms();
-		sertrArms.getArm().add(JAXBConvertor.armReference(study_one, arms1.getArm().get(1).getName())); // study 1
-		sertrArms.getArm().add(JAXBConvertor.armReference(study_two, arms2.getArm().get(1).getName())); // study 2
-		sertrArms.getArm().add(JAXBConvertor.armReference(study_three, arms3.getArm().get(0).getName())); // study 2
+		sertrArms.getArm().add(JAXBConvertor.armReference(study1Name, arms1.getArm().get(1).getName())); // study 1
+		sertrArms.getArm().add(JAXBConvertor.armReference(study2Name, arms2.getArm().get(1).getName())); // study 2
+		sertrArms.getArm().add(JAXBConvertor.armReference(study3Name, arms3.getArm().get(0).getName())); // study 3
 		setr.setArms(sertrArms);
 		nma.getAlternative().add(setr);
-		
+				
 		return new MetaAnalysisWithStudies(nma, studiesl);
 	}
-	
-	private void buildArmEpochTreatmentActivityCombination(Arms arms, Epochs epochs,
-			StudyActivities sas, int armSize, String fluoxArmName,
-			String mainPhaseName, String treatmentName, TreatmentActivity fluoxFixedDose) throws ConversionException
-			{
+
+	private void buildArmEpochTreatmentActivityCombination(Arms arms,
+			Epochs epochs, StudyActivities sas, int armSize,
+			String fluoxArmName, String mainPhaseName, String treatmentName,
+			TreatmentActivity fluoxFixedDose) throws ConversionException {
 		arms.getArm().add(buildArmData(fluoxArmName, armSize));
-		epochs.getEpoch().add(buildEpoch(mainPhaseName, EntityUtil.createDuration("P2D")));
-		org.drugis.addis.entities.data.StudyActivity saTreatment1 = buildStudyActivity(treatmentName, fluoxFixedDose);
-		saTreatment1.getUsedBy().add(buildActivityUsedby(fluoxArmName, mainPhaseName));
+		epochs.getEpoch().add(
+				buildEpoch(mainPhaseName, EntityUtil.createDuration("P2D")));
+		org.drugis.addis.entities.data.StudyActivity saTreatment1 = buildStudyActivity(
+				treatmentName, fluoxFixedDose);
+		saTreatment1.getUsedBy().add(
+				buildActivityUsedby(fluoxArmName, mainPhaseName));
 		sas.getStudyActivity().add(saTreatment1);
 	}
-	
+
 	@Test
-	public void testConvertMetaAnalyses() throws NullPointerException, ConversionException, DatatypeConfigurationException {
+	public void testConvertMetaAnalyses() throws NullPointerException,
+			ConversionException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		
+
 		MetaAnalyses analyses = new MetaAnalyses();
 		MetaAnalysisWithStudies ma1 = buildPairWiseMetaAnalysis("XXX");
 		analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(ma1.d_pwma);
 		MetaAnalysisWithStudies ma2 = buildNetworkMetaAnalysis("XXX 2");
 		analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(ma2.d_nwma);
-		
+
 		addStudies(domain, ma1);
 		addStudies(domain, ma2);
-		
+
 		List<MetaAnalysis> expected = new ArrayList<MetaAnalysis>();
-		expected.add(JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma, domain));
-		expected.add(JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain));
-		
-		assertEntityEquals(expected, JAXBConvertor.convertMetaAnalyses(analyses, domain));
+		expected.add(JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma,
+				domain));
+		expected.add(JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma,
+				domain));
+
+		assertEntityEquals(expected,
+				JAXBConvertor.convertMetaAnalyses(analyses, domain));
 		assertEquals(analyses, JAXBConvertor.convertMetaAnalyses(expected));
 	}
 
@@ -1460,78 +1715,99 @@ public class JAXBConvertorTest {
 			domain.getStudies().add(JAXBConvertor.convertStudy(study, domain));
 		}
 	}
-	
+
 	@Test
-	public void testConvertDecisionContext() throws ConversionException, DatatypeConfigurationException {
+	public void testConvertDecisionContext() throws ConversionException,
+			DatatypeConfigurationException {
 		final String comparator = "Comparator bla";
 		final String perspective = "Perspective";
 		final String therapy = "Purely psychosomatic";
 		final String horizon = "New horizons";
-		
+
 		DecisionContext entityContext = new DecisionContext();
 		entityContext.setComparator(comparator);
 		entityContext.setStakeholderPerspective(perspective);
 		entityContext.setTherapeuticContext(therapy);
 		entityContext.setTimeHorizon(horizon);
-		
+
 		org.drugis.addis.entities.data.DecisionContext dataContext = new org.drugis.addis.entities.data.DecisionContext();
 		dataContext.setComparator(comparator);
 		dataContext.setStakeholderPerspective(perspective);
 		dataContext.setTherapeuticContext(therapy);
 		dataContext.setTimeHorizon(horizon);
-		
-		assertEquals(dataContext, JAXBConvertor.convertDecisionContext(entityContext));
-		assertEntityEquals(entityContext, JAXBConvertor.convertDecisionContext(dataContext));
+
+		assertEquals(dataContext,
+				JAXBConvertor.convertDecisionContext(entityContext));
+		assertEntityEquals(entityContext,
+				JAXBConvertor.convertDecisionContext(dataContext));
 	}
-	
+
 	@Test
-	public void testConvertStudyBenefitRiskAnalysis() throws ConversionException, DatatypeConfigurationException {
+	public void testConvertStudyBenefitRiskAnalysis()
+			throws ConversionException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
-		
+
 		String name = "BR Analysis";
-		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
-		String[] endpoints = { ExampleData.buildEndpointCgi().getName(), ExampleData.buildEndpointHamd().getName() };
+		String[] adverseEvents = {
+				ExampleData.buildAdverseEventDiarrhea().getName(),
+				ExampleData.buildAdverseEventConvulsion().getName() };
+		String[] endpoints = { ExampleData.buildEndpointCgi().getName(),
+				ExampleData.buildEndpointHamd().getName() };
 		String[] whichArms = { "parox arm high", "parox arm low" };
 		Arms arms = new Arms();
 		Epochs epochs = new Epochs();
 		StudyActivities sas = new StudyActivities();
-		
-		TreatmentActivity fluoxTA = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 13);
-		TreatmentActivity paroxTAHigh = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 45);
-		TreatmentActivity paroxTALow = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12);
-		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 12, "fluox arm", "Main phase", "Treatment", fluoxTA);
-		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 23, "parox arm high", "Main phase", "Treatment", paroxTAHigh);
-		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 11, "parox arm low", "Main phase", "Treatment", paroxTALow);
 
-		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
-				ExampleData.buildIndicationDepression().getName(), endpoints, adverseEvents, new String[]{}, arms, epochs, sas);
-		
+		TreatmentActivity fluoxTA = buildFixedDoseTreatmentActivity(
+				ExampleData.buildDrugFluoxetine(), 13);
+		TreatmentActivity paroxTAHigh = buildFixedDoseTreatmentActivity(
+				ExampleData.buildDrugParoxetine(), 45);
+		TreatmentActivity paroxTALow = buildFixedDoseTreatmentActivity(
+				ExampleData.buildDrugParoxetine(), 12);
+		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 12,
+				"fluox arm", "Main phase", "Treatment", fluoxTA);
+		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 23,
+				"parox arm high", "Main phase", "Treatment", paroxTAHigh);
+		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 11,
+				"parox arm low", "Main phase", "Treatment", paroxTALow);
+
+		org.drugis.addis.entities.data.Study study = buildStudySkeleton(
+				"Study for Benefit-Risk", "HI", ExampleData
+						.buildIndicationDepression().getName(), endpoints,
+				adverseEvents, new String[] {}, arms, epochs, sas);
+
 		DecisionContext entityContext = new DecisionContext();
-		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(name, study, endpoints, adverseEvents, whichArms[1], whichArms, entityContext );
-		
+		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = buildStudyBR(
+				name, study, endpoints, adverseEvents, whichArms[1], whichArms,
+				entityContext);
+
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
 		domain.getStudies().add(convertStudy);
 		List<org.drugis.addis.entities.OutcomeMeasure> criteria = new ArrayList<org.drugis.addis.entities.OutcomeMeasure>();
 		criteria.add(ExampleData.buildEndpointCgi());
 		criteria.add(ExampleData.buildAdverseEventConvulsion());
-		
+
 		List<Arm> alternatives = new ArrayList<Arm>();
 		alternatives.add(convertStudy.getArms().get(1));
 		alternatives.add(convertStudy.getArms().get(2));
-		
-		StudyBenefitRiskAnalysis expected = new StudyBenefitRiskAnalysis(name, 
+
+		StudyBenefitRiskAnalysis expected = new StudyBenefitRiskAnalysis(name,
 				ExampleData.buildIndicationDepression(), convertStudy,
-				criteria, alternatives.get(1), alternatives, AnalysisType.LyndOBrien, entityContext);
-		
-		assertEntityEquals(expected, JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
-		assertEquals(br, JAXBConvertor.convertStudyBenefitRiskAnalysis(expected));
+				criteria, alternatives.get(1), alternatives,
+				AnalysisType.LyndOBrien, entityContext);
+
+		assertEntityEquals(expected,
+				JAXBConvertor.convertStudyBenefitRiskAnalysis(br, domain));
+		assertEquals(br,
+				JAXBConvertor.convertStudyBenefitRiskAnalysis(expected));
 	}
 
 	private org.drugis.addis.entities.data.StudyBenefitRiskAnalysis buildStudyBR(
 			String name, org.drugis.addis.entities.data.Study study,
-			String[] endpoints, String[] adverseEvents, String baseline, String[] whichArms, DecisionContext entityContext) {
+			String[] endpoints, String[] adverseEvents, String baseline,
+			String[] whichArms, DecisionContext entityContext) {
 		RateMeasurement rm = new RateMeasurement();
 		rm.setRate(2);
 		rm.setSampleSize(50);
@@ -1541,14 +1817,26 @@ public class JAXBConvertorTest {
 		cm.setStdDev(1.0);
 		for (String armName : whichArms) {
 			for (String aeName : adverseEvents) {
-				study.getMeasurements().getMeasurement().add(buildRateMeasurement(armName, "adverseEvent-" + aeName, "Main phase", ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END, rm));
+				study.getMeasurements()
+						.getMeasurement()
+						.add(buildRateMeasurement(armName, "adverseEvent-"
+								+ aeName, "Main phase", ZERO_DAYS,
+								RelativeTo.BEFORE_EPOCH_END, rm));
 			}
-			
+
 			// FIXME: Magic numbers in endpoint indices (too tired)
-			study.getMeasurements().getMeasurement().add(buildRateMeasurement(armName, "endpoint-" + endpoints[1], "Main phase", ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END, rm));
-			study.getMeasurements().getMeasurement().add(buildContinuousMeasurement(armName, "endpoint-" + endpoints[0], "Main phase", ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END, cm));
+			study.getMeasurements()
+					.getMeasurement()
+					.add(buildRateMeasurement(armName, "endpoint-"
+							+ endpoints[1], "Main phase", ZERO_DAYS,
+							RelativeTo.BEFORE_EPOCH_END, rm));
+			study.getMeasurements()
+					.getMeasurement()
+					.add(buildContinuousMeasurement(armName, "endpoint-"
+							+ endpoints[0], "Main phase", ZERO_DAYS,
+							RelativeTo.BEFORE_EPOCH_END, cm));
 		}
-		
+
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
 		br.setName(name);
 		br.setIndication(nameReference(study.getIndication().getName()));
@@ -1556,46 +1844,53 @@ public class JAXBConvertorTest {
 		br.setAnalysisType(AnalysisType.LyndOBrien);
 		br.setOutcomeMeasures(new OutcomeMeasuresReferences());
 		br.getOutcomeMeasures().getEndpoint().add(nameReference(endpoints[0]));
-		br.getOutcomeMeasures().getAdverseEvent().add(nameReference(adverseEvents[1]));
+		br.getOutcomeMeasures().getAdverseEvent()
+				.add(nameReference(adverseEvents[1]));
 		ArmReferences armRefs = new ArmReferences();
 		for (String whichArm : whichArms) {
-			armRefs.getArm().add(JAXBConvertor.armReference(study.getName(), whichArm));
+			armRefs.getArm().add(
+					JAXBConvertor.armReference(study.getName(), whichArm));
 		}
 		br.setArms(armRefs);
 		BaselineArmReference baselineRef = new BaselineArmReference();
-		baselineRef.setArm(JAXBConvertor.armReference(study.getName(), baseline));
+		baselineRef
+				.setArm(JAXBConvertor.armReference(study.getName(), baseline));
 		br.setBaseline(baselineRef);
 		if (entityContext != null) {
-			br.setDecisionContext(JAXBConvertor.convertDecisionContext(entityContext));
+			br.setDecisionContext(JAXBConvertor
+					.convertDecisionContext(entityContext));
 		}
 		return br;
-	}	
-	
+	}
+
 	@Test
-	public void testConvertMetaBenefitRiskAnalysis() throws ConversionException, NullPointerException, IllegalArgumentException, EntityIdExistsException, DatatypeConfigurationException {
+	public void testConvertMetaBenefitRiskAnalysis()
+			throws ConversionException, NullPointerException,
+			IllegalArgumentException, EntityIdExistsException,
+			DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
-		
+
 		String name = "Meta Benefit-Risk Analysis Test";
 		// create entities
 		String pairWiseName = "First Pair-Wise";
 		String networkMetaName = "Second Network Meta Analysis";
 		MetaAnalysisWithStudies ma1 = buildPairWiseMetaAnalysis(pairWiseName);
 		MetaAnalysisWithStudies ma2 = buildNetworkMetaAnalysis(networkMetaName);
-		
+
 		// add to the domain
 		addStudies(domain, ma1);
 		addStudies(domain, ma2);
-		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
+		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor
+				.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
 		domain.getMetaAnalyses().add(ma1ent);
-		MetaAnalysis ma2ent = JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma, domain);
+		MetaAnalysis ma2ent = JAXBConvertor.convertNetworkMetaAnalysis(
+				ma2.d_nwma, domain);
 		domain.getMetaAnalyses().add(ma2ent);
 
 		// create BR analysis
-		String[][] drugs = {
-				new String[] { "Fluoxetine", "Sertraline" },
-				new String[] { "Paroxetine" }
-		};
+		String[][] drugs = { new String[] { "Fluoxetine", "Sertraline" },
+				new String[] { "Paroxetine" } };
 		String indication = ma1.d_pwma.getIndication().getName();
 		String[] meta = { pairWiseName, networkMetaName };
 		DecisionContext entityContext = new DecisionContext();
@@ -1605,18 +1900,22 @@ public class JAXBConvertorTest {
 		List<MetaAnalysis> metaList = new ArrayList<MetaAnalysis>();
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
-		
-		List<DrugSet> drugsEnt = new ArrayList<DrugSet>(ma1ent.getIncludedDrugs());
+
+		List<DrugSet> drugsEnt = new ArrayList<DrugSet>(
+				ma1ent.getIncludedDrugs());
 		DrugSet baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
-		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name, ma1ent.getIndication(), metaList , baseline, 
-				drugsEnt, AnalysisType.SMAA, entityContext);
-		assertEntityEquals(expected, JAXBConvertor.convertMetaBenefitRiskAnalysis(br, domain));
+		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name,
+				ma1ent.getIndication(), metaList, baseline, drugsEnt,
+				AnalysisType.SMAA, entityContext);
+		assertEntityEquals(expected,
+				JAXBConvertor.convertMetaBenefitRiskAnalysis(br, domain));
 		assertEquals(br, JAXBConvertor.convertMetaBenefitRiskAnalysis(expected));
 	}
 
 	private org.drugis.addis.entities.data.MetaBenefitRiskAnalysis buildMetaBR(
-			String name, String[][] drugs, String indication, String[] meta, DecisionContext entityContext) {
+			String name, String[][] drugs, String indication, String[] meta,
+			DecisionContext entityContext) {
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
 		br.setName(name);
 		br.setAnalysisType(AnalysisType.SMAA);
@@ -1631,7 +1930,8 @@ public class JAXBConvertorTest {
 			mRefs.getMetaAnalysis().add(nameReference(mName));
 		}
 		br.setMetaAnalyses(mRefs);
-		br.setDecisionContext(JAXBConvertor.convertDecisionContext(entityContext));
+		br.setDecisionContext(JAXBConvertor
+				.convertDecisionContext(entityContext));
 		return br;
 	}
 
@@ -1642,92 +1942,119 @@ public class JAXBConvertorTest {
 		}
 		return drugs1;
 	}
-	
+
 	@Test
-	public void testConvertBenefitRiskAnalyses() throws ConversionException, EntityIdExistsException, DatatypeConfigurationException {
+	public void testConvertBenefitRiskAnalyses() throws ConversionException,
+			EntityIdExistsException, DatatypeConfigurationException {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
 		domain.getAdverseEvents().add(ExampleData.buildAdverseEventDiarrhea());
-		
+
 		String name = "BR Analysis";
-		String[] adverseEvents = {ExampleData.buildAdverseEventDiarrhea().getName(), ExampleData.buildAdverseEventConvulsion().getName() };
-		String[] endpoints = { ExampleData.buildEndpointCgi().getName(), ExampleData.buildEndpointHamd().getName() };
+		String[] adverseEvents = {
+				ExampleData.buildAdverseEventDiarrhea().getName(),
+				ExampleData.buildAdverseEventConvulsion().getName() };
+		String[] endpoints = { ExampleData.buildEndpointCgi().getName(),
+				ExampleData.buildEndpointHamd().getName() };
 		Arms arms = new Arms();
 		Epochs epochs = new Epochs();
 		StudyActivities sas = new StudyActivities();
-		
-		TreatmentActivity fluoxTA = buildFixedDoseTreatmentActivity(ExampleData.buildDrugFluoxetine(), 13);
-		TreatmentActivity paroxTAHigh = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 45);
-		TreatmentActivity paroxTALow = buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12);
-		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 12, "fluox arm", "Main phase", "Treatment", fluoxTA);
-		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 23, "parox arm high", "Main phase", "Treatment", paroxTAHigh);
-		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 11, "parox arm low", "Main phase", "Treatment", paroxTALow);
 
-		org.drugis.addis.entities.data.Study study = buildStudySkeleton("Study for Benefit-Risk", "HI", 
-				ExampleData.buildIndicationDepression().getName(),
-				endpoints, adverseEvents, new String[]{}, arms, epochs, sas);
-		
+		TreatmentActivity fluoxTA = buildFixedDoseTreatmentActivity(
+				ExampleData.buildDrugFluoxetine(), 13);
+		TreatmentActivity paroxTAHigh = buildFixedDoseTreatmentActivity(
+				ExampleData.buildDrugParoxetine(), 45);
+		TreatmentActivity paroxTALow = buildFixedDoseTreatmentActivity(
+				ExampleData.buildDrugParoxetine(), 12);
+		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 12,
+				"fluox arm", "Main phase", "Treatment", fluoxTA);
+		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 23,
+				"parox arm high", "Main phase", "Treatment", paroxTAHigh);
+		buildArmEpochTreatmentActivityCombination(arms, epochs, sas, 11,
+				"parox arm low", "Main phase", "Treatment", paroxTALow);
+
+		org.drugis.addis.entities.data.Study study = buildStudySkeleton(
+				"Study for Benefit-Risk", "HI", ExampleData
+						.buildIndicationDepression().getName(), endpoints,
+				adverseEvents, new String[] {}, arms, epochs, sas);
+
 		String[] whichArms = { "parox arm high", "parox arm low" };
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis studyBR = buildStudyBR(
-				name, study, endpoints, adverseEvents, whichArms[0], whichArms, null);
-		
+				name, study, endpoints, adverseEvents, whichArms[0], whichArms,
+				null);
+
 		Study convertStudy = JAXBConvertor.convertStudy(study, domain);
 		domain.getStudies().add(convertStudy);
-		
+
 		String pwName = "pairwise MA";
 		String nwName = "network MA";
 		MetaAnalysisWithStudies pairWiseMetaAnalysis = buildPairWiseMetaAnalysis(pwName);
 		MetaAnalysisWithStudies networkMetaAnalysis = buildNetworkMetaAnalysis(nwName);
 		addStudies(domain, pairWiseMetaAnalysis);
-		domain.getMetaAnalyses().add(JAXBConvertor.convertPairWiseMetaAnalysis(pairWiseMetaAnalysis.d_pwma, domain));
+		domain.getMetaAnalyses().add(
+				JAXBConvertor.convertPairWiseMetaAnalysis(
+						pairWiseMetaAnalysis.d_pwma, domain));
 		addStudies(domain, networkMetaAnalysis);
-		domain.getMetaAnalyses().add(JAXBConvertor.convertNetworkMetaAnalysis(networkMetaAnalysis.d_nwma, domain));
-		
-		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR("Meta BR", 
-				new String[][] { 
-					new String[] { ExampleData.buildDrugFluoxetine().getName(), ExampleData.buildDrugSertraline().getName() },
-					new String[] { ExampleData.buildDrugParoxetine().getName() }
-				}, 
-				ExampleData.buildIndicationDepression().getName(),
-				new String[] { nwName, pwName }, null);
-		
-		BenefitRiskAnalyses analyses = new BenefitRiskAnalyses();
-		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(metaBR);
-		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(studyBR);
-		
-		List<BenefitRiskAnalysis<?>> expected = new ArrayList<BenefitRiskAnalysis<?>>();
-		expected.add(JAXBConvertor.convertMetaBenefitRiskAnalysis(metaBR, domain));
-		expected.add(JAXBConvertor.convertStudyBenefitRiskAnalysis(studyBR, domain));
+		domain.getMetaAnalyses().add(
+				JAXBConvertor.convertNetworkMetaAnalysis(
+						networkMetaAnalysis.d_nwma, domain));
 
-		assertEntityEquals(expected, JAXBConvertor.convertBenefitRiskAnalyses(analyses, domain));
-		assertEquals(analyses, JAXBConvertor.convertBenefitRiskAnalyses(expected));
+		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR(
+				"Meta BR", new String[][] {
+						new String[] {
+								ExampleData.buildDrugFluoxetine().getName(),
+								ExampleData.buildDrugSertraline().getName() },
+						new String[] { ExampleData.buildDrugParoxetine()
+								.getName() } }, ExampleData
+						.buildIndicationDepression().getName(), new String[] {
+						nwName, pwName }, null);
+
+		BenefitRiskAnalyses analyses = new BenefitRiskAnalyses();
+		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(
+				metaBR);
+		analyses.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis().add(
+				studyBR);
+
+		List<BenefitRiskAnalysis<?>> expected = new ArrayList<BenefitRiskAnalysis<?>>();
+		expected.add(JAXBConvertor.convertMetaBenefitRiskAnalysis(metaBR,
+				domain));
+		expected.add(JAXBConvertor.convertStudyBenefitRiskAnalysis(studyBR,
+				domain));
+
+		assertEntityEquals(expected,
+				JAXBConvertor.convertBenefitRiskAnalyses(analyses, domain));
+		assertEquals(analyses,
+				JAXBConvertor.convertBenefitRiskAnalyses(expected));
 	}
-	
+
 	@Test
 	public void testDefaultDataRoundTripConversion() throws Exception {
 		doRoundTripTest(getTransformedDefaultData());
 	}
 
-
 	@Test
 	public void testSmallerDataRoundTripConversion() throws Exception {
-//		PubMedDataBankRetriever.copyStream(JAXBConvertor.transformToVersion(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0), 0, 2), System.out);
+		// PubMedDataBankRetriever.copyStream(JAXBConvertor.transformToVersion(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0),
+		// 0, 2), System.out);
 		doRoundTripTest(getTransformedTestData());
 	}
 
-	@Test @Ignore
+	@Test
+	@Ignore
 	public void testMysteriousDataRoundTripConversion() throws Exception {
 		doRoundTripTest(getTestData(TEST_DATA_A_1));
 	}
-	
+
 	@Test
 	public void testCombinationTreatmentRoundTripConversion() throws Exception {
 		doRoundTripTest(getTestData(TEST_DATA_3));
 	}
 
-	private void doRoundTripTest(InputStream transformedXmlStream) throws JAXBException, ConversionException {
+	private void doRoundTripTest(InputStream transformedXmlStream)
+			throws JAXBException, ConversionException {
 		System.clearProperty("javax.xml.transform.TransformerFactory");
-		AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
+		AddisData data = (AddisData) d_unmarshaller
+				.unmarshal(transformedXmlStream);
 		sortMeasurements(data);
 		sortAnalysisArms(data);
 		sortBenefitRiskOutcomes(data);
@@ -1735,22 +2062,26 @@ public class JAXBConvertorTest {
 		sortMetaBenefitRiskAnalysisAlternatives(data);
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		sortUsedBys(data);
-		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
+		AddisData roundTrip = JAXBConvertor
+				.convertDomainToAddisData(domainData);
 		assertEquals(data, roundTrip);
 	}
-		
+
 	private static void sortMetaBenefitRiskAnalysisAlternatives(AddisData data) {
-		for (Object bra : data.getBenefitRiskAnalyses().getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
+		for (Object bra : data.getBenefitRiskAnalyses()
+				.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
 			if (bra instanceof org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) {
 				org.drugis.addis.entities.data.MetaBenefitRiskAnalysis mbra = (org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) bra;
-				List<AnalysisDrugs> alternatives = mbra.getAlternatives().getAlternative();
+				List<AnalysisDrugs> alternatives = mbra.getAlternatives()
+						.getAlternative();
 				Collections.sort(alternatives, new Comparator<AnalysisDrugs>() {
 					@Override
 					public int compare(AnalysisDrugs ad1, AnalysisDrugs ad2) {
 						Iterator<NameReference> i1 = ad1.getDrug().iterator();
 						Iterator<NameReference> i2 = ad2.getDrug().iterator();
 						while (i1.hasNext() && i2.hasNext()) {
-							int compVal = i1.next().getName().compareTo(i2.next().getName());
+							int compVal = i1.next().getName()
+									.compareTo(i2.next().getName());
 							if (compVal != 0) {
 								return compVal;
 							}
@@ -1769,41 +2100,52 @@ public class JAXBConvertorTest {
 	}
 
 	private void sortUsedBys(AddisData data) {
-		for (org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
-			for(org.drugis.addis.entities.data.StudyActivity a : s.getActivities().getStudyActivity()) {
+		for (org.drugis.addis.entities.data.Study s : data.getStudies()
+				.getStudy()) {
+			for (org.drugis.addis.entities.data.StudyActivity a : s
+					.getActivities().getStudyActivity()) {
 				Collections.sort(a.getUsedBy(), new UsedByComparator());
 			}
 		}
 	}
 
-	private class UsedByComparator implements Comparator<org.drugis.addis.entities.data.ActivityUsedBy> {
+	private class UsedByComparator implements
+			Comparator<org.drugis.addis.entities.data.ActivityUsedBy> {
 		public int compare(ActivityUsedBy o1, ActivityUsedBy o2) {
-			if(o1.getArm().compareTo(o2.getArm()) != 0) {
+			if (o1.getArm().compareTo(o2.getArm()) != 0) {
 				return o1.getArm().compareTo(o2.getArm());
 			}
 			return o1.getEpoch().compareTo(o2.getEpoch());
 		}
 	}
-	
+
 	private static void sortCategoricalMeasurementCategories(AddisData data) {
-		for (org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
-			for (org.drugis.addis.entities.data.Measurement m : s.getMeasurements().getMeasurement()) {
+		for (org.drugis.addis.entities.data.Study s : data.getStudies()
+				.getStudy()) {
+			for (org.drugis.addis.entities.data.Measurement m : s
+					.getMeasurements().getMeasurement()) {
 				if (m.getCategoricalMeasurement() != null) {
-					CategoricalVariable var = findVariable(data, s, m.getStudyOutcomeMeasure().getId());
-					Collections.sort(m.getCategoricalMeasurement().getCategory(), new CategoryMeasurementComparator(var));
+					CategoricalVariable var = findVariable(data, s, m
+							.getStudyOutcomeMeasure().getId());
+					Collections.sort(m.getCategoricalMeasurement()
+							.getCategory(), new CategoryMeasurementComparator(
+							var));
 				}
 			}
 		}
 	}
 
-	private static CategoricalVariable findVariable(AddisData data, org.drugis.addis.entities.data.Study s, String id) {
+	private static CategoricalVariable findVariable(AddisData data,
+			org.drugis.addis.entities.data.Study s, String id) {
 		String varName = null;
-		for (org.drugis.addis.entities.data.StudyOutcomeMeasure som : s.getStudyOutcomeMeasures().getStudyOutcomeMeasure()) {
+		for (org.drugis.addis.entities.data.StudyOutcomeMeasure som : s
+				.getStudyOutcomeMeasures().getStudyOutcomeMeasure()) {
 			if (som.getId().equals(id)) {
 				varName = som.getPopulationCharacteristic().getName();
 			}
 		}
-		for (OutcomeMeasure om : data.getPopulationCharacteristics().getPopulationCharacteristic()) {
+		for (OutcomeMeasure om : data.getPopulationCharacteristics()
+				.getPopulationCharacteristic()) {
 			if (om.getName().equals(varName)) {
 				return om.getCategorical();
 			}
@@ -1812,17 +2154,22 @@ public class JAXBConvertorTest {
 	}
 
 	private static void sortBenefitRiskOutcomes(AddisData data) {
-		for(Object obj : data.getBenefitRiskAnalyses().getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
+		for (Object obj : data.getBenefitRiskAnalyses()
+				.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
 			if (obj instanceof org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) {
 				org.drugis.addis.entities.data.StudyBenefitRiskAnalysis sbr = (org.drugis.addis.entities.data.StudyBenefitRiskAnalysis) obj;
-				Collections.sort(sbr.getOutcomeMeasures().getAdverseEvent(), new NameReferenceComparator());
-				Collections.sort(sbr.getOutcomeMeasures().getEndpoint(), new NameReferenceComparator());
+				Collections.sort(sbr.getOutcomeMeasures().getAdverseEvent(),
+						new NameReferenceComparator());
+				Collections.sort(sbr.getOutcomeMeasures().getEndpoint(),
+						new NameReferenceComparator());
 			}
 		}
 	}
 
 	private static void sortAnalysisArms(AddisData data) {
-		for(org.drugis.addis.entities.data.MetaAnalysis ma : data.getMetaAnalyses().getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
+		for (org.drugis.addis.entities.data.MetaAnalysis ma : data
+				.getMetaAnalyses()
+				.getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
 			List<Alternative> alternatives = null;
 			if (ma instanceof org.drugis.addis.entities.data.PairwiseMetaAnalysis) {
 				org.drugis.addis.entities.data.PairwiseMetaAnalysis pwma = (org.drugis.addis.entities.data.PairwiseMetaAnalysis) ma;
@@ -1840,12 +2187,15 @@ public class JAXBConvertorTest {
 	}
 
 	private static void sortMeasurements(AddisData data) {
-		for(org.drugis.addis.entities.data.Study s : data.getStudies().getStudy()) {
-			Collections.sort(s.getMeasurements().getMeasurement(), new MeasurementComparator(s));
+		for (org.drugis.addis.entities.data.Study s : data.getStudies()
+				.getStudy()) {
+			Collections.sort(s.getMeasurements().getMeasurement(),
+					new MeasurementComparator(s));
 		}
 	}
-	
-	public static class CategoryMeasurementComparator implements Comparator<CategoryMeasurement> {
+
+	public static class CategoryMeasurementComparator implements
+			Comparator<CategoryMeasurement> {
 		private final CategoricalVariable d_var;
 
 		public CategoryMeasurementComparator(CategoricalVariable var) {
@@ -1853,38 +2203,51 @@ public class JAXBConvertorTest {
 		}
 
 		public int compare(CategoryMeasurement o1, CategoryMeasurement o2) {
-			return d_var.getCategory().indexOf(o1.getName()) - d_var.getCategory().indexOf(o2.getName());
+			return d_var.getCategory().indexOf(o1.getName())
+					- d_var.getCategory().indexOf(o2.getName());
 		}
 	}
-	
-	public static class NameReferenceComparator implements Comparator<org.drugis.addis.entities.data.NameReference> {
-		public int compare(org.drugis.addis.entities.data.NameReference o1, org.drugis.addis.entities.data.NameReference o2) {
+
+	public static class NameReferenceComparator implements
+			Comparator<org.drugis.addis.entities.data.NameReference> {
+		public int compare(org.drugis.addis.entities.data.NameReference o1,
+				org.drugis.addis.entities.data.NameReference o2) {
 			return o1.getName().compareTo(o2.getName());
-		}		
-	}
-	
-	public static class AlternativeComparator implements Comparator<org.drugis.addis.entities.data.Alternative> {
-		public int compare(org.drugis.addis.entities.data.Alternative o1, org.drugis.addis.entities.data.Alternative o2) {
-			return (o1.getDrugs() != null ? o1.getDrugs().getDrug().get(0) : null).getName().compareTo((o2.getDrugs() != null ? o2.getDrugs().getDrug().get(0) : null).getName());
 		}
 	}
-	
-	public static class ArmComparator implements Comparator<org.drugis.addis.entities.data.ArmReference> {
+
+	public static class AlternativeComparator implements
+			Comparator<org.drugis.addis.entities.data.Alternative> {
+		public int compare(org.drugis.addis.entities.data.Alternative o1,
+				org.drugis.addis.entities.data.Alternative o2) {
+			return (o1.getDrugs() != null ? o1.getDrugs().getDrug().get(0)
+					: null).getName().compareTo(
+					(o2.getDrugs() != null ? o2.getDrugs().getDrug().get(0)
+							: null).getName());
+		}
+	}
+
+	public static class ArmComparator implements
+			Comparator<org.drugis.addis.entities.data.ArmReference> {
 		public int compare(ArmReference o1, ArmReference o2) {
 			return o1.getStudy().compareTo(o2.getStudy());
 		}
 	}
-	
-	public static class MeasurementComparator implements Comparator<org.drugis.addis.entities.data.Measurement> {
+
+	public static class MeasurementComparator implements
+			Comparator<org.drugis.addis.entities.data.Measurement> {
 		private org.drugis.addis.entities.data.Study d_study;
 
 		public MeasurementComparator(org.drugis.addis.entities.data.Study s) {
 			d_study = s;
 		}
 
-		public int compare(org.drugis.addis.entities.data.Measurement o1, org.drugis.addis.entities.data.Measurement o2) {
-			org.drugis.addis.entities.data.StudyOutcomeMeasure om1 = findOutcomeMeasure(o1.getStudyOutcomeMeasure().getId());
-			org.drugis.addis.entities.data.StudyOutcomeMeasure om2 = findOutcomeMeasure(o2.getStudyOutcomeMeasure().getId());
+		public int compare(org.drugis.addis.entities.data.Measurement o1,
+				org.drugis.addis.entities.data.Measurement o2) {
+			org.drugis.addis.entities.data.StudyOutcomeMeasure om1 = findOutcomeMeasure(o1
+					.getStudyOutcomeMeasure().getId());
+			org.drugis.addis.entities.data.StudyOutcomeMeasure om2 = findOutcomeMeasure(o2
+					.getStudyOutcomeMeasure().getId());
 			if (!om1.equals(om2)) {
 				return compareOutcomeMeasure(om1, om2);
 			}
@@ -1897,25 +2260,34 @@ public class JAXBConvertorTest {
 			return o1.getArm().getName().compareTo(o2.getArm().getName());
 		}
 
-		private static int compareOutcomeMeasure(org.drugis.addis.entities.data.StudyOutcomeMeasure om1, org.drugis.addis.entities.data.StudyOutcomeMeasure om2) {
+		private static int compareOutcomeMeasure(
+				org.drugis.addis.entities.data.StudyOutcomeMeasure om1,
+				org.drugis.addis.entities.data.StudyOutcomeMeasure om2) {
 			if (om1.getEndpoint() != null) {
-				return (om2.getEndpoint() == null ? -1 : compareOutcomeId(om1, om2));
+				return (om2.getEndpoint() == null ? -1 : compareOutcomeId(om1,
+						om2));
 			} else if (om1.getAdverseEvent() != null) {
 				if (om2.getEndpoint() != null) {
 					return 1;
 				}
-				return (om2.getAdverseEvent() == null ? -1 : compareOutcomeId(om1, om2));
+				return (om2.getAdverseEvent() == null ? -1 : compareOutcomeId(
+						om1, om2));
 			} else {
-				return om2.getPopulationCharacteristic() == null ? 1 : compareOutcomeId(om1, om2);
+				return om2.getPopulationCharacteristic() == null ? 1
+						: compareOutcomeId(om1, om2);
 			}
 		}
 
-		private static int compareOutcomeId(org.drugis.addis.entities.data.StudyOutcomeMeasure om1, org.drugis.addis.entities.data.StudyOutcomeMeasure om2) {
+		private static int compareOutcomeId(
+				org.drugis.addis.entities.data.StudyOutcomeMeasure om1,
+				org.drugis.addis.entities.data.StudyOutcomeMeasure om2) {
 			return om1.getId().compareTo(om2.getId());
 		}
 
-		private org.drugis.addis.entities.data.StudyOutcomeMeasure findOutcomeMeasure (String id) {
-			List<org.drugis.addis.entities.data.StudyOutcomeMeasure> oms = d_study.getStudyOutcomeMeasures().getStudyOutcomeMeasure();
+		private org.drugis.addis.entities.data.StudyOutcomeMeasure findOutcomeMeasure(
+				String id) {
+			List<org.drugis.addis.entities.data.StudyOutcomeMeasure> oms = d_study
+					.getStudyOutcomeMeasures().getStudyOutcomeMeasure();
 			for (org.drugis.addis.entities.data.StudyOutcomeMeasure om : oms) {
 				if (om.getId().equals(id)) {
 					return om;
@@ -1924,30 +2296,32 @@ public class JAXBConvertorTest {
 			return null;
 		}
 	}
-	
+
 	@Test
 	public void testDateWithNotes() {
 		String date = "2010-11-12";
-		Date oldXmlDate = new GregorianCalendar(2010, 11 -1, 12).getTime();
+		Date oldXmlDate = new GregorianCalendar(2010, 11 - 1, 12).getTime();
 		DateWithNotes dwn = JAXBConvertor.dateWithNotes(oldXmlDate);
-		
+
 		XMLGregorianCalendar cal = XMLGregorianCalendarImpl.parse(date);
 		DateWithNotes dwn2 = new DateWithNotes();
 		dwn2.setNotes(new Notes());
 		dwn2.setValue(cal);
-		
+
 		assertEquals(dwn, dwn2);
 	}
 
 	@Test
 	public void writeTransformedXML() throws TransformerException, IOException {
 		InputStream transformedXmlStream = getTransformedDefaultData();
-		FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
+		FileOutputStream output = new FileOutputStream(
+				"transformedDefaultData.xml");
 		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);
 		output.close();
 	}
 
-	private static InputStream getTestData(String fileName) throws TransformerException, IOException {
+	private static InputStream getTestData(String fileName)
+			throws TransformerException, IOException {
 		InputStream is = JAXBConvertorTest.class.getResourceAsStream(fileName);
 		XmlFormatType xmlType = JAXBHandler.determineXmlType(is);
 		int version = 0;
@@ -1962,12 +2336,14 @@ public class JAXBConvertorTest {
 		}
 		return JAXBConvertor.transformToLatest(is, version);
 	}
-	
-	private static InputStream getTransformedDefaultData() throws TransformerException, IOException {
+
+	private static InputStream getTransformedDefaultData()
+			throws TransformerException, IOException {
 		return getTestData("../defaultData.addis");
 	}
-	
-	private static InputStream getTransformedTestData() throws TransformerException, IOException {
-			return getTestData(TEST_DATA_A_0);
+
+	private static InputStream getTransformedTestData()
+			throws TransformerException, IOException {
+		return getTestData(TEST_DATA_A_0);
 	}
 }

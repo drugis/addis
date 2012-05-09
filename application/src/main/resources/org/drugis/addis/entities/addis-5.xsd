@@ -523,12 +523,14 @@
 			<xs:element name="mcmcSettings" type="MCMCSettings"/>
 			<xs:element minOccurs="0" name="rankProbabilitySummary" type="RankProbabilityMatrix"/>
 			<xs:element minOccurs="0" name="relativeEffectsSummary" type="RelativeEffectsSummary"/>
+			<xs:element minOccurs="0" name="relativeEffectsQuantileSummary" type="RelativeEffectsQuantileSummary"/>
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="InconsistencyResults">
 		<xs:sequence>
 			<xs:element name="mcmcSettings" type="MCMCSettings"/>
+			<xs:element minOccurs="0" name="relativeEffectsQuantileSummary" type="RelativeEffectsQuantileSummary"/>
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -554,6 +556,17 @@
 			<xs:element name="means" type="MeansType"/>
 			<xs:element name="covariance" type="CovarianceMatrixType"/>
 		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RelativeEffectsQuantileSummary">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" name="relativeEffectQuantileSummary" type="RelativeEffectQuantileSummary" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RelativeEffectQuantileSummary">
+			<xs:sequence>
+				<xs:element name="relativeEffect" type="RelativeEffectParameter"/>
+				<xs:element name="quantile" maxOccurs="unbounded" type="QuantileType"/>
+			</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ParameterSummary">
 		<xs:sequence>

@@ -30,8 +30,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections15.BidiMap;
 import org.apache.commons.collections15.Transformer;
@@ -67,6 +69,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -327,6 +330,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 	}
 	
+	public QuantileSummary getQuantileSummary(MixedTreatmentComparison mtc, Pair<DrugSet> drugs) { 
+		Parameter param = mtc.getRelativeEffect(getTreatment(drugs.getFirst()), getTreatment(drugs.getSecond())); 
+		return getQuantileSummary(mtc, param);
+	}
+	
 	public List<Treatment> getTreatments() {
 		List<Treatment> treatments = new ArrayList<Treatment>();
 		for (DrugSet d : d_drugs) {
@@ -334,11 +342,23 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return treatments;
 	}
+	
+	public Set<DrugSet> getInconsistencyCycle(InconsistencyParameter ip) {
+		Set<DrugSet> l = new HashSet<DrugSet>();
+		for (Treatment t : ip.getCycle()) { 
+			l.add(getDrugSet(t));
+		}
+		return l;
+	}
 
 	public Treatment getTreatment(DrugSet d) {
 		return getBuilder().getTreatmentMap().get(d);
 	}
 
+	public DrugSet getDrugSet(Treatment t) { 
+		return getBuilder().getTreatmentMap().getKey(t);
+	}
+	
 	public List<BasicParameter> getSplitParameters() {
 		return DefaultModelFactory.instance().getSplittableNodes(getBuilder().buildNetwork());
 	}
