@@ -54,6 +54,10 @@ import javax.swing.table.TableColumn;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -86,12 +90,8 @@ import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
-import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResultsEvent;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -192,7 +192,7 @@ implements ViewBuilder {
 		row += 2;
 
 		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
-		row = buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row);
+		row = buildMemoryUsage(d_pm.getInconsistencyModel().getModel(), "Inconsistency model", builder, layout, row);
 		builder.addSeparator("", cc.xyw(2, row-1, 3));
 		for(BasicParameter p : d_pm.getSplitParameters()) {
 			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
@@ -273,7 +273,7 @@ implements ViewBuilder {
 		row += 2;
 
 		
-		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
+		final InconsistencyWrapper inconsistencyModel = d_pm.getInconsistencyModel();
 		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), row, d_mainWindow, false);
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
@@ -354,7 +354,7 @@ implements ViewBuilder {
 		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, colSpan));
 		
 		row += 2;
-		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
+		final ConsistencyWrapper consistencyModel = d_pm.getConsistencyModel();
 		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), row, d_mainWindow, false);
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
@@ -430,7 +430,7 @@ implements ViewBuilder {
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
+			NodeSplitWrapper model = d_pm.getNodeSplitModel(p);			
 			
 			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), row, d_mainWindow, true);
 			builder.add(simulationControls, cc.xyw(1, row, 3));
@@ -485,8 +485,8 @@ implements ViewBuilder {
 	}
 
 	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
-		NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
-		ConsistencyModel consModel = d_pm.getConsistencyModel();
+		NodeSplitWrapper splitModel = d_pm.getNodeSplitModel(p);
+		ConsistencyWrapper consModel = d_pm.getConsistencyModel();
 		XYDataset dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
 				new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
 				new PlotParameter(consModel.getResults(), p));
@@ -596,7 +596,7 @@ implements ViewBuilder {
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
-	private TablePanel createNetworkTablePanel(MixedTreatmentComparison mtc) {
+	private TablePanel createNetworkTablePanel(MTCModelWrapper mtc) {
 		JTable table = new JTable(new NetworkRelativeEffectTableModel(d_pm, mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);

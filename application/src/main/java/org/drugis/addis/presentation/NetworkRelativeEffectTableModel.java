@@ -33,6 +33,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -40,10 +41,10 @@ import org.drugis.mtc.summary.QuantileSummary;
 @SuppressWarnings("serial")
 public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 	private NetworkMetaAnalysisPresentation d_pm;
-	MixedTreatmentComparison d_networkModel;
+	MTCModelWrapper d_networkModel;
 	private final PropertyChangeListener d_listener;
 	
-	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MixedTreatmentComparison networkModel) {
+	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MTCModelWrapper networkModel) {
 		d_pm = pm;
 		d_networkModel = networkModel;
 		d_listener = new PropertyChangeListener() {
