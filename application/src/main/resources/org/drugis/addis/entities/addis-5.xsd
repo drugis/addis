@@ -559,7 +559,7 @@
 	</xs:complexType>
 	<xs:complexType name="RelativeEffectsQuantileSummary">
 		<xs:sequence>
-			<xs:element maxOccurs="unbounded" name="relativeEffectQuantileSummary" type="RelativeEffectQuantileSummary" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="relativeEffectQuantileSummary" type="RelativeEffectQuantileSummary" />
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RelativeEffectQuantileSummary">

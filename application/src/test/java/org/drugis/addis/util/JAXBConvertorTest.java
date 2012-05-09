@@ -722,14 +722,14 @@ public class JAXBConvertorTest {
 		om.setEndpoint(nameReference(ep.getName()));
 		om.setPrimary(false);
 		RelativeTime rt = buildRelativeTime(epoch.getName(),
-				EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END);
+				ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END);
 		om.getWhenTaken().add(rt);
 
 		assertEntityEquals(ep, (Endpoint) JAXBConvertor
 				.convertStudyOutcomeMeasure(om, epochs, domain).getValue());
 		StudyOutcomeMeasure<Variable> sOm1 = new StudyOutcomeMeasure<Variable>(
 				ep);
-		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"),
+		WhenTaken wt = new WhenTaken(ZERO_DAYS,
 				RelativeTo.BEFORE_EPOCH_END, epoch);
 		wt.commit();
 		sOm1.getWhenTaken().add(wt);
@@ -785,7 +785,7 @@ public class JAXBConvertorTest {
 		List<Epoch> epochs = new ArrayList<Epoch>();
 		epochs.add(epoch);
 
-		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"),
+		WhenTaken wt = new WhenTaken(ZERO_DAYS,
 				RelativeTo.BEFORE_EPOCH_END, epoch);
 		wt.commit();
 		epSom.getWhenTaken().add(wt);
@@ -881,7 +881,7 @@ public class JAXBConvertorTest {
 				EntityUtil.createDuration("P2D"));
 		epochs.add(mainPhase);
 
-		WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"),
+		WhenTaken whenTaken = new WhenTaken(ZERO_DAYS,
 				RelativeTo.BEFORE_EPOCH_END, mainPhase);
 		whenTaken.commit();
 
@@ -1130,17 +1130,17 @@ public class JAXBConvertorTest {
 			String omName, List<org.drugis.addis.entities.data.Measurement> dataMeasurements) {
 		org.drugis.addis.entities.data.Measurement m = buildRateMeasurement(
 				armName, omName, "Main phase",
-				EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END,
+				ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END,
 				rm);
 		dataMeasurements.add(m);
 	}
 	
-	private void addContinuousMeasurement(ContinuousMeasurement rm, String armName,
+	private void addContinuousMeasurement(ContinuousMeasurement cm, String armName,
 			String omName, List<org.drugis.addis.entities.data.Measurement> dataMeasurements) {
 		org.drugis.addis.entities.data.Measurement m = buildContinuousMeasurement(
 				armName, omName, "Main phase",
-				EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END,
-				rm);
+				ZERO_DAYS, RelativeTo.BEFORE_EPOCH_END,
+				cm);
 		dataMeasurements.add(m);
 	}
 
@@ -1817,24 +1817,11 @@ public class JAXBConvertorTest {
 		cm.setStdDev(1.0);
 		for (String armName : whichArms) {
 			for (String aeName : adverseEvents) {
-				study.getMeasurements()
-						.getMeasurement()
-						.add(buildRateMeasurement(armName, "adverseEvent-"
-								+ aeName, "Main phase", ZERO_DAYS,
-								RelativeTo.BEFORE_EPOCH_END, rm));
+				// FIXME: Magic numbers in endpoint indices (too tired)
+				addRateMeasurement(rm, armName, "adverseEvent-"	+ aeName, study.getMeasurements().getMeasurement());
+				addRateMeasurement(rm, armName,  "endpoint-" + endpoints[1], study.getMeasurements().getMeasurement());
+				addContinuousMeasurement(cm, armName,  "endpoint-" + endpoints[0], study.getMeasurements().getMeasurement());
 			}
-
-			// FIXME: Magic numbers in endpoint indices (too tired)
-			study.getMeasurements()
-					.getMeasurement()
-					.add(buildRateMeasurement(armName, "endpoint-"
-							+ endpoints[1], "Main phase", ZERO_DAYS,
-							RelativeTo.BEFORE_EPOCH_END, rm));
-			study.getMeasurements()
-					.getMeasurement()
-					.add(buildContinuousMeasurement(armName, "endpoint-"
-							+ endpoints[0], "Main phase", ZERO_DAYS,
-							RelativeTo.BEFORE_EPOCH_END, cm));
 		}
 
 		org.drugis.addis.entities.data.StudyBenefitRiskAnalysis br = new org.drugis.addis.entities.data.StudyBenefitRiskAnalysis();
@@ -1844,8 +1831,7 @@ public class JAXBConvertorTest {
 		br.setAnalysisType(AnalysisType.LyndOBrien);
 		br.setOutcomeMeasures(new OutcomeMeasuresReferences());
 		br.getOutcomeMeasures().getEndpoint().add(nameReference(endpoints[0]));
-		br.getOutcomeMeasures().getAdverseEvent()
-				.add(nameReference(adverseEvents[1]));
+		br.getOutcomeMeasures().getAdverseEvent().add(nameReference(adverseEvents[1]));
 		ArmReferences armRefs = new ArmReferences();
 		for (String whichArm : whichArms) {
 			armRefs.getArm().add(
@@ -1853,8 +1839,7 @@ public class JAXBConvertorTest {
 		}
 		br.setArms(armRefs);
 		BaselineArmReference baselineRef = new BaselineArmReference();
-		baselineRef
-				.setArm(JAXBConvertor.armReference(study.getName(), baseline));
+		baselineRef.setArm(JAXBConvertor.armReference(study.getName(), baseline));
 		br.setBaseline(baselineRef);
 		if (entityContext != null) {
 			br.setDecisionContext(JAXBConvertor

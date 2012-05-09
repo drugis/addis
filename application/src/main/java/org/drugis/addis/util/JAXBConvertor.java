@@ -128,6 +128,7 @@ import org.drugis.addis.entities.data.Drugs;
 import org.drugis.addis.entities.data.Endpoints;
 import org.drugis.addis.entities.data.EvidenceTypeEnum;
 import org.drugis.addis.entities.data.IdReference;
+import org.drugis.addis.entities.data.InconsistencyParameter;
 import org.drugis.addis.entities.data.InconsistencyResults;
 import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.IntegerWithNotes;
@@ -148,6 +149,7 @@ import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
 import org.drugis.addis.entities.data.RelativeEffectParameter;
 import org.drugis.addis.entities.data.RelativeEffectQuantileSummary;
+import org.drugis.addis.entities.data.RelativeEffectsQuantileSummary;
 import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StringIdReference;
 import org.drugis.addis.entities.data.StringWithNotes;
@@ -1153,6 +1155,8 @@ public class JAXBConvertor {
 		for (Parameter p : inconsistencyModel.getResults().getParameters()) { 
 			inconsResults.getSummary().add(convertParameterSummary(p, inconsistencyModel, ma));
 		}
+		RelativeEffectsQuantileSummary relEffectQuantileSummary = new RelativeEffectsQuantileSummary();
+		inconsResults.setRelativeEffectsQuantileSummary(relEffectQuantileSummary);
 		inconsResults.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary().addAll(convertRelativeEffectParameters(ma, inconsistencyModel));
 		return inconsResults;
 	}
@@ -1162,6 +1166,7 @@ public class JAXBConvertor {
 		ps.setPsrf(new ConvergenceSummary(mtc.getResults(), p).getScaleReduction());
 		if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) { 
 			org.drugis.mtc.parameterization.InconsistencyParameter ip = (org.drugis.mtc.parameterization.InconsistencyParameter)p;
+			ps.setInconsistency(new InconsistencyParameter());
 			for (Treatment t : ip.getCycle()) { 
 				Drugs drugs = new Drugs();
 				for (Drug d : nma.getDrugSet(t).getContents()) {
@@ -1199,8 +1204,8 @@ public class JAXBConvertor {
 	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MixedTreatmentComparison mtc) {
 		List<DrugSet> includedDrugs = ma.getIncludedDrugs();
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
-		for (int i = 0; i < includedDrugs.size() - 2; ++i) {
-			for (int j = i + 1; j < includedDrugs.size() - 1; ++j) {
+		for (int i = 0; i < includedDrugs.size() - 1; ++i) {
+			for (int j = i + 1; j < includedDrugs.size(); ++j) {
 				Pair<DrugSet> relEffect = new Pair<DrugSet>(includedDrugs.get(i), includedDrugs.get(j));
 				RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
 				qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
