@@ -37,8 +37,8 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.InconsistencyModel;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
@@ -47,8 +47,8 @@ import org.drugis.mtc.summary.QuantileSummary;
 
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	
-	private InconsistencyModel d_mockInconsistencyModel;
-	private ConsistencyModel d_mockConsistencyModel;
+	private InconsistencyWrapper d_mockInconsistencyModel;
+	private ConsistencyWrapper d_mockConsistencyModel;
 
 	public MockNetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
@@ -57,7 +57,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		d_mockInconsistencyModel = new MockInconsistencyModel();
 		d_mockConsistencyModel = new MockConsistencyModel(toTreatments(drugs));
 		d_quantileSummaries.put(d_mockConsistencyModel, new HashMap<Parameter, QuantileSummary>());
-		d_quantileSummaries.put(d_mockInconsistencyModel, new HashMap<Parameter, QuantileSummary>());
+		d_quantileSummaries.put(d_mockInconsistencyModel.getModel(), new HashMap<Parameter, QuantileSummary>());
 	}
 
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {
@@ -68,7 +68,6 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		return ts;
 	}
 
-	@Override
 	public QuantileSummary getQuantileSummary(MixedTreatmentComparison networkModel, Parameter ip) {
 		QuantileSummary summary = d_quantileSummaries.get(networkModel).get(ip);
 		if (summary == null) {
@@ -79,12 +78,12 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	}
 
 	@Override
-	public InconsistencyModel getInconsistencyModel() {
+	public InconsistencyWrapper getInconsistencyModel() {
 		return d_mockInconsistencyModel;
 	}
 	
 	@Override
-	public ConsistencyModel getConsistencyModel() {
+	public ConsistencyWrapper getConsistencyModel() {
 		return d_mockConsistencyModel;
 	}
 }

@@ -49,6 +49,13 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
+import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
+import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
+import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.EntityUtil;
@@ -60,7 +67,6 @@ import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
@@ -79,8 +85,8 @@ import edu.uci.ics.jung.graph.util.Pair;
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
-	private InconsistencyModel d_inconsistencyModel;
-	private ConsistencyModel d_consistencyModel;
+	private InconsistencyWrapper d_inconsistencyModel;
+	private ConsistencyWrapper d_consistencyModel;
 	private NetworkBuilder<DrugSet> d_builder;
 	protected final ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
@@ -89,7 +95,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		new HashMap<Parameter, NodeSplitPValueSummary>();
 	
 	private RankProbabilitySummary d_rankProbabilitySummary;
-	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
+	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitWrapper>();
 	
 	private static final Transformer<DrugSet, String> s_descTransform = new Transformer<DrugSet, String>() {
 		@Override
@@ -148,13 +154,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		super(ANALYSIS_TYPE, name, indication, om, armMap);
 	}
 
-	private InconsistencyModel createInconsistencyModel() {
+	private InconsistencyWrapper createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 		d_quantileSummaries.put(inconsistencyModel, new HashMap<Parameter, QuantileSummary>());
-		return inconsistencyModel;
+		return new SimulationInconsistencyModel(inconsistencyModel);
 	}
 	
-	private ConsistencyModel createConsistencyModel() {
+	private ConsistencyWrapper createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
 		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
@@ -164,15 +170,15 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			parameters[i] = consistencyModel.getRelativeEffect(getTreatment(relEffect.getFirst()), getTreatment(relEffect.getSecond()));
 		}
 		d_relativeEffectsSummary.setNested(new MCMCMultivariateNormalSummary(consistencyModel.getResults(), parameters));
-		return consistencyModel;
+		return new SimulationConsistencyModel(consistencyModel);
 	}
 	
-	private NodeSplitModel createNodeSplitModel(BasicParameter node) {
+	private NodeSplitWrapper createNodeSplitModel(BasicParameter node) {
 		NodeSplitModel nodeSplitModel = (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
 		d_quantileSummaries.put(nodeSplitModel, new HashMap<Parameter, QuantileSummary>());
 		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
-		return nodeSplitModel;
+		return new SimulationNodeSplitModel(nodeSplitModel);
 	}
 	
 	private NetworkBuilder<DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
@@ -209,14 +215,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return builder;
 	}
 
-	public synchronized InconsistencyModel getInconsistencyModel() {
+	public synchronized InconsistencyWrapper getInconsistencyModel() {
 		if (d_inconsistencyModel == null) {
 			d_inconsistencyModel = createInconsistencyModel();
 		}
 		return d_inconsistencyModel;
 	}
 	
-	public synchronized ConsistencyModel getConsistencyModel() {
+	public synchronized ConsistencyWrapper getConsistencyModel() {
 		if (d_consistencyModel == null) {
 			d_consistencyModel = createConsistencyModel();
 		}
@@ -250,13 +256,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return getInconsistencyModel().getInconsistencyFactors();
 	}
 	
-	public QuantileSummary getQuantileSummary(MixedTreatmentComparison networkModel, Parameter ip) {
-		QuantileSummary summary = d_quantileSummaries.get(networkModel).get(ip);
-		if (summary == null) {
-			summary = new QuantileSummary(networkModel.getResults(), ip);
-			d_quantileSummaries.get(networkModel).put(ip, summary);
-		}
-		return summary;
+	public QuantileSummary getQuantileSummary(MTCModelWrapper modelWrapper, Parameter ip) {
+		return modelWrapper.getQuantileSummary(ip);
+//		QuantileSummary summary = d_quantileSummaries.get(networkModel).get(ip);
+//		if (summary == null) {
+//			summary = new QuantileSummary(networkModel.getResults(), ip);
+//			d_quantileSummaries.get(networkModel).put(ip, summary);
+//		}
+//		return summary;
 	}
 
 	/**
@@ -286,7 +293,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary(Parameter p) {
 		NodeSplitPValueSummary summary = d_nodeSplitPValueSummaries.get(p);
 		if(summary == null) {
-			NodeSplitModel m = getNodeSplitModel((BasicParameter) p);
+			NodeSplitWrapper m = getNodeSplitModel((BasicParameter) p);
 			Parameter dir = m.getDirectEffect();
 			Parameter indir = m.getIndirectEffect();
 			summary = new NodeSplitPValueSummary(m.getResults(), dir, indir);
@@ -317,9 +324,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		if(!getConsistencyModel().isReady())
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
-		ConsistencyModel consistencyModel = getConsistencyModel();
+		ConsistencyWrapper consistencyModel = getConsistencyModel();
 		Parameter param = consistencyModel.getRelativeEffect(getTreatment(d1), getTreatment(d2));
-		QuantileSummary estimate = getQuantileSummary(consistencyModel, param);
+		QuantileSummary estimate = consistencyModel.getQuantileSummary(param);
 		
 		if (isContinuous()) {
 			return NetworkRelativeEffect.buildMeanDifference(estimate);
@@ -344,7 +351,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return DefaultModelFactory.instance().getSplittableNodes(getBuilder().buildNetwork());
 	}
 
-	public NodeSplitModel getNodeSplitModel(BasicParameter p) {
+	public NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
 		if (!d_nodeSplitModels.containsKey(p)) {
 			d_nodeSplitModels.put(p, createNodeSplitModel(p));
 		}

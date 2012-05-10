@@ -30,19 +30,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.yadas.YadasResults;
 
-public class MockInconsistencyModel implements InconsistencyModel {
+public class MockInconsistencyModel  extends SimulationInconsistencyModel implements InconsistencyWrapper {
 
 	boolean d_ready = false;
 	private ActivityTask d_task;
@@ -52,6 +53,7 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	private static final int SIMULATION_ITER = 10000;
 
 	public MockInconsistencyModel() {
+		super(null); // FIXME!!!
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
 		d_task = new ActivityTask(new ActivityModel(start, end, 
@@ -116,11 +118,4 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	protected void finished() {
 		d_results.simulationFinished();
 	}
-
-	@Override
-	public void setExtendSimulation(ExtendSimulation s) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

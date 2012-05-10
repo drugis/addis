@@ -42,10 +42,10 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
@@ -91,7 +91,7 @@ public class NetworkTableModelTest {
 		assertEquals(d_analysis.getIncludedDrugs().get(2), d_tableModel.getValueAt(2, 2));
 
 		
-		ConsistencyModel consModel = d_analysis.getConsistencyModel();
+		ConsistencyWrapper consModel = d_analysis.getConsistencyModel();
 		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1)));
 		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)));
 		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(2)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)));
@@ -108,7 +108,7 @@ public class NetworkTableModelTest {
 	
 	@Test
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
-		ConsistencyModel model = d_analysis.getConsistencyModel();
+		ConsistencyWrapper model =  d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getActivityTask());
 		Treatment d1 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0));
 		Treatment d2 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1));
