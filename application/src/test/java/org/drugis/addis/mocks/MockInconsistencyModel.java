@@ -30,20 +30,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
+import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
+import org.drugis.mtc.yadas.YadasInconsistencyModel;
 import org.drugis.mtc.yadas.YadasResults;
 
-public class MockInconsistencyModel  extends SimulationInconsistencyModel implements InconsistencyWrapper {
+public class MockInconsistencyModel extends YadasInconsistencyModel implements InconsistencyModel {
 
 	boolean d_ready = false;
 	private ActivityTask d_task;
@@ -51,9 +51,13 @@ public class MockInconsistencyModel  extends SimulationInconsistencyModel implem
 	
 	private static final int BURNIN_ITER = 1000;
 	private static final int SIMULATION_ITER = 10000;
+	
+	public static InconsistencyModel buildMockSimulationIconsistencyModel() { 
+		return new MockInconsistencyModel();	
+	}
 
-	public MockInconsistencyModel() {
-		super(null); // FIXME!!!
+	private MockInconsistencyModel() {
+		super(null);
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
 		d_task = new ActivityTask(new ActivityModel(start, end, 
@@ -77,9 +81,6 @@ public class MockInconsistencyModel  extends SimulationInconsistencyModel implem
 		return inFac;
 	}
 
-	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
-		return null;
-	}
 
 	public boolean isReady() {
 		return d_task.isFinished();
@@ -93,11 +94,6 @@ public class MockInconsistencyModel  extends SimulationInconsistencyModel implem
 		return SIMULATION_ITER;
 	}
 
-	public void setBurnInIterations(int it) {
-	}
-
-	public void setSimulationIterations(int it) {
-	}
 
 	public ActivityTask getActivityTask() {
 		return d_task;

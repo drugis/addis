@@ -27,7 +27,6 @@
 package org.drugis.addis.mocks;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +38,9 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.Parameter;
+import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
+import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.summary.QuantileSummary;
 
 
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
@@ -54,10 +52,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
-		d_mockInconsistencyModel = new MockInconsistencyModel();
-		d_mockConsistencyModel = new MockConsistencyModel(toTreatments(drugs));
-		d_quantileSummaries.put(d_mockConsistencyModel, new HashMap<Parameter, QuantileSummary>());
-		d_quantileSummaries.put(d_mockInconsistencyModel.getModel(), new HashMap<Parameter, QuantileSummary>());
+		d_mockInconsistencyModel =  new SimulationInconsistencyModel(getBuilder(), MockInconsistencyModel.buildMockSimulationIconsistencyModel());
+		d_mockConsistencyModel = new SimulationConsistencyModel(getBuilder(), MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
 	}
 
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {
@@ -67,16 +63,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		}
 		return ts;
 	}
-
-	public QuantileSummary getQuantileSummary(MixedTreatmentComparison networkModel, Parameter ip) {
-		QuantileSummary summary = d_quantileSummaries.get(networkModel).get(ip);
-		if (summary == null) {
-			summary = new MockQuantileSummary(networkModel.getResults(), ip);
-			d_quantileSummaries.get(networkModel).put(ip, summary);
-		}
-		return summary;
-	}
-
+	
 	@Override
 	public InconsistencyWrapper getInconsistencyModel() {
 		return d_mockInconsistencyModel;

@@ -1,15 +1,17 @@
 package org.drugis.addis.entities.analysis.models;
 
+import org.drugis.addis.entities.DrugSet;
+import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.summary.NodeSplitPValueSummary;
 
-public class SimulationNodeSplitModel extends AbstractSimulationModel implements NodeSplitWrapper {
+public class SimulationNodeSplitModel extends AbstractSimulationModel<NodeSplitModel> implements NodeSplitWrapper {
+	private NodeSplitPValueSummary d_pValueSummary;
 
-	private final NodeSplitModel d_nested;
-
-	public SimulationNodeSplitModel(NodeSplitModel model) {
-		super(model);
-		d_nested = model;
+	public SimulationNodeSplitModel(NetworkBuilder<DrugSet> builder, NodeSplitModel model) {
+		super(builder, model);
 	}
 
 	@Override
@@ -22,5 +24,16 @@ public class SimulationNodeSplitModel extends AbstractSimulationModel implements
 		return d_nested.getIndirectEffect();
 	}
 
+	@Override
+	public BasicParameter getSplitNode() {
+		return d_nested.getSplitNode();
+	}
+
+	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary() {
+		if(d_pValueSummary == null) {
+			d_pValueSummary = new NodeSplitPValueSummary(d_nested.getResults(), getDirectEffect(), getIndirectEffect());
+		}
+		return d_pValueSummary;
+	}
 
 }

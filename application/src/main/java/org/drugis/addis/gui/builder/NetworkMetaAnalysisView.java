@@ -58,6 +58,8 @@ import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
+import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
+import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -191,11 +193,11 @@ implements ViewBuilder {
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
-		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
+		row = buildMemoryUsage(d_pm.getConsistencyModel().getModel(), "Consistency model", builder, layout, row);
 		row = buildMemoryUsage(d_pm.getInconsistencyModel().getModel(), "Inconsistency model", builder, layout, row);
 		builder.addSeparator("", cc.xyw(2, row-1, 3));
 		for(BasicParameter p : d_pm.getSplitParameters()) {
-			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
+			row = buildMemoryUsage(d_pm.getNodeSplitModel(p).getModel(), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
 			builder.addSeparator("", cc.xyw(2, row-1, 3));
 		}
 		
@@ -485,8 +487,11 @@ implements ViewBuilder {
 	}
 
 	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
-		NodeSplitWrapper splitModel = d_pm.getNodeSplitModel(p);
-		ConsistencyWrapper consModel = d_pm.getConsistencyModel();
+		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitModel) || !(d_pm.getConsistencyModel() instanceof SimulationConsistencyModel)) {
+			return new JLabel("Can not build density plot based on saved results.");
+		}
+		SimulationNodeSplitModel splitModel = (SimulationNodeSplitModel) d_pm.getNodeSplitModel(p);
+		SimulationConsistencyModel consModel = (SimulationConsistencyModel) d_pm.getConsistencyModel();
 		XYDataset dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
 				new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
 				new PlotParameter(consModel.getResults(), p));

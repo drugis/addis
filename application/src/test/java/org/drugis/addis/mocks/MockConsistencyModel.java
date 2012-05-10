@@ -30,21 +30,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
+import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.yadas.YadasConsistencyModel;
 import org.drugis.mtc.yadas.YadasResults;
 
-public class MockConsistencyModel extends SimulationConsistencyModel implements ConsistencyWrapper {
+public class MockConsistencyModel extends YadasConsistencyModel implements ConsistencyModel {
 
+	public static ConsistencyModel buildMockSimulationConsistencyModel(List<Treatment> ts) {
+		return new MockConsistencyModel(ts);
+	}
+	
 	boolean d_ready = false;
 	private ActivityTask d_task;
 	private YadasResults d_results;
@@ -52,7 +56,7 @@ public class MockConsistencyModel extends SimulationConsistencyModel implements 
 	private static final int BURNIN_ITER = 1000;
 	private static final int SIMULATION_ITER = 10000;
 	
-	public MockConsistencyModel(List<Treatment> ts) {
+	private MockConsistencyModel(List<Treatment> ts) {
 		super(null);
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
@@ -76,7 +80,7 @@ public class MockConsistencyModel extends SimulationConsistencyModel implements 
 		return parameters;
 	}
 
-	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
+	public BasicParameter getRelativeEffect(Treatment base, Treatment subj) {
 		return new BasicParameter(base, subj);
 	}
 

@@ -34,8 +34,6 @@ import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
@@ -64,8 +62,8 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MixedTreatmentComparison networkModel, DrugSet d1, DrugSet d2) {
-		QuantileSummary quantileSummary = getSummary(d_pm.getBean().getTreatment(d1), d_pm.getBean().getTreatment(d2));
+	private void attachListener(MTCModelWrapper networkModel, DrugSet d1, DrugSet d2) {
+		QuantileSummary quantileSummary = getSummary(d1, d2);
 		quantileSummary.addPropertyChangeListener(d_listener);
 	}
 
@@ -92,14 +90,10 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		if (row == col) {
 			return getDrugAt(row);
 		}
-		return getSummary(getTreatment(row), getTreatment(col));
+		return getSummary(getDrugAt(row), getDrugAt(col));
 	}
 	
-	private QuantileSummary getSummary(final Treatment drug1, final Treatment drug2) {
-		return d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
-	}
-
-	private Treatment getTreatment(int idx) {
-		return d_pm.getBean().getTreatment(getDrugAt(idx));
+	private QuantileSummary getSummary(final DrugSet d1, final DrugSet d2) {
+		return d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(d1, d2));
 	}
 }

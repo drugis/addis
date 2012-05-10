@@ -111,12 +111,12 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
-		return new RankProbabilityDataset(getBean().getRankProbabilities());
+		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities());
 	}
 	
 
 	public TableModel getRankProbabilityTableModel() {
-		return new RankProbabilityTableModel(getBean().getRankProbabilities());
+		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities());
 	}
 
 	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
@@ -130,7 +130,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public ValueHolder<Boolean> getNodesplitModelConstructedModel(BasicParameter p) {
 		return d_models.get(getBean().getNodeSplitModel(p)).isModelConstructed();
 	}
-
 	
 	public String getRankProbabilityRankChartNote() {
 		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
@@ -142,7 +141,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TaskProgressModel getProgressModel(MixedTreatmentComparison mtc) {
+	public TaskProgressModel getProgressModel(MTCModelWrapper mtc) {
 		return d_models.get(mtc).getProgressModel();
 	}
 	
@@ -166,12 +165,12 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getConsistencyModel();
 	}
 
-	public NodeSplitPValueSummary getNodeSplitPValueSummary(Parameter p) {
-		return getBean().getNodesNodeSplitPValueSummary(p);
+	public NodeSplitPValueSummary getNodeSplitPValueSummary(BasicParameter p) {
+		return getBean().getNodeSplitModel(p).getNodesNodeSplitPValueSummary();
 	}
 
 	public List<Parameter> getInconsistencyFactors() {
-		return getBean().getInconsistencyFactors();
+		return getBean().getInconsistencyModel().getInconsistencyFactors();
 	}
 
 	public List<DrugSet> getIncludedDrugs() {
@@ -186,7 +185,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNetwork();
 	}
 	
-	public MCMCWrapper getWrappedModel(MixedTreatmentComparison m) {
+	public MCMCWrapper getWrappedModel(MTCModelWrapper m) {
 		return d_models.get(m);
 	}
 }

@@ -60,8 +60,6 @@ import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.Parameter;
-import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
@@ -366,22 +364,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		
 	public AnalysisType getAnalysisType() {
 		return d_analysisType;
-	}
-
-	public List<Summary> getRelativeEffectSummaries() {
-		List<Summary> summaryList = new ArrayList<Summary>();
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof NetworkMetaAnalysis) {
-				for(DrugSet d: getNonBaselineAlternatives()) {
-					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-					Parameter p = new BasicParameter(nma.getTreatment(getBaseline()), nma.getTreatment(d));
-//					summaryList.add(nma.getQuantileSummary(nma.getConsistencyModel(), p));
-					summaryList.add(nma.getConsistencyModel().getQuantileSummary(p));
-
-				}
-			}
-		}
-		return summaryList;
 	}
 
 	public List<Summary> getAbsoluteEffectSummaries() {

@@ -2,13 +2,15 @@ package org.drugis.addis.entities.analysis.models;
 
 import java.util.List;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.InconsistencyModel;
+import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 
-public class SimulationInconsistencyModel extends AbstractSimulationModel implements InconsistencyWrapper {
+public class SimulationInconsistencyModel extends AbstractSimulationModel<InconsistencyModel> implements InconsistencyWrapper {
 
-	public SimulationInconsistencyModel(InconsistencyModel model) {
-		super(model);
+	public SimulationInconsistencyModel(NetworkBuilder<DrugSet> builder, InconsistencyModel model) {
+		super(builder, model);
 	}
 
 	@Override
