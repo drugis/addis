@@ -106,6 +106,8 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.AdverseEvents;
@@ -162,15 +164,12 @@ import org.drugis.addis.entities.data.VarianceParameterType;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.parameterization.InconsistencyVariance;
 import org.drugis.mtc.parameterization.RandomEffectsVariance;
-import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -1149,10 +1148,10 @@ public class JAXBConvertor {
 
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
 		InconsistencyResults inconsResults = new InconsistencyResults();
-		InconsistencyModel inconsistencyModel = ma.getInconsistencyModel();
-		MCMCSettings inconsistencySettings = convertMCMCSettings(inconsistencyModel);
+		InconsistencyWrapper inconsistencyModel = ma.getInconsistencyModel();
+		MCMCSettings inconsistencySettings = convertMCMCSettings(inconsistencyModel.getModel());
 		inconsResults.setMcmcSettings(inconsistencySettings);
-		for (Parameter p : inconsistencyModel.getResults().getParameters()) { 
+		for (Parameter p : inconsistencyModel.getModel().getResults().getParameters()) { 
 			inconsResults.getSummary().add(convertParameterSummary(p, inconsistencyModel, ma));
 		}
 		RelativeEffectsQuantileSummary relEffectQuantileSummary = new RelativeEffectsQuantileSummary();
@@ -1161,9 +1160,9 @@ public class JAXBConvertor {
 		return inconsResults;
 	}
 
-	private static ParameterSummary convertParameterSummary(Parameter p, MixedTreatmentComparison mtc, NetworkMetaAnalysis nma) { 
+	private static ParameterSummary convertParameterSummary(Parameter p, MTCModelWrapper mtc, NetworkMetaAnalysis nma) { 
 		ParameterSummary ps = new ParameterSummary();
-		ps.setPsrf(new ConvergenceSummary(mtc.getResults(), p).getScaleReduction());
+		ps.setPsrf(mtc.getConvergenceSummary(p).getScaleReduction());
 		if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) { 
 			org.drugis.mtc.parameterization.InconsistencyParameter ip = (org.drugis.mtc.parameterization.InconsistencyParameter)p;
 			ps.setInconsistency(new InconsistencyParameter());
@@ -1183,7 +1182,7 @@ public class JAXBConvertor {
 			value.setName(VarianceParameterType.VAR_D);
 			ps.setVariance(value);
 		} else if (p instanceof BasicParameter) {
-			QuantileSummary qs = nma.getQuantileSummary(mtc, p);
+			QuantileSummary qs = mtc.getQuantileSummary(p);
 			
 			ps.getQuantile().addAll(convertQuantileSummary(qs));
 		}
@@ -1201,7 +1200,7 @@ public class JAXBConvertor {
 		return l;
 	}
 
-	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MixedTreatmentComparison mtc) {
+	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MTCModelWrapper mtc) {
 		List<DrugSet> includedDrugs = ma.getIncludedDrugs();
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
 		for (int i = 0; i < includedDrugs.size() - 1; ++i) {
@@ -1209,11 +1208,11 @@ public class JAXBConvertor {
 				Pair<DrugSet> relEffect = new Pair<DrugSet>(includedDrugs.get(i), includedDrugs.get(j));
 				RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
 				qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
-				qs.getQuantile().addAll(convertQuantileSummary(ma.getQuantileSummary(mtc, relEffect)));
+				qs.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(mtc.getRelativeEffect(includedDrugs.get(i), includedDrugs.get(j)))));
 				reqs.add(qs);
 			}
 		}
-		return reqs; // TODO make it accept RelativeEffectsQuantileSummaries 
+		return reqs; 
 	}
 	
 	private static RelativeEffectParameter convertRelativeEffectsParameter(Pair<DrugSet> pair) {

@@ -42,13 +42,12 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -91,16 +90,16 @@ public class NetworkTableModelTest {
 		assertEquals(d_analysis.getIncludedDrugs().get(2), d_tableModel.getValueAt(2, 2));
 
 		
-		ConsistencyModel consModel = d_analysis.getConsistencyModel();
-		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1)));
-		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)));
-		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(2)), d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0)));
+		ConsistencyWrapper consModel = d_analysis.getConsistencyModel();
+		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(0), d_analysis.getIncludedDrugs().get(1));
+		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(1), d_analysis.getIncludedDrugs().get(0));
+		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(2), d_analysis.getIncludedDrugs().get(0));
 
-		assertSame(d_analysis.getQuantileSummary(consModel, relativeEffect01), d_tableModel.getValueAt(0, 1));
+		assertSame(consModel.getQuantileSummary(relativeEffect01), d_tableModel.getValueAt(0, 1));
 		assertEquals("\"Paroxetine\" relative to \"Fluoxetine\"", d_tableModel.getDescriptionAt(0, 1));
-		assertSame(d_analysis.getQuantileSummary(consModel, relativeEffect10), d_tableModel.getValueAt(1, 0));
+		assertSame(consModel.getQuantileSummary(relativeEffect10), d_tableModel.getValueAt(1, 0));
 		assertEquals("\"Fluoxetine\" relative to \"Paroxetine\"", d_tableModel.getDescriptionAt(1, 0));
-		assertSame(d_analysis.getQuantileSummary(consModel, relativeEffect20), d_tableModel.getValueAt(2, 0));
+		assertSame(consModel.getQuantileSummary(relativeEffect20), d_tableModel.getValueAt(2, 0));
 		assertEquals("\"Fluoxetine\" relative to \"Sertraline\"", d_tableModel.getDescriptionAt(2, 0));
 
 	}
@@ -108,17 +107,17 @@ public class NetworkTableModelTest {
 	
 	@Test
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
-		ConsistencyModel model = d_analysis.getConsistencyModel();
+		ConsistencyWrapper model =  d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getActivityTask());
-		Treatment d1 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(0));
-		Treatment d2 = d_analysis.getTreatment(d_analysis.getIncludedDrugs().get(1));
-		QuantileSummary normalSummary = d_analysis.getQuantileSummary(model, model.getRelativeEffect(d1, d2));
+		DrugSet d1 = d_analysis.getIncludedDrugs().get(0);
+		DrugSet d2 = d_analysis.getIncludedDrugs().get(1);
+		QuantileSummary quantileSummary = model.getQuantileSummary(model.getRelativeEffect(d1, d2));
 		
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
 		d_tableModel.addTableModelListener(mock);
 		
 		// fire some event
-		normalSummary.resultsEvent(new MCMCResultsEvent(null));
+		quantileSummary.resultsEvent(new MCMCResultsEvent(null));
 		
 		EasyMock.verify(mock);
 	}
