@@ -1227,10 +1227,10 @@ public class JAXBConvertor {
 	
 	private static MCMCSettings convertMCMCSettings(MCMCModel mcmc) {
 		MCMCSettings s = new MCMCSettings();
-		s.setSimulationIterations((long)mcmc.getSimulationIterations());
-		s.setTuningIterations((long)mcmc.getBurnInIterations());
-		s.setThinningInterval((long) 1); // FIXME Magic number
-		s.setInferenceIterations((long)mcmc.getSimulationIterations() / 2);
+		s.setSimulationIterations(mcmc.getSimulationIterations());
+		s.setTuningIterations(mcmc.getBurnInIterations());
+		s.setThinningInterval( 1); // FIXME Magic number
+		s.setInferenceIterations(mcmc.getSimulationIterations() / 2);
 		s.setVarianceScalingFactor(2.5); // FIXME Magic number
 		return s;
 	}

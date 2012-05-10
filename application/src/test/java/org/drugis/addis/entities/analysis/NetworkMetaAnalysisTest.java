@@ -47,22 +47,24 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class NetworkMetaAnalysisTest {
 	private NetworkMetaAnalysis d_analysis;
-	private NetworkMetaAnalysis d_mockAnalysis;
+	private MockNetworkMetaAnalysis d_mockAnalysis;
 
 	@Before
 	public void setup() throws InterruptedException{
 		d_analysis = ExampleData.buildNetworkMetaAnalysisHamD();
-		d_mockAnalysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
 		while (!d_mockAnalysis.getConsistencyModel().isReady()) {
 			Thread.sleep(10);
@@ -92,11 +94,13 @@ public class NetworkMetaAnalysisTest {
 		assertEquals(expected, d_analysis.getConsistencyModel().getRelativeEffectsList());
 	}
 	
+	@Ignore
 	@Test
 	public void testGetRelativeEffect() {
 		DrugSet base = new DrugSet(ExampleData.buildDrugFluoxetine());
 		DrugSet subj = new DrugSet(ExampleData.buildDrugParoxetine());
 		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(base, subj, BasicOddsRatio.class);
+
 		QuantileSummary summary = d_mockAnalysis.getConsistencyModel().getQuantileSummary(d_mockAnalysis.getConsistencyModel().getRelativeEffect(base, subj));
 		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary);
 		assertNotNull(expected);

@@ -543,10 +543,10 @@
 		<xs:attribute name="pValue" type="xs:double"/>
 	</xs:complexType>
 	<xs:complexType name="MCMCSettings">
-		<xs:attribute name="tuningIterations" type="xs:long"/>
-		<xs:attribute name="simulationIterations" type="xs:long"/>
-		<xs:attribute name="inferenceIterations" type="xs:long"/>
-		<xs:attribute name="thinningInterval" type="xs:long"/>
+		<xs:attribute name="tuningIterations" type="xs:int"/>
+		<xs:attribute name="simulationIterations" type="xs:int"/>
+		<xs:attribute name="inferenceIterations" type="xs:int"/>
+		<xs:attribute name="thinningInterval" type="xs:int"/>
 		<xs:attribute name="varianceScalingFactor" type="xs:double"/>
 	</xs:complexType>
 

@@ -100,6 +100,4 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
 		return new ConvergenceSummary(d_nested.getResults(), p); 
 	}
-
-	
 }
