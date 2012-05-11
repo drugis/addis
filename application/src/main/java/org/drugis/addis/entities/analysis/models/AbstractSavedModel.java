@@ -10,6 +10,7 @@ import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.common.threading.activity.Transition;
+import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
@@ -41,9 +42,6 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		return new ActivityTask(new ActivityModel(start, end, transitions ), msg);
 	}
 
-	public MixedTreatmentComparison getModel() {
-		return null;
-	}
 
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
 		return new BasicParameter(d_builder.getTreatmentMap().get(a), d_builder.getTreatmentMap().get(b));
@@ -77,4 +75,26 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	public int getSimulationIterations() {
 		return d_settings.getSimulationIterations();
 	}
+	
+	public MixedTreatmentComparison getModel() {
+		throw new UnsupportedOperationException("Saved MTC models do not have a MixedTreatmentComparison model.");
+	}
+	
+	@Override
+	public MCMCResults getResults() {
+		throw new UnsupportedOperationException("Saved MTC models do not have results");
+	}
+
+	@Override
+	public void setBurnInIterations(int it) {
+		throw new IllegalAccessError("Burn-in iterations are read-only for saved models");
+	}
+
+	@Override
+	public void setSimulationIterations(int it) {
+		throw new IllegalAccessError("Simulation iterations are read-only for saved models");
+		
+	}
+	
+	
 }

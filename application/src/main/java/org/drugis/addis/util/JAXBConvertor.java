@@ -167,8 +167,8 @@ import org.drugis.common.beans.SortedSetModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.parameterization.InconsistencyVariance;
-import org.drugis.mtc.parameterization.RandomEffectsVariance;
+import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -1104,16 +1104,52 @@ public class JAXBConvertor {
 		}
 
 		NetworkMetaAnalysis networkMetaAnalysis = new NetworkMetaAnalysis(name, indication, om, armMap);
-		// Begin loading results
 		
-		networkMetaAnalysis.loadInconsitencyModel(null, null, null);
+		// Begin loading results
+		if(nma.getInconsistencyResults() != null) { 
+			InconsistencyResults results = nma.getInconsistencyResults();
+			HashMap<Parameter, QuantileSummary> quantileSummaries = new HashMap<Parameter, QuantileSummary>();
+			HashMap<Parameter, ConvergenceSummary> convergenceSummaries = new HashMap<Parameter, ConvergenceSummary>();
+			
+			List<RelativeEffectQuantileSummary> relativeEffects = results.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary();
+			
+			for(RelativeEffectQuantileSummary reqs : relativeEffects) {
+				Drugs base = reqs.getRelativeEffect().getAlternative().get(0);
+				Drugs subj = reqs.getRelativeEffect().getAlternative().get(1);
+				Parameter p = new BasicParameter(networkMetaAnalysis.getTreatment(convertDrugSet(base, domain)), networkMetaAnalysis.getTreatment(convertDrugSet(subj, domain)));
+				
+				QuantileSummary q = convertQuantileSummary(reqs);
+				quantileSummaries.put(p, q);
+			}
+			
+			networkMetaAnalysis.loadInconsitencyModel(results.getMcmcSettings(), quantileSummaries, convergenceSummaries);
+		}
 		return networkMetaAnalysis;
 		
+	}
+
+	private static QuantileSummary convertQuantileSummary(RelativeEffectQuantileSummary reqs) {
+		List<QuantileType> quantile = reqs.getQuantile();
+		double[] probs = new double[quantile.size()]; 
+		double[] values = new double[quantile.size()];  
+		for(int i = 0; quantile.size() > i; ++i) { 
+			probs[i] = quantile.get(i).getLevel();
+			values[i] = quantile.get(i).getValue();
+		}
+		return new QuantileSummary(probs, values);
 	}
 	
 	private static DrugSet convertDrugSet(AnalysisDrugs drugs, Domain domain) {
 		List<Drug> out = new ArrayList<Drug>();
 		for(NameReference d : drugs.getDrug()) {
+			out.add(findNamedItem(domain.getDrugs(), d.getName()));
+		}
+		return new DrugSet(out);
+	}
+	
+	private static DrugSet convertDrugSet(Drugs drugs, Domain domain) {
+		List<Drug> out = new ArrayList<Drug>();
+		for(org.drugis.addis.entities.data.Drug d : drugs.getDrug()) {
 			out.add(findNamedItem(domain.getDrugs(), d.getName()));
 		}
 		return new DrugSet(out);
@@ -1144,6 +1180,7 @@ public class JAXBConvertor {
 			alt.setArms(arms);
 			nma.getAlternative().add(alt);
 		}
+		
 		// Begin saving results
 		nma.setInconsistencyResults(convertInconsistencyResults(ma));
 		
@@ -1153,44 +1190,47 @@ public class JAXBConvertor {
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
 		InconsistencyResults inconsResults = new InconsistencyResults();
 		InconsistencyWrapper inconsistencyModel = ma.getInconsistencyModel();
-		MCMCSettings inconsistencySettings = convertMCMCSettings(inconsistencyModel.getModel());
-		inconsResults.setMcmcSettings(inconsistencySettings);
-		for (Parameter p : inconsistencyModel.getModel().getResults().getParameters()) { 
-			inconsResults.getSummary().add(convertParameterSummary(p, inconsistencyModel, ma));
+		if(!inconsistencyModel.hasSavedResults() && inconsistencyModel.isReady()) { 
+			MCMCSettings inconsistencySettings = convertMCMCSettings(inconsistencyModel.getModel());
+			inconsResults.setMcmcSettings(inconsistencySettings);
+			for (Parameter p : inconsistencyModel.getModel().getResults().getParameters()) { 
+				inconsResults.getSummary().add(convertParameterSummary(p, inconsistencyModel, ma));
+			}
+			RelativeEffectsQuantileSummary relEffectQuantileSummary = new RelativeEffectsQuantileSummary();
+			inconsResults.setRelativeEffectsQuantileSummary(relEffectQuantileSummary);
+			inconsResults.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary().addAll(convertRelativeEffectParameters(ma, inconsistencyModel));
+			return inconsResults;
 		}
-		RelativeEffectsQuantileSummary relEffectQuantileSummary = new RelativeEffectsQuantileSummary();
-		inconsResults.setRelativeEffectsQuantileSummary(relEffectQuantileSummary);
-		inconsResults.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary().addAll(convertRelativeEffectParameters(ma, inconsistencyModel));
-		return inconsResults;
+		return null;
 	}
 
 	private static ParameterSummary convertParameterSummary(Parameter p, MTCModelWrapper mtc, NetworkMetaAnalysis nma) { 
 		ParameterSummary ps = new ParameterSummary();
-		ps.setPsrf(mtc.getConvergenceSummary(p).getScaleReduction());
-		if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) { 
-			org.drugis.mtc.parameterization.InconsistencyParameter ip = (org.drugis.mtc.parameterization.InconsistencyParameter)p;
-			ps.setInconsistency(new InconsistencyParameter());
-			for (Treatment t : ip.getCycle()) { 
-				Drugs drugs = new Drugs();
-				for (Drug d : nma.getDrugSet(t).getContents()) {
-					drugs.getDrug().add(convertDrug(d));
+		if( p instanceof org.drugis.mtc.parameterization.InconsistencyParameter ||
+			p instanceof org.drugis.mtc.parameterization.InconsistencyVariance  ||
+			p instanceof org.drugis.mtc.parameterization.RandomEffectsVariance) {
+			ps.setPsrf(mtc.getConvergenceSummary(p).getScaleReduction());
+			ps.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(p)));
+			if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) { 
+				org.drugis.mtc.parameterization.InconsistencyParameter ip = (org.drugis.mtc.parameterization.InconsistencyParameter)p;
+				ps.setInconsistency(new InconsistencyParameter());
+				for (Treatment t : ip.getCycle()) { 
+					Drugs drugs = new Drugs();
+					for (Drug d : nma.getDrugSet(t).getContents()) {
+						drugs.getDrug().add(convertDrug(d));
+					}
+					ps.getInconsistency().getAlternative().add(drugs);
 				}
-				ps.getInconsistency().getAlternative().add(drugs);
+			} else if (p instanceof org.drugis.mtc.parameterization.InconsistencyVariance) { 
+				VarianceParameter value = new VarianceParameter();
+				value.setName(VarianceParameterType.VAR_W);
+				ps.setVariance(value);
+			} else if (p instanceof org.drugis.mtc.parameterization.RandomEffectsVariance) { 
+				VarianceParameter value = new VarianceParameter();
+				value.setName(VarianceParameterType.VAR_D);
+				ps.setVariance(value);
 			}
-		} else if (p instanceof InconsistencyVariance) { 
-			VarianceParameter value = new VarianceParameter();
-			value.setName(VarianceParameterType.VAR_W);
-			ps.setVariance(value);
-		} else if (p instanceof RandomEffectsVariance) { 
-			VarianceParameter value = new VarianceParameter();
-			value.setName(VarianceParameterType.VAR_D);
-			ps.setVariance(value);
-//		} else if (p instanceof BasicParameter) {
-//			QuantileSummary qs = mtc.getQuantileSummary(p);
-//			
-//			ps.getQuantile().addAll(convertQuantileSummary(qs));
 		}
-		ps.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(p)));
 		return ps;
 	}
 

@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -74,7 +75,7 @@ public class AnalysisComponentFactory {
 		
 		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model));
 		panelRow += 2;
-		if(hasConvergence(model) && !model.hasSavedResults()) { 
+		if(!model.hasSavedResults() && hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
 		}
 		return panelBuilder.getPanel();
@@ -137,7 +138,7 @@ public class AnalysisComponentFactory {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					((MixedTreatmentComparison)model.getModel()).setExtendSimulation(ExtendSimulation.FINISH);
+					((MTCModelWrapper)model.getModel()).getModel().setExtendSimulation(ExtendSimulation.FINISH);
 				}
 			}
 		});
@@ -151,7 +152,7 @@ public class AnalysisComponentFactory {
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((MixedTreatmentComparison)model.getModel()).setExtendSimulation(ExtendSimulation.EXTEND);
+				((MTCModelWrapper)model.getModel()).getModel().setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;
@@ -172,7 +173,7 @@ public class AnalysisComponentFactory {
 	}
 
 	private static boolean hasConvergence(MCMCWrapper model) {
-		if(!model.hasSavedResults() && model.getModel() instanceof MixedTreatmentComparison) {
+		if(!model.hasSavedResults() && model.getModel() instanceof MTCModelWrapper) {
 			return true;
 		} else { 
 			return false;

@@ -169,7 +169,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public boolean isContinuous() {
 		return NetworkBuilderFactory.isContinuous(d_outcome);
 	}
-
+	
+	public Treatment getTreatment(DrugSet d) {
+		return d_builder.getTreatmentMap().get(d);
+	}
+	
 	public DrugSet getDrugSet(Treatment t) {
 		return d_builder.getTreatmentMap().getKey(t);
 	}
