@@ -47,6 +47,7 @@ import org.drugis.addis.entities.analysis.models.SavedInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
+import org.drugis.addis.entities.data.MCMCSettings;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.EntityUtil;
@@ -59,6 +60,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
@@ -139,12 +141,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_nodeSplitModels.get(p);
 	}
 
-	/**
-	 * Loads an InconsitencyModel generated from saved JAXB results
- 	 * @param model of the type SavedInconsitencyModel
-	 */
-	public synchronized void setInconsistencyModel(SavedInconsistencyModel model) {
+	private void setInconsistencyModel(SavedInconsistencyModel model) {
 		d_inconsistencyModel = model;
+	}
+
+	public synchronized void loadInconsitencyModel(MCMCSettings settings,
+			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
+		setInconsistencyModel(new SavedInconsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries));
 	}
 	
 	public NetworkBuilder<DrugSet> getBuilder() {

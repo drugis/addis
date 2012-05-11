@@ -1,8 +1,15 @@
 package org.drugis.addis.entities.analysis.models;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.data.MCMCSettings;
+import org.drugis.common.threading.NullTask;
+import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
+import org.drugis.common.threading.activity.DirectTransition;
+import org.drugis.common.threading.activity.Transition;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
@@ -14,19 +21,28 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	
 	private NetworkBuilder<DrugSet> d_builder;
 	private final MCMCSettings d_settings;
+	private final Map<Parameter, QuantileSummary> d_quantileSummaries;
+	private final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
 
-	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettings settings) {
+	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettings settings, 
+			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_builder = builder;
-		d_settings = settings; 
+		d_settings = settings;
+		d_quantileSummaries = quantileSummaries;
+		d_convergenceSummaries = convergenceSummaries; 
 	}
 
 	public ActivityTask getActivityTask() {
-		// FIXME: finished null task?
-		throw new UnsupportedOperationException("Saved MTC models do not have an ActivityTask.");
+		NullTask start = new NullTask();
+		String msg = "Loaded from saved results";
+		NullTask end = new NullTask(msg);
+		ArrayList<Transition> transitions =  new ArrayList<Transition>();
+		transitions.add(new DirectTransition(start, end));
+		return new ActivityTask(new ActivityModel(start, end, transitions ), msg);
 	}
 
 	public MixedTreatmentComparison getModel() {
-		throw new UnsupportedOperationException("Saved MTC models do not have a MixedTreatmentComparison model.");
+		return null;
 	}
 
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
@@ -42,8 +58,7 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	}
 
 	public QuantileSummary getQuantileSummary(Parameter p) {
-		// TODO Auto-generated method stub
-		return null;
+		return d_quantileSummaries.get(p);
 	}
 	
 	public Parameter getRandomEffectsVariance() {
@@ -52,8 +67,7 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	}
 
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
-		// TODO Auto-generated method stub
-		return null;
+		return d_convergenceSummaries.get(p);
 	}
 	
 	public int getBurnInIterations() {

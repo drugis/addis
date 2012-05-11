@@ -75,6 +75,11 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
 			return (omCompare == 0) ? modelComp : omCompare;
 		}
+
+		@Override
+		public boolean hasSavedResults() {
+			return false;
+		}
 	}
 	
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {

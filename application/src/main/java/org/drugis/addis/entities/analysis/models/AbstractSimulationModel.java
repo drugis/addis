@@ -18,8 +18,9 @@ import org.drugis.mtc.summary.QuantileSummary;
 
 public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComparison> implements MTCModelWrapper {
 	protected final MTCType d_nested;
-	private final Map<Parameter, QuantileSummary> d_summaryMap = new HashMap<Parameter, QuantileSummary>();
+	private final Map<Parameter, QuantileSummary> d_quantileSummaryMap = new HashMap<Parameter, QuantileSummary>();
 	protected final NetworkBuilder<DrugSet> d_builder;
+	private final Map<Parameter, ConvergenceSummary> d_convergenceSummaryMap = new HashMap<Parameter, ConvergenceSummary>();
 	
 	protected AbstractSimulationModel(NetworkBuilder<DrugSet> builder, MTCType mtc) { 
 		d_builder = builder;
@@ -33,10 +34,10 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 	
 	@Override
 	public QuantileSummary getQuantileSummary(Parameter p) {
-		if(d_summaryMap.get(p) == null) { 
-			d_summaryMap.put(p, new QuantileSummary(d_nested.getResults(), p));
+		if(d_quantileSummaryMap.get(p) == null) { 
+			d_quantileSummaryMap.put(p, new QuantileSummary(d_nested.getResults(), p));
 		}
-		return d_summaryMap.get(p);
+		return d_quantileSummaryMap.get(p);
 	}
 	
 	@Override
@@ -68,6 +69,11 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 	}
 
 	@Override
+	public boolean hasSavedResults() { 
+		return false;
+	}
+	
+	@Override
 	public int getBurnInIterations() {
 		return d_nested.getBurnInIterations();
 	}
@@ -98,6 +104,9 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 	}
 	
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
-		return new ConvergenceSummary(d_nested.getResults(), p); 
+		if(d_convergenceSummaryMap.get(p) == null) { 
+			d_convergenceSummaryMap.put(p, new ConvergenceSummary(d_nested.getResults(), p));
+		}
+		return d_convergenceSummaryMap.get(p);
 	}
 }

@@ -94,6 +94,7 @@ import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResultsEvent;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -193,50 +194,58 @@ implements ViewBuilder {
 		LayoutUtil.addRow(builder.getLayout());
 		row += 2;
 
-		row = buildMemoryUsage(d_pm.getConsistencyModel().getModel(), "Consistency model", builder, layout, row);
-		row = buildMemoryUsage(d_pm.getInconsistencyModel().getModel(), "Inconsistency model", builder, layout, row);
+		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
+		row = buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row);
 		builder.addSeparator("", cc.xyw(2, row-1, 3));
 		for(BasicParameter p : d_pm.getSplitParameters()) {
-			row = buildMemoryUsage(d_pm.getNodeSplitModel(p).getModel(), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
+			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
 			builder.addSeparator("", cc.xyw(2, row-1, 3));
 		}
 		
 		return builder.getPanel();
 	}
 	
-	private int buildMemoryUsage(final MCMCModel model, String name, PanelBuilder builder, FormLayout layout, int row) {
-		LayoutUtil.addRow(layout);
-		row += 2;
-		CellConstraints cc = new CellConstraints();
-		
-		final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(model.getResults());
-		JLabel memory = AuxComponentFactory.createAutoWrapLabel(memoryModel);
-		builder.add(new JLabel(name), cc.xy(2, row));
-		
-		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
-		final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
-		
-		builder.add(memory, cc.xy(4, row));
-		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
-		clearButton.setToolTipText("Clear results");
-		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
-		Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
-		builder.add(clearButton, cc.xy(6, row));
-		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
-		saveButton.setToolTipText("Save to R-file");
-		Bindings.bind(saveButton, "enabled", modelFinishedAndResults);
-		
-		saveButton.addActionListener(buildRButtonActionListener(model));
-		builder.add(saveButton, cc.xy(8, row));
-		
-		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.getResults().clear();
-				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
-				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
-				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
-			}
-		});
+	private int buildMemoryUsage(final MTCModelWrapper model, String name, PanelBuilder builder, FormLayout layout, int row) {
+		if(model.hasSavedResults()) {
+			LayoutUtil.addRow(layout);
+			row += 2;
+			builder.add(new JLabel("Not available for loaded results"));
+			row += 2;
+		} else if(!model.hasSavedResults()) {
+			final MixedTreatmentComparison mtc = model.getModel(); 
+			LayoutUtil.addRow(layout);
+			row += 2;
+			CellConstraints cc = new CellConstraints();
+			
+			final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(mtc.getResults());
+			JLabel memory = AuxComponentFactory.createAutoWrapLabel(memoryModel);
+			builder.add(new JLabel(name), cc.xy(2, row));
+			
+			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(mtc.getResults());
+			final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
+			
+			builder.add(memory, cc.xy(4, row));
+			final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+			clearButton.setToolTipText("Clear results");
+			BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
+			Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
+			builder.add(clearButton, cc.xy(6, row));
+			final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
+			saveButton.setToolTipText("Save to R-file");
+			Bindings.bind(saveButton, "enabled", modelFinishedAndResults);
+			
+			saveButton.addActionListener(buildRButtonActionListener(mtc));
+			builder.add(saveButton, cc.xy(8, row));
+			
+			clearButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mtc.getResults().clear();
+					// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
+					memoryModel.resultsEvent(new MCMCResultsEvent(mtc.getResults()));
+					resultsAvailableModel.resultsEvent(new MCMCResultsEvent(mtc.getResults()));
+				}
+			});
+		}
 		return row;
 	}
 

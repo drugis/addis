@@ -71,12 +71,14 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	
 	public static class WrappedNetworkMetaAnalysis extends MCMCWrapper {
 		private ValueHolder<Boolean> d_modelConstructionFinished;
+		private final MTCModelWrapper d_wrapper;
 		public WrappedNetworkMetaAnalysis(MTCModelWrapper wrapper, OutcomeMeasure om, String name) {
 			super(wrapper.getModel(), om, name);
+			d_wrapper = wrapper;
 			d_modelConstructionFinished = new ValueModelWrapper<Boolean>(
 					new TaskTerminatedModel(wrapper.getActivityTask().getModel().getStartState()));
 		}
-	
+		
 		@Override
 		public TaskProgressModel getProgressModel() {
 			return new TaskProgressModel(getActivityTask());
@@ -98,6 +100,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		@Override
 		public OutcomeMeasure getOutcomeMeasure() {
 			return d_om;
+		}
+
+		@Override
+		public boolean hasSavedResults() {
+			return d_wrapper.hasSavedResults();
 		}
 	}
 	

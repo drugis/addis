@@ -167,7 +167,6 @@ import org.drugis.common.beans.SortedSetModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.parameterization.InconsistencyVariance;
 import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -1104,7 +1103,12 @@ public class JAXBConvertor {
 			}
 		}
 
-		return new NetworkMetaAnalysis(name, indication, om, armMap);
+		NetworkMetaAnalysis networkMetaAnalysis = new NetworkMetaAnalysis(name, indication, om, armMap);
+		// Begin loading results
+		
+		networkMetaAnalysis.loadInconsitencyModel(null, null, null);
+		return networkMetaAnalysis;
+		
 	}
 	
 	private static DrugSet convertDrugSet(AnalysisDrugs drugs, Domain domain) {
@@ -1181,11 +1185,12 @@ public class JAXBConvertor {
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_D);
 			ps.setVariance(value);
-		} else if (p instanceof BasicParameter) {
-			QuantileSummary qs = mtc.getQuantileSummary(p);
-			
-			ps.getQuantile().addAll(convertQuantileSummary(qs));
+//		} else if (p instanceof BasicParameter) {
+//			QuantileSummary qs = mtc.getQuantileSummary(p);
+//			
+//			ps.getQuantile().addAll(convertQuantileSummary(qs));
 		}
+		ps.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(p)));
 		return ps;
 	}
 

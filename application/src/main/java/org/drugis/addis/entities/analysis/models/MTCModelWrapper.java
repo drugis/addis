@@ -16,6 +16,8 @@ public interface MTCModelWrapper {
 	public ActivityTask getActivityTask();
 	
 	public MixedTreatmentComparison getModel();
+	
+	public boolean hasSavedResults();
 
 	public boolean isReady();
 

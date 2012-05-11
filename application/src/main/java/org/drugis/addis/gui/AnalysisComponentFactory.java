@@ -66,7 +66,6 @@ public class AnalysisComponentFactory {
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
-		
 		int panelRow = 1;
 		if (withSeparator) {
 			panelBuilder.addSeparator(model.toString(), cc.xyw(1, panelRow, 5));
@@ -75,7 +74,7 @@ public class AnalysisComponentFactory {
 		
 		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model));
 		panelRow += 2;
-		if(hasConvergence(model)) { 
+		if(hasConvergence(model) && !model.hasSavedResults()) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
 		}
 		return panelBuilder.getPanel();
@@ -138,7 +137,7 @@ public class AnalysisComponentFactory {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.FINISH);
+					((MixedTreatmentComparison)model.getModel()).setExtendSimulation(ExtendSimulation.FINISH);
 				}
 			}
 		});
@@ -152,7 +151,7 @@ public class AnalysisComponentFactory {
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.EXTEND);
+				((MixedTreatmentComparison)model.getModel()).setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;
@@ -173,7 +172,7 @@ public class AnalysisComponentFactory {
 	}
 
 	private static boolean hasConvergence(MCMCWrapper model) {
-		if( model.getModel() instanceof MixedTreatmentComparison) {
+		if(!model.hasSavedResults() && model.getModel() instanceof MixedTreatmentComparison) {
 			return true;
 		} else { 
 			return false;
