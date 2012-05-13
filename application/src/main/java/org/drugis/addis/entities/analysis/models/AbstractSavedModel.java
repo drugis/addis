@@ -22,8 +22,8 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	
 	private NetworkBuilder<DrugSet> d_builder;
 	private final MCMCSettings d_settings;
-	private final Map<Parameter, QuantileSummary> d_quantileSummaries;
-	private final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
+	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
+	protected final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
 
 	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettings settings, 
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
@@ -57,11 +57,6 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 
 	public QuantileSummary getQuantileSummary(Parameter p) {
 		return d_quantileSummaries.get(p);
-	}
-	
-	public Parameter getRandomEffectsVariance() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
