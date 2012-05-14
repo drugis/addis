@@ -10,11 +10,10 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.parameterization.InconsistencyVariance;
-import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public class SavedInconsistencyModel extends AbstractSavedModel  implements InconsistencyWrapper {
+public class SavedInconsistencyModel extends AbstractSavedModel implements InconsistencyWrapper {
 
 	private List<Parameter> d_inconsistencyFactors;
 
@@ -23,7 +22,7 @@ public class SavedInconsistencyModel extends AbstractSavedModel  implements Inco
 		super(builder, settings, quantileSummaries, convergenceSummaries);
 		d_inconsistencyFactors = new ArrayList<Parameter>();
 		for(Parameter p : d_quantileSummaries.keySet()) { 
-			if(!(p instanceof InconsistencyParameter)) {
+			if((p instanceof InconsistencyParameter)) {
 				d_inconsistencyFactors.add(p);
 			}
 		}
@@ -32,16 +31,6 @@ public class SavedInconsistencyModel extends AbstractSavedModel  implements Inco
 	@Override
 	public List<Parameter> getInconsistencyFactors() {
 		return d_inconsistencyFactors;
-	}
-
-	@Override
-	public Parameter getRandomEffectsVariance() {
-		for(Parameter p : d_quantileSummaries.keySet()) { 
-			if(p instanceof RandomEffectsVariance) {
-				return p;
-			}
-		}
-		return null;
 	}
 	
 	@Override

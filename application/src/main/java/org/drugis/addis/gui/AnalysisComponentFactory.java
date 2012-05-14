@@ -161,11 +161,11 @@ public class AnalysisComponentFactory {
 	public static JButton createShowConvergenceButton(final JFrame main, final MCMCWrapper model) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_CHART));
 		button.setText("Show convergence");
+		final MTCModelWrapper mtcWrapper = (MTCModelWrapper) model.getModel(); // TODO Make this accept MCMCModels in general
 		button.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog convergence = new ConvergenceSummaryDialog(main, ((MixedTreatmentComparison)model.getModel()), model.isModelConstructed(), model.toString());
+				JDialog convergence = new ConvergenceSummaryDialog(main,mtcWrapper,model.isModelConstructed(), model.toString());
 				convergence.setVisible(true);
 			}
 		});
@@ -173,7 +173,7 @@ public class AnalysisComponentFactory {
 	}
 
 	private static boolean hasConvergence(MCMCWrapper model) {
-		if(!model.hasSavedResults() && model.getModel() instanceof MTCModelWrapper) {
+		if(model.getModel() instanceof MTCModelWrapper) {
 			return true;
 		} else { 
 			return false;

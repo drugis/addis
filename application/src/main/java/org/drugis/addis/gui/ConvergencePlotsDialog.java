@@ -34,13 +34,13 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MCMCResultsListener;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.convergence.GelmanRubinConvergence;
 import org.jfree.chart.ChartFactory;
@@ -66,7 +66,7 @@ public class ConvergencePlotsDialog extends JDialog {
 	private XYSeries d_wSeries;
 	private SimpleSuspendableTask d_task;
 
-	public ConvergencePlotsDialog(final JFrame main, final MixedTreatmentComparison mtc, final Parameter p) {
+	public ConvergencePlotsDialog(final JFrame main, final MTCModelWrapper mtc, final Parameter p) {
 		super(main, p + " convergence diagnostics", false);
 		d_rHatSeries = new XYSeries("R-Hat");
 		d_vHatSeries = new XYSeries("sqrt(vHat)");

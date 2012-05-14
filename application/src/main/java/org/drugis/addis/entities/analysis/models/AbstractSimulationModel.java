@@ -109,4 +109,9 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 		}
 		return d_convergenceSummaryMap.get(p);
 	}
+	
+	@Override
+	public Parameter[] getParameters() { 
+		return d_nested.getResults().getParameters();
+	}
 }

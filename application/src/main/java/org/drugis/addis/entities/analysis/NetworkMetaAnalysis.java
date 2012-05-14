@@ -43,6 +43,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
+import org.drugis.addis.entities.analysis.models.SavedConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SavedInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
@@ -141,13 +142,16 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_nodeSplitModels.get(p);
 	}
 
-	private void setInconsistencyModel(SavedInconsistencyModel model) {
-		d_inconsistencyModel = model;
-	}
-
 	public synchronized void loadInconsitencyModel(MCMCSettings settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
-		setInconsistencyModel(new SavedInconsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries));
+		d_inconsistencyModel = new SavedInconsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);
+	}
+	
+
+	public synchronized void loadConsitencyModel(MCMCSettings settings,
+			HashMap<Parameter, QuantileSummary> quantileSummaries,
+			HashMap<Parameter, ConvergenceSummary> convergenceSummaries) {
+		d_consistencyModel = new SavedConsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);		
 	}
 	
 	public NetworkBuilder<DrugSet> getBuilder() {
@@ -158,7 +162,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public Network getNetwork() {
-		return d_builder.buildNetwork();
+		return getBuilder().buildNetwork();
 	}
 
 
@@ -171,11 +175,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public Treatment getTreatment(DrugSet d) {
-		return d_builder.getTreatmentMap().get(d);
+		return getBuilder().getTreatmentMap().get(d);
 	}
 	
 	public DrugSet getDrugSet(Treatment t) {
-		return d_builder.getTreatmentMap().getKey(t);
+		return getBuilder().getTreatmentMap().getKey(t);
 	}
 	
 	public List<BasicParameter> getSplitParameters() {
@@ -213,5 +217,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return true;
 	}
+
 
 }

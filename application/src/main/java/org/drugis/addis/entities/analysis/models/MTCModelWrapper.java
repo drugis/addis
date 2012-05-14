@@ -30,4 +30,5 @@ public interface MTCModelWrapper extends MCMCModel {
 	
 	public ConvergenceSummary getConvergenceSummary(Parameter p);
 
+	public Parameter[] getParameters();
 }

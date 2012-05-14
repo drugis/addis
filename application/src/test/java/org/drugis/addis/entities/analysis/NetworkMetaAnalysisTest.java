@@ -28,7 +28,6 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -44,15 +43,10 @@ import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
-import org.drugis.mtc.summary.QuantileSummary;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.uci.ics.jung.graph.util.Pair;
@@ -92,22 +86,6 @@ public class NetworkMetaAnalysisTest {
 				new Pair<DrugSet>(fluox, sertr)
 		);
 		assertEquals(expected, d_analysis.getConsistencyModel().getRelativeEffectsList());
-	}
-	
-	@Ignore
-	@Test
-	public void testGetRelativeEffect() {
-		DrugSet base = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet subj = new DrugSet(ExampleData.buildDrugParoxetine());
-		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(base, subj, BasicOddsRatio.class);
-
-		QuantileSummary summary = d_mockAnalysis.getConsistencyModel().getQuantileSummary(d_mockAnalysis.getConsistencyModel().getRelativeEffect(base, subj));
-		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary);
-		assertNotNull(expected);
-		assertNotNull(actual);
-		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
-		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
-		assertEquals(expected.getAxisType(), actual.getAxisType());
 	}
 	
 	@Test

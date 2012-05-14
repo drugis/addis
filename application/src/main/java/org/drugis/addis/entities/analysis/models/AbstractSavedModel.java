@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.data.MCMCSettings;
 import org.drugis.common.threading.NullTask;
+import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
@@ -15,6 +16,7 @@ import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
@@ -39,7 +41,9 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		NullTask end = new NullTask(msg);
 		ArrayList<Transition> transitions =  new ArrayList<Transition>();
 		transitions.add(new DirectTransition(start, end));
-		return new ActivityTask(new ActivityModel(start, end, transitions ), msg);
+		ActivityTask activityTask = new ActivityTask(new ActivityModel(start, end, transitions ), msg);
+		ThreadHandler.getInstance().scheduleTask(activityTask);
+		return activityTask;
 	}
 
 
@@ -63,6 +67,16 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		return d_convergenceSummaries.get(p);
 	}
 	
+	@Override
+	public Parameter getRandomEffectsVariance() {
+		for(Parameter p : d_quantileSummaries.keySet()) { 
+			if(p instanceof RandomEffectsVariance) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
 	public int getBurnInIterations() {
 		return d_settings.getTuningIterations();
 	}
@@ -70,6 +84,12 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	public int getSimulationIterations() {
 		return d_settings.getSimulationIterations();
 	}
+	
+	@Override
+	public Parameter[] getParameters() { 
+		return d_convergenceSummaries.keySet().toArray(new Parameter[] {});
+	}
+	
 	
 	public MixedTreatmentComparison getModel() {
 		throw new UnsupportedOperationException("Saved MTC models do not have a MixedTreatmentComparison model.");

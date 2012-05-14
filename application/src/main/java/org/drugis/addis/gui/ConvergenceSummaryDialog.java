@@ -38,11 +38,11 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -61,13 +61,13 @@ public class ConvergenceSummaryDialog extends JDialog  {
 	private static final long serialVersionUID = -220027860371330394L;
 	private final JFrame d_mainWindow;
 
-	private final MixedTreatmentComparison d_model;
+	private final MTCModelWrapper d_model;
 
 	private final ValueHolder<Boolean> d_modelConstructed;
 
 	private ConvergenceDiagnosticTableModel d_tableModel;
 	
-	public ConvergenceSummaryDialog(final JFrame main, final MixedTreatmentComparison mtc, final ValueHolder<Boolean> modelConstructed, String name) {
+	public ConvergenceSummaryDialog(final JFrame main, final MTCModelWrapper mtc, final ValueHolder<Boolean> modelConstructed, String name) {
 		d_mainWindow = main;
 		d_model = mtc;
 		d_modelConstructed = modelConstructed;
@@ -107,7 +107,7 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		return panel;
 	}
 	
-	private TablePanel buildConvergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
+	private TablePanel buildConvergenceTable(final MTCModelWrapper mtc, ValueHolder<Boolean> modelConstructed) {
 		ConvergenceDiagnosticTableModel tableModel = convergenceTable(mtc, modelConstructed);
 		EnhancedTable convergenceTable = EnhancedTable.createBare(tableModel);
 
@@ -117,7 +117,7 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		convergenceTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() > 1) {
+				if (!mtc.hasSavedResults() && e.getClickCount() > 1) {
 					JTable table = (JTable)e.getComponent();
 					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
 					Parameter[] parameters = mtc.getResults().getParameters();
@@ -131,11 +131,11 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		return pane;
 	}
 
-	private ConvergenceDiagnosticTableModel convergenceTable(final MixedTreatmentComparison mtc, ValueHolder<Boolean> modelConstructed) {
+	private ConvergenceDiagnosticTableModel convergenceTable(final MTCModelWrapper mtc, ValueHolder<Boolean> modelConstructed) {
 		return (d_tableModel == null) ? new ConvergenceDiagnosticTableModel(mtc, modelConstructed) : d_tableModel;
 	}
 
-	private void showConvergencePlots(MixedTreatmentComparison mtc, Parameter p) {
+	private void showConvergencePlots(MTCModelWrapper mtc, Parameter p) {
 		if(mtc.getResults().getNumberOfSamples() > 0) {
 			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc, p);
 			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));

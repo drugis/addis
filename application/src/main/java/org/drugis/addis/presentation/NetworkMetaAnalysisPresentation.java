@@ -44,6 +44,7 @@ import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.status.TaskTerminatedModel;
+import org.drugis.common.validation.BooleanOrModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
@@ -53,6 +54,7 @@ import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
@@ -73,11 +75,29 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		private ValueHolder<Boolean> d_modelConstructionFinished;
 		private final MTCModelWrapper d_wrapper;
 		
-		public WrappedNetworkMetaAnalysis(MTCModelWrapper mtc, OutcomeMeasure om, String name) {
+		public WrappedNetworkMetaAnalysis(final MTCModelWrapper mtc, final OutcomeMeasure om, final String name) {
 			super(mtc, om, name);
 			d_wrapper = mtc;
-			d_modelConstructionFinished = new ValueModelWrapper<Boolean>(
+			ValueModelWrapper<Boolean> modelConstructionFinished = new ValueModelWrapper<Boolean>(
 					new TaskTerminatedModel(mtc.getActivityTask().getModel().getStartState()));
+			ValueModelWrapper<Boolean> modelIsSaved = new ValueModelWrapper<Boolean>(
+					new AbstractValueModel() {
+						
+						private boolean d_value;
+
+						@Override
+						public void setValue(Object newValue) {
+							if(newValue instanceof Boolean) { 
+								d_value = ((Boolean)newValue);
+							}
+						}
+						
+						@Override
+						public Object getValue() {
+							return d_value || mtc.hasSavedResults();
+						}
+					});
+			d_modelConstructionFinished = new ValueModelWrapper<Boolean>(new BooleanOrModel(modelConstructionFinished, modelIsSaved));
 		}
 		
 		@Override

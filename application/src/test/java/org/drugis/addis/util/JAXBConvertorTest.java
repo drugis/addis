@@ -153,6 +153,7 @@ import org.drugis.addis.entities.data.Treatment;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
+import org.drugis.addis.util.converters.NetworkMetaAnalysisConverter;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -1193,23 +1194,14 @@ public class JAXBConvertorTest {
 		characteristics.setTitle(JAXBConvertor.stringWithNotes(title));
 	}
 
-	private org.drugis.addis.entities.data.Study buildStudySkeletonWithMeasurements(
-			String name, String title, String indicationName,
-			String[] endpointNames, String[] adverseEventName,
-			String[] popCharNames, Arms arms, Epochs epochs, StudyActivities sas, List<String> armNames) 
-	{
-		org.drugis.addis.entities.data.Study study = 
-				buildStudySkeleton(name, title, indicationName, endpointNames, adverseEventName, popCharNames, arms, epochs, sas);
-	
+	private void addContinuousMeasurements(org.drugis.addis.entities.data.Study study, String omName) {
 		ContinuousMeasurement cm = new ContinuousMeasurement();
 		cm.setMean(0.5);
 		cm.setSampleSize(50);
 		cm.setStdDev(1.0);
-		for (String armName : armNames) {
-			addContinuousMeasurement(cm, armName, "endpoint-" + endpointNames[0], study
-					.getMeasurements().getMeasurement());
+		for (org.drugis.addis.entities.data.Arm arm : study.getArms().getArm()) { // ARGH
+			addContinuousMeasurement(cm, arm.getName(), omName, study.getMeasurements().getMeasurement());
 		}
-		return study;
 	}
 	
 	private org.drugis.addis.entities.data.Study buildStudySkeleton(
@@ -1553,16 +1545,15 @@ public class JAXBConvertorTest {
 		study3map.put(combi, studies.get(2).getArms().get(2));
 		armMap.put(studies.get(2), study3map);
 
-		Collections.sort(studies); // So the reading *by definition* puts the
-									// studies in their natural order
+		Collections.sort(studies); // So the reading *by definition* puts the studies in their natural order
 		NetworkMetaAnalysis expected = new NetworkMetaAnalysis(name,
 				ExampleData.buildIndicationDepression(),
 				ExampleData.buildEndpointCgi(), studies, drugs, armMap);
-
+		
 		assertEntityEquals(expected,
-				JAXBConvertor.convertNetworkMetaAnalysis(ma.d_nwma, domain));
+				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(ma.d_nwma, domain));
 		assertEquals(ma.d_nwma,
-				JAXBConvertor.convertNetworkMetaAnalysis(expected));
+				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(expected));
 	}
 
 	private MetaAnalysisWithStudies buildNetworkMetaAnalysis(String name) throws DatatypeConfigurationException, ConversionException {
@@ -1581,40 +1572,41 @@ public class JAXBConvertorTest {
 		String mainPhaseName = "Main phase";
 		String treatmentName = "Treatment";
 		DrugTreatment fluox = buildFixedDoseDrugTreatment(ExampleData.buildDrugFluoxetine(), 12.5);
-		DrugTreatment venla = buildFixedDoseDrugTreatment(ExampleData.buildDrugSertraline(), 12.5);
-		TreatmentActivity combiFixedDose = new TreatmentActivity(Arrays.asList(fluox, venla));
+		DrugTreatment sertr = buildFixedDoseDrugTreatment(ExampleData.buildDrugSertraline(), 12.5);
+		TreatmentActivity combiFixedDose = new TreatmentActivity(Arrays.asList(fluox, sertr));
 		TreatmentActivity sertraFixedDose = buildFixedDoseTreatmentActivity(ExampleData.buildDrugSertraline(), 12.5);
 		TreatmentActivity paroxFixedDose =  buildFixedDoseTreatmentActivity(ExampleData.buildDrugParoxetine(), 12.5);
-		List<String> armList1 = new ArrayList<String>(Arrays.asList(combiArmName, sertraArmName));
 		buildArmEpochTreatmentActivityCombination(arms1, epochs1, sas1, 20, combiArmName, mainPhaseName, treatmentName, combiFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms1, epochs1, sas1, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
 
 		String indicationName = ExampleData.buildIndicationDepression().getName();
 		String[] popCharNames = new String[] {ExampleData.buildAgeVariable().getName()};
 		String[] adverseEventNames = new String[] {};
-		org.drugis.addis.entities.data.Study study1 = buildStudySkeletonWithMeasurements(study1Name, study1Name, 
-				indicationName, endpointNames, adverseEventNames , popCharNames, arms1, epochs1, sas1, armList1);
+		org.drugis.addis.entities.data.Study study1 = 
+				buildStudySkeleton(study1Name, study1Name, indicationName, endpointNames, adverseEventNames, popCharNames, arms1, epochs1, sas1);
+		String omName = "endpoint-" + ExampleData.buildEndpointCgi().getName();
+		
+		addContinuousMeasurements(study1, omName);
 
 		Arms arms2 = new Arms();
 		Epochs epochs2 = new Epochs();
 		StudyActivities sas2 = new StudyActivities();
-		List<String> armList2 = new ArrayList<String>(Arrays.asList(paroxArmName, sertraArmName));
 		buildArmEpochTreatmentActivityCombination(arms2, epochs2, sas2, 20, paroxArmName, mainPhaseName, treatmentName, paroxFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms2, epochs2, sas2, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
-		
-		org.drugis.addis.entities.data.Study study2 = buildStudySkeletonWithMeasurements(study2Name, study2Name, 
-				indicationName, endpointNames, adverseEventNames, popCharNames, arms2, epochs2, sas2, armList2);
+		org.drugis.addis.entities.data.Study study2 = 
+				buildStudySkeleton(study2Name, study2Name, indicationName, endpointNames, adverseEventNames, popCharNames, arms2, epochs2, sas2);		
+		addContinuousMeasurements(study2, omName);
+
 		
 		Arms arms3 = new Arms();
 		Epochs epochs3 = new Epochs();
 		StudyActivities sas3 = new StudyActivities();
-		List<String> armList3 = new ArrayList<String>(Arrays.asList(sertraArmName, sertraArmName, combiArmName));
 		buildArmEpochTreatmentActivityCombination(arms3, epochs3, sas3, 20, sertraArmName, mainPhaseName, treatmentName, sertraFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms3, epochs3, sas3, 20, paroxArmName, mainPhaseName, treatmentName, paroxFixedDose);
 		buildArmEpochTreatmentActivityCombination(arms3, epochs3, sas3, 20, combiArmName, mainPhaseName, treatmentName, combiFixedDose);
-
-		org.drugis.addis.entities.data.Study study3 = buildStudySkeletonWithMeasurements(study3Name, study3Name, 
-				indicationName, endpointNames, adverseEventNames, popCharNames, arms3, epochs3, sas3, armList3);
+		org.drugis.addis.entities.data.Study study3 = 
+				buildStudySkeleton(study3Name, study3Name, indicationName, endpointNames, adverseEventNames, popCharNames, arms3, epochs3, sas3);		
+		addContinuousMeasurements(study3, omName);
 
 		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
 		nma.setName(name);		
@@ -1671,16 +1663,13 @@ public class JAXBConvertorTest {
 
 	private void buildArmEpochTreatmentActivityCombination(Arms arms,
 			Epochs epochs, StudyActivities sas, int armSize,
-			String fluoxArmName, String mainPhaseName, String treatmentName,
-			TreatmentActivity fluoxFixedDose) throws ConversionException {
-		arms.getArm().add(buildArmData(fluoxArmName, armSize));
-		epochs.getEpoch().add(
-				buildEpoch(mainPhaseName, EntityUtil.createDuration("P2D")));
-		org.drugis.addis.entities.data.StudyActivity saTreatment1 = buildStudyActivity(
-				treatmentName, fluoxFixedDose);
-		saTreatment1.getUsedBy().add(
-				buildActivityUsedby(fluoxArmName, mainPhaseName));
-		sas.getStudyActivity().add(saTreatment1);
+			String armName, String mainPhaseName, String treatmentName,
+			TreatmentActivity treatmentActivity) throws ConversionException {
+		arms.getArm().add(buildArmData(armName, armSize));
+		epochs.getEpoch().add(buildEpoch(mainPhaseName, EntityUtil.createDuration("P2D")));
+		org.drugis.addis.entities.data.StudyActivity studyActivity = buildStudyActivity(treatmentName, treatmentActivity);
+		studyActivity.getUsedBy().add(buildActivityUsedby(armName, mainPhaseName));
+		sas.getStudyActivity().add(studyActivity);
 	}
 
 	@Test
@@ -1701,7 +1690,7 @@ public class JAXBConvertorTest {
 		List<MetaAnalysis> expected = new ArrayList<MetaAnalysis>();
 		expected.add(JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma,
 				domain));
-		expected.add(JAXBConvertor.convertNetworkMetaAnalysis(ma2.d_nwma,
+		expected.add(NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(ma2.d_nwma,
 				domain));
 
 		assertEntityEquals(expected,
@@ -1869,7 +1858,7 @@ public class JAXBConvertorTest {
 		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor
 				.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
 		domain.getMetaAnalyses().add(ma1ent);
-		MetaAnalysis ma2ent = JAXBConvertor.convertNetworkMetaAnalysis(
+		MetaAnalysis ma2ent = NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(
 				ma2.d_nwma, domain);
 		domain.getMetaAnalyses().add(ma2ent);
 
@@ -1981,7 +1970,7 @@ public class JAXBConvertorTest {
 						pairWiseMetaAnalysis.d_pwma, domain));
 		addStudies(domain, networkMetaAnalysis);
 		domain.getMetaAnalyses().add(
-				JAXBConvertor.convertNetworkMetaAnalysis(
+				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(
 						networkMetaAnalysis.d_nwma, domain));
 
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR(
