@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +32,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 
 @SuppressWarnings("serial")
-public class StudyBenefitRiskPresentation extends
-		AbstractBenefitRiskPresentation<Arm, StudyBenefitRiskAnalysis> {
+public class StudyBenefitRiskPresentation extends AbstractBenefitRiskPresentation<Arm, StudyBenefitRiskAnalysis> {
 
 	public StudyBenefitRiskPresentation(StudyBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
@@ -39,9 +40,6 @@ public class StudyBenefitRiskPresentation extends
 
 	public TableModel getMeasurementTableModel() {
 		return new BenefitRiskMeasurementTableModel<Arm>(getBean());
-	}
-
-	public synchronized void startAllSimulations() {
 	}
 
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
@@ -56,5 +54,9 @@ public class StudyBenefitRiskPresentation extends
 	@Override
 	protected void startLyndOBrien() {
 		getLyndOBrienPresentation().startLyndOBrien();
+	}
+
+	@Override
+	protected void initSimulations() {
 	}
 }

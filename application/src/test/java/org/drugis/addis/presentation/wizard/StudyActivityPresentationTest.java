@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,8 +50,6 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import scala.actors.threadpool.Arrays;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -115,7 +116,6 @@ public class StudyActivityPresentationTest {
 		JUnitUtil.assertNotEquals(new DrugTreatment(null, d_dose), d_treatment);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testActivityOptions() {
 		// Test empty initialization

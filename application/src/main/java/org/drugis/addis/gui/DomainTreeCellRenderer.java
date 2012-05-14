@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +34,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
-import org.drugis.common.ImageLoader;
 
 @SuppressWarnings("serial")
 public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -54,7 +55,7 @@ public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
 		if (value instanceof Entity) {
 			CategoryKnowledge knowledge =
 				CategoryKnowledgeFactory.getCategoryKnowledge(d_domain.getCategory((Entity)value));
-			setIcon(ImageLoader.getIcon(knowledge.getIconName()));
+			setIcon(Main.IMAGELOADER.getIcon(knowledge.getIconName()));
 			setToolTipText(knowledge.getSingularCapitalized());
 		} else {
 			setToolTipText(null); //no tool tip

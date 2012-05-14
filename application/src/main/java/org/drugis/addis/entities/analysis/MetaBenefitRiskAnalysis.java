@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,9 +59,9 @@ import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
@@ -77,6 +79,12 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			for (Summary s : getEffectSummaries()) {
 				s.addPropertyChangeListener(l);
 			}
+		}
+		
+		private List<Summary> getEffectSummaries() {
+			List<Summary> summaryList = getAbsoluteEffectSummaries();
+			summaryList.addAll(d_relativeEffects.values());
+			return summaryList;
 		}
 	}
 
@@ -264,6 +272,17 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get a summary of the effects on the given criterion of the non-baseline alternatives relative to the baseline.
+	 * @param om The criterion to get the summary for.
+	 * @return A MultivariateNormalSummary (mean and covariance) of the relative effects.
+	 * @see MetaBenefitRiskAnalysis#getNonBaselineAlternatives() The non-baseline alternatives.
+	 * @see MetaBenefitRiskAnalysis#getBaseline() The baseline.
+	 */
+	public MultivariateNormalSummary getRelativeEffectsSummary(OutcomeMeasure om) {
+		return d_relativeEffects.get(findMetaAnalysis(om));
+	}
 
 	private GaussianBase createDistribution(OutcomeMeasure om, double mu, double sigma) {
 		return (om.getVariableType() instanceof RateVariableType) ? new LogGaussian(mu, sigma) : new Gaussian(mu, sigma);
@@ -356,7 +375,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 				for(DrugSet d: getNonBaselineAlternatives()) {
 					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
 					Parameter p = new BasicParameter(nma.getTreatment(getBaseline()), nma.getTreatment(d));
-					summaryList.add(nma.getNormalSummary(nma.getConsistencyModel(), p));
+					summaryList.add(nma.getQuantileSummary(nma.getConsistencyModel(), p));
 				}
 			}
 		}
@@ -368,12 +387,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		for (OutcomeMeasure om : getCriteria()) {
 			summaryList.add(getBaselineModel(om).getSummary());
 		}
-		return summaryList;
-	}
-
-	public List<Summary> getEffectSummaries() {
-		List<Summary> summaryList = getAbsoluteEffectSummaries();
-		summaryList.addAll(getRelativeEffectSummaries());
 		return summaryList;
 	}
 

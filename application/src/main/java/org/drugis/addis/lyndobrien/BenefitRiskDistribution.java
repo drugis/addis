@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +26,8 @@
 
 package org.drugis.addis.lyndobrien;
 
+import fi.smaa.common.RandomUtil;
+
 
 public interface BenefitRiskDistribution {
 	public class Sample {
@@ -36,7 +40,7 @@ public interface BenefitRiskDistribution {
 		}
 	}
 	
-	public Sample nextSample();
+	public Sample nextSample(RandomUtil random);
 	public String getBenefitAxisName();
 	public String getRiskAxisName();
 }

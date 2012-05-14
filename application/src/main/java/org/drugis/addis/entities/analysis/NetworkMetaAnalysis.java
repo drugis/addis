@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,28 +54,25 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.ContinuousMeasurement;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
-import org.drugis.mtc.DichotomousMeasurement;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.Network;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.MCMCMultivariateNormalSummary;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
-import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
-import org.drugis.mtc.summary.MultivariateNormalSummary;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
@@ -82,9 +81,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyModel d_inconsistencyModel;
 	private ConsistencyModel d_consistencyModel;
-	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> d_builder;
-	protected Map<MCMCModel, Map<Parameter, NormalSummary>> d_normalSummaries = 
-		new HashMap<MCMCModel, Map<Parameter, NormalSummary>>();
+	private NetworkBuilder<DrugSet> d_builder;
 	protected final ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	protected Map<MCMCModel, Map<Parameter, QuantileSummary>> d_quantileSummaries = 
 		new HashMap<MCMCModel, Map<Parameter, QuantileSummary>>();
@@ -93,6 +90,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	private RankProbabilitySummary d_rankProbabilitySummary;
 	private Map<BasicParameter, NodeSplitModel> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitModel>();
+	
+	private static final Transformer<DrugSet, String> s_descTransform = new Transformer<DrugSet, String>() {
+		@Override
+		public String transform(DrugSet input) {
+			return input.getLabel();
+		}
+	};
 	private static final Transformer<DrugSet, String> s_transform = new Transformer<DrugSet, String>() {
 		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();  
 		@Override
@@ -145,15 +149,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	private InconsistencyModel createInconsistencyModel() {
-		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel((Network<? extends org.drugis.mtc.Measurement>) getBuilder().buildNetwork());
-		d_normalSummaries.put(inconsistencyModel, new HashMap<Parameter, NormalSummary>());
+		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 		d_quantileSummaries.put(inconsistencyModel, new HashMap<Parameter, QuantileSummary>());
 		return inconsistencyModel;
 	}
 	
 	private ConsistencyModel createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		d_normalSummaries.put(consistencyModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(consistencyModel, new HashMap<Parameter, QuantileSummary>());
 		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
 		Parameter[] parameters = new Parameter[relEffects.size()]; 
@@ -167,14 +169,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	private NodeSplitModel createNodeSplitModel(BasicParameter node) {
 		NodeSplitModel nodeSplitModel = (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
-		d_normalSummaries.put(nodeSplitModel, new HashMap<Parameter, NormalSummary>());
 		d_quantileSummaries.put(nodeSplitModel, new HashMap<Parameter, QuantileSummary>());
 		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
 		return nodeSplitModel;
 	}
 	
-	private NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+	private NetworkBuilder<DrugSet> createBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
 		if (isContinuous()) {
 			return createContinuousBuilder(studies, drugs, armMap);
 		} else {
@@ -182,8 +183,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 	}
 	
-	private NetworkBuilder<ContinuousMeasurement, DrugSet> createContinuousBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform);
+	private NetworkBuilder<DrugSet> createContinuousBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
@@ -195,8 +196,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return builder;
 	}
 
-	private NetworkBuilder<DichotomousMeasurement, DrugSet> createRateBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform);
+	private NetworkBuilder<DrugSet> createRateBuilder(List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
 		for(Study s : studies){
 			for (DrugSet d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
@@ -222,14 +223,14 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_consistencyModel;
 	}
 
-	public NetworkBuilder<? extends org.drugis.mtc.Measurement, DrugSet> getBuilder() {
+	public NetworkBuilder<DrugSet> getBuilder() {
 		if (d_builder == null) {
 			d_builder = createBuilder(d_studies, getIncludedDrugs(), d_armMap);
 		}
 		return d_builder;
 	}
 	
-	public Network<?> getNetwork() {
+	public Network getNetwork() {
 		return d_builder.buildNetwork();
 	}
 	
@@ -257,16 +258,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return summary;
 	}
-	
-	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip){
-		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
-		if (summary == null) {
-			summary = new NormalSummary(networkModel.getResults(), ip);
-			d_normalSummaries.get(networkModel).put(ip, summary);
-		}
-		return summary;
-	}
-	
+
 	/**
 	 * Return a multivariate summary of the effects for all treatments relative to the baseline. 
 	 * The order in which the relative effects are given is based on the natural ordering of the
@@ -327,12 +319,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		
 		ConsistencyModel consistencyModel = getConsistencyModel();
 		Parameter param = consistencyModel.getRelativeEffect(getTreatment(d1), getTreatment(d2));
-		NormalSummary estimate = getNormalSummary(consistencyModel, param);
+		QuantileSummary estimate = getQuantileSummary(consistencyModel, param);
 		
 		if (isContinuous()) {
-			return NetworkRelativeEffect.buildMeanDifference(estimate.getMean(), estimate.getStandardDeviation());
+			return NetworkRelativeEffect.buildMeanDifference(estimate);
 		} else {
-			return NetworkRelativeEffect.buildOddsRatio(estimate.getMean(), estimate.getStandardDeviation());
+			return NetworkRelativeEffect.buildOddsRatio(estimate);
 		}
 	}
 	

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,37 +29,64 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeSet;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.MCMCModel;
+import org.drugis.common.threading.status.TaskTerminatedModel;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
+	private ValueHolder<Boolean> d_measurementsReadyModel;
+	private HashMap<Task, MCMCWrapper> d_models;
 	
-	private AllSummariesDefinedModel d_allSummariesDefinedModel;
-	private List<MCMCModel> d_baselineModels = new ArrayList<MCMCModel>();
-	private Map<Task, TaskProgressModel> d_progressModels = new HashMap<Task, TaskProgressModel>();
+	public static class WrappedBaselineModel extends MCMCWrapper {
 
+		public WrappedBaselineModel(AbstractBaselineModel<?> model, OutcomeMeasure om, String name) {
+			super(model, om, name);
+		}
+
+		@Override
+		public ValueHolder<Boolean> isModelConstructed() {
+			return new UnmodifiableHolder<Boolean>(true);
+		}
+				
+		@Override
+		public int compareTo(MCMCWrapper o) {
+			int omCompare = d_om.compareTo(o.getOutcomeMeasure());
+			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
+			return (omCompare == 0) ? modelComp : omCompare;
+		}
+	}
+	
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
 		
 		d_pmf = pmf;
+	}
+	
+	@Override
+	protected void initSimulations() {
+		d_models = new HashMap<Task, MCMCWrapper>();
 		initAllBaselineModels();
-		initAllProgressModels();
+		initNetworkMetaAnalysisModels();
 	}
 
 	@Override
@@ -93,10 +122,17 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
-		if (d_allSummariesDefinedModel == null) {
-			d_allSummariesDefinedModel = new AllSummariesDefinedModel(getBean().getEffectSummaries());
+		if (d_measurementsReadyModel != null) {
+			return d_measurementsReadyModel;
 		}
-		return d_allSummariesDefinedModel;
+		
+		List<ValueModel> models = new ArrayList<ValueModel>();
+		for (Task task : d_models.keySet()) {
+			models.add(new TaskTerminatedModel(task));
+		}
+		d_measurementsReadyModel = new ValueModelWrapper<Boolean>(new BooleanAndModel(models));
+		
+		return d_measurementsReadyModel;
 	}
 	
 	public List<Task> getMeasurementTasks() {
@@ -104,16 +140,14 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		tasks.addAll(getBean().getNetworkTasks());
 		return tasks;
 	}
-	
-	@Override
-	public synchronized void startAllSimulations() {
-		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
-	}
+
 
 	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		for (MCMCModel model : d_baselineModels) {
-			tasks.add(model.getActivityTask());
+		for (MCMCWrapper model : d_models.values()) {
+			if(model.getModel() instanceof AbstractBaselineModel) {
+				tasks.add(model.getActivityTask());
+			}
 		}
 		return tasks;
 	}
@@ -122,22 +156,21 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		AbstractBaselineModel<?> model;
 		for (OutcomeMeasure om : getBean().getCriteria()) {
 			model = getBean().getBaselineModel(om);
-			d_baselineModels.add(model);
+			String name = getBean().getName() + " \u2014 Baseline Model (" + om.getName() + ")";
+			d_models.put(model.getActivityTask(), new WrappedBaselineModel(model, om, name));
 		}
 	}
 	
 
-	private void initAllProgressModels() {
+	private void initNetworkMetaAnalysisModels() {
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-				NetworkMetaAnalysisPresentation p = (NetworkMetaAnalysisPresentation)d_pmf.getModel(nma);
-				d_progressModels.put(nma.getConsistencyModel().getActivityTask(), 
-						p.getProgressModel(nma.getConsistencyModel()));
+				MixedTreatmentComparison mtc = nma.getConsistencyModel();
+				String name = nma.getName() + " \u2014 Consistency Model";
+				MCMCWrapper wm = new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(mtc, nma.getOutcomeMeasure(), name);
+				d_models.put(nma.getConsistencyModel().getActivityTask(), wm);
 			}
-		}
-		for (Task t : getBaselineTasks()) {
-			d_progressModels.put(t, new TaskProgressModel(t));
 		}
 	}
 	
@@ -159,7 +192,18 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 
 	public TaskProgressModel getProgressModel(Task t) {
-		return d_progressModels.get(t);
+		return d_models.get(t).getProgressModel();
 	}
 
+	public MCMCWrapper getWrappedModel(Task t) {
+		return d_models.get(t);
+	}
+
+	public Collection<MCMCWrapper> getWrappedModels() {
+		return new TreeSet<MCMCWrapper>( d_models.values() );
+	}
+
+	public synchronized void startAllSimulations() {
+		ThreadHandler.getInstance().scheduleTasks(getMeasurementTasks());
+	}
 }

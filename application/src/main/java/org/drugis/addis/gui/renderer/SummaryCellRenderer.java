@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.gui.renderer;
 
 import java.awt.Component;
 import java.text.DecimalFormat;
@@ -35,9 +37,27 @@ import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
+/**
+ * Render instances of org.drugis.mtc.summary.Summary. Can optionally render the exponent of the quantities.
+ */
 public class SummaryCellRenderer implements TableCellRenderer {
-
 	private static final DecimalFormat s_format = new DecimalFormat("0.00");
+	private final boolean d_applyExpTransform;
+	
+	/**
+	 * Render summaries (without applying a transformation).
+	 */
+	public SummaryCellRenderer() {
+		this(false);
+	}
+
+	/**
+	 * Render summaries, optionally applying an exponential transformation.
+	 * @param applyExpTransform If true, will render e^x instead of x.
+	 */
+	public SummaryCellRenderer(boolean applyExpTransform) {
+		d_applyExpTransform = applyExpTransform;
+	}
 
 	public Component getTableCellRendererComponent(JTable table, Object cellContents,
 			boolean isSelected, boolean hasFocus, int row, int column) {
@@ -77,10 +97,19 @@ public class SummaryCellRenderer implements TableCellRenderer {
 		
 		String str = "N/A";
 		if (re != null && re.getDefined()) {
-			str = format(re.getQuantile(1)) + " (" + 
-				format(re.getQuantile(0)) + ", " + format(re.getQuantile(2)) + ")";
+			str = formatQuantile(re, 0.5) + " (" + 
+				formatQuantile(re, 0.025) + ", " + formatQuantile(re, 0.975) + ")";
 		}
+		
 		return str;
+	}
+
+	private String formatQuantile(QuantileSummary re, double p) {
+		if (d_applyExpTransform) { 
+			return format(Math.exp(re.getQuantile(re.indexOf(p))));
+		} else {
+			return format(re.getQuantile(re.indexOf(p)));
+		}
 	}
 	
 	private String getNormalSummaryString(Object cellContents) {
@@ -90,8 +119,11 @@ public class SummaryCellRenderer implements TableCellRenderer {
 		if (re != null && re.getDefined()) {
 			String mu = format(re.getMean());
 			String sigma = format(re.getStandardDeviation());
-			
-			str = mu + " \u00B1 " + sigma;
+			if (d_applyExpTransform) { 
+				str = "LogNormal(" + mu + ", " + sigma + ")";
+			} else { 
+				str = mu + " \u00B1 " + sigma;
+			}
 		}
 		return str;
 	}

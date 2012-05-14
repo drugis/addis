@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +33,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -43,18 +46,18 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM;
+import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.drugis.addis.presentation.wizard.CriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.MetaCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.StudyCriteriaAndAlternativesPresentation;
-import org.drugis.addis.presentation.wizard.BenefitRiskWizardPM.BRAType;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
@@ -114,7 +117,6 @@ public class BenefitRiskWizard extends Wizard {
 		
 	}
 
-
 	private static <Alternative extends Comparable<Alternative> & Entity> Component buildAlternativesPanel(FormLayout layout, CriteriaAndAlternativesPresentation<Alternative> critAltPM) {
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
@@ -124,7 +126,7 @@ public class BenefitRiskWizard extends Wizard {
 		builder.add(alternativesLabel, cc.xy(1, 1));
 		
 		int row = 1;
-		for(final Alternative a : critAltPM.getAlternativesListModel()){
+		for (final Alternative a : critAltPM.getAlternativesListModel()){
 			LayoutUtil.addRow(layout);
 
 			final ValueHolder<Boolean> selectedModel = critAltPM.getAlternativeSelectedModel(a);
@@ -368,30 +370,42 @@ public class BenefitRiskWizard extends Wizard {
 
 		private Component buildCriteriaPane() {
 			FormLayout layout = new FormLayout(
-					"left:pref, 3dlu, left:pref",
+					"left:pref, 3dlu, fill:0:grow",
 					"p, 3dlu, p, 3dlu, p"
-					);	
-			
+					);
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			JLabel criteriaLabel = new JLabel("Criteria");
 			criteriaLabel.setFont(
-				criteriaLabel.getFont().deriveFont(Font.BOLD));
+					criteriaLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(criteriaLabel, cc.xy(1, 1));
-			
-			int row = 1;
-			for(OutcomeMeasure out : d_metaPM.getCriteriaListModel()){
-				if(d_metaPM.getMetaAnalyses(out).isEmpty())
-					continue;
 
-				row = addCriterionCheckbox(out, d_metaPM, layout, builder, cc, row);
-				
-				// Add radio-button panel
+
+			if (checkSuitableMetaAnalysesAvailable(d_pm)) {
+				int row = 1;
+				for (OutcomeMeasure out : d_metaPM.getCriteriaListModel()){
+					if (!d_metaPM.getMetaAnalyses(out).isEmpty()) {
+						row = addCriterionCheckbox(out, d_metaPM, layout, builder, cc, row);
+
+						// Add radio-button panel
+						row = LayoutUtil.addRow(layout, row);
+						builder.add(buildRadioButtonAnalysisPanel(out),
+								cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
+					}
+				}
+			} else {
+				String warnHTMLText = "<i>Note</i>: To create a benefit-risk analysis, first create " +
+						"at least two meta-analyses with at least two overlapping alternatives.";
+				JComponent htmlField = AuxComponentFactory.createHtmlField(warnHTMLText);
+				htmlField.setPreferredSize(new Dimension(PREFERRED_COLUMN_SIZE.width - 5, 100));
+
+				int row = 1;
 				row = LayoutUtil.addRow(layout, row);
-				builder.add(buildRadioButtonAnalysisPanel(out), cc.xy(3, row, CellConstraints.LEFT, CellConstraints.DEFAULT));
+				builder.add(htmlField, cc.xyw(1, row, 3));
 			}
-			
+
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
@@ -404,7 +418,7 @@ public class BenefitRiskWizard extends Wizard {
 			ValueHolder<Boolean> enabledModel = d_metaPM.getCriterionSelectedModel(out);
 			
 			// Add the radio buttons
-			for(MetaAnalysis ma : d_metaPM.getMetaAnalyses(out)){
+			for (MetaAnalysis ma : d_metaPM.getMetaAnalyses(out)){
 				ValueHolder<MetaAnalysis> selectedModel = d_metaPM.getMetaAnalysesSelectedModel(out);
 				JRadioButton radioButton = AuxComponentFactory.createDynamicEnabledRadioButton(ma.getName(), ma, selectedModel, enabledModel);
 				radioButtonPanel.add(radioButton);
@@ -419,6 +433,29 @@ public class BenefitRiskWizard extends Wizard {
 					);	
 			
 			return buildAlternativesPanel(layout, d_metaPM);
+		}
+
+		private static boolean checkSuitableMetaAnalysesAvailable(BenefitRiskWizardPM pm) {
+			MetaCriteriaAndAlternativesPresentation metaPM = pm.getMetaBRPresentation();
+			List<OutcomeMeasure> outcomeMeasures = metaPM.getCriteriaListModel();
+
+			if (outcomeMeasures.size() < 2) {
+				return false;
+			}
+
+			final OutcomeMeasure firstOM = outcomeMeasures.get(0);
+			boolean foundDifferentOM = false;
+			for (OutcomeMeasure om : outcomeMeasures) {
+				if (!firstOM.deepEquals(om)) {
+					foundDifferentOM = true;
+					break;
+				}
+			}
+			if (!foundDifferentOM) {
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +50,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 public class PropertyListHolder<E> extends ModifiableHolder<List<E>> implements PropertyChangeListener {
 	private final AbstractValueModel d_vm;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public PropertyListHolder(Object bean, String propertyName, Class<E> objType) {
 		PresentationModel pm = new PresentationModel(bean);
 		d_vm = pm.getModel(propertyName);
@@ -73,7 +75,7 @@ public class PropertyListHolder<E> extends ModifiableHolder<List<E>> implements 
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<E> getValue() {
 		if (d_vm.getValue() instanceof Set) {

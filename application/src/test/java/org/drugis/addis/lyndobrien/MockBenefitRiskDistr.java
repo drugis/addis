@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +33,8 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 import org.drugis.addis.entities.relativeeffect.AxisType;
+
+import fi.smaa.common.RandomUtil;
 
 public class MockBenefitRiskDistr implements BenefitRiskDistribution {
 	private double[][] d_samples;
@@ -63,7 +67,7 @@ public class MockBenefitRiskDistr implements BenefitRiskDistribution {
 		return AxisType.LINEAR;
 	}
 
-	public Sample nextSample() {
+	public Sample nextSample(RandomUtil random) {
 		int idx = d_currentSample;
 		++d_currentSample;
 		return new Sample(d_samples[0][idx], d_samples[1][idx]); 

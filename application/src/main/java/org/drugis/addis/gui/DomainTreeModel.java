@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +86,7 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public Object getChild(Object parent, int childIndex) {
-		if (d_root == parent && childIndex >= 0 && childIndex < d_domain.getCategories().size()) {
+		if (d_root.equals(parent) && childIndex >= 0 && childIndex < d_domain.getCategories().size()) {
 			return d_domain.getCategories().get(childIndex);
 		} else {
 			for (EntityCategory cat : d_domain.getCategories()) {
@@ -109,7 +111,7 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public int getChildCount(Object parent) {
-		if (d_root == parent) {
+		if (d_root.equals(parent)) {
 			return d_domain.getCategories().size();
 		} else {
 			ObservableList<? extends Entity> contents = d_domain.getCategoryContents(getCategoryNode(parent));
@@ -121,7 +123,7 @@ public class DomainTreeModel implements TreeModel {
 	}
 
 	public int getIndexOfChild(Object parent, Object child) {
-		if (parent == d_root) {
+		if (parent.equals(d_root)) {
 			return d_domain.getCategories().indexOf(child);
 		} else {
 			ObservableList<? extends Entity> contents = d_domain.getCategoryContents(getCategoryNode(parent));

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,31 +33,19 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
-import org.drugis.addis.entities.relativeeffect.LogGaussian;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.Treatment;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
-public class NetworkTableModel extends AbstractTableModel {
-	private final Object d_na;
+public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 	private NetworkMetaAnalysisPresentation d_pm;
-	private PresentationModelFactory d_pmf;
 	MixedTreatmentComparison d_networkModel;
 	private final PropertyChangeListener d_listener;
-	private NetworkMetaAnalysis d_model;
 	
-	public NetworkTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf, MixedTreatmentComparison networkModel) {
+	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MixedTreatmentComparison networkModel) {
 		d_pm = pm;
-		d_pmf = pmf;
 		d_networkModel = networkModel;
-		d_na = d_pmf.getLabeledModel(new NetworkRelativeEffect<Measurement>());
-		d_model = d_pm.getBean();
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();
@@ -74,8 +64,8 @@ public class NetworkTableModel extends AbstractTableModel {
 	}
 
 	private void attachListener(MixedTreatmentComparison networkModel, DrugSet d1, DrugSet d2) {
-		NormalSummary normalSummary = getSummary(d_model.getTreatment(d1), d_model.getTreatment(d2));
-		normalSummary.addPropertyChangeListener(d_listener);
+		QuantileSummary quantileSummary = getSummary(d_pm.getBean().getTreatment(d1), d_pm.getBean().getTreatment(d2));
+		quantileSummary.addPropertyChangeListener(d_listener);
 	}
 
 	public int getColumnCount() {
@@ -90,34 +80,25 @@ public class NetworkTableModel extends AbstractTableModel {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + d_pm.getIncludedDrugs().get(col).getLabel() + "\" relative to \"" + d_pm.getBean().getIncludedDrugs().get(row).getLabel() + "\"";
+		return "\"" + getDrugAt(col).getLabel() + "\" relative to \"" + getDrugAt(row).getLabel() + "\"";
+	}
+
+	private DrugSet getDrugAt(int idx) {
+		return d_pm.getIncludedDrugs().get(idx);
 	}
 	
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return d_pmf.getModel(d_pm.getIncludedDrugs().get(row));
-		} if (!d_networkModel.isReady()) {
-			return d_na;
+			return getDrugAt(row);
 		}
-
-		NormalSummary re = getSummary(getTreatment(row), getTreatment(col));
-		if (!re.getDefined()) {
-			return d_na;
-		}
-		
-		double mu = re.getMean();
-		double sigma = re.getStandardDeviation();
-		Distribution dist = d_pm.isContinuous() ? new Gaussian(mu, sigma) : new LogGaussian(mu, sigma);
-		
-		return d_pmf.getLabeledModel(dist);
+		return getSummary(getTreatment(row), getTreatment(col));
 	}
-
-	private NormalSummary getSummary(final Treatment drug1,
-			final Treatment drug2) {
-		return d_pm.getNormalSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
+	
+	private QuantileSummary getSummary(final Treatment drug1, final Treatment drug2) {
+		return d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
 	}
 
 	private Treatment getTreatment(int idx) {
-		return d_pm.getBean().getTreatment(d_pm.getIncludedDrugs().get(idx));
+		return d_pm.getBean().getTreatment(getDrugAt(idx));
 	}
 }

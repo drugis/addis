@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +30,12 @@ import static org.junit.Assert.assertNotNull;
 
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.ContinuousMeasurement;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.ModelFactory;
-import org.drugis.mtc.Network;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,13 +43,12 @@ public class ContinuousConsistencyModelIT {
 	/* This test apparently cannot run in sequence with NetworkMetaAnalysisTest so this is commented out entirely */
 
 	    private ContinuousNetworkBuilder<String> d_builder;
-		private Network<ContinuousMeasurement> d_network;
+		private Network d_network;
 		private ConsistencyModel d_model;
 
-	    @SuppressWarnings("unchecked")
 		@Before
 	    public void setUp() {
-	        d_builder = new ContinuousNetworkBuilder();
+	        d_builder = new ContinuousNetworkBuilder<String>();
 	        d_builder.add("1", "A", 12.0, 3.0, 100);
 	        d_builder.add("1", "B", 23.0, 2.0, 100);
 	        d_builder.add("2", "B", 12.1, 9.0, 43);
@@ -62,6 +63,7 @@ public class ContinuousConsistencyModelIT {
 	    
 	    @Test
 	    public void getResults() throws InterruptedException {
+	    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
 	    	TaskUtil.run(d_model.getActivityTask());
 	    	Treatment a = d_builder.getTreatmentMap().get("A");
 	    	Treatment b = d_builder.getTreatmentMap().get("B");

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +45,8 @@ public class HTMLWrappingModel extends AbstractValueModel {
 		});
 	}
 	public Object getValue() {
-		return "<html><div style='text-align:left; '>" + d_nested.getValue() + "</div></html>";
+		String text = ((String) d_nested.getValue().toString()).replaceAll("\n", "<br/>");
+		return "<html><div style='text-align:left;'>" + text + "</div></html>";
 	}
 	public void setValue(Object newValue) {
 		throw new IllegalAccessError(this.getClass().getName()+" is read-only!");

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +102,7 @@ public abstract class RelativeEffectTableModelBaseTest {
 		assertEquals(d_threeArmStudy.getMeasurement(d_endpoint, pg1), val21.getBean().getSubject());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testGetValueAtDiagonal() {
 		for (int i = 0; i < d_standardStudy.getArms().size(); ++i) {

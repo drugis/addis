@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,19 +34,18 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.drugis.mtc.BasicParameter;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.drugis.mtc.test.FileResults;
 import org.junit.Before;
 import org.junit.Test;
-
-import scala.actors.threadpool.Arrays;
 
 public class RankProbabilityTableModelTest {
 	private Treatment d_ta;
@@ -54,7 +55,6 @@ public class RankProbabilityTableModelTest {
 	private FileResults d_results;
 	private RankProbabilityTableModel d_model;
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws IOException {
 		d_ta = new Treatment("A");
@@ -64,7 +64,7 @@ public class RankProbabilityTableModelTest {
 				RankProbabilityDataset.class.getResourceAsStream("rankProbabilitySamples.txt"),
 				new Parameter[] { new BasicParameter(d_ta, d_tb), new BasicParameter(d_ta, d_tc) },
 				1, 1000);
-		d_summary = new RankProbabilitySummary(d_results, Arrays.asList(new Treatment[] { d_ta, d_tb, d_tc }));
+		d_summary = new RankProbabilitySummary(d_results, Arrays.asList(d_ta, d_tb, d_tc));
 		d_model = new RankProbabilityTableModel(d_summary);
 	}
 	
@@ -80,9 +80,9 @@ public class RankProbabilityTableModelTest {
 	
 	@Test
 	public void testRowName() {
-		assertEquals(d_ta.id(), d_model.getValueAt(0, 0));
-		assertEquals(d_tb.id(), d_model.getValueAt(1, 0));
-		assertEquals(d_tc.id(), d_model.getValueAt(2, 0));
+		assertEquals(d_ta.getId(), d_model.getValueAt(0, 0));
+		assertEquals(d_tb.getId(), d_model.getValueAt(1, 0));
+		assertEquals(d_tc.getId(), d_model.getValueAt(2, 0));
 	}
 	
 	@Test

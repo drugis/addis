@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,14 +36,11 @@ import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.yadas.YadasResults;
-
-import scala.collection.JavaConversions;
-import scala.collection.mutable.Buffer;
 
 public class MockInconsistencyModel implements InconsistencyModel {
 
@@ -60,7 +59,7 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		d_results = new YadasResults();
 		d_results.setNumberOfIterations(SIMULATION_ITER);
 		d_results.setNumberOfChains(1);
-		d_results.setDirectParameters(JavaConversions.asBuffer(getInconsistencyFactors()).toList());
+		d_results.setDirectParameters(getInconsistencyFactors());
 	}
 
 	public List<Parameter> getInconsistencyFactors() {
@@ -70,12 +69,8 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		cycle.add(new Treatment("Paroxetine"));
 		cycle.add(new Treatment("Fluoxetine"));
 
-		
-		Buffer<Treatment> buffer = JavaConversions.asBuffer(cycle); 
-		scala.collection.immutable.List<Treatment> scalaCycle = buffer.toList();
-
 		List<Parameter> inFac = new ArrayList<Parameter>();
-		inFac.add(new InconsistencyParameter(scalaCycle));
+		inFac.add(new InconsistencyParameter(cycle));
 
 		return inFac;
 	}
@@ -120,6 +115,12 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	
 	protected void finished() {
 		d_results.simulationFinished();
+	}
+
+	@Override
+	public void setExtendSimulation(ExtendSimulation s) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

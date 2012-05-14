@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +77,6 @@ import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.knowledge.StudiesKnowledge;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
@@ -126,7 +127,7 @@ public class AddisWindow extends JFrame {
 			}
 		});
 
-		setIconImage(ImageLoader.getImage(FileNames.ICON_ADDIS_APP));
+		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
 		
 		setPreferredSize(fitDimensionToScreen(960, 800));
 		setMinimumSize(new Dimension(750, 550)); // fit the screen for 800x600 resolution
@@ -190,7 +191,7 @@ public class AddisWindow extends JFrame {
 	private JButton createToolbarButton(final CategoryKnowledge knowledge) {
 		String title = "New " + knowledge.getSingularCapitalized();
 		JButton topAddStudyButton = new JButton(title,
-				ImageLoader.getIcon(knowledge.getNewIconName()));
+				Main.IMAGELOADER.getIcon(knowledge.getNewIconName()));
 		topAddStudyButton.setToolTipText(title);
 		topAddStudyButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
@@ -317,7 +318,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		JMenuItem item = new JMenuItem("Delete", ImageLoader.getIcon(FileNames.ICON_DELETE));
+		JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -329,7 +330,7 @@ public class AddisWindow extends JFrame {
 	}
 	
 	private JMenuItem createEditItem() {
-		JMenuItem item = new JMenuItem("Edit", ImageLoader.getIcon(FileNames.ICON_EDIT));
+		JMenuItem item = new JMenuItem("Edit", Main.IMAGELOADER.getIcon(FileNames.ICON_EDIT));
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -371,7 +372,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createLoadItem() {
-		JMenuItem openItem = new JMenuItem("Load", ImageLoader
+		JMenuItem openItem = new JMenuItem("Load", Main.IMAGELOADER
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
 		openItem.addActionListener(new AbstractAction() {
@@ -429,7 +430,7 @@ public class AddisWindow extends JFrame {
 	}
 	
 	private JMenuItem createSaveItem() {
-		d_saveMenuItem = new JMenuItem("Save", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
+		d_saveMenuItem = new JMenuItem("Save", Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		d_saveMenuItem.setMnemonic('s');
 		Bindings.bind(d_saveMenuItem, "enabled", d_main.getDomainChangedModel());
 		
@@ -452,7 +453,7 @@ public class AddisWindow extends JFrame {
 	}
 	
 	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save As", ImageLoader.getIcon(FileNames.ICON_SAVEFILE));
+		JMenuItem saveItem = new JMenuItem("Save As", Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
 		
 		// attach to ctrl-shift-s
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
@@ -472,7 +473,7 @@ public class AddisWindow extends JFrame {
 	
 
 	private JMenuItem createExitItem() {
-		JMenuItem exitItem = new JMenuItem("Exit", ImageLoader.getIcon(FileNames.ICON_STOP));
+		JMenuItem exitItem = new JMenuItem("Exit", Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
 		exitItem.setMnemonic('e');
 		exitItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -601,7 +602,7 @@ public class AddisWindow extends JFrame {
 			int conf = JOptionPane.showConfirmDialog(this,
 					"Do you really want to delete " + selectedType + " " + selected
 					+ " ?", "Confirm deletion", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE, ImageLoader
+					JOptionPane.QUESTION_MESSAGE, Main.IMAGELOADER
 					.getIcon(FileNames.ICON_DELETE));
 			if (conf != JOptionPane.YES_OPTION) {
 				return;
@@ -627,7 +628,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {
-		JMenuItem item = new JMenuItem(knowledge.getSingularCapitalized(), ImageLoader.getIcon(knowledge.getNewIconName()));
+		JMenuItem item = new JMenuItem(knowledge.getSingularCapitalized(), Main.IMAGELOADER.getIcon(knowledge.getNewIconName()));
 		item.setMnemonic(knowledge.getMnemonic());
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -652,7 +653,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createNewItem() {
-		JMenuItem newItem = new JMenuItem("New", ImageLoader.getIcon(FileNames.ICON_FILE_NEW));
+		JMenuItem newItem = new JMenuItem("New", Main.IMAGELOADER.getIcon(FileNames.ICON_FILE_NEW));
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

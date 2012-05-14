@@ -3,7 +3,7 @@ package org.drugis.mtc.summary;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.correlation.StorelessCovariance;
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.mtc.MCMCResults;

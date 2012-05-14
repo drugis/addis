@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +54,7 @@ import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -60,7 +63,6 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.WhenTakenPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
@@ -239,7 +241,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 				row = LayoutUtil.addRow(momentLayout, row);
 				momentPanelBuilder.addLabel("Measurement moment: ", cc.xy(1, row));
 				momentPanelBuilder.addLabel(wt.toString(), cc.xy(3, row));
-				JButton editButton = new JButton(ImageLoader.getIcon(FileNames.ICON_EDIT));
+				JButton editButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_EDIT));
 				editButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, wt, (StudyOutcomeMeasure<T>) d_slot, d_epm);
@@ -250,7 +252,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 				});
 				momentPanelBuilder.add(editButton, cc.xy(5, row));
 				
-				JButton deleteButton = new JButton(ImageLoader.getIcon(FileNames.ICON_DELETE));
+				JButton deleteButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 				deleteButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						d_slot.getWhenTaken().remove(wt);

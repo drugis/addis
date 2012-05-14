@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +31,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.drugis.common.JUnitUtil.assertNotEquals;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -37,8 +40,6 @@ import org.drugis.addis.ExampleData;
 import org.junit.Before;
 import org.junit.Test;
 
-import scala.actors.threadpool.Arrays;
-
 public class DrugSetTest {
 	private DrugSet d_empty;
 	private DrugSet d_single;
@@ -46,17 +47,15 @@ public class DrugSetTest {
 	private List<Drug> d_multiList;
 	private Drug d_singleDrug;
 	
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		d_empty = new DrugSet();
 		d_singleDrug = ExampleData.buildDrugEscitalopram();
 		d_single = new DrugSet(d_singleDrug);
-		d_multiList = Arrays.asList(new Drug[] {
+		d_multiList = Arrays.asList(
 				ExampleData.buildDrugCandesartan(),
 				ExampleData.buildDrugViagra(),
-				ExampleData.buildDrugViagra()
-			});
+				ExampleData.buildDrugViagra());
 		d_multi = new DrugSet(d_multiList);
 	}
 
@@ -75,7 +74,6 @@ public class DrugSetTest {
 		assertEquals(new HashSet<Drug>(d_multiList), d_multi.getContents());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetName() {
 		assertEquals("", d_empty.getLabel());
@@ -126,7 +124,6 @@ public class DrugSetTest {
 		assertFalse(d_single.deepEquals(new DrugSet(drug)));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testCompareTo() {
 		assertEquals(0, d_empty.compareTo(d_empty));

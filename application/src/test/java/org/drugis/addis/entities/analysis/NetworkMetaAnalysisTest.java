@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,8 +49,8 @@ import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
-import org.drugis.mtc.BasicParameter;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.summary.QuantileSummary;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -96,9 +98,9 @@ public class NetworkMetaAnalysisTest {
 		Drug base = ExampleData.buildDrugFluoxetine();
 		Drug subj = ExampleData.buildDrugParoxetine();
 		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(new DrugSet(base), new DrugSet(subj), BasicOddsRatio.class);
-		NormalSummary summary = d_mockAnalysis.getNormalSummary(d_mockAnalysis.getConsistencyModel(), 
+		QuantileSummary summary = d_mockAnalysis.getQuantileSummary(d_mockAnalysis.getConsistencyModel(), 
 				new BasicParameter(d_mockAnalysis.getTreatment(new DrugSet(base)), d_mockAnalysis.getTreatment(new DrugSet(subj))));
-		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary.getMean(), summary.getStandardDeviation());
+		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary);
 		assertNotNull(expected);
 		assertNotNull(actual);
 		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
@@ -129,7 +131,7 @@ public class NetworkMetaAnalysisTest {
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		assertEquals("Candesartan_Fluoxetine", nma.getTreatment(new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()))).id());
+		assertEquals("Candesartan_Fluoxetine", nma.getTreatment(new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()))).getId());
 	}
 	
 	@Test
@@ -150,7 +152,7 @@ public class NetworkMetaAnalysisTest {
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		assertEquals("Fluoxetine_MyDrug", nma.getTreatment(new DrugSet(Arrays.asList(myDrug, ExampleData.buildDrugFluoxetine()))).id());
+		assertEquals("Fluoxetine_MyDrug", nma.getTreatment(new DrugSet(Arrays.asList(myDrug, ExampleData.buildDrugFluoxetine()))).getId());
 	}
 	
 	@Test
@@ -175,7 +177,7 @@ public class NetworkMetaAnalysisTest {
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		assertEquals("MyDrug", nma.getTreatment(new DrugSet(Arrays.asList(myDrug1))).id());
-		assertEquals("MyDrug2", nma.getTreatment(new DrugSet(Arrays.asList(myDrug2))).id());
+		assertEquals("MyDrug", nma.getTreatment(new DrugSet(Arrays.asList(myDrug1))).getId());
+		assertEquals("MyDrug2", nma.getTreatment(new DrugSet(Arrays.asList(myDrug2))).getId());
 	}
 }

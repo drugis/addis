@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +31,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -119,7 +123,7 @@ public class StudyActivityTest {
 	@Test
 	public void testDependencies() {
 		assertEquals(Collections.emptySet(), d_randomization.getDependencies());
-		assertEquals(Collections.singleton(d_fluoxetine), d_main.getDependencies());
+		assertEquals(new HashSet<Entity>(Arrays.asList(d_fluoxetine, ExampleData.MILLIGRAMS_A_DAY.getUnit())), d_main.getDependencies());
 	}
 	
 	@Test

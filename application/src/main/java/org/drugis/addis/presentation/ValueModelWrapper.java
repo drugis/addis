@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +24,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis;
+package org.drugis.addis.presentation;
 
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.Study;
+import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueModel;
 
-public class MockStudyBenefitRiskAnalysis extends StudyBenefitRiskAnalysis {
-	public MockStudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
-			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
-		super(name,indication, study, criteria,alternatives, analysisType);
+/**
+ * Wrap a ValueModel to conform to the typed ValueHolder<T> interface.
+ * Does NOT make the ValueModel type safe. 
+ */
+public class ValueModelWrapper<T> extends AbstractValueModel implements ValueHolder<T> {
+	private static final long serialVersionUID = 1485871079580004731L;
+	private final ValueModel d_model;
+
+	public ValueModelWrapper(ValueModel model) {
+		d_model = model;
+		model.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				firePropertyChange("value", event.getOldValue(), event.getNewValue());
+			}
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T getValue() {
+		return (T) d_model.getValue();
+	}
+
+	@Override
+	public void setValue(Object newValue) {
+		d_model.setValue(newValue);
 	}
 }

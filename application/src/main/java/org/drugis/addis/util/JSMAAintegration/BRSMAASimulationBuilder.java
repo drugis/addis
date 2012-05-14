@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +28,7 @@ package org.drugis.addis.util.JSMAAintegration;
 
 import org.drugis.common.gui.task.TaskProgressModel;
 
+import fi.smaa.common.RandomUtil;
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
 import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
 import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
@@ -63,7 +66,7 @@ public class BRSMAASimulationBuilder extends SimulationBuilder<SMAAModel, SMAA2R
 
 	@Override
 	protected SMAA2Simulation generateSimulation() {
-		SMAA2Simulation simulation = new SMAA2Simulation(model, 10000);
+		SMAA2Simulation simulation = new SMAA2Simulation(model, RandomUtil.createWithRandomSeed(), 10000);
 		d_progressModel.setTask(simulation.getTask());
 		return simulation;
 	}

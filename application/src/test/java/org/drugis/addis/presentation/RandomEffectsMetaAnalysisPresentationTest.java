@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +56,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
-		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
+		PairWiseMetaAnalysisPresentation pres = (PairWiseMetaAnalysisPresentation) fact.getModel(meta);
 		assertEquals(new RateVariableType(), pres.getAnalysisType());
 	}
 	
@@ -68,7 +70,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
-		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
+		PairWiseMetaAnalysisPresentation pres = (PairWiseMetaAnalysisPresentation) fact.getModel(meta);
 		assertTrue(pres.getAnalysisType() instanceof ContinuousVariableType);
 	}
 	
@@ -82,7 +84,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
-		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
+		PairWiseMetaAnalysisPresentation pres = (PairWiseMetaAnalysisPresentation) fact.getModel(meta);
 		List<Study> expected = new ArrayList<Study>();
 		expected.add(ExampleData.buildStudyChouinard());
 
@@ -99,7 +101,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
-		RandomEffectsMetaAnalysisPresentation pres = (RandomEffectsMetaAnalysisPresentation) fact.getModel(meta);
+		PairWiseMetaAnalysisPresentation pres = (PairWiseMetaAnalysisPresentation) fact.getModel(meta);
 		
 		ForestPlotPresentation expected = new ForestPlotPresentation(meta, BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()));

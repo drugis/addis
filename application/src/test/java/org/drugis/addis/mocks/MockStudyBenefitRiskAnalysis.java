@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,30 +24,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.mocks;
 
-import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import java.util.List;
 
-@SuppressWarnings("serial")
-public class RandomEffectsMetaAnalysisPresentation
-extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
-implements StudyListPresentation {
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 
-	public RandomEffectsMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
-		super(bean, mgr);
-	}
-	
-	public LabeledPresentation getFirstDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getFirstDrug());
-	}
-	
-	public LabeledPresentation getSecondDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
-	}
-
-	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
-		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
-		return pm;
+public class MockStudyBenefitRiskAnalysis extends StudyBenefitRiskAnalysis {
+	public MockStudyBenefitRiskAnalysis(String name, Indication indication, Study study, 
+			List<OutcomeMeasure> criteria, List<Arm> alternatives, AnalysisType analysisType) {
+		super(name,indication, study, criteria,alternatives, analysisType);
 	}
 }

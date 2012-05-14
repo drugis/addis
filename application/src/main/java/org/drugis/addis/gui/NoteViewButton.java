@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +34,6 @@ import javax.swing.JButton;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
-import org.drugis.common.ImageLoader;
 
 import com.jgoodies.binding.list.ObservableList;
 
@@ -44,7 +45,7 @@ public class NoteViewButton extends JButton {
 	private final String d_description;
 	
 	public NoteViewButton(Window parent, String description, ObservableList<Note> notes) {
-		super(ImageLoader.getIcon(FileNames.ICON_NOTE));
+		super(Main.IMAGELOADER.getIcon(FileNames.ICON_NOTE));
 		d_parent = parent;
 		d_description = description;
 		d_notes = notes;

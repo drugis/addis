@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -453,7 +455,7 @@ public class BenefitRiskWizardPMTest {
 	}
 	
 	@Test
-	public void testLyndOBrienAlternativesRestrictions(){
+	public void testLyndOBrienAlternativesRestrictions() {
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien);
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
@@ -471,7 +473,7 @@ public class BenefitRiskWizardPMTest {
 	}
 
 	@Test
-	public void testLyndOBrienOutcomesRestrictions(){
+	public void testLyndOBrienOutcomesRestrictions() {
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
@@ -580,5 +582,26 @@ public class BenefitRiskWizardPMTest {
 		
 		d_pm.getDecisionContextFields().get(0).getModel().setValue("Test");
 		assertEquals("Test", d_pm.getDecisionContext().getTherapeuticContext());
+	}
+	
+	@Test
+	public void testDeselectedCriterionWithSelectedMetaAnalysisShouldBeExcluded() {
+		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
+		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien);
+
+		// Set a meta-analysis for HAM-D, but deselect HAM-D afterwards
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
+		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(false);
+		
+		// Select two (other) criteria
+		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
+		pm.getCriterionSelectedModel(ExampleData.buildAdverseEventConvulsion()).setValue(true);
+
+		// Select two alternatives
+		pm.getAlternativeSelectedModel(d_sertrSet).setValue(true);
+		pm.getAlternativeSelectedModel(d_fluoxSet).setValue(true);
+		
+		assertEquals(Arrays.asList(ExampleData.buildNetworkMetaAnalysisCgi(), null), pm.getSelectedMetaAnalyses());
 	}
 }

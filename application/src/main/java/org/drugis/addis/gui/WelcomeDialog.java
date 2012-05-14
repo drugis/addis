@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +44,6 @@ import javax.swing.border.EtchedBorder;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
-import org.drugis.common.ImageLoader;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -64,7 +65,7 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 		setTitle("Welcome to " + AppInfo.getAppName());		
 		initComps();
 		setResizable(false);
-		setIconImage(ImageLoader.getImage(FileNames.ICON_ADDIS_APP));
+		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
 		
 		pack();
 		addWindowListener(new WindowAdapter() {
@@ -133,12 +134,12 @@ public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
 
 	private JLabel createImageLabel(String imageHeader) {
 		JLabel label = new JLabel();
-		label.setIcon(ImageLoader.getIcon(imageHeader));
+		label.setIcon(Main.IMAGELOADER.getIcon(imageHeader));
 		return label;
 	}
 
 	private JButton createButton(String text, String icon, AbstractAction action) {
-		JButton button = new JButton(text, ImageLoader.getIcon(icon));
+		JButton button = new JButton(text, Main.IMAGELOADER.getIcon(icon));
 		button.setPreferredSize(new Dimension(BUTTON_WIDTH, COMP_HEIGHT));
 		button.setHorizontalAlignment(SwingConstants.LEFT);
 		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

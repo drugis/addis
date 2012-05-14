@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +44,6 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.StudyListPresentation;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LinkLabel;
 import org.jfree.chart.ChartFactory;
@@ -59,7 +60,7 @@ public class GUIFactory {
 	}
 
 	public static JButton createIconButton(String iconName, String toolTipText) {
-		Icon icon = ImageLoader.getIcon(iconName);
+		Icon icon = Main.IMAGELOADER.getIcon(iconName);
 		JButton button = new JButton(icon);
 		button.setToolTipText(toolTipText);
 		return button;
@@ -76,7 +77,7 @@ public class GUIFactory {
 		} else if (e instanceof PopulationCharacteristic) {
 			fname = FileNames.ICON_POPULATION_CHAR;
 		}
-		Icon icon = ImageLoader.getIcon(fname);
+		Icon icon = Main.IMAGELOADER.getIcon(fname);
 		return new JLabel(e.getName() + primary, icon, JLabel.CENTER);
 	}
 

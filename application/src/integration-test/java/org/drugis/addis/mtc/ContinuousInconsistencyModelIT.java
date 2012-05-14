@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +38,8 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,10 +56,11 @@ public class ContinuousInconsistencyModelIT {
     
     @Test
     public void getResults() throws InterruptedException {
+    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
     	TaskUtil.run(d_model.getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyFactors().size());
-    	assertNotNull(d_nma.getNormalSummary(d_model, d_model.getInconsistencyFactors().get(0)));
+    	assertNotNull(d_nma.getQuantileSummary(d_model, d_model.getInconsistencyFactors().get(0)));
     	Treatment a = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugFluoxetine()));
     	Treatment b = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugParoxetine()));
     	Treatment c = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugSertraline()));

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +50,6 @@ public class ErrorDialog {
 		"Attaching the stack trace and the .addis data file would be very helpful.<br/>" +
 		"See <a href=\"http://drugis.org/addis-bug\">http://drugis.org/addis-bug</a> for instructions.<br/><br/>" +
 		"Consider restarting ADDIS.</html>";
-	private static final long serialVersionUID = 954780612211006478L;
 
 	public static void showDialog(final Throwable e, String title) {
 		showDialog(e, title, e.getMessage(), true);

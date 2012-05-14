@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,9 +45,9 @@ import org.drugis.addis.entities.ObjectWithNotes;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyCharacteristics;
 import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.presentation.StudyPresentation;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -101,7 +103,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		row = LayoutUtil.addRow(layout, row);
 		builder.addSeparator("", cc.xyw(1, row, fullWidth));
 		
-		JButton d80Button = new JButton("Summary of Efficacy Table", ImageLoader.getIcon(FileNames.ICON_FILE_NEW));
+		JButton d80Button = new JButton("Summary of Efficacy Table", Main.IMAGELOADER.getIcon(FileNames.ICON_FILE_NEW));
 		d80Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +39,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
@@ -69,13 +73,13 @@ import fi.smaa.jsmaa.gui.views.ResultsView;
 public class SMAAView implements ViewBuilder  {
 	public static final String WAITING_MESSAGE = "Please wait while the sub-analyses run";
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private SMAAPresentation d_pm;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private final AbstractBenefitRiskPresentation d_BRpm;
 	private final AddisWindow d_mainWindow;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public SMAAView(AbstractBenefitRiskPresentation pm, AddisWindow mainWindow) {
 		d_pm = pm.getSMAAPresentation();
 		d_mainWindow = mainWindow;
@@ -120,6 +124,8 @@ public class SMAAView implements ViewBuilder  {
 				dialog.saveActions();
 			}
 		});
+		expButton.setEnabled(false);
+		expButton.setToolTipText("Temporarily disabled, while JSMAA is under development.");
 		return expButton;
 	}
 
@@ -167,7 +173,7 @@ public class SMAAView implements ViewBuilder  {
 	public JComponent buildPreferenceInformationView(PreferencePresentationModel preferencePresentationModel, AbstractBenefitRiskPresentation<?,?> pm) {
 		if (d_BRpm instanceof MetaBenefitRiskPresentation) {
 			return new PreferenceInformationView(d_pm.getPreferencePresentationModel(),
-					new ClinicalScaleRenderer((MetaBenefitRiskPresentation) d_BRpm, (SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>>) d_pm)).buildPanel();
+					new ClinicalScaleRenderer((AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis>) d_BRpm, (SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>>) d_pm)).buildPanel();
 		} else {
 			return new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
 		}

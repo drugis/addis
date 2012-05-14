@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,8 +241,7 @@ public class StudyTest {
 		study.getOutcomeMeasures().iterator().next().setVariableType(new ContinuousVariableType());
 		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
 	}
-	
-	
+
 	@Test
 	public void testEquals() {
 		String name1 = "Study A";
@@ -354,17 +355,9 @@ public class StudyTest {
 		assertFalse(s.getDrugs().isEmpty());
 		
 		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
-		for (DrugSet d : s.getDrugs()) {
-			dep.addAll(d.getContents());
-		}
-		for (StudyActivity sa: s.getStudyActivities()) {
-			if (sa.getActivity() instanceof TreatmentActivity) {
-				TreatmentActivity ta = (TreatmentActivity) sa.getActivity();
-				for (AbstractDose d: ta.getDoses()) {
-					dep.add(d.getDoseUnit().getUnit());
-				}
-			}
-		}
+		dep.add(ExampleData.buildDrugFluoxetine());
+		dep.add(ExampleData.buildDrugParoxetine());
+		dep.add(ExampleData.MILLIGRAMS_A_DAY.getUnit());
 		dep.add(s.getIndication());
 		assertEquals(dep, s.getDependencies());
 	}	
@@ -737,6 +730,15 @@ public class StudyTest {
 				d_clone.getMeasurement(som.getValue(), arm, newWhenTaken));
 	}
 	
+	@Test
+	public void testNoDefaultMeasurement() { 
+		for(StudyActivity activity : d_clone.getStudyActivities()) {
+			activity.setUsedBy(Collections.<UsedBy> emptySet());
+		}
+		assertNull(d_clone.defaultMeasurementMoment());
+		assertEquals(Collections.<DrugSet> emptySet(), d_clone.getMeasuredDrugs(d_clone.getEndpoints().get(0).getValue()));
+	}
+	
 	private void removeTreatmentActivities() {
 		for (StudyActivity sa : d_clone.getStudyActivities()) {
 			if (sa.getActivity() instanceof TreatmentActivity) {
@@ -745,4 +747,23 @@ public class StudyTest {
 		}
 	}
 	
+	@Test
+	public void testDependenciesFromActivity() {
+		final Indication indication = ExampleData.buildIndicationDepression();
+		Study study = new Study("Study X", indication);
+		Set<Entity> expected = new HashSet<Entity>();
+		expected.add(indication);
+		assertEquals(expected, study.getDependencies());
+		
+		Drug drug = ExampleData.buildDrugCandesartan();
+		final TreatmentActivity treatmentActivity = new TreatmentActivity(new DrugTreatment(drug, new UnknownDose()));
+		study.getStudyActivities().add(new StudyActivity("Candesartan", treatmentActivity));
+		expected.add(drug);
+		assertEquals(expected, study.getDependencies());
+		
+		treatmentActivity.addTreatment(drug, new FixedDose(3.0, ExampleData.KILOGRAMS_PER_HOUR));
+		study.getStudyActivities().add(new StudyActivity("Candesartan 2", treatmentActivity));
+		expected.add(ExampleData.KILOGRAMS_PER_HOUR.getUnit());
+		assertEquals(expected, study.getDependencies());
+	}
 }

@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +26,8 @@
 
 package org.drugis.addis.gui.util;
 
-import java.awt.Canvas;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -36,7 +38,9 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -51,9 +55,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.drugis.addis.gui.builder.BRATForestCellRenderer;
 
-import scala.actors.threadpool.Arrays;
 import sun.awt.datatransfer.DataTransferer;
 
 public class TableCopyHandler implements Transferable, ClipboardOwner {
@@ -220,8 +223,8 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		Component c = getRendererComponent(row, col);
 		if (c instanceof JLabel) {
 			return stripHtml(((JLabel)c).getText(), plainText);
-		} else if (c instanceof Canvas) {
-			return plainText ? "" : "<img src=\"data:image/png;base64," + getMimeEncodedPng((Canvas) c) + "\"/>";
+		} else if (c instanceof BRATForestCellRenderer.ForestPlotTableCell) {
+			return plainText ? "" : "<img src=\"data:image/png;base64," + getMimeEncodedPng((JComponent) c) + "\"/>";
 		}
 		return d_table.getValueAt(row, col).toString();
 	}
@@ -234,11 +237,17 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		}
 	}
 
-	private String getMimeEncodedPng(Canvas c) {
+	public static String getMimeEncodedPng(JComponent c) {
+		Dimension componentSize = c.getPreferredSize();
+		c.setDoubleBuffered(false);
+		c.setSize(componentSize); // Required to make component dirty, otherwise it won't export 
+		c.addNotify();
+		c.validate();
+		
 		BufferedImage bufferedImage = new BufferedImage(c.getSize().width, c.getSize().height, BufferedImage.TYPE_INT_RGB);
-		Graphics2D graphics2d = bufferedImage.createGraphics();
-		graphics2d.setClip(0, 0, c.getSize().width, c.getSize().height);
-		c.paint(graphics2d);
+		Graphics2D graphics = bufferedImage.createGraphics();
+		graphics.setClip(0, 0, c.getSize().width, c.getSize().height);
+		c.paintAll(graphics);
 		try {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			ImageIO.write(bufferedImage, "png", output);
@@ -248,7 +257,6 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<DataFlavor> getSupportedFlavors() {
 		return Arrays.asList(getTransferDataFlavors());
 	}

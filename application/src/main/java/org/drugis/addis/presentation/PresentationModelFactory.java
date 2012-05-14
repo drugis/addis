@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +33,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
@@ -63,7 +66,7 @@ public class PresentationModelFactory {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> PresentationModel<T> getModel(T obj) {
 		PresentationModel mod = d_cache.get(obj);
 		if ((mod != null) && (mod.getBean() == obj)) {
@@ -79,7 +82,7 @@ public class PresentationModelFactory {
 		d_cache.clear();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private PresentationModel createModel(Object obj) {
 		if (obj instanceof Variable) {
 			return new VariablePresentation((Variable)obj,
@@ -113,11 +116,13 @@ public class PresentationModelFactory {
 			return new DrugTreatmentPresentation((DrugTreatment)obj);
 		}
 		if (obj instanceof Drug) {
-			Drug d = (Drug) obj;
-			return new DrugPresentation(d, d_domain);
+			return new DrugPresentation((Drug) obj, d_domain);
+		}
+		if (obj instanceof DrugSet) {
+			return new DrugSetPresentation((DrugSet) obj, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
-			return new RandomEffectsMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
+			return new PairWiseMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);
 		}
 		if (obj instanceof NetworkMetaAnalysis) {
 			return new NetworkMetaAnalysisPresentation((NetworkMetaAnalysis) obj, this);

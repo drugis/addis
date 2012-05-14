@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,15 +31,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -61,7 +61,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
 
-import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PubMedId;
@@ -71,14 +70,9 @@ import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.BrowserLaunch;
-import org.drugis.common.ImageLoader;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
-import org.drugis.common.threading.Task;
-import org.drugis.common.threading.ThreadHandler;
-
-import scala.actors.threadpool.Arrays;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -100,7 +94,6 @@ public class AuxComponentFactory {
 		return createBoundComboBox(values, model, false);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model, boolean isEntity) {
 		return createBoundComboBox(new ArrayListModel<T>(Arrays.asList(values)), model, isEntity);
 	}
@@ -317,17 +310,6 @@ public class AuxComponentFactory {
 	
 	public static JLabel createAutoWrapLabel(ValueModel value) {
 		return BasicComponentFactory.createLabel(new HTMLWrappingModel(value));
-	}
-
-	public static JButton createStartButton(final Task task) {
-		JButton button = new JButton(ImageLoader.getIcon(FileNames.ICON_RUN));
-		button.setToolTipText("Run simulation");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ThreadHandler.getInstance().scheduleTask(task);
-			}
-		});
-		return button;
 	}
 
 	public static Dimension defaultTextPaneDimension(JTextPane area) {

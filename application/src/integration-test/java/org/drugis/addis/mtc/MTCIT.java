@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,25 +31,24 @@ import static org.junit.Assert.assertNotNull;
 
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.DefaultModelFactory;
-import org.drugis.mtc.DichotomousMeasurement;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.ModelFactory;
-import org.drugis.mtc.Network;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
+import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
 public class MTCIT {
     private DichotomousNetworkBuilder<String> d_builder;
-	private Network<DichotomousMeasurement> d_network;
+	private Network d_network;
 	private InconsistencyModel d_model;
 
-    @SuppressWarnings("unchecked")
 	@Before
     public void setUp() {
-    	d_builder = new DichotomousNetworkBuilder();
+    	d_builder = new DichotomousNetworkBuilder<String>();
         d_builder.add("1", "A", 5, 100);
         d_builder.add("1", "B", 23, 100);
         d_builder.add("2", "B", 12, 43);
@@ -62,6 +63,7 @@ public class MTCIT {
     
     @Test
     public void getResults() throws InterruptedException {
+    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
     	TaskUtil.run(d_model.getActivityTask());
     	Treatment a = d_builder.getTreatmentMap().get("A");
     	Treatment b = d_builder.getTreatmentMap().get("B");

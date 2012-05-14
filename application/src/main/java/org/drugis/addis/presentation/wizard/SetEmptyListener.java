@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +34,7 @@ import java.util.List;
 
 import org.drugis.addis.presentation.ModifiableHolder;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class SetEmptyListener implements PropertyChangeListener {
 	private List<ModifiableHolder> holders;
 	

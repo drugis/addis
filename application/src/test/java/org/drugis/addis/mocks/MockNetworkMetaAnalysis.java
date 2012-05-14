@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +41,8 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.Treatment;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.summary.QuantileSummary;
 
 
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
@@ -54,24 +56,24 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		super(name, indication, om, studies, drugs, armMap);
 		d_mockInconsistencyModel = new MockInconsistencyModel();
 		d_mockConsistencyModel = new MockConsistencyModel(toTreatments(drugs));
-		d_normalSummaries.put(d_mockConsistencyModel, new HashMap<Parameter, NormalSummary>());
-		d_normalSummaries.put(d_mockInconsistencyModel, new HashMap<Parameter, NormalSummary>());
+		d_quantileSummaries.put(d_mockConsistencyModel, new HashMap<Parameter, QuantileSummary>());
+		d_quantileSummaries.put(d_mockInconsistencyModel, new HashMap<Parameter, QuantileSummary>());
 	}
 
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {
 		List<Treatment> ts = new ArrayList<Treatment>();
 		for (DrugSet d : drugs) {
-			ts.add(new Treatment(d.getLabel()));
+			ts.add(new Treatment(d.getLabel(), d.getLabel()));
 		}
 		return ts;
 	}
 
 	@Override
-	public NormalSummary getNormalSummary(MixedTreatmentComparison networkModel, Parameter ip) {
-		NormalSummary summary = d_normalSummaries.get(networkModel).get(ip);
+	public QuantileSummary getQuantileSummary(MixedTreatmentComparison networkModel, Parameter ip) {
+		QuantileSummary summary = d_quantileSummaries.get(networkModel).get(ip);
 		if (summary == null) {
-			summary = new MockNormalSummary(networkModel.getResults(), ip);
-			d_normalSummaries.get(networkModel).put(ip, summary);
+			summary = new MockQuantileSummary(networkModel.getResults(), ip);
+			d_quantileSummaries.get(networkModel).put(ip, summary);
 		}
 		return summary;
 	}

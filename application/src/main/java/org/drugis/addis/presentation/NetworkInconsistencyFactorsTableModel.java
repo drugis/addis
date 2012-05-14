@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,23 +32,21 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.InconsistencyParameter;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.parameterization.InconsistencyParameter;
+import org.drugis.mtc.summary.QuantileSummary;
+import org.drugis.mtc.summary.Summary;
 
 @SuppressWarnings("serial")
 public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private static final String NA = "N/A";
 	private NetworkMetaAnalysisPresentation d_pm;
-	private PresentationModelFactory d_pmf;
 	private PropertyChangeListener d_listener;
 	private boolean d_listenersAttached;
 
-	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm, PresentationModelFactory pmf) {
+	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm) {
 		d_pm = pm;
-		d_pmf = pmf;
 		
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -73,10 +73,16 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		
 		List<Parameter> parameterList = d_pm.getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			NormalSummary normalSummary = d_pm.getNormalSummary(getModel(), p);
-			normalSummary.addPropertyChangeListener(d_listener);
+			QuantileSummary summary = d_pm.getQuantileSummary(getModel(), p);
+			summary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int column) {
+		return column == 0 ? String.class : Summary.class;
+		
 	}
 	
 	@Override
@@ -94,25 +100,22 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		return 0;
 	}
 	
-	public String getValueAt(int row, int col) {
-		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
+	public Object getValueAt(int row, int col) {
+		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
 			return NA;
 		}
+		
 		InconsistencyModel model = getModel();
-		InconsistencyParameter ip = 
-			(InconsistencyParameter)model.getInconsistencyFactors().get(row);
-		if(col == 0){
+		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
+		if(col == 0){ // FIXME: use apache commons for this operation, and add a cell renderer!
 			String out = "";
-			for (int i=0; i<ip.treatmentList().size() - 1; ++i){
-				out += ip.treatmentList().get(i).id() + ", ";
+			for (int i = 0; i < ip.getCycle().size() - 1; ++i){
+				out += ip.getCycle().get(i).getId() + ", ";
 			}
-			return out.substring(0, out.length()-2);
-		} else if (model.isReady()){
-			NormalSummary summary = d_pm.getNormalSummary(model, ip);
-			Gaussian dist = new Gaussian(summary.getMean(), summary.getStandardDeviation());
-			return (String) d_pmf.getLabeledModel(dist).getLabelModel().getValue();
-		} else
-			return NA;
+			return out.substring(0, out.length() - 2);
+		} else {
+			return d_pm.getQuantileSummary(model, ip);
+		}
 	}
 
 	private InconsistencyModel getModel() {

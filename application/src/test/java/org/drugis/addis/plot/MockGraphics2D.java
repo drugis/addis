@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +67,7 @@ public class MockGraphics2D extends AbstractGraphics2D {
 		JUnitUtil.assertAllAndOnly(d_expected, d_actual);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void addRenderingHints(Map arg0) {
 		throw new RuntimeException("Not Implemented");
@@ -143,7 +145,7 @@ public class MockGraphics2D extends AbstractGraphics2D {
 		throw new RuntimeException("Not Implemented");
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void setRenderingHints(Map arg0) {
 		throw new RuntimeException("Not Implemented");

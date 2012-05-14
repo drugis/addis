@@ -7,6 +7,8 @@
  * Ahmad Kamal, Daniel Reid.
  * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +26,7 @@
 
 package org.drugis.addis.gui;
 
-import java.awt.AWTException;
 import java.awt.Container;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -54,7 +54,6 @@ import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.gui.FileLoadDialog;
-import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.threading.ThreadHandler;
@@ -62,6 +61,7 @@ import org.drugis.common.threading.event.TaskFailedEvent;
 
 @SuppressWarnings("serial")
 public class Main extends AbstractObservable {
+	public static final ImageLoader IMAGELOADER = new ImageLoader("/org/drugis/addis/gfx/");
 	public static class ErrorDialogExceptionHandler {
 		public void handle(Throwable e) {
 			e.printStackTrace();
@@ -85,7 +85,6 @@ public class Main extends AbstractObservable {
 
 	public Main(String[] args, boolean headless) {
 		d_headless = headless;
-		ImageLoader.setImagePath("/org/drugis/addis/gfx/");
 		
 		if (!d_headless) {
 			GUIHelper.initializeLookAndFeel();
@@ -126,26 +125,17 @@ public class Main extends AbstractObservable {
 		final JComponent content = (JComponent) container;
 		content.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(PRINT_SCREEN), "printWindow");
 		content.getActionMap().put("printWindow", 
-				new AbstractAction("printWindow") { 
-					public void actionPerformed(ActionEvent evt) {
-							try { 
-								printWindow(content);
-							} catch (Exception e) {
-								throw new RuntimeException("Error writing SVG: " + e.getMessage(), e);
-							}
-					} 
+		new AbstractAction("printWindow") { 
+			public void actionPerformed(ActionEvent evt) {
+				try { 		
+					ImageExporter.writeImage(content, content, content.getWidth(), content.getHeight());
+
 				} 
-		);
-	}
-	
-	public static void printWindow(final JComponent component) throws HeadlessException, AWTException {
-		FileSaveDialog dialog = new FileSaveDialog(component, "svg", "SVG files") {
-			@Override
-			public void doAction(String path, String extension) {
-				ImageExporter.writeSVG(path, component, component.getWidth(), component.getHeight());
-			}
-		};
-		dialog.saveActions();
+				catch (Exception e) {
+					throw new RuntimeException("Error writing image: " + e.getMessage(), e);
+				}
+			} 
+		});
 	}
 	
 	protected void showWelcome() {
