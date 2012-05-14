@@ -64,7 +64,9 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 
 	private void attachListener(MTCModelWrapper networkModel, DrugSet d1, DrugSet d2) {
 		QuantileSummary quantileSummary = getSummary(d1, d2);
-		quantileSummary.addPropertyChangeListener(d_listener);
+		if(quantileSummary != null) {
+			quantileSummary.addPropertyChangeListener(d_listener);
+		}
 	}
 
 	public int getColumnCount() {

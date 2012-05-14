@@ -3,10 +3,12 @@ package org.drugis.addis.entities.analysis.models;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public interface MTCModelWrapper {
+public interface MTCModelWrapper extends MCMCModel {
 
 	public QuantileSummary getQuantileSummary(Parameter ip);
 	
@@ -14,14 +16,19 @@ public interface MTCModelWrapper {
 
 	public ActivityTask getActivityTask();
 	
-	public MCMCModel getModel();
+	public MixedTreatmentComparison getModel();
+	
+	public boolean hasSavedResults();
 
 	public boolean isReady();
 
-	Parameter getRandomEffectsVariance();
+	public Parameter getRandomEffectsVariance();
 
-	int getBurnInIterations();
+	public int getBurnInIterations();
 
-	int getSimulationIterations();
+	public int getSimulationIterations();
+	
+	public ConvergenceSummary getConvergenceSummary(Parameter p);
 
+	public Parameter[] getParameters();
 }

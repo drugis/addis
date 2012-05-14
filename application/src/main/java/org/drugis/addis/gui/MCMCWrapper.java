@@ -27,18 +27,19 @@
 package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.MCMCModel;
 
 public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
-	private final MCMCModel d_model;
+	private MCMCModel d_model;
 	private final String d_name;
 	protected final OutcomeMeasure d_om;
 	private TaskProgressModel d_taskProgressModel;
 
-	public MCMCWrapper(MCMCModel model, OutcomeMeasure om, String name) { 
+	public MCMCWrapper(final MCMCModel model, final OutcomeMeasure om, final String name) { 
 		d_model = model;
 		d_om = om;
 		d_taskProgressModel = new TaskProgressModel(getActivityTask());
@@ -46,7 +47,11 @@ public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
 	}
 	
 	public ActivityTask getActivityTask() {
-		return d_model.getActivityTask();
+		if(d_model instanceof MTCModelWrapper) { 
+			return ((MTCModelWrapper)d_model).getActivityTask();
+		} else { 
+			return d_model.getActivityTask();
+		}
 	}
 
 	public TaskProgressModel getProgressModel() {
@@ -62,6 +67,8 @@ public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
 	public OutcomeMeasure getOutcomeMeasure() {
 		return d_om;
 	}
+	
+	public abstract boolean hasSavedResults();
 	
 	@Override
 	public String toString() { 

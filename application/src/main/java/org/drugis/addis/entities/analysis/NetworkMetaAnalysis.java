@@ -43,14 +43,15 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
+import org.drugis.addis.entities.analysis.models.SavedConsistencyModel;
+import org.drugis.addis.entities.analysis.models.SavedInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
+import org.drugis.addis.entities.data.MCMCSettings;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.common.threading.Task;
-import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
@@ -58,7 +59,9 @@ import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
@@ -82,16 +85,17 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(ANALYSIS_TYPE, name, indication, om, studies, sortDrugs(drugs), armMap);
 	}
+	
+	public NetworkMetaAnalysis(String name, Indication indication,
+			OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
+		super(ANALYSIS_TYPE, name, indication, om, armMap);
+	}
+
 
 	private static List<DrugSet> sortDrugs(Collection<DrugSet> drugs) {
 		ArrayList<DrugSet> list = new ArrayList<DrugSet>(drugs);
 		Collections.sort(list);
 		return list;
-	}
-
-	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
-		super(ANALYSIS_TYPE, name, indication, om, armMap);
 	}
 
 	private InconsistencyWrapper createInconsistencyModel() {
@@ -131,6 +135,25 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_consistencyModel;
 	}
 
+	public NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
+		if (!d_nodeSplitModels.containsKey(p)) {
+			d_nodeSplitModels.put(p, createNodeSplitModel(p));
+		}
+		return d_nodeSplitModels.get(p);
+	}
+
+	public synchronized void loadInconsitencyModel(MCMCSettings settings,
+			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
+		d_inconsistencyModel = new SavedInconsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);
+	}
+	
+
+	public synchronized void loadConsitencyModel(MCMCSettings settings,
+			HashMap<Parameter, QuantileSummary> quantileSummaries,
+			HashMap<Parameter, ConvergenceSummary> convergenceSummaries) {
+		d_consistencyModel = new SavedConsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);		
+	}
+	
 	public NetworkBuilder<DrugSet> getBuilder() {
 		if (d_builder == null) {
 			d_builder = createBuilder(d_outcome, d_studies, getIncludedDrugs(), d_armMap);
@@ -139,19 +162,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public Network getNetwork() {
-		return d_builder.buildNetwork();
+		return getBuilder().buildNetwork();
 	}
-	
-	public void run() {
-		List<Task> tasks = new ArrayList<Task>();
-		if (!getConsistencyModel().isReady()) {
-			tasks.add(getConsistencyModel().getActivityTask());
-		}
-		if (!getInconsistencyModel().isReady()) {
-			tasks.add(getInconsistencyModel().getActivityTask());
-		}
-		ThreadHandler.getInstance().scheduleTasks(tasks);
-	}
+
 
 	public MultivariateNormalSummary getRelativeEffectsSummary() {
 		return d_relativeEffectsSummary;
@@ -160,9 +173,21 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public boolean isContinuous() {
 		return NetworkBuilderFactory.isContinuous(d_outcome);
 	}
+	
+	public Treatment getTreatment(DrugSet d) {
+		return getBuilder().getTreatmentMap().get(d);
+	}
+	
+	public DrugSet getDrugSet(Treatment t) {
+		return getBuilder().getTreatmentMap().getKey(t);
+	}
+	
+	public List<BasicParameter> getSplitParameters() {
+		return DefaultModelFactory.instance().getSplittableNodes(getBuilder().buildNetwork());
+	}
 
-	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {
-		
+	@Deprecated
+	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {		
 		if(!getConsistencyModel().isReady())
 			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
 		
@@ -175,18 +200,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		} else {
 			return NetworkRelativeEffect.buildOddsRatio(estimate);
 		}
-	}
-	
-
-	public List<BasicParameter> getSplitParameters() {
-		return DefaultModelFactory.instance().getSplittableNodes(getBuilder().buildNetwork());
-	}
-
-	public NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
-		if (!d_nodeSplitModels.containsKey(p)) {
-			d_nodeSplitModels.put(p, createNodeSplitModel(p));
-		}
-		return d_nodeSplitModels.get(p);
 	}
 	
 	@Override
@@ -204,5 +217,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return true;
 	}
-	
+
+
 }

@@ -31,8 +31,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.QuantileSummary;
 
@@ -55,7 +55,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 		};
 		
 		if (isInconsistency()) {
-			attachListener(((InconsistencyModel) mtc).getInconsistencyVariance());
+			attachListener(((InconsistencyWrapper) mtc).getInconsistencyVariance());
 		}
 		attachListener(mtc.getRandomEffectsVariance());
 	}
@@ -83,7 +83,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 	}
 
 	private boolean isInconsistency() {
-		return (d_mtc instanceof InconsistencyModel);
+		return (d_mtc instanceof InconsistencyWrapper);
 	}
 
 	public Object getValueAt(int row, int col) {

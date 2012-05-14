@@ -40,6 +40,8 @@ import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
+import org.drugis.common.threading.Task;
+import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.model.Treatment;
 
 
@@ -73,4 +75,16 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	public ConsistencyWrapper getConsistencyModel() {
 		return d_mockConsistencyModel;
 	}
+	
+	public void run() {
+		List<Task> tasks = new ArrayList<Task>();
+		if (!getConsistencyModel().isReady()) {
+			tasks.add(getConsistencyModel().getActivityTask());
+		}
+		if (!getInconsistencyModel().isReady()) {
+			tasks.add(getInconsistencyModel().getActivityTask());
+		}
+		ThreadHandler.getInstance().scheduleTasks(tasks);
+	}
+	
 }

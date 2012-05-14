@@ -15,12 +15,12 @@ public class SimulationInconsistencyModel extends AbstractSimulationModel<Incons
 
 	@Override
 	public List<Parameter> getInconsistencyFactors() {	
-		return ((InconsistencyModel)d_nested).getInconsistencyFactors();
+		return d_nested.getInconsistencyFactors();
 	}
 
 	@Override
 	public Parameter getInconsistencyVariance() {
-		return ((InconsistencyModel)d_nested).getInconsistencyVariance();
+		return d_nested.getInconsistencyVariance();
 	}
 
 }
