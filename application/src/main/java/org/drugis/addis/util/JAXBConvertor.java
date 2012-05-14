@@ -165,7 +165,6 @@ import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
@@ -1083,7 +1082,6 @@ public class JAXBConvertor {
 		return drugs;
 	}
 	
-	@SuppressWarnings("unused")
 	public static NetworkMetaAnalysis convertNetworkMetaAnalysis(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
 		String name = nma.getName();
 		Indication indication = findNamedItem(domain.getIndications(), nma.getIndication().getName());
@@ -1106,7 +1104,7 @@ public class JAXBConvertor {
 		}
 
 		NetworkMetaAnalysis networkMetaAnalysis = new NetworkMetaAnalysis(name, indication, om, armMap);
-		NetworkBuilder<DrugSet> builder = networkMetaAnalysis.getBuilder(); // Also initializes
+		networkMetaAnalysis.getBuilder(); // Also initializes
 
 		// Begin loading results
 		if(nma.getInconsistencyResults() != null) { 
