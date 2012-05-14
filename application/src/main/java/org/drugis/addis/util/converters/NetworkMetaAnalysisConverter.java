@@ -77,9 +77,9 @@ public class NetworkMetaAnalysisConverter {
 		if(nma.getInconsistencyResults() != null) { 
 			loadInconsistencyModel(nma, networkMetaAnalysis, domain);
 		}
-		if(nma.getConsistencyResults() != null) { 
-			loadConsistencyModel(nma, networkMetaAnalysis, domain);
-		}
+//		if(nma.getConsistencyResults() != null) { 
+//			loadConsistencyModel(nma, networkMetaAnalysis, domain);
+//		}
 		return networkMetaAnalysis;
 	}
 
@@ -214,7 +214,7 @@ public class NetworkMetaAnalysisConverter {
 		}
 		
 		nma.setInconsistencyResults(convertInconsistencyResults(ma));
-		nma.setConsistencyResults(convertConsistencyResults(ma));
+//		nma.setConsistencyResults(convertConsistencyResults(ma));
 		return nma; 
 	}
 
