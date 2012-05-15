@@ -45,6 +45,7 @@ import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
 import org.drugis.addis.entities.analysis.models.SavedConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SavedInconsistencyModel;
+import org.drugis.addis.entities.analysis.models.SavedNodeSplitModel;
 import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
@@ -160,7 +161,16 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 				convergenceSummaries, 
 				relativeEffectsSummary, 
 				rankProbabilitySummary,
-				getIncludedDrugs());		
+				getIncludedDrugs());	
+	}
+	
+	public void loadNodeSplitModel(BasicParameter splitParameter,
+			MCMCSettings settings,
+			HashMap<Parameter, QuantileSummary> quantileSummaries,
+			HashMap<Parameter, ConvergenceSummary> convergenceSummaries,
+			NodeSplitPValueSummary nodeSplitPValueSummary) {
+		SavedNodeSplitModel nodeSplitModel = new SavedNodeSplitModel(getBuilder(), settings, quantileSummaries, convergenceSummaries, splitParameter, nodeSplitPValueSummary);
+		d_nodeSplitModels.put(splitParameter, nodeSplitModel);
 	}
 	
 	public NetworkBuilder<DrugSet> getBuilder() {
@@ -195,6 +205,10 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return DefaultModelFactory.instance().getSplittableNodes(getBuilder().buildNetwork());
 	}
 
+	public Collection<NodeSplitWrapper> getNodeSplitModels() { 
+		return d_nodeSplitModels.values();
+	}
+	
 	@Deprecated
 	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {		
 		if(!getConsistencyModel().isReady())
@@ -226,6 +240,5 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 		return true;
 	}
-
 
 }
