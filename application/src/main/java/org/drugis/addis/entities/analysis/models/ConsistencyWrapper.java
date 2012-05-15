@@ -52,4 +52,5 @@ public interface ConsistencyWrapper extends MTCModelWrapper {
 	 * @return A list of all <baseline, subject> pairs, where the subjects are given in their natural order  
 	 */	
 	public List<Pair<DrugSet>> getRelativeEffectsList();
+
 }

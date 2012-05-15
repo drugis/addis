@@ -89,7 +89,9 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 
 	private void attachQuantileSummary(MTCModelWrapper model, Parameter param) {
 		QuantileSummary summary = model.getQuantileSummary(param);
-		summary.addPropertyChangeListener(d_listener);
+		if(summary != null) { 
+			summary.addPropertyChangeListener(d_listener); 
+		}
 		d_quantileSummaries.put(param, summary);
 	}
 	
