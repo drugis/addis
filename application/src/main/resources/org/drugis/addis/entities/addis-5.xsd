@@ -798,8 +798,8 @@
 		<xs:list itemType="xs:double" />
 	</xs:simpleType>
 	
-	<!-- To represent an n by n CovarianceMatrix, the values list must be length n / 2 * (n + 1).
-	This list gives the upper triangle of the matrix in row-major order. -->
+	<!-- To represent an n by n CovarianceMatrix, the values list must be length (n * (n + 1)) / 2.
+	This list gives the upper triangle of the matrix in row-major order. The matrix is symmetric -->
 	<xs:simpleType name="CovarianceMatrixType">
 		<xs:list itemType="xs:double" />
 	</xs:simpleType>

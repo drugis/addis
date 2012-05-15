@@ -110,6 +110,4 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		throw new IllegalAccessError("Simulation iterations are read-only for saved models");
 		
 	}
-	
-	
 }
