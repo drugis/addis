@@ -871,7 +871,7 @@ public class JAXBConvertor {
 		return null;
 	}
 	
-	static Study convertStudy(org.drugis.addis.entities.data.Study study, Domain domain) throws ConversionException {
+	public static Study convertStudy(org.drugis.addis.entities.data.Study study, Domain domain) throws ConversionException {
 		Study newStudy = new Study();
 		newStudy.setName(study.getName());
 		newStudy.setIndication(findNamedItem(domain.getIndications(), study.getIndication().getName()));

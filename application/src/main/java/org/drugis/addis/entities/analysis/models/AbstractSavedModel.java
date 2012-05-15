@@ -52,6 +52,7 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	private final MCMCSettings d_settings;
 	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
 	protected final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
+	private ActivityTask d_activityTask;
 
 	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettings settings, 
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
@@ -59,17 +60,18 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		d_settings = settings;
 		d_quantileSummaries = quantileSummaries;
 		d_convergenceSummaries = convergenceSummaries; 
+		
+		String msg = "Loaded from saved results";
+		NullTask start = new NullTask();
+		NullTask end = new NullTask("msg");
+		ArrayList<Transition> transitions = new ArrayList<Transition>();
+		transitions.add(new DirectTransition(start, end));
+		d_activityTask = new ActivityTask(new ActivityModel(start, end, transitions), msg);
 	}
 
 	public ActivityTask getActivityTask() {
-		NullTask start = new NullTask();
-		String msg = "Loaded from saved results";
-		NullTask end = new NullTask(msg);
-		ArrayList<Transition> transitions =  new ArrayList<Transition>();
-		transitions.add(new DirectTransition(start, end));
-		ActivityTask activityTask = new ActivityTask(new ActivityModel(start, end, transitions ), msg);
-		ThreadHandler.getInstance().scheduleTask(activityTask);
-		return activityTask;
+		ThreadHandler.getInstance().scheduleTask(d_activityTask);
+		return d_activityTask;
 	}
 
 
@@ -136,6 +138,4 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		throw new IllegalAccessError("Simulation iterations are read-only for saved models");
 		
 	}
-	
-	
 }
