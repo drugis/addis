@@ -16,6 +16,8 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
+1.13.1: Development release for saving Mixed Treatment Comparison results. 
+    The Inconsistency results can now be saved and loaded in ADDIS. 
 
 1.12.4: The network meta-analysis simulation can be continued if it has
    not converged yet, and there is a new GUI for checking convergence.
