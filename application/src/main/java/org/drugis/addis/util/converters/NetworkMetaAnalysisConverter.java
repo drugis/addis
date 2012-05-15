@@ -69,8 +69,10 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
+import org.drugis.mtc.summary.SimpleMultivariateNormalSummary;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
@@ -133,10 +135,36 @@ public class NetworkMetaAnalysisConverter {
 		addRelativeEffectQuantileSummaries(networkMetaAnalysis, quantileSummaries, results.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary(), domain);
 		addParameterSummaries(networkMetaAnalysis, quantileSummaries, convergenceSummaries, results.getSummary(), domain);
 	
-		double[] mean = ArrayUtils.toPrimitive(results.getRelativeEffectsSummary().getMeans().toArray(new Double[results.getRelativeEffectsSummary().getMeans().size()]));
+		RelativeEffectsSummary relativeEffects = results.getRelativeEffectsSummary();
+		double[] mean = ArrayUtils.toPrimitive(relativeEffects.getMeans().toArray(new Double[results.getRelativeEffectsSummary().getMeans().size()]));
+		int covarianceSize = relativeEffects.getCovariance().size() / 2;
+		double[][] covarianceMatrix = new double[covarianceSize][covarianceSize];
+		int covIdx = 0;
+		for(int row = 0; row < covarianceSize; ++row) {
+			for(int col = row; col < covarianceSize; ++col) {
+				double x = relativeEffects.getCovariance().get(covIdx);
+				covarianceMatrix[row][col] = x;
+				covarianceMatrix[col][row] = x;
+				++covIdx;
+			}
+		}
+		MultivariateNormalSummary relativeEffectsSummary = new SimpleMultivariateNormalSummary(mean, covarianceMatrix);
 		
-		networkMetaAnalysis.loadConsitencyModel(results.getMcmcSettings(), quantileSummaries, convergenceSummaries);
-		
+		// DrugSets are always sorted in their natural order
+		List<Treatment> treatments = new ArrayList<Treatment>();
+		for(DrugSet d : networkMetaAnalysis.getIncludedDrugs()) {
+			treatments.add(networkMetaAnalysis.getTreatment(d));
+		}		
+		double[][] rankProbabilityMatrix = new double[treatments.size()][treatments.size()];
+		int rankIdx = 0;
+		for(int row = treatments.size() - 1; row >= 0; row--) { 
+			for(int col = 0; col < treatments.size(); ++col) { 
+				rankProbabilityMatrix[col][row] = results.getRankProbabilitySummary().get(rankIdx);
+				rankIdx++; 
+			}
+		}	
+		RankProbabilitySummary rankProbabilitySummary = new RankProbabilitySummary(rankProbabilityMatrix, treatments);
+		networkMetaAnalysis.loadConsitencyModel(results.getMcmcSettings(), quantileSummaries, convergenceSummaries, relativeEffectsSummary, rankProbabilitySummary);
 	}
 
 	private static void addRelativeEffectQuantileSummaries(NetworkMetaAnalysis networkMetaAnalysis,
@@ -264,7 +292,6 @@ public class NetworkMetaAnalysisConverter {
 			results.setMcmcSettings(convertMCMCSettings(model.getModel()));
 			convertParameterSummaries(ma, model, results.getSummary());
 			results.setRelativeEffectsQuantileSummary(convertRelativeEffectQuantileSummaries(ma, model));
-		
 			RelativeEffectsSummary relativeEffectSummary = new RelativeEffectsSummary();
 			List<Double> list = relativeEffectSummary.getCovariance();
 			double[][] matrix = model.getRelativeEffectsSummary().getCovarianceMatrix();
@@ -280,8 +307,8 @@ public class NetworkMetaAnalysisConverter {
 			RankProbabilitySummary rankProbabilities = model.getRankProbabilities();
 			int rankProababilitySize = rankProbabilities.getTreatments().size();
 			for(int row = 0; row < rankProababilitySize; ++row) { 
-				for(int col = row + 1; col < rankProababilitySize; ++col) { 
-					results.getRankProbabilitySummary().add(rankProbabilities.getValue(rankProbabilities.getTreatments().get(row), col));
+				for(int col = 0; col < rankProababilitySize; ++col) { 
+					results.getRankProbabilitySummary().add(rankProbabilities.getValue(rankProbabilities.getTreatments().get(col), row + 1));
 				}
 			}
 			return results;
@@ -347,13 +374,15 @@ public class NetworkMetaAnalysisConverter {
 	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MTCModelWrapper mtc) {
 		List<DrugSet> includedDrugs = ma.getIncludedDrugs();
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
-		for (int i = 0; i < includedDrugs.size() - 1; ++i) {
-			for (int j = i + 1; j < includedDrugs.size(); ++j) {
-				Pair<DrugSet> relEffect = new Pair<DrugSet>(includedDrugs.get(i), includedDrugs.get(j));
-				RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
-				qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
-				qs.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(mtc.getRelativeEffect(includedDrugs.get(i), includedDrugs.get(j)))));
-				reqs.add(qs);
+		for (int i = 0; i < includedDrugs.size(); ++i) {
+			for (int j = 0; j < includedDrugs.size(); ++j) {
+				if(j != i) { 
+					Pair<DrugSet> relEffect = new Pair<DrugSet>(includedDrugs.get(i), includedDrugs.get(j));
+					RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
+					qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
+					qs.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(mtc.getRelativeEffect(includedDrugs.get(i), includedDrugs.get(j)))));
+					reqs.add(qs);
+				} 
 			}
 		}
 		return reqs; 

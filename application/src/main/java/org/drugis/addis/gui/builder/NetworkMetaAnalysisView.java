@@ -212,7 +212,8 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		if(model.hasSavedResults()) {
 			LayoutUtil.addRow(layout);
-			builder.add(new JLabel("Not available for loaded results"), cc.xyw(1, row, 3));
+			builder.add(new JLabel(name), cc.xy(1, row));
+			builder.add(new JLabel("Not available for loaded results"), cc.xyw(2, row, 7));
 			return row + 2;
 		} else {
 			final MixedTreatmentComparison mtc = model.getModel(); 
@@ -335,7 +336,7 @@ implements ViewBuilder {
 		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
 		row += 2;
 	
-		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
+		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(inconsistencyModel);
 		EnhancedTable varianceTable = new EnhancedTable(varianceTableModel, 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		final TablePanel varianceTablePanel = new TablePanel(varianceTable);
@@ -403,7 +404,7 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Variance Parameters", cc.xyw(1, row, colSpan));
 		row += 2;
-		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
+		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(consistencyModel), 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());		
 		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, colSpan));
 

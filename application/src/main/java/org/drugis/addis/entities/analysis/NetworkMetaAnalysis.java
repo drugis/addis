@@ -66,6 +66,7 @@ import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
+import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
@@ -150,8 +151,16 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public synchronized void loadConsitencyModel(MCMCSettings settings,
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
-			HashMap<Parameter, ConvergenceSummary> convergenceSummaries) {
-		d_consistencyModel = new SavedConsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);		
+			HashMap<Parameter, ConvergenceSummary> convergenceSummaries, 
+			MultivariateNormalSummary relativeEffectsSummary, 
+			RankProbabilitySummary rankProbabilitySummary) {
+		d_consistencyModel = new SavedConsistencyModel(getBuilder(), 
+				settings, 
+				quantileSummaries, 
+				convergenceSummaries, 
+				relativeEffectsSummary, 
+				rankProbabilitySummary,
+				getIncludedDrugs());		
 	}
 	
 	public NetworkBuilder<DrugSet> getBuilder() {
