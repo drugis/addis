@@ -35,8 +35,7 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.MCMCResults;
-import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
 
@@ -46,14 +45,13 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	private static final String NA = "N/A";
 	private static final int COL_PARAM = 0;
 	private static final int COL_ESTIMATE = 1;
-	private MCMCResults d_results;
 	private Map<Parameter, ConvergenceSummary> d_summaries = new HashMap<Parameter, ConvergenceSummary>();
 	private PropertyChangeListener d_listener;
 	private static final NumberFormat s_format = new DecimalFormat("#.00");
+	private final MTCModelWrapper d_model;
 
-	public ConvergenceDiagnosticTableModel(MixedTreatmentComparison mtc, ValueHolder<Boolean> modelBuiltModel) {		
-		d_results = mtc.getResults();
-
+	public ConvergenceDiagnosticTableModel(MTCModelWrapper model, ValueHolder<Boolean> modelBuiltModel) {		
+		d_model = model;
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();
@@ -70,10 +68,12 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	}
 
 	private void initializeSummaries() {
-		for (Parameter p : d_results.getParameters()) {
-			ConvergenceSummary value = new ConvergenceSummary(d_results, p);
-			value.addPropertyChangeListener(d_listener);
-			d_summaries.put(p, value);
+		for (Parameter p : d_model.getParameters()) {
+			ConvergenceSummary value = d_model.getConvergenceSummary(p);
+			if(value != null) { 
+				value.addPropertyChangeListener(d_listener);
+				d_summaries.put(p, value);
+			}
 		}
 		fireTableDataChanged();
 	}
@@ -93,7 +93,7 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	}
 
 	public int getRowCount() {
-		return d_results.getParameters().length;
+		return d_model.getParameters().length;
 	}
 	
 	@Override
@@ -126,6 +126,6 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	}
 
 	private Parameter getParameter(int rowIndex) {
-		return d_results.getParameters()[rowIndex];
+		return d_model.getParameters()[rowIndex];
 	}
 }

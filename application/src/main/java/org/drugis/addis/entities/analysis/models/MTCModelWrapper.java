@@ -24,54 +24,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.entities.analysis.models;
 
-import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
-import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.Parameter;
+import org.drugis.mtc.summary.ConvergenceSummary;
+import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
-	private MCMCModel d_model;
-	private final String d_name;
-	protected final OutcomeMeasure d_om;
-	private TaskProgressModel d_taskProgressModel;
+public interface MTCModelWrapper extends MCMCModel {
 
-	public MCMCWrapper(final MCMCModel model, final OutcomeMeasure om, final String name) { 
-		d_model = model;
-		d_om = om;
-		d_taskProgressModel = new TaskProgressModel(getActivityTask());
-		d_name = name;
-	}
+	public QuantileSummary getQuantileSummary(Parameter ip);
 	
-	public ActivityTask getActivityTask() {
-		if(d_model instanceof MTCModelWrapper) { 
-			return ((MTCModelWrapper)d_model).getActivityTask();
-		} else { 
-			return d_model.getActivityTask();
-		}
-	}
+	public Parameter getRelativeEffect(DrugSet a, DrugSet b);
 
-	public TaskProgressModel getProgressModel() {
-		return d_taskProgressModel;
-	}
+	public ActivityTask getActivityTask();
 	
-	public MCMCModel getModel() {
-		return d_model;
-	} 
+	public MixedTreatmentComparison getModel();
+	
+	public boolean hasSavedResults();
 
-	public abstract ValueHolder<Boolean> isModelConstructed();	
+	public boolean isReady();
 
-	public OutcomeMeasure getOutcomeMeasure() {
-		return d_om;
-	}
+	public Parameter getRandomEffectsVariance();
+
+	public int getBurnInIterations();
+
+	public int getSimulationIterations();
 	
-	public abstract boolean hasSavedResults();
-	
-	@Override
-	public String toString() { 
-		return d_name;
-	}
+	public ConvergenceSummary getConvergenceSummary(Parameter p);
+
+	public Parameter[] getParameters();
 }

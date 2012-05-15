@@ -32,7 +32,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.InconsistencyModel;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -73,7 +73,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		
 		List<Parameter> parameterList = d_pm.getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			QuantileSummary summary = d_pm.getQuantileSummary(getModel(), p);
+			QuantileSummary summary = d_pm.getQuantileSummary(d_pm.getInconsistencyModel(), p);
 			summary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
@@ -105,7 +105,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 			return NA;
 		}
 		
-		InconsistencyModel model = getModel();
+		InconsistencyWrapper model = d_pm.getInconsistencyModel();
 		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
 		if(col == 0){ // FIXME: use apache commons for this operation, and add a cell renderer!
 			String out = "";
@@ -116,9 +116,5 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		} else {
 			return d_pm.getQuantileSummary(model, ip);
 		}
-	}
-
-	private InconsistencyModel getModel() {
-		return (InconsistencyModel) d_pm.getInconsistencyModel();
 	}
 }

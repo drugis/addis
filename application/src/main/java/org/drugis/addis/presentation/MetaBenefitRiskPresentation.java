@@ -39,6 +39,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.gui.task.TaskProgressModel;
@@ -73,6 +74,11 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 			int omCompare = d_om.compareTo(o.getOutcomeMeasure());
 			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
 			return (omCompare == 0) ? modelComp : omCompare;
+		}
+
+		@Override
+		public boolean hasSavedResults() {
+			return false;
 		}
 	}
 	
@@ -166,7 +172,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-				MixedTreatmentComparison mtc = nma.getConsistencyModel();
+				MTCModelWrapper mtc = nma.getConsistencyModel();
 				String name = nma.getName() + " \u2014 Consistency Model";
 				MCMCWrapper wm = new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(mtc, nma.getOutcomeMeasure(), name);
 				d_models.put(nma.getConsistencyModel().getActivityTask(), wm);

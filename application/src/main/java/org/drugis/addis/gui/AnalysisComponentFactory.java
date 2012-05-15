@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -66,7 +67,6 @@ public class AnalysisComponentFactory {
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
-		
 		int panelRow = 1;
 		if (withSeparator) {
 			panelBuilder.addSeparator(model.toString(), cc.xyw(1, panelRow, 5));
@@ -75,7 +75,7 @@ public class AnalysisComponentFactory {
 		
 		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model));
 		panelRow += 2;
-		if(hasConvergence(model)) { 
+		if(!model.hasSavedResults() && hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
 		}
 		return panelBuilder.getPanel();
@@ -138,7 +138,7 @@ public class AnalysisComponentFactory {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.FINISH);
+					((MTCModelWrapper)model.getModel()).getModel().setExtendSimulation(ExtendSimulation.FINISH);
 				}
 			}
 		});
@@ -152,7 +152,7 @@ public class AnalysisComponentFactory {
 		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.EXTEND);
+				((MTCModelWrapper)model.getModel()).getModel().setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;
@@ -161,11 +161,11 @@ public class AnalysisComponentFactory {
 	public static JButton createShowConvergenceButton(final JFrame main, final MCMCWrapper model) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_CHART));
 		button.setText("Show convergence");
+		final MTCModelWrapper mtcWrapper = (MTCModelWrapper) model.getModel(); // TODO Make this accept MCMCModels in general
 		button.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog convergence = new ConvergenceSummaryDialog(main, ((MixedTreatmentComparison)model.getModel()), model.isModelConstructed(), model.toString());
+				JDialog convergence = new ConvergenceSummaryDialog(main,mtcWrapper,model.isModelConstructed(), model.toString());
 				convergence.setVisible(true);
 			}
 		});
@@ -173,7 +173,7 @@ public class AnalysisComponentFactory {
 	}
 
 	private static boolean hasConvergence(MCMCWrapper model) {
-		if( model.getModel() instanceof MixedTreatmentComparison) {
+		if(model.getModel() instanceof MTCModelWrapper) {
 			return true;
 		} else { 
 			return false;

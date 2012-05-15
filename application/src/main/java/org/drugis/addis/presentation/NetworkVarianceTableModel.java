@@ -31,8 +31,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.QuantileSummary;
 
@@ -41,10 +41,10 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 
 	private static final int RANDOM_EFFECTS = 0;
 	private NetworkMetaAnalysisPresentation d_pm;
-	private MixedTreatmentComparison d_mtc;
+	private MTCModelWrapper d_mtc;
 	private PropertyChangeListener d_listener;
 	
-	public NetworkVarianceTableModel(NetworkMetaAnalysisPresentation pm, MixedTreatmentComparison mtc) {
+	public NetworkVarianceTableModel(NetworkMetaAnalysisPresentation pm, MTCModelWrapper mtc) {
 		d_pm = pm;
 		d_mtc = mtc;
 		
@@ -55,13 +55,13 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 		};
 		
 		if (isInconsistency()) {
-			attachListener(((InconsistencyModel) mtc).getInconsistencyVariance());
+			attachListener(((InconsistencyWrapper) mtc).getInconsistencyVariance());
 		}
 		attachListener(mtc.getRandomEffectsVariance());
 	}
 	
 	private void attachListener(Parameter p) {
-		d_pm.getQuantileSummary(d_mtc, p).addPropertyChangeListener(d_listener); 
+		d_mtc.getQuantileSummary(p).addPropertyChangeListener(d_listener); 
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 	}
 
 	private boolean isInconsistency() {
-		return (d_mtc instanceof InconsistencyModel);
+		return (d_mtc instanceof InconsistencyWrapper);
 	}
 
 	public Object getValueAt(int row, int col) {
@@ -106,15 +106,13 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 	}
 
 	private QuantileSummary getInconsistencySummary() {
-		Parameter p = ((InconsistencyModel) d_mtc).getInconsistencyVariance();
-		QuantileSummary summary = d_pm.getQuantileSummary(d_mtc, p);
-		return summary;
+		Parameter p = d_pm.getInconsistencyModel().getInconsistencyVariance();
+		return d_pm.getInconsistencyModel().getQuantileSummary(p);
 	}
 
 	private QuantileSummary getRandomEffectsSummary() {
-		Parameter p = d_mtc.getRandomEffectsVariance();
-		QuantileSummary summary = d_pm.getQuantileSummary(d_mtc, p);
-		return summary;
+		Parameter p = d_pm.getInconsistencyModel().getRandomEffectsVariance();
+		return d_pm.getInconsistencyModel().getQuantileSummary(p);
 	}
 
 	private String getRowDescription(int row) {
