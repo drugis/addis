@@ -1,8 +1,10 @@
-package org.drugis.addis.util.converters;
+package org.drugis.addis.util.convertors;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +15,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
@@ -21,18 +26,22 @@ import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.util.JAXBConvertor;
+import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.JAXBConvertorTest;
 import org.drugis.addis.util.JAXBConvertorTest.MetaAnalysisWithStudies;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class NetworkMetaAnalysisConverterTest {
 
 	private JAXBConvertorTest d_jaxbConverterTest;
-	
+	private static final String TEST_DATA_WITH_RESULTS = "../testDataSavedResults.addis"; // note: saved results in Dizziness MA
+
 	@Before 
-	public void setUp() { 
+	public void setUp() throws JAXBException { 
 		d_jaxbConverterTest = new JAXBConvertorTest();
+		d_jaxbConverterTest.setup();
 	}
 
 	@Test
@@ -86,4 +95,15 @@ public class NetworkMetaAnalysisConverterTest {
 				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(expected));
 	}
 
+	@Test
+	public void testRoundTrip() throws JAXBException, ConversionException, TransformerException, IOException, SAXException {
+		d_jaxbConverterTest.doRoundTripTest(getTransformedSavedResultsData());
+	}
+	
+	private static InputStream getTransformedSavedResultsData()
+			throws TransformerException, IOException {
+		return JAXBConvertorTest.getTestData(TEST_DATA_WITH_RESULTS);
+	}
+		
+	
 }

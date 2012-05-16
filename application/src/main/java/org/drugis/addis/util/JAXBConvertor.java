@@ -148,7 +148,7 @@ import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Units;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
-import org.drugis.addis.util.converters.NetworkMetaAnalysisConverter;
+import org.drugis.addis.util.convertors.NetworkMetaAnalysisConverter;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
 

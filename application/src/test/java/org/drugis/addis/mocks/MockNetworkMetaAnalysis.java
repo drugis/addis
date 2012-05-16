@@ -85,6 +85,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			tasks.add(getInconsistencyModel().getActivityTask());
 		}
 		ThreadHandler.getInstance().scheduleTasks(tasks);
+		firePropertyChange("fasrt", false, true);
+
 	}
 	
 }

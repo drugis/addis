@@ -149,7 +149,7 @@ import org.drugis.addis.entities.data.Treatment;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
-import org.drugis.addis.util.converters.NetworkMetaAnalysisConverter;
+import org.drugis.addis.util.convertors.NetworkMetaAnalysisConverter;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -1970,7 +1970,7 @@ public class JAXBConvertorTest {
 		doRoundTripTest(getTestData(TEST_DATA_3));
 	}
 
-	private void doRoundTripTest(InputStream transformedXmlStream)
+	public void doRoundTripTest(InputStream transformedXmlStream)
 			throws JAXBException, ConversionException {
 		System.clearProperty("javax.xml.transform.TransformerFactory");
 		AddisData data = (AddisData) d_unmarshaller
@@ -2240,7 +2240,7 @@ public class JAXBConvertorTest {
 		output.close();
 	}
 
-	private static InputStream getTestData(String fileName)
+	public static InputStream getTestData(String fileName)
 			throws TransformerException, IOException {
 		InputStream is = JAXBConvertorTest.class.getResourceAsStream(fileName);
 		XmlFormatType xmlType = JAXBHandler.determineXmlType(is);

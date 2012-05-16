@@ -26,11 +26,16 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.EntityCategory;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.common.beans.ListPropertyChangeProxy;
 
 import com.jgoodies.binding.value.AbstractValueModel;
 
@@ -55,6 +60,11 @@ public class DomainChangedModel extends AbstractValueModel implements ValueHolde
 		for (EntityCategory c : domain.getCategories()) {
 			domain.getCategoryContents(c).addListDataListener(listener);
 		}
+		new ListPropertyChangeProxy<MetaAnalysis>(domain.getNetworkMetaAnalyses(), new PropertyChangeListener() {
+		    public void propertyChange(PropertyChangeEvent evt) {
+		        setValue(true);
+		    }
+		});
 	}
 	
 	public Boolean getValue() {
