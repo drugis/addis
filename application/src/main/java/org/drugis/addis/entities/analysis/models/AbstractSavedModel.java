@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.data.MCMCSettings;
+import org.drugis.addis.mcmcmodel.MCMCSettingsCache;
 import org.drugis.common.threading.NullTask;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.activity.ActivityModel;
@@ -49,12 +49,12 @@ import org.drugis.mtc.summary.QuantileSummary;
 public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	
 	private NetworkBuilder<DrugSet> d_builder;
-	private final MCMCSettings d_settings;
+	private final MCMCSettingsCache d_settings;
 	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
 	protected final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
 	private ActivityTask d_activityTask;
 
-	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettings settings, 
+	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings, 
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_builder = builder;
 		d_settings = settings;

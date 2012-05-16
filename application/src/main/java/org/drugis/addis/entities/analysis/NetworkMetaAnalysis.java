@@ -49,9 +49,9 @@ import org.drugis.addis.entities.analysis.models.SavedNodeSplitModel;
 import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
-import org.drugis.addis.entities.data.MCMCSettings;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.mcmcmodel.MCMCSettingsCache;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
@@ -144,19 +144,19 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return d_nodeSplitModels.get(p);
 	}
 
-	public synchronized void loadInconsitencyModel(MCMCSettings settings,
+	public synchronized void loadInconsistencyModel(MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_inconsistencyModel = new SavedInconsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);
 	}
 	
 
-	public synchronized void loadConsitencyModel(MCMCSettings settings,
+	public synchronized void loadConsistencyModel(MCMCSettingsCache mcmcSettingsCache,
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
 			HashMap<Parameter, ConvergenceSummary> convergenceSummaries, 
 			MultivariateNormalSummary relativeEffectsSummary, 
 			RankProbabilitySummary rankProbabilitySummary) {
 		d_consistencyModel = new SavedConsistencyModel(getBuilder(), 
-				settings, 
+				mcmcSettingsCache, 
 				quantileSummaries, 
 				convergenceSummaries, 
 				relativeEffectsSummary, 
@@ -165,7 +165,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public void loadNodeSplitModel(BasicParameter splitParameter,
-			MCMCSettings settings,
+			MCMCSettingsCache settings,
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
 			HashMap<Parameter, ConvergenceSummary> convergenceSummaries,
 			NodeSplitPValueSummary nodeSplitPValueSummary) {

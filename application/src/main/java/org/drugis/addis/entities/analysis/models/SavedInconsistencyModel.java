@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.data.MCMCSettings;
+import org.drugis.addis.mcmcmodel.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
@@ -43,7 +43,7 @@ public class SavedInconsistencyModel extends AbstractSavedModel implements Incon
 
 	private List<Parameter> d_inconsistencyFactors;
 
-	public SavedInconsistencyModel(NetworkBuilder<DrugSet> builder, MCMCSettings settings,
+	public SavedInconsistencyModel(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		super(builder, settings, quantileSummaries, convergenceSummaries);
 		d_inconsistencyFactors = new ArrayList<Parameter>();

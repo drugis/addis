@@ -39,6 +39,7 @@ import org.drugis.addis.entities.data.RelativeEffectsQuantileSummary;
 import org.drugis.addis.entities.data.RelativeEffectsSummary;
 import org.drugis.addis.entities.data.VarianceParameter;
 import org.drugis.addis.entities.data.VarianceParameterType;
+import org.drugis.addis.mcmcmodel.MCMCSettingsCache;
 import org.drugis.addis.util.JAXBConvertor;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.mtc.Parameter;
@@ -109,7 +110,7 @@ public class NetworkMetaAnalysisConverter {
 		
 		BasicParameter splitParameter = new BasicParameter(base, subj);
 		
-		networkMetaAnalysis.loadNodeSplitModel(splitParameter, results.getMcmcSettings(), quantileSummaries, convergenceSummaries, nodeSplitPValueSummary);
+		networkMetaAnalysis.loadNodeSplitModel(splitParameter, new MCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries, nodeSplitPValueSummary);
 
 	}
 
@@ -123,7 +124,7 @@ public class NetworkMetaAnalysisConverter {
 		
 		addRelativeEffectQuantileSummaries(networkMetaAnalysis, quantileSummaries, results.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary(), domain);
 		addParameterSummaries(networkMetaAnalysis, quantileSummaries, convergenceSummaries, results.getSummary(), domain);
-		networkMetaAnalysis.loadInconsitencyModel(results.getMcmcSettings(), quantileSummaries, convergenceSummaries);
+		networkMetaAnalysis.loadInconsistencyModel(new MCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries);
 	}
 	
 	private static void loadConsistencyModel(
@@ -166,7 +167,7 @@ public class NetworkMetaAnalysisConverter {
 			}
 		}	
 		RankProbabilitySummary rankProbabilitySummary = new RankProbabilitySummary(rankProbabilityMatrix, treatments);
-		networkMetaAnalysis.loadConsitencyModel(results.getMcmcSettings(), quantileSummaries, convergenceSummaries, relativeEffectsSummary, rankProbabilitySummary);
+		networkMetaAnalysis.loadConsistencyModel(new MCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries, relativeEffectsSummary, rankProbabilitySummary);
 	}
 
 	private static void addRelativeEffectQuantileSummaries(NetworkMetaAnalysis networkMetaAnalysis,
@@ -443,7 +444,7 @@ public class NetworkMetaAnalysisConverter {
 	private static RelativeEffectParameter convertRelativeEffectParameter(
 			Pair<DrugSet> pair, EvidenceTypeEnum evidenceType) {
 		RelativeEffectParameter rel = new RelativeEffectParameter();
-		rel.setWhichEvidence(evidenceType); // FIXME for NodeSplit parameters 
+		rel.setWhichEvidence(evidenceType); 
 		Drugs first = JAXBConvertor.convertDrugSet(pair.getFirst());
 		Drugs second = JAXBConvertor.convertDrugSet(pair.getSecond());
 		rel.getAlternative().addAll(Arrays.asList(first, second));
