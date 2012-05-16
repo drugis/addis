@@ -1,4 +1,4 @@
-package org.drugis.addis.util.converters;
+package org.drugis.addis.util.convertors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -289,11 +289,10 @@ public class NetworkMetaAnalysisConverter {
 		nma.setConsistencyResults(convertConsistencyResults(ma));
 		
 		for(NodeSplitWrapper model : ma.getNodeSplitModels()) {
-			if (model.getActivityTask().isFinished()) {
+			if (model.isSavable()) {
 				nma.getNodeSplitResults().add(convertNodeSplitResults(ma, model));
 			}
 		}
-		
 		return nma; 
 	}
 
@@ -313,7 +312,7 @@ public class NetworkMetaAnalysisConverter {
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
 		InconsistencyResults results = new InconsistencyResults();
 		InconsistencyWrapper model = ma.getInconsistencyModel();
-		if (model.getActivityTask().isFinished()) {
+		if (model.isSavable()) {
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
 			results.setRelativeEffectsQuantileSummary(convertRelativeEffectQuantileSummaries(ma, model));
@@ -325,7 +324,7 @@ public class NetworkMetaAnalysisConverter {
 	private static ConsistencyResults convertConsistencyResults(NetworkMetaAnalysis ma) {
 		ConsistencyResults results = new ConsistencyResults();
 		ConsistencyWrapper model = ma.getConsistencyModel();
-		if (model.getActivityTask().isFinished()) { 
+		if (model.isSavable()) { 
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
 			results.setRelativeEffectsQuantileSummary(convertRelativeEffectQuantileSummaries(ma, model));
@@ -360,7 +359,9 @@ public class NetworkMetaAnalysisConverter {
 	}
 	
 	private static void convertParameterSummaries(NetworkMetaAnalysis ma, MTCModelWrapper model, List<ParameterSummary> summaries) {
-		for (Parameter p : model.getParameters()) { 
+		Parameter[] parameters = model.getParameters();
+		Arrays.sort(parameters);
+		for (Parameter p : parameters) { 
 			summaries.add(convertParameterSummary(p, model, ma));
 		}
 		if(model instanceof NodeSplitWrapper) { 
