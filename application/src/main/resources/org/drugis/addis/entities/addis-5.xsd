@@ -547,6 +547,7 @@
 		<xs:attribute name="simulationIterations" type="xs:int"/>
 		<xs:attribute name="inferenceIterations" type="xs:int"/>
 		<xs:attribute name="thinningInterval" type="xs:int"/>
+		<xs:attribute name="numberOfChains" type="xs:int"/>
 		<xs:attribute name="varianceScalingFactor" type="xs:double"/>
 	</xs:complexType>
 

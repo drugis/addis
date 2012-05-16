@@ -55,6 +55,7 @@ import org.drugis.common.threading.activity.Transition;
 import org.drugis.mtc.AbstractParameter;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.yadas.ParameterWriter;
@@ -77,6 +78,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		}
 	};
 	private NormalSummary d_summary;
+	private final MCMCSettingsCache d_settings;
 
 	private SimpleTask d_buildModelPhase = new SimpleSuspendableTask(new Runnable() {
 		public void run() {
@@ -119,6 +121,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		d_activityTask = new ActivityTask(
 				new ActivityModel(d_buildModelPhase, d_calculateResultsPhase, transitions), 
 				"MCMC model");
+		d_settings = new MCMCSettingsCache(d_simulationIter / 2, d_simulationIter, 1, d_tuningIter, 0.0, 1);
 	}
 
 	public ActivityTask getActivityTask() {
@@ -237,5 +240,9 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	
 	public NormalSummary getSummary() {
 		return d_summary;
+	}
+
+	public MCMCSettingsCache getSettings() {
+		return d_settings;
 	}
 }

@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.mcmcmodel.MCMCSettingsCache;
 import org.drugis.common.threading.NullTask;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.activity.ActivityModel;
@@ -38,6 +37,7 @@ import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.common.threading.activity.Transition;
 import org.drugis.mtc.MCMCResults;
+import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
@@ -109,14 +109,6 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		return null;
 	}
 	
-	public int getBurnInIterations() {
-		return d_settings.getTuningIterations();
-	}
-
-	public int getSimulationIterations() {
-		return d_settings.getSimulationIterations();
-	}
-	
 	@Override
 	public Parameter[] getParameters() { 
 		return d_convergenceSummaries.keySet().toArray(new Parameter[] {});
@@ -141,5 +133,9 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	public void setSimulationIterations(int it) {
 		throw new IllegalAccessError("Simulation iterations are read-only for saved models");
 		
+	}
+
+	public MCMCSettingsCache getSettings() {
+		return d_settings;
 	}
 }

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.mcmcmodel.MCMCSettingsCache;
+import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.InconsistencyParameter;

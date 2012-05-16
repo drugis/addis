@@ -47,10 +47,6 @@ public interface MTCModelWrapper extends MCMCModel {
 	public boolean isReady();
 
 	public Parameter getRandomEffectsVariance();
-
-	public int getBurnInIterations();
-
-	public int getSimulationIterations();
 	
 	public ConvergenceSummary getConvergenceSummary(Parameter p);
 
