@@ -26,13 +26,15 @@
 
 package org.drugis.addis.presentation;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,4 +78,20 @@ public class DomainChangedModelTest {
 		assertTrue(d_model.getValue());
 	}
 	
+	@Test 
+	public void testNetworkMetaAnalysisResults() { 
+		assertFalse(d_model.getValue());
+		ExampleData.initDefaultData(d_domain);
+		
+		// Add some results
+		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
+		d_domain.getStudies().add(ExampleData.buildStudyFava2002());
+		MockNetworkMetaAnalysis mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		d_domain.getMetaAnalyses().add(mockAnalysis);
+		assertTrue(d_model.getValue());
+		d_model.setValue(false);
+		mockAnalysis.run();
+
+		assertTrue(d_model.getValue());
+	}
 }

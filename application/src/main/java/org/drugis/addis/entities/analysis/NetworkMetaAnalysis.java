@@ -26,7 +26,10 @@
 
 package org.drugis.addis.entities.analysis;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,11 +54,15 @@ import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
 import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.threading.status.TaskTerminatedModel;
+import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCSettingsCache;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
@@ -69,8 +76,11 @@ import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 
+import com.jgoodies.binding.value.ValueModel;
+
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
+	private static final String PROPERTY_CONSISTENCY_RESULTS = "consistencyResults";
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyWrapper d_inconsistencyModel;
 	private ConsistencyWrapper d_consistencyModel;
@@ -102,26 +112,43 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	private InconsistencyWrapper createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
+		attachModelSavableListener(inconsistencyModel);
 		return new SimulationInconsistencyModel(getBuilder(), inconsistencyModel);
 	}
 	
 	private ConsistencyWrapper createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		SimulationConsistencyModel simulationConsistencyModel = new SimulationConsistencyModel(getBuilder(), consistencyModel, getIncludedDrugs());
-		d_relativeEffectsSummary.setNested(simulationConsistencyModel.getRelativeEffectsSummary());
-		return simulationConsistencyModel;
+		SimulationConsistencyModel model = new SimulationConsistencyModel(getBuilder(), consistencyModel, getIncludedDrugs());
+		d_relativeEffectsSummary.setNested(model.getRelativeEffectsSummary());
+		
+		attachModelSavableListener(consistencyModel);
+		
+		return model;
 	}
-	
+
 	private NodeSplitWrapper createNodeSplitModel(BasicParameter node) {
 		NodeSplitModel nodeSplitModel = (DefaultModelFactory.instance()).getNodeSplitModel(getBuilder().buildNetwork(), node);
 		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
+		attachModelSavableListener(nodeSplitModel);
 		return new SimulationNodeSplitModel(getBuilder(), nodeSplitModel);
 	}
 	
 	private NetworkBuilder<DrugSet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
 		return NetworkBuilderFactory.createBuilder(outcomeMeasure, studies, drugs, armMap);
 	}
+	
+	private void attachModelSavableListener(MixedTreatmentComparison model) {
+		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
+		final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
+		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
+		modelFinishedAndResults.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				firePropertyChange(PROPERTY_CONSISTENCY_RESULTS, false, true);
+			}
+		});
+	}
+	
 
 	public synchronized InconsistencyWrapper getInconsistencyModel() {
 		if (d_inconsistencyModel == null) {
