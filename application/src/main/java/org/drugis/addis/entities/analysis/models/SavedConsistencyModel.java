@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.data.MCMCSettings;
+import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
@@ -48,7 +48,7 @@ public class SavedConsistencyModel extends AbstractSavedModel implements Consist
 	private List<DrugSet> d_drugs;
 
 	public SavedConsistencyModel(NetworkBuilder<DrugSet> builder,
-			MCMCSettings settings,
+			MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries,
 			Map<Parameter, ConvergenceSummary> convergenceSummaries, 
 			MultivariateNormalSummary relativeEffectsSummary, 
