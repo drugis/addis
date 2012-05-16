@@ -80,7 +80,7 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAnalysis {
 	
-	private static final String PROPERTY_CONSISTENCY_RESULTS = "consistencyResults";
+	private static final String PROPERTY_MCMC_RESULTS = "MCMCResults";
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyWrapper d_inconsistencyModel;
 	private ConsistencyWrapper d_consistencyModel;
@@ -144,7 +144,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
 		modelFinishedAndResults.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				firePropertyChange(PROPERTY_CONSISTENCY_RESULTS, false, true);
+				firePropertyChange(PROPERTY_MCMC_RESULTS, false, true);
 			}
 		});
 	}
