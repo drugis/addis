@@ -44,8 +44,6 @@ public interface MTCModelWrapper extends MCMCModel {
 	
 	public MixedTreatmentComparison getModel();
 	
-	public boolean hasSavedResults();
-
 	public boolean isReady();
 
 	public Parameter getRandomEffectsVariance();
@@ -57,4 +55,8 @@ public interface MTCModelWrapper extends MCMCModel {
 	public ConvergenceSummary getConvergenceSummary(Parameter p);
 
 	public Parameter[] getParameters();
+	
+	public boolean hasSavedResults();
+
+	public boolean isSavable(); 
 }

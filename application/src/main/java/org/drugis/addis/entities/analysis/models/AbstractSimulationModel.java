@@ -94,10 +94,14 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 		return d_nested.getResults();
 	}
 
-	@Override
 	public boolean hasSavedResults() { 
 		return false;
 	}
+
+	public boolean isSavable() {
+		return getActivityTask().isFinished();
+	}
+
 	
 	@Override
 	public int getBurnInIterations() {

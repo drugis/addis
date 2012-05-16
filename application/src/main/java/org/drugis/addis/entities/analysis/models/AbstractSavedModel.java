@@ -86,6 +86,10 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	public boolean hasSavedResults() {
 		return true;
 	}
+	
+	public boolean isSavable() {
+		return true;
+	}
 
 	public QuantileSummary getQuantileSummary(Parameter p) {
 		return d_quantileSummaries.get(p);
