@@ -55,7 +55,7 @@ public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
 
 	@Override
 	protected double getStdDevPrior() {
-		return 2.0;
+		return 2.0; // FIXME Magic value
 	}
 
 	@Override

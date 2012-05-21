@@ -42,6 +42,8 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
+import org.drugis.addis.util.JSMAAintegration.MetaBenefitRiskSMAAFactory;
+import org.drugis.addis.util.JSMAAintegration.StudyBenefitRiskSMAAFactory;
 import org.junit.Before;
 import org.junit.Test;
 

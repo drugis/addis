@@ -35,24 +35,36 @@ import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
 public interface MTCModelWrapper extends MCMCModel {
-
-	public QuantileSummary getQuantileSummary(Parameter ip);
+	
+	public Parameter[] getParameters();
 	
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b);
+	
+	public Parameter getRandomEffectsVariance();
 
 	public ActivityTask getActivityTask();
 	
 	public MixedTreatmentComparison getModel();
 	
-	public boolean isReady();
-
-	public Parameter getRandomEffectsVariance();
-	
 	public ConvergenceSummary getConvergenceSummary(Parameter p);
 
-	public Parameter[] getParameters();
+	public QuantileSummary getQuantileSummary(Parameter ip);
+	
+	public boolean isReady();
 	
 	public boolean hasSavedResults();
 
 	public boolean isSavable(); 
+	
+	/** Whether or not the model should be cleaned up on the next invocation from NetworkMetaAnalysis
+	 *  This will cause NetworkMetaAnalysis to create a new instance of a AbstractSimulationModel 
+	 */
+	public void selfDestruct(); 
+	
+	/**
+	 * Returns true if selfDestruct called previously, false otherwise.
+	 */
+	public boolean shouldDestroy();
+	
+	public String getName();
 }

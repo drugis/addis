@@ -46,11 +46,8 @@ import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanOrModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.parameterization.BasicParameter;
-import org.drugis.mtc.summary.NodeSplitPValueSummary;
-import org.drugis.mtc.summary.QuantileSummary;
 import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -59,15 +56,14 @@ import com.jgoodies.binding.value.AbstractValueModel;
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
 	private Map<MTCModelWrapper, WrappedNetworkMetaAnalysis> d_models;
-	
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 		d_models = new HashMap<MTCModelWrapper, WrappedNetworkMetaAnalysis>();
-		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 Consistency Model");
-		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 Inconsistency Model");
+		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getName());
+		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getName());
 		for (BasicParameter p : getBean().getSplitParameters()) {
 			NodeSplitWrapper m = getBean().getNodeSplitModel(p);
-			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 Node Split on " + p.getName());
+			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getName());
 		}
 	}
 	
@@ -101,15 +97,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 		
 		@Override
-		public TaskProgressModel getProgressModel() {
-			return new TaskProgressModel(getActivityTask());
-		}
-
-		@Override
 		public ValueHolder<Boolean> isModelConstructed() {
 			return d_modelConstructionFinished;
 		}
-		
 
 		@Override
 		public int compareTo(MCMCWrapper o) {
@@ -128,10 +118,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 			return d_wrapper.hasSavedResults();
 		}
 	}
-	
-	public InconsistencyWrapper getInconsistencyModel() {
-		return getBean().getInconsistencyModel();
-	}
 
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
@@ -142,23 +128,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities());
 	}
 	
-
 	public TableModel getRankProbabilityTableModel() {
 		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities());
 	}
 
-	public ValueHolder<Boolean> getInconsistencyModelConstructedModel() {
-		return d_models.get(getBean().getInconsistencyModel()).isModelConstructed();
-	}
-	
-	public ValueHolder<Boolean> getConsistencyModelConstructedModel() {
-		return d_models.get(getBean().getConsistencyModel()).isModelConstructed();
-	}
-
-	public ValueHolder<Boolean> getNodesplitModelConstructedModel(BasicParameter p) {
-		return d_models.get(getBean().getNodeSplitModel(p)).isModelConstructed();
-	}
-	
 	public String getRankProbabilityRankChartNote() {
 		if(getBean().getOutcomeMeasure().getDirection() == Direction.HIGHER_IS_BETTER) {
 			//return "A lower rank indicates the drug is better";
@@ -171,10 +144,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 	public TaskProgressModel getProgressModel(MTCModelWrapper mtc) {
 		return d_models.get(mtc).getProgressModel();
-	}
-	
-	public QuantileSummary getQuantileSummary(MTCModelWrapper m, Parameter p) {
-		return m.getQuantileSummary(p);
 	}
 	
 	private void addModel(MTCModelWrapper mtc, OutcomeMeasure om, String name) {
@@ -192,13 +161,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public ConsistencyWrapper getConsistencyModel() {
 		return getBean().getConsistencyModel();
 	}
-
-	public NodeSplitPValueSummary getNodeSplitPValueSummary(BasicParameter p) {
-		return getBean().getNodeSplitModel(p).getNodesNodeSplitPValueSummary();
-	}
-
-	public List<Parameter> getInconsistencyFactors() {
-		return getBean().getInconsistencyModel().getInconsistencyFactors();
+	
+	public InconsistencyWrapper getInconsistencyModel() {
+		return getBean().getInconsistencyModel();
 	}
 
 	public List<DrugSet> getIncludedDrugs() {
@@ -214,6 +179,15 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 	
 	public MCMCWrapper getWrappedModel(MTCModelWrapper m) {
+		if(d_models.get(m) == null) {
+			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getName());
+		}
 		return d_models.get(m);
 	}
+	
+	public void reset(MTCModelWrapper m) {
+		getBean().reset(m);
+		m.selfDestruct();
+		d_models.remove(m);
+	}	
 }

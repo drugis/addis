@@ -44,6 +44,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PropertyChangeListener d_listener;
 	private boolean d_listenersAttached;
+	private ValueHolder<Boolean> d_modelConstructed;
 
 	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm) {
 		d_pm = pm;
@@ -54,11 +55,12 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 			}
 		};
 		
-		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(true)) {
+		d_modelConstructed = d_pm.getWrappedModel(d_pm.getInconsistencyModel()).isModelConstructed();
+		if (d_modelConstructed.getValue().equals(true)) {
 			attachListeners();
 		}
 		
-		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
+		d_modelConstructed.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue().equals(true)) {
 					fireTableStructureChanged();					
@@ -71,9 +73,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private void attachListeners() {
 		if (d_listenersAttached) return;
 		
-		List<Parameter> parameterList = d_pm.getInconsistencyFactors();
+		List<Parameter> parameterList = d_pm.getInconsistencyModel().getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			QuantileSummary summary = d_pm.getQuantileSummary(d_pm.getInconsistencyModel(), p);
+			QuantileSummary summary = d_pm.getInconsistencyModel().getQuantileSummary(p);
 			summary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
@@ -95,13 +97,13 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(true))
-			return d_pm.getInconsistencyFactors().size();
+		if(d_modelConstructed.getValue().equals(true))
+			return d_pm.getInconsistencyModel().getInconsistencyFactors().size();
 		return 0;
 	}
 	
 	public Object getValueAt(int row, int col) {
-		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
+		if (d_modelConstructed.getValue().equals(false)){
 			return NA;
 		}
 		
@@ -114,7 +116,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 			}
 			return out.substring(0, out.length() - 2);
 		} else {
-			return d_pm.getQuantileSummary(model, ip);
+			return model.getQuantileSummary(ip);
 		}
 	}
 }

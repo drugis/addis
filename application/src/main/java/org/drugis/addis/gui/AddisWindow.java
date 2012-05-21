@@ -114,7 +114,6 @@ public class AddisWindow extends JFrame {
 		d_main = main;
 		d_main.getDomainChangedModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				reloadRightPanel();
 				updateTitle();
 			}
 		});

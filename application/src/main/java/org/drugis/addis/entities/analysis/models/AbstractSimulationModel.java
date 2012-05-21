@@ -48,36 +48,21 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 	private final Map<Parameter, QuantileSummary> d_quantileSummaryMap = new HashMap<Parameter, QuantileSummary>();
 	protected final NetworkBuilder<DrugSet> d_builder;
 	private final Map<Parameter, ConvergenceSummary> d_convergenceSummaryMap = new HashMap<Parameter, ConvergenceSummary>();
+	private boolean d_destroy = false;
 	
 	protected AbstractSimulationModel(NetworkBuilder<DrugSet> builder, MTCType mtc) { 
 		d_builder = builder;
 		d_nested = mtc;
 	}
 	
-	@Override
-	public boolean isReady() {
-		return d_nested.isReady();
-	}
-	
-	@Override
-	public QuantileSummary getQuantileSummary(Parameter p) {
-		if(d_quantileSummaryMap.get(p) == null) { 
-			d_quantileSummaryMap.put(p, new QuantileSummary(d_nested.getResults(), p));
-		}
-		return d_quantileSummaryMap.get(p);
-	}
-	
-	@Override
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
 		return d_nested.getRelativeEffect(getTreatment(a), getTreatment(b));
 	}
 	
-	@Override
 	public ActivityTask getActivityTask() {
 		return d_nested.getActivityTask();
 	}
 	
-	@Override
 	public MixedTreatmentComparison getModel() {
 		return d_nested;
 	}
@@ -86,7 +71,6 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 		d_nested.setExtendSimulation(s);
 	}
 	
-	@Override
 	public Parameter getRandomEffectsVariance() {
 		return d_nested.getRandomEffectsVariance();
 	}
@@ -103,6 +87,11 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 		return getActivityTask().isFinished();
 	}
 
+	public boolean isReady() {
+		return d_nested.isReady();
+	}
+	
+	
 	public void setBurnInIterations(int it) {
 		d_nested.setBurnInIterations(it);
 	}
@@ -127,6 +116,13 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 		return d_nested.getSettings();
 	}
 	
+	public QuantileSummary getQuantileSummary(Parameter p) {
+		if(d_quantileSummaryMap.get(p) == null) { 
+			d_quantileSummaryMap.put(p, new QuantileSummary(d_nested.getResults(), p));
+		}
+		return d_quantileSummaryMap.get(p);
+	}
+	
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
 		if(d_convergenceSummaryMap.get(p) == null) { 
 			d_convergenceSummaryMap.put(p, new ConvergenceSummary(d_nested.getResults(), p));
@@ -134,8 +130,21 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 		return d_convergenceSummaryMap.get(p);
 	}
 	
-	@Override
 	public Parameter[] getParameters() { 
 		return d_nested.getResults().getParameters();
 	}
+	
+	public void selfDestruct() {
+		d_destroy  = true;
+	}
+	
+	public boolean shouldDestroy() { 
+		return d_destroy;
+	}
+
+	@Override
+	public String getName() {
+		return d_nested.toString();
+	}
+	
 }

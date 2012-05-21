@@ -81,7 +81,7 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getDirectEffect());
 			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getIndirectEffect());
 			
-			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitPValueSummary(p);
+			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitModel(p).getNodeSplitPValueSummary();
 			valuePvalue.addPropertyChangeListener(d_listener);
 			d_pValueSummaries.put(p, valuePvalue);
 		}
