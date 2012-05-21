@@ -151,7 +151,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	public boolean isReady() {
-		return d_simulationPhase.isFinished();
+		return d_activityTask.isFinished();
 	}
 
 	public int getBurnInIterations() {
