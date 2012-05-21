@@ -13,6 +13,7 @@
             <author name="drugis.org development team" email="info@drugis.org" />
         </authors>
         <url>http://drugis.org/addis</url>
+        <run-privileged/>
     </info>
 
     <!-- 
