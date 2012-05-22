@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.threading.NullTask;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.activity.ActivityModel;
@@ -46,7 +47,7 @@ import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class AbstractSavedModel implements MTCModelWrapper  {
+public abstract class AbstractSavedModel extends AbstractObservable implements MTCModelWrapper  {
 	
 	protected NetworkBuilder<DrugSet> d_builder;
 	private final MCMCSettingsCache d_settings;
@@ -135,9 +136,10 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	
 	public void selfDestruct() {
 		d_destroy = true;
+		firePropertyChange(PROPERTY_DESTROYED, false, true);
 	}
 	
-	public boolean shouldDestroy() { 
+	public boolean getDestroyed() { 
 		return d_destroy;
 	}
 	

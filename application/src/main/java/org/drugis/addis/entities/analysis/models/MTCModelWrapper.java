@@ -34,7 +34,11 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public interface MTCModelWrapper extends MCMCModel {
+import com.jgoodies.binding.beans.Observable;
+
+public interface MTCModelWrapper extends MCMCModel, Observable {
+	
+	public static final String PROPERTY_DESTROYED = "destroyed";
 	
 	public Parameter[] getParameters();
 	
@@ -56,15 +60,16 @@ public interface MTCModelWrapper extends MCMCModel {
 
 	public boolean isSavable(); 
 	
-	/** Whether or not the model should be cleaned up on the next invocation from NetworkMetaAnalysis
-	 *  This will cause NetworkMetaAnalysis to create a new instance of a AbstractSimulationModel 
+	/** 
+	 * Whether or not the model should be cleaned up on the next invocation from NetworkMetaAnalysis.
+	 * This will cause NetworkMetaAnalysis to create a new instance of a AbstractSimulationModel.
 	 */
 	public void selfDestruct(); 
 	
 	/**
 	 * Returns true if selfDestruct called previously, false otherwise.
 	 */
-	public boolean shouldDestroy();
+	public boolean getDestroyed();
 	
 	public String getName();
 }

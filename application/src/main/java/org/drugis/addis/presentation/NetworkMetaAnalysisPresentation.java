@@ -26,6 +26,8 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +66,16 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		for (BasicParameter p : getBean().getSplitParameters()) {
 			NodeSplitWrapper m = getBean().getNodeSplitModel(p);
 			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getName());
+		}
+		for(MTCModelWrapper model : d_models.keySet()) { 
+			model.addPropertyChangeListener(new PropertyChangeListener() {		
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) { 
+						d_models.remove(evt.getSource());
+					}
+				}
+			});
 		}
 	}
 	
@@ -183,11 +195,5 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getName());
 		}
 		return d_models.get(m);
-	}
-	
-	public void reset(MTCModelWrapper m) {
-		getBean().reset(m);
-		m.selfDestruct();
-		d_models.remove(m);
 	}	
 }

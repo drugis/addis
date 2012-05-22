@@ -162,7 +162,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		AbstractBaselineModel<?> model;
 		for (OutcomeMeasure om : getBean().getCriteria()) {
 			model = getBean().getBaselineModel(om);
-			String name = getBean().getName() + " \u2014 Baseline Model (" + om.getName() + ")";
+			String name = om.getName() + " \u2014 Baseline Model";
 			d_models.put(model.getActivityTask(), new WrappedBaselineModel(model, om, name));
 		}
 	}
@@ -171,13 +171,27 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	private void initNetworkMetaAnalysisModels() {
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
-				NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-				MTCModelWrapper mtc = nma.getConsistencyModel();
-				String name = nma.getName() + " \u2014 Consistency Model";
-				MCMCWrapper wm = new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(mtc, nma.getOutcomeMeasure(), name);
-				d_models.put(nma.getConsistencyModel().getActivityTask(), wm);
+				final NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
+				final MTCModelWrapper mtc = nma.getConsistencyModel();
+				addNetworkMetaAnalysis(nma, mtc);
+				mtc.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) { 
+							addNetworkMetaAnalysis(nma, (MTCModelWrapper) evt.getSource());
+						}
+					}
+				});
 			}
 		}
+	}
+
+	private MTCModelWrapper addNetworkMetaAnalysis(NetworkMetaAnalysis nma, MTCModelWrapper mtc) {
+		String name = nma.getName() + " \u2014 " + mtc.getName();
+		MCMCWrapper wm = new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(mtc, nma.getOutcomeMeasure(), name);
+		d_models.put(mtc.getActivityTask(), wm);
+		return mtc;
 	}
 	
 	public BRBaselineMeasurementTableModel getBaselineMeasurementTableModel() {

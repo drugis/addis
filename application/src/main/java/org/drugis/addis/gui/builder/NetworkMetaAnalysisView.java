@@ -611,7 +611,7 @@ implements ViewBuilder {
 		button.setToolTipText("Restart simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				d_pm.reset(model);
+				model.selfDestruct();
 				d_mainWindow.reloadRightPanel();
 			}
 		});

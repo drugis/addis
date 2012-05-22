@@ -149,21 +149,21 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 	
 	public synchronized InconsistencyWrapper getInconsistencyModel() {
-		if (d_inconsistencyModel == null || d_inconsistencyModel.shouldDestroy()) {
+		if (d_inconsistencyModel == null || d_inconsistencyModel.getDestroyed()) {
 			d_inconsistencyModel = createInconsistencyModel();
 		}
 		return d_inconsistencyModel;
 	}
 	
 	public synchronized ConsistencyWrapper getConsistencyModel() {
-		if (d_consistencyModel == null || d_consistencyModel.shouldDestroy()) {
+		if (d_consistencyModel == null || d_consistencyModel.getDestroyed()) {
 			d_consistencyModel = createConsistencyModel();
 		}
 		return d_consistencyModel;
 	}
 
 	public synchronized NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
-		if (!d_nodeSplitModels.containsKey(p) || d_nodeSplitModels.get(p).shouldDestroy()) {
+		if (!d_nodeSplitModels.containsKey(p) || d_nodeSplitModels.get(p).getDestroyed()) {
 			d_nodeSplitModels.put(p, createNodeSplitModel(p));
 		}
 		return d_nodeSplitModels.get(p);
@@ -267,6 +267,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public void reset(MTCModelWrapper m) {
+		m.selfDestruct();
 		firePropertyChange(PROPERTY_MCMC_RESULTS, true, false);
 	}
 

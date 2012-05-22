@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCSettingsCache;
@@ -43,7 +44,7 @@ import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComparison> implements MTCModelWrapper {
+public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComparison> extends AbstractObservable implements MTCModelWrapper {
 	protected final MTCType d_nested;
 	private final Map<Parameter, QuantileSummary> d_quantileSummaryMap = new HashMap<Parameter, QuantileSummary>();
 	protected final NetworkBuilder<DrugSet> d_builder;
@@ -136,9 +137,10 @@ public abstract class AbstractSimulationModel<MTCType extends MixedTreatmentComp
 	
 	public void selfDestruct() {
 		d_destroy  = true;
+		firePropertyChange(PROPERTY_DESTROYED, false, true);
 	}
 	
-	public boolean shouldDestroy() { 
+	public boolean getDestroyed() { 
 		return d_destroy;
 	}
 
