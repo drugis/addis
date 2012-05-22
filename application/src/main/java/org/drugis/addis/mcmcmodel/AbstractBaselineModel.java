@@ -75,7 +75,6 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		}
 	};
 	private NormalSummary d_summary;
-	private final MCMCSettingsCache d_settings;
 
 	private SimpleTask d_buildModelPhase = new SimpleSuspendableTask(new Runnable() {
 		public void run() {
@@ -116,7 +115,6 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		d_activityTask = new ActivityTask(
 				new ActivityModel(d_buildModelPhase, d_calculateResultsPhase, transitions), 
 				"MCMC model");
-		d_settings = new MCMCSettingsCache(d_simulationIter / 2, d_simulationIter, 1, d_tuningIter, 0.0, 1);
 	}
 
 	public ActivityTask getActivityTask() {
@@ -135,14 +133,6 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 
 	public boolean isReady() {
 		return d_activityTask.isFinished();
-	}
-
-	public int getBurnInIterations() {
-		return d_tuningIter;
-	}
-
-	public int getSimulationIterations() {
-		return d_simulationIter;
 	}
 
 	public void setBurnInIterations(int it) {
@@ -226,6 +216,6 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	public MCMCSettingsCache getSettings() {
-		return d_settings;
+		return new MCMCSettingsCache(d_simulationIter / 2, d_simulationIter, 1, d_tuningIter, 0.0, 1);
 	}
 }

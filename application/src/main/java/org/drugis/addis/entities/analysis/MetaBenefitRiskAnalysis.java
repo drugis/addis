@@ -310,7 +310,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
 		AbstractBaselineModel<?> model = getBaselineModel(om);
 		NormalSummary summary = model.getSummary();
-		if (!summary.getDefined()) {
+		if (summary == null || !summary.getDefined()) {
 			return null;
 		}
 		return createDistribution(om, summary.getMean(), summary.getStandardDeviation());

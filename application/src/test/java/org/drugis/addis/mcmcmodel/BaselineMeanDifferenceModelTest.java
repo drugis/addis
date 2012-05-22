@@ -38,18 +38,18 @@ public class BaselineMeanDifferenceModelTest {
 	@Test
 	public void testBurnInIterations() {
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(new ArrayList<ContinuousMeasurement>());
-		assertTrue(model.getBurnInIterations() > 1000);
-		int newIter = model.getBurnInIterations() * 2;
+		assertTrue(model.getSettings().getTuningIterations() > 1000);
+		int newIter = model.getSettings().getTuningIterations() * 2;
 		model.setBurnInIterations(newIter);
-		assertEquals(newIter, model.getBurnInIterations());
+		assertEquals(newIter, (int)model.getSettings().getTuningIterations());
 	}
 	
 	@Test
 	public void testSimulationIterations() {
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(new ArrayList<ContinuousMeasurement>());
-		assertTrue(model.getSimulationIterations() > 1000);
-		int newIter = model.getSimulationIterations() * 2;
+		assertTrue(model.getSettings().getSimulationIterations() > 1000);
+		int newIter = model.getSettings().getSimulationIterations() * 2;
 		model.setSimulationIterations(newIter);
-		assertEquals(newIter, model.getSimulationIterations());
+		assertEquals(newIter, (int)model.getSettings().getSimulationIterations());
 	}
 }
