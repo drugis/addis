@@ -37,6 +37,6 @@ public interface NodeSplitWrapper extends MTCModelWrapper {
 	
 	public Parameter getSplitNode();
 
-	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary();
+	public NodeSplitPValueSummary getNodeSplitPValueSummary();
 	
 }

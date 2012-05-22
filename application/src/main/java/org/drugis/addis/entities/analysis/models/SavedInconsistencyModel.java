@@ -69,4 +69,8 @@ public class SavedInconsistencyModel extends AbstractSavedModel implements Incon
 		return null;
 	}
 	
+	@Override
+	public String getName() {
+		return "Inconsistency Model";
+	}
 }

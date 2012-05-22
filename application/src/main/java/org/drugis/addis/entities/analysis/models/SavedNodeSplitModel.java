@@ -54,8 +54,12 @@ public class SavedNodeSplitModel extends AbstractSavedModel implements NodeSplit
 	}
 
 	@Override
-	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary() {
+	public NodeSplitPValueSummary getNodeSplitPValueSummary() {
 		return d_nodeSplitPValueSummary;
 	}
 
+	@Override
+	public String getName() {
+		return "Node Split on " + getSplitNode().getName();
+	}
 }

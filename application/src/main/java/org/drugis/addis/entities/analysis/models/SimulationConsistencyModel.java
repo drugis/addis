@@ -79,4 +79,11 @@ public class SimulationConsistencyModel extends AbstractSimulationModel<Consiste
 		}
 		return list;
 	}
+	
+
+	@Override
+	public String getName() {
+		return "Consistency Model";
+	}
+	
 }

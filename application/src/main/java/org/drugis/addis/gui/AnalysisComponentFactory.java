@@ -41,9 +41,10 @@ import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.status.ActivityTaskInPhase;
-import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.threading.status.TaskStartableModel;
+import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.BooleanNotModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -59,8 +60,9 @@ public class AnalysisComponentFactory {
 	
 	public static JPanel createSimulationControls(
 			final MCMCWrapper model, 
-			final int row,
-			final JFrame parent, boolean withSeparator) {
+			final JFrame parent,
+			boolean withSeparator,
+			JButton ... buttons) {
 
 		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:0:grow, 3dlu, pref",
@@ -73,7 +75,7 @@ public class AnalysisComponentFactory {
 			panelRow += 2;
 		}
 		
-		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model));
+		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model), buttons);
 		panelRow += 2;
 		if(!model.hasSavedResults() && hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
@@ -105,12 +107,18 @@ public class AnalysisComponentFactory {
 
 	private static void createProgressBarRow(final MCMCWrapper model,
 			JFrame main, CellConstraints cc,
-			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence) {
-		final JButton startButton = createStartButton(model.getActivityTask(), model);
-		final ValueModel taskStartable = new TaskStartableModel(model.getActivityTask());
+			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence, JButton[] buttons) {
+		ValueModel buttonEnabledModel = new TaskStartableModel(model.getActivityTask());
+		JButton startButton = createStartButton(model);
+		Bindings.bind(startButton, "enabled", buttonEnabledModel);
 		
-		Bindings.bind(startButton, "enabled", taskStartable);
-		panelBuilder.add(startButton, cc.xy(1, panelRow));
+		JPanel bb = new JPanel();
+		bb.add(startButton);	
+		for(JButton b : buttons) { 
+			bb.add(b);
+		}
+		panelBuilder.add(bb, cc.xy(1, panelRow));
+
 		if(hasConvergence) { 
 			panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xy(3, panelRow));
 			panelBuilder.add(createShowConvergenceButton(main, model), cc.xy(5, panelRow));
@@ -119,7 +127,8 @@ public class AnalysisComponentFactory {
 		}
 	}
 
-	public static JButton createStartButton(final Task task, final MCMCWrapper model) {
+	public static JButton createStartButton(final MCMCWrapper model) {
+		final ActivityTask task = model.getActivityTask();
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
 		button.setEnabled(!task.isFinished() && !task.isStarted());
@@ -130,6 +139,8 @@ public class AnalysisComponentFactory {
 		});
 		return button;
 	}
+	
+
 	
 	public static JButton createStopButton(final Task task, final MCMCWrapper model) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_TICK));
@@ -165,7 +176,7 @@ public class AnalysisComponentFactory {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog convergence = new ConvergenceSummaryDialog(main,mtcWrapper,model.isModelConstructed(), model.toString());
+				JDialog convergence = new ConvergenceSummaryDialog(main, mtcWrapper,model.isModelConstructed(), model.toString());
 				convergence.setVisible(true);
 			}
 		});

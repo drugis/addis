@@ -87,4 +87,8 @@ public class SavedConsistencyModel extends AbstractSavedModel implements Consist
 		return list;
 	}
 
+	@Override
+	public String getName() {
+		return "Consistency Model";
+	}
 }

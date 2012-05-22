@@ -117,7 +117,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
-
+	private static final String MEMORY_USAGE_TAB_TITLE = "Memory Usage";
+	private static final String NODE_SPLIT_TAB_TITLE = "Node Split";
+	private static final String INCONSISTENCY_TAB_TITLE = "Inconsistency";
+	private static final String CONSISTENCY_TAB_TITLE = "Consistency";
+	private static final String OVERVIEW_TAB_TITLE = "Overview";
 
 	private static class AnalysisFinishedListener implements TaskListener {
 		private final TablePanel[] d_tablePanels;
@@ -125,7 +129,6 @@ implements ViewBuilder {
 		public AnalysisFinishedListener(TablePanel[] tablePanels) {
 			d_tablePanels = tablePanels;
 		}
-
 		public void taskEvent(TaskEvent event) {
 			if (event.getType() == EventType.TASK_FINISHED) {
 				Runnable r = new Runnable() {
@@ -213,7 +216,7 @@ implements ViewBuilder {
 		if(model.hasSavedResults()) {
 			LayoutUtil.addRow(layout);
 			builder.add(new JLabel(name), cc.xy(1, row));
-			builder.add(new JLabel("Not available for loaded results"), cc.xyw(2, row, 7));
+			builder.add(new JLabel("N/A"), cc.xyw(3, row, 7));
 			return row + 2;
 		} else {
 			final MixedTreatmentComparison mtc = model.getModel(); 
@@ -275,23 +278,22 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();		
 		CellConstraints cc = new CellConstraints();
 		
 		int row = 1;
-		int colSpan = 3;
+		int colSpan = 5;
 		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, colSpan));
 
 		row += 2;
 
-		
 		final InconsistencyWrapper inconsistencyModel = d_pm.getInconsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), row, d_mainWindow, false);
-		builder.add(simulationControls, cc.xyw(1, row, 3));
-
+				
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, createRestartButton(inconsistencyModel, INCONSISTENCY_TAB_TITLE));
+		builder.add(simulationControls, cc.xyw(3, row, 3));
 
 		row += 2;
 		
@@ -304,13 +306,13 @@ implements ViewBuilder {
 				"101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.";
 		JComponent inconsistencyNote = AuxComponentFactory.createHtmlField(inconsistencyText);
 		
-		builder.add(inconsistencyNote, cc.xyw(1, row, 3));
+		builder.add(inconsistencyNote, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(inconsistencyModel);
-		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, 3));
+		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, 3));
+		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm);
@@ -318,7 +320,7 @@ implements ViewBuilder {
 		table.setDefaultRenderer(Summary.class, new SummaryCellRenderer(false));
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 		
-		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
+		d_pm.getWrappedModel(inconsistencyModel).isModelConstructed().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getNewValue().equals(true)) {
 					Runnable r = new Runnable() {
@@ -331,9 +333,9 @@ implements ViewBuilder {
 			}
 		});
 		
-		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, 3));
+		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
+		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 	
 		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(inconsistencyModel);
@@ -341,9 +343,9 @@ implements ViewBuilder {
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		final TablePanel varianceTablePanel = new TablePanel(varianceTable);
 		
-		builder.addSeparator("Variance Calculation", cc.xyw(1, row, 3));
+		builder.addSeparator("Variance Calculation", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(varianceTablePanel, cc.xyw(1, row, 3));
+		builder.add(varianceTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
@@ -351,8 +353,6 @@ implements ViewBuilder {
 						relativeEffectsTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
-
-		
 		return builder.getPanel();
 	}
 
@@ -370,7 +370,7 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyWrapper consistencyModel = d_pm.getConsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), row, d_mainWindow, false);
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, createRestartButton(consistencyModel, CONSISTENCY_TAB_TITLE));
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
 		row += 2;
@@ -447,7 +447,7 @@ implements ViewBuilder {
 			row += 2;
 			NodeSplitWrapper model = d_pm.getNodeSplitModel(p);			
 			
-			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), row, d_mainWindow, true);
+			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, createRestartButton(model, NODE_SPLIT_TAB_TITLE));
 			builder.add(simulationControls, cc.xyw(1, row, 3));
 
 			
@@ -488,27 +488,32 @@ implements ViewBuilder {
 		table.autoSizeColumns();
 		return new TablePanel(table);
 	}
+	
 
 	public JComponent buildPanel() {
 		JTabbedPane tabbedPane = new AddisTabbedPane();
-		tabbedPane.addTab("Overview", buildOverviewTab());
-		tabbedPane.addTab("Consistency", buildConsistencyTab());
-		tabbedPane.addTab("Inconsistency", buildInconsistencyTab());
-		tabbedPane.addTab("Node Split", buildNodeSplitTab());
-		tabbedPane.addTab("Memory Usage", buildMemoryUsageTab());
+		tabbedPane.addTab(OVERVIEW_TAB_TITLE, buildOverviewTab());
+		tabbedPane.addTab(CONSISTENCY_TAB_TITLE, buildConsistencyTab());
+		tabbedPane.addTab(INCONSISTENCY_TAB_TITLE, buildInconsistencyTab());
+		tabbedPane.addTab(NODE_SPLIT_TAB_TITLE, buildNodeSplitTab());
+		tabbedPane.addTab(MEMORY_USAGE_TAB_TITLE, buildMemoryUsageTab());
 		return tabbedPane;
 	}
 
 	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
-		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitModel) || !(d_pm.getConsistencyModel() instanceof SimulationConsistencyModel)) {
+		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitModel)) {
 			return new JLabel("Can not build density plot based on saved results.");
 		}
 		SimulationNodeSplitModel splitModel = (SimulationNodeSplitModel) d_pm.getNodeSplitModel(p);
-		SimulationConsistencyModel consModel = (SimulationConsistencyModel) d_pm.getConsistencyModel();
-		XYDataset dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
-				new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
-				new PlotParameter(consModel.getResults(), p));
-		
+		XYDataset dataset;
+		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyModel) {
+			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
+					new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
+					new PlotParameter(((SimulationConsistencyModel) d_pm.getConsistencyModel()).getResults(), p));
+		} else {
+			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
+					new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()));
+		}	
 		JFreeChart chart = ChartFactory.createXYLineChart(
 	            p.getName() + " density plot", "Relative Effect", "Density",                      
 	            dataset, PlotOrientation.VERTICAL,
@@ -517,8 +522,6 @@ implements ViewBuilder {
 
         return new ChartPanel(chart);	
 	}
-
-
 
 	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
@@ -609,6 +612,20 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
+	
+	private JButton createRestartButton(final MTCModelWrapper model, final String activeTab) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
+		button.setToolTipText("Reset simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.selfDestruct();
+				d_mainWindow.reloadRightPanel(activeTab);
+			}
+		});
+		Bindings.bind(button, "enabled", new TaskTerminatedModel(model.getActivityTask()));
+		return button;
+	}
+	
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
 	 * @param mtc Model for which to display results.

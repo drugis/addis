@@ -55,11 +55,16 @@ public class SimulationNodeSplitModel extends AbstractSimulationModel<NodeSplitM
 		return d_nested.getSplitNode();
 	}
 
-	public NodeSplitPValueSummary getNodesNodeSplitPValueSummary() {
+	public NodeSplitPValueSummary getNodeSplitPValueSummary() {
 		if(d_pValueSummary == null) {
 			d_pValueSummary = new NodeSplitPValueSummary(d_nested.getResults(), getDirectEffect(), getIndirectEffect());
 		}
 		return d_pValueSummary;
+	}
+
+	@Override
+	public String getName() {
+		return "Node Split on " + getSplitNode().getName();
 	}
 
 }
