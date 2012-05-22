@@ -16,6 +16,8 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
+1.12.5: Fixed an issue when running multiple baseline models.
+   Fixed an issue with MinimumDiameterSpanningTree calculations. 
 
 1.12.4: The network meta-analysis simulation can be continued if it has
    not converged yet, and there is a new GUI for checking convergence.
