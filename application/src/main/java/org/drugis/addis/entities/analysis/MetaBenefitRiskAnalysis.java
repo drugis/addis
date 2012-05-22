@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DrugSet;
@@ -73,7 +75,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					notifyListeners();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							notifyListeners();							
+						}
+					});
 				}
 			};
 			for (Summary s : getEffectSummaries()) {
@@ -304,10 +310,10 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	 */
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
 		AbstractBaselineModel<?> model = getBaselineModel(om);
-		if (!model.isReady()) {
+		if (!model.getSummary().getDefined()) {
 			return null;
 		}
-		return (GaussianBase) model.getResult();
+		return createDistribution(om, model.getSummary().getMean(), model.getSummary().getStandardDeviation());
 	}
 	
 	public AbstractBaselineModel<?> getBaselineModel(OutcomeMeasure om) {

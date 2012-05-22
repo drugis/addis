@@ -35,7 +35,6 @@ import gov.lanl.yadas.MCMCParameter;
 import java.util.List;
 
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.relativeeffect.LogGaussian;
 
 //FIXME: allow reuse of ProgressObservable from MTC
 public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
@@ -56,11 +55,6 @@ public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
 	@Override
 	protected double getStdDevPrior() {
 		return 2.0;
-	}
-
-	@Override
-	public LogGaussian getResult() {
-		return new LogGaussian(getSummary().getMean(), getSummary().getStandardDeviation());
 	}
 
 	private double[] sampleSizeArray() {

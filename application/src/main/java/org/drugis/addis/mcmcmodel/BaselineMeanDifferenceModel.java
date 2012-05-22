@@ -35,7 +35,6 @@ import gov.lanl.yadas.MCMCParameter;
 import java.util.List;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
 
 public class BaselineMeanDifferenceModel extends AbstractBaselineModel<ContinuousMeasurement> {
 	public BaselineMeanDifferenceModel(List<ContinuousMeasurement> measurements) {
@@ -66,11 +65,6 @@ public class BaselineMeanDifferenceModel extends AbstractBaselineModel<Continuou
 			arr[i] = d_measurements.get(i).getMean();
 		}
 		return arr;
-	}
-
-	@Override
-	public Gaussian getResult() {
-		return new Gaussian(getSummary().getMean(), getSummary().getStandardDeviation());
 	}
 
 	@Override
