@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.drugis.addis.util.JSMAAIntegration.NetworkBenefitRiskIT;
+import org.drugis.addis.util.JSMAAintegration.NetworkBenefitRiskIT;
 import org.drugis.common.threading.TaskUtil;
 import org.junit.Test;
 

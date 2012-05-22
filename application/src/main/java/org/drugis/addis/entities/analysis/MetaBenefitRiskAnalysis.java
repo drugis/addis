@@ -63,6 +63,7 @@ import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
+import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
@@ -308,10 +309,12 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	 */
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
 		AbstractBaselineModel<?> model = getBaselineModel(om);
-		if (!model.getSummary().getDefined()) {
+
+		NormalSummary summary = model.getSummary();
+		if (summary == null || !summary.getDefined()) {
 			return null;
 		}
-		return createDistribution(om, model.getSummary().getMean(), model.getSummary().getStandardDeviation());
+		return createDistribution(om, summary.getMean(), summary.getStandardDeviation());
 	}
 	
 	public AbstractBaselineModel<?> getBaselineModel(OutcomeMeasure om) {
