@@ -42,13 +42,13 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
-import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 
+import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
@@ -172,26 +172,26 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				final NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-				final MTCModelWrapper mtc = nma.getConsistencyModel();
-				addNetworkMetaAnalysis(nma, mtc);
-				mtc.addPropertyChangeListener(new PropertyChangeListener() {
-					
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) { 
-							addNetworkMetaAnalysis(nma, (MTCModelWrapper) evt.getSource());
-						}
-					}
-				});
+				addConsistencyModel(nma);
 			}
 		}
 	}
 
-	private MTCModelWrapper addNetworkMetaAnalysis(NetworkMetaAnalysis nma, MTCModelWrapper mtc) {
-		String name = nma.getName() + " \u2014 " + mtc.getName();
-		MCMCWrapper wm = new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(mtc, nma.getOutcomeMeasure(), name);
-		d_models.put(mtc.getActivityTask(), wm);
-		return mtc;
+	private void addConsistencyModel(final NetworkMetaAnalysis nma) {
+		d_models.put(nma.getConsistencyModel().getActivityTask(), 
+				new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(nma.getConsistencyModel(), 
+				nma.getOutcomeMeasure(),
+				nma.getName() + " \u2014 " + nma.getConsistencyModel().getName()));
+		nma.getConsistencyModel().addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) {
+					((Observable)evt.getSource()).removePropertyChangeListener(this);
+					MTCModelWrapper source = (MTCModelWrapper) evt.getSource();
+					d_models.remove(source.getActivityTask());
+					addConsistencyModel(nma);
+				}
+			}
+		});
 	}
 	
 	public BRBaselineMeasurementTableModel getBaselineMeasurementTableModel() {
@@ -209,14 +209,6 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	public DrugSet getBaseline() {
 		return getBean().getBaseline();
-	}
-
-	public TaskProgressModel getProgressModel(Task t) {
-		return d_models.get(t).getProgressModel();
-	}
-
-	public MCMCWrapper getWrappedModel(Task t) {
-		return d_models.get(t);
 	}
 
 	public Collection<MCMCWrapper> getWrappedModels() {

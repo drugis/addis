@@ -54,6 +54,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
@@ -528,14 +529,19 @@ public class AddisWindow extends JFrame {
 		d_rightPanelBuilder = view;
 		reloadRightPanel();
 	}
-
+	
 	public void reloadRightPanel() {
+		reloadRightPanel(null);
+	}
+
+	public void reloadRightPanel(final String activeTab) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (d_rightPanelBuilder != null) {
 					d_rightPanel.setVisible(false);
 					try {
 						JComponent panel = d_rightPanelBuilder.buildPanel();
+						setActiveTab(activeTab, panel);
 						setRightPanelContents(panel);
 						d_rightPanel.setVisible(true);
 					} catch (RuntimeException e) {
@@ -543,6 +549,13 @@ public class AddisWindow extends JFrame {
 						d_rightPanel.setVisible(true);
 						throw e;
 					}
+				}
+			}
+
+			private void setActiveTab(final String activeTab, JComponent panel) {
+				if(panel instanceof JTabbedPane && activeTab != null) { 
+					JTabbedPane pane = ((JTabbedPane) panel);
+					pane.setSelectedIndex(pane.indexOfTab(activeTab));
 				}
 			}
 		});

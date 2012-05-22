@@ -117,6 +117,12 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
+	private static final String MEMORY_USAGE_TAB_TITLE = "Memory Usage";
+	private static final String NODE_SPLIT_TAB_TITLE = "Node Split";
+	private static final String INCONSISTENCY_TAB_TITLE = "Inconsistency";
+	private static final String CONSISTENCY_TAB_TITLE = "Consistency";
+	private static final String OVERVIEW_TAB_TITLE = "Overview";
+
 	private static class AnalysisFinishedListener implements TaskListener {
 		private final TablePanel[] d_tablePanels;
 
@@ -286,7 +292,7 @@ implements ViewBuilder {
 
 		final InconsistencyWrapper inconsistencyModel = d_pm.getInconsistencyModel();
 				
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, createRestartButton(inconsistencyModel));
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, createRestartButton(inconsistencyModel, INCONSISTENCY_TAB_TITLE));
 		builder.add(simulationControls, cc.xyw(3, row, 3));
 
 		row += 2;
@@ -364,7 +370,7 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyWrapper consistencyModel = d_pm.getConsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, createRestartButton(consistencyModel));
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, createRestartButton(consistencyModel, CONSISTENCY_TAB_TITLE));
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
 		row += 2;
@@ -441,7 +447,7 @@ implements ViewBuilder {
 			row += 2;
 			NodeSplitWrapper model = d_pm.getNodeSplitModel(p);			
 			
-			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, createRestartButton(model));
+			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, createRestartButton(model, NODE_SPLIT_TAB_TITLE));
 			builder.add(simulationControls, cc.xyw(1, row, 3));
 
 			
@@ -482,14 +488,15 @@ implements ViewBuilder {
 		table.autoSizeColumns();
 		return new TablePanel(table);
 	}
+	
 
 	public JComponent buildPanel() {
 		JTabbedPane tabbedPane = new AddisTabbedPane();
-		tabbedPane.addTab("Overview", buildOverviewTab());
-		tabbedPane.addTab("Consistency", buildConsistencyTab());
-		tabbedPane.addTab("Inconsistency", buildInconsistencyTab());
-		tabbedPane.addTab("Node Split", buildNodeSplitTab());
-		tabbedPane.addTab("Memory Usage", buildMemoryUsageTab());
+		tabbedPane.addTab(OVERVIEW_TAB_TITLE, buildOverviewTab());
+		tabbedPane.addTab(CONSISTENCY_TAB_TITLE, buildConsistencyTab());
+		tabbedPane.addTab(INCONSISTENCY_TAB_TITLE, buildInconsistencyTab());
+		tabbedPane.addTab(NODE_SPLIT_TAB_TITLE, buildNodeSplitTab());
+		tabbedPane.addTab(MEMORY_USAGE_TAB_TITLE, buildMemoryUsageTab());
 		return tabbedPane;
 	}
 
@@ -606,15 +613,16 @@ implements ViewBuilder {
 	}
 
 	
-	private JButton createRestartButton(final MTCModelWrapper model) {
+	private JButton createRestartButton(final MTCModelWrapper model, final String activeTab) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
-		button.setToolTipText("Restart simulation");
+		button.setToolTipText("Reset simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.selfDestruct();
-				d_mainWindow.reloadRightPanel();
+				d_mainWindow.reloadRightPanel(activeTab);
 			}
 		});
+		Bindings.bind(button, "enabled", new TaskTerminatedModel(model.getActivityTask()));
 		return button;
 	}
 	
