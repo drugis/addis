@@ -52,8 +52,8 @@ public class BaselineOddsModelIT {
 		
 		assertTrue(model.isReady());
 		SummaryHelper.waitUntilDefined(model.getSummary());
-		assertEquals(expectedMu, model.getResult().getMu(), dev);
-		assertEquals(expectedSigma, model.getResult().getSigma(), dev);
+		assertEquals(expectedMu, model.getSummary().getStandardDeviation(), dev);
+		assertEquals(expectedSigma, model.getSummary().getMean(), dev);
 	}
 
 	private static List<RateMeasurement> buildMeasurementsList(int[] n, int[] r) {

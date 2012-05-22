@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DrugSet;
@@ -63,6 +65,7 @@ import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
+import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
@@ -73,7 +76,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					notifyListeners();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							notifyListeners();							
+						}
+					});
 				}
 			};
 			for (Summary s : getEffectSummaries()) {
@@ -304,10 +311,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	 */
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
 		AbstractBaselineModel<?> model = getBaselineModel(om);
-		if (!model.isReady()) {
+		NormalSummary summary = model.getSummary();
+		if (!summary.getDefined()) {
 			return null;
 		}
-		return (GaussianBase) model.getResult();
+		return createDistribution(om, summary.getMean(), summary.getStandardDeviation());
 	}
 	
 	public AbstractBaselineModel<?> getBaselineModel(OutcomeMeasure om) {
