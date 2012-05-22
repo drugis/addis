@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util.JSMAAIntegration;
+package org.drugis.addis.util.JSMAAintegration;
 
 import static org.junit.Assert.assertEquals;
 
