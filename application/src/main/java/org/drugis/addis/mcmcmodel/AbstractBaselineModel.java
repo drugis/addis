@@ -42,12 +42,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
-import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.common.threading.AbstractIterativeComputation;
 import org.drugis.common.threading.IterativeTask;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.SimpleTask;
-import org.drugis.common.threading.Task;
 import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
@@ -61,12 +59,11 @@ import org.drugis.mtc.yadas.YadasResults;
 
 abstract public class AbstractBaselineModel<T extends Measurement> implements MCMCModel {
 
-	public abstract Distribution getResult();
-
 	private int d_tuningIter = 20000;
 	private int d_simulationIter = 50000;
 	private int d_reportingInterval = 100;
 	protected List<T> d_measurements;
+	private ActivityTask d_activityTask;
 	private List<MCMCUpdate> d_updates;
 	private ParameterWriter d_muWriter;
 	private YadasResults d_results = new YadasResults();
@@ -102,9 +99,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 			d_results.simulationFinished();
 		}
 	}, "Calculating summaries");
-	
-	private ActivityTask d_activityTask;
-	
+		
 	public AbstractBaselineModel(List<T> measurements) {
 		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
@@ -124,18 +119,6 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 		return d_activityTask;
 	}
 	
-	Task getBuildModelPhase() {
-		return d_buildModelPhase;
-	}
-	
-	Task getBurnInPhase() {
-		return d_tuningPhase;
-	}
-	
-	Task getSimulationPhase() {
-		return d_simulationPhase;
-	}
-
 	private void output() {
 		d_muWriter.output();
 	}
@@ -147,7 +130,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	}
 
 	public boolean isReady() {
-		return d_simulationPhase.isFinished();
+		return d_activityTask.isFinished();
 	}
 
 	public int getBurnInIterations() {
