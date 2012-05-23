@@ -26,6 +26,7 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,14 +36,20 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.gui.components.GraphBarNode;
+import org.drugis.addis.gui.components.GraphLine;
+import org.drugis.addis.gui.components.GraphProgressNode;
+import org.drugis.addis.gui.components.GraphSimpleNode;
+import org.drugis.addis.gui.components.GraphSimpleNode.GraphSimpleNodeType;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.ActivityTaskInPhase;
-import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.threading.status.TaskStartableModel;
+import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.BooleanNotModel;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -63,7 +70,7 @@ public class AnalysisComponentFactory {
 
 		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:0:grow, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
 		
@@ -78,9 +85,54 @@ public class AnalysisComponentFactory {
 		if(hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
 		}
+		
+		panelBuilder.add(createProgressPanel(model), cc.xyw(1, panelRow + 2, 5));
+		
 		return panelBuilder.getPanel();
 	}
 
+	private static JPanel createProgressPanel(MCMCWrapper model) {
+		final int numChains = 4;
+		final int circleDiameter = 20;
+		final int edgeLength = 35;
+		final Dimension gridCellSize = new Dimension(95, 35);
+
+		final FormLayout layout = new FormLayout(
+				"pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref",
+				"p, p, p, p, p");
+		CellConstraints cc = new CellConstraints();
+		JPanel progressPanel = new JPanel(layout);
+		
+		progressPanel.add(new GraphSimpleNode(new Dimension(circleDiameter,circleDiameter), GraphSimpleNodeType.START), cc.xy(1, 3));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(2, 3));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "build model"), cc.xy(3, 3));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(4, 3));
+		progressPanel.add(new GraphBarNode(new Dimension(5, 90)), cc.xywh(5, 1, 1, 5));
+		
+		//loop
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(6, 1));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "burn-in (1)"), cc.xy(7, 1));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(6, 5));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "burn-in (2)"), cc.xy(7, 5));
+		
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(9, 1));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "simulation (1)"), cc.xy(10, 1));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(11, 1));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(9, 5));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "simulation (2)"), cc.xy(10, 5));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(11, 5));
+		//end loop
+		
+		progressPanel.add(new GraphBarNode(new Dimension(5, 90)), cc.xywh(12, 1, 1, 5));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(13, 3));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "assess convergence"), cc.xy(14, 3));
+		
+		//TODO: add feedback node with cc.xywh(8, 1, 1, 5)
+		
+		
+		return progressPanel;
+	}
+	
 	private static JPanel questionPanel(final MCMCWrapper model) {
 		final FlowLayout flowLayout = new FlowLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
@@ -111,7 +163,7 @@ public class AnalysisComponentFactory {
 		
 		Bindings.bind(startButton, "enabled", taskStartable);
 		panelBuilder.add(startButton, cc.xy(1, panelRow));
-		if(hasConvergence) { 
+		if(hasConvergence) {
 			panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xy(3, panelRow));
 			panelBuilder.add(createShowConvergenceButton(main, model), cc.xy(5, panelRow));
 		} else {
