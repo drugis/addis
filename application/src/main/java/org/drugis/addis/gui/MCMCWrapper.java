@@ -33,12 +33,12 @@ import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.MCMCModel;
 
 public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
-	private final MCMCModel d_model;
+	private MCMCModel d_model;
 	private final String d_name;
 	protected final OutcomeMeasure d_om;
 	private TaskProgressModel d_taskProgressModel;
 
-	public MCMCWrapper(MCMCModel model, OutcomeMeasure om, String name) { 
+	public MCMCWrapper(final MCMCModel model, final OutcomeMeasure om, final String name) { 
 		d_model = model;
 		d_om = om;
 		d_taskProgressModel = new TaskProgressModel(getActivityTask());
@@ -62,6 +62,8 @@ public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
 	public OutcomeMeasure getOutcomeMeasure() {
 		return d_om;
 	}
+	
+	public abstract boolean hasSavedResults();
 	
 	@Override
 	public String toString() { 

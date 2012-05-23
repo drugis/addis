@@ -35,7 +35,7 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -81,15 +81,17 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getDirectEffect());
 			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getIndirectEffect());
 			
-			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitPValueSummary(p);
+			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitModel(p).getNodeSplitPValueSummary();
 			valuePvalue.addPropertyChangeListener(d_listener);
 			d_pValueSummaries.put(p, valuePvalue);
 		}
 	}
 
-	private void attachQuantileSummary(MixedTreatmentComparison model, Parameter param) {
-		QuantileSummary summary = d_pm.getQuantileSummary(model, param);
-		summary.addPropertyChangeListener(d_listener);
+	private void attachQuantileSummary(MTCModelWrapper model, Parameter param) {
+		QuantileSummary summary = model.getQuantileSummary(param);
+		if(summary != null) { 
+			summary.addPropertyChangeListener(d_listener); 
+		}
 		d_quantileSummaries.put(param, summary);
 	}
 	

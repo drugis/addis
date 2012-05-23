@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DrugSet;
@@ -46,6 +48,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -59,10 +62,8 @@ import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.Parameter;
-import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
+import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
@@ -73,7 +74,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					notifyListeners();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							notifyListeners();							
+						}
+					});
 				}
 			};
 			for (Summary s : getEffectSummaries()) {
@@ -304,10 +309,12 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	 */
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
 		AbstractBaselineModel<?> model = getBaselineModel(om);
-		if (!model.isReady()) {
+
+		NormalSummary summary = model.getSummary();
+		if (summary == null || !summary.getDefined()) {
 			return null;
 		}
-		return (GaussianBase) model.getResult();
+		return createDistribution(om, summary.getMean(), summary.getStandardDeviation());
 	}
 	
 	public AbstractBaselineModel<?> getBaselineModel(OutcomeMeasure om) {
@@ -357,7 +364,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
-				ConsistencyModel model = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				ConsistencyWrapper model = ((NetworkMetaAnalysis) ma).getConsistencyModel();
 				tasks.add((Task) model.getActivityTask());
 			}
 		}
@@ -366,20 +373,6 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		
 	public AnalysisType getAnalysisType() {
 		return d_analysisType;
-	}
-
-	public List<Summary> getRelativeEffectSummaries() {
-		List<Summary> summaryList = new ArrayList<Summary>();
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof NetworkMetaAnalysis) {
-				for(DrugSet d: getNonBaselineAlternatives()) {
-					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-					Parameter p = new BasicParameter(nma.getTreatment(getBaseline()), nma.getTreatment(d));
-					summaryList.add(nma.getQuantileSummary(nma.getConsistencyModel(), p));
-				}
-			}
-		}
-		return summaryList;
 	}
 
 	public List<Summary> getAbsoluteEffectSummaries() {

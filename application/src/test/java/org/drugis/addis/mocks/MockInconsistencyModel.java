@@ -40,9 +40,10 @@ import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
+import org.drugis.mtc.yadas.YadasInconsistencyModel;
 import org.drugis.mtc.yadas.YadasResults;
 
-public class MockInconsistencyModel implements InconsistencyModel {
+public class MockInconsistencyModel extends YadasInconsistencyModel implements InconsistencyModel {
 
 	boolean d_ready = false;
 	private ActivityTask d_task;
@@ -50,8 +51,13 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	
 	private static final int BURNIN_ITER = 1000;
 	private static final int SIMULATION_ITER = 10000;
+	
+	public static InconsistencyModel buildMockSimulationIconsistencyModel() { 
+		return new MockInconsistencyModel();	
+	}
 
-	public MockInconsistencyModel() {
+	private MockInconsistencyModel() {
+		super(null);
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
 		d_task = new ActivityTask(new ActivityModel(start, end, 
@@ -75,9 +81,6 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		return inFac;
 	}
 
-	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
-		return null;
-	}
 
 	public boolean isReady() {
 		return d_task.isFinished();
@@ -91,11 +94,6 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		return SIMULATION_ITER;
 	}
 
-	public void setBurnInIterations(int it) {
-	}
-
-	public void setSimulationIterations(int it) {
-	}
 
 	public ActivityTask getActivityTask() {
 		return d_task;
@@ -116,11 +114,4 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	protected void finished() {
 		d_results.simulationFinished();
 	}
-
-	@Override
-	public void setExtendSimulation(ExtendSimulation s) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

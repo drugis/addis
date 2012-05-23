@@ -54,6 +54,12 @@ import javax.swing.table.TableColumn;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
+import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
+import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -66,6 +72,7 @@ import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.NetworkRelativeEffectTableCellRenderer;
 import org.drugis.addis.gui.renderer.SummaryCellRenderer;
+import org.drugis.addis.gui.util.TableCopyHandler;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
@@ -86,12 +93,9 @@ import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
-import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -114,7 +118,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class NetworkMetaAnalysisView extends AbstractMetaAnalysisView<NetworkMetaAnalysisPresentation>
 implements ViewBuilder {
-
+	private static final String MEMORY_USAGE_TAB_TITLE = "Memory Usage";
+	private static final String NODE_SPLIT_TAB_TITLE = "Node Split";
+	private static final String INCONSISTENCY_TAB_TITLE = "Inconsistency";
+	private static final String CONSISTENCY_TAB_TITLE = "Consistency";
+	private static final String OVERVIEW_TAB_TITLE = "Overview";
 
 	private static class AnalysisFinishedListener implements TaskListener {
 		private final TablePanel[] d_tablePanels;
@@ -122,7 +130,6 @@ implements ViewBuilder {
 		public AnalysisFinishedListener(TablePanel[] tablePanels) {
 			d_tablePanels = tablePanels;
 		}
-
 		public void taskEvent(TaskEvent event) {
 			if (event.getType() == EventType.TASK_FINISHED) {
 				Runnable r = new Runnable() {
@@ -173,69 +180,81 @@ implements ViewBuilder {
 		PanelBuilder builderheader = new PanelBuilder(header);
 		
 		FormLayout layout = new FormLayout(
-				"3dlu, left:0:grow, 3dlu, left:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref, 3dlu",
-				"3dlu, p, 3dlu, p"
+				"left:0:grow, 3dlu, left:pref, 3dlu, pref, 3dlu, pref, 3dlu, pref",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);
+		final int colSpan = layout.getColumnCount();
 		PanelBuilder builder = new PanelBuilder(layout);
-
-		int row = 2;
-		builder.addSeparator("Memory usage", cc.xyw(2, row, 7));
+		builder.setDefaultDialogBorder();
+		int row = 1;
+		
+		builder.addSeparator("Memory usage", cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		builderheader.add(AuxComponentFactory.createHtmlField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
 				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
 		"discarding the results, it will no longer be possible to display the convergence plots."), cc.xy(1,1));
 		
-		builder.add(builderheader.getPanel(), cc.xyw(2, row, 7));
-		
-		LayoutUtil.addRow(builder.getLayout());
+		builder.add(builderheader.getPanel(), cc.xyw(1, row, colSpan));
 		row += 2;
 
 		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
 		row = buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row);
-		builder.addSeparator("", cc.xyw(2, row-1, 3));
+		builder.addSeparator("", cc.xyw(1, row, 3));
+		row += 2;
 		for(BasicParameter p : d_pm.getSplitParameters()) {
 			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
-			builder.addSeparator("", cc.xyw(2, row-1, 3));
+			LayoutUtil.addRow(layout);
+			builder.addSeparator("", cc.xyw(1, row, 3));
+			row += 2;
 		}
 		
 		return builder.getPanel();
 	}
 	
-	private int buildMemoryUsage(final MCMCModel model, String name, PanelBuilder builder, FormLayout layout, int row) {
-		LayoutUtil.addRow(layout);
-		row += 2;
+	private int buildMemoryUsage(final MTCModelWrapper model, String name, PanelBuilder builder, FormLayout layout, int row) {
 		CellConstraints cc = new CellConstraints();
-		
-		final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(model.getResults());
-		JLabel memory = AuxComponentFactory.createAutoWrapLabel(memoryModel);
-		builder.add(new JLabel(name), cc.xy(2, row));
-		
-		final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(model.getResults());
-		final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
-		
-		builder.add(memory, cc.xy(4, row));
-		final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
-		clearButton.setToolTipText("Clear results");
-		BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
-		Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
-		builder.add(clearButton, cc.xy(6, row));
-		final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
-		saveButton.setToolTipText("Save to R-file");
-		Bindings.bind(saveButton, "enabled", modelFinishedAndResults);
-		
-		saveButton.addActionListener(buildRButtonActionListener(model));
-		builder.add(saveButton, cc.xy(8, row));
-		
-		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.getResults().clear();
-				// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
-				memoryModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
-				resultsAvailableModel.resultsEvent(new MCMCResultsEvent(model.getResults()));
-			}
-		});
-		return row;
+		if(model.hasSavedResults()) {
+			LayoutUtil.addRow(layout);
+			builder.add(new JLabel(name), cc.xy(1, row));
+			builder.add(new JLabel("N/A"), cc.xyw(3, row, 7));
+			return row + 2;
+		} else {
+			final MixedTreatmentComparison mtc = model.getModel(); 
+			
+			final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(mtc.getResults());
+			JLabel memory = AuxComponentFactory.createAutoWrapLabel(memoryModel);
+			
+			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(mtc.getResults());
+			final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
+			
+			final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+			clearButton.setToolTipText("Clear results");
+			BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
+			Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
+			
+			
+			final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
+			saveButton.setToolTipText("Save to R-file");
+			Bindings.bind(saveButton, "enabled", modelFinishedAndResults);			
+			saveButton.addActionListener(buildRButtonActionListener(mtc));
+	
+			clearButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mtc.getResults().clear();
+					// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
+					memoryModel.resultsEvent(new MCMCResultsEvent(mtc.getResults()));
+					resultsAvailableModel.resultsEvent(new MCMCResultsEvent(mtc.getResults()));
+				}
+			});
+			
+			LayoutUtil.addRow(layout);
+			builder.add(new JLabel(name), cc.xy(1, row));
+			builder.add(memory, cc.xy(3, row));
+			builder.add(clearButton, cc.xy(5, row));
+			builder.add(saveButton, cc.xy(7, row));
+			return row + 2;
+		}
 	}
 
 	private ActionListener buildRButtonActionListener(final MCMCModel model) {
@@ -260,23 +279,22 @@ implements ViewBuilder {
 	}
 	
 	private JComponent buildInconsistencyTab() {
-		FormLayout layout = new FormLayout("pref, 3dlu, fill:0:grow",
+		FormLayout layout = new FormLayout("pref, 3dlu, pref, 3dlu, fill:0:grow",
 		"p, 3dlu, p, 3dlu, p, 5dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout, new ScrollableJPanel());
 		builder.setDefaultDialogBorder();		
 		CellConstraints cc = new CellConstraints();
 		
 		int row = 1;
-		int colSpan = 3;
+		int colSpan = 5;
 		builder.addSeparator("Results - network inconsistency model", cc.xyw(1, row, colSpan));
 
 		row += 2;
 
-		
-		final InconsistencyModel inconsistencyModel = (InconsistencyModel) d_pm.getInconsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), row, d_mainWindow, false);
-		builder.add(simulationControls, cc.xyw(1, row, 3));
-
+		final InconsistencyWrapper inconsistencyModel = d_pm.getInconsistencyModel();
+				
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, createRestartButton(inconsistencyModel, INCONSISTENCY_TAB_TITLE));
+		builder.add(simulationControls, cc.xyw(3, row, 3));
 
 		row += 2;
 		
@@ -289,13 +307,13 @@ implements ViewBuilder {
 				"101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.";
 		JComponent inconsistencyNote = AuxComponentFactory.createHtmlField(inconsistencyText);
 		
-		builder.add(inconsistencyNote, cc.xyw(1, row, 3));
+		builder.add(inconsistencyNote, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(inconsistencyModel);
-		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, 3));
+		builder.addSeparator("Network Meta-Analysis (Inconsistency Model)", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, 3));
+		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm);
@@ -303,7 +321,7 @@ implements ViewBuilder {
 		table.setDefaultRenderer(Summary.class, new SummaryCellRenderer(false));
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 		
-		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
+		d_pm.getWrappedModel(inconsistencyModel).isModelConstructed().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getNewValue().equals(true)) {
 					Runnable r = new Runnable() {
@@ -316,19 +334,19 @@ implements ViewBuilder {
 			}
 		});
 		
-		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, 3));
+		builder.addSeparator("Inconsistency Factors", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, 3));
+		builder.add(inconsistencyFactorsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 	
-		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(d_pm, inconsistencyModel);
+		NetworkVarianceTableModel varianceTableModel = new NetworkVarianceTableModel(inconsistencyModel);
 		EnhancedTable varianceTable = new EnhancedTable(varianceTableModel, 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
 		final TablePanel varianceTablePanel = new TablePanel(varianceTable);
 		
-		builder.addSeparator("Variance Calculation", cc.xyw(1, row, 3));
+		builder.addSeparator("Variance Calculation", cc.xyw(1, row, colSpan));
 		row += 2;
-		builder.add(varianceTablePanel, cc.xyw(1, row, 3));
+		builder.add(varianceTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		inconsistencyModel.getActivityTask().addTaskListener(
@@ -336,8 +354,6 @@ implements ViewBuilder {
 						relativeEffectsTablePanel, inconsistencyFactorsTablePanel
 				})
 			);
-
-		
 		return builder.getPanel();
 	}
 
@@ -354,8 +370,8 @@ implements ViewBuilder {
 		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, colSpan));
 		
 		row += 2;
-		final ConsistencyModel consistencyModel = d_pm.getConsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), row, d_mainWindow, false);
+		final ConsistencyWrapper consistencyModel = d_pm.getConsistencyModel();
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, createRestartButton(consistencyModel, CONSISTENCY_TAB_TITLE));
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
 		row += 2;
@@ -389,7 +405,7 @@ implements ViewBuilder {
 		
 		builder.addSeparator("Variance Parameters", cc.xyw(1, row, colSpan));
 		row += 2;
-		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(d_pm, consistencyModel), 300);
+		EnhancedTable varianceTable = new EnhancedTable(new NetworkVarianceTableModel(consistencyModel), 300);
 		varianceTable.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());		
 		builder.add(new TablePanel(varianceTable), cc.xyw(1, row, colSpan));
 
@@ -430,9 +446,9 @@ implements ViewBuilder {
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			NodeSplitModel model = d_pm.getNodeSplitModel(p);			
+			NodeSplitWrapper model = d_pm.getNodeSplitModel(p);			
 			
-			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), row, d_mainWindow, true);
+			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, createRestartButton(model, NODE_SPLIT_TAB_TITLE));
 			builder.add(simulationControls, cc.xyw(1, row, 3));
 
 			
@@ -473,24 +489,32 @@ implements ViewBuilder {
 		table.autoSizeColumns();
 		return new TablePanel(table);
 	}
+	
 
 	public JComponent buildPanel() {
 		JTabbedPane tabbedPane = new AddisTabbedPane();
-		tabbedPane.addTab("Overview", buildOverviewTab());
-		tabbedPane.addTab("Consistency", buildConsistencyTab());
-		tabbedPane.addTab("Inconsistency", buildInconsistencyTab());
-		tabbedPane.addTab("Node Split", buildNodeSplitTab());
-		tabbedPane.addTab("Memory Usage", buildMemoryUsageTab());
+		tabbedPane.addTab(OVERVIEW_TAB_TITLE, buildOverviewTab());
+		tabbedPane.addTab(CONSISTENCY_TAB_TITLE, buildConsistencyTab());
+		tabbedPane.addTab(INCONSISTENCY_TAB_TITLE, buildInconsistencyTab());
+		tabbedPane.addTab(NODE_SPLIT_TAB_TITLE, buildNodeSplitTab());
+		tabbedPane.addTab(MEMORY_USAGE_TAB_TITLE, buildMemoryUsageTab());
 		return tabbedPane;
 	}
 
 	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
-		NodeSplitModel splitModel = d_pm.getNodeSplitModel(p);
-		ConsistencyModel consModel = d_pm.getConsistencyModel();
-		XYDataset dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
-				new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
-				new PlotParameter(consModel.getResults(), p));
-		
+		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitModel)) {
+			return new JLabel("Can not build density plot based on saved results.");
+		}
+		SimulationNodeSplitModel splitModel = (SimulationNodeSplitModel) d_pm.getNodeSplitModel(p);
+		XYDataset dataset;
+		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyModel) {
+			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
+					new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
+					new PlotParameter(((SimulationConsistencyModel) d_pm.getConsistencyModel()).getResults(), p));
+		} else {
+			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
+					new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()));
+		}	
 		JFreeChart chart = ChartFactory.createXYLineChart(
 	            p.getName() + " density plot", "Relative Effect", "Density",                      
 	            dataset, PlotOrientation.VERTICAL,
@@ -499,8 +523,6 @@ implements ViewBuilder {
 
         return new ChartPanel(chart);	
 	}
-
-
 
 	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
@@ -591,16 +613,31 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
+	
+	private JButton createRestartButton(final MTCModelWrapper model, final String activeTab) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
+		button.setToolTipText("Reset simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.selfDestruct();
+				d_mainWindow.reloadRightPanel(activeTab);
+			}
+		});
+		Bindings.bind(button, "enabled", new TaskTerminatedModel(model.getActivityTask()));
+		return button;
+	}
+	
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
-	private TablePanel createNetworkTablePanel(MixedTreatmentComparison mtc) {
+	private TablePanel createNetworkTablePanel(MTCModelWrapper mtc) {
 		JTable table = new JTable(new NetworkRelativeEffectTableModel(d_pm, mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);
+		TableCopyHandler.registerCopyAction(table);
 		return new TablePanel(table);
 	}
 	

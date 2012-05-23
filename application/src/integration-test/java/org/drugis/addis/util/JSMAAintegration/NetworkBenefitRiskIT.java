@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util.JSMAAIntegration;
+package org.drugis.addis.util.JSMAAintegration;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,6 +43,7 @@ import org.drugis.addis.util.JSMAAintegration.NetworkBenefitRiskTestBase;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fi.smaa.common.RandomUtil;
@@ -59,6 +60,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 	/**
 	 * Test SMAA using measurements derived using the internal MTC models.
 	 */
+	@Ignore
 	@Test
 	public void testNetworkBR() throws FileNotFoundException, IOException, InterruptedException {
 		DomainManager domainManager = new DomainManager();
