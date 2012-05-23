@@ -28,6 +28,7 @@ package org.drugis.addis.util.convertors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.parameterization.ParameterComparator;
 import org.drugis.mtc.parameterization.SplitParameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
@@ -139,8 +141,6 @@ public class NetworkMetaAnalysisConverter {
 		networkMetaAnalysis.loadNodeSplitModel(splitParameter, buildMCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries, nodeSplitPValueSummary);
 
 	}
-	
-	
 
 	private static MCMCSettingsCache buildMCMCSettingsCache(MCMCSettings settings) {
 		return new MCMCSettingsCache(settings.getInferenceIterations(), settings.getSimulationIterations(), 
@@ -392,13 +392,13 @@ public class NetworkMetaAnalysisConverter {
 	}
 	
 	private static void convertParameterSummaries(NetworkMetaAnalysis ma, MTCModelWrapper model, List<ParameterSummary> summaries) {
-		Parameter[] parameters = model.getParameters();
-		Arrays.sort(parameters);
-		for (Parameter p : parameters) { 
-			summaries.add(convertParameterSummary(p, model, ma));
-		}
+		List<Parameter> parameters = new ArrayList<Parameter>(Arrays.asList(model.getParameters()));
 		if(model instanceof NodeSplitWrapper) { 
-			summaries.add(convertParameterSummary(((NodeSplitWrapper) model).getIndirectEffect(), model, ma));
+			parameters.add(((NodeSplitWrapper) model).getIndirectEffect());
+		}
+		Collections.sort(parameters, new ParameterComparator());
+		for (Parameter p : parameters) {
+			summaries.add(convertParameterSummary(p, model, ma));
 		}
 	}
 
