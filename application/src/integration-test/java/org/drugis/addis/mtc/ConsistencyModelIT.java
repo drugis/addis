@@ -32,7 +32,7 @@ import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
 import org.drugis.mtc.DichotomousNetworkBuilder;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.drugis.mtc.ModelFactory;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;

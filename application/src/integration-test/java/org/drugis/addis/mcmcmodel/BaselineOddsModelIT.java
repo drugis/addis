@@ -35,6 +35,7 @@ import java.util.List;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.common.threading.TaskUtil;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.junit.Test;
 
 public class BaselineOddsModelIT {
@@ -48,6 +49,7 @@ public class BaselineOddsModelIT {
 		double dev = expectedSigma * 0.05;
 		
 		BaselineOddsModel model = new BaselineOddsModel(buildMeasurementsList(n, r));
+		model.setExtendSimulation(ExtendSimulation.FINISH);
 		TaskUtil.run(model.getActivityTask());
 		
 		assertTrue(model.isReady());

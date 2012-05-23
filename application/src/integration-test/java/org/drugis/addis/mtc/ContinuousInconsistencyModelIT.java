@@ -38,7 +38,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.junit.Before;
 import org.junit.Test;
 

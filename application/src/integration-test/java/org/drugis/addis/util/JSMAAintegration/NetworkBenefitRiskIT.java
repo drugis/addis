@@ -39,10 +39,8 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
-import org.drugis.addis.util.JSMAAintegration.NetworkBenefitRiskTestBase;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -71,11 +69,8 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		// Run required models
 		MetaBenefitRiskPresentation brpm = new MetaBenefitRiskPresentation(br, null);
 		for (MCMCPresentation model : brpm.getWrappedModels()) {
-			if (model.getModel() instanceof MixedTreatmentComparison) {
-				MixedTreatmentComparison mtc = (MixedTreatmentComparison) model.getModel();
-				mtc.setSimulationIterations(20000);
-				mtc.setExtendSimulation(ExtendSimulation.FINISH);
-			}
+			model.getModel().setSimulationIterations(20000);
+			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 			TaskUtil.run(model.getModel().getActivityTask());
 		}
 		

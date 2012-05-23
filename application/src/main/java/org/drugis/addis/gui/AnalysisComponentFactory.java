@@ -49,7 +49,7 @@ import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.BooleanNotModel;
 import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
