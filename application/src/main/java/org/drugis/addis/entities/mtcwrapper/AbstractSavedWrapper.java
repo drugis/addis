@@ -81,11 +81,6 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 	}
 	
 	@Override
-	public boolean isReady() {
-		return true;
-	}
-	
-	@Override
 	public boolean hasSavedResults() {
 		return true;
 	}

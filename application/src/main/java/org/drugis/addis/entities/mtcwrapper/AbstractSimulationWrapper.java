@@ -84,11 +84,6 @@ public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentCo
 		return getActivityTask().isFinished();
 	}
 
-	@Override
-	public boolean isReady() {
-		return d_nested.isReady();
-	}
-
 	protected List<Treatment> getTreatments(List<DrugSet> drugs) {
 		List<Treatment> treatments = new ArrayList<Treatment>();
 		for (DrugSet d : drugs) {

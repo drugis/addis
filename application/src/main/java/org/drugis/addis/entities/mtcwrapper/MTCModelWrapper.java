@@ -54,10 +54,14 @@ public interface MTCModelWrapper extends Observable {
 
 	public QuantileSummary getQuantileSummary(Parameter ip);
 	
-	public boolean isReady();
-	
+	/**
+	 * Whether or not the model has saved results (rather than newly-computed ones)
+	 */
 	public boolean hasSavedResults();
 
+	/**
+	 * Whether or not the model can be saved.
+	 */
 	public boolean isSavable(); 
 	
 	/** 

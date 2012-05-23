@@ -93,14 +93,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 	}
 
 	private QuantileSummary getEstimate(int row) {
-		if (d_mtc.isReady()){
-			if (row == RANDOM_EFFECTS) {
-				return getRandomEffectsSummary();
-			} else {
-				return getInconsistencySummary();
-			}
-		}
-		return null;
+		return row == RANDOM_EFFECTS ? getRandomEffectsSummary() : getInconsistencySummary();
 	}
 
 	private QuantileSummary getInconsistencySummary() {

@@ -60,9 +60,6 @@ public class NetworkMetaAnalysisTest {
 		d_analysis = ExampleData.buildNetworkMetaAnalysisHamD();
 		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
-		while (!d_mockAnalysis.getConsistencyModel().isReady()) {
-			Thread.sleep(10);
-		}
 	}
 	
 	@Test

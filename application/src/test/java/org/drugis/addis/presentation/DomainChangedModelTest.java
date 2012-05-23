@@ -79,7 +79,7 @@ public class DomainChangedModelTest {
 	}
 	
 	@Test 
-	public void testNetworkMetaAnalysisResults() { 
+	public void testNetworkMetaAnalysisResults() throws InterruptedException { 
 		assertFalse(d_model.getValue());
 		ExampleData.initDefaultData(d_domain);
 		
