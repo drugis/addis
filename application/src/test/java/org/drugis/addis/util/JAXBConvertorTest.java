@@ -1982,8 +1982,7 @@ public class JAXBConvertorTest {
 		sortMetaBenefitRiskAnalysisAlternatives(data);
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		sortUsedBys(data);
-		AddisData roundTrip = JAXBConvertor
-				.convertDomainToAddisData(domainData);
+		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
 		assertEquals(data, roundTrip);
 	}
 
