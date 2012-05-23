@@ -28,12 +28,17 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
+import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.ValueModelWrapper;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.NullTask;
+import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MixedTreatmentComparison;
 
-public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
+public class MCMCPresentation implements Comparable<MCMCPresentation> {
+	private ValueHolder<Boolean> d_modelConstructionFinished;
 	private MCMCModelWrapper d_wrapper;
 	private final String d_name;
 	protected final OutcomeMeasure d_om;
@@ -42,8 +47,7 @@ public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
 	public MCMCPresentation(final MCMCModelWrapper wrapper, final OutcomeMeasure om, final String name) { 
 		d_wrapper = wrapper;
 		d_om = om;
-		MCMCModel model = d_wrapper.getModel();
-		d_taskProgressModel = model != null ? new TaskProgressModel(model.getActivityTask()) : new TaskProgressModel(new NullTask() {
+		d_taskProgressModel = !wrapper.isSaved() ? new TaskProgressModel(wrapper.getModel().getActivityTask()) : new TaskProgressModel(new NullTask() {
 			public boolean isFinished() {
 				return true;
 			}
@@ -52,8 +56,29 @@ public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
 			}
 		});
 		d_name = name;
+		
+		d_modelConstructionFinished = wrapper.isSaved() ? new UnmodifiableHolder<Boolean>(true) : 
+			new ValueModelWrapper<Boolean>(new TaskTerminatedModel(wrapper.getModel().getActivityTask().getModel().getStartState()));
 	}
-	
+
+	public ValueHolder<Boolean> isModelConstructed() {
+		return d_modelConstructionFinished;
+	}
+
+	@Override
+	public int compareTo(MCMCPresentation o) {
+		int omCompare = d_om.compareTo(o.getOutcomeMeasure());
+		int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
+		return (omCompare == 0) ? modelComp : omCompare;
+	}
+
+	public OutcomeMeasure getOutcomeMeasure() {
+		return d_om;
+	}
+
+	public boolean hasSavedResults() {
+		return d_wrapper.isSaved();
+	}
 	public TaskProgressModel getProgressModel() {
 		return d_taskProgressModel;
 	}
@@ -66,14 +91,6 @@ public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
 		return d_wrapper.getModel();
 	}
 
-	public abstract ValueHolder<Boolean> isModelConstructed();	
-
-	public OutcomeMeasure getOutcomeMeasure() {
-		return d_om;
-	}
-	
-	public abstract boolean hasSavedResults();
-	
 	@Override
 	public String toString() { 
 		return d_name;

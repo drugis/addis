@@ -47,7 +47,6 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
-import org.drugis.mtc.MixedTreatmentComparison;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -57,30 +56,6 @@ import com.jgoodies.binding.value.ValueModel;
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	private ValueHolder<Boolean> d_measurementsReadyModel;
 	private HashMap<MCMCModelWrapper, MCMCPresentation> d_models;
-	
-	public static class WrappedBaselineModel extends MCMCPresentation {
-
-		public WrappedBaselineModel(MCMCModelWrapper wrapper, OutcomeMeasure om, String name) {
-			super(wrapper, om, name);
-		}
-
-		@Override
-		public ValueHolder<Boolean> isModelConstructed() {
-			return new UnmodifiableHolder<Boolean>(true);
-		}
-				
-		@Override
-		public int compareTo(MCMCPresentation o) {
-			int omCompare = d_om.compareTo(o.getOutcomeMeasure());
-			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
-			return (omCompare == 0) ? modelComp : omCompare;
-		}
-
-		@Override
-		public boolean hasSavedResults() {
-			return false;
-		}
-	}
 	
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
@@ -165,7 +140,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (OutcomeMeasure om : getBean().getCriteria()) {
 			wrapper = getBean().getBaselineModel(om);
 			String name = om.getName() + " \u2014 Baseline Model";
-			d_models.put(wrapper, new WrappedBaselineModel(wrapper, om, name));
+			d_models.put(wrapper, new MCMCPresentation(wrapper, om, name));
 		}
 	}
 	
@@ -180,7 +155,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	private void addConsistencyModel(final NetworkMetaAnalysis nma) {
 		d_models.put(nma.getConsistencyModel(), 
-				new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(nma.getConsistencyModel(), 
+				new MCMCPresentation(nma.getConsistencyModel(), 
 				nma.getOutcomeMeasure(),
 				nma.getName() + " \u2014 " + nma.getConsistencyModel().getDescription()));
 		nma.getConsistencyModel().addPropertyChangeListener(new PropertyChangeListener() {
