@@ -27,7 +27,6 @@
 package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.activity.ActivityTask;
@@ -47,11 +46,7 @@ public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
 	}
 	
 	public ActivityTask getActivityTask() {
-		if(d_model instanceof MTCModelWrapper) { 
-			return ((MTCModelWrapper)d_model).getActivityTask();
-		} else { 
-			return d_model.getActivityTask();
-		}
+		return d_model.getActivityTask();
 	}
 
 	public TaskProgressModel getProgressModel() {

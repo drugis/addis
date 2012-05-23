@@ -307,7 +307,7 @@ public class NetworkMetaAnalysisConverter {
 		NodeSplitResults results = new NodeSplitResults();
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
-			results.setPValue(model.getNodesNodeSplitPValueSummary().getPvalue());
+			results.setPValue(model.getNodeSplitPValueSummary().getPvalue());
 			AlternativePair alternativePair = new AlternativePair();
 			BasicParameter splitNode = (BasicParameter) model.getSplitNode();
 			alternativePair.getAlternative().add(JAXBConvertor.convertDrugSet(ma.getDrugSet(splitNode.getBaseline())));

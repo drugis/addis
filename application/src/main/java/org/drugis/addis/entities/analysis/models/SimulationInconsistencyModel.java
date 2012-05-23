@@ -49,4 +49,9 @@ public class SimulationInconsistencyModel extends AbstractSimulationModel<Incons
 		return d_nested.getInconsistencyVariance();
 	}
 
+	@Override
+	public String getName() {
+		return "Inconsistency Model";
+	}
+
 }

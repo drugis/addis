@@ -96,6 +96,6 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 	}
 	
 	private QuantileSummary getSummary(final DrugSet d1, final DrugSet d2) {
-		return d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(d1, d2));
+		return d_networkModel.getQuantileSummary(d_networkModel.getRelativeEffect(d1, d2));
 	}
 }

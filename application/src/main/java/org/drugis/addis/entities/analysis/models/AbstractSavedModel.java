@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.threading.NullTask;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.activity.ActivityModel;
@@ -46,13 +47,14 @@ import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class AbstractSavedModel implements MTCModelWrapper  {
+public abstract class AbstractSavedModel extends AbstractObservable implements MTCModelWrapper  {
 	
-	private NetworkBuilder<DrugSet> d_builder;
+	protected NetworkBuilder<DrugSet> d_builder;
 	private final MCMCSettingsCache d_settings;
 	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
 	protected final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
 	private ActivityTask d_activityTask;
+	private boolean d_destroy;
 
 	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings, 
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
@@ -98,8 +100,7 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
 		return d_convergenceSummaries.get(p);
 	}
-	
-	@Override
+		
 	public Parameter getRandomEffectsVariance() {
 		for(Parameter p : d_quantileSummaries.keySet()) { 
 			if(p instanceof RandomEffectsVariance) {
@@ -109,33 +110,41 @@ public abstract class AbstractSavedModel implements MTCModelWrapper  {
 		return null;
 	}
 	
-	@Override
 	public Parameter[] getParameters() { 
 		return d_convergenceSummaries.keySet().toArray(new Parameter[] {});
 	}
-	
-	
+
 	public MixedTreatmentComparison getModel() {
 		throw new UnsupportedOperationException("Saved MTC models do not have a MixedTreatmentComparison model.");
 	}
 	
-	@Override
 	public MCMCResults getResults() {
 		throw new UnsupportedOperationException("Saved MTC models do not have results");
 	}
 
-	@Override
 	public void setBurnInIterations(int it) {
 		throw new IllegalAccessError("Burn-in iterations are read-only for saved models");
 	}
 
-	@Override
 	public void setSimulationIterations(int it) {
 		throw new IllegalAccessError("Simulation iterations are read-only for saved models");
 		
 	}
-
 	public MCMCSettingsCache getSettings() {
 		return d_settings;
+	}
+	
+	public void selfDestruct() {
+		d_destroy = true;
+		firePropertyChange(PROPERTY_DESTROYED, false, true);
+	}
+	
+	public boolean getDestroyed() { 
+		return d_destroy;
+	}
+	
+	@Override
+	public String getName() {
+		return this.toString();
 	}
 }

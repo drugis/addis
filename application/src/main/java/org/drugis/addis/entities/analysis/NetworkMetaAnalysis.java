@@ -45,6 +45,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
 import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
+import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
 import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
 import org.drugis.addis.entities.analysis.models.SavedConsistencyModel;
 import org.drugis.addis.entities.analysis.models.SavedInconsistencyModel;
@@ -119,10 +120,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private ConsistencyWrapper createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
 		SimulationConsistencyModel model = new SimulationConsistencyModel(getBuilder(), consistencyModel, getIncludedDrugs());
-		d_relativeEffectsSummary.setNested(model.getRelativeEffectsSummary());
-		
-		attachModelSavableListener(consistencyModel);
-		
+		d_relativeEffectsSummary.setNested(model.getRelativeEffectsSummary());	
+		attachModelSavableListener(consistencyModel);	
 		return model;
 	}
 
@@ -149,23 +148,22 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		});
 	}
 	
-
 	public synchronized InconsistencyWrapper getInconsistencyModel() {
-		if (d_inconsistencyModel == null) {
+		if (d_inconsistencyModel == null || d_inconsistencyModel.getDestroyed()) {
 			d_inconsistencyModel = createInconsistencyModel();
 		}
 		return d_inconsistencyModel;
 	}
 	
 	public synchronized ConsistencyWrapper getConsistencyModel() {
-		if (d_consistencyModel == null) {
+		if (d_consistencyModel == null || d_consistencyModel.getDestroyed()) {
 			d_consistencyModel = createConsistencyModel();
 		}
 		return d_consistencyModel;
 	}
 
-	public NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
-		if (!d_nodeSplitModels.containsKey(p)) {
+	public synchronized NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
+		if (!d_nodeSplitModels.containsKey(p) || d_nodeSplitModels.get(p).getDestroyed()) {
 			d_nodeSplitModels.put(p, createNodeSplitModel(p));
 		}
 		return d_nodeSplitModels.get(p);
@@ -266,6 +264,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			}
 		}
 		return true;
+	}
+
+	public void reset(MTCModelWrapper m) {
+		m.selfDestruct();
+		firePropertyChange(PROPERTY_MCMC_RESULTS, true, false);
 	}
 
 }
