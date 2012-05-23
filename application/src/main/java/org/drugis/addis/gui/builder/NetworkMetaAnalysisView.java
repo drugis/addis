@@ -72,6 +72,7 @@ import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.NetworkRelativeEffectTableCellRenderer;
 import org.drugis.addis.gui.renderer.SummaryCellRenderer;
+import org.drugis.addis.gui.util.TableCopyHandler;
 import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
@@ -636,6 +637,7 @@ implements ViewBuilder {
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);
+		TableCopyHandler.registerCopyAction(table);
 		return new TablePanel(table);
 	}
 	

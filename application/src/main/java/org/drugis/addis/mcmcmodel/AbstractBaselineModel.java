@@ -50,7 +50,6 @@ import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.common.threading.activity.Transition;
-import org.drugis.mtc.AbstractParameter;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCSettingsCache;
@@ -69,7 +68,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> implements MC
 	private List<MCMCUpdate> d_updates;
 	private ParameterWriter d_muWriter;
 	private YadasResults d_results = new YadasResults();
-	private Parameter d_muParam = new AbstractParameter() {
+	private Parameter d_muParam = new Parameter() {
 		public String getName() {
 			return("mu");
 		}
