@@ -27,55 +27,24 @@
 package org.drugis.addis.entities.mtcwrapper;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.common.threading.activity.ActivityTask;
-import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.summary.ConvergenceSummary;
-import org.drugis.mtc.summary.QuantileSummary;
 
-import com.jgoodies.binding.beans.Observable;
-
-public interface MTCModelWrapper extends Observable {
-	
-	public static final String PROPERTY_DESTROYED = "destroyed";
-	
-	public Parameter[] getParameters();
-	
+public interface MTCModelWrapper extends MCMCModelWrapper {
+	/**
+	 * @see org.drugis.mtc.MixedTreatmentComparison#getRelativeEffect(org.drugis.mtc.model.Treatment, org.drugis.mtc.model.Treatment)
+	 */
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b);
 	
+	/**
+	 * @see org.drugis.mtc.MixedTreatmentComparison#getRandomEffectsVariance()
+	 */
 	public Parameter getRandomEffectsVariance();
-
-	public ActivityTask getActivityTask();
 	
+	/**
+	 * Get the underlying MCMC model.
+	 * Can not be called when {@link #isSaved()} is true.
+	 */
+	@Override
 	public MixedTreatmentComparison getModel();
-	
-	public ConvergenceSummary getConvergenceSummary(Parameter p);
-
-	public QuantileSummary getQuantileSummary(Parameter ip);
-	
-	/**
-	 * Whether or not the model has saved results (rather than newly-computed ones)
-	 */
-	public boolean hasSavedResults();
-
-	/**
-	 * Whether or not the model can be saved.
-	 */
-	public boolean isSavable(); 
-	
-	/** 
-	 * Whether or not the model should be cleaned up on the next invocation from NetworkMetaAnalysis.
-	 * This will cause NetworkMetaAnalysis to create a new instance of a AbstractSimulationModel.
-	 */
-	public void selfDestruct(); 
-	
-	/**
-	 * Returns true if selfDestruct called previously, false otherwise.
-	 */
-	public boolean getDestroyed();
-	
-	public String getName();
-
-	public MCMCSettingsCache getSettings();
 }

@@ -70,7 +70,7 @@ public class SavedInconsistencyWrapper extends AbstractSavedWrapper implements I
 	}
 	
 	@Override
-	public String getName() {
+	public String getDescription() {
 		return "Inconsistency Model";
 	}
 }

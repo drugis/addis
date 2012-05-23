@@ -26,17 +26,10 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.common.beans.AbstractObservable;
-import org.drugis.common.threading.NullTask;
-import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.activity.ActivityModel;
-import org.drugis.common.threading.activity.ActivityTask;
-import org.drugis.common.threading.activity.DirectTransition;
-import org.drugis.common.threading.activity.Transition;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
@@ -51,7 +44,6 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 	private final MCMCSettingsCache d_settings;
 	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
 	protected final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
-	private ActivityTask d_activityTask;
 	private boolean d_destroy;
 
 	public AbstractSavedWrapper(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings, 
@@ -60,19 +52,6 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 		d_settings = settings;
 		d_quantileSummaries = quantileSummaries;
 		d_convergenceSummaries = convergenceSummaries; 
-		
-		String msg = "Loaded from saved results";
-		NullTask start = new NullTask();
-		NullTask end = new NullTask("msg");
-		ArrayList<Transition> transitions = new ArrayList<Transition>();
-		transitions.add(new DirectTransition(start, end));
-		d_activityTask = new ActivityTask(new ActivityModel(start, end, transitions), msg);
-	}
-
-	@Override
-	public ActivityTask getActivityTask() {
-		ThreadHandler.getInstance().scheduleTask(d_activityTask);
-		return d_activityTask;
 	}
 
 	@Override
@@ -81,12 +60,12 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 	}
 	
 	@Override
-	public boolean hasSavedResults() {
+	public boolean isSaved() {
 		return true;
 	}
 	
 	@Override
-	public boolean isSavable() {
+	public boolean isApproved() {
 		return true;
 	}
 	
@@ -134,10 +113,5 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 	@Override
 	public boolean getDestroyed() { 
 		return d_destroy;
-	}
-	
-	@Override
-	public String getName() {
-		return this.toString();
 	}
 }

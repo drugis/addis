@@ -86,10 +86,7 @@ import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.threading.Task;
-import org.drugis.common.threading.TaskListener;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.event.TaskEvent;
-import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MCMCModel;
@@ -123,26 +120,6 @@ implements ViewBuilder {
 	private static final String INCONSISTENCY_TAB_TITLE = "Inconsistency";
 	private static final String CONSISTENCY_TAB_TITLE = "Consistency";
 	private static final String OVERVIEW_TAB_TITLE = "Overview";
-
-	private static class AnalysisFinishedListener implements TaskListener {
-		private final TablePanel[] d_tablePanels;
-
-		public AnalysisFinishedListener(TablePanel[] tablePanels) {
-			d_tablePanels = tablePanels;
-		}
-		public void taskEvent(TaskEvent event) {
-			if (event.getType() == EventType.TASK_FINISHED) {
-				Runnable r = new Runnable() {
-					public void run() {
-						for (TablePanel tablePanel : d_tablePanels) {
-							tablePanel.doLayout();
-						}
-					}
-				};
-				SwingUtilities.invokeLater(r);
-			}
-		}
-	}
 	
 	private final AddisWindow d_mainWindow;
 	
@@ -214,7 +191,7 @@ implements ViewBuilder {
 	
 	private int buildMemoryUsage(final MTCModelWrapper model, String name, PanelBuilder builder, FormLayout layout, int row) {
 		CellConstraints cc = new CellConstraints();
-		if(model.hasSavedResults()) {
+		if(model.isSaved()) {
 			LayoutUtil.addRow(layout);
 			builder.add(new JLabel(name), cc.xy(1, row));
 			builder.add(new JLabel("N/A"), cc.xyw(3, row, 7));
@@ -226,7 +203,7 @@ implements ViewBuilder {
 			JLabel memory = AuxComponentFactory.createAutoWrapLabel(memoryModel);
 			
 			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(mtc.getResults());
-			final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(model.getActivityTask());
+			final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(mtc.getActivityTask());
 			
 			final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 			clearButton.setToolTipText("Clear results");
@@ -349,11 +326,6 @@ implements ViewBuilder {
 		builder.add(varianceTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		inconsistencyModel.getActivityTask().addTaskListener(
-				new AnalysisFinishedListener(new TablePanel[] {
-						relativeEffectsTablePanel, inconsistencyFactorsTablePanel
-				})
-			);
 		return builder.getPanel();
 	}
 
@@ -388,8 +360,6 @@ implements ViewBuilder {
 		builder.add(consistencyNote, cc.xyw(1, row, colSpan));
 		
 		TablePanel relativeEffectsTablePanel = createNetworkTablePanel(consistencyModel);
-		consistencyModel.getActivityTask().addTaskListener(
-				new AnalysisFinishedListener(new TablePanel[] {relativeEffectsTablePanel}));
 
 		row += 2;
 		builder.addSeparator("Network Meta-Analysis (Consistency Model)", cc.xyw(1, row, colSpan));
@@ -469,7 +439,10 @@ implements ViewBuilder {
 		button.setToolTipText("Run all simulations");
 		final List<Task> tasks = new ArrayList<Task>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
-			tasks.add(d_pm.getNodeSplitModel(p).getActivityTask());
+			final NodeSplitWrapper wrapper = d_pm.getNodeSplitModel(p);
+			if (!wrapper.isSaved()) {
+				tasks.add(wrapper.getModel().getActivityTask());
+			}
 
 		}
 		button.addActionListener(new ActionListener() {
@@ -616,16 +589,18 @@ implements ViewBuilder {
 	}
 
 	
-	private JButton createRestartButton(final MTCModelWrapper model, final String activeTab) {
+	private JButton createRestartButton(final MTCModelWrapper wrapper, final String activeTab) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
 		button.setToolTipText("Reset simulation");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.selfDestruct();
+				wrapper.selfDestruct();
 				d_mainWindow.reloadRightPanel(activeTab);
 			}
 		});
-		Bindings.bind(button, "enabled", new TaskTerminatedModel(model.getActivityTask()));
+		if (!wrapper.isSaved()) {
+			Bindings.bind(button, "enabled", new TaskTerminatedModel(wrapper.getModel().getActivityTask()));
+		}
 		return button;
 	}
 	

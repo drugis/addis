@@ -27,63 +27,31 @@
 package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.common.beans.AbstractObservable;
-import org.drugis.common.threading.activity.ActivityTask;
-import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
-import org.drugis.mtc.summary.ConvergenceSummary;
-import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentComparison> extends AbstractObservable implements MTCModelWrapper {
-	protected final MTCType d_nested;
-	private final Map<Parameter, QuantileSummary> d_quantileSummaryMap = new HashMap<Parameter, QuantileSummary>();
+public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentComparison> extends MCMCSimulationWrapper<MTCType> implements MTCModelWrapper {
 	protected final NetworkBuilder<DrugSet> d_builder;
-	private final Map<Parameter, ConvergenceSummary> d_convergenceSummaryMap = new HashMap<Parameter, ConvergenceSummary>();
-	private boolean d_destroy = false;
-	
-	protected AbstractSimulationWrapper(NetworkBuilder<DrugSet> builder, MTCType mtc) { 
+	protected AbstractSimulationWrapper(NetworkBuilder<DrugSet> builder, MTCType mtc, String description) {
+		super(mtc, description);
 		d_builder = builder;
-		d_nested = mtc;
 	}
 	
 	@Override
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
 		return d_nested.getRelativeEffect(getTreatment(a), getTreatment(b));
 	}
-	
-	@Override
-	public ActivityTask getActivityTask() {
-		return d_nested.getActivityTask();
-	}
-	
-	@Override
-	public MixedTreatmentComparison getModel() {
-		return d_nested;
-	}
-	
+
 	@Override
 	public Parameter getRandomEffectsVariance() {
 		return d_nested.getRandomEffectsVariance();
 	}
 	
-	@Override
-	public boolean hasSavedResults() { 
-		return false;
-	}
-
-	@Override
-	public boolean isSavable() {
-		return getActivityTask().isFinished();
-	}
-
 	protected List<Treatment> getTreatments(List<DrugSet> drugs) {
 		List<Treatment> treatments = new ArrayList<Treatment>();
 		for (DrugSet d : drugs) {
@@ -95,47 +63,4 @@ public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentCo
 	protected Treatment getTreatment(DrugSet d) {
 		return d_builder.getTreatmentMap().get(d);
 	}
-	
-	@Override
-	public MCMCSettingsCache getSettings() {
-		return d_nested.getSettings();
-	}
-	
-	@Override
-	public QuantileSummary getQuantileSummary(Parameter p) {
-		if(d_quantileSummaryMap.get(p) == null) { 
-			d_quantileSummaryMap.put(p, new QuantileSummary(d_nested.getResults(), p));
-		}
-		return d_quantileSummaryMap.get(p);
-	}
-	
-	@Override
-	public ConvergenceSummary getConvergenceSummary(Parameter p) {
-		if(d_convergenceSummaryMap.get(p) == null) { 
-			d_convergenceSummaryMap.put(p, new ConvergenceSummary(d_nested.getResults(), p));
-		}
-		return d_convergenceSummaryMap.get(p);
-	}
-	
-	@Override
-	public Parameter[] getParameters() { 
-		return d_nested.getResults().getParameters();
-	}
-	
-	@Override
-	public void selfDestruct() {
-		d_destroy  = true;
-		firePropertyChange(PROPERTY_DESTROYED, false, true);
-	}
-	
-	@Override
-	public boolean getDestroyed() { 
-		return d_destroy;
-	}
-
-	@Override
-	public String getName() {
-		return d_nested.toString();
-	}
-	
 }

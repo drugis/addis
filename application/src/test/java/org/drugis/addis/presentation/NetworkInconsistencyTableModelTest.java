@@ -68,13 +68,13 @@ public class NetworkInconsistencyTableModelTest {
 	@Test
 	public void testGetRowCount() throws InterruptedException {
 		assertEquals(0, d_tableModel.getRowCount());
-		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask().getModel().getStartState());
+		TaskUtil.run(d_analysis.getInconsistencyModel().getModel().getActivityTask().getModel().getStartState());
 		assertEquals(d_analysis.getInconsistencyModel().getInconsistencyFactors().size(), d_tableModel.getRowCount());
 	}
 
 	@Test
 	public void testValueAt() throws InterruptedException {
-		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
+		TaskUtil.run(d_analysis.getInconsistencyModel().getModel().getActivityTask());
 
 		InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(0);
 		assertEquals("Fluoxetine, Sertraline, Paroxetine", d_tableModel.getValueAt(0, 0));
@@ -91,7 +91,7 @@ public class NetworkInconsistencyTableModelTest {
 	
 	@Test
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
-		TaskUtil.run(d_analysis.getInconsistencyModel().getActivityTask());
+		TaskUtil.run(d_analysis.getInconsistencyModel().getModel().getActivityTask());
 		InconsistencyParameter ip = (InconsistencyParameter)d_analysis.getInconsistencyModel().getInconsistencyFactors().get(0);
 		QuantileSummary summary = d_analysis.getInconsistencyModel().getQuantileSummary(ip);
 		

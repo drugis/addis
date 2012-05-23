@@ -88,7 +88,7 @@ public class SavedConsistencyWrapper extends AbstractSavedWrapper implements Con
 	}
 
 	@Override
-	public String getName() {
+	public String getDescription() {
 		return "Consistency Model";
 	}
 }

@@ -108,7 +108,7 @@ public class NetworkTableModelTest {
 	@Test
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
 		ConsistencyWrapper model =  d_analysis.getConsistencyModel();
-		TaskUtil.run(model.getActivityTask());
+		TaskUtil.run(model.getModel().getActivityTask());
 		DrugSet d1 = d_analysis.getIncludedDrugs().get(0);
 		DrugSet d2 = d_analysis.getIncludedDrugs().get(1);
 		QuantileSummary quantileSummary = model.getQuantileSummary(model.getRelativeEffect(d1, d2));

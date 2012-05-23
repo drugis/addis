@@ -322,7 +322,7 @@ public class NetworkMetaAnalysisConverter {
 		nma.setConsistencyResults(convertConsistencyResults(ma));
 		
 		for(NodeSplitWrapper model : ma.getNodeSplitModels()) {
-			if (model.isSavable()) {
+			if (model.isApproved()) {
 				nma.getNodeSplitResults().add(convertNodeSplitResults(ma, model));
 			}
 		}
@@ -345,7 +345,7 @@ public class NetworkMetaAnalysisConverter {
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
 		InconsistencyResults results = new InconsistencyResults();
 		InconsistencyWrapper model = ma.getInconsistencyModel();
-		if (model.isSavable()) {
+		if (model.isApproved()) {
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
 			results.setRelativeEffectsQuantileSummary(convertRelativeEffectQuantileSummaries(ma, model));
@@ -357,7 +357,7 @@ public class NetworkMetaAnalysisConverter {
 	private static ConsistencyResults convertConsistencyResults(NetworkMetaAnalysis ma) {
 		ConsistencyResults results = new ConsistencyResults();
 		ConsistencyWrapper model = ma.getConsistencyModel();
-		if (model.isSavable()) { 
+		if (model.isApproved()) { 
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
 			results.setRelativeEffectsQuantileSummary(convertRelativeEffectQuantileSummaries(ma, model));

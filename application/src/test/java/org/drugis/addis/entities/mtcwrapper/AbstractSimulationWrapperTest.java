@@ -59,7 +59,7 @@ public class AbstractSimulationWrapperTest {
 			treatmentList.add(builder.getTreatmentMap().get(s));
 		}
 		ConsistencyModel mtc = MockConsistencyModel.buildMockSimulationConsistencyModel(treatmentList);
-		d_model = new AbstractSimulationWrapper<ConsistencyModel>(builder, mtc) {};
+		d_model = new AbstractSimulationWrapper<ConsistencyModel>(builder, mtc, "Stub Model") {};
 	}
 
 	@Test

@@ -44,31 +44,31 @@ import org.junit.Test;
 
 public class ContinuousInconsistencyModelIT {
 	private NetworkMetaAnalysis d_nma;
-	private SimulationInconsistencyWrapper d_model;
+	private SimulationInconsistencyWrapper d_wrapper;
 
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
        
-		d_model = (SimulationInconsistencyWrapper) d_nma.getInconsistencyModel();
+		d_wrapper = (SimulationInconsistencyWrapper) d_nma.getInconsistencyModel();
     }
     
     @Test
     public void getResults() throws InterruptedException {
-    	d_model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
-    	TaskUtil.run(d_model.getActivityTask());
+    	d_wrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
+    	TaskUtil.run(d_wrapper.getModel().getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyModel().getInconsistencyFactors().size());
-    	assertNotNull(d_model.getQuantileSummary(d_model.getInconsistencyFactors().get(0)));
+    	assertNotNull(d_wrapper.getQuantileSummary(d_wrapper.getInconsistencyFactors().get(0)));
     	DrugSet a = new DrugSet(ExampleData.buildDrugFluoxetine());
     	DrugSet b = new DrugSet(ExampleData.buildDrugParoxetine());
     	DrugSet c = new DrugSet(ExampleData.buildDrugSertraline());
-    	assertNotNull(d_model.getRelativeEffect(a, b));
-    	assertNotNull(d_model.getRelativeEffect(b, a));
-    	assertNotNull(d_model.getRelativeEffect(a, c));
-    	assertNotNull(d_model.getRelativeEffect(c, a));
-    	assertNotNull(d_model.getRelativeEffect(c, b));
-    	assertNotNull(d_model.getRelativeEffect(b, c));
+    	assertNotNull(d_wrapper.getRelativeEffect(a, b));
+    	assertNotNull(d_wrapper.getRelativeEffect(b, a));
+    	assertNotNull(d_wrapper.getRelativeEffect(a, c));
+    	assertNotNull(d_wrapper.getRelativeEffect(c, a));
+    	assertNotNull(d_wrapper.getRelativeEffect(c, b));
+    	assertNotNull(d_wrapper.getRelativeEffect(b, c));
     }
     
     private NetworkMetaAnalysis buildContinuousNetworkMetaAnalysis() {

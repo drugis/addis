@@ -79,10 +79,10 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	public void run() throws InterruptedException {
 		List<Task> tasks = new ArrayList<Task>();
 		if (!getConsistencyModel().getModel().isReady()) {
-			tasks.add(getConsistencyModel().getActivityTask());
+			tasks.add(getConsistencyModel().getModel().getActivityTask());
 		}
 		if (!getInconsistencyModel().getModel().isReady()) {
-			tasks.add(getInconsistencyModel().getActivityTask());
+			tasks.add(getInconsistencyModel().getModel().getActivityTask());
 		}
 		
 		for (Task task : tasks) {

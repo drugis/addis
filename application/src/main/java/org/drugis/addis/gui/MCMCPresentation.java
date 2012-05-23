@@ -29,26 +29,29 @@ package org.drugis.addis.gui;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.task.TaskProgressModel;
-import org.drugis.common.threading.activity.ActivityTask;
+import org.drugis.common.threading.NullTask;
 import org.drugis.mtc.MCMCModel;
 
-public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
+public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
 	private MCMCModel d_model;
 	private final String d_name;
 	protected final OutcomeMeasure d_om;
 	private TaskProgressModel d_taskProgressModel;
-
-	public MCMCWrapper(final MCMCModel model, final OutcomeMeasure om, final String name) { 
+	
+	public MCMCPresentation(final MCMCModel model, final OutcomeMeasure om, final String name) { 
 		d_model = model;
 		d_om = om;
-		d_taskProgressModel = new TaskProgressModel(getActivityTask());
+		d_taskProgressModel = d_model != null ? new TaskProgressModel(d_model.getActivityTask()) : new TaskProgressModel(new NullTask() {
+			public boolean isFinished() {
+				return true;
+			}
+			public boolean isStarted() {
+				return true;
+			}
+		});
 		d_name = name;
 	}
 	
-	public ActivityTask getActivityTask() {
-		return d_model.getActivityTask();
-	}
-
 	public TaskProgressModel getProgressModel() {
 		return d_taskProgressModel;
 	}

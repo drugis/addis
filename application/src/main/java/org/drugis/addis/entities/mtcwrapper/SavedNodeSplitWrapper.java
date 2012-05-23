@@ -85,7 +85,7 @@ public class SavedNodeSplitWrapper extends AbstractSavedWrapper implements NodeS
 	}
 
 	@Override
-	public String getName() {
+	public String getDescription() {
 		return "Node Split on " + getSplitNode().getName();
 	}
 }

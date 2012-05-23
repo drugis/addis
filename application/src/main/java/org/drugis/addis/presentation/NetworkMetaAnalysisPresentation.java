@@ -43,17 +43,15 @@ import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
-import org.drugis.addis.gui.MCMCWrapper;
+import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.status.TaskTerminatedModel;
-import org.drugis.common.validation.BooleanOrModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.binding.list.ArrayListModel;
-import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
@@ -61,11 +59,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 		d_models = new HashMap<MTCModelWrapper, WrappedNetworkMetaAnalysis>();
-		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getName());
-		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getName());
+		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getDescription());
+		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getDescription());
 		for (BasicParameter p : getBean().getSplitParameters()) {
 			NodeSplitWrapper m = getBean().getNodeSplitModel(p);
-			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getName());
+			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getDescription());
 		}
 		for(MTCModelWrapper model : d_models.keySet()) { 
 			model.addPropertyChangeListener(new PropertyChangeListener() {		
@@ -79,32 +77,15 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 	
-	public static class WrappedNetworkMetaAnalysis extends MCMCWrapper {
+	public static class WrappedNetworkMetaAnalysis extends MCMCPresentation {
 		private ValueHolder<Boolean> d_modelConstructionFinished;
 		private final MTCModelWrapper d_wrapper;
 		
 		public WrappedNetworkMetaAnalysis(final MTCModelWrapper mtc, final OutcomeMeasure om, final String name) {
-			super(mtc.getModel(), om, name);
+			super(mtc.isSaved() ? null : mtc.getModel(), om, name);
 			d_wrapper = mtc;
-			ValueModelWrapper<Boolean> modelConstructionFinished = new ValueModelWrapper<Boolean>(
-					new TaskTerminatedModel(mtc.getActivityTask().getModel().getStartState()));
-			ValueModelWrapper<Boolean> modelIsSaved = new ValueModelWrapper<Boolean>(
-					new AbstractValueModel() {
-						private boolean d_value;
-
-						@Override
-						public void setValue(Object newValue) {
-							if(newValue instanceof Boolean) { 
-								d_value = ((Boolean)newValue);
-							}
-						}
-						
-						@Override
-						public Object getValue() {
-							return d_value || mtc.hasSavedResults();
-						}
-					});
-			d_modelConstructionFinished = new ValueModelWrapper<Boolean>(new BooleanOrModel(modelConstructionFinished, modelIsSaved));
+			d_modelConstructionFinished = mtc.isSaved() ? new UnmodifiableHolder<Boolean>(true) : 
+					new ValueModelWrapper<Boolean>(new TaskTerminatedModel(mtc.getModel().getActivityTask().getModel().getStartState()));
 		}
 		
 		@Override
@@ -113,7 +94,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 
 		@Override
-		public int compareTo(MCMCWrapper o) {
+		public int compareTo(MCMCPresentation o) {
 			int omCompare = d_om.compareTo(o.getOutcomeMeasure());
 			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
 			return (omCompare == 0) ? modelComp : omCompare;
@@ -126,7 +107,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 
 		@Override
 		public boolean hasSavedResults() {
-			return d_wrapper.hasSavedResults();
+			return d_wrapper.isSaved();
 		}
 
 		public MTCModelWrapper getWrapper() {
@@ -193,9 +174,9 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNetwork();
 	}
 	
-	public MCMCWrapper getWrappedModel(MTCModelWrapper m) {
+	public MCMCPresentation getWrappedModel(MTCModelWrapper m) {
 		if(d_models.get(m) == null) {
-			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getName());
+			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getDescription());
 		}
 		return d_models.get(m);
 	}	

@@ -36,7 +36,7 @@ import org.drugis.mtc.Parameter;
 public class SimulationInconsistencyWrapper extends AbstractSimulationWrapper<InconsistencyModel> implements InconsistencyWrapper {
 
 	public SimulationInconsistencyWrapper(NetworkBuilder<DrugSet> builder, InconsistencyModel model) {
-		super(builder, model);
+		super(builder, model, "Inconsistency Model");
 	}
 
 	@Override
@@ -48,10 +48,4 @@ public class SimulationInconsistencyWrapper extends AbstractSimulationWrapper<In
 	public Parameter getInconsistencyVariance() {
 		return d_nested.getInconsistencyVariance();
 	}
-
-	@Override
-	public String getName() {
-		return "Inconsistency Model";
-	}
-
 }

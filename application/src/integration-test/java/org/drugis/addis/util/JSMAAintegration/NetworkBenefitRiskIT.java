@@ -36,7 +36,7 @@ import java.util.List;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.gui.MCMCWrapper;
+import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.addis.util.JSMAAintegration.NetworkBenefitRiskTestBase;
@@ -70,13 +70,13 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		
 		// Run required models
 		MetaBenefitRiskPresentation brpm = new MetaBenefitRiskPresentation(br, null);
-		for (MCMCWrapper model : brpm.getWrappedModels()) {
+		for (MCMCPresentation model : brpm.getWrappedModels()) {
 			if (model.getModel() instanceof MixedTreatmentComparison) {
 				MixedTreatmentComparison mtc = (MixedTreatmentComparison) model.getModel();
 				mtc.setSimulationIterations(20000);
 				mtc.setExtendSimulation(ExtendSimulation.FINISH);
 			}
-			TaskUtil.run(model.getActivityTask());
+			TaskUtil.run(model.getModel().getActivityTask());
 		}
 		
 		// Build SMAA model

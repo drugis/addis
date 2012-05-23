@@ -37,7 +37,7 @@ public class SimulationNodeSplitWrapper extends AbstractSimulationWrapper<NodeSp
 	private NodeSplitPValueSummary d_pValueSummary;
 
 	public SimulationNodeSplitWrapper(NetworkBuilder<DrugSet> builder, NodeSplitModel model) {
-		super(builder, model);
+		super(builder, model, "Node Split on " + model.getSplitNode().getName());
 	}
 
 	@Override
@@ -62,10 +62,4 @@ public class SimulationNodeSplitWrapper extends AbstractSimulationWrapper<NodeSp
 		}
 		return d_pValueSummary;
 	}
-
-	@Override
-	public String getName() {
-		return "Node Split on " + getSplitNode().getName();
-	}
-
 }

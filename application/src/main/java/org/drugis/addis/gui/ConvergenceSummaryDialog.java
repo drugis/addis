@@ -169,7 +169,7 @@ public class ConvergenceSummaryDialog extends JDialog  {
 	}
 
 	private void showConvergencePlots(MTCModelWrapper mtc, Parameter p) {
-		if (!mtc.hasSavedResults() && mtc.getModel().getResults().getNumberOfSamples() > 0) {
+		if (!mtc.isSaved() && mtc.getModel().getResults().getNumberOfSamples() > 0) {
 			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc.getModel(), p);
 			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));
 			dialog.setMinimumSize(new Dimension(d_mainWindow.getMinimumSize().width - 100, d_mainWindow.getMinimumSize().height - 100));

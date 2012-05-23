@@ -39,16 +39,18 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MCMCSimulationWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.gui.MCMCWrapper;
+import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 
-import com.jgoodies.binding.beans.Observable;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
@@ -56,9 +58,9 @@ import com.jgoodies.binding.value.ValueModel;
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	private ValueHolder<Boolean> d_measurementsReadyModel;
-	private HashMap<Task, MCMCWrapper> d_models;
+	private HashMap<MCMCModelWrapper, MCMCPresentation> d_models;
 	
-	public static class WrappedBaselineModel extends MCMCWrapper {
+	public static class WrappedBaselineModel extends MCMCPresentation {
 
 		public WrappedBaselineModel(AbstractBaselineModel<?> model, OutcomeMeasure om, String name) {
 			super(model, om, name);
@@ -70,7 +72,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		}
 				
 		@Override
-		public int compareTo(MCMCWrapper o) {
+		public int compareTo(MCMCPresentation o) {
 			int omCompare = d_om.compareTo(o.getOutcomeMeasure());
 			int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
 			return (omCompare == 0) ? modelComp : omCompare;
@@ -90,7 +92,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	protected void initSimulations() {
-		d_models = new HashMap<Task, MCMCWrapper>();
+		d_models = new HashMap<MCMCModelWrapper, MCMCPresentation>();
 		initAllBaselineModels();
 		initNetworkMetaAnalysisModels();
 	}
@@ -133,8 +135,10 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		}
 		
 		List<ValueModel> models = new ArrayList<ValueModel>();
-		for (Task task : d_models.keySet()) {
-			models.add(new TaskTerminatedModel(task));
+		for (MCMCModelWrapper wrapper : d_models.keySet()) {
+			if (!wrapper.isSaved()) {
+				models.add(new TaskTerminatedModel(wrapper.getModel().getActivityTask()));
+			}
 		}
 		d_measurementsReadyModel = new ValueModelWrapper<Boolean>(new BooleanAndModel(models));
 		
@@ -150,9 +154,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		for (MCMCWrapper model : d_models.values()) {
+		for (MCMCPresentation model : d_models.values()) {
 			if(model.getModel() instanceof AbstractBaselineModel) {
-				tasks.add(model.getActivityTask());
+				tasks.add(model.getModel().getActivityTask());
 			}
 		}
 		return tasks;
@@ -163,11 +167,10 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		for (OutcomeMeasure om : getBean().getCriteria()) {
 			model = getBean().getBaselineModel(om);
 			String name = om.getName() + " \u2014 Baseline Model";
-			d_models.put(model.getActivityTask(), new WrappedBaselineModel(model, om, name));
+			d_models.put(new MCMCSimulationWrapper<MCMCModel>(model, "Baseline Model"), new WrappedBaselineModel(model, om, name));
 		}
 	}
 	
-
 	private void initNetworkMetaAnalysisModels() {
 		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
@@ -178,16 +181,16 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 
 	private void addConsistencyModel(final NetworkMetaAnalysis nma) {
-		d_models.put(nma.getConsistencyModel().getActivityTask(), 
+		d_models.put(nma.getConsistencyModel(), 
 				new NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis(nma.getConsistencyModel(), 
 				nma.getOutcomeMeasure(),
-				nma.getName() + " \u2014 " + nma.getConsistencyModel().getName()));
+				nma.getName() + " \u2014 " + nma.getConsistencyModel().getDescription()));
 		nma.getConsistencyModel().addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) {
-					((Observable)evt.getSource()).removePropertyChangeListener(this);
 					MTCModelWrapper source = (MTCModelWrapper) evt.getSource();
-					d_models.remove(source.getActivityTask());
+					source.removePropertyChangeListener(this);
+					d_models.remove(source);
 					addConsistencyModel(nma);
 				}
 			}
@@ -211,8 +214,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		return getBean().getBaseline();
 	}
 
-	public Collection<MCMCWrapper> getWrappedModels() {
-		return new TreeSet<MCMCWrapper>( d_models.values() );
+	public Collection<MCMCPresentation> getWrappedModels() {
+		return new TreeSet<MCMCPresentation>( d_models.values() );
 	}
 
 	public synchronized void startAllSimulations() {

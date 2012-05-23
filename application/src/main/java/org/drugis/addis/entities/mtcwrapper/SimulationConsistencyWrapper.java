@@ -46,7 +46,7 @@ public class SimulationConsistencyWrapper extends AbstractSimulationWrapper<Cons
 	private final List<DrugSet> d_drugs;
 
 	public SimulationConsistencyWrapper(NetworkBuilder<DrugSet> builder, ConsistencyModel model, List<DrugSet> drugs) {
-		super(builder, model);
+		super(builder, model, "Consistency Model");
 		d_drugs = drugs;
 		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
 		Parameter[] parameters = new Parameter[relEffects.size()]; 
@@ -79,10 +79,5 @@ public class SimulationConsistencyWrapper extends AbstractSimulationWrapper<Cons
 			list.add(relEffect);
 		}
 		return list;
-	}
-
-	@Override
-	public String getName() {
-		return "Consistency Model";
 	}
 }
