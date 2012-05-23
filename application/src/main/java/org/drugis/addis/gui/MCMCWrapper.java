@@ -55,7 +55,7 @@ public abstract class MCMCWrapper implements Comparable<MCMCWrapper> {
 	
 	public MCMCModel getModel() {
 		return d_model;
-	} 
+	}
 
 	public abstract ValueHolder<Boolean> isModelConstructed();	
 

@@ -35,7 +35,7 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;

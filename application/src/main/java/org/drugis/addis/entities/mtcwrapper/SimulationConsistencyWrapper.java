@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +40,12 @@ import org.drugis.mtc.summary.RankProbabilitySummary;
 import edu.uci.ics.jung.graph.util.Pair;
 
 
-public class SimulationConsistencyModel extends AbstractSimulationModel<ConsistencyModel> implements ConsistencyWrapper {
+public class SimulationConsistencyWrapper extends AbstractSimulationWrapper<ConsistencyModel> implements ConsistencyWrapper {
 	protected final MultivariateNormalSummary d_relativeEffectsSummary;
 	private RankProbabilitySummary d_rankProbabilitySummary;
 	private final List<DrugSet> d_drugs;
 
-	public SimulationConsistencyModel(NetworkBuilder<DrugSet> builder, ConsistencyModel model, List<DrugSet> drugs) {
+	public SimulationConsistencyWrapper(NetworkBuilder<DrugSet> builder, ConsistencyModel model, List<DrugSet> drugs) {
 		super(builder, model);
 		d_drugs = drugs;
 		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
@@ -63,6 +63,7 @@ public class SimulationConsistencyModel extends AbstractSimulationModel<Consiste
 		return d_relativeEffectsSummary;
 	}
 	
+	@Override
 	public RankProbabilitySummary getRankProbabilities() {
 		if (d_rankProbabilitySummary == null) {
 			d_rankProbabilitySummary = new RankProbabilitySummary(d_nested.getResults(), getTreatments(d_drugs));
@@ -70,7 +71,7 @@ public class SimulationConsistencyModel extends AbstractSimulationModel<Consiste
 		return d_rankProbabilitySummary;
 	}
 	
-
+	@Override
 	public List<Pair<DrugSet>> getRelativeEffectsList() {
 		List<Pair<DrugSet>> list = new ArrayList<Pair<DrugSet>>(d_drugs.size() - 1); // first DrugSet is baseline-> excluded
 		for (int i = 0; i < d_drugs.size() - 1; ++i) {
@@ -79,11 +80,9 @@ public class SimulationConsistencyModel extends AbstractSimulationModel<Consiste
 		}
 		return list;
 	}
-	
 
 	@Override
 	public String getName() {
 		return "Consistency Model";
 	}
-	
 }

@@ -39,7 +39,7 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.threading.Task;

@@ -54,12 +54,12 @@ import javax.swing.table.TableColumn;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
-import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
-import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
-import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
+import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -93,6 +93,7 @@ import org.drugis.common.threading.event.TaskEvent.EventType;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
@@ -501,18 +502,20 @@ implements ViewBuilder {
 	}
 
 	private JComponent makeNodeSplitDensityChart(BasicParameter p) {
-		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitModel)) {
+		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitWrapper)) {
 			return new JLabel("Can not build density plot based on saved results.");
 		}
-		SimulationNodeSplitModel splitModel = (SimulationNodeSplitModel) d_pm.getNodeSplitModel(p);
+		final SimulationNodeSplitWrapper splitWrapper = (SimulationNodeSplitWrapper) d_pm.getNodeSplitModel(p);
 		XYDataset dataset;
-		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyModel) {
-			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
-					new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()), 
-					new PlotParameter(((SimulationConsistencyModel) d_pm.getConsistencyModel()).getResults(), p));
+		final MCMCResults splitResults = splitWrapper.getModel().getResults();
+		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyWrapper) {
+			final SimulationConsistencyWrapper consistencyWrapper = (SimulationConsistencyWrapper) d_pm.getConsistencyModel();
+			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()), 
+					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()), 
+					new PlotParameter(consistencyWrapper.getModel().getResults(), p));
 		} else {
-			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitModel.getResults(), splitModel.getDirectEffect()), 
-					new PlotParameter(splitModel.getResults(), splitModel.getIndirectEffect()));
+			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()), 
+					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()));
 		}	
 		JFreeChart chart = ChartFactory.createXYLineChart(
 	            p.getName() + " density plot", "Relative Effect", "Density",                      

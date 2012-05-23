@@ -36,10 +36,10 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
-import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
+import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.model.Treatment;
@@ -54,8 +54,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
-		d_mockInconsistencyModel =  new SimulationInconsistencyModel(getBuilder(), MockInconsistencyModel.buildMockSimulationIconsistencyModel());
-		d_mockConsistencyModel = new SimulationConsistencyModel(getBuilder(), MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
+		d_mockInconsistencyModel =  new SimulationInconsistencyWrapper(getBuilder(), MockInconsistencyModel.buildMockSimulationIconsistencyModel());
+		d_mockConsistencyModel = new SimulationConsistencyWrapper(getBuilder(), MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
 	}
 
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {

@@ -43,16 +43,16 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
-import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
-import org.drugis.addis.entities.analysis.models.SavedConsistencyModel;
-import org.drugis.addis.entities.analysis.models.SavedInconsistencyModel;
-import org.drugis.addis.entities.analysis.models.SavedNodeSplitModel;
-import org.drugis.addis.entities.analysis.models.SimulationConsistencyModel;
-import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
-import org.drugis.addis.entities.analysis.models.SimulationNodeSplitModel;
+import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
+import org.drugis.addis.entities.mtcwrapper.SavedConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SavedInconsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SavedNodeSplitWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
 import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
@@ -114,12 +114,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private InconsistencyWrapper createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 		attachModelSavableListener(inconsistencyModel);
-		return new SimulationInconsistencyModel(getBuilder(), inconsistencyModel);
+		return new SimulationInconsistencyWrapper(getBuilder(), inconsistencyModel);
 	}
 	
 	private ConsistencyWrapper createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		SimulationConsistencyModel model = new SimulationConsistencyModel(getBuilder(), consistencyModel, getIncludedDrugs());
+		SimulationConsistencyWrapper model = new SimulationConsistencyWrapper(getBuilder(), consistencyModel, getIncludedDrugs());
 		d_relativeEffectsSummary.setNested(model.getRelativeEffectsSummary());	
 		attachModelSavableListener(consistencyModel);	
 		return model;
@@ -130,7 +130,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
 		attachModelSavableListener(nodeSplitModel);
-		return new SimulationNodeSplitModel(getBuilder(), nodeSplitModel);
+		return new SimulationNodeSplitWrapper(getBuilder(), nodeSplitModel);
 	}
 	
 	private NetworkBuilder<DrugSet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
@@ -171,7 +171,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public synchronized void loadInconsistencyModel(MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
-		d_inconsistencyModel = new SavedInconsistencyModel(getBuilder(), settings, quantileSummaries, convergenceSummaries);
+		d_inconsistencyModel = new SavedInconsistencyWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries);
 	}
 	
 
@@ -180,7 +180,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			HashMap<Parameter, ConvergenceSummary> convergenceSummaries, 
 			MultivariateNormalSummary relativeEffectsSummary, 
 			RankProbabilitySummary rankProbabilitySummary) {
-		d_consistencyModel = new SavedConsistencyModel(getBuilder(), 
+		d_consistencyModel = new SavedConsistencyWrapper(getBuilder(), 
 				mcmcSettingsCache, 
 				quantileSummaries, 
 				convergenceSummaries, 
@@ -194,7 +194,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
 			HashMap<Parameter, ConvergenceSummary> convergenceSummaries,
 			NodeSplitPValueSummary nodeSplitPValueSummary) {
-		SavedNodeSplitModel nodeSplitModel = new SavedNodeSplitModel(getBuilder(), settings, quantileSummaries, convergenceSummaries, splitParameter, nodeSplitPValueSummary);
+		SavedNodeSplitWrapper nodeSplitModel = new SavedNodeSplitWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries, splitParameter, nodeSplitPValueSummary);
 		d_nodeSplitModels.put(splitParameter, nodeSplitModel);
 	}
 	

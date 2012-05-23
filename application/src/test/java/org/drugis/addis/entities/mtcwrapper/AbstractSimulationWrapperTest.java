@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -37,6 +37,7 @@ import java.util.List;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkBuilderFactory;
+import org.drugis.addis.entities.mtcwrapper.AbstractSimulationWrapper;
 import org.drugis.addis.mocks.MockConsistencyModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
@@ -45,10 +46,8 @@ import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractSimulationModelTest {
-
-
-	private AbstractSimulationModel<ConsistencyModel> d_model;
+public class AbstractSimulationWrapperTest {
+	private AbstractSimulationWrapper<ConsistencyModel> d_model;
 	private List<DrugSet> d_treatments;
 
 	@Before
@@ -60,7 +59,7 @@ public class AbstractSimulationModelTest {
 			treatmentList.add(builder.getTreatmentMap().get(s));
 		}
 		ConsistencyModel mtc = MockConsistencyModel.buildMockSimulationConsistencyModel(treatmentList);
-		d_model = new AbstractSimulationModel<ConsistencyModel>(builder, mtc) {};
+		d_model = new AbstractSimulationWrapper<ConsistencyModel>(builder, mtc) {};
 	}
 
 	@Test
@@ -72,5 +71,4 @@ public class AbstractSimulationModelTest {
 		assertNotNull(d_model.getQuantileSummary(dAC));
 		assertNotSame(d_model.getQuantileSummary(dAB), d_model.getQuantileSummary(dAC));
 	}
-
 }

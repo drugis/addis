@@ -39,10 +39,10 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.InconsistencyWrapper;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
-import org.drugis.addis.entities.analysis.models.NodeSplitWrapper;
+import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
 import org.drugis.addis.gui.MCMCWrapper;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.status.TaskTerminatedModel;
@@ -84,13 +84,12 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		private final MTCModelWrapper d_wrapper;
 		
 		public WrappedNetworkMetaAnalysis(final MTCModelWrapper mtc, final OutcomeMeasure om, final String name) {
-			super(mtc, om, name);
+			super(mtc.getModel(), om, name);
 			d_wrapper = mtc;
 			ValueModelWrapper<Boolean> modelConstructionFinished = new ValueModelWrapper<Boolean>(
 					new TaskTerminatedModel(mtc.getActivityTask().getModel().getStartState()));
 			ValueModelWrapper<Boolean> modelIsSaved = new ValueModelWrapper<Boolean>(
 					new AbstractValueModel() {
-						
 						private boolean d_value;
 
 						@Override
@@ -128,6 +127,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		@Override
 		public boolean hasSavedResults() {
 			return d_wrapper.hasSavedResults();
+		}
+
+		public MTCModelWrapper getWrapper() {
+			return d_wrapper;
 		}
 	}
 

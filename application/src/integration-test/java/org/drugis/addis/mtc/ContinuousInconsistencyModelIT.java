@@ -36,7 +36,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.models.SimulationInconsistencyModel;
+import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
 import org.junit.Before;
@@ -44,18 +44,18 @@ import org.junit.Test;
 
 public class ContinuousInconsistencyModelIT {
 	private NetworkMetaAnalysis d_nma;
-	private SimulationInconsistencyModel d_model;
+	private SimulationInconsistencyWrapper d_model;
 
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
        
-		d_model = (SimulationInconsistencyModel) d_nma.getInconsistencyModel();
+		d_model = (SimulationInconsistencyWrapper) d_nma.getInconsistencyModel();
     }
     
     @Test
     public void getResults() throws InterruptedException {
-    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
+    	d_model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
     	TaskUtil.run(d_model.getActivityTask());
     	
     	assertEquals(1, d_nma.getInconsistencyModel().getInconsistencyFactors().size());

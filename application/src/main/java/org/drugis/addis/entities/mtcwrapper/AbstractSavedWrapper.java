@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -37,7 +37,6 @@ import org.drugis.common.threading.activity.ActivityModel;
 import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.activity.DirectTransition;
 import org.drugis.common.threading.activity.Transition;
-import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
@@ -47,8 +46,7 @@ import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class AbstractSavedModel extends AbstractObservable implements MTCModelWrapper  {
-	
+public abstract class AbstractSavedWrapper extends AbstractObservable implements MTCModelWrapper  {
 	protected NetworkBuilder<DrugSet> d_builder;
 	private final MCMCSettingsCache d_settings;
 	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
@@ -56,7 +54,7 @@ public abstract class AbstractSavedModel extends AbstractObservable implements M
 	private ActivityTask d_activityTask;
 	private boolean d_destroy;
 
-	public AbstractSavedModel(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings, 
+	public AbstractSavedWrapper(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings, 
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_builder = builder;
 		d_settings = settings;
@@ -71,36 +69,43 @@ public abstract class AbstractSavedModel extends AbstractObservable implements M
 		d_activityTask = new ActivityTask(new ActivityModel(start, end, transitions), msg);
 	}
 
+	@Override
 	public ActivityTask getActivityTask() {
 		ThreadHandler.getInstance().scheduleTask(d_activityTask);
 		return d_activityTask;
 	}
 
-
+	@Override
 	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
 		return new BasicParameter(d_builder.getTreatmentMap().get(a), d_builder.getTreatmentMap().get(b));
 	}
 	
+	@Override
 	public boolean isReady() {
 		return true;
 	}
 	
+	@Override
 	public boolean hasSavedResults() {
 		return true;
 	}
 	
+	@Override
 	public boolean isSavable() {
 		return true;
 	}
-
+	
+	@Override
 	public QuantileSummary getQuantileSummary(Parameter p) {
 		return d_quantileSummaries.get(p);
 	}
 
+	@Override
 	public ConvergenceSummary getConvergenceSummary(Parameter p) {
 		return d_convergenceSummaries.get(p);
 	}
-		
+	
+	@Override
 	public Parameter getRandomEffectsVariance() {
 		for(Parameter p : d_quantileSummaries.keySet()) { 
 			if(p instanceof RandomEffectsVariance) {
@@ -110,35 +115,28 @@ public abstract class AbstractSavedModel extends AbstractObservable implements M
 		return null;
 	}
 	
+	@Override
 	public Parameter[] getParameters() { 
 		return d_convergenceSummaries.keySet().toArray(new Parameter[] {});
 	}
 
+	@Override
 	public MixedTreatmentComparison getModel() {
 		throw new UnsupportedOperationException("Saved MTC models do not have a MixedTreatmentComparison model.");
 	}
 	
-	public MCMCResults getResults() {
-		throw new UnsupportedOperationException("Saved MTC models do not have results");
-	}
-
-	public void setBurnInIterations(int it) {
-		throw new IllegalAccessError("Burn-in iterations are read-only for saved models");
-	}
-
-	public void setSimulationIterations(int it) {
-		throw new IllegalAccessError("Simulation iterations are read-only for saved models");
-		
-	}
+	@Override
 	public MCMCSettingsCache getSettings() {
 		return d_settings;
 	}
 	
+	@Override
 	public void selfDestruct() {
 		d_destroy = true;
 		firePropertyChange(PROPERTY_DESTROYED, false, true);
 	}
 	
+	@Override
 	public boolean getDestroyed() { 
 		return d_destroy;
 	}

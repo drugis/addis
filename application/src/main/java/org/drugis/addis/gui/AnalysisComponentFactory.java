@@ -37,7 +37,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -146,10 +147,12 @@ public class AnalysisComponentFactory {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_TICK));
 		button.setText("Yes, finish");
 		button.setToolTipText("Finish the simulation");
+		
+		final MTCModelWrapper mtcWrapper = ((WrappedNetworkMetaAnalysis) model).getWrapper(); // TODO Make this accept MCMCModels in general
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					((MTCModelWrapper)model.getModel()).getModel().setExtendSimulation(ExtendSimulation.FINISH);
+					mtcWrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 				}
 			}
 		});
@@ -161,9 +164,10 @@ public class AnalysisComponentFactory {
 		button.setText("No, extend");
 		button.setToolTipText("Extend the simulation");
 		
+		final MTCModelWrapper mtcWrapper = ((WrappedNetworkMetaAnalysis) model).getWrapper(); // TODO Make this accept MCMCModels in general
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((MTCModelWrapper)model.getModel()).getModel().setExtendSimulation(ExtendSimulation.EXTEND);
+				mtcWrapper.getModel().setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;
@@ -172,11 +176,11 @@ public class AnalysisComponentFactory {
 	public static JButton createShowConvergenceButton(final JFrame main, final MCMCWrapper model) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_CHART));
 		button.setText("Show convergence");
-		final MTCModelWrapper mtcWrapper = (MTCModelWrapper) model.getModel(); // TODO Make this accept MCMCModels in general
+		final MTCModelWrapper mtcWrapper = ((WrappedNetworkMetaAnalysis) model).getWrapper(); // TODO Make this accept MCMCModels in general
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog convergence = new ConvergenceSummaryDialog(main, mtcWrapper,model.isModelConstructed(), model.toString());
+				JDialog convergence = new ConvergenceSummaryDialog(main, mtcWrapper, model.isModelConstructed(), model.toString());
 				convergence.setVisible(true);
 			}
 		});
@@ -184,7 +188,7 @@ public class AnalysisComponentFactory {
 	}
 
 	private static boolean hasConvergence(MCMCWrapper model) {
-		if(model.getModel() instanceof MTCModelWrapper) {
+		if(model instanceof WrappedNetworkMetaAnalysis) {
 			return true;
 		} else { 
 			return false;

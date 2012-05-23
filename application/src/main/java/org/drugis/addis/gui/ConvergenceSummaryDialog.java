@@ -39,7 +39,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
@@ -150,10 +150,10 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		convergenceTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!mtc.hasSavedResults() && e.getClickCount() > 1) {
+				if (e.getClickCount() > 1) {
 					JTable table = (JTable)e.getComponent();
 					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
-					Parameter[] parameters = mtc.getResults().getParameters();
+					Parameter[] parameters = mtc.getParameters();
 					if (row <= parameters.length) {
 						Parameter p = parameters[row];
 						showConvergencePlots(mtc, p);
@@ -169,8 +169,8 @@ public class ConvergenceSummaryDialog extends JDialog  {
 	}
 
 	private void showConvergencePlots(MTCModelWrapper mtc, Parameter p) {
-		if(mtc.getResults().getNumberOfSamples() > 0) {
-			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc, p);
+		if (!mtc.hasSavedResults() && mtc.getModel().getResults().getNumberOfSamples() > 0) {
+			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc.getModel(), p);
 			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));
 			dialog.setMinimumSize(new Dimension(d_mainWindow.getMinimumSize().width - 100, d_mainWindow.getMinimumSize().height - 100));
 			dialog.setModal(true);

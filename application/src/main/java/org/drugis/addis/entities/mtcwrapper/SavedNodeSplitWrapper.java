@@ -1,4 +1,4 @@
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.Map;
 
@@ -12,12 +12,12 @@ import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public class SavedNodeSplitModel extends AbstractSavedModel implements NodeSplitWrapper {
+public class SavedNodeSplitWrapper extends AbstractSavedWrapper implements NodeSplitWrapper {
 
 	private final NodeSplitPValueSummary d_nodeSplitPValueSummary;
 	private final BasicParameter d_splitNode;
 
-	public SavedNodeSplitModel(NetworkBuilder<DrugSet> builder,
+	public SavedNodeSplitWrapper(NetworkBuilder<DrugSet> builder,
 			MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries,
 			Map<Parameter, ConvergenceSummary> convergenceSummaries,

@@ -24,19 +24,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
 
+import org.drugis.addis.entities.DrugSet;
+import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 
-public interface NodeSplitWrapper extends MTCModelWrapper {
+public class SimulationNodeSplitWrapper extends AbstractSimulationWrapper<NodeSplitModel> implements NodeSplitWrapper {
+	private NodeSplitPValueSummary d_pValueSummary;
 
-	public Parameter getDirectEffect();
+	public SimulationNodeSplitWrapper(NetworkBuilder<DrugSet> builder, NodeSplitModel model) {
+		super(builder, model);
+	}
 
-	public Parameter getIndirectEffect();
-	
-	public Parameter getSplitNode();
+	@Override
+	public Parameter getDirectEffect() {
+		return d_nested.getDirectEffect();
+	}
 
-	public NodeSplitPValueSummary getNodeSplitPValueSummary();
-	
+	@Override
+	public Parameter getIndirectEffect() {
+		return d_nested.getIndirectEffect();
+	}
+
+	@Override
+	public BasicParameter getSplitNode() {
+		return d_nested.getSplitNode();
+	}
+
+	@Override
+	public NodeSplitPValueSummary getNodeSplitPValueSummary() {
+		if(d_pValueSummary == null) {
+			d_pValueSummary = new NodeSplitPValueSummary(d_nested.getResults(), getDirectEffect(), getIndirectEffect());
+		}
+		return d_pValueSummary;
+	}
+
+	@Override
+	public String getName() {
+		return "Node Split on " + getSplitNode().getName();
+	}
+
 }

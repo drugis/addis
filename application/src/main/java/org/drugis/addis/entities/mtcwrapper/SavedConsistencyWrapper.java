@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +41,13 @@ import org.drugis.mtc.summary.RankProbabilitySummary;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class SavedConsistencyModel extends AbstractSavedModel implements ConsistencyWrapper {
+public class SavedConsistencyWrapper extends AbstractSavedWrapper implements ConsistencyWrapper {
 
 	private final MultivariateNormalSummary d_relativeEffectsSummary;
 	private final RankProbabilitySummary d_rankProbabilitySummary;
 	private List<DrugSet> d_drugs;
 
-	public SavedConsistencyModel(NetworkBuilder<DrugSet> builder,
+	public SavedConsistencyWrapper(NetworkBuilder<DrugSet> builder,
 			MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries,
 			Map<Parameter, ConvergenceSummary> convergenceSummaries, 

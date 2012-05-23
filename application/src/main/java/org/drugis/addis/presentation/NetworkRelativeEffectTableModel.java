@@ -33,7 +33,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.analysis.models.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")

@@ -24,47 +24,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
+package org.drugis.addis.entities.mtcwrapper;
+
+import java.util.List;
 
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
-import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.parameterization.BasicParameter;
-import org.drugis.mtc.summary.NodeSplitPValueSummary;
 
-public class SimulationNodeSplitModel extends AbstractSimulationModel<NodeSplitModel> implements NodeSplitWrapper {
-	private NodeSplitPValueSummary d_pValueSummary;
+public class SimulationInconsistencyWrapper extends AbstractSimulationWrapper<InconsistencyModel> implements InconsistencyWrapper {
 
-	public SimulationNodeSplitModel(NetworkBuilder<DrugSet> builder, NodeSplitModel model) {
+	public SimulationInconsistencyWrapper(NetworkBuilder<DrugSet> builder, InconsistencyModel model) {
 		super(builder, model);
 	}
 
 	@Override
-	public Parameter getDirectEffect() {
-		return d_nested.getDirectEffect();
+	public List<Parameter> getInconsistencyFactors() {	
+		return d_nested.getInconsistencyFactors();
 	}
 
 	@Override
-	public Parameter getIndirectEffect() {
-		return d_nested.getIndirectEffect();
-	}
-
-	@Override
-	public BasicParameter getSplitNode() {
-		return d_nested.getSplitNode();
-	}
-
-	public NodeSplitPValueSummary getNodeSplitPValueSummary() {
-		if(d_pValueSummary == null) {
-			d_pValueSummary = new NodeSplitPValueSummary(d_nested.getResults(), getDirectEffect(), getIndirectEffect());
-		}
-		return d_pValueSummary;
+	public Parameter getInconsistencyVariance() {
+		return d_nested.getInconsistencyVariance();
 	}
 
 	@Override
 	public String getName() {
-		return "Node Split on " + getSplitNode().getName();
+		return "Inconsistency Model";
 	}
 
 }

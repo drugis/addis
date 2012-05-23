@@ -42,7 +42,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.analysis.models.ConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;

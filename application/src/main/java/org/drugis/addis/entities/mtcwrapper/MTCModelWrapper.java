@@ -24,53 +24,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.analysis.models;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+package org.drugis.addis.entities.mtcwrapper;
 
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.mtc.MCMCSettingsCache;
-import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.parameterization.InconsistencyParameter;
-import org.drugis.mtc.parameterization.InconsistencyVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public class SavedInconsistencyModel extends AbstractSavedModel implements InconsistencyWrapper {
+import com.jgoodies.binding.beans.Observable;
 
-	private List<Parameter> d_inconsistencyFactors;
-
-	public SavedInconsistencyModel(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings,
-			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
-		super(builder, settings, quantileSummaries, convergenceSummaries);
-		d_inconsistencyFactors = new ArrayList<Parameter>();
-		for(Parameter p : d_quantileSummaries.keySet()) { 
-			if((p instanceof InconsistencyParameter)) {
-				d_inconsistencyFactors.add(p);
-			}
-		}
-	}
-
-	@Override
-	public List<Parameter> getInconsistencyFactors() {
-		return d_inconsistencyFactors;
-	}
+public interface MTCModelWrapper extends Observable {
 	
-	@Override
-	public Parameter getInconsistencyVariance() {
-		for(Parameter p : d_quantileSummaries.keySet()) { 
-			if(p instanceof InconsistencyVariance) {
-				return p;
-			}
-		}
-		return null;
-	}
+	public static final String PROPERTY_DESTROYED = "destroyed";
 	
-	@Override
-	public String getName() {
-		return "Inconsistency Model";
-	}
+	public Parameter[] getParameters();
+	
+	public Parameter getRelativeEffect(DrugSet a, DrugSet b);
+	
+	public Parameter getRandomEffectsVariance();
+
+	public ActivityTask getActivityTask();
+	
+	public MixedTreatmentComparison getModel();
+	
+	public ConvergenceSummary getConvergenceSummary(Parameter p);
+
+	public QuantileSummary getQuantileSummary(Parameter ip);
+	
+	public boolean isReady();
+	
+	public boolean hasSavedResults();
+
+	public boolean isSavable(); 
+	
+	/** 
+	 * Whether or not the model should be cleaned up on the next invocation from NetworkMetaAnalysis.
+	 * This will cause NetworkMetaAnalysis to create a new instance of a AbstractSimulationModel.
+	 */
+	public void selfDestruct(); 
+	
+	/**
+	 * Returns true if selfDestruct called previously, false otherwise.
+	 */
+	public boolean getDestroyed();
+	
+	public String getName();
+
+	public MCMCSettingsCache getSettings();
 }
