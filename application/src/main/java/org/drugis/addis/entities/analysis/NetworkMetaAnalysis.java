@@ -40,7 +40,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
@@ -53,8 +52,6 @@ import org.drugis.addis.entities.mtcwrapper.SavedNodeSplitWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.status.TaskTerminatedModel;
@@ -232,22 +229,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public Collection<NodeSplitWrapper> getNodeSplitModels() { 
 		return d_nodeSplitModels.values();
-	}
-	
-	@Deprecated
-	public NetworkRelativeEffect<? extends Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {		
-		if(!getConsistencyModel().isReady())
-			return new NetworkRelativeEffect<Measurement>(); // empty relative effect.
-		
-		ConsistencyWrapper consistencyModel = getConsistencyModel();
-		Parameter param = consistencyModel.getRelativeEffect(d1, d2);
-		QuantileSummary estimate = consistencyModel.getQuantileSummary(param);
-		
-		if (isContinuous()) {
-			return NetworkRelativeEffect.buildMeanDifference(estimate);
-		} else {
-			return NetworkRelativeEffect.buildOddsRatio(estimate);
-		}
 	}
 	
 	@Override

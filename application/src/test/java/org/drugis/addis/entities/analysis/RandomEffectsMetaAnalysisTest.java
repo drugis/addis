@@ -186,19 +186,6 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	}
 	
 	@Test
-	public void testGetRelativeEffect() {
-		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach1 = 
-			d_rema.getRelativeEffect(BasicOddsRatio.class);
-		RandomEffectMetaAnalysisRelativeEffect<Measurement> approach2 = 
-			d_rema.getRelativeEffect(d_rema.getFirstDrug(), d_rema.getSecondDrug(), BasicOddsRatio.class);
-
-		assertEquals(approach1.getConfidenceInterval().getPointEstimate(), approach2.getConfidenceInterval().getPointEstimate());
-		assertEquals(approach1.getConfidenceInterval(), approach2.getConfidenceInterval());
-		//assertEquals(approach1.getSampleSize(), approach2.getSampleSize());
-		assertEquals(approach1.getAxisType(), approach2.getAxisType());
-	}
-	
-	@Test
 	public void testContinuousMetaAnalysis() {
 		Study s1 = createContStudy("s1", 50, 4, 2, 50, 6, 2, d_ind);
 		Study s2 = createContStudy("s2", 50, 4, 2, 50, 7, 2, d_ind);
@@ -226,11 +213,11 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testFilterUndefinedRelativeEffects() {
-		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
+		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118);
 		d_studyList.add(zeroRate);
 		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
-		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
+		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, false).isDefined());
 		ADDISTestUtil.assertRelativeEffectListEquals(expected, actual);
 	}
