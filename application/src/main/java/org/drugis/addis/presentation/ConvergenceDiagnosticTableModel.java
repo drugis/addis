@@ -35,7 +35,7 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
 
@@ -48,10 +48,10 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	private Map<Parameter, ConvergenceSummary> d_summaries = new HashMap<Parameter, ConvergenceSummary>();
 	private PropertyChangeListener d_listener;
 	private static final NumberFormat s_format = new DecimalFormat("#.00");
-	private final MTCModelWrapper d_model;
+	private final MCMCModelWrapper d_wrapper;
 
-	public ConvergenceDiagnosticTableModel(MTCModelWrapper model, ValueHolder<Boolean> modelBuiltModel) {		
-		d_model = model;
+	public ConvergenceDiagnosticTableModel(MCMCModelWrapper wrapper, ValueHolder<Boolean> modelBuiltModel) {		
+		d_wrapper = wrapper;
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();
@@ -68,8 +68,8 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	}
 
 	private void initializeSummaries() {
-		for (Parameter p : d_model.getParameters()) {
-			ConvergenceSummary value = d_model.getConvergenceSummary(p);
+		for (Parameter p : d_wrapper.getParameters()) {
+			ConvergenceSummary value = d_wrapper.getConvergenceSummary(p);
 			if(value != null) { 
 				value.addPropertyChangeListener(d_listener);
 				d_summaries.put(p, value);
@@ -93,7 +93,7 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	}
 
 	public int getRowCount() {
-		return d_model.getParameters().length;
+		return d_wrapper.getParameters().length;
 	}
 	
 	@Override
@@ -126,6 +126,6 @@ public class ConvergenceDiagnosticTableModel extends AbstractTableModel{
 	}
 
 	private Parameter getParameter(int rowIndex) {
-		return d_model.getParameters()[rowIndex];
+		return d_wrapper.getParameters()[rowIndex];
 	}
 }

@@ -39,7 +39,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
@@ -64,15 +64,15 @@ public class ConvergenceSummaryDialog extends JDialog  {
 	private static final long serialVersionUID = -220027860371330394L;
 	private final JFrame d_mainWindow;
 
-	private final MTCModelWrapper d_model;
+	private final MCMCModelWrapper d_wrapper;
 
 	private final ValueHolder<Boolean> d_modelConstructed;
 
 	private ConvergenceDiagnosticTableModel d_tableModel;
 	
-	public ConvergenceSummaryDialog(final JFrame main, final MTCModelWrapper mtc, final ValueHolder<Boolean> modelConstructed, String name) {
+	public ConvergenceSummaryDialog(final JFrame main, final MCMCModelWrapper wrapper, final ValueHolder<Boolean> modelConstructed, String name) {
 		d_mainWindow = main;
-		d_model = mtc;
+		d_wrapper = wrapper;
 		d_modelConstructed = modelConstructed;
 		setPreferredSize(new Dimension(d_mainWindow.getWidth() / 6 * 4, d_mainWindow.getHeight() / 8 * 5));
 		setMinimumSize(new Dimension(d_mainWindow.getWidth() / 6 * 4, d_mainWindow.getHeight() / 8 * 5));
@@ -80,7 +80,7 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		setLocationByPlatform(true);
 		setTitle(name);
 		pack();
-		d_tableModel = convergenceTable(mtc, modelConstructed);
+		d_tableModel = convergenceTable(wrapper, modelConstructed);
 		final JPanel panel = createPanel();
 		add(panel);
 		
@@ -95,10 +95,10 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 		
-		builder.add(buildConvergenceTable(d_model, d_modelConstructed), cc.xy(1, 1, CellConstraints.DEFAULT, CellConstraints.TOP));
+		builder.add(buildConvergenceTable(d_wrapper, d_modelConstructed), cc.xy(1, 1, CellConstraints.DEFAULT, CellConstraints.TOP));
 		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xy(3, 1));
 		
-		builder.add(buildMCMCSettingsPanel(d_model.getSettings()), cc.xyw(1, 3, 3));
+		builder.add(buildMCMCSettingsPanel(d_wrapper.getSettings()), cc.xyw(1, 3, 3));
 		
 		final JPanel panel = builder.getPanel();
 
@@ -140,8 +140,8 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		return rows;
 	}
 
-	private TablePanel buildConvergenceTable(final MTCModelWrapper mtc, ValueHolder<Boolean> modelConstructed) {
-		ConvergenceDiagnosticTableModel tableModel = convergenceTable(mtc, modelConstructed);
+	private TablePanel buildConvergenceTable(final MCMCModelWrapper wrapper, ValueHolder<Boolean> modelConstructed) {
+		ConvergenceDiagnosticTableModel tableModel = convergenceTable(wrapper, modelConstructed);
 		EnhancedTable convergenceTable = EnhancedTable.createBare(tableModel);
 
 		TablePanel pane = new TablePanel(convergenceTable);
@@ -153,10 +153,10 @@ public class ConvergenceSummaryDialog extends JDialog  {
 				if (e.getClickCount() > 1) {
 					JTable table = (JTable)e.getComponent();
 					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
-					Parameter[] parameters = mtc.getParameters();
+					Parameter[] parameters = wrapper.getParameters();
 					if (row <= parameters.length) {
 						Parameter p = parameters[row];
-						showConvergencePlots(mtc, p);
+						showConvergencePlots(wrapper, p);
 					}
 				}
 			}
@@ -164,13 +164,13 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		return pane;
 	}
 
-	private ConvergenceDiagnosticTableModel convergenceTable(final MTCModelWrapper mtc, ValueHolder<Boolean> modelConstructed) {
-		return (d_tableModel == null) ? new ConvergenceDiagnosticTableModel(mtc, modelConstructed) : d_tableModel;
+	private ConvergenceDiagnosticTableModel convergenceTable(final MCMCModelWrapper wrapper, ValueHolder<Boolean> modelConstructed) {
+		return (d_tableModel == null) ? new ConvergenceDiagnosticTableModel(wrapper, modelConstructed) : d_tableModel;
 	}
 
-	private void showConvergencePlots(MTCModelWrapper mtc, Parameter p) {
-		if (!mtc.isSaved() && mtc.getModel().getResults().getNumberOfSamples() > 0) {
-			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, mtc.getModel(), p);
+	private void showConvergencePlots(MCMCModelWrapper wrapper, Parameter p) {
+		if (!wrapper.isSaved() && wrapper.getModel().getResults().getNumberOfSamples() > 0) {
+			JDialog dialog = new ConvergencePlotsDialog(d_mainWindow, wrapper.getModel(), p);
 			dialog.setPreferredSize(new Dimension(d_mainWindow.getWidth() / 5 * 4, d_mainWindow.getHeight() / 5 * 4));
 			dialog.setMinimumSize(new Dimension(d_mainWindow.getMinimumSize().width - 100, d_mainWindow.getMinimumSize().height - 100));
 			dialog.setModal(true);

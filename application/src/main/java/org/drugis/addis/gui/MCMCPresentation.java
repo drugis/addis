@@ -27,21 +27,23 @@
 package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.NullTask;
 import org.drugis.mtc.MCMCModel;
 
 public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
-	private MCMCModel d_model;
+	private MCMCModelWrapper d_wrapper;
 	private final String d_name;
 	protected final OutcomeMeasure d_om;
 	private TaskProgressModel d_taskProgressModel;
 	
-	public MCMCPresentation(final MCMCModel model, final OutcomeMeasure om, final String name) { 
-		d_model = model;
+	public MCMCPresentation(final MCMCModelWrapper wrapper, final OutcomeMeasure om, final String name) { 
+		d_wrapper = wrapper;
 		d_om = om;
-		d_taskProgressModel = d_model != null ? new TaskProgressModel(d_model.getActivityTask()) : new TaskProgressModel(new NullTask() {
+		MCMCModel model = d_wrapper.getModel();
+		d_taskProgressModel = model != null ? new TaskProgressModel(model.getActivityTask()) : new TaskProgressModel(new NullTask() {
 			public boolean isFinished() {
 				return true;
 			}
@@ -56,8 +58,12 @@ public abstract class MCMCPresentation implements Comparable<MCMCPresentation> {
 		return d_taskProgressModel;
 	}
 	
+	public MCMCModelWrapper getWrapper() {
+		return d_wrapper;
+	}
+	
 	public MCMCModel getModel() {
-		return d_model;
+		return d_wrapper.getModel();
 	}
 
 	public abstract ValueHolder<Boolean> isModelConstructed();	

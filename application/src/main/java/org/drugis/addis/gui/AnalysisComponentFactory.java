@@ -37,8 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation.WrappedNetworkMetaAnalysis;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -48,7 +47,7 @@ import org.drugis.common.threading.status.TaskStartableModel;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.BooleanNotModel;
-import org.drugis.mtc.MixedTreatmentComparison;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
 
 import com.jgoodies.binding.adapter.Bindings;
@@ -76,7 +75,7 @@ public class AnalysisComponentFactory {
 			panelRow += 2;
 		}
 		
-		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model), buttons);
+		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, true, buttons);
 		panelRow += 2;
 		if(!model.hasSavedResults() && hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
@@ -90,7 +89,7 @@ public class AnalysisComponentFactory {
 		final JButton extendSimulationButton = createExtendSimulationButton(model);
 		final JButton stopButton = createStopButton(model.getModel().getActivityTask(), model);
 		
-		ValueModel inAssessConvergence = new ActivityTaskInPhase(model.getModel().getActivityTask(), MixedTreatmentComparison.ASSESS_CONVERGENCE_PHASE);
+		ValueModel inAssessConvergence = new ActivityTaskInPhase(model.getModel().getActivityTask(), MCMCModel.ASSESS_CONVERGENCE_PHASE);
 		ValueModel notTaskFinished = new BooleanNotModel(new TaskTerminatedModel(model.getModel().getActivityTask()));
 		
 		ValueModel shouldAssessConvergence = new BooleanAndModel(inAssessConvergence, notTaskFinished);
@@ -150,44 +149,44 @@ public class AnalysisComponentFactory {
 	
 
 	
-	public static JButton createStopButton(final Task task, final MCMCPresentation model) {
+	public static JButton createStopButton(final Task task, final MCMCPresentation presentation) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_TICK));
 		button.setText("Yes, finish");
 		button.setToolTipText("Finish the simulation");
 		
-		final MTCModelWrapper mtcWrapper = ((WrappedNetworkMetaAnalysis) model).getWrapper(); // TODO Make this accept MCMCModels in general
+		final MCMCModelWrapper wrapper = presentation.getWrapper();
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					mtcWrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
+					wrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 				}
 			}
 		});
 		return button;
 	}	
 
-	public static JButton createExtendSimulationButton(final MCMCPresentation model) {
+	public static JButton createExtendSimulationButton(final MCMCPresentation presentation) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
 		button.setText("No, extend");
 		button.setToolTipText("Extend the simulation");
 		
-		final MTCModelWrapper mtcWrapper = ((WrappedNetworkMetaAnalysis) model).getWrapper(); // TODO Make this accept MCMCModels in general
+		final MCMCModelWrapper wrapper = presentation.getWrapper();
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mtcWrapper.getModel().setExtendSimulation(ExtendSimulation.EXTEND);
+				wrapper.getModel().setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;
 	}
 
-	public static JButton createShowConvergenceButton(final JFrame main, final MCMCPresentation model) {
+	public static JButton createShowConvergenceButton(final JFrame main, final MCMCPresentation presentation) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_CHART));
 		button.setText("Show convergence");
-		final MTCModelWrapper mtcWrapper = ((WrappedNetworkMetaAnalysis) model).getWrapper(); // TODO Make this accept MCMCModels in general
+		final MCMCModelWrapper wrapper = presentation.getWrapper();
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog convergence = new ConvergenceSummaryDialog(main, mtcWrapper, model.isModelConstructed(), model.toString());
+				JDialog convergence = new ConvergenceSummaryDialog(main, wrapper, presentation.isModelConstructed(), presentation.toString());
 				convergence.setVisible(true);
 			}
 		});
@@ -195,10 +194,6 @@ public class AnalysisComponentFactory {
 	}
 
 	private static boolean hasConvergence(MCMCPresentation model) {
-		if(model instanceof WrappedNetworkMetaAnalysis) {
-			return true;
-		} else { 
-			return false;
-		}
+		return true;
 	}
 }

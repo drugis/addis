@@ -82,7 +82,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		private final MTCModelWrapper d_wrapper;
 		
 		public WrappedNetworkMetaAnalysis(final MTCModelWrapper mtc, final OutcomeMeasure om, final String name) {
-			super(mtc.isSaved() ? null : mtc.getModel(), om, name);
+			super(mtc, om, name);
 			d_wrapper = mtc;
 			d_modelConstructionFinished = mtc.isSaved() ? new UnmodifiableHolder<Boolean>(true) : 
 					new ValueModelWrapper<Boolean>(new TaskTerminatedModel(mtc.getModel().getActivityTask().getModel().getStartState()));

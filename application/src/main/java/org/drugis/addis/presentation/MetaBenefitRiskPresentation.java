@@ -40,7 +40,6 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.MCMCSimulationWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
@@ -48,7 +47,6 @@ import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
-import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MixedTreatmentComparison;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -62,8 +60,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	public static class WrappedBaselineModel extends MCMCPresentation {
 
-		public WrappedBaselineModel(AbstractBaselineModel<?> model, OutcomeMeasure om, String name) {
-			super(model, om, name);
+		public WrappedBaselineModel(MCMCModelWrapper wrapper, OutcomeMeasure om, String name) {
+			super(wrapper, om, name);
 		}
 
 		@Override
@@ -163,11 +161,11 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 	
 	private void initAllBaselineModels() {
-		AbstractBaselineModel<?> model;
+		MCMCModelWrapper wrapper;
 		for (OutcomeMeasure om : getBean().getCriteria()) {
-			model = getBean().getBaselineModel(om);
+			wrapper = getBean().getBaselineModel(om);
 			String name = om.getName() + " \u2014 Baseline Model";
-			d_models.put(new MCMCSimulationWrapper<MCMCModel>(model, "Baseline Model"), new WrappedBaselineModel(model, om, name));
+			d_models.put(wrapper, new WrappedBaselineModel(wrapper, om, name));
 		}
 	}
 	
