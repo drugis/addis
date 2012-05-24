@@ -74,7 +74,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 	private NormalSummary d_summary;
 	
 	public AbstractBaselineModel(List<T> measurements) {
-		setBurnInIterations(5000);
+		setTuningIterations(5000);
 		setSimulationIterations(15000);
 		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
