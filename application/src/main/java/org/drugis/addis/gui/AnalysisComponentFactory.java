@@ -30,21 +30,25 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
-import org.drugis.addis.gui.components.GraphBarNode;
-import org.drugis.addis.gui.components.GraphLine;
-import org.drugis.addis.gui.components.GraphProgressNode;
-import org.drugis.addis.gui.components.GraphSimpleNode;
-import org.drugis.addis.gui.components.GraphSimpleNode.GraphSimpleNodeType;
+import org.drugis.addis.gui.components.progressgraph.GraphBar;
+import org.drugis.addis.gui.components.progressgraph.GraphConnector;
+import org.drugis.addis.gui.components.progressgraph.GraphLine;
+import org.drugis.addis.gui.components.progressgraph.GraphProgressNode;
+import org.drugis.addis.gui.components.progressgraph.GraphSimpleNode;
+import org.drugis.addis.gui.components.progressgraph.GraphSimpleNode.GraphSimpleNodeType;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -62,6 +66,7 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.Sizes;
 
 public class AnalysisComponentFactory {
 	
@@ -117,45 +122,65 @@ public class AnalysisComponentFactory {
 	}
 
 	private static JPanel createProgressPanel(final MCMCPresentation model) {
-		final int numChains = 4;
+		final int cellHeight = (int)new JProgressBar().getPreferredSize().getHeight() + 4;
+		final Dimension gridCellSize = new Dimension(95, cellHeight);
 		final int circleDiameter = 20;
 		final int edgeLength = 35;
-		final Dimension gridCellSize = new Dimension(95, 35);
-
+		final int arrowSize = 10;
+		final int barWidth = 9;
+		final int numberOfChains = model.getWrapper().getSettings().getNumberOfChains();
+		final int numMainRows = (numberOfChains - 1) * 2 + 1;
+		final int numTotalRows = numMainRows + 2;
+		final int numCols = 17;
+		
 		final FormLayout layout = new FormLayout(
-				"pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref",
-				"p, p, p, p, p");
+				createFormSpec("pref", numCols),
+				"p, " + createFormSpec("3dlu, p", numTotalRows - 1));
 		CellConstraints cc = new CellConstraints();
 		JPanel progressPanel = new JPanel(layout);
+
+		for(int i = 0; i < numberOfChains; ++i) {
+			int rowIdx = (2 * i) + 1;
+			progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), cc.xy(6, rowIdx));
+			progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "burn-in " + i), cc.xy(7, rowIdx));
+
+			progressPanel.add(new GraphLine(new Dimension(edgeLength * 2, arrowSize), 2, SwingConstants.EAST), cc.xy(9, rowIdx));
+			progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "simulation " + i ), cc.xy(10, rowIdx));
+			progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), cc.xy(11, rowIdx));	
+		}
 		
-		progressPanel.add(new GraphSimpleNode(new Dimension(circleDiameter,circleDiameter), GraphSimpleNodeType.START), cc.xy(1, 3));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(2, 3));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "build model"), cc.xy(3, 3));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(4, 3));
-		progressPanel.add(new GraphBarNode(new Dimension(5, 90)), cc.xywh(5, 1, 1, 5));
+		/** Placement needed for the calculated preferred size */
+		progressPanel.add(new GraphSimpleNode(new Dimension(circleDiameter,circleDiameter), GraphSimpleNodeType.START), centerCell(cc, numMainRows, 1));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), centerCell(cc, numMainRows, 2));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "build model", false), centerCell(cc, numMainRows, 3));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), centerCell(cc, numMainRows, 4));
+		//NOTE: it is a mystery why numMainRows - 1 is the correct count instead of just numMainRows
+		progressPanel.add(new GraphBar(new Dimension(barWidth, (int)progressPanel.getPreferredSize().getHeight())), centerCell(cc, numMainRows - 1, 5));
+		progressPanel.add(new GraphBar(new Dimension(barWidth, (int)progressPanel.getPreferredSize().getHeight())), centerCell(cc, numMainRows - 1, 12));
 		
-		//loop
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(6, 1));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "burn-in (1)"), cc.xy(7, 1));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(6, 5));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "burn-in (2)"), cc.xy(7, 5));
-		
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(9, 1));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "simulation (1)"), cc.xy(10, 1));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(11, 1));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(9, 5));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "simulation (2)"), cc.xy(10, 5));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(11, 5));
-		//end loop
-		
-		progressPanel.add(new GraphBarNode(new Dimension(5, 90)), cc.xywh(12, 1, 1, 5));
-		progressPanel.add(new GraphLine(new Dimension(edgeLength, 10), 2, SwingConstants.EAST), cc.xy(13, 3));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "assess convergence"), cc.xy(14, 3));
-		
-		//TODO: add feedback node with cc.xywh(8, 1, 1, 5)
-		
-		
+		progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), centerCell(cc, numMainRows, 13));
+		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "assess convergence", false), centerCell(cc, numMainRows, 14));
+		progressPanel.add(new GraphLine(new Dimension(arrowSize, 50), 2, SwingConstants.SOUTH), cc.xywh(14, numMainRows / 2 + 2, 1,  numMainRows / 2 + 1, CellConstraints.CENTER, CellConstraints.BOTTOM));
+		progressPanel.add(new GraphSimpleNode(new Dimension(circleDiameter,circleDiameter), GraphSimpleNodeType.DECISION), cc.xywh(14, numMainRows + 2, 1, 1, CellConstraints.CENTER, CellConstraints.CENTER));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength + 4, arrowSize), 2, SwingConstants.EAST), cc.xyw(14, numMainRows + 2, 2, CellConstraints.RIGHT, CellConstraints.DEFAULT));
+		progressPanel.add(new GraphSimpleNode(new Dimension(circleDiameter,circleDiameter), GraphSimpleNodeType.END), cc.xy(16, numMainRows + 2));
+		progressPanel.add(new GraphLine(new Dimension(edgeLength * 6 + 2, arrowSize), 2, SwingConstants.WEST), cc.xyw(10, numMainRows + 2, 14 - 7, CellConstraints.LEFT, CellConstraints.DEFAULT));
+		progressPanel.add(new GraphBar(new Dimension(edgeLength * 2, barWidth)), cc.xy(9, numMainRows + 2));
+
+		int totalHeight = (int)progressPanel.getPreferredSize().getHeight();
+		progressPanel.add(new GraphConnector(new Dimension(edgeLength * 2, totalHeight), cellHeight + Sizes.DLUY3.getPixelSize(progressPanel), totalHeight - 30, numberOfChains), cc.xywh(9, 1, 1, numTotalRows));
 		return progressPanel;
+	}
+
+	private static String createFormSpec(String rowSpec, final int numRows) {
+		String[] rowArray = new String[numRows];
+		Arrays.fill(rowArray, rowSpec);
+		String completeRowSpec = StringUtils.join(rowArray, ",");
+		return completeRowSpec;
+	}
+
+	private static CellConstraints centerCell(CellConstraints cc, int rowSpan, int col) {
+		return cc.xywh(col, 1, 1, rowSpan, CellConstraints.CENTER, CellConstraints.CENTER);
 	}
 	
 	private static void createProgressBarRow(final MCMCPresentation model,

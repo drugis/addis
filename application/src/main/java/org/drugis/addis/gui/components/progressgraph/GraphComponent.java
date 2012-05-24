@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.gui.components.progressgraph;
 
 import java.awt.Color;
 import java.awt.Dimension;

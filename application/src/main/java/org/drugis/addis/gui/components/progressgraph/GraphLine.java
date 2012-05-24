@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.gui.components.progressgraph;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -20,17 +20,24 @@ public class GraphLine extends GraphComponent implements SwingConstants {
 	private int d_direction;
 	private int d_barbLength;
 	private double d_barbAngle;
+
+	private final boolean d_hasArrow;
 	
 	public GraphLine(Dimension gridCellSize) {
-		this(gridCellSize, DEFAULT_LINE_WIDTH, DEFAULT_COLOR, DEFAULT_DIRECTION);
+		this(gridCellSize, DEFAULT_LINE_WIDTH, DEFAULT_COLOR, DEFAULT_DIRECTION, true);
 	}
 	
 	public GraphLine(Dimension gridCellSize, int lineWidth, int direction) {
-		this(gridCellSize, lineWidth, DEFAULT_COLOR, direction);
+		this(gridCellSize, lineWidth, DEFAULT_COLOR, direction, true);
 	}
 	
-	public GraphLine(Dimension gridCellSize, int lineWidth, Color color, int direction) {
+	public GraphLine(Dimension gridCellSize, int lineWidth, int direction, boolean hasArrow) {
+		this(gridCellSize, lineWidth, DEFAULT_COLOR, direction, hasArrow);
+	}
+	
+	public GraphLine(Dimension gridCellSize, int lineWidth, Color color, int direction, boolean hasArrow) {
 		super(gridCellSize, lineWidth, color);
+		d_hasArrow = hasArrow;
 		
 		if (direction!= NORTH && direction != EAST && direction != SOUTH && direction != WEST) {
 			throw new IllegalArgumentException(direction + " is not a legal direction");
@@ -55,21 +62,24 @@ public class GraphLine extends GraphComponent implements SwingConstants {
 		if (d_direction == WEST || d_direction == EAST) {
 			double y = s.height / 2;
 			g2.draw(new Line2D.Double(0, y, s.width, y));
-			
-			if (d_direction == EAST) {
-				drawArrow(g2, 0.0, s.width, y);
-			} else if (d_direction == WEST) {
-				drawArrow(g2, Math.PI, 0.0, y);
-			}
+			if(d_hasArrow) {
+				if (d_direction == EAST) {
+					drawArrow(g2, 0.0, s.width, y);
+				} else if (d_direction == WEST) {
+					drawArrow(g2, Math.PI, 0.0, y);
+				}
+			}	
 
 		} else if (d_direction == NORTH || d_direction == SOUTH) {
 			double x = s.width / 2;
 			g2.draw(new Line2D.Double(x, 0, x, s.height));
-			if (d_direction == NORTH) {
-				drawArrow(g2, Math.PI * 1.5, x, 0);
-			}
-			else if (d_direction == SOUTH) {
-				drawArrow(g2, Math.PI / 2, x, s.height);
+			if(d_hasArrow) {
+				if (d_direction == NORTH) {
+					drawArrow(g2, Math.PI * 1.5, x, 0);
+				}
+				else if (d_direction == SOUTH) {
+					drawArrow(g2, Math.PI / 2, x, s.height);
+				}
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.gui.components.progressgraph;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -23,10 +23,7 @@ public class GraphSimpleNode extends GraphComponent implements SwingConstants {
 	}
 	
 	public GraphSimpleNode(Dimension gridCellSize, int lineWidth, Color color, GraphSimpleNodeType type) {
-		super(gridCellSize, lineWidth, color);
-
-//		revalidate();
-		
+		super(gridCellSize, lineWidth, color);		
 		d_type = type;
 	}
 	
@@ -35,24 +32,30 @@ public class GraphSimpleNode extends GraphComponent implements SwingConstants {
 		Graphics2D g2 = (Graphics2D)g;  
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		Dimension s = getSize();
+		double w = getPreferredSize().getWidth();
+		double h = getPreferredSize().getHeight();
+		
 		g2.setColor(d_color);
 		g2.setStroke(new BasicStroke((float)d_lineWidth));
 		
 		switch (d_type) {
 		case START:
-			g2.fillOval(0, 0, (int)s.getWidth(), (int)s.getHeight());
+			g2.fillOval(0, 0, (int)w, (int)h);
 			break;
 		case END:
-//			double factor = 0.8;
-//			double invFactor = 1 - factor;
-//			Rectangle2D scaledDims = new Rectangle2D.Double(
-//					s.getWidth() * invFactor / 2, s.getHeight() * invFactor / 2,
-//					s.getWidth() / 2 * factor, s.getHeight() * factor); 
-//			g2.fillOval((int)scaledDims.getMinX(), (int)scaledDims.getMinY(), (int)scaledDims.getWidth(), (int)scaledDims.getHeight());
-//			g2.drawOval(0, 0, (int)s.getWidth(), (int)s.getHeight());
+			double factor = 0.6;
+			int baseDiameter = (int)(w - d_lineWidth * 2);
+			int scaledDiameter = (int)(baseDiameter * factor);
+			
+			g2.translate(baseDiameter / 2 + d_lineWidth / 2, baseDiameter / 2 + d_lineWidth / 2);
+			g2.fillOval(-scaledDiameter / 2, -scaledDiameter / 2, scaledDiameter, scaledDiameter);
+			g2.drawOval(-baseDiameter / 2, -baseDiameter / 2, baseDiameter, baseDiameter);
 			break;
-		case DECISION:
+		case DECISION: // NOTE: you could use the createDiamond from ShapeUtilities
+			int sideLength = (int)Math.sqrt(0.5 * w * w);
+			int offset = (int)((w - sideLength) / 2);
+			g2.rotate(Math.PI / 4, w / 2, h / 2);
+			g2.drawRect(offset, offset, sideLength, sideLength);
 			break;
 		}
 	}
