@@ -35,9 +35,13 @@ import gov.lanl.yadas.MCMCParameter;
 import java.util.List;
 
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.common.stat.DichotomousDescriptives;
+import org.drugis.common.stat.EstimateWithPrecision;
 
 //FIXME: allow reuse of ProgressObservable from MTC
 public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
+	private DichotomousDescriptives d_dichotomousDescriptives = new DichotomousDescriptives(true);
+
 	public BaselineOddsModel(List<RateMeasurement> measurements) {
 		super(measurements);
 	}
@@ -53,10 +57,22 @@ public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
 	}
 
 	@Override
-	protected double getStdDevPrior() {
-		return 2.0; // FIXME Magic value
+	protected EstimateWithPrecision estimateTreatmentEffect(int i) {
+		final RateMeasurement m = d_measurements.get(i);
+		double mean = d_dichotomousDescriptives.logOdds(m.getRate(), m.getSampleSize());
+		double se = getError(i);
+		return new EstimateWithPrecision(mean, se);
 	}
 
+	@Override
+	protected double getError(int i) {
+		return getError(d_measurements.get(i));
+	}
+	
+	private double getError(final RateMeasurement m) {
+		return d_dichotomousDescriptives.logOddsError(m.getRate(), m.getSampleSize());
+	}
+	
 	private double[] sampleSizeArray() {
 		double[] arr = new double[d_measurements.size()];
 		for (int i = 0; i < arr.length; ++i) {

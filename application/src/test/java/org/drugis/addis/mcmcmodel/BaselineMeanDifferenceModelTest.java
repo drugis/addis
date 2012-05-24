@@ -40,7 +40,7 @@ public class BaselineMeanDifferenceModelTest {
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(new ArrayList<ContinuousMeasurement>());
 		assertTrue(model.getSettings().getTuningIterations() > 1000);
 		int newIter = model.getSettings().getTuningIterations() * 2;
-		model.setBurnInIterations(newIter);
+		model.setTuningIterations(newIter);
 		assertEquals(newIter, (int)model.getSettings().getTuningIterations());
 	}
 	

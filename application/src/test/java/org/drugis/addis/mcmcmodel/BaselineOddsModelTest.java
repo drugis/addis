@@ -40,7 +40,7 @@ public class BaselineOddsModelTest {
 		BaselineOddsModel model = new BaselineOddsModel(new ArrayList<RateMeasurement>());
 		assertTrue(model.getSettings().getTuningIterations() > 1000);
 		int newIter = model.getSettings().getTuningIterations() * 2;
-		model.setBurnInIterations(newIter);
+		model.setTuningIterations(newIter);
 		assertEquals(newIter, (int)model.getSettings().getTuningIterations());
 	}
 	
