@@ -36,16 +36,22 @@ import gov.lanl.yadas.MCMCParameter;
 import gov.lanl.yadas.Uniform;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 import org.drugis.addis.entities.Measurement;
+import org.drugis.common.stat.EstimateWithPrecision;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
+import org.drugis.mtc.util.DerSimonianLairdPooling;
 import org.drugis.mtc.yadas.AbstractYadasModel;
 
 abstract public class AbstractBaselineModel<T extends Measurement> extends AbstractYadasModel {
 	protected List<T> d_measurements;
+	protected final RandomGenerator d_rng = new JDKRandomGenerator(); 
  
 	private Parameter d_muParam = new Parameter() {
 		public String getName() {
@@ -53,49 +59,76 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		}
 	};
 	
+	private Parameter d_sigmaParam = new Parameter() {
+		public String getName() {
+			return("sd");
+		}
+	};
+	
 	private NormalSummary d_summary;
-		
+	
 	public AbstractBaselineModel(List<T> measurements) {
 		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
 		d_measurements = measurements;
 	}
-
-	protected int[] intArray(int val) {
-		int[] arr = new int[d_measurements.size()];
-		for (int i = 0; i < arr.length; ++i) {
-			arr[i] = val;
-		}
-		return arr;
+	
+	public NormalSummary getSummary() {
+		return d_summary;
 	}
 
-	protected double[] doubleArray(double val) {
-		double[] arr = new double[d_measurements.size()];
-		for (int i = 0; i < arr.length; ++i) {
-			arr[i] = val;
-		}
-		return arr;
+	@Override
+	protected List<Parameter> getParameters() {
+		return Arrays.asList(d_muParam, d_sigmaParam);
 	}
-
-	protected abstract double getStdDevPrior();
+	
+	protected double getStandardDeviationPrior() {
+		double maxDev = 0.0;
+		for (int i = 0; i < d_measurements.size(); ++i) {
+			maxDev = Math.max(maxDev, getError(i) * Math.sqrt(d_measurements.get(i).getSampleSize()));
+		}
+		return maxDev * 5;
+	}
+	
+	protected abstract EstimateWithPrecision estimateTreatmentEffect(int i);
 
 	protected abstract void createDataBond(MCMCParameter studyMu);
+	
+	protected double[] initializeStandardDeviation() {
+		return new double[] {d_rng.nextDouble() * getStandardDeviationPrior()};
+	}
 
+	private double[] initializeMean() {
+		List<EstimateWithPrecision> estimates = new ArrayList<EstimateWithPrecision>();
+		for (int i = 0; i < d_measurements.size(); ++i) {
+			estimates.add(estimateTreatmentEffect(i));
+		}
+		EstimateWithPrecision pooled = new DerSimonianLairdPooling(estimates).getPooled();
+		return new double[] {generate(pooled)};
+	}
+
+	private double[] initializeStudyMeans() {
+		double[] means = new double[d_measurements.size()];
+		for (int i = 0; i < means.length; ++i) {
+			final EstimateWithPrecision e = estimateTreatmentEffect(i);
+			means[i] = generate(e);
+		}
+		return means;
+	}
+
+	private double generate(final EstimateWithPrecision e) {
+		return e.getPointEstimate() + d_rng.nextGaussian() * VARIANCE_SCALING * e.getStandardError();
+	}
 	
 	@Override
 	protected void prepareModel() {
 	}
 	
 	@Override
-	protected List<Parameter> getParameters() {
-		return Collections.singletonList(d_muParam);
-	}
-	
-	@Override
 	protected void createChain(int chain) {
-		MCMCParameter studyMu = new MCMCParameter(doubleArray(0.0), doubleArray(0.1), null);
-		MCMCParameter mu = new MCMCParameter(new double[] {0.0}, new double[] {0.1}, null);
-		MCMCParameter sd = new MCMCParameter(new double[] {0.25}, new double[] {0.1}, null);
+		MCMCParameter studyMu = new MCMCParameter(initializeStudyMeans(), doubleArray(0.1, d_measurements.size()), null);
+		MCMCParameter mu = new MCMCParameter(initializeMean(), new double[] {0.1}, null);
+		MCMCParameter sd = new MCMCParameter(initializeStandardDeviation(), new double[] {0.1}, null);
 	
 		// data bond
 		createDataBond(studyMu);
@@ -104,8 +137,8 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		new BasicMCMCBond(new MCMCParameter[] {studyMu, mu, sd},
 				new ArgumentMaker[] {
 					new IdentityArgument(0),
-					new GroupArgument(1, intArray(0)),
-					new GroupArgument(2, intArray(0))
+					new GroupArgument(1, new int[d_measurements.size()]),
+					new GroupArgument(2, new int[d_measurements.size()])
 				}, new Gaussian());
 	
 		// priors
@@ -113,13 +146,13 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 				new ArgumentMaker[] {
 					new IdentityArgument(0),
 					new ConstantArgument(0.0),
-					new ConstantArgument(Math.sqrt(1000))
+					new ConstantArgument(15 * getStandardDeviationPrior())
 				}, new Gaussian());
 		new BasicMCMCBond(new MCMCParameter[] {sd},
 				new ArgumentMaker[] {
 					new IdentityArgument(0),
 					new ConstantArgument(0.0),
-					new ConstantArgument(getStdDevPrior()) // FIXME
+					new ConstantArgument(getStandardDeviationPrior())
 				}, new Uniform());
 		
 		List<MCMCParameter> parameters = new ArrayList<MCMCParameter>();
@@ -128,10 +161,16 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		parameters.add(sd);
 		
 		addTuners(parameters);
-		addWriters(Collections.singletonList(d_results.getParameterWriter(d_muParam, chain, mu, 0)));
+		addWriters(Arrays.asList(
+				d_results.getParameterWriter(d_muParam, chain, mu, 0),
+				d_results.getParameterWriter(d_sigmaParam, chain, sd, 0)));
 	}
 
-	public NormalSummary getSummary() {
-		return d_summary;
+	protected double[] doubleArray(double val, int size) {
+		double[] arr = new double[size];
+		Arrays.fill(arr, val);
+		return arr;
 	}
+
+	protected abstract double getError(int i);
 }
