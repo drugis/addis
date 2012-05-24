@@ -57,7 +57,7 @@ public class BaselineMeanDifferenceModelIT {
 		assertTrue(model.isReady());
 		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getSummary().getMean(), dev);
-		assertEquals(expectedSigma, model.getSummary().getMean(), dev * 2);
+		assertEquals(expectedSigma, model.getSummary().getStandardDeviation(), dev * 2);
 	}
 
 	private static List<ContinuousMeasurement> buildMeasurementsList(double[] m, double[] s, int[] n) {
