@@ -57,17 +57,25 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		public String getName() {
 			return("mu");
 		}
+		public String toString() { 
+			return getName();
+		};
 	};
 	
 	private Parameter d_sigmaParam = new Parameter() {
 		public String getName() {
 			return("sd");
 		}
+		public String toString() { 
+			return getName();
+		};
 	};
 	
 	private NormalSummary d_summary;
 	
 	public AbstractBaselineModel(List<T> measurements) {
+		setBurnInIterations(5000);
+		setSimulationIterations(15000);
 		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
 		d_measurements = measurements;
