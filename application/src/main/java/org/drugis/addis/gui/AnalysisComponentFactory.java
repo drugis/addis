@@ -50,6 +50,7 @@ import org.drugis.addis.gui.components.progressgraph.GraphProgressNode;
 import org.drugis.addis.gui.components.progressgraph.GraphSimpleNode;
 import org.drugis.addis.gui.components.progressgraph.GraphSimpleNode.GraphSimpleNodeType;
 import org.drugis.common.gui.task.TaskProgressBar;
+import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.activity.ActivityTask;
@@ -141,11 +142,12 @@ public class AnalysisComponentFactory {
 
 		for(int i = 0; i < numberOfChains; ++i) {
 			int rowIdx = (2 * i) + 1;
+			Task tuningTask = getTaskByName(model.getModel().getActivityTask(), MCMCModel.TUNING_CHAIN_PREFIX + i);
 			progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), cc.xy(6, rowIdx));
-			progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "burn-in " + i), cc.xy(7, rowIdx));
-
+			progressPanel.add(new GraphProgressNode(gridCellSize, new TaskProgressModel(tuningTask), tuningTask.toString()), cc.xy(7, rowIdx));
+			Task simulationTask = getTaskByName(model.getModel().getActivityTask(), MCMCModel.SIMULATION_CHAIN_PREFIX + i);
 			progressPanel.add(new GraphLine(new Dimension(edgeLength * 2, arrowSize), 2, SwingConstants.EAST), cc.xy(9, rowIdx));
-			progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "simulation " + i ), cc.xy(10, rowIdx));
+			progressPanel.add(new GraphProgressNode(gridCellSize,  new TaskProgressModel(simulationTask), simulationTask.toString()), cc.xy(10, rowIdx));
 			progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), cc.xy(11, rowIdx));	
 		}
 		
@@ -158,8 +160,10 @@ public class AnalysisComponentFactory {
 		progressPanel.add(new GraphBar(new Dimension(barWidth, (int)progressPanel.getPreferredSize().getHeight())), centerCell(cc, numMainRows - 1, 5));
 		progressPanel.add(new GraphBar(new Dimension(barWidth, (int)progressPanel.getPreferredSize().getHeight())), centerCell(cc, numMainRows - 1, 12));
 		
+		Task assessConvergence = getTaskByName(model.getModel().getActivityTask(), MCMCModel.ASSESS_CONVERGENCE_PHASE);
+		
 		progressPanel.add(new GraphLine(new Dimension(edgeLength, arrowSize), 2, SwingConstants.EAST), centerCell(cc, numMainRows, 13));
-		progressPanel.add(new GraphProgressNode(gridCellSize, model.getProgressModel(), "assess convergence", false), centerCell(cc, numMainRows, 14));
+		progressPanel.add(new GraphProgressNode(gridCellSize, new TaskProgressModel(assessConvergence), assessConvergence.toString(), false), centerCell(cc, numMainRows, 14));
 		progressPanel.add(new GraphLine(new Dimension(arrowSize, 50), 2, SwingConstants.SOUTH), cc.xywh(14, numMainRows / 2 + 2, 1,  numMainRows / 2 + 1, CellConstraints.CENTER, CellConstraints.BOTTOM));
 		progressPanel.add(new GraphSimpleNode(new Dimension(circleDiameter,circleDiameter), GraphSimpleNodeType.DECISION), cc.xywh(14, numMainRows + 2, 1, 1, CellConstraints.CENTER, CellConstraints.CENTER));
 		progressPanel.add(new GraphLine(new Dimension(edgeLength + 4, arrowSize), 2, SwingConstants.EAST), cc.xyw(14, numMainRows + 2, 2, CellConstraints.RIGHT, CellConstraints.DEFAULT));
@@ -181,6 +185,15 @@ public class AnalysisComponentFactory {
 
 	private static CellConstraints centerCell(CellConstraints cc, int rowSpan, int col) {
 		return cc.xywh(col, 1, 1, rowSpan, CellConstraints.CENTER, CellConstraints.CENTER);
+	}
+	
+	private static Task getTaskByName(ActivityTask task, String name) { 
+		for (Task t : task.getModel().getStates()) { 		
+			if(name.equals(t.toString())) { 
+				return t;
+			}
+		}
+		throw new IllegalArgumentException("Could not find task with name " + name);
 	}
 	
 	private static void createProgressBarRow(final MCMCPresentation model,
