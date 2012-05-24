@@ -37,10 +37,10 @@ import javax.swing.JScrollPane;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MCMCResultsListener;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.convergence.GelmanRubinConvergence;
 import org.jfree.chart.ChartFactory;
@@ -66,22 +66,22 @@ public class ConvergencePlotsDialog extends JDialog {
 	private XYSeries d_wSeries;
 	private SimpleSuspendableTask d_task;
 
-	public ConvergencePlotsDialog(final JFrame main, final MixedTreatmentComparison mtc, final Parameter p) {
+	public ConvergencePlotsDialog(final JFrame main, final MCMCModel mcmcModel, final Parameter p) {
 		super(main, p + " convergence diagnostics", false);
 		d_rHatSeries = new XYSeries("R-Hat");
 		d_vHatSeries = new XYSeries("sqrt(vHat)");
 		d_wSeries = new XYSeries("sqrt(W)");
-		d_task = createTask(mtc.getResults(), p);
+		d_task = createTask(mcmcModel.getResults(), p);
 		
 		super.add(new JScrollPane(createPanel()));
 
-		mtc.getResults().addResultsListener(new MCMCResultsListener() {
+		mcmcModel.getResults().addResultsListener(new MCMCResultsListener() {
 			public void resultsEvent(MCMCResultsEvent event) {
 				fillDataSets();
 			}
 		});
 		
-		if(mtc.getResults().getNumberOfSamples() > 0) { 
+		if(mcmcModel.getResults().getNumberOfSamples() > 0) { 
 			fillDataSets();
 		}
 	}

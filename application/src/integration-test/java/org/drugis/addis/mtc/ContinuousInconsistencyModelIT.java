@@ -36,40 +36,39 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.InconsistencyModel;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
-import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ContinuousInconsistencyModelIT {
 	private NetworkMetaAnalysis d_nma;
-	private InconsistencyModel d_model;
+	private SimulationInconsistencyWrapper d_wrapper;
 
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
        
-		d_model = d_nma.getInconsistencyModel();
+		d_wrapper = (SimulationInconsistencyWrapper) d_nma.getInconsistencyModel();
     }
     
     @Test
     public void getResults() throws InterruptedException {
-    	d_model.setExtendSimulation(ExtendSimulation.FINISH);
-    	TaskUtil.run(d_model.getActivityTask());
+    	d_wrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
+    	TaskUtil.run(d_wrapper.getModel().getActivityTask());
     	
-    	assertEquals(1, d_nma.getInconsistencyFactors().size());
-    	assertNotNull(d_nma.getQuantileSummary(d_model, d_model.getInconsistencyFactors().get(0)));
-    	Treatment a = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugFluoxetine()));
-    	Treatment b = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugParoxetine()));
-    	Treatment c = d_nma.getTreatment(new DrugSet(ExampleData.buildDrugSertraline()));
-    	assertNotNull(d_model.getRelativeEffect(a, b));
-    	assertNotNull(d_model.getRelativeEffect(b, a));
-    	assertNotNull(d_model.getRelativeEffect(a, c));
-    	assertNotNull(d_model.getRelativeEffect(c, a));
-    	assertNotNull(d_model.getRelativeEffect(c, b));
-    	assertNotNull(d_model.getRelativeEffect(b, c));
+    	assertEquals(1, d_nma.getInconsistencyModel().getInconsistencyFactors().size());
+    	assertNotNull(d_wrapper.getQuantileSummary(d_wrapper.getInconsistencyFactors().get(0)));
+    	DrugSet a = new DrugSet(ExampleData.buildDrugFluoxetine());
+    	DrugSet b = new DrugSet(ExampleData.buildDrugParoxetine());
+    	DrugSet c = new DrugSet(ExampleData.buildDrugSertraline());
+    	assertNotNull(d_wrapper.getRelativeEffect(a, b));
+    	assertNotNull(d_wrapper.getRelativeEffect(b, a));
+    	assertNotNull(d_wrapper.getRelativeEffect(a, c));
+    	assertNotNull(d_wrapper.getRelativeEffect(c, a));
+    	assertNotNull(d_wrapper.getRelativeEffect(c, b));
+    	assertNotNull(d_wrapper.getRelativeEffect(b, c));
     }
     
     private NetworkMetaAnalysis buildContinuousNetworkMetaAnalysis() {

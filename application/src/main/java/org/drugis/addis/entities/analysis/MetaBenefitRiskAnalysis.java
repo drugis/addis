@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.DrugSet;
@@ -46,6 +48,9 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MCMCSimulationWrapper;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -59,10 +64,9 @@ import org.drugis.addis.util.comparator.AlphabeticalComparator;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.mtc.ConsistencyModel;
-import org.drugis.mtc.Parameter;
-import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
+import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.Summary;
 import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
@@ -73,7 +77,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
-					notifyListeners();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							notifyListeners();							
+						}
+					});
 				}
 			};
 			for (Summary s : getEffectSummaries()) {
@@ -92,7 +100,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	private List<MetaAnalysis> d_metaAnalyses;
 	private ObservableList<DrugSet> d_drugs;
 	private DrugSet d_baseline;
-	private Map<OutcomeMeasure, AbstractBaselineModel<?>> d_baselineModelMap;
+	private Map<OutcomeMeasure, MCMCModelWrapper> d_baselineModelMap;
 	private AnalysisType d_analysisType;
 	private DecisionContext d_decisionContext;
 	private Map<MetaAnalysis, TransformedMultivariateNormalSummary> d_relativeEffects =
@@ -117,7 +125,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		d_baseline = baseline;
 		d_drugs.add(baseline);
 
-		d_baselineModelMap = new HashMap<OutcomeMeasure, AbstractBaselineModel<?>>();
+		d_baselineModelMap = new HashMap<OutcomeMeasure, MCMCModelWrapper>();
 		d_analysisType = analysisType;
 		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_drugs.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
@@ -303,26 +311,29 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	 * Get the assumed distribution for the baseline odds.
 	 */
 	public GaussianBase getBaselineDistribution(OutcomeMeasure om) {
-		AbstractBaselineModel<?> model = getBaselineModel(om);
-		if (!model.isReady()) {
+		AbstractBaselineModel<?> model = (AbstractBaselineModel<?>) getBaselineModel(om).getModel();
+
+		NormalSummary summary = model.getSummary();
+		if (summary == null || !summary.getDefined()) {
 			return null;
 		}
-		return (GaussianBase) model.getResult();
+		return createDistribution(om, summary.getMean(), summary.getStandardDeviation());
 	}
 	
-	public AbstractBaselineModel<?> getBaselineModel(OutcomeMeasure om) {
-		AbstractBaselineModel<?> model = d_baselineModelMap.get(om);
+	public MCMCModelWrapper getBaselineModel(OutcomeMeasure om) {
+		MCMCModelWrapper model = d_baselineModelMap.get(om);
 		if (model == null) {
 			model = createBaselineModel(om);
-			d_baselineModelMap.put(om,model);
+			d_baselineModelMap.put(om, model);
 		}
 		return model;
 	}
 	
-	private AbstractBaselineModel<?> createBaselineModel(OutcomeMeasure om) {
-		return (AbstractBaselineModel<?>) ((om.getVariableType() instanceof RateVariableType) ? 
+	private MCMCModelWrapper createBaselineModel(OutcomeMeasure om) {
+		AbstractBaselineModel<?> model = (AbstractBaselineModel<?>) ((om.getVariableType() instanceof RateVariableType) ? 
 				new BaselineOddsModel(getBaselineMeasurements(om, RateMeasurement.class)) : 
 				new BaselineMeanDifferenceModel(getBaselineMeasurements(om, ContinuousMeasurement.class)));
+		return new MCMCSimulationWrapper<MCMCModel>(model, "Baseline Model");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -357,8 +368,10 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
-				ConsistencyModel model = ((NetworkMetaAnalysis) ma).getConsistencyModel();
-				tasks.add((Task) model.getActivityTask());
+				ConsistencyWrapper wrapper = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				if (!wrapper.isSaved()) {
+					tasks.add((Task) wrapper.getModel().getActivityTask());
+				}
 			}
 		}
 		return tasks;
@@ -368,24 +381,10 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		return d_analysisType;
 	}
 
-	public List<Summary> getRelativeEffectSummaries() {
-		List<Summary> summaryList = new ArrayList<Summary>();
-		for (MetaAnalysis ma : getMetaAnalyses()) {
-			if (ma instanceof NetworkMetaAnalysis) {
-				for(DrugSet d: getNonBaselineAlternatives()) {
-					NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
-					Parameter p = new BasicParameter(nma.getTreatment(getBaseline()), nma.getTreatment(d));
-					summaryList.add(nma.getQuantileSummary(nma.getConsistencyModel(), p));
-				}
-			}
-		}
-		return summaryList;
-	}
-
 	public List<Summary> getAbsoluteEffectSummaries() {
 		List<Summary> summaryList = new ArrayList<Summary>();
 		for (OutcomeMeasure om : getCriteria()) {
-			summaryList.add(getBaselineModel(om).getSummary());
+			summaryList.add(((AbstractBaselineModel<?>) getBaselineModel(om).getModel()).getSummary());
 		}
 		return summaryList;
 	}

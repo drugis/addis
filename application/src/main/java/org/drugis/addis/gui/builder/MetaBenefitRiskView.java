@@ -47,7 +47,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.MCMCWrapper;
+import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntityTablePanel;
@@ -115,10 +115,10 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		builder.add(createRunAllButton(), cc.xyw(1, 3, 3));
 		int row = 3;
 
-		for (MCMCWrapper mw : d_pm.getWrappedModels()) {
+		for (MCMCPresentation mw : d_pm.getWrappedModels()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AnalysisComponentFactory.createSimulationControls(mw, row, d_mainWindow, true), cc.xyw(1, row, 3));
+			builder.add(AnalysisComponentFactory.createSimulationControls(mw, d_mainWindow, true), cc.xyw(1, row, 3));
 		}
 		
 		return builder.getPanel();

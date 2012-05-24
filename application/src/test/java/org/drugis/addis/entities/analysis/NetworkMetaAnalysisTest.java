@@ -28,7 +28,6 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -44,13 +43,9 @@ import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.NetworkRelativeEffect;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
-import org.drugis.mtc.parameterization.BasicParameter;
-import org.drugis.mtc.summary.QuantileSummary;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,16 +53,13 @@ import edu.uci.ics.jung.graph.util.Pair;
 
 public class NetworkMetaAnalysisTest {
 	private NetworkMetaAnalysis d_analysis;
-	private NetworkMetaAnalysis d_mockAnalysis;
+	private MockNetworkMetaAnalysis d_mockAnalysis;
 
 	@Before
 	public void setup() throws InterruptedException{
 		d_analysis = ExampleData.buildNetworkMetaAnalysisHamD();
-		d_mockAnalysis = NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
-		while (!d_mockAnalysis.getConsistencyModel().isReady()) {
-			Thread.sleep(10);
-		}
 	}
 	
 	@Test
@@ -90,22 +82,7 @@ public class NetworkMetaAnalysisTest {
 				new Pair<DrugSet>(fluox, parox),
 				new Pair<DrugSet>(fluox, sertr)
 		);
-		assertEquals(expected, d_analysis.getRelativeEffectsList());
-	}
-	
-	@Test
-	public void testGetRelativeEffect() {
-		Drug base = ExampleData.buildDrugFluoxetine();
-		Drug subj = ExampleData.buildDrugParoxetine();
-		RelativeEffect<?> actual = d_mockAnalysis.getRelativeEffect(new DrugSet(base), new DrugSet(subj), BasicOddsRatio.class);
-		QuantileSummary summary = d_mockAnalysis.getQuantileSummary(d_mockAnalysis.getConsistencyModel(), 
-				new BasicParameter(d_mockAnalysis.getTreatment(new DrugSet(base)), d_mockAnalysis.getTreatment(new DrugSet(subj))));
-		RelativeEffect<?> expected = NetworkRelativeEffect.buildOddsRatio(summary);
-		assertNotNull(expected);
-		assertNotNull(actual);
-		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actual.getConfidenceInterval().getPointEstimate());
-		assertEquals(expected.getConfidenceInterval(), actual.getConfidenceInterval());
-		assertEquals(expected.getAxisType(), actual.getAxisType());
+		assertEquals(expected, d_analysis.getConsistencyModel().getRelativeEffectsList());
 	}
 	
 	@Test
@@ -114,6 +91,7 @@ public class NetworkMetaAnalysisTest {
 		assertTrue(NetworkTableModelTest.buildMockContinuousNetworkMetaAnalysis().isContinuous());
 	}
 	
+	// TODO Move to NetworkBuilderFactoryTest
 	@Test
 	public void testTransformCombinationTreatment() {
 		Study study = ExampleData.buildStudyMcMurray().clone();
@@ -131,7 +109,7 @@ public class NetworkMetaAnalysisTest {
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		assertEquals("Candesartan_Fluoxetine", nma.getTreatment(new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()))).getId());
+		assertEquals("Candesartan_Fluoxetine", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()))).getId());
 	}
 	
 	@Test
@@ -152,7 +130,7 @@ public class NetworkMetaAnalysisTest {
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		assertEquals("Fluoxetine_MyDrug", nma.getTreatment(new DrugSet(Arrays.asList(myDrug, ExampleData.buildDrugFluoxetine()))).getId());
+		assertEquals("Fluoxetine_MyDrug", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(myDrug, ExampleData.buildDrugFluoxetine()))).getId());
 	}
 	
 	@Test
@@ -177,7 +155,7 @@ public class NetworkMetaAnalysisTest {
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		assertEquals("MyDrug", nma.getTreatment(new DrugSet(Arrays.asList(myDrug1))).getId());
-		assertEquals("MyDrug2", nma.getTreatment(new DrugSet(Arrays.asList(myDrug2))).getId());
+		assertEquals("MyDrug", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(myDrug1))).getId());
+		assertEquals("MyDrug2", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(myDrug2))).getId());
 	}
 }

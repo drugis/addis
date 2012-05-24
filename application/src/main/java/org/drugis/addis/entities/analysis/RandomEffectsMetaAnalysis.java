@@ -161,63 +161,39 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		in.defaultReadObject();
 	}	
 	
-	/* (non-Javadoc)
-	 * @see org.drugis.addis.entities.analysis.PairWiseMetaAnalysis#getFirstDrug()
-	 */
+	@Override
 	public DrugSet getFirstDrug() {
 		return d_drugs.get(0);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.drugis.addis.entities.analysis.PairWiseMetaAnalysis#getSecondDrug()
-	 */
+	@Override
 	public DrugSet getSecondDrug() {
 		return d_drugs.get(1);
 	}
 	
 	public List<StudyArmsEntry> getStudyArms() {
-		return getStudyArms(false);
-	}
-	
-	private List<StudyArmsEntry> getStudyArms(boolean drugsSwapped) {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		for (Study s : getIncludedStudies()) {
-			if (!drugsSwapped)
-				studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstDrug()), getArm(s, getSecondDrug())));
-			else
-				studyArms.add(new StudyArmsEntry(s, getArm(s, getSecondDrug()), getArm(s, getFirstDrug())));
+			studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstDrug()), getArm(s, getSecondDrug())));
 		}
 		return studyArms;
 	}
-
-	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {
-		if (!d_drugs.containsAll(drugSetList(d1, d2)))
-			throw new IllegalArgumentException(d_name + " compares drugs " + d_drugs + " but " + drugSetList(d1, d2) + " were asked");
-		
-		
-		List<BasicRelativeEffect<? extends Measurement>> relEffects = getFilteredRelativeEffects(d1, d2, type);
-		
-		return new RandomEffectsRelativeEffect(relEffects);
-	}
-
-	List<BasicRelativeEffect<? extends Measurement>> getFilteredRelativeEffects(DrugSet d1, DrugSet d2, Class<? extends RelativeEffect<?>> type) {
-		boolean drugsSwapped = !d1.equals(getFirstDrug());
+	
+	List<BasicRelativeEffect<? extends Measurement>> getFilteredRelativeEffects(Class<? extends RelativeEffect<?>> type) {
 		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
-		
-		for (int i = 0; i < d_studies.size(); ++i){ 
-			RelativeEffect<? extends Measurement> re;
-			re = RelativeEffectFactory.buildRelativeEffect(getStudyArms(drugsSwapped).get(i), d_outcome, type, d_isCorrected);
-			if (re.isDefined())
+		for (StudyArmsEntry entry : getStudyArms()) {
+			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(entry, d_outcome, type, d_isCorrected);
+			if (re.isDefined()) {
 				relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
+			}
 		}
 		return relEffects;
 	}
 		
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
-		return getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
+		return new RandomEffectsRelativeEffect(getFilteredRelativeEffects(type));
 	}
 	
-
 	public boolean getIsCorrected() {
 		return d_isCorrected;
 	}
@@ -247,7 +223,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public MultivariateNormalSummary getRelativeEffectsSummary() {
 		Class<? extends RelativeEffect<?>> type = (d_outcome.getVariableType() instanceof RateVariableType) ? 
 				BasicOddsRatio.class : BasicMeanDifference.class;
-		RelativeEffect<Measurement> effect = getRelativeEffect(getFirstDrug(), getSecondDrug(), type);
+		RelativeEffect<Measurement> effect = getRelativeEffect(type);
 		GaussianBase distribution = (GaussianBase) effect.getDistribution();
 		return new SimpleMultivariateNormalSummary(
 				new double[]{ distribution.getMu() },

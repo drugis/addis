@@ -33,17 +33,16 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.model.Treatment;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
 public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 	private NetworkMetaAnalysisPresentation d_pm;
-	MixedTreatmentComparison d_networkModel;
+	MTCModelWrapper d_networkModel;
 	private final PropertyChangeListener d_listener;
 	
-	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MixedTreatmentComparison networkModel) {
+	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MTCModelWrapper networkModel) {
 		d_pm = pm;
 		d_networkModel = networkModel;
 		d_listener = new PropertyChangeListener() {
@@ -63,9 +62,11 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MixedTreatmentComparison networkModel, DrugSet d1, DrugSet d2) {
-		QuantileSummary quantileSummary = getSummary(d_pm.getBean().getTreatment(d1), d_pm.getBean().getTreatment(d2));
-		quantileSummary.addPropertyChangeListener(d_listener);
+	private void attachListener(MTCModelWrapper networkModel, DrugSet d1, DrugSet d2) {
+		QuantileSummary quantileSummary = getSummary(d1, d2);
+		if(quantileSummary != null) {
+			quantileSummary.addPropertyChangeListener(d_listener);
+		}
 	}
 
 	public int getColumnCount() {
@@ -91,14 +92,10 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		if (row == col) {
 			return getDrugAt(row);
 		}
-		return getSummary(getTreatment(row), getTreatment(col));
+		return getSummary(getDrugAt(row), getDrugAt(col));
 	}
 	
-	private QuantileSummary getSummary(final Treatment drug1, final Treatment drug2) {
-		return d_pm.getQuantileSummary(d_networkModel, d_networkModel.getRelativeEffect(drug1, drug2));
-	}
-
-	private Treatment getTreatment(int idx) {
-		return d_pm.getBean().getTreatment(getDrugAt(idx));
+	private QuantileSummary getSummary(final DrugSet d1, final DrugSet d2) {
+		return d_networkModel.getQuantileSummary(d_networkModel.getRelativeEffect(d1, d2));
 	}
 }

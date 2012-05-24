@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
 import org.drugis.addis.gui.components.GraphBarNode;
 import org.drugis.addis.gui.components.GraphLine;
 import org.drugis.addis.gui.components.GraphProgressNode;
@@ -47,13 +48,14 @@ import org.drugis.addis.gui.components.GraphSimpleNode.GraphSimpleNodeType;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.activity.ActivityTask;
 import org.drugis.common.threading.status.ActivityTaskInPhase;
 import org.drugis.common.threading.status.TaskStartableModel;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.BooleanNotModel;
-import org.drugis.mtc.MixedTreatmentComparison;
-import org.drugis.mtc.MixedTreatmentComparison.ExtendSimulation;
+import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
@@ -64,25 +66,25 @@ import com.jgoodies.forms.layout.FormLayout;
 public class AnalysisComponentFactory {
 	
 	public static JPanel createSimulationControls(
-			final MCMCWrapper model, 
-			final int row,
-			final JFrame parent, boolean withSeparator) {
+			final MCMCPresentation model, 
+			final JFrame parent,
+			boolean withSeparator,
+			JButton ... buttons) {
 
 		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:0:grow, 3dlu, pref",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
-		
 		int panelRow = 1;
 		if (withSeparator) {
 			panelBuilder.addSeparator(model.toString(), cc.xyw(1, panelRow, 5));
 			panelRow += 2;
 		}
 		
-		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, hasConvergence(model));
+		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, true, buttons);
 		panelRow += 2;
-		if(hasConvergence(model)) { 
+		if(!model.hasSavedResults() && hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
 		}
 		
@@ -91,7 +93,30 @@ public class AnalysisComponentFactory {
 		return panelBuilder.getPanel();
 	}
 
-	private static JPanel createProgressPanel(MCMCWrapper model) {
+	private static JPanel questionPanel(final MCMCPresentation model) {
+		final FlowLayout flowLayout = new FlowLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		final JButton extendSimulationButton = createExtendSimulationButton(model);
+		final JButton stopButton = createStopButton(model.getModel().getActivityTask(), model);
+		
+		ValueModel inAssessConvergence = new ActivityTaskInPhase(model.getModel().getActivityTask(), MCMCModel.ASSESS_CONVERGENCE_PHASE);
+		ValueModel notTaskFinished = new BooleanNotModel(new TaskTerminatedModel(model.getModel().getActivityTask()));
+		
+		ValueModel shouldAssessConvergence = new BooleanAndModel(inAssessConvergence, notTaskFinished);
+		
+		Bindings.bind(extendSimulationButton, "enabled", shouldAssessConvergence);
+		Bindings.bind(stopButton, "enabled", shouldAssessConvergence);
+
+		
+		JPanel questionPanel = new JPanel(flowLayout);
+		questionPanel.add(new JLabel("Has the simulation converged?"));
+		questionPanel.add(stopButton);
+		questionPanel.add(extendSimulationButton);
+		
+		return questionPanel;
+	}
+
+	private static JPanel createProgressPanel(final MCMCPresentation model) {
 		final int numChains = 4;
 		final int circleDiameter = 20;
 		final int edgeLength = 35;
@@ -133,37 +158,19 @@ public class AnalysisComponentFactory {
 		return progressPanel;
 	}
 	
-	private static JPanel questionPanel(final MCMCWrapper model) {
-		final FlowLayout flowLayout = new FlowLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		final JButton extendSimulationButton = createExtendSimulationButton(model);
-		final JButton stopButton = createStopButton(model.getActivityTask(), model);
-		
-		ValueModel inAssessConvergence = new ActivityTaskInPhase(model.getActivityTask(), MixedTreatmentComparison.ASSESS_CONVERGENCE_PHASE);
-		ValueModel notTaskFinished = new BooleanNotModel(new TaskTerminatedModel(model.getActivityTask()));
-		
-		ValueModel shouldAssessConvergence = new BooleanAndModel(inAssessConvergence, notTaskFinished);
-		
-		Bindings.bind(extendSimulationButton, "enabled", shouldAssessConvergence);
-		Bindings.bind(stopButton, "enabled", shouldAssessConvergence);
-
-		
-		JPanel questionPanel = new JPanel(flowLayout);
-		questionPanel.add(new JLabel("Has the simulation converged?"));
-		questionPanel.add(stopButton);
-		questionPanel.add(extendSimulationButton);
-		return questionPanel;
-	}
-
-	private static void createProgressBarRow(final MCMCWrapper model,
+	private static void createProgressBarRow(final MCMCPresentation model,
 			JFrame main, CellConstraints cc,
-			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence) {
-		final JButton startButton = createStartButton(model.getActivityTask(), model);
-		final ValueModel taskStartable = new TaskStartableModel(model.getActivityTask());
+			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence, JButton[] buttons) {
+		JButton startButton = createStartButton(model);
 		
-		Bindings.bind(startButton, "enabled", taskStartable);
-		panelBuilder.add(startButton, cc.xy(1, panelRow));
-		if(hasConvergence) {
+		JPanel bb = new JPanel();
+		bb.add(startButton);	
+		for(JButton b : buttons) { 
+			bb.add(b);
+		}
+		panelBuilder.add(bb, cc.xy(1, panelRow));
+
+		if(hasConvergence) { 
 			panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xy(3, panelRow));
 			panelBuilder.add(createShowConvergenceButton(main, model), cc.xy(5, panelRow));
 		} else {
@@ -171,64 +178,75 @@ public class AnalysisComponentFactory {
 		}
 	}
 
-	public static JButton createStartButton(final Task task, final MCMCWrapper model) {
+	public static JButton createStartButton(final MCMCPresentation model) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
-		button.setEnabled(!task.isFinished() && !task.isStarted());
+		
+		if (model.getModel() == null) {
+			button.setEnabled(false);
+			return button;
+		}
+		
+		ValueModel buttonEnabledModel = new TaskStartableModel(model.getModel().getActivityTask());
+		Bindings.bind(button, "enabled", buttonEnabledModel);
+
+		final ActivityTask task = model.getModel().getActivityTask();
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ThreadHandler.getInstance().scheduleTask(task);
 			}
 		});
+		
 		return button;
 	}
 	
-	public static JButton createStopButton(final Task task, final MCMCWrapper model) {
+
+	
+	public static JButton createStopButton(final Task task, final MCMCPresentation presentation) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_TICK));
 		button.setText("Yes, finish");
 		button.setToolTipText("Finish the simulation");
+		
+		final MCMCModelWrapper wrapper = presentation.getWrapper();
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(task.isStarted()) { 
-					((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.FINISH);
+					wrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 				}
 			}
 		});
 		return button;
 	}	
 
-	public static JButton createExtendSimulationButton(final MCMCWrapper model) {
+	public static JButton createExtendSimulationButton(final MCMCPresentation presentation) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RESTART));
 		button.setText("No, extend");
 		button.setToolTipText("Extend the simulation");
 		
+		final MCMCModelWrapper wrapper = presentation.getWrapper();
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((MixedTreatmentComparison) ((MixedTreatmentComparison)model.getModel())).setExtendSimulation(ExtendSimulation.EXTEND);
+				wrapper.getModel().setExtendSimulation(ExtendSimulation.EXTEND);
 			}
 		});
 		return button;
 	}
 
-	public static JButton createShowConvergenceButton(final JFrame main, final MCMCWrapper model) {
+	public static JButton createShowConvergenceButton(final JFrame main, final MCMCPresentation presentation) {
 		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_CHART));
 		button.setText("Show convergence");
+		final MCMCModelWrapper wrapper = presentation.getWrapper();
 		button.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog convergence = new ConvergenceSummaryDialog(main, ((MixedTreatmentComparison)model.getModel()), model.isModelConstructed(), model.toString());
+				JDialog convergence = new ConvergenceSummaryDialog(main, wrapper, presentation.isModelConstructed(), presentation.toString());
 				convergence.setVisible(true);
 			}
 		});
 		return button;
 	}
 
-	private static boolean hasConvergence(MCMCWrapper model) {
-		if( model.getModel() instanceof MixedTreatmentComparison) {
-			return true;
-		} else { 
-			return false;
-		}
+	private static boolean hasConvergence(MCMCPresentation model) {
+		return true;
 	}
 }
