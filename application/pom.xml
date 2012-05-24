@@ -70,7 +70,12 @@
 			<artifactId>common-gui</artifactId>
 			<version>${drugis-common.version}</version>
 		</dependency>
-	    	<dependency>
+		<dependency>
+			<groupId>org.drugis</groupId>
+			<artifactId>common-extra</artifactId>
+			<version>${drugis-common.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.drugis</groupId>
 			<artifactId>common-test</artifactId>
 			<version>${drugis-common.version}</version>
