@@ -136,12 +136,24 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 	
 	private void initAllBaselineModels() {
-		MCMCModelWrapper wrapper;
 		for (OutcomeMeasure om : getBean().getCriteria()) {
-			wrapper = getBean().getBaselineModel(om);
-			String name = om.getName() + " \u2014 Baseline Model";
-			d_models.put(wrapper, new MCMCPresentation(wrapper, om, name));
+			addBaselineModel(getBean().getBaselineModel(om), om);
 		}
+	}
+
+	private void addBaselineModel(final MCMCModelWrapper wrapper, final OutcomeMeasure om) {
+		d_models.put(wrapper, new MCMCPresentation(wrapper, om, om.getName() + " \u2014 " + wrapper.getDescription()));
+		wrapper.addPropertyChangeListener(new PropertyChangeListener() {		
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals(MCMCModelWrapper.PROPERTY_DESTROYED)) {
+					System.out.println("DESTROYEEDDD");
+					MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
+					source.removePropertyChangeListener(this);
+					d_models.remove(source);
+					addBaselineModel(wrapper, om);
+				}
+			}
+		});
 	}
 	
 	private void initNetworkMetaAnalysisModels() {
@@ -161,7 +173,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		nma.getConsistencyModel().addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) {
-					MTCModelWrapper source = (MTCModelWrapper) evt.getSource();
+					MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
 					source.removePropertyChangeListener(this);
 					d_models.remove(source);
 					addConsistencyModel(nma);

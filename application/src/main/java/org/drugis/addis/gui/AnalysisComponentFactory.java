@@ -30,7 +30,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -74,8 +76,9 @@ public class AnalysisComponentFactory {
 	public static JPanel createSimulationControls(
 			final MCMCPresentation model, 
 			final JFrame parent,
-			boolean withSeparator,
-			JButton ... buttons) {
+			final boolean withSeparator,
+			final String activeTab,
+			final JButton ... buttons) {
 
 		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:0:grow, 3dlu, pref",
@@ -88,7 +91,7 @@ public class AnalysisComponentFactory {
 			panelRow += 2;
 		}
 		
-		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, true, buttons);
+		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, true, buttons, activeTab);
 		panelRow += 2;
 		if(!model.hasSavedResults() && hasConvergence(model)) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
@@ -197,13 +200,20 @@ public class AnalysisComponentFactory {
 	}
 	
 	private static void createProgressBarRow(final MCMCPresentation model,
-			JFrame main, CellConstraints cc,
-			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence, JButton[] buttons) {
-		JButton startButton = createStartButton(model);
+			final JFrame main, 
+			final CellConstraints cc,
+			final PanelBuilder panelBuilder, 
+			final int panelRow, 
+			final boolean hasConvergence, 
+			final JButton[] buttons,
+			final String activeTab) {
+		List<JButton> buttonList = new ArrayList<JButton>(Arrays.asList(buttons));
 		
+		buttonList.add(createStartButton(model));
+		buttonList.add(createRestartButton(model, activeTab, main));
+
 		JPanel bb = new JPanel();
-		bb.add(startButton);	
-		for(JButton b : buttons) { 
+		for(JButton b : buttonList) { 
 			bb.add(b);
 		}
 		panelBuilder.add(bb, cc.xy(1, panelRow));
@@ -216,6 +226,23 @@ public class AnalysisComponentFactory {
 		}
 	}
 
+	private static JButton createRestartButton(final MCMCPresentation model, final String activeTab, final JFrame main) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
+		button.setToolTipText("Reset simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.getWrapper().selfDestruct();
+				if(main instanceof AddisWindow) {
+					((AddisWindow) main).reloadRightPanel(activeTab);
+				} 
+			}
+		});
+		if (!model.getWrapper().isSaved()) {
+			Bindings.bind(button, "enabled", new TaskTerminatedModel(model.getModel().getActivityTask()));
+		}
+		return button;
+	}
+	
 	public static JButton createStartButton(final MCMCPresentation model) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");

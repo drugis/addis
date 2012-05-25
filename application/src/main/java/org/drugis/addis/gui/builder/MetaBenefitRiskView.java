@@ -118,7 +118,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		for (MCMCPresentation mw : d_pm.getWrappedModels()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AnalysisComponentFactory.createSimulationControls(mw, d_mainWindow, true), cc.xyw(1, row, 3));
+			builder.add(AnalysisComponentFactory.createSimulationControls(mw, d_mainWindow, true, null), cc.xyw(1, row, 3));
 		}
 		
 		return builder.getPanel();

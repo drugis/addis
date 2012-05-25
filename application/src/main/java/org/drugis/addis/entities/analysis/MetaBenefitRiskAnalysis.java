@@ -322,7 +322,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 	
 	public MCMCModelWrapper getBaselineModel(OutcomeMeasure om) {
 		MCMCModelWrapper model = d_baselineModelMap.get(om);
-		if (model == null) {
+		if (model == null || model.getDestroyed()) {
 			model = createBaselineModel(om);
 			d_baselineModelMap.put(om, model);
 		}

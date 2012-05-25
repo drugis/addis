@@ -271,7 +271,7 @@ implements ViewBuilder {
 
 		final InconsistencyWrapper inconsistencyModel = d_pm.getInconsistencyModel();
 				
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, createRestartButton(inconsistencyModel, INCONSISTENCY_TAB_TITLE));
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, INCONSISTENCY_TAB_TITLE);
 		builder.add(simulationControls, cc.xyw(3, row, 3));
 
 		row += 2;
@@ -344,7 +344,7 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyWrapper consistencyModel = d_pm.getConsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, createRestartButton(consistencyModel, CONSISTENCY_TAB_TITLE));
+		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, CONSISTENCY_TAB_TITLE);
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
 		row += 2;
@@ -419,7 +419,7 @@ implements ViewBuilder {
 			row += 2;
 			NodeSplitWrapper model = d_pm.getNodeSplitModel(p);			
 			
-			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, createRestartButton(model, NODE_SPLIT_TAB_TITLE));
+			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, NODE_SPLIT_TAB_TITLE);
 			builder.add(simulationControls, cc.xyw(1, row, 3));
 
 			
@@ -590,20 +590,7 @@ implements ViewBuilder {
 	}
 
 	
-	private JButton createRestartButton(final MTCModelWrapper wrapper, final String activeTab) {
-		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
-		button.setToolTipText("Reset simulation");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				wrapper.selfDestruct();
-				d_mainWindow.reloadRightPanel(activeTab);
-			}
-		});
-		if (!wrapper.isSaved()) {
-			Bindings.bind(button, "enabled", new TaskTerminatedModel(wrapper.getModel().getActivityTask()));
-		}
-		return button;
-	}
+
 	
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
