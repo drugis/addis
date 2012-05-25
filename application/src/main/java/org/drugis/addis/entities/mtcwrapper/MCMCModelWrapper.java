@@ -2,7 +2,7 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MCMCSettingsCache;
+import org.drugis.mtc.MCMCSettings;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -29,8 +29,8 @@ public interface MCMCModelWrapper extends Observable {
 	public abstract boolean isApproved();
 
 	/** 
-	 * Whether or not the model should be cleaned up on the next invocation from NetworkMetaAnalysis.
-	 * This will cause NetworkMetaAnalysis to create a new instance of a AbstractSimulationModel.
+	 * Whether or not the model should be cleaned up on the next invocation from analysis.
+	 * This will cause it to create a new instance of a AbstractSimulationModel.
 	 */
 	public abstract void selfDestruct();
 
@@ -47,7 +47,7 @@ public interface MCMCModelWrapper extends Observable {
 	/**
 	 * @see org.drugis.mtc.MixedTreatmentComparison#getSettings()
 	 */
-	public abstract MCMCSettingsCache getSettings();
+	public abstract MCMCSettings getSettings();
 
 	/**
 	 * Get a convergence summary for the given parameter.

@@ -490,7 +490,7 @@ public class NetworkMetaAnalysisConverter {
 		s.setSimulationIterations(wrapper.getSettings().getSimulationIterations());
 		s.setTuningIterations(wrapper.getSettings().getTuningIterations());
 		s.setThinningInterval(wrapper.getSettings().getThinningInterval()); 
-		s.setInferenceIterations(wrapper.getSettings().getInferenceIterations());
+		s.setInferenceIterations(wrapper.getSettings().getInferenceSamples());
 		s.setVarianceScalingFactor(wrapper.getSettings().getVarianceScalingFactor()); 
 		s.setNumberOfChains(wrapper.getSettings().getNumberOfChains());
 		return s;

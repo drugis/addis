@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MCMCSettingsCache;
+import org.drugis.mtc.MCMCSettings;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -38,7 +38,7 @@ public class MCMCSimulationWrapper<ModelType extends MCMCModel> extends Abstract
 	}
 
 	@Override
-	public MCMCSettingsCache getSettings() {
+	public MCMCSettings getSettings() {
 		return d_nested.getSettings();
 	}
 
