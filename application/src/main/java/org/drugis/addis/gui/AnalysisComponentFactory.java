@@ -80,16 +80,21 @@ public class AnalysisComponentFactory {
 			panelBuilder.addSeparator(model.toString(), cc.xyw(1, panelRow, 5));
 			panelRow += 2;
 		}
-		JPanel progressGraph = new ProgressGraph(model, parent).createPanel();
-		panelBuilder.add(createShowProgressGraph(model, progressGraph), cc.xy(7, panelRow));
 		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, buttons, activeTab);
+		
+		panelRow += 2;
+		JPanel progressGraph = null;
+		if(!model.hasSavedResults()) { 
+			progressGraph = new ProgressGraph(model, parent).createPanel();
+			panelBuilder.add(progressGraph, cc.xyw(1, panelRow, 5));	
+		}
+		panelBuilder.add(createShowProgressGraph(model, progressGraph), cc.xy(7, panelRow - 2));
+
 		panelRow += 2;
 		if(!model.hasSavedResults()) { 
 			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
-		}		
-		panelRow += 2;
+		}	
 
-		panelBuilder.add(progressGraph, cc.xyw(1, panelRow, 5));
 		return panelBuilder.getPanel();
 	}
 
@@ -183,7 +188,7 @@ public class AnalysisComponentFactory {
 		final JToggleButton button = new JToggleButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_ORGANIZATION));
 		button.setToolTipText("Show simulation model");
 		
-		if (model.getWrapper().isSaved()) {
+		if (model.getWrapper().isSaved() || progressGraph == null) {
 			button.setEnabled(false);
 			return button;
 		}
