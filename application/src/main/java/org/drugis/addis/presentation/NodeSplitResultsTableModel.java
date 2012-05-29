@@ -35,8 +35,11 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.collections15.BidiMap;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -117,7 +120,7 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex == COL_NAME) {
-			return getParameter(rowIndex).getName();
+			return getDescription(getParameter(rowIndex));
 		} else if (columnIndex >= COL_DIRECT_EFFECT && columnIndex <= COL_P_VALUE) {
 			return getSummary(rowIndex, columnIndex);
 		} 
@@ -136,6 +139,11 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 
 	private BasicParameter getParameter(int rowIndex) {
 		return d_parameters.get(rowIndex);
+	}
+	
+	private String getDescription(BasicParameter p) { 
+		BidiMap<DrugSet, Treatment> treatmentMap = d_pm.getBean().getBuilder().getTreatmentMap();
+		return treatmentMap.getKey(p.getBaseline()).getLabel() + ", " + treatmentMap.getKey(p.getSubject()).getLabel();
 	}
 	
 	@Override
