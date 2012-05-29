@@ -37,6 +37,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import org.drugis.addis.gui.MeasurementInputHelper;
+import org.drugis.addis.gui.renderer.MeasurementCellRenderer;
 import org.drugis.addis.presentation.wizard.MissingMeasurementPresentation;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;

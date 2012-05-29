@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui;
+package org.drugis.addis.gui.renderer;
 
 import java.awt.Component;
 
@@ -34,6 +34,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
+import org.drugis.addis.gui.CategoryKnowledge;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.Main;
 
 @SuppressWarnings("serial")
 public class DomainTreeCellRenderer extends DefaultTreeCellRenderer {
