@@ -36,6 +36,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.gui.util.JGraphUtil;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
@@ -124,12 +125,9 @@ public class StudyGraph extends JPanel {
 		public String getToolTipText(MouseEvent e) {
 			if(e != null) {
 				Object c = getFirstCellForLocation(e.getX(), e.getY());
-				if (c != null) {
-					try {
-						Integer.parseInt(convertValueToString(c)); // Don't display integers
-					} catch(Exception ex) {
-						return convertValueToString(c);
-					}
+				String str = convertValueToString(c);
+				if (!StringUtils.isNumeric(str)) {
+					return str;
 				}
 			}
 			return null;
