@@ -76,6 +76,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.knowledge.StudiesKnowledge;
+import org.drugis.addis.gui.renderer.DomainTreeCellRenderer;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.gui.FileSaveDialog;
