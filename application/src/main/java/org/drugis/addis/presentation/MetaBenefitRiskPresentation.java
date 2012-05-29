@@ -137,20 +137,20 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	private void initAllBaselineModels() {
 		for (OutcomeMeasure om : getBean().getCriteria()) {
-			addBaselineModel(getBean().getBaselineModel(om), om);
+			addBaselineModel(om);
 		}
 	}
 
-	private void addBaselineModel(final MCMCModelWrapper wrapper, final OutcomeMeasure om) {
-		d_models.put(wrapper, new MCMCPresentation(wrapper, om, om.getName() + " \u2014 " + wrapper.getDescription()));
-		wrapper.addPropertyChangeListener(new PropertyChangeListener() {		
+	private void addBaselineModel(final OutcomeMeasure om) {
+		MCMCModelWrapper baselineModel = getBean().getBaselineModel(om);
+		d_models.put(baselineModel, new MCMCPresentation(baselineModel, om, om.getName() + " \u2014 " + baselineModel.getDescription()));
+		baselineModel.addPropertyChangeListener(new PropertyChangeListener() {		
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals(MCMCModelWrapper.PROPERTY_DESTROYED)) {
-					System.out.println("DESTROYEEDDD");
 					MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
 					source.removePropertyChangeListener(this);
 					d_models.remove(source);
-					addBaselineModel(wrapper, om);
+					addBaselineModel(om);
 				}
 			}
 		});
