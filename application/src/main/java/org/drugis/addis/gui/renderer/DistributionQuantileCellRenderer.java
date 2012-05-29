@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.renderer;
 
 import java.awt.Component;
 import java.awt.Insets;
@@ -36,7 +36,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 
 @SuppressWarnings("serial")
 public class DistributionQuantileCellRenderer extends DefaultTableCellRenderer {

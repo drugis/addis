@@ -36,6 +36,7 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.gui.renderer.DistributionQuantileCellRenderer;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 
 import com.jgoodies.forms.builder.PanelBuilder;

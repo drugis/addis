@@ -29,11 +29,15 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
@@ -106,15 +110,14 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		if (d_modelConstructed.getValue().equals(false)){
 			return NA;
 		}
-		
 		InconsistencyWrapper model = d_pm.getInconsistencyModel();
 		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
-		if(col == 0){ // FIXME: use apache commons for this operation, and add a cell renderer!
-			String out = "";
-			for (int i = 0; i < ip.getCycle().size() - 1; ++i){
-				out += ip.getCycle().get(i).getId() + ", ";
+		if(col == 0){
+			Set<String> descriptions = new TreeSet<String>();
+			for(Treatment t : ip.getCycle()) { 
+				descriptions.add(d_pm.getBean().getBuilder().getTreatmentMap().getKey(t).getLabel());
 			}
-			return out.substring(0, out.length() - 2);
+			return StringUtils.join(descriptions, ", ");
 		} else {
 			return model.getQuantileSummary(ip);
 		}

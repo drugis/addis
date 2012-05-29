@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.builder;
+package org.drugis.addis.gui.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
