@@ -29,15 +29,20 @@ package org.drugis.addis.gui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
+import org.drugis.addis.gui.components.progressgraph.ProgressGraph;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -61,11 +66,12 @@ public class AnalysisComponentFactory {
 	public static JPanel createSimulationControls(
 			final MCMCPresentation model, 
 			final JFrame parent,
-			boolean withSeparator,
-			JButton ... buttons) {
+			final boolean withSeparator,
+			final String activeTab,
+			final JButton ... buttons) {
 
 		final FormLayout layout = new FormLayout(
-				"pref, 3dlu, fill:0:grow, 3dlu, pref",
+				"pref, 3dlu, fill:0:grow, 3dlu, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p");
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
@@ -74,12 +80,21 @@ public class AnalysisComponentFactory {
 			panelBuilder.addSeparator(model.toString(), cc.xyw(1, panelRow, 5));
 			panelRow += 2;
 		}
+		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, buttons, activeTab);
 		
-		createProgressBarRow(model, parent, cc, panelBuilder, panelRow, true, buttons);
 		panelRow += 2;
-		if(!model.hasSavedResults() && hasConvergence(model)) { 
-			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
+		JPanel progressGraph = null;
+		if(!model.hasSavedResults()) { 
+			progressGraph = new ProgressGraph(model, parent).createPanel();
+			panelBuilder.add(progressGraph, cc.xyw(1, panelRow, 5));	
 		}
+		panelBuilder.add(createShowProgressGraph(model, progressGraph), cc.xy(7, panelRow - 2));
+
+		panelRow += 2;
+		if(!model.hasSavedResults()) { 
+			panelBuilder.add(questionPanel(model), cc.xyw(1, panelRow, 3));
+		}	
+
 		return panelBuilder.getPanel();
 	}
 
@@ -102,34 +117,55 @@ public class AnalysisComponentFactory {
 		questionPanel.add(new JLabel("Has the simulation converged?"));
 		questionPanel.add(stopButton);
 		questionPanel.add(extendSimulationButton);
+		
 		return questionPanel;
 	}
-
+	
 	private static void createProgressBarRow(final MCMCPresentation model,
-			JFrame main, CellConstraints cc,
-			PanelBuilder panelBuilder, int panelRow, boolean hasConvergence, JButton[] buttons) {
-		JButton startButton = createStartButton(model);
+			final JFrame main, 
+			final CellConstraints cc,
+			final PanelBuilder panelBuilder, 
+			final int panelRow, 
+			final JButton[] buttons,
+			final String activeTab) {
+		List<JButton> buttonList = new ArrayList<JButton>(Arrays.asList(buttons));
 		
+		buttonList.add(createStartButton(model));
+		buttonList.add(createRestartButton(model, activeTab, main));
+
 		JPanel bb = new JPanel();
-		bb.add(startButton);	
-		for(JButton b : buttons) { 
+		for(JButton b : buttonList) { 
 			bb.add(b);
 		}
 		panelBuilder.add(bb, cc.xy(1, panelRow));
 
-		if(hasConvergence) { 
-			panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xy(3, panelRow));
-			panelBuilder.add(createShowConvergenceButton(main, model), cc.xy(5, panelRow));
-		} else {
-			panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xyw(3, panelRow, 3));
-		}
+		panelBuilder.add(new TaskProgressBar(model.getProgressModel()), cc.xy(3, panelRow));
+		panelBuilder.add(createShowConvergenceButton(main, model), cc.xy(5, panelRow));
 	}
 
+	private static JButton createRestartButton(final MCMCPresentation model, final String activeTab, final JFrame main) {
+		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
+		button.setToolTipText("Reset simulation");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.getWrapper().selfDestruct();
+				if(main instanceof AddisWindow) {
+					((AddisWindow) main).reloadRightPanel(activeTab);
+				} 
+			}
+		});
+		if (!model.getWrapper().isSaved()) {
+			Bindings.bind(button, "enabled", new TaskTerminatedModel(model.getModel().getActivityTask()));
+		}
+		return button;
+	}
+
+	
 	public static JButton createStartButton(final MCMCPresentation model) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
 		button.setToolTipText("Run simulation");
 		
-		if (model.getModel() == null) {
+		if (model.getWrapper().isSaved()) {
 			button.setEnabled(false);
 			return button;
 		}
@@ -147,7 +183,25 @@ public class AnalysisComponentFactory {
 		return button;
 	}
 	
+	
+	public static JToggleButton createShowProgressGraph(final MCMCPresentation model, final JPanel progressGraph) {
+		final JToggleButton button = new JToggleButton(Main.IMAGELOADER.getIcon(FileNames.ICON_CURVE_ORGANIZATION));
+		button.setToolTipText("Show simulation model");
+		
+		if (model.getWrapper().isSaved() || progressGraph == null) {
+			button.setEnabled(false);
+			return button;
+		}
+		progressGraph.setVisible(button.isSelected());
 
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				progressGraph.setVisible(button.isSelected());
+			}
+		});
+		
+		return button;
+	}
 	
 	public static JButton createStopButton(final Task task, final MCMCPresentation presentation) {
 		final JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_TICK));
@@ -191,9 +245,5 @@ public class AnalysisComponentFactory {
 			}
 		});
 		return button;
-	}
-
-	private static boolean hasConvergence(MCMCPresentation model) {
-		return true;
 	}
 }
