@@ -251,5 +251,4 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		m.selfDestruct();
 		firePropertyChange(PROPERTY_MCMC_RESULTS, true, false);
 	}
-
 }

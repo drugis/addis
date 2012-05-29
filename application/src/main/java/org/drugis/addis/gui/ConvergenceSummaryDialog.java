@@ -29,6 +29,7 @@ package org.drugis.addis.gui;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -45,9 +46,12 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.ConvergenceDiagnosticTableModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.mtc.MCMCSettingsCache;
+import org.drugis.mtc.MCMCSettings;
 import org.drugis.mtc.Parameter;
 
+import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -63,17 +67,18 @@ public class ConvergenceSummaryDialog extends JDialog  {
 	
 	private static final long serialVersionUID = -220027860371330394L;
 	private final JFrame d_mainWindow;
-
 	private final MCMCModelWrapper d_wrapper;
-
 	private final ValueHolder<Boolean> d_modelConstructed;
-
 	private ConvergenceDiagnosticTableModel d_tableModel;
+	private MCMCSettings d_settings ;
+
+	private JPanel d_settingsPanel;
 	
 	public ConvergenceSummaryDialog(final JFrame main, final MCMCModelWrapper wrapper, final ValueHolder<Boolean> modelConstructed, String name) {
 		d_mainWindow = main;
 		d_wrapper = wrapper;
 		d_modelConstructed = modelConstructed;
+		d_settings = d_wrapper.getSettings();
 		setPreferredSize(new Dimension(d_mainWindow.getWidth() / 6 * 4, d_mainWindow.getHeight() / 8 * 5));
 		setMinimumSize(new Dimension(d_mainWindow.getWidth() / 6 * 4, d_mainWindow.getHeight() / 8 * 5));
 		setLocationRelativeTo(d_mainWindow);
@@ -97,8 +102,8 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		
 		builder.add(buildConvergenceTable(d_wrapper, d_modelConstructed), cc.xy(1, 1, CellConstraints.DEFAULT, CellConstraints.TOP));
 		builder.add(AuxComponentFactory.createHtmlField(CONVERGENCE_TEXT), cc.xy(3, 1));
-		
-		builder.add(buildMCMCSettingsPanel(d_wrapper.getSettings()), cc.xyw(1, 3, 3));
+		d_settingsPanel = buildMCMCSettingsPanel();
+		builder.add(d_settingsPanel, cc.xyw(1, 3, 3));
 		
 		final JPanel panel = builder.getPanel();
 
@@ -112,7 +117,7 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		return panel;
 	}
 	
-	private JPanel buildMCMCSettingsPanel(MCMCSettingsCache settings) {
+	private JPanel buildMCMCSettingsPanel() {
 		final FormLayout layout = new FormLayout(
 				"pref, 7dlu, fill:0:grow",
 				"pref");
@@ -121,22 +126,22 @@ public class ConvergenceSummaryDialog extends JDialog  {
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
 
-		rows = buildSettingsRow(layout, rows, builder, cc, "Number of chains", settings.getNumberOfChains());
-		rows = buildSettingsRow(layout, rows, builder, cc, "Tuning iterations", settings.getTuningIterations());
-		rows = buildSettingsRow(layout, rows, builder, cc, "Simulation iterations", settings.getSimulationIterations());
-		rows = buildSettingsRow(layout, rows, builder, cc, "Thinning interval", settings.getThinningInterval());
-		rows = buildSettingsRow(layout, rows, builder, cc, "Inference iterations", settings.getInferenceIterations());
-		rows = buildSettingsRow(layout, rows, builder, cc, "Variance scaling factor", settings.getVarianceScalingFactor());
+		PresentationModel<MCMCSettings> pm = new PresentationModel<MCMCSettings>(d_settings);
+		rows = buildSettingsRow(layout, rows, builder, cc, "Number of chains", pm.getModel(MCMCSettings.PROPERTY_NUMBER_OF_CHAINS));
+		rows = buildSettingsRow(layout, rows, builder, cc, "Tuning iterations",  pm.getModel(MCMCSettings.PROPERTY_TUNING_ITERATIONS));
+		rows = buildSettingsRow(layout, rows, builder, cc, "Simulation iterations", pm.getModel(MCMCSettings.PROPERTY_SIMULATION_ITERATIONS));
+		rows = buildSettingsRow(layout, rows, builder, cc, "Thinning interval", pm.getModel(MCMCSettings.PROPERTY_THINNING_INTERVAL));
+		rows = buildSettingsRow(layout, rows, builder, cc, "Inference samples", pm.getModel(MCMCSettings.PROPERTY_INFERENCE_SAMPLES));
+		rows = buildSettingsRow(layout, rows, builder, cc, "Variance scaling factor",  pm.getModel(MCMCSettings.PROPERTY_VARIANCE_SCALING_FACTOR));
 		
 		return builder.getPanel();
 	}
-
-	private int buildSettingsRow(final FormLayout layout, int rows, final PanelBuilder builder, CellConstraints cc, String leftCol,
-			Object rightColObject) {
+	private int buildSettingsRow(final FormLayout layout, int rows, final PanelBuilder builder, CellConstraints cc,
+			String label, ValueModel model) {
 		rows = LayoutUtil.addRow(layout, rows);
-		builder.add(new JLabel(leftCol), cc.xy(1, rows));
+		builder.add(new JLabel(label), cc.xy(1, rows));
 		builder.add(new JLabel(":"), cc.xy(2, rows));
-		builder.add(new JLabel(rightColObject.toString()), cc.xy(3, rows));
+		builder.add(BasicComponentFactory.createLabel(model, new DecimalFormat()), cc.xy(3, rows));
 		return rows;
 	}
 
