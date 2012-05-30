@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
@@ -88,7 +88,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
 		new HashMap<Parameter, NodeSplitPValueSummary>();
 	
-	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitWrapper>();
+	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new TreeMap<BasicParameter, NodeSplitWrapper>(new ParameterComparator());
 	private ProxyMultivariateNormalSummary d_relativeEffectsSummary =  new ProxyMultivariateNormalSummary();
 	
 
@@ -232,13 +232,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public Collection<NodeSplitWrapper> getNodeSplitModels() { 
-		TreeSet<BasicParameter> parameters = new TreeSet<BasicParameter>(new ParameterComparator());
-		parameters.addAll(d_nodeSplitModels.keySet());
-		ArrayList<NodeSplitWrapper> models = new ArrayList<NodeSplitWrapper>();
-		for(BasicParameter p : parameters) { 
-			models.add(d_nodeSplitModels.get(p));
-		}
-		return models;
+		return d_nodeSplitModels.values();
 	}
 	
 	@Override
