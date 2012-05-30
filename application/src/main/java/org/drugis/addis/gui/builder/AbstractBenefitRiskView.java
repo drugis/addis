@@ -67,6 +67,7 @@ import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -188,7 +189,7 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 	protected JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.setOpaque(true);
@@ -220,7 +221,12 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
-
+		
+		row += 2;
+		builder.addLabel("Baseline:", cc.xy(1, row));
+		JLabel baselineLabel = new JLabel(getBaseline().getLabel());
+		builder.add(baselineLabel,cc.xy(3, row));
+		
 		if (d_pm.getBean().getDecisionContext() != null) {
 			row  = LayoutUtil.addRow(layout, row);
 			builder.addSeparator("Decision context", cc.xyw(1, row, 3));
