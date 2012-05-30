@@ -169,6 +169,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public synchronized void loadInconsistencyModel(MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_inconsistencyModel = new SavedInconsistencyWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries);
+		
 	}
 	
 
@@ -184,6 +185,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 				relativeEffectsSummary, 
 				rankProbabilitySummary,
 				getIncludedDrugs());	
+		d_relativeEffectsSummary.setNested(d_consistencyModel.getRelativeEffectsSummary());	
 	}
 	
 	public void loadNodeSplitModel(BasicParameter splitParameter,

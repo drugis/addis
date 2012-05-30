@@ -59,7 +59,10 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 	}
 	
 	private void attachListener(Parameter p) {
-		d_mtc.getQuantileSummary(p).addPropertyChangeListener(d_listener); 
+		QuantileSummary quantileSummary = d_mtc.getQuantileSummary(p);
+		if(quantileSummary != null) { 
+			quantileSummary.addPropertyChangeListener(d_listener); 
+		}
 	}
 
 	@Override
