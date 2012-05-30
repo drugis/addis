@@ -115,7 +115,7 @@ public class NetworkMetaAnalysisConverter {
 		if(nma.getConsistencyResults() != null) { 
 			loadConsistencyModel(nma, networkMetaAnalysis, domain);
 		}
-		
+
 		for(NodeSplitResults nodeSplit : nma.getNodeSplitResults()) {
 			loadNodeSplitModel(nodeSplit, nma, networkMetaAnalysis, domain);
 
@@ -344,15 +344,15 @@ public class NetworkMetaAnalysisConverter {
 
 	private static NodeSplitResults convertNodeSplitResults(NetworkMetaAnalysis ma, NodeSplitWrapper model) {
 		NodeSplitResults results = new NodeSplitResults();
-			results.setMcmcSettings(convertMCMCSettings(model));
-			convertParameterSummaries(ma, model, results.getSummary());
-			results.setPValue(model.getNodeSplitPValueSummary().getPvalue());
-			AlternativePair alternativePair = new AlternativePair();
-			BasicParameter splitNode = (BasicParameter) model.getSplitNode();
-			alternativePair.getAlternative().add(JAXBConvertor.convertDrugSet(ma.getDrugSet(splitNode.getBaseline())));
-			alternativePair.getAlternative().add(JAXBConvertor.convertDrugSet(ma.getDrugSet(splitNode.getSubject())));
-			results.setSplitNode(alternativePair);
-			return results;
+		results.setMcmcSettings(convertMCMCSettings(model));
+		convertParameterSummaries(ma, model, results.getSummary());
+		results.setPValue(model.getNodeSplitPValueSummary().getPvalue());
+		AlternativePair alternativePair = new AlternativePair();
+		BasicParameter splitNode = (BasicParameter) model.getSplitNode();
+		alternativePair.getAlternative().add(JAXBConvertor.convertDrugSet(ma.getDrugSet(splitNode.getBaseline())));
+		alternativePair.getAlternative().add(JAXBConvertor.convertDrugSet(ma.getDrugSet(splitNode.getSubject())));
+		results.setSplitNode(alternativePair);
+		return results;
 	}
 
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {

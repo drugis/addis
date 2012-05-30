@@ -32,6 +32,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +53,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -59,6 +61,7 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 
+import org.custommonkey.xmlunit.Diff;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
@@ -155,6 +158,7 @@ import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -165,12 +169,14 @@ public class JAXBConvertorTest {
 	private static final Duration ZERO_DAYS = EntityUtil.createDuration("P0D");
 
 	private JAXBContext d_jaxb;
-	private Unmarshaller d_unmarshaller;
+	private static Unmarshaller d_unmarshaller;
+	private static Marshaller d_marshaller;
 
 	@Before
 	public void setup() throws JAXBException {
 		d_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
 		d_unmarshaller = d_jaxb.createUnmarshaller();
+		d_marshaller = d_jaxb.createMarshaller();
 	}
 
 	@Test
@@ -1971,7 +1977,7 @@ public class JAXBConvertorTest {
 	}
 
 	public void doRoundTripTest(InputStream transformedXmlStream)
-			throws JAXBException, ConversionException {
+			throws JAXBException, ConversionException, SAXException, IOException {
 		System.clearProperty("javax.xml.transform.TransformerFactory");
 		AddisData data = (AddisData) d_unmarshaller
 				.unmarshal(transformedXmlStream);
@@ -1983,8 +1989,23 @@ public class JAXBConvertorTest {
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		sortUsedBys(data);
 		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
+
+		assertXMLSimilar(data, roundTrip);
 		assertEquals(data, roundTrip);
 	}
+
+	private static void assertXMLSimilar(AddisData expected, AddisData actual)
+			throws JAXBException, SAXException, IOException {
+		ByteArrayOutputStream os1 = new ByteArrayOutputStream();
+		ByteArrayOutputStream os2 = new ByteArrayOutputStream();
+
+		d_marshaller.marshal(actual, os1);
+		d_marshaller.marshal(expected, os2);
+		Diff myDiff = new Diff(os1.toString(), os2.toString());
+	    assertTrue("XML similar " + myDiff.toString(), myDiff.similar());
+	}
+	
+	
 
 	private static void sortMetaBenefitRiskAnalysisAlternatives(AddisData data) {
 		for (Object bra : data.getBenefitRiskAnalyses()
