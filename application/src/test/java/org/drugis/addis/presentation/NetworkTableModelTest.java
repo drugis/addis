@@ -62,6 +62,7 @@ public class NetworkTableModelTest {
 	public void setUp() {
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain);
+		
 		d_analysis = buildMockNetworkMetaAnalysis();
 		d_pmf = new PresentationModelFactory(domain);
 		d_tableModel = new NetworkRelativeEffectTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_analysis.getConsistencyModel());
@@ -145,7 +146,6 @@ public class NetworkTableModelTest {
 				new DrugSet(ExampleData.buildDrugFluoxetine()),
 				new DrugSet(ExampleData.buildDrugParoxetine()), 
 				new DrugSet(ExampleData.buildDrugSertraline())});
-		
 		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointHamd(),
 				studies, drugs, ExampleData.buildMap(studies, drugs));
