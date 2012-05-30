@@ -28,6 +28,7 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
+import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.ValueModelWrapper;
@@ -68,7 +69,7 @@ public class MCMCPresentation implements Comparable<MCMCPresentation> {
 	@Override
 	public int compareTo(MCMCPresentation o) {
 		int omCompare = d_om.compareTo(o.getOutcomeMeasure());
-		int modelComp = (o.getModel() instanceof MixedTreatmentComparison) ? 1 : -1;
+		int modelComp = (o.getWrapper() instanceof MTCModelWrapper) ? 1 : -1;
 		return (omCompare == 0) ? modelComp : omCompare;
 	}
 
@@ -88,7 +89,7 @@ public class MCMCPresentation implements Comparable<MCMCPresentation> {
 	}
 	
 	public MCMCModel getModel() {
-		return d_wrapper.getModel();
+		return hasSavedResults() ? null : d_wrapper.getModel();
 	}
 
 	@Override
