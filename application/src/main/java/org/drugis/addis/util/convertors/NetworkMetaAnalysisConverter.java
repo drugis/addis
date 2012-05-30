@@ -173,15 +173,16 @@ public class NetworkMetaAnalysisConverter {
 	
 		RelativeEffectsSummary relativeEffects = results.getRelativeEffectsSummary();
 		double[] mean = ArrayUtils.toPrimitive(relativeEffects.getMeans().toArray(new Double[results.getRelativeEffectsSummary().getMeans().size()]));
-		int covarianceSize = relativeEffects.getCovariance().size() / 2;
+		int covarianceSize = calcCovMatrixDim(relativeEffects.getCovariance().size());
+
 		double[][] covarianceMatrix = new double[covarianceSize][covarianceSize];
 		int covIdx = 0;
-		for(int row = 0; row < covarianceSize; ++row) {
-			for(int col = row; col < covarianceSize; ++col) {
+		for(int row = 0; row < covarianceSize; row++) {
+			for(int col = row; col < covarianceSize; col++) {
 				double x = relativeEffects.getCovariance().get(covIdx);
 				covarianceMatrix[row][col] = x;
 				covarianceMatrix[col][row] = x;
-				++covIdx;
+				covIdx++;
 			}
 		}
 		MultivariateNormalSummary relativeEffectsSummary = new SimpleMultivariateNormalSummary(mean, covarianceMatrix);
@@ -201,6 +202,18 @@ public class NetworkMetaAnalysisConverter {
 		}	
 		RankProbabilitySummary rankProbabilitySummary = new RankProbabilitySummary(rankProbabilityMatrix, treatments);
 		networkMetaAnalysis.loadConsistencyModel(buildMCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries, relativeEffectsSummary, rankProbabilitySummary);
+	}
+
+	private static int calcCovMatrixDim(int entries) {
+		return (intSqrt(1 + 8 * entries) - 1) / 2;
+	}
+
+	private static int intSqrt(int n) {
+		int r = (int)Math.round(Math.sqrt(n));
+		if (r * r != n) {
+			throw new RuntimeException(n + " does not have an integer square root.");
+		}
+		return r;
 	}
 
 	private static void addRelativeEffectQuantileSummaries(NetworkMetaAnalysis networkMetaAnalysis,
