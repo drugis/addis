@@ -82,7 +82,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyWrapper d_inconsistencyModel;
 	private ConsistencyWrapper d_consistencyModel;
-	private NetworkBuilder<DrugSet> d_builder;
+	protected NetworkBuilder<DrugSet> d_builder;
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
 		new HashMap<Parameter, NodeSplitPValueSummary>();
 	
