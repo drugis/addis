@@ -1989,9 +1989,7 @@ public class JAXBConvertorTest {
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		sortUsedBys(data);
 		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
-
 		assertXMLSimilar(data, roundTrip);
-		assertEquals(data, roundTrip);
 	}
 
 	private static void assertXMLSimilar(AddisData expected, AddisData actual)

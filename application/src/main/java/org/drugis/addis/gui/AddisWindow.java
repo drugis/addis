@@ -299,7 +299,7 @@ public class AddisWindow extends JFrame {
 		d_editMenuEditItem.setEnabled(false);
 		editMenu.add(d_editMenuEditItem);
 
-		d_editMenuDeleteItem = createDeleteItem(d_editMenuEditItem);
+		d_editMenuDeleteItem = createDeleteItem();
 		d_editMenuDeleteItem.setEnabled(false);
 		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editMenu.add(d_editMenuDeleteItem);
@@ -318,16 +318,13 @@ public class AddisWindow extends JFrame {
 		return editMenu;
 	}
 
-	private JMenuItem createDeleteItem(final JMenuItem ... menuItems) {
+	private JMenuItem createDeleteItem() {
 		final JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				final boolean deleted = deleteMenuAction();
-				item.setEnabled(!deleted);
-				for(JMenuItem disable : menuItems) { 
-					disable.setEnabled(!deleted);
-				}
+				deleteMenuAction();
+				d_leftPanelTree.setSelectionPath(null);
 			}
 		});
 
