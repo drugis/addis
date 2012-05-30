@@ -295,15 +295,15 @@ public class AddisWindow extends JFrame {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
 		
-		d_editMenuDeleteItem = createDeleteItem();
-		d_editMenuDeleteItem.setEnabled(false);
-		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-		editMenu.add(d_editMenuDeleteItem);
-		
 		d_editMenuEditItem = createEditItem();
 		d_editMenuEditItem.setEnabled(false);
 		editMenu.add(d_editMenuEditItem);
 
+		d_editMenuDeleteItem = createDeleteItem(d_editMenuEditItem);
+		d_editMenuDeleteItem.setEnabled(false);
+		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+		editMenu.add(d_editMenuDeleteItem);
+		
 		if(AppInfo.getAppVersion().equals(AppInfo.APPVERSIONFALLBACK)) {
 			JMenuItem menuItem = new JMenuItem("Generate error");
 			editMenu.add(menuItem);
@@ -318,12 +318,16 @@ public class AddisWindow extends JFrame {
 		return editMenu;
 	}
 
-	private JMenuItem createDeleteItem() {
-		JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+	private JMenuItem createDeleteItem(final JMenuItem ... menuItems) {
+		final JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				deleteMenuAction();
+				final boolean deleted = deleteMenuAction();
+				item.setEnabled(!deleted);
+				for(JMenuItem disable : menuItems) { 
+					disable.setEnabled(!deleted);
+				}
 			}
 		});
 
@@ -342,11 +346,12 @@ public class AddisWindow extends JFrame {
 		return item;
 	}
 
-	protected void deleteMenuAction() {
+	protected boolean deleteMenuAction() {
 		Entity selected = getSelectedEntity();
 		if (selected != null) {
-			deleteEntity(selected, true);
+			return deleteEntity(selected, true);
 		}
+		return false;
 	}
 
 	private Entity getSelectedEntity() {
@@ -608,7 +613,7 @@ public class AddisWindow extends JFrame {
 	}
 
 
-	public void deleteEntity(Entity selected, boolean confirmation) {
+	public boolean deleteEntity(Entity selected, boolean confirmation) {
 		String selectedType = getEntityKnowledge(selected).getSingularCapitalized();
 
 		if (confirmation) {
@@ -618,7 +623,7 @@ public class AddisWindow extends JFrame {
 					JOptionPane.QUESTION_MESSAGE, Main.IMAGELOADER
 					.getIcon(FileNames.ICON_DELETE));
 			if (conf != JOptionPane.YES_OPTION) {
-				return;
+				return false;
 			}
 		}
 		try {
@@ -638,6 +643,7 @@ public class AddisWindow extends JFrame {
 			JOptionPane.showMessageDialog(this, sp, "Error deleting "
 					+ selected, JOptionPane.ERROR_MESSAGE);
 		}
+		return true;
 	}
 
 	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {
