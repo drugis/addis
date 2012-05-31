@@ -37,9 +37,15 @@ import org.drugis.mtc.summary.RankProbabilitySummary;
 public class RankProbabilityTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 6045183840617200792L;
 	private final RankProbabilitySummary d_summary;
+	private final NetworkMetaAnalysisPresentation d_pm;
 
-	public RankProbabilityTableModel(RankProbabilitySummary summary) {
+	public RankProbabilityTableModel(RankProbabilitySummary summary) { 
+		this(summary, null);
+	}
+	
+	public RankProbabilityTableModel(RankProbabilitySummary summary, NetworkMetaAnalysisPresentation pm) {
 		d_summary = summary;
+		d_pm = pm;
 		d_summary.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				fireTableDataChanged();
@@ -76,6 +82,9 @@ public class RankProbabilityTableModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Treatment treatment = d_summary.getTreatments().get(rowIndex);
 		if (columnIndex == 0) {
+			if(d_pm != null) { 
+				return d_pm.getBean().getBuilder().getTreatmentMap().getKey(treatment).getLabel();
+			}
 			return treatment.getId();
 		} else {
 			return d_summary.getDefined() ? d_summary.getValue(treatment, columnIndex) : "";

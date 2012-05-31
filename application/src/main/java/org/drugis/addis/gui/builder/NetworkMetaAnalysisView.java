@@ -503,7 +503,7 @@ implements ViewBuilder {
 	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
 		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Treatment", "Probability", 
-						dataset, PlotOrientation.VERTICAL, true, false, false);	
+						dataset, PlotOrientation.VERTICAL, true, true, false);	
 		chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle(d_pm.getRankProbabilityRankChartNote()));
 
 		FormLayout layout = new FormLayout(
