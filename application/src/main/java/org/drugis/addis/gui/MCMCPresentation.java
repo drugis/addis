@@ -47,13 +47,14 @@ public class MCMCPresentation implements Comparable<MCMCPresentation> {
 	public MCMCPresentation(final MCMCModelWrapper wrapper, final OutcomeMeasure om, final String name) { 
 		d_wrapper = wrapper;
 		d_om = om;
-		if(wrapper.isSaved()) { 
-			NullTask savedTask = new NullTask("Loading results");
-			d_taskProgressModel = new TaskProgressModel(savedTask);
-			savedTask.run();
-		} else { 
-			d_taskProgressModel = new TaskProgressModel(wrapper.getModel().getActivityTask());
-		}
+		d_taskProgressModel = !wrapper.isSaved() ? new TaskProgressModel(wrapper.getModel().getActivityTask()) : new TaskProgressModel(new NullTask() {
+			public boolean isFinished() {
+				return true;
+			}
+			public boolean isStarted() {
+				return true;
+			}
+		});
 		d_name = name;
 		d_modelConstructionFinished = wrapper.isSaved() ? new UnmodifiableHolder<Boolean>(true) : 
 			new ValueModelWrapper<Boolean>(new TaskTerminatedModel(wrapper.getModel().getActivityTask().getModel().getStartState()));
