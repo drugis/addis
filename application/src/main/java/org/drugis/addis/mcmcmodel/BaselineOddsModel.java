@@ -38,7 +38,6 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.common.stat.DichotomousDescriptives;
 import org.drugis.common.stat.EstimateWithPrecision;
 
-//FIXME: allow reuse of ProgressObservable from MTC
 public class BaselineOddsModel extends AbstractBaselineModel<RateMeasurement> {
 	private DichotomousDescriptives d_dichotomousDescriptives = new DichotomousDescriptives(true);
 

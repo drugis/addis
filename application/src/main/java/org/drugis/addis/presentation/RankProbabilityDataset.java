@@ -38,9 +38,15 @@ import org.jfree.data.category.DefaultCategoryDataset;
 @SuppressWarnings("serial")
 public class RankProbabilityDataset extends DefaultCategoryDataset {
 	private RankProbabilitySummary d_summary;
+	private final NetworkMetaAnalysisPresentation d_pm;
 
 	public RankProbabilityDataset(RankProbabilitySummary rankProbabilitySummary) {
+		this(rankProbabilitySummary, null);
+	}
+	
+	public RankProbabilityDataset(RankProbabilitySummary rankProbabilitySummary, NetworkMetaAnalysisPresentation pm) {
 		d_summary = rankProbabilitySummary;
+		d_pm = pm;
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				fireDatasetChanged();
@@ -87,6 +93,9 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	
 	@Override
 	public String getColumnKey(int column) {
+		if(d_pm != null) { 
+			return d_pm.getDrugSet(d_summary.getTreatments().get(column)).getLabel(); 
+		}
 		return d_summary.getTreatments().get(column).getId(); 
 	}
 	
