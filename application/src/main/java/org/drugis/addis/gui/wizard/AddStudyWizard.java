@@ -1111,7 +1111,6 @@ public class AddStudyWizard extends Wizard {
 					"Unfortunately, due to limitations of ClinicalTrials.gov, it is currently not possible to import adverse events or study results.",
 					doc.getStyle("regular"));
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
