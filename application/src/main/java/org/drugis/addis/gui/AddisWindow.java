@@ -323,8 +323,9 @@ public class AddisWindow extends JFrame {
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				deleteMenuAction();
-				d_leftPanelTree.setSelectionPath(null);
+				if(deleteMenuAction()) { 
+					d_leftPanelTree.setSelectionPath(null);
+				}
 			}
 		});
 
