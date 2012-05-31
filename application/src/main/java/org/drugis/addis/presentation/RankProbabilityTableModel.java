@@ -83,7 +83,7 @@ public class RankProbabilityTableModel extends AbstractTableModel {
 		Treatment treatment = d_summary.getTreatments().get(rowIndex);
 		if (columnIndex == 0) {
 			if(d_pm != null) { 
-				return d_pm.getBean().getBuilder().getTreatmentMap().getKey(treatment).getLabel();
+				return d_pm.getDrugSet(treatment).getLabel();
 			}
 			return treatment.getId();
 		} else {

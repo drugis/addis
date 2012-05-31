@@ -94,7 +94,7 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	@Override
 	public String getColumnKey(int column) {
 		if(d_pm != null) { 
-			return d_pm.getBean().getBuilder().getTreatmentMap().getKey(d_summary.getTreatments().get(column)).getLabel(); 
+			return d_pm.getDrugSet(d_summary.getTreatments().get(column)).getLabel(); 
 		}
 		return d_summary.getTreatments().get(column).getId(); 
 	}

@@ -46,6 +46,7 @@ import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
 import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.jfree.data.category.CategoryDataset;
 
@@ -75,6 +76,10 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
+	public DrugSet getDrugSet(Treatment t) { 
+		return getBean().getBuilder().getTreatmentMap().getKey(t);
+	}
+	
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
 				new ArrayListModel<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
