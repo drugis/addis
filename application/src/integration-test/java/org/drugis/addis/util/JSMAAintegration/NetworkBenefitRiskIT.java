@@ -41,6 +41,7 @@ import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fi.smaa.common.RandomUtil;
@@ -57,6 +58,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 	/**
 	 * Test SMAA using measurements derived using the internal MTC models.
 	 */
+	@Ignore
 	@Test
 	public void testNetworkBR() throws FileNotFoundException, IOException, InterruptedException {
 		DomainManager domainManager = new DomainManager();
