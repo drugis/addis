@@ -31,14 +31,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.TypeWithName;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {
@@ -138,5 +139,14 @@ public class EntityUtil {
 			return Entity.class.isAssignableFrom(type) ? Entity.class : Object.class;
 		}
 		return type;
+	}
+
+	public static <T extends TypeWithName> T findByName(Collection<T> haystack, String needle) {
+		for (T o : haystack) {
+			if (needle.equals(o.getName())) {
+				return o;
+			}
+		}
+		return null;
 	}
 }
