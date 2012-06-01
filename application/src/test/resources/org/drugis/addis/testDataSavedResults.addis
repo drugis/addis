@@ -24778,19 +24778,6 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     <quantile level="0.5" value="-0.36474100305661183"/>
                     <quantile level="0.975" value="0.4714631493228781"/>
                 </summary>
-                <summary psrf="1.034980027897645">
-                    <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                    </relativeEffect>
-                    <quantile level="0.025" value="-1.1598407016004961"/>
-                    <quantile level="0.5" value="-0.36474100305661183"/>
-                    <quantile level="0.975" value="0.4714631493228781"/>
-                </summary>
                 <summary psrf="1.020774888017304">
                     <variance name="var.d"/>
                     <quantile level="0.025" value="0.007697416644200058"/>
@@ -24859,19 +24846,6 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     <quantile level="0.025" value="-0.10286237416997962"/>
                     <quantile level="0.5" value="0.3820843462701017"/>
                     <quantile level="0.975" value="0.901978935430046"/>
-                </summary>
-                <summary psrf="1.0088559423552028">
-                    <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                    </relativeEffect>
-                    <quantile level="0.025" value="-0.2744594724370188"/>
-                    <quantile level="0.5" value="0.5857308826804052"/>
-                    <quantile level="0.975" value="1.508762521517565"/>
                 </summary>
                 <summary psrf="1.0088559423552028">
                     <relativeEffect whichEvidence="INDIRECT">
@@ -24968,19 +24942,6 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     <quantile level="0.5" value="-0.7012522667786996"/>
                     <quantile level="0.975" value="0.11603579336147074"/>
                 </summary>
-                <summary psrf="1.0978522711852665">
-                    <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                    </relativeEffect>
-                    <quantile level="0.025" value="-1.537718312520842"/>
-                    <quantile level="0.5" value="-0.7012522667786996"/>
-                    <quantile level="0.975" value="0.11603579336147074"/>
-                </summary>
                 <summary psrf="1.0634550991092562">
                     <variance name="var.d"/>
                     <quantile level="0.025" value="0.002945475346351608"/>
@@ -25049,19 +25010,6 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     <quantile level="0.025" value="-1.6188424357804152"/>
                     <quantile level="0.5" value="-0.9406115452999635"/>
                     <quantile level="0.975" value="-0.2396507488577411"/>
-                </summary>
-                <summary psrf="1.0034311187751843">
-                    <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                    </relativeEffect>
-                    <quantile level="0.025" value="-1.558664557575764"/>
-                    <quantile level="0.5" value="-0.8124134786699839"/>
-                    <quantile level="0.975" value="0.044222893769935906"/>
                 </summary>
                 <summary psrf="1.0034311187751843">
                     <relativeEffect whichEvidence="INDIRECT">
@@ -25158,19 +25106,6 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     <quantile level="0.5" value="-1.1205604193467757"/>
                     <quantile level="0.975" value="-0.3569437897713643"/>
                 </summary>
-                <summary psrf="1.0080074077717607">
-                    <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                    </relativeEffect>
-                    <quantile level="0.025" value="-1.8263300417057744"/>
-                    <quantile level="0.5" value="-1.1205604193467757"/>
-                    <quantile level="0.975" value="-0.3569437897713643"/>
-                </summary>
                 <summary psrf="1.0248419417918222">
                     <variance name="var.d"/>
                     <quantile level="0.025" value="0.0024678179021695914"/>
@@ -25239,19 +25174,6 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     <quantile level="0.025" value="-0.5098527037629831"/>
                     <quantile level="0.5" value="0.5463004780881278"/>
                     <quantile level="0.975" value="1.7300648099429983"/>
-                </summary>
-                <summary psrf="1.0057560580606306">
-                    <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                    </relativeEffect>
-                    <quantile level="0.025" value="-0.897232413696087"/>
-                    <quantile level="0.5" value="-0.13661347554117526"/>
-                    <quantile level="0.975" value="0.6579177709108964"/>
                 </summary>
                 <summary psrf="1.0057560580606306">
                     <relativeEffect whichEvidence="INDIRECT">
