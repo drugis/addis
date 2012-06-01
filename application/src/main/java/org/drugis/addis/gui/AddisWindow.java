@@ -144,6 +144,10 @@ public class AddisWindow extends JFrame {
 		initComponents();
 		Main.bindPrintScreen(super.getContentPane());
 		updateTitle();
+		selectDefaultPath();
+	}
+
+	private void selectDefaultPath() {
 		d_leftPanelTree.getSelectionModel().setSelectionPath(d_domainTreeModel.getPathTo(d_domain.getCategory(Study.class)));
 	}
 	
@@ -323,8 +327,9 @@ public class AddisWindow extends JFrame {
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				deleteMenuAction();
-				d_leftPanelTree.setSelectionPath(null);
+				if(deleteMenuAction()) { 
+					selectDefaultPath();
+				}
 			}
 		});
 
