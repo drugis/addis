@@ -26,6 +26,7 @@
 
 package org.drugis.addis.util.JSMAAintegration;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
@@ -33,7 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.AdverseEvent;
+import org.apache.commons.math3.linear.RealVector;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.DrugSet;
@@ -45,10 +46,18 @@ import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fi.smaa.common.RandomUtil;
+import fi.smaa.jsmaa.model.Alternative;
 import fi.smaa.jsmaa.model.Criterion;
+import fi.smaa.jsmaa.model.CriterionMeasurement;
+import fi.smaa.jsmaa.model.GaussianMeasurement;
+import fi.smaa.jsmaa.model.PerCriterionMeasurements;
+import fi.smaa.jsmaa.model.RelativeGaussianCriterionMeasurement;
+import fi.smaa.jsmaa.model.RelativeLogitGaussianCriterionMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.simulator.SMAA2Simulation;
 
@@ -58,56 +67,153 @@ import fi.smaa.jsmaa.simulator.SMAA2Simulation;
  * @see <a href="http://drugis.org/network-br">network-br paper</a>
  */
 public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
+	
+	private static DomainManager d_domainManager;
+	private static MetaBenefitRiskAnalysis d_br;
+	private static MetaBenefitRiskPresentation d_brpm;
+	private static SMAAModel d_model;
+
+	@BeforeClass
+	public static void setUp() throws IOException, InterruptedException {
+		System.out.println("BeforeClass -- Running models");
+		d_domainManager = new DomainManager();
+		d_domainManager.loadXMLDomain(NetworkBenefitRiskIT.class.getResourceAsStream("network-br.addis"), 1);
+		
+		Domain domain = d_domainManager.getDomain();
+		d_br = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().get(0);
+		
+		d_brpm = new MetaBenefitRiskPresentation(d_br, null);
+		for (MCMCPresentation model : d_brpm.getWrappedModels()) {
+			System.out.println("Running " + model);
+			model.getModel().setSimulationIterations(50000);
+			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
+			TaskUtil.run(model.getModel().getActivityTask());
+		}
+		// Build SMAA model
+		SMAAPresentation<DrugSet, MetaBenefitRiskAnalysis> smaapm = d_brpm.getSMAAPresentation();
+		d_model = smaapm.getSMAAFactory().createSMAAModel();
+	}
+	
+	@AfterClass
+	public static void cleanUp() { 
+		d_domainManager = null;
+		d_br = null;
+		d_brpm = null;
+		d_model = null;
+	}
+	
 	/**
 	 * Test SMAA using measurements derived using the internal MTC models.
 	 */
 	@Test
-	public void testNetworkBR() throws FileNotFoundException, IOException, InterruptedException {
-		DomainManager domainManager = new DomainManager();
-		domainManager.loadXMLDomain(NetworkBenefitRiskIT.class.getResourceAsStream("network-br.addis"), 1);
-		
-		Domain domain = domainManager.getDomain();
-		MetaBenefitRiskAnalysis br = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().get(0);
-		
-		// Run required models
-		MetaBenefitRiskPresentation brpm = new MetaBenefitRiskPresentation(br, null);
-		for (MCMCPresentation model : brpm.getWrappedModels()) {
-			model.getModel().setSimulationIterations(40000);
-			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
-			TaskUtil.run(model.getModel().getActivityTask());
-		}
-		
+	public void testNetworkBRBaseline() { 
 		// Test results of underlying models
-		verifyBaselineMeasurement(br, "HAM-D Responders", -0.17, 0.11);
-		verifyBaselineMeasurement(br, "Diarrhea", -2.19, 0.21);
-		verifyBaselineMeasurement(br, "Dizziness", -2.23, 0.61);
-		verifyBaselineMeasurement(br, "Headache", -1.20, 0.29);
-		verifyBaselineMeasurement(br, "Insomnia", -2.61, 0.19);
-		verifyBaselineMeasurement(br, "Nausea", -2.02, 0.19);
-		
-		// Build SMAA model
-		SMAAPresentation<DrugSet, MetaBenefitRiskAnalysis> smaapm = brpm.getSMAAPresentation();
-		SMAAModel model = smaapm.getSMAAFactory().createSMAAModel();
-
+		System.out.println("Begin verifiying baselines");
+		verifyBaselineMeasurement(d_br, "HAM-D Responders", -0.17, 0.11);
+		verifyBaselineMeasurement(d_br, "Diarrhea", -2.19, 0.21);
+		verifyBaselineMeasurement(d_br, "Dizziness", -2.23, 0.61);
+		verifyBaselineMeasurement(d_br, "Headache", -1.20, 0.29);
+		verifyBaselineMeasurement(d_br, "Insomnia", -2.61, 0.19);
+		verifyBaselineMeasurement(d_br, "Nausea", -2.02, 0.19);
+		System.out.println("Finished verifiying baselines");
+	}
+	
+	@Test
+	public void testNetworkBRRelativeEffects() throws FileNotFoundException, IOException, InterruptedException {	
+		System.out.println("Begin verifiying relative effects");
+		List<Alternative> alternatives = new ArrayList<Alternative>(d_model.getAlternatives());
+		alternatives = movePlacebo(alternatives, findPlacebo(alternatives), 0); // The build* expect placebo first
+		verifyRelativeEffects(d_brpm, d_model, "HAM-D Responders", buildHAMD(alternatives));
+		verifyRelativeEffects(d_brpm, d_model, "Diarrhea", buildDiarrhea(alternatives));
+		verifyRelativeEffects(d_brpm, d_model, "Dizziness", buildDizziness(alternatives));
+		verifyRelativeEffects(d_brpm, d_model, "Headache", buildHeadache(alternatives));
+		verifyRelativeEffects(d_brpm, d_model, "Insomnia", buildInsomnia(alternatives));
+		verifyRelativeEffects(d_brpm, d_model, "Nausea", buildNausea(alternatives));
+		System.out.println("Finished verifiying relative effects");
+	}
+	
+	@Test
+	public void testNetworkBRModel() throws InterruptedException { 
+		System.out.println("Begin verifiying model");
 		// Reorder criteria
-		List<Criterion> newCrit = new ArrayList<Criterion>(model.getCriteria());
+		List<Criterion> newCrit = new ArrayList<Criterion>(d_model.getCriteria());
 		Criterion hamd = newCrit.remove(0);
 		assertEquals("HAM-D Responders", hamd.getName());
 		newCrit.add(2, hamd);
-		model.reorderCriteria(newCrit);
+		d_model.reorderCriteria(newCrit);
 
 		// Run SMAA
 		RandomUtil random = RandomUtil.createWithRandomSeed();
-		SMAA2Simulation simulation = new SMAA2Simulation(model, random, 10000);
+		SMAA2Simulation simulation = new SMAA2Simulation(d_model, random, 10000);
 		TaskUtil.run(simulation.getTask());
 		
-		checkResults(model, simulation, 2.0);
+		checkResults(d_model, simulation, 2.0);
+		System.out.println("Finished verifiying model");
 	}
 
-	private void verifyBaselineMeasurement(MetaBenefitRiskAnalysis br,
+	private static void verifyRelativeEffects(MetaBenefitRiskPresentation brpm, SMAAModel model,
+			String name, CriterionMeasurement expected) {
+		PerCriterionMeasurements measurements = (PerCriterionMeasurements) model.getMeasurements();
+		
+		CriterionMeasurement actual = measurements.getCriterionMeasurement(brpm.getSMAAPresentation().getSMAAFactory().getCriterion(EntityUtil.findByName(brpm.getBean().getCriteria(), name)));
+		actual.reorderAlternatives(movePlacebo(actual.getAlternatives(), findPlacebo(actual.getAlternatives()), 2)); // Reorder alternatives
+		expected.reorderAlternatives(movePlacebo(expected.getAlternatives(), findPlacebo(expected.getAlternatives()), 2)); // Reorder alternatives
+		assertRelativeLogitEquals((RelativeLogitGaussianCriterionMeasurement) expected, (RelativeLogitGaussianCriterionMeasurement) actual, 0.05);
+	}
+
+
+	private static void assertRelativeLogitEquals(
+			RelativeLogitGaussianCriterionMeasurement expected,
+			RelativeLogitGaussianCriterionMeasurement actual, double d) {
+		assertRelativeGaussian(expected.getGaussianMeasurement(), actual.getGaussianMeasurement(), d);
+	}
+
+	private static void assertRelativeGaussian(
+			RelativeGaussianCriterionMeasurement expected,
+			RelativeGaussianCriterionMeasurement actual, double d) {
+
+		GaussianMeasurement expectedBaseline = expected.getBaselineMeasurement();
+		GaussianMeasurement actualBaseline = actual.getBaselineMeasurement();		
+
+		assertEquals(expectedBaseline.getMean(), actualBaseline.getMean(), d);
+		assertEquals(expectedBaseline.getStDev(), actualBaseline.getStDev(), d);
+		
+		double[] expectedCovariance = flatten(expected.getRelativeMeasurement().getCovarianceMatrix().getData());
+		double[] actualCovariance = flatten(actual.getRelativeMeasurement().getCovarianceMatrix().getData());
+		
+		assertArrayEquals(expectedCovariance, actualCovariance, d);
+		
+		RealVector expectedMeanVector = expected.getRelativeMeasurement().getMeanVector();
+		RealVector actualMeanVector = actual.getRelativeMeasurement().getMeanVector();
+
+		assertArrayEquals(expectedMeanVector.toArray(), actualMeanVector.toArray(), d);
+	}
+	
+	private static void verifyBaselineMeasurement(MetaBenefitRiskAnalysis br,
 			String name, double mu, double sigma) {
 		OutcomeMeasure om = EntityUtil.findByName(br.getCriteria(), name);
 		assertEquals(sigma, br.getBaselineDistribution(om).getSigma(), 0.05);
 		assertEquals(mu, br.getBaselineDistribution(om).getMu(), 0.05);
 	}
+
+	private static int findPlacebo(List<Alternative> alternatives) {
+		int expPlaceboIdx = 0;
+		for(int idx = 0; idx < alternatives.size(); idx++)  {
+			if(alternatives.get(idx).getName().equals("Placebo")) {
+				expPlaceboIdx = idx;
+			}
+		}
+		return expPlaceboIdx;
+	}
+	
+	private static double[] flatten(double[][] matrix2d) { 
+		double[] newArray = new double[2 * matrix2d[0].length];
+		int index = 0;
+		for (int n = 0; n < matrix2d[0].length; n++) {
+		    newArray[index++] = matrix2d[0][n];
+		    newArray[index++] = matrix2d[1][n];
+		}
+		return newArray;
+	}
+	
 }
