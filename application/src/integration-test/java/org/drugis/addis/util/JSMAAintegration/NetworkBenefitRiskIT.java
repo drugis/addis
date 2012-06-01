@@ -33,15 +33,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drugis.addis.entities.AdverseEvent;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
+import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import fi.smaa.common.RandomUtil;
@@ -58,21 +61,29 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 	/**
 	 * Test SMAA using measurements derived using the internal MTC models.
 	 */
-	@Ignore
 	@Test
 	public void testNetworkBR() throws FileNotFoundException, IOException, InterruptedException {
 		DomainManager domainManager = new DomainManager();
 		domainManager.loadXMLDomain(NetworkBenefitRiskIT.class.getResourceAsStream("network-br.addis"), 1);
 		
-		MetaBenefitRiskAnalysis br = (MetaBenefitRiskAnalysis) domainManager.getDomain().getBenefitRiskAnalyses().get(0);
+		Domain domain = domainManager.getDomain();
+		MetaBenefitRiskAnalysis br = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().get(0);
 		
 		// Run required models
 		MetaBenefitRiskPresentation brpm = new MetaBenefitRiskPresentation(br, null);
 		for (MCMCPresentation model : brpm.getWrappedModels()) {
-			model.getModel().setSimulationIterations(20000);
+			model.getModel().setSimulationIterations(40000);
 			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 			TaskUtil.run(model.getModel().getActivityTask());
 		}
+		
+		// Test results of underlying models
+		verifyBaselineMeasurement(br, "HAM-D Responders", -0.17, 0.11);
+		verifyBaselineMeasurement(br, "Diarrhea", -2.19, 0.21);
+		verifyBaselineMeasurement(br, "Dizziness", -2.23, 0.61);
+		verifyBaselineMeasurement(br, "Headache", -1.20, 0.29);
+		verifyBaselineMeasurement(br, "Insomnia", -2.61, 0.19);
+		verifyBaselineMeasurement(br, "Nausea", -2.02, 0.19);
 		
 		// Build SMAA model
 		SMAAPresentation<DrugSet, MetaBenefitRiskAnalysis> smaapm = brpm.getSMAAPresentation();
@@ -91,5 +102,12 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		TaskUtil.run(simulation.getTask());
 		
 		checkResults(model, simulation, 2.0);
+	}
+
+	private void verifyBaselineMeasurement(MetaBenefitRiskAnalysis br,
+			String name, double mu, double sigma) {
+		OutcomeMeasure om = EntityUtil.findByName(br.getCriteria(), name);
+		assertEquals(sigma, br.getBaselineDistribution(om).getSigma(), 0.05);
+		assertEquals(mu, br.getBaselineDistribution(om).getMu(), 0.05);
 	}
 }
