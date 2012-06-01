@@ -75,7 +75,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 
 	@BeforeClass
 	public static void setUp() throws IOException, InterruptedException {
-		System.out.println("Running setUp");
+		System.out.println("BeforeClass -- Running models");
 		d_domainManager = new DomainManager();
 		d_domainManager.loadXMLDomain(NetworkBenefitRiskIT.class.getResourceAsStream("network-br.addis"), 1);
 		
@@ -84,6 +84,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		
 		d_brpm = new MetaBenefitRiskPresentation(d_br, null);
 		for (MCMCPresentation model : d_brpm.getWrappedModels()) {
+			System.out.println("Running " + model);
 			model.getModel().setSimulationIterations(50000);
 			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 			TaskUtil.run(model.getModel().getActivityTask());
