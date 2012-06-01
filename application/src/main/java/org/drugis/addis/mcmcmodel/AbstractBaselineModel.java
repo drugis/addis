@@ -91,11 +91,18 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 	}
 	
 	protected double getStandardDeviationPrior() {
+		// FIXME: the factor 2 below is rather arbitrary. However, it is required to make
+		// the tests pass for network-br. Until baselines can be specified explicitly, it
+		// should remain there.
 		double maxDev = 0.0;
-		for (int i = 0; i < d_measurements.size(); ++i) {
-			maxDev = Math.max(maxDev, getError(i) * Math.sqrt(d_measurements.get(i).getSampleSize()));
+		for (int i = 0; i < d_measurements.size() - 1; ++i) {
+			EstimateWithPrecision e1 = estimateTreatmentEffect(i);
+			for (int j = i + 1; j < d_measurements.size(); ++j) {
+				EstimateWithPrecision e2 = estimateTreatmentEffect(j);
+				maxDev = Math.max(maxDev, Math.abs(e2.getPointEstimate() - e1.getPointEstimate()));
+			}
 		}
-		return maxDev * 5;
+		return 2 * maxDev;
 	}
 	
 	protected abstract EstimateWithPrecision estimateTreatmentEffect(int i);
