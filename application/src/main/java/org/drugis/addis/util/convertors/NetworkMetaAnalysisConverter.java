@@ -118,7 +118,6 @@ public class NetworkMetaAnalysisConverter {
 
 		for(NodeSplitResults nodeSplit : nma.getNodeSplitResults()) {
 			loadNodeSplitModel(nodeSplit, nma, networkMetaAnalysis, domain);
-
 		}
 		
 		return networkMetaAnalysis;

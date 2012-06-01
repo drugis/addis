@@ -26,7 +26,9 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.MCMCSettingsCache;
@@ -88,4 +90,12 @@ public class SavedNodeSplitWrapper extends AbstractSavedWrapper implements NodeS
 	public String getDescription() {
 		return "Node Split on " + getSplitNode().getName();
 	}
+	
+	@Override
+	public Parameter[] getParameters() { 
+		Set<Parameter> set = new HashSet<Parameter>(d_convergenceSummaries.keySet());
+		set.remove(getIndirectEffect());
+		return set.toArray(new Parameter[] {});
+	}
+
 }

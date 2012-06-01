@@ -173,7 +173,6 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		d_inconsistencyModel = new SavedInconsistencyWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries);
 		
 	}
-	
 
 	public synchronized void loadConsistencyModel(MCMCSettingsCache mcmcSettingsCache,
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
@@ -197,6 +196,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			NodeSplitPValueSummary nodeSplitPValueSummary) {
 		SavedNodeSplitWrapper nodeSplitModel = new SavedNodeSplitWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries, splitParameter, nodeSplitPValueSummary);
 		d_nodeSplitModels.put(splitParameter, nodeSplitModel);
+	}
+	
+	public void resetNodeSplitModels() { 
+		d_nodeSplitModels.clear();
+		for(BasicParameter p : getSplitParameters()) {
+			getNodeSplitModel(p); 
+		}
 	}
 	
 	public NetworkBuilder<DrugSet> getBuilder() {
