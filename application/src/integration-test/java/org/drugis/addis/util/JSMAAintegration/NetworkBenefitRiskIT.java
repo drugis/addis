@@ -108,19 +108,16 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 	@Test
 	public void testNetworkBRBaseline() { 
 		// Test results of underlying models
-		System.out.println("Begin verifiying baselines");
 		verifyBaselineMeasurement(d_br, "HAM-D Responders", -0.17, 0.11);
 		verifyBaselineMeasurement(d_br, "Diarrhea", -2.19, 0.21);
 		verifyBaselineMeasurement(d_br, "Dizziness", -2.23, 0.61);
 		verifyBaselineMeasurement(d_br, "Headache", -1.20, 0.29);
 		verifyBaselineMeasurement(d_br, "Insomnia", -2.61, 0.19);
 		verifyBaselineMeasurement(d_br, "Nausea", -2.02, 0.19);
-		System.out.println("Finished verifiying baselines");
 	}
 	
 	@Test
 	public void testNetworkBRRelativeEffects() throws FileNotFoundException, IOException, InterruptedException {	
-		System.out.println("Begin verifiying relative effects");
 		List<Alternative> alternatives = new ArrayList<Alternative>(d_model.getAlternatives());
 		alternatives = movePlacebo(alternatives, findPlacebo(alternatives), 0); // The build* expect placebo first
 		verifyRelativeEffects(d_brpm, d_model, "HAM-D Responders", buildHAMD(alternatives));
@@ -129,12 +126,10 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		verifyRelativeEffects(d_brpm, d_model, "Headache", buildHeadache(alternatives));
 		verifyRelativeEffects(d_brpm, d_model, "Insomnia", buildInsomnia(alternatives));
 		verifyRelativeEffects(d_brpm, d_model, "Nausea", buildNausea(alternatives));
-		System.out.println("Finished verifiying relative effects");
 	}
 	
 	@Test
 	public void testNetworkBRModel() throws InterruptedException { 
-		System.out.println("Begin verifiying model");
 		// Reorder criteria
 		List<Criterion> newCrit = new ArrayList<Criterion>(d_model.getCriteria());
 		Criterion hamd = newCrit.remove(0);
@@ -148,7 +143,6 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		TaskUtil.run(simulation.getTask());
 		
 		checkResults(d_model, simulation, 2.0);
-		System.out.println("Finished verifiying model");
 	}
 
 	private static void verifyRelativeEffects(MetaBenefitRiskPresentation brpm, SMAAModel model,
