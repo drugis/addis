@@ -44,8 +44,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.gui.AddisWindow;
@@ -55,12 +55,15 @@ import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.components.TablePanel;
+import org.drugis.addis.gui.renderer.BRATDifferenceRenderer;
+import org.drugis.addis.gui.renderer.BRATForestCellRenderer;
+import org.drugis.addis.gui.renderer.DistributionQuantileCellRenderer;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
-import org.drugis.addis.presentation.BRATTableModel;
-import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation.DecisionContextField;
+import org.drugis.addis.presentation.BRATTableModel;
 import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
+import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 
@@ -185,7 +188,7 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 	protected JPanel buildOverviewPart() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		builder.setOpaque(true);
@@ -217,7 +220,12 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
-
+		
+		row += 2;
+		builder.addLabel("Baseline:", cc.xy(1, row));
+		JLabel baselineLabel = new JLabel(getBaseline().getLabel());
+		builder.add(baselineLabel,cc.xy(3, row));
+		
 		if (d_pm.getBean().getDecisionContext() != null) {
 			row  = LayoutUtil.addRow(layout, row);
 			builder.addSeparator("Decision context", cc.xyw(1, row, 3));

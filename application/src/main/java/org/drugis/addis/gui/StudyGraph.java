@@ -28,12 +28,15 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.gui.util.JGraphUtil;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
@@ -53,8 +56,7 @@ import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
 public class StudyGraph extends JPanel {
 	protected StudyGraphModel d_pm;
 	
-	@SuppressWarnings("rawtypes")
-	protected JGraphModelAdapter d_model;
+	protected JGraphModelAdapter<Vertex, Edge> d_model;
 	private AttributeMap d_vertexAttributes;
 
 	private JGraph d_jgraph;
@@ -114,16 +116,34 @@ public class StudyGraph extends JPanel {
 		return new MyDefaultCellViewFactory(d_model);
 	}
 
+	private class StudyJGraph extends JGraph {
+		public StudyJGraph(JGraphModelAdapter<Vertex, Edge> model, GraphLayoutCache layoutCache) {
+			super(model, layoutCache);
+		}
+
+		// Return Cell Label as a Tooltip
+		public String getToolTipText(MouseEvent e) {
+			if(e != null) {
+				Object c = getFirstCellForLocation(e.getX(), e.getY());
+				String str = convertValueToString(c);
+				if (!StringUtils.isNumeric(str)) {
+					return str;
+				}
+			}
+			return null;
+		}
+	}
+	
 	protected JGraph createGraph(GraphLayoutCache layoutCache) {
-		JGraph jgraph = new JGraph(d_model, layoutCache);
+		JGraph jgraph = new StudyJGraph(d_model, layoutCache);
 		jgraph.setAntiAliased(true);
 		jgraph.setEditable(false);
 		jgraph.setEnabled(false);
-		
+	    ToolTipManager.sharedInstance().registerComponent(jgraph);
 		return jgraph;
 	}
 	
 	public void saveImage(JFrame frame) {
 		JGraphUtil.writeGraphImage(frame, d_jgraph);
-	}
+	}	
 }

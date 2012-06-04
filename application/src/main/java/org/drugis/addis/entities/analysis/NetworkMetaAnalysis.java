@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DrugSet;
@@ -67,6 +68,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.parameterization.ParameterComparator;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -82,11 +84,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyWrapper d_inconsistencyModel;
 	private ConsistencyWrapper d_consistencyModel;
-	private NetworkBuilder<DrugSet> d_builder;
+	protected NetworkBuilder<DrugSet> d_builder;
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
 		new HashMap<Parameter, NodeSplitPValueSummary>();
 	
-	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new HashMap<BasicParameter, NodeSplitWrapper>();
+	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new TreeMap<BasicParameter, NodeSplitWrapper>(new ParameterComparator());
 	private ProxyMultivariateNormalSummary d_relativeEffectsSummary =  new ProxyMultivariateNormalSummary();
 	
 
@@ -169,8 +171,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	public synchronized void loadInconsistencyModel(MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_inconsistencyModel = new SavedInconsistencyWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries);
+		
 	}
-	
 
 	public synchronized void loadConsistencyModel(MCMCSettingsCache mcmcSettingsCache,
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
@@ -184,6 +186,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 				relativeEffectsSummary, 
 				rankProbabilitySummary,
 				getIncludedDrugs());	
+		d_relativeEffectsSummary.setNested(d_consistencyModel.getRelativeEffectsSummary());	
 	}
 	
 	public void loadNodeSplitModel(BasicParameter splitParameter,
@@ -193,6 +196,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			NodeSplitPValueSummary nodeSplitPValueSummary) {
 		SavedNodeSplitWrapper nodeSplitModel = new SavedNodeSplitWrapper(getBuilder(), settings, quantileSummaries, convergenceSummaries, splitParameter, nodeSplitPValueSummary);
 		d_nodeSplitModels.put(splitParameter, nodeSplitModel);
+	}
+	
+	public void resetNodeSplitModels() { 
+		d_nodeSplitModels.clear();
+		for(BasicParameter p : getSplitParameters()) {
+			getNodeSplitModel(p); 
+		}
 	}
 	
 	public NetworkBuilder<DrugSet> getBuilder() {

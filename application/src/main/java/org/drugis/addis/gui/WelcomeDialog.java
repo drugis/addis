@@ -35,8 +35,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
@@ -50,7 +50,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
-public class WelcomeDialog extends JDialog { // FIXME: should be JFrame
+public class WelcomeDialog extends JFrame { 
+	
 	private static final int COMP_HEIGHT = 65;
 	private static final int FULL_WIDTH = 446; // width of the header image
 	private static final int SPACING = 3;

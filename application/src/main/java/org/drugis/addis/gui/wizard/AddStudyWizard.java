@@ -30,6 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -39,12 +40,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.JButton;
@@ -72,6 +76,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
@@ -81,6 +87,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
@@ -109,18 +116,22 @@ import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
 import org.drugis.addis.imports.PubMedIDRetriever;
+import org.drugis.addis.presentation.AbstractListValidator;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.StudyActivitiesTableModel;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.AddArmsPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
-import org.drugis.addis.presentation.wizard.StudyActivityPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.OutcomeMeasurementsModel;
+import org.drugis.addis.presentation.wizard.StudyActivityPresentation;
 import org.drugis.addis.util.PubMedListFormat;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.common.validation.BooleanNotModel;
 import org.pietschy.wizard.AbstractWizardModel;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
@@ -264,53 +275,88 @@ public class AddStudyWizard extends Wizard {
 	
 	public static class AssignActivitiesWizardStep extends PanelWizardStep {
 		
-		public final class Validator extends AbstractValueModel {
-			private ContentAwareListModel<StudyActivity> d_list;
-			
-			public Validator(ObservableList<StudyActivity> list) {
-				d_list = new ContentAwareListModel<StudyActivity>(list);
-				d_list.addListDataListener(new ListDataListener() {
-					@Override
-					public void intervalRemoved(ListDataEvent e) {
-						fireValueChange(null, areDrugAndDoseFilledIn());
-					}
-					
-					@Override
-					public void intervalAdded(ListDataEvent e) {
-						fireValueChange(null, areDrugAndDoseFilledIn());
-					}
-					
-					@Override
-					public void contentsChanged(ListDataEvent e) {
-						fireValueChange(null, areDrugAndDoseFilledIn());
-					}
-				});
+		public final static class ActivitiesCompleteValidator extends AbstractListValidator<StudyActivity> {
+			public ActivitiesCompleteValidator(ObservableList<StudyActivity> list) {
+				super(new ContentAwareListModel<StudyActivity>(list));
 			}
 
-			private boolean areDrugAndDoseFilledIn() {
-				for (StudyActivity act : d_list.getList()) {
+			@Override
+			public boolean validate() {
+				for (StudyActivity act : d_list) {
 					if (!act.isComplete()) {
 						return false;
 					}
 				}
 				return true;
 			}
-
-			public Boolean getValue() {
-				return areDrugAndDoseFilledIn();
+		}
+		
+		public final static class AllActivitiesUsedValidator extends AbstractListValidator<StudyActivity> {
+			public AllActivitiesUsedValidator(ObservableList<StudyActivity> list) {
+				super(new ContentAwareListModel<StudyActivity>(list));
 			}
 
-			public void setValue(Object newValue) {
+			@Override
+			public boolean validate() {
+				for (StudyActivity act : d_list) {
+					if (act.getUsedBy().isEmpty()) {
+						return false;
+					}
+				}
+				return true;
 			}
 		}
 		
-		
+		public final static class TableFilledValidator extends AbstractValueModel implements ValueHolder<Boolean> {
+			private final StudyActivitiesTableModel d_tableModel;
+			private boolean d_value;
+
+			public TableFilledValidator(StudyActivitiesTableModel table) {
+				d_tableModel = table;
+				d_tableModel.addTableModelListener(new TableModelListener() {
+					
+					@Override
+					public void tableChanged(TableModelEvent e) {
+						update();
+					}
+				});
+				update();
+			}
+			
+			private void update() {
+				boolean oldValue = d_value;
+				d_value = validate();
+				fireValueChange(oldValue, d_value);
+			}
+			
+			private boolean validate() {
+				for(int row = 0; row < d_tableModel.getRowCount(); ++row) { 
+					for(int col = 0; col < d_tableModel.getColumnCount(); ++col) { 
+						if(d_tableModel.getValueAt(row, col) == null) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return d_value;
+			}
+
+			@Override
+			public void setValue(Object newValue) {
+				throw new IllegalAccessError("TableFilledFilledValidator is read-only");
+			}
+			
+		}
 		
 		private PanelBuilder d_builder;
 		private JScrollPane d_scrollPane;
 		
 		private AddStudyWizardPresentation d_pm;
-		private Validator d_validator;
+		private List<Pair<String, ValueModel>> d_validators = new ArrayList<Pair<String, ValueModel>>();
 		public JTable armsEpochsTable;
 		private final JDialog d_parent;
 		private AddisWindow d_mainWindow;
@@ -318,6 +364,7 @@ public class AddStudyWizard extends Wizard {
 		private static DataFlavor s_studyActivityFlavor = createFlavor();
 		private JList d_activityList;
 		private StudyActivitiesTableModel d_tableModel;
+		private BooleanAndModel d_readyValidator;
 		
 		private static DataFlavor createFlavor() {
 			try {
@@ -337,11 +384,26 @@ public class AddStudyWizard extends Wizard {
 				setComplete(true);
 		}
 		
+		private void addValidator(String warning, ValueModel validator) {
+			 d_validators.add(new Pair<String, ValueModel>(warning, validator));
+		}
+		
 		@Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_validator = new Validator(d_pm.getNewStudyPM().getBean().getStudyActivities());
-			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+			 d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
+			 d_validators.clear();
+			 addValidator("Some activities have missing data", new ActivitiesCompleteValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
+			 addValidator("Not all cells in the table are filled in", new TableFilledValidator(d_tableModel));
+			 addValidator("Not all the activities are used", new AllActivitiesUsedValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
+			 
+			 List<ValueModel> validators = new ArrayList<ValueModel>();
+			 for(Pair<String, ValueModel> validator : d_validators) {
+				 validators.add(validator.getValue());
+			 }
+			 
+			 d_readyValidator = new BooleanAndModel(validators);
+			 PropertyConnector.connectAndUpdate(d_readyValidator, this, "complete");
 			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
@@ -354,7 +416,7 @@ public class AddStudyWizard extends Wizard {
 		private void buildWizardStep() {
 			FormLayout layout = new FormLayout(
 					"fill:pref, 7dlu, fill:pref:grow",
-					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 					);
 			d_builder = new PanelBuilder(layout);
 			d_builder.setDefaultDialogBorder();
@@ -444,10 +506,32 @@ public class AddStudyWizard extends Wizard {
 			d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 			add(d_scrollPane, BorderLayout.CENTER);
+			
+			JPanel validationPanel = new JPanel();
+			validationPanel.setLayout(new BoxLayout(validationPanel, BoxLayout.Y_AXIS));
+			for (Pair<String, ValueModel> x : d_validators) {
+				validationPanel.add(createValidationLabel(x.getKey(), x.getValue()));
+			}
+			
+			d_builder.add(validationPanel, cc.xy(3, 11));
+			
+			JComponent note = buildTip("The study activities encode precisely what happened in each arm (patient group), during each epoch (phase of the study). " +
+					"To create a valid study design, please add an activity to each cell of the arms and epochs table above." +
+					"You should also make sure that each activity is completely specified and used in the study design.");
+			d_builder.add(note, cc.xyw(1, 13, 3));
 		}
 
+		private JComponent createValidationLabel(String message, ValueModel validModel) {
+			JLabel label = new JLabel(message);
+			label.setForeground(Color.RED);
+			label.setFont(label.getFont().deriveFont(Font.BOLD));
+			Bindings.bind(label, "visible", new BooleanNotModel(validModel));
+			return label;
+		}
+
+
+		
 		private void createArmsAndEpochsTable(CellConstraints cc) {
-			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
 
 			final JTable armsEpochsTable = new JTable(d_tableModel);
 			armsEpochsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -558,8 +642,6 @@ public class AddStudyWizard extends Wizard {
 					addStudyActivityDialog.setLocationRelativeTo(d_parent);
 					addStudyActivityDialog.setVisible(true);
 				}
-
-
 			});
 			
 			d_builder.add(removeButton, cc.xy(1, 9));
@@ -1034,7 +1116,12 @@ public class AddStudyWizard extends Wizard {
 					}
 				});
 				d_builder.add(clearButton, cc.xy(3, 11));
-				d_builder.add(buildTip(), cc.xy(3, 13));
+				String tip = 	"You can import studies from ClinicalTrials.gov by entering their NCT-ID, " +
+								"and then pressing the import button next to the ID field. " +
+								"For example, try " + EXAMPLE_NCT_ID + ".\n\n" +
+								"Unfortunately, due to limitations of ClinicalTrials.gov, it is currently not possible to import adverse events or study results.";
+								
+				d_builder.add(buildTip(tip), cc.xy(3, 13));
 				
 				this.setLayout(new BorderLayout());
 				d_scrollPane = new JScrollPane(d_builder.getPanel());
@@ -1094,7 +1181,7 @@ public class AddStudyWizard extends Wizard {
 		}
 	}	
 	
-	private static JComponent buildTip() {
+	private static JComponent buildTip(String tip) {
 		JTextPane area = new JTextPane();
 		StyledDocument doc = area.getStyledDocument();
 		addStylesToDoc(doc);
@@ -1104,14 +1191,9 @@ public class AddStudyWizard extends Wizard {
 		try {
 			doc.insertString(0, "x", doc.getStyle("tip"));
 			doc.insertString(doc.getLength(), " Tip: \n", doc.getStyle("bold"));
-			doc.insertString(doc.getLength(),
-					"You can import studies from ClinicalTrials.gov by entering their NCT-ID, " +
-					"and then pressing the import button next to the ID field. " +
-					"For example, try " + EXAMPLE_NCT_ID + ".\n\n" +
-					"Unfortunately, due to limitations of ClinicalTrials.gov, it is currently not possible to import adverse events or study results.",
+			doc.insertString(doc.getLength(), tip,
 					doc.getStyle("regular"));
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

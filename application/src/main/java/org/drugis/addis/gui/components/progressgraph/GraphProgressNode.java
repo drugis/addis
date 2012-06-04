@@ -46,6 +46,10 @@ import org.drugis.common.threading.event.TaskEvent;
 import org.drugis.common.threading.event.TaskEvent.EventType;
 
 public class GraphProgressNode extends GraphComponent implements SwingConstants {
+	private static final Color DARK_RED = Color.decode("#C4000D");
+	private static final Color SKY_BLUE = Color.decode("#7DA6FF");
+	private static final Color GREEN = Color.decode("#D7FF96");
+
 	private static final long serialVersionUID = 7151331776919970759L;
 
 	private static final double DEFAULT_ROUNDING_ARCH = 5;
@@ -80,16 +84,17 @@ public class GraphProgressNode extends GraphComponent implements SwingConstants 
 			tpb.setVisible(true);
 			revalidate();
 		}
+		setNodeColors(task);
 		task.addTaskListener(new TaskListener() {
 			
 			@Override
 			public void taskEvent(TaskEvent event) {
 				if(event.getType() == EventType.TASK_FINISHED) {
-					d_color = Color.decode("#D7FF96");
+					d_color = GREEN;
 				} else if(event.getType() == EventType.TASK_STARTED) {
-					d_color = Color.decode("#7DA6FF");
+					d_color = SKY_BLUE;
 				} else if(event.getType() == EventType.TASK_FAILED || event.getType() == EventType.TASK_ABORTED) {
-					d_color = Color.decode("#C4000D");
+					d_color = DARK_RED;
 				} else if(event.getType() == EventType.TASK_RESTARTED) {
 					d_color = Color.LIGHT_GRAY;
 				}
@@ -98,6 +103,15 @@ public class GraphProgressNode extends GraphComponent implements SwingConstants 
 		});
 	}
 
+	private void setNodeColors(Task task) {
+		if(task.isAborted() || task.isFailed()) { 
+			d_color = DARK_RED;
+		} else if(task.isStarted() && !task.isFinished()) {
+			d_color = SKY_BLUE;
+		} else if (task.isFinished()) {
+			d_color = GREEN;
+		}
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {

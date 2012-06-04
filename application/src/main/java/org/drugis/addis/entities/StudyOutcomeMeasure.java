@@ -110,6 +110,7 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	
 	@Override
 	public String toString() {
-		return d_isPrimary ? "primary measure: " : "secondary measure: " + getValue().getName() + " " + d_whenTaken + " " + getNotes();
+		return (d_isPrimary ? "primary measure: " : "secondary measure: ") +
+				(getValue() != null ? getValue().getName() : "???") + " " + d_whenTaken + " " + getNotes();
 	}
 }

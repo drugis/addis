@@ -94,8 +94,6 @@ public abstract class Domain {
 	 */
 	public abstract boolean hasDependents(Entity entity);
 	
-	// FIXME: move methods below to presentation layer
-
 	public abstract ObservableList<MetaAnalysis> getPairWiseMetaAnalyses();
 	
 	public abstract ObservableList<MetaAnalysis> getNetworkMetaAnalyses();

@@ -55,7 +55,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.bind.DatatypeConverter;
 
-import org.drugis.addis.gui.builder.BRATForestCellRenderer;
+import org.drugis.addis.gui.renderer.BRATForestCellRenderer;
 
 import sun.awt.datatransfer.DataTransferer;
 

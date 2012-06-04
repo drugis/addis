@@ -27,7 +27,6 @@
 package org.drugis.addis.gui.builder;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -407,7 +406,7 @@ implements ViewBuilder {
 				cc.xyw(1, row, colSpan));
 		row += 2;
 		
-		builder.add(buildNodeSplitRunAllButton(), cc.xyw(1, row, colSpan));
+		builder.add(buildNodeSplitControls(), cc.xyw(1, row, colSpan));
 		row += 2;
 		
 		builder.add(buildNodeSplitResultsTable(), cc.xyw(1, row, colSpan));
@@ -434,24 +433,44 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-	private Component buildNodeSplitRunAllButton() {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
-		button.setText("Run all node-split models");
-		button.setToolTipText("Run all simulations");
+	private JComponent buildNodeSplitControls() {
+		final FormLayout layout = new FormLayout(
+				"fill:0:grow, 3dlu, pref",
+				"p");
+		CellConstraints cc = new CellConstraints();
+		PanelBuilder panelBuilder = new PanelBuilder(layout);
+		
+		JButton resetAll = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
+		resetAll.setToolTipText("Reset all simulations");
+		resetAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {	
+				d_pm.getBean().resetNodeSplitModels();
+				if(d_mainWindow instanceof AddisWindow) {
+					((AddisWindow) d_mainWindow).reloadRightPanel(NODE_SPLIT_TAB_TITLE);
+				} 
+			}
+		});
+	
+		JButton runAll = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		runAll.setText("Run all node-split models");
+		runAll.setToolTipText("Run all simulations");
 		final List<Task> tasks = new ArrayList<Task>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
 			final NodeSplitWrapper wrapper = d_pm.getNodeSplitModel(p);
 			if (!wrapper.isSaved()) {
 				tasks.add(wrapper.getModel().getActivityTask());
 			}
-
 		}
-		button.addActionListener(new ActionListener() {
+		runAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ThreadHandler.getInstance().scheduleTasks(tasks);
 			}
 		});
-		return button;
+		
+		panelBuilder.add(resetAll, cc.xy(3, 1));
+		panelBuilder.add(runAll,  cc.xy(1, 1));
+
+		return panelBuilder.getPanel();
 	}
 
 	private JComponent buildNodeSplitResultsTable() {
@@ -503,7 +522,7 @@ implements ViewBuilder {
 	private JComponent createRankProbChart() {
 		CategoryDataset dataset = d_pm.getRankProbabilityDataset();
 		JFreeChart chart = ChartFactory.createBarChart("Rank Probability", "Treatment", "Probability", 
-						dataset, PlotOrientation.VERTICAL, true, false, false);	
+						dataset, PlotOrientation.VERTICAL, true, true, false);	
 		chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle(d_pm.getRankProbabilityRankChartNote()));
 
 		FormLayout layout = new FormLayout(

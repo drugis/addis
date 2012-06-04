@@ -76,6 +76,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.gui.components.AddisScrollPane;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.knowledge.StudiesKnowledge;
+import org.drugis.addis.gui.renderer.DomainTreeCellRenderer;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.gui.FileSaveDialog;
@@ -143,6 +144,10 @@ public class AddisWindow extends JFrame {
 		initComponents();
 		Main.bindPrintScreen(super.getContentPane());
 		updateTitle();
+		selectDefaultPath();
+	}
+
+	private void selectDefaultPath() {
 		d_leftPanelTree.getSelectionModel().setSelectionPath(d_domainTreeModel.getPathTo(d_domain.getCategory(Study.class)));
 	}
 	
@@ -294,15 +299,15 @@ public class AddisWindow extends JFrame {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
 		
+		d_editMenuEditItem = createEditItem();
+		d_editMenuEditItem.setEnabled(false);
+		editMenu.add(d_editMenuEditItem);
+
 		d_editMenuDeleteItem = createDeleteItem();
 		d_editMenuDeleteItem.setEnabled(false);
 		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editMenu.add(d_editMenuDeleteItem);
 		
-		d_editMenuEditItem = createEditItem();
-		d_editMenuEditItem.setEnabled(false);
-		editMenu.add(d_editMenuEditItem);
-
 		if(AppInfo.getAppVersion().equals(AppInfo.APPVERSIONFALLBACK)) {
 			JMenuItem menuItem = new JMenuItem("Generate error");
 			editMenu.add(menuItem);
@@ -318,11 +323,13 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+		final JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				deleteMenuAction();
+				if(deleteMenuAction()) { 
+					selectDefaultPath();
+				}
 			}
 		});
 
@@ -341,11 +348,12 @@ public class AddisWindow extends JFrame {
 		return item;
 	}
 
-	protected void deleteMenuAction() {
+	protected boolean deleteMenuAction() {
 		Entity selected = getSelectedEntity();
 		if (selected != null) {
-			deleteEntity(selected, true);
+			return deleteEntity(selected, true);
 		}
+		return false;
 	}
 
 	private Entity getSelectedEntity() {
@@ -607,7 +615,7 @@ public class AddisWindow extends JFrame {
 	}
 
 
-	public void deleteEntity(Entity selected, boolean confirmation) {
+	public boolean deleteEntity(Entity selected, boolean confirmation) {
 		String selectedType = getEntityKnowledge(selected).getSingularCapitalized();
 
 		if (confirmation) {
@@ -617,7 +625,7 @@ public class AddisWindow extends JFrame {
 					JOptionPane.QUESTION_MESSAGE, Main.IMAGELOADER
 					.getIcon(FileNames.ICON_DELETE));
 			if (conf != JOptionPane.YES_OPTION) {
-				return;
+				return false;
 			}
 		}
 		try {
@@ -637,6 +645,7 @@ public class AddisWindow extends JFrame {
 			JOptionPane.showMessageDialog(this, sp, "Error deleting "
 					+ selected, JOptionPane.ERROR_MESSAGE);
 		}
+		return true;
 	}
 
 	private JMenuItem createAddMenuItem(final CategoryKnowledge knowledge) {

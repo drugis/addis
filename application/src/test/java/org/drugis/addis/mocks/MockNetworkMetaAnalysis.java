@@ -35,6 +35,7 @@ import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.NetworkBuilderFactory;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
@@ -42,6 +43,7 @@ import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskUtil;
+import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.model.Treatment;
 
 
@@ -54,8 +56,12 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
 			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
-		d_mockInconsistencyModel =  new SimulationInconsistencyWrapper(getBuilder(), MockInconsistencyModel.buildMockSimulationIconsistencyModel());
-		d_mockConsistencyModel = new SimulationConsistencyWrapper(getBuilder(), MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
+		
+		d_builder = NetworkBuilderFactory.createBuilderStub(drugs);
+		
+		d_mockInconsistencyModel = new SimulationInconsistencyWrapper(d_builder, MockInconsistencyModel.buildMockSimulationInconsistencyModel(toTreatments(drugs)));
+		d_mockConsistencyModel = new SimulationConsistencyWrapper(d_builder, MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
+
 	}
 
 	private List<Treatment> toTreatments(List<DrugSet> drugs) {
@@ -89,5 +95,10 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			TaskUtil.run(task);
 		}
 		firePropertyChange("fasrt", false, true);
+	}
+	
+	@Override
+	public NetworkBuilder<DrugSet> getBuilder() {
+		return d_builder;
 	}
 }

@@ -133,7 +133,7 @@ public class RankProbabilityDataSetTest {
 		for (Treatment t : d_summary.getTreatments()) {
 			for (int r = 1; r <= d_summary.getTreatments().size(); ++r) {
 				assertEquals(0.0, d_dataSet.getValue(r - 1, d_summary.getTreatments().indexOf(t)));
-//				assertEquals(0.0, d_dataSet.getValue("Rank " + r, t)); FIXME
+				assertEquals(0.0, d_dataSet.getValue("Rank " + r, t)); 
 			}
 		}
 		
@@ -141,7 +141,7 @@ public class RankProbabilityDataSetTest {
 		for (Treatment t : d_summary.getTreatments()) {
 			for (int r = 1; r <= d_summary.getTreatments().size(); ++r) {
 				assertEquals(d_summary.getValue(t, r), d_dataSet.getValue(r - 1, d_summary.getTreatments().indexOf(t)));
-//				assertEquals(d_summary.getValue(t, r), d_dataSet.getValue("Rank " + r, t)); FIXME
+				assertEquals(d_summary.getValue(t, r), d_dataSet.getValue("Rank " + r, t));
 			}
 		}
 	}
