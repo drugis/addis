@@ -16,13 +16,12 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
-1.13.2: Development release. Mixed Treatment Comparisons can now be saved
-    and loaded. The progress of the simulation can be shown in a 
-    flow diagram. MCMC Simulations can be restarted (deleting previous
-    simulation).
 
-1.13.1: Development release for saving Mixed Treatment Comparison results. 
-    The Inconsistency results can now be saved and loaded in ADDIS. 
+1.14: Network meta-analysis results can now be saved in the ADDIS data
+   file. In addition, the computations can be reset and there is a new
+   visual progress indicator.
+
+1.12.5: Bugfix release.
 
 1.12.4: The network meta-analysis simulation can be continued if it has
    not converged yet, and there is a new GUI for checking convergence.
