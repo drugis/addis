@@ -81,7 +81,6 @@ public class StudyActivity extends AbstractNamedEntity<StudyActivity> implements
 	}
 
 	private Activity d_activity;
-	// FIXME: the hashCode() of UsedBy is non-static during the AddStudyWizard, so we cannot use this.
 	private Set<UsedBy> d_usedBy = new HashSet<UsedBy>();
 	private ObservableList<Note> d_notes = new ArrayListModel<Note>();
 	

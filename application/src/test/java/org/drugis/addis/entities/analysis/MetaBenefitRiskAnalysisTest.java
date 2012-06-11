@@ -28,7 +28,6 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -38,15 +37,13 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
-import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -91,16 +88,16 @@ public class MetaBenefitRiskAnalysisTest {
 	public void testGetDistribution() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		
-		Drug fluox = ExampleData.buildDrugFluoxetine();
-		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(om, new DrugSet(fluox));
+		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(om, new DrugSet(ExampleData.buildDrugFluoxetine()));
 		
-		RelativeEffect<? extends Measurement> expected = ExampleData.buildMetaAnalysisHamd().getRelativeEffect(
-				new DrugSet(ExampleData.buildDrugParoxetine()), new DrugSet(fluox), BasicOddsRatio.class);
-		assertNotNull(actualDist);
-		assertNotNull(expected);
-		assertEquals(expected.getConfidenceInterval().getPointEstimate(), actualDist.getQuantile(0.50), 0.00001);
-		assertEquals(expected.getConfidenceInterval().getLowerBound(), actualDist.getQuantile(0.025), 0.00001);
-		assertEquals(expected.getConfidenceInterval().getUpperBound(), actualDist.getQuantile(0.975), 0.00001);
+		final MetaAnalysis ma = ExampleData.buildMetaAnalysisHamd();
+		MultivariateNormalSummary summary = ma.getRelativeEffectsSummary();
+		LogGaussian expected = new LogGaussian(summary.getMeanVector()[0], Math.sqrt(summary.getCovarianceMatrix()[0][0])); 
+		assertEquals(new DrugSet(ExampleData.buildDrugParoxetine()), ma.getIncludedDrugs().get(0));
+
+		assertEquals(expected.getQuantile(0.50), actualDist.getQuantile(0.50), 0.00001);
+		assertEquals(expected.getQuantile(0.025), actualDist.getQuantile(0.025), 0.00001);
+		assertEquals(expected.getQuantile(0.975), actualDist.getQuantile(0.975), 0.00001);
 	}
 	
 	@Test

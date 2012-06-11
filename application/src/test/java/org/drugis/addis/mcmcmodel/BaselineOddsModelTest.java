@@ -38,18 +38,18 @@ public class BaselineOddsModelTest {
 	@Test
 	public void testBurnInIterations() {
 		BaselineOddsModel model = new BaselineOddsModel(new ArrayList<RateMeasurement>());
-		assertTrue(model.getBurnInIterations() > 1000);
-		int newIter = model.getBurnInIterations() * 2;
-		model.setBurnInIterations(newIter);
-		assertEquals(newIter, model.getBurnInIterations());
+		assertTrue(model.getSettings().getTuningIterations() > 1000);
+		int newIter = model.getSettings().getTuningIterations() * 2;
+		model.setTuningIterations(newIter);
+		assertEquals(newIter, (int)model.getSettings().getTuningIterations());
 	}
 	
 	@Test
 	public void testSimulationIterations() {
 		BaselineOddsModel model = new BaselineOddsModel(new ArrayList<RateMeasurement>());
-		assertTrue(model.getSimulationIterations() > 1000);
-		int newIter = model.getSimulationIterations() * 2;
+		assertTrue(model.getSettings().getSimulationIterations() > 1000);
+		int newIter = model.getSettings().getSimulationIterations() * 2;
 		model.setSimulationIterations(newIter);
-		assertEquals(newIter, model.getSimulationIterations());
+		assertEquals(newIter, (int)model.getSettings().getSimulationIterations());
 	}
 }

@@ -35,6 +35,7 @@ import java.util.List;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.common.threading.TaskUtil;
+import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.junit.Test;
 
 public class BaselineMeanDifferenceModelIT {
@@ -50,12 +51,13 @@ public class BaselineMeanDifferenceModelIT {
 		double dev = expectedSigma * 0.075;
 		
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(buildMeasurementsList(m, s, n));
+		model.setExtendSimulation(ExtendSimulation.FINISH);
 		TaskUtil.run(model.getActivityTask());
 		
 		assertTrue(model.isReady());
 		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getSummary().getMean(), dev);
-		assertEquals(expectedSigma, model.getResult().getSigma(), dev * 2);
+		assertEquals(expectedSigma, model.getSummary().getStandardDeviation(), dev * 2);
 	}
 
 	private static List<ContinuousMeasurement> buildMeasurementsList(double[] m, double[] s, int[] n) {

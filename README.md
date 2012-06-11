@@ -17,6 +17,12 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.14: Network meta-analysis results can now be saved in the ADDIS data
+   file. In addition, the computations can be reset and there is a new
+   visual progress indicator.
+
+1.12.5: Bugfix release.
+
 1.12.4: The network meta-analysis simulation can be continued if it has
    not converged yet, and there is a new GUI for checking convergence.
    The benefit-risk analysis now uses the full covariance information

@@ -2,6 +2,7 @@
 */.metadata
 */.project
 */.settings
+*/bin
 .gitignore
 *~
 application/src/main/generated-source/

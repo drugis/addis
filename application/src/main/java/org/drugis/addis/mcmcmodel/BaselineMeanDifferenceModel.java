@@ -35,7 +35,7 @@ import gov.lanl.yadas.MCMCParameter;
 import java.util.List;
 
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.relativeeffect.Gaussian;
+import org.drugis.common.stat.EstimateWithPrecision;
 
 public class BaselineMeanDifferenceModel extends AbstractBaselineModel<ContinuousMeasurement> {
 	public BaselineMeanDifferenceModel(List<ContinuousMeasurement> measurements) {
@@ -55,27 +55,30 @@ public class BaselineMeanDifferenceModel extends AbstractBaselineModel<Continuou
 	private double[] standardErrorArray() {
 		double[] arr = new double[d_measurements.size()];
 		for (int i = 0; i < arr.length; ++i) {
-			arr[i] = d_measurements.get(i).getStdDev() / Math.sqrt(d_measurements.get(i).getSampleSize());
+			arr[i] = getError(i);
 		}
 		return arr;
+	}
+
+	@Override
+	public double getError(int i) {
+		return d_measurements.get(i).getStdDev() / Math.sqrt(d_measurements.get(i).getSampleSize());
 	}
 
 	private double[] meanArray() {
 		double[] arr = new double[d_measurements.size()];
 		for (int i = 0; i < arr.length; ++i) {
-			arr[i] = d_measurements.get(i).getMean();
+			arr[i] = getMean(i);
 		}
 		return arr;
 	}
 
-	@Override
-	public Gaussian getResult() {
-		return new Gaussian(getSummary().getMean(), getSummary().getStandardDeviation());
+	private Double getMean(int i) {
+		return d_measurements.get(i).getMean();
 	}
 
 	@Override
-	protected double getStdDevPrior() {
-		return 20.0; // FIXME
+	protected EstimateWithPrecision estimateTreatmentEffect(int i) {
+		return new EstimateWithPrecision(getMean(i), getError(i));
 	}
-
 }

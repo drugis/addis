@@ -911,9 +911,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public <T extends Variable> StudyOutcomeMeasure<T> findStudyOutcomeMeasure(T v) {
 		ObservableList<StudyOutcomeMeasure<T>> soms = getStudyOutcomeMeasures((Class<T>)v.getClass());
 		for (StudyOutcomeMeasure<T> som : soms) {
-			if (som.getValue().equals(v)) {
+			if (EqualsUtil.equal(som.getValue(), v)) {
 				return som;
-			}
+			} 
 		}
 		return null;
 	}

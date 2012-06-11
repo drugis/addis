@@ -298,7 +298,7 @@ public class AuxComponentFactory {
 	}
 	
 	/**
-	 * Create a styles HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
+	 * Create a styled HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
 	 */
 	public static JComponent createHtmlField(String bodyText) {	
 		JLabel label = new JLabel("<html><div style='margin:0; padding: 10px;'>" + bodyText + "</div></html>", SwingConstants.CENTER);

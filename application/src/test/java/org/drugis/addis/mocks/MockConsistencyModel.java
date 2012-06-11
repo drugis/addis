@@ -40,10 +40,15 @@ import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.yadas.YadasConsistencyModel;
 import org.drugis.mtc.yadas.YadasResults;
 
-public class MockConsistencyModel implements ConsistencyModel {
+public class MockConsistencyModel extends YadasConsistencyModel implements ConsistencyModel {
 
+	public static ConsistencyModel buildMockSimulationConsistencyModel(List<Treatment> ts) {
+		return new MockConsistencyModel(ts);
+	}
+	
 	boolean d_ready = false;
 	private ActivityTask d_task;
 	private YadasResults d_results;
@@ -51,7 +56,8 @@ public class MockConsistencyModel implements ConsistencyModel {
 	private static final int BURNIN_ITER = 1000;
 	private static final int SIMULATION_ITER = 10000;
 	
-	public MockConsistencyModel(List<Treatment> ts) {
+	private MockConsistencyModel(List<Treatment> ts) {
+		super(null);
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
 		d_task = new ActivityTask(new ActivityModel(start, end, 
@@ -74,7 +80,7 @@ public class MockConsistencyModel implements ConsistencyModel {
 		return parameters;
 	}
 
-	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
+	public BasicParameter getRelativeEffect(Treatment base, Treatment subj) {
 		return new BasicParameter(base, subj);
 	}
 
@@ -110,11 +116,5 @@ public class MockConsistencyModel implements ConsistencyModel {
 	
 	protected void finished() {
 		d_results.simulationFinished();
-	}
-
-	@Override
-	public void setExtendSimulation(ExtendSimulation s) {
-		// TODO Auto-generated method stub
-		
 	}
 }

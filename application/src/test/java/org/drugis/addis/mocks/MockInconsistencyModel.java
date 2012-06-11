@@ -27,6 +27,7 @@
 package org.drugis.addis.mocks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,9 +41,10 @@ import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
+import org.drugis.mtc.yadas.YadasInconsistencyModel;
 import org.drugis.mtc.yadas.YadasResults;
 
-public class MockInconsistencyModel implements InconsistencyModel {
+public class MockInconsistencyModel extends YadasInconsistencyModel implements InconsistencyModel {
 
 	boolean d_ready = false;
 	private ActivityTask d_task;
@@ -50,8 +52,22 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	
 	private static final int BURNIN_ITER = 1000;
 	private static final int SIMULATION_ITER = 10000;
+	private List<Treatment> d_treatments;
+	
+	public static InconsistencyModel buildMockSimulationInconsistencyModel() { 
+		return new MockInconsistencyModel();	
+	}
+	
+	public static InconsistencyModel buildMockSimulationInconsistencyModel(List<Treatment> treatments) { 
+		return new MockInconsistencyModel(treatments);	
+	}
 
-	public MockInconsistencyModel() {
+	private MockInconsistencyModel() {
+		this(Arrays.asList(new Treatment("Fluoxetine"), new Treatment("Sertraline"), new Treatment("Paroxetine")));
+	}
+
+	public MockInconsistencyModel(List<Treatment> treatments) {
+		super(null);
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
 		d_task = new ActivityTask(new ActivityModel(start, end, 
@@ -59,15 +75,17 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		d_results = new YadasResults();
 		d_results.setNumberOfIterations(SIMULATION_ITER);
 		d_results.setNumberOfChains(1);
+		d_treatments = treatments;
 		d_results.setDirectParameters(getInconsistencyFactors());
+		
 	}
 
 	public List<Parameter> getInconsistencyFactors() {
 		List<Treatment> cycle = new ArrayList<Treatment>();
-		cycle.add(new Treatment("Fluoxetine"));
-		cycle.add(new Treatment("Sertraline"));
-		cycle.add(new Treatment("Paroxetine"));
-		cycle.add(new Treatment("Fluoxetine"));
+		for(Treatment t : d_treatments) { 
+			cycle.add(t);
+		}
+		cycle.add(d_treatments.get(0));
 
 		List<Parameter> inFac = new ArrayList<Parameter>();
 		inFac.add(new InconsistencyParameter(cycle));
@@ -75,9 +93,6 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		return inFac;
 	}
 
-	public Parameter getRelativeEffect(Treatment base, Treatment subj) {
-		return null;
-	}
 
 	public boolean isReady() {
 		return d_task.isFinished();
@@ -91,11 +106,6 @@ public class MockInconsistencyModel implements InconsistencyModel {
 		return SIMULATION_ITER;
 	}
 
-	public void setBurnInIterations(int it) {
-	}
-
-	public void setSimulationIterations(int it) {
-	}
 
 	public ActivityTask getActivityTask() {
 		return d_task;
@@ -116,11 +126,4 @@ public class MockInconsistencyModel implements InconsistencyModel {
 	protected void finished() {
 		d_results.simulationFinished();
 	}
-
-	@Override
-	public void setExtendSimulation(ExtendSimulation s) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

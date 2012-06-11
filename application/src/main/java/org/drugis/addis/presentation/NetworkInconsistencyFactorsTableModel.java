@@ -29,11 +29,16 @@ package org.drugis.addis.presentation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.mtc.InconsistencyModel;
+import org.apache.commons.lang.StringUtils;
+import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
@@ -44,6 +49,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private NetworkMetaAnalysisPresentation d_pm;
 	private PropertyChangeListener d_listener;
 	private boolean d_listenersAttached;
+	private ValueHolder<Boolean> d_modelConstructed;
 
 	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm) {
 		d_pm = pm;
@@ -54,11 +60,12 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 			}
 		};
 		
-		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(true)) {
+		d_modelConstructed = d_pm.getWrappedModel(d_pm.getInconsistencyModel()).isModelConstructed();
+		if (d_modelConstructed.getValue().equals(true)) {
 			attachListeners();
 		}
 		
-		d_pm.getInconsistencyModelConstructedModel().addValueChangeListener(new PropertyChangeListener() {
+		d_modelConstructed.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue().equals(true)) {
 					fireTableStructureChanged();					
@@ -71,9 +78,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private void attachListeners() {
 		if (d_listenersAttached) return;
 		
-		List<Parameter> parameterList = d_pm.getInconsistencyFactors();
+		List<Parameter> parameterList = d_pm.getInconsistencyModel().getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			QuantileSummary summary = d_pm.getQuantileSummary(getModel(), p);
+			QuantileSummary summary = d_pm.getInconsistencyModel().getQuantileSummary(p);
 			summary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
@@ -95,30 +102,26 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		if(d_pm.getInconsistencyModelConstructedModel().getValue().equals(true))
-			return d_pm.getInconsistencyFactors().size();
+		if(d_modelConstructed.getValue().equals(true))
+			return d_pm.getInconsistencyModel().getInconsistencyFactors().size();
 		return 0;
 	}
 	
 	public Object getValueAt(int row, int col) {
-		if (d_pm.getInconsistencyModelConstructedModel().getValue().equals(false)){
+		if (d_modelConstructed.getValue().equals(false)){
 			return NA;
 		}
-		
-		InconsistencyModel model = getModel();
+		InconsistencyWrapper model = d_pm.getInconsistencyModel();
 		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
-		if(col == 0){ // FIXME: use apache commons for this operation, and add a cell renderer!
-			String out = "";
-			for (int i = 0; i < ip.getCycle().size() - 1; ++i){
-				out += ip.getCycle().get(i).getId() + ", ";
+		if(col == 0) {
+			Set<String> descriptions = new TreeSet<String>();
+			for(Treatment t : ip.getCycle()) { 
+				DrugSet key = d_pm.getBean().getBuilder().getTreatmentMap().getKey(t);
+				descriptions.add(key.getLabel());
 			}
-			return out.substring(0, out.length() - 2);
+			return StringUtils.join(descriptions, ", ");
 		} else {
-			return d_pm.getQuantileSummary(model, ip);
+			return model.getQuantileSummary(ip);
 		}
-	}
-
-	private InconsistencyModel getModel() {
-		return (InconsistencyModel) d_pm.getInconsistencyModel();
 	}
 }
