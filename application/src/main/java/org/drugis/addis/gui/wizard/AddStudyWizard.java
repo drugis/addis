@@ -380,8 +380,18 @@ public class AddStudyWizard extends Wizard {
 			d_parent = parent;
 			d_mainWindow = mainWindow;
 			d_pm = pm;
-			if (d_pm.isEditing())
-				setComplete(true);
+			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
+
+			addValidator("Some activities have missing data", new ActivitiesCompleteValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
+			addValidator("Not all cells in the table are filled in", new TableFilledValidator(d_tableModel));
+			addValidator("Not all the activities are used", new AllActivitiesUsedValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
+			 
+			List<ValueModel> validators = new ArrayList<ValueModel>();
+			for(Pair<String, ValueModel> validator : d_validators) {
+				validators.add(validator.getValue());
+			}
+			d_readyValidator = new BooleanAndModel(validators);
+			PropertyConnector.connectAndUpdate(d_readyValidator, this, "complete");
 		}
 		
 		private void addValidator(String warning, ValueModel validator) {
@@ -391,20 +401,6 @@ public class AddStudyWizard extends Wizard {
 		@Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
-			 d_validators.clear();
-			 addValidator("Some activities have missing data", new ActivitiesCompleteValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
-			 addValidator("Not all cells in the table are filled in", new TableFilledValidator(d_tableModel));
-			 addValidator("Not all the activities are used", new AllActivitiesUsedValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
-			 
-			 List<ValueModel> validators = new ArrayList<ValueModel>();
-			 for(Pair<String, ValueModel> validator : d_validators) {
-				 validators.add(validator.getValue());
-			 }
-			 
-			 d_readyValidator = new BooleanAndModel(validators);
-			 PropertyConnector.connectAndUpdate(d_readyValidator, this, "complete");
-			 
 			 if (d_scrollPane != null)
 				 remove(d_scrollPane);
 			 
@@ -529,8 +525,6 @@ public class AddStudyWizard extends Wizard {
 			return label;
 		}
 
-
-		
 		private void createArmsAndEpochsTable(CellConstraints cc) {
 
 			final JTable armsEpochsTable = new JTable(d_tableModel);

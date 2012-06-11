@@ -26,6 +26,8 @@
 
 package org.drugis.addis.presentation;
 
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.Study;
@@ -38,6 +40,40 @@ public class StudyActivitiesTableModel extends AbstractTableModel {
 
 	public StudyActivitiesTableModel(Study s) {
 		d_study = s;
+		d_study.getEpochs().addListDataListener(new ListDataListener() {
+			
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				fireTableStructureChanged();
+			}
+			
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				fireTableStructureChanged();
+			}
+			
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				fireTableStructureChanged();				
+			}
+		});
+		d_study.getArms().addListDataListener(new ListDataListener() {
+			
+			@Override
+			public void intervalRemoved(ListDataEvent e) {
+				fireTableDataChanged();
+			}
+			
+			@Override
+			public void intervalAdded(ListDataEvent e) {
+				fireTableDataChanged();				
+			}
+			
+			@Override
+			public void contentsChanged(ListDataEvent e) {
+				fireTableDataChanged();				
+			}
+		});
 	}
 	
 	public int getColumnCount() {
