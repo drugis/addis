@@ -26,7 +26,7 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.common.EqualsUtil;
+import org.apache.commons.math3.util.Precision;
 
 
 public class FixedDose extends AbstractDose {
@@ -64,8 +64,7 @@ public class FixedDose extends AbstractDose {
 	public boolean equals(Object o) {
 		if (o instanceof FixedDose) {
 			FixedDose other = (FixedDose)o;
-			return EqualsUtil.equal(other.getQuantity(), getQuantity()) &&
-				EqualsUtil.equal(other.getDoseUnit(), getDoseUnit());
+			return Precision.equals(DoseUnit.convert(d_quantity, d_unit, other.getDoseUnit()), other.getQuantity(), Precision.EPSILON);
 		}
 		return false;
 	}

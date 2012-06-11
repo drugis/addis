@@ -1,6 +1,12 @@
 package org.drugis.addis.entities.treatment;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.DoseUnit;
+
+import com.jgoodies.binding.beans.BeanUtils;
 
 public class DoseRangeNode extends RangeNode {
 
@@ -20,7 +26,19 @@ public class DoseRangeNode extends RangeNode {
 	
 	@Override
 	public DecisionTreeNode decide(Object object) {
-		return null;
+		try {
+			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(d_beanClass, d_propertyName);
+			Object value = BeanUtils.getValue(object, propertyDescriptor);
+			try { 
+				DoseUnit unit = ((AbstractDose)object).getDoseUnit();		
+				return getNodeByValue(DoseUnit.convert((Double)value, unit, d_doseUnit));
+			} catch(ClassCastException e) { 
+				throw new IllegalArgumentException("Object was not an AbstractDose, or property was not numeric. Object was a: " + object.getClass().getName());
+			}
+		} catch (IntrospectionException e) {
+			e.printStackTrace();
+		} 
+		throw new IllegalStateException("Could not decide the fate of " + object.toString());
 	}
 
 }

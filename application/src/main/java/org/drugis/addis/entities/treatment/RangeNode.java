@@ -44,8 +44,8 @@ public class RangeNode implements DecisionTreeNode {
 		}
 	}
 	
-	private final Class<?> d_beanClass;
-	private final String d_propertyName;
+	protected final Class<?> d_beanClass;
+	protected final String d_propertyName;
 	private final ArrayList<BoundedInterval> d_ranges = new ArrayList<BoundedInterval>();
 	
 	/**
@@ -173,30 +173,34 @@ public class RangeNode implements DecisionTreeNode {
 	 * not numeric, or if the property value is not within the range specified for this node.
 	 */
 	public DecisionTreeNode decide(Object object) {
-		Object value = null;
-		Double doseValue = null;
 		try { 
 			if(!d_beanClass.isInstance(object)) {
 				throw new IllegalArgumentException("Object not of the valid type " + d_beanClass.getName() + "  was: " + object.getClass().getName());
 			}
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(d_beanClass, d_propertyName);
-			value = BeanUtils.getValue(object, propertyDescriptor);
-			doseValue = (Double)value;				
+			try { 
+				Double doseValue = (Double)BeanUtils.getValue(object, propertyDescriptor);		
+				return getNodeByValue(doseValue);
+			} catch (ClassCastException e) {
+				throw new IllegalArgumentException("Property was not numeric. but: " + BeanUtils.getValue(object, propertyDescriptor).getClass());
+			}  
+
 		} catch (IntrospectionException e) {
 			e.printStackTrace();
-		} catch (ClassCastException e) {
-			throw new IllegalArgumentException("Property was not numeric. but: " + value.getClass());
 		} 
-		
-		int idx = findNodeByValue(doseValue);
-		if(idx == -1) throw new IllegalArgumentException("Value " + doseValue + " not within allowed range");
-		return getChildNode(idx);
+		throw new IllegalStateException("Could not decide the fate of " + object.toString());
 	}
 	
 	public boolean isLeaf() {
 		return false;
 	}
 
+	protected DecisionTreeNode getNodeByValue(Double doseValue) {
+		int idx = findNodeByValue(doseValue);
+		if(idx == -1) throw new IllegalArgumentException("Value " + doseValue + " not within allowed range");
+		return getChildNode(idx);
+	}
+	
 	private int findNodeByValue(Double value) {
 		for(int i = 0; i < d_ranges.size(); ++i) { 
 			if(d_ranges.get(i).getRange().containsDouble(value)) return i;

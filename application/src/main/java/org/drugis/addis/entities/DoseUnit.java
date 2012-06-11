@@ -27,6 +27,7 @@
 package org.drugis.addis.entities;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 import javax.xml.datatype.Duration;
@@ -129,5 +130,13 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 	@Override
 	public void setDuration(Duration duration) {
 		setPerTime(duration);
+	}
+	
+	public static double convert(double quantity, DoseUnit from, DoseUnit to) {
+		double fromMillis = from.getPerTime().getTimeInMillis(new Date(0));
+		double toMillis = to.getPerTime().getTimeInMillis(new Date(0));
+		double scale = from.d_scaleModifier.getFactor() / to.d_scaleModifier.getFactor();
+
+		return quantity * scale * (toMillis / fromMillis);
 	}
 }

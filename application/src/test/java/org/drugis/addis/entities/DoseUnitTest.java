@@ -34,6 +34,7 @@ import static org.junit.Assert.assertNotSame;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apache.commons.math3.util.Precision;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
@@ -95,4 +96,11 @@ public class DoseUnitTest {
 		assertEquals(d_mgDay.getPerTime(), cloned.getPerTime());
 	}
 	
+	@Test
+	public void testConvert() { 
+		assertEquals(0.0001, DoseUnit.convert(2400, ExampleData.MILLIGRAMS_A_DAY, ExampleData.KILOGRAMS_PER_HOUR), Precision.EPSILON);
+		
+		DoseUnit gHour = new DoseUnit(new Unit("gram", "g"), ScaleModifier.UNIT, EntityUtil.createDuration("PT1H"));
+		assertEquals(240000, DoseUnit.convert(10, gHour, ExampleData.MILLIGRAMS_A_DAY), Precision.EPSILON);
+	}
 }

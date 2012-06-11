@@ -28,6 +28,7 @@ package org.drugis.addis.entities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.common.Interval;
@@ -133,5 +134,16 @@ public class DoseTest {
 		assertNotSame(dose, dose.clone());
 	}
 	
+	@Test
+	public void testUnitDifferCompare() {
+		FixedDose fixd1 = new FixedDose(2400, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose fixd2 = new FixedDose(0.0001, ExampleData.KILOGRAMS_PER_HOUR);
+		assertTrue(fixd1.equals(fixd2));
+		
+		
+		FlexibleDose flex1 = new FlexibleDose(new Interval<Double>(2400.0, 24000.0), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose flex2 = new FlexibleDose(new Interval<Double>(0.0001, 0.001), ExampleData.KILOGRAMS_PER_HOUR);
+		assertTrue(flex1.equals(flex2));
 
+	}
 }
