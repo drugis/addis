@@ -12,6 +12,11 @@ public class DoseRangeNode extends RangeNode {
 
 	private final DoseUnit d_doseUnit;
 
+	public DoseRangeNode(Class<?> beanClass, String propertyName, DoseUnit doseUnit, DecisionTreeNode child) {
+		super(beanClass, propertyName, child);
+		d_doseUnit = doseUnit;
+	}
+	
 	public DoseRangeNode(Class<?> beanClass, String propertyName,
 			double lowerBound, 
 			boolean lowerBoundIsOpen, 
@@ -40,5 +45,4 @@ public class DoseRangeNode extends RangeNode {
 		} 
 		throw new IllegalStateException("Could not decide the fate of " + object.toString());
 	}
-
 }

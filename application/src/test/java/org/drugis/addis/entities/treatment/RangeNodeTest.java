@@ -155,7 +155,7 @@ public class RangeNodeTest {
 	@Test
 	public void testDecideEdges() {
 		ExcludeNode dummy = new ExcludeNode();
-		RangeNode minNode = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, 0, false, 40, true, d_excludeNode);
+		RangeNode minNode = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, 0, true, 40, true, d_excludeNode);
 		
 		FlexibleDose tooLowDose = new FlexibleDose(new Interval<Double>(0.0, 15.0), ExampleData.MILLIGRAMS_A_DAY);
 		expected.expect(IllegalArgumentException.class);

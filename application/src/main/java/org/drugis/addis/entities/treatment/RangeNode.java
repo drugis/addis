@@ -5,17 +5,19 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.math.DoubleRange;
-import org.apache.commons.math3.util.Precision;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
 public class RangeNode implements DecisionTreeNode {
 	
+//	private static final double EPSILON = Precision.EPSILON;
+	private static final double EPSILON = 1.0E-14;
+
 	private static class BoundedInterval { 
 		private final DoubleRange d_range;
 		private final boolean d_lowerBoundIsOpen;
 		private final boolean d_upperBoundIsOpen;
-		private DecisionTreeNode node;
+		private DecisionTreeNode d_node;
 		
 		public BoundedInterval(DoubleRange range, boolean lowerBoundIsOpen, boolean upperBoundIsOpen) {
 			d_range = range;
@@ -36,17 +38,22 @@ public class RangeNode implements DecisionTreeNode {
 		}
 
 		public DecisionTreeNode getNode() {
-			return node;
+			return d_node;
 		}
 
 		public void setNode(DecisionTreeNode node) {
-			this.node = node;
+			d_node = node;
 		}
 	}
 	
 	protected final Class<?> d_beanClass;
 	protected final String d_propertyName;
 	private final ArrayList<BoundedInterval> d_ranges = new ArrayList<BoundedInterval>();
+	
+	public RangeNode(Class<?> beanClass, String propertyName, 
+			DecisionTreeNode child) {
+		this(beanClass, propertyName, 0, false, Double.POSITIVE_INFINITY, true, child);
+	}
 	
 	/**
 	 * Construct a RangeNode that classifies objects by the given property, which must be numeric.
@@ -77,23 +84,32 @@ public class RangeNode implements DecisionTreeNode {
 	}
 	
 	/**
+	 * @see {@link #addCutOff(double, boolean, DecisionTreeNode)}
+	 */
+	public int addCutOff(double value, boolean isOpenAsLowerBound) {
+		return addCutOff(value, isOpenAsLowerBound, null);
+	}
+	
+	/**
 	 * Add a cut-off value. This splits an existing range in two.
-	 * The resulting ranges will be initialized with the child node of the original range.
+	 * The lower range will always be initialized with the child node of the original range.
 	 * @param value The cut-off value.
-	 * @param isOpenAsLowerBound True if the value should be included in the range
+	 * @param includeInRightSide True if the value should be included in the range
 	 * where it is a lower bound, and excluded where it is an upper bound.
+	 * @param rightNode The child node to set for the new upper range, or null to use the child node of the original range. 
 	 * @return The index of the range where this cut-off is a lower bound.
 	 * @throws IllegalArgumentException If the value does not lie within the specified range for this node, 
 	 * or if it is equal to an existing cut-off value.
 	 */
-	public int addCutOff(double value, boolean isOpenAsLowerBound) {
+	public int addCutOff(double value, boolean includeInRightSide, DecisionTreeNode rightNode) {
 		int splitIdx = findNodeByValue(value);
 		BoundedInterval current = d_ranges.get(splitIdx);
 		
-		BoundedInterval left = createInterval(current.getRange().getMinimumDouble(), value, current.isLowerBoundOpen(), !isOpenAsLowerBound);
-		BoundedInterval right = createInterval(value, current.getRange().getMaximumDouble(), isOpenAsLowerBound, current.isUpperBoundOpen());
-		left.setNode(d_ranges.get(splitIdx).getNode());
-		right.setNode(d_ranges.get(splitIdx).getNode());
+		BoundedInterval left = createInterval(current.getRange().getMinimumDouble(), value, current.isLowerBoundOpen(), includeInRightSide);
+		BoundedInterval right = createInterval(value, current.getRange().getMaximumDouble(), !includeInRightSide, current.isUpperBoundOpen());
+		DecisionTreeNode leftNode = d_ranges.get(splitIdx).getNode();
+		left.setNode(leftNode);
+		right.setNode((rightNode != null) ? rightNode : leftNode);
 
 		d_ranges.remove(splitIdx);
 		d_ranges.add(splitIdx, left);
@@ -210,9 +226,19 @@ public class RangeNode implements DecisionTreeNode {
 
 	private BoundedInterval createInterval(double lowerBound, double upperBound, boolean isOpenLowerBound, boolean isOpenUpperBound) { 
 		 DoubleRange range = new DoubleRange(
-				 lowerBound + (!isOpenLowerBound ? Precision.EPSILON : 0), 
-				 upperBound	- (!isOpenUpperBound ? Precision.EPSILON : 0));
+				 lowerBound + (isOpenLowerBound ? EPSILON : 0), 
+				 upperBound	- (isOpenUpperBound ? EPSILON : 0));
 		 return new BoundedInterval(range, isOpenLowerBound, isOpenUpperBound);
 	}
 	
+	public String toString() {
+		String result = "";
+		for (BoundedInterval interval : d_ranges) {
+			result += "{" + interval.getRange();
+			result += interval.isLowerBoundOpen() ? " T" : " F";
+			result += interval.isUpperBoundOpen() ? " T" : " F";
+			result += "}\n";
+		}
+		return result;
+	}
 }
