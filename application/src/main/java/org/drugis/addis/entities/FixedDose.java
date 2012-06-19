@@ -30,7 +30,6 @@ import org.drugis.common.EqualsUtil;
 
 
 public class FixedDose extends AbstractDose {
-
 	public static final String PROPERTY_QUANTITY = "quantity";
 
 	private Double d_quantity;
@@ -84,5 +83,4 @@ public class FixedDose extends AbstractDose {
 	public AbstractDose clone() {
 		return new FixedDose(getQuantity(), getDoseUnit().clone());
 	}
-
 }

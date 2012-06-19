@@ -29,9 +29,9 @@ package org.drugis.addis.entities;
 import java.util.Set;
 
 public abstract class AbstractDose extends AbstractEntity {
-	
 	protected DoseUnit d_unit;
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
+	public static final String PROPERTY_DOSE_TYPE = "doseType";
 
 	public DoseUnit getDoseUnit() {
 		return d_unit;
@@ -41,6 +41,10 @@ public abstract class AbstractDose extends AbstractEntity {
 		DoseUnit oldVal = d_unit;
 		d_unit = unit;
 		firePropertyChange(PROPERTY_DOSE_UNIT, oldVal, d_unit);
+	}
+	
+	public Class<? extends AbstractDose> getDoseType() {
+		return getClass();
 	}
 
 	@Override

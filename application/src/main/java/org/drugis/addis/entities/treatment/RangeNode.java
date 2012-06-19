@@ -1,17 +1,53 @@
 package org.drugis.addis.entities.treatment;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.math.DoubleRange;
+import org.apache.commons.math3.util.Precision;
+
+import com.jgoodies.binding.beans.BeanUtils;
 
 public class RangeNode implements DecisionTreeNode {
+	
+	private static class BoundedInterval { 
+		private final DoubleRange d_range;
+		private final boolean d_lowerBoundIsOpen;
+		private final boolean d_upperBoundIsOpen;
+		private DecisionTreeNode node;
+		
+		public BoundedInterval(DoubleRange range, boolean lowerBoundIsOpen, boolean upperBoundIsOpen) {
+			d_range = range;
+			d_lowerBoundIsOpen = lowerBoundIsOpen;
+			d_upperBoundIsOpen = upperBoundIsOpen;
+		}
+
+		public DoubleRange getRange() {
+			return d_range;
+		}
+
+		public boolean isLowerBoundOpen() {
+			return d_lowerBoundIsOpen;
+		}
+
+		public boolean isUpperBoundOpen() {
+			return d_upperBoundIsOpen;
+		}
+
+		public DecisionTreeNode getNode() {
+			return node;
+		}
+
+		public void setNode(DecisionTreeNode node) {
+			this.node = node;
+		}
+	}
+	
 	private final Class<?> d_beanClass;
 	private final String d_propertyName;
-	private final double d_lowerBound;
-	private final boolean d_lowerBoundIsOpen;
-	private final double d_upperBound;
-	private final boolean d_upperBoundIsOpen;
-	private ArrayList<DecisionTreeNode> d_children = new ArrayList<DecisionTreeNode>();
-
+	private final ArrayList<BoundedInterval> d_ranges = new ArrayList<BoundedInterval>();
+	
 	/**
 	 * Construct a RangeNode that classifies objects by the given property, which must be numeric.
 	 * The specified range is subdivided according to cut-off points (to be specified using {@link #addCutOff(double, boolean)}).
@@ -35,11 +71,9 @@ public class RangeNode implements DecisionTreeNode {
 		
 		d_beanClass = beanClass;
 		d_propertyName = propertyName;
-		d_lowerBound = lowerBound;
-		d_lowerBoundIsOpen = lowerBoundIsOpen;
-		d_upperBound = upperBound;
-		d_upperBoundIsOpen = upperBoundIsOpen;
-		d_children.add(child);
+		
+		d_ranges.add(0, createInterval(lowerBound, upperBound, lowerBoundIsOpen, upperBoundIsOpen));
+		d_ranges.get(0).setNode(child);
 	}
 	
 	/**
@@ -53,7 +87,18 @@ public class RangeNode implements DecisionTreeNode {
 	 * or if it is equal to an existing cut-off value.
 	 */
 	public int addCutOff(double value, boolean isOpenAsLowerBound) {
-		d_children.add(getChildCount(), getChildNode(getChildCount() - 1));
+		int splitIdx = findNodeByValue(value);
+		BoundedInterval current = d_ranges.get(splitIdx);
+		
+		BoundedInterval left = createInterval(current.getRange().getMinimumDouble(), value, current.isLowerBoundOpen(), !isOpenAsLowerBound);
+		BoundedInterval right = createInterval(value, current.getRange().getMaximumDouble(), isOpenAsLowerBound, current.isUpperBoundOpen());
+		left.setNode(d_ranges.get(splitIdx).getNode());
+		right.setNode(d_ranges.get(splitIdx).getNode());
+
+		d_ranges.remove(splitIdx);
+		d_ranges.add(splitIdx, left);
+		d_ranges.add(splitIdx + 1, right);
+		
 		return getChildCount() - 1;
 	}
 
@@ -62,7 +107,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @return The number of children (sub-ranges).
 	 */
 	public int getChildCount() {
-		return d_children.size();
+		return d_ranges.size();
 	}
 	
 	/**
@@ -72,7 +117,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @throws IndexOutOfBoundsException If index < 0 or index >= {@link #getChildCount()}.
 	 */
 	public void setChildNode(int index, DecisionTreeNode node) {
-		d_children.set(index, node);
+		d_ranges.get(index).setNode(node);
 	}
 	
 	/**
@@ -81,7 +126,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @return The child at that index.
 	 */
 	public DecisionTreeNode getChildNode(int index) {
-		return d_children.get(index);
+		return d_ranges.get(index).getNode();
 	}
 	
 	/**
@@ -90,7 +135,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @return The lower bound.
 	 */
 	public double getRangeLowerBound(int index) {
-		return d_lowerBound;
+		return d_ranges.get(index).getRange().getMinimumDouble();
 	}
 	
 	/**
@@ -99,7 +144,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @return True if the lower bound is open (exclusive), false if it is close (inclusive).
 	 */
 	public boolean isRangeLowerBoundOpen(int index) {
-		return d_lowerBoundIsOpen;
+		return d_ranges.get(index).isLowerBoundOpen();
 	}
 
 	/**
@@ -108,7 +153,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @return The upper bound.
 	 */
 	public double getRangeUpperBound(int index) {
-		return d_upperBound;
+		return d_ranges.get(index).getRange().getMaximumDouble();
 	}
 	
 	/**
@@ -117,7 +162,7 @@ public class RangeNode implements DecisionTreeNode {
 	 * @return True if the upper bound is open (exclusive), false if it is close (inclusive).
 	 */
 	public boolean isRangeUpperBoundOpen(int index) {
-		return d_upperBoundIsOpen;
+		return d_ranges.get(index).isUpperBoundOpen();
 	}
 
 	/**
@@ -128,11 +173,42 @@ public class RangeNode implements DecisionTreeNode {
 	 * not numeric, or if the property value is not within the range specified for this node.
 	 */
 	public DecisionTreeNode decide(Object object) {
+		Object value = null;
+		Double doseValue = null;
+		try { 
+			if(!d_beanClass.isInstance(object)) {
+				throw new IllegalArgumentException("Object not of the valid type " + d_beanClass.getName() + "  was: " + object.getClass().getName());
+			}
+			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(d_beanClass, d_propertyName);
+			value = BeanUtils.getValue(object, propertyDescriptor);
+			doseValue = (Double)value;				
+		} catch (IntrospectionException e) {
+			e.printStackTrace();
+		} catch (ClassCastException e) {
+			throw new IllegalArgumentException("Property was not numeric. but: " + value.getClass());
+		} 
 		
-		return null;
+		int idx = findNodeByValue(doseValue);
+		if(idx == -1) throw new IllegalArgumentException("Value " + doseValue + " not within allowed range");
+		return getChildNode(idx);
 	}
 	
 	public boolean isLeaf() {
 		return false;
 	}
+
+	private int findNodeByValue(Double value) {
+		for(int i = 0; i < d_ranges.size(); ++i) { 
+			if(d_ranges.get(i).getRange().containsDouble(value)) return i;
+		}
+		return -1;
+	}
+
+	private BoundedInterval createInterval(double lowerBound, double upperBound, boolean isOpenLowerBound, boolean isOpenUpperBound) { 
+		 DoubleRange range = new DoubleRange(
+				 lowerBound + (!isOpenLowerBound ? Precision.EPSILON : 0), 
+				 upperBound	- (!isOpenUpperBound ? Precision.EPSILON : 0));
+		 return new BoundedInterval(range, isOpenLowerBound, isOpenUpperBound);
+	}
+	
 }

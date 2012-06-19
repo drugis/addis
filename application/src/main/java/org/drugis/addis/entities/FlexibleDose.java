@@ -113,5 +113,4 @@ public class FlexibleDose extends AbstractDose {
 	public AbstractDose clone() {
 		return new FlexibleDose(getFlexibleDose(), getDoseUnit().clone());
 	}
-
 }
