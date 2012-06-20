@@ -10,8 +10,7 @@ import com.jgoodies.binding.beans.BeanUtils;
 
 public class RangeNode implements DecisionTreeNode {
 	
-//	private static final double EPSILON = Precision.EPSILON;
-	private static final double EPSILON = 1.0E-14;
+	public static final double EPSILON = 1.0E-14;
 
 	private static class BoundedInterval { 
 		private final DoubleRange d_range;
@@ -86,8 +85,8 @@ public class RangeNode implements DecisionTreeNode {
 	/**
 	 * @see {@link #addCutOff(double, boolean, DecisionTreeNode)}
 	 */
-	public int addCutOff(double value, boolean isOpenAsLowerBound) {
-		return addCutOff(value, isOpenAsLowerBound, null);
+	public int addCutOff(double value, boolean includeInRightSide) {
+		return addCutOff(value, includeInRightSide, null);
 	}
 	
 	/**
@@ -111,11 +110,10 @@ public class RangeNode implements DecisionTreeNode {
 		left.setNode(leftNode);
 		right.setNode((rightNode != null) ? rightNode : leftNode);
 
-		d_ranges.remove(splitIdx);
-		d_ranges.add(splitIdx, left);
+		d_ranges.set(splitIdx, left);
 		d_ranges.add(splitIdx + 1, right);
 		
-		return getChildCount() - 1;
+		return d_ranges.indexOf(right);
 	}
 
 	/**
@@ -224,7 +222,7 @@ public class RangeNode implements DecisionTreeNode {
 		return -1;
 	}
 
-	private BoundedInterval createInterval(double lowerBound, double upperBound, boolean isOpenLowerBound, boolean isOpenUpperBound) { 
+	private static BoundedInterval createInterval(double lowerBound, double upperBound, boolean isOpenLowerBound, boolean isOpenUpperBound) { 
 		 DoubleRange range = new DoubleRange(
 				 lowerBound + (isOpenLowerBound ? EPSILON : 0), 
 				 upperBound	- (isOpenUpperBound ? EPSILON : 0));
@@ -237,6 +235,7 @@ public class RangeNode implements DecisionTreeNode {
 			result += "{" + interval.getRange();
 			result += interval.isLowerBoundOpen() ? " T" : " F";
 			result += interval.isUpperBoundOpen() ? " T" : " F";
+			result += " node: " + interval.getNode().getClass().getName();
 			result += "}\n";
 		}
 		return result;

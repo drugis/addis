@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.math3.util.Precision;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.common.Interval;
@@ -25,14 +24,14 @@ public class RangeNodeTest {
 	}
 	
 	@Test
-	public void testInitialization() throws Exception {
-		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000,true , 2000, false, d_excludeNode);
+	public void testInitialization() {
+		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000, true, 2000, false, d_excludeNode);
 		RangeNode node2 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, 1, false, 2, true, node1);
 		
 		
 		assertEquals(node1, node2.getChildNode(0));
-		assertEquals(1, node2.getRangeLowerBound(0), Precision.EPSILON);
-		assertEquals(2, node2.getRangeUpperBound(0), Precision.EPSILON);
+		assertEquals(1, node2.getRangeLowerBound(0), RangeNode.EPSILON);
+		assertEquals(2, node2.getRangeUpperBound(0), RangeNode.EPSILON);
 		assertFalse(node2.isRangeLowerBoundOpen(0));
 		assertTrue(node2.isRangeUpperBoundOpen(0));
 		assertEquals(1, node2.getChildCount());
@@ -43,15 +42,15 @@ public class RangeNodeTest {
 	
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testIndexCorrectness() {
-		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000,true , 2000, false, d_excludeNode);
+		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000, true, 2000, false, d_excludeNode);
 		
 		node1.getChildNode(1);
 	}
 	
 	@Test 
 	public void setChildNode() { 
-		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000,true , 2000, false, d_excludeNode);
-		RangeNode node2 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000,true , 2000, false, d_excludeNode);
+		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000, true, 2000, false, d_excludeNode);
+		RangeNode node2 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000, true, 2000, false, d_excludeNode);
 
 		node1.setChildNode(0, node2);
 
@@ -63,20 +62,20 @@ public class RangeNodeTest {
 	@Test
 	public void testSplitCategory() {
 		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000, true, 2000, false, d_excludeNode);
-		node1.addCutOff(1500, true);
+		int childIdx = node1.addCutOff(1500, true);
 		
 		assertEquals(node1.getChildCount(), 2);
-		assertEquals(d_excludeNode, node1.getChildNode(1));
+		assertEquals(d_excludeNode, node1.getChildNode(childIdx));
 		
-		assertEquals(1000, node1.getRangeLowerBound(0), Precision.EPSILON);
-		assertEquals(1500, node1.getRangeUpperBound(0), Precision.EPSILON);		
-		assertEquals(1500, node1.getRangeLowerBound(1), Precision.EPSILON);
-		assertEquals(2000, node1.getRangeUpperBound(1), Precision.EPSILON);
+		assertEquals(1000, node1.getRangeLowerBound(0), RangeNode.EPSILON);
+		assertEquals(1500, node1.getRangeUpperBound(0), RangeNode.EPSILON);		
+		assertEquals(1500, node1.getRangeLowerBound(1), RangeNode.EPSILON);
+		assertEquals(2000, node1.getRangeUpperBound(1), RangeNode.EPSILON);
 		
 		assertTrue(node1.isRangeLowerBoundOpen(0));
-		assertTrue(node1.isRangeLowerBoundOpen(1));
+		assertFalse(node1.isRangeLowerBoundOpen(1));
 		
-		assertFalse(node1.isRangeUpperBoundOpen(0));
+		assertTrue(node1.isRangeUpperBoundOpen(0));
 		assertFalse(node1.isRangeUpperBoundOpen(1));
 
 	}
@@ -84,39 +83,45 @@ public class RangeNodeTest {
 	@Test
 	public void testSplitTwice() { 
 		RangeNode node1 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, 1000, true, 2000, false, d_excludeNode);
-		node1.addCutOff(1500, false);
+		int childIdx = node1.addCutOff(1500, false);
+		// (1000..1500], (1500..2000]
 		
 		assertEquals(node1.getChildCount(), 2);
-		assertEquals(d_excludeNode, node1.getChildNode(1));
+		assertEquals(d_excludeNode, node1.getChildNode(childIdx));
 		
-		assertEquals(1000, node1.getRangeLowerBound(0), Precision.EPSILON);
-		assertEquals(1500, node1.getRangeUpperBound(0), Precision.EPSILON);		
-		assertEquals(1500, node1.getRangeLowerBound(1), Precision.EPSILON);
-		assertEquals(2000, node1.getRangeUpperBound(1), Precision.EPSILON);
+		assertEquals(1000, node1.getRangeLowerBound(0), RangeNode.EPSILON);
+		assertEquals(1500, node1.getRangeUpperBound(0), RangeNode.EPSILON);		
+		assertEquals(1500, node1.getRangeLowerBound(1), RangeNode.EPSILON);
+		assertEquals(2000, node1.getRangeUpperBound(1), RangeNode.EPSILON);
 		
 		assertTrue(node1.isRangeLowerBoundOpen(0));
-		assertFalse(node1.isRangeLowerBoundOpen(1));
+		assertTrue(node1.isRangeLowerBoundOpen(1));
 
-		assertTrue(node1.isRangeUpperBoundOpen(0));
+		assertFalse(node1.isRangeUpperBoundOpen(0));
 		assertFalse(node1.isRangeUpperBoundOpen(1));
+		System.out.println("actual");
+
+		CategoryNode midCatNode = new CategoryNode("midrange");
+		int childIdx2 = node1.addCutOff(1250, false, midCatNode);
 		
-		node1.addCutOff(1250, false);
-		
+		// (1000..1250], (1250..1500], (1500..2000]
+
 		assertEquals(node1.getChildCount(), 3);
+		assertEquals(midCatNode, node1.getChildNode(childIdx2));
 		
-		assertEquals(1000, node1.getRangeLowerBound(0), Precision.EPSILON);
-		assertEquals(1250, node1.getRangeUpperBound(0), Precision.EPSILON);		
-		assertEquals(1250, node1.getRangeLowerBound(1), Precision.EPSILON);
-		assertEquals(1500, node1.getRangeUpperBound(1), Precision.EPSILON);
-		assertEquals(1500, node1.getRangeLowerBound(2), Precision.EPSILON);
-		assertEquals(2000, node1.getRangeUpperBound(2), Precision.EPSILON);
+		assertEquals(1000, node1.getRangeLowerBound(0), RangeNode.EPSILON);
+		assertEquals(1250, node1.getRangeUpperBound(0), RangeNode.EPSILON);		
+		assertEquals(1250, node1.getRangeLowerBound(1), RangeNode.EPSILON);
+		assertEquals(1500, node1.getRangeUpperBound(1), RangeNode.EPSILON);
+		assertEquals(1500, node1.getRangeLowerBound(2), RangeNode.EPSILON);
+		assertEquals(2000, node1.getRangeUpperBound(2), RangeNode.EPSILON);
 		
 		assertTrue(node1.isRangeLowerBoundOpen(0));
-		assertFalse(node1.isRangeLowerBoundOpen(1));
-		assertFalse(node1.isRangeLowerBoundOpen(2));
+		assertTrue(node1.isRangeLowerBoundOpen(1));
+		assertTrue(node1.isRangeLowerBoundOpen(2));
 		
-		assertTrue(node1.isRangeUpperBoundOpen(0));
-		assertTrue(node1.isRangeUpperBoundOpen(1));
+		assertFalse(node1.isRangeUpperBoundOpen(0));
+		assertFalse(node1.isRangeUpperBoundOpen(1));
 		assertFalse(node1.isRangeUpperBoundOpen(2));
 
 	}
@@ -165,7 +170,7 @@ public class RangeNodeTest {
 		maxNode.addCutOff(20, true);
 		maxNode.setChildNode(1, dummy);
 		
-		FlexibleDose maxDoseLowCat = new FlexibleDose(new Interval<Double>(10.0, 20.0 - Precision.EPSILON), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose maxDoseLowCat = new FlexibleDose(new Interval<Double>(10.0, 20.0 - RangeNode.EPSILON), ExampleData.MILLIGRAMS_A_DAY);
 		FlexibleDose maxDoseHighCat = new FlexibleDose(new Interval<Double>(20.0, 40.0), ExampleData.MILLIGRAMS_A_DAY);
 		assertEquals(d_excludeNode, maxNode.decide(maxDoseLowCat));
 		assertEquals(dummy, maxNode.decide(maxDoseHighCat));

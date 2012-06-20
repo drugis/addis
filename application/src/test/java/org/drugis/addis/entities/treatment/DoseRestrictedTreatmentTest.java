@@ -3,7 +3,6 @@ package org.drugis.addis.entities.treatment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.math3.util.Precision;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
