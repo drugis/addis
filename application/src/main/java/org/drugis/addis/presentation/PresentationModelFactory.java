@@ -47,6 +47,7 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -114,6 +115,9 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof DrugTreatment) {
 			return new DrugTreatmentPresentation((DrugTreatment)obj);
+		}
+		if (obj instanceof DosedDrugTreatment) {
+			return new DosedDrugTreatmentPresentation((DosedDrugTreatment)obj);
 		}
 		if (obj instanceof Drug) {
 			return new DrugPresentation((Drug) obj, d_domain);

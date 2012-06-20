@@ -99,7 +99,6 @@ public class RangeNodeTest {
 
 		assertFalse(node1.isRangeUpperBoundOpen(0));
 		assertFalse(node1.isRangeUpperBoundOpen(1));
-		System.out.println("actual");
 
 		CategoryNode midCatNode = new CategoryNode("midrange");
 		int childIdx2 = node1.addCutOff(1250, false, midCatNode);

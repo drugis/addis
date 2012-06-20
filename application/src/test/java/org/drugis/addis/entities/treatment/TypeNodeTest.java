@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.UnknownDose;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,12 +37,19 @@ public class TypeNodeTest {
 	@Test
 	public void testMultipleTypes() {
 		CategoryNode someCatNode = new CategoryNode("dog");
+		CategoryNode unknownNode = new CategoryNode("unknown");
 		TypeNode typeNode = new TypeNode(FixedDose.class, d_child);
 		typeNode.addType(FlexibleDose.class, someCatNode);
-		FixedDose fixedDose = new FixedDose();
-		FlexibleDose flexibleDose = new FlexibleDose();
+		typeNode.addType(UnknownDose.class, unknownNode);
+		
+		assertEquals(d_child, typeNode.decide(new FixedDose()));
+		assertEquals(someCatNode, typeNode.decide(new FlexibleDose()));
+		assertEquals(unknownNode, typeNode.decide(new UnknownDose()));
+	}
 
-		assertEquals(d_child, typeNode.decide(fixedDose));
-		assertEquals(someCatNode, typeNode.decide(flexibleDose));
+	@Test(expected=IllegalArgumentException.class)
+	public void testIllegalArgument() {
+		TypeNode typeNode = new TypeNode(FlexibleDose.class, d_child);
+		typeNode.decide(new UnknownDose());
 	}
 }

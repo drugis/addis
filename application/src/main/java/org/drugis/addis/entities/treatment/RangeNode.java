@@ -4,7 +4,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 
-import org.apache.commons.lang.math.DoubleRange;
+import org.drugis.addis.util.BoundedInterval;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
@@ -12,39 +12,6 @@ public class RangeNode implements DecisionTreeNode {
 	
 	public static final double EPSILON = 1.0E-14;
 
-	private static class BoundedInterval { 
-		private final DoubleRange d_range;
-		private final boolean d_lowerBoundIsOpen;
-		private final boolean d_upperBoundIsOpen;
-		private DecisionTreeNode d_node;
-		
-		public BoundedInterval(DoubleRange range, boolean lowerBoundIsOpen, boolean upperBoundIsOpen) {
-			d_range = range;
-			d_lowerBoundIsOpen = lowerBoundIsOpen;
-			d_upperBoundIsOpen = upperBoundIsOpen;
-		}
-
-		public DoubleRange getRange() {
-			return d_range;
-		}
-
-		public boolean isLowerBoundOpen() {
-			return d_lowerBoundIsOpen;
-		}
-
-		public boolean isUpperBoundOpen() {
-			return d_upperBoundIsOpen;
-		}
-
-		public DecisionTreeNode getNode() {
-			return d_node;
-		}
-
-		public void setNode(DecisionTreeNode node) {
-			d_node = node;
-		}
-	}
-	
 	protected final Class<?> d_beanClass;
 	protected final String d_propertyName;
 	private final ArrayList<BoundedInterval> d_ranges = new ArrayList<BoundedInterval>();
@@ -78,7 +45,7 @@ public class RangeNode implements DecisionTreeNode {
 		d_beanClass = beanClass;
 		d_propertyName = propertyName;
 		
-		d_ranges.add(0, createInterval(lowerBound, upperBound, lowerBoundIsOpen, upperBoundIsOpen));
+		d_ranges.add(0, new BoundedInterval(lowerBound, lowerBoundIsOpen, upperBound, upperBoundIsOpen));
 		d_ranges.get(0).setNode(child);
 	}
 	
@@ -104,8 +71,8 @@ public class RangeNode implements DecisionTreeNode {
 		int splitIdx = findNodeByValue(value);
 		BoundedInterval current = d_ranges.get(splitIdx);
 		
-		BoundedInterval left = createInterval(current.getRange().getMinimumDouble(), value, current.isLowerBoundOpen(), includeInRightSide);
-		BoundedInterval right = createInterval(value, current.getRange().getMaximumDouble(), !includeInRightSide, current.isUpperBoundOpen());
+		BoundedInterval left = new BoundedInterval(current.getRange().getMinimumDouble(), current.isLowerBoundOpen(), value, includeInRightSide);
+		BoundedInterval right = new BoundedInterval(value, !includeInRightSide, current.getRange().getMaximumDouble(), current.isUpperBoundOpen());
 		DecisionTreeNode leftNode = d_ranges.get(splitIdx).getNode();
 		left.setNode(leftNode);
 		right.setNode((rightNode != null) ? rightNode : leftNode);
@@ -222,13 +189,6 @@ public class RangeNode implements DecisionTreeNode {
 		return -1;
 	}
 
-	private static BoundedInterval createInterval(double lowerBound, double upperBound, boolean isOpenLowerBound, boolean isOpenUpperBound) { 
-		 DoubleRange range = new DoubleRange(
-				 lowerBound + (isOpenLowerBound ? EPSILON : 0), 
-				 upperBound	- (isOpenUpperBound ? EPSILON : 0));
-		 return new BoundedInterval(range, isOpenLowerBound, isOpenUpperBound);
-	}
-	
 	public String toString() {
 		String result = "";
 		for (BoundedInterval interval : d_ranges) {

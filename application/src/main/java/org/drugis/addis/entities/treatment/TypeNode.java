@@ -3,7 +3,7 @@ package org.drugis.addis.entities.treatment;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.AbstractDose;
 
 public class TypeNode implements DecisionTreeNode {
 	private final Map<Class<?>, DecisionTreeNode> d_nodeMap =
@@ -22,7 +22,7 @@ public class TypeNode implements DecisionTreeNode {
 		return node;
 	}
 
-	public void addType(Class<FlexibleDose> type, DecisionTreeNode node) {
+	public void addType(Class<? extends AbstractDose> type, DecisionTreeNode node) {
 		d_nodeMap.put(type, node);
 	}
 	

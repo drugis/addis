@@ -12,14 +12,14 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DoseRestrictedTreatmentTest {
+public class DosedDrugTreatmentTest {
 	private static final DoseUnit MG_DAY = ExampleData.MILLIGRAMS_A_DAY;
 	
-	private DoseRestrictedTreatment d_treatment;
+	private DosedDrugTreatment d_treatment;
 
 	@Before
 	public void setUp() {
-		d_treatment = new DoseRestrictedTreatment(ExampleData.buildDrugCandesartan());
+		d_treatment = new DosedDrugTreatment(ExampleData.buildDrugCandesartan());
 	}
 	
 	@Test
@@ -32,14 +32,14 @@ public class DoseRestrictedTreatmentTest {
 	@Test
 	public void testCategorization() {
 		TypeNode rootNode = new TypeNode(FixedDose.class, new CategoryNode("Fixed Dose"));
-		DoseRangeNode maxRangeNode = new DoseRangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, MG_DAY, new CategoryNode("Flexible dose"));
+		DoseRangeNode maxRangeNode = new DoseRangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, MG_DAY, 
+				new CategoryNode("Flexible dose"));
 		maxRangeNode.addCutOff(100, false, new ExcludeNode());
 
-		DoseRangeNode minRangeNode = new DoseRangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, MG_DAY, new ExcludeNode());
+		DoseRangeNode minRangeNode = new DoseRangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, MG_DAY, 
+				new ExcludeNode());
 		minRangeNode.addCutOff(50.0, true, maxRangeNode);
 		rootNode.addType(FlexibleDose.class, minRangeNode);
-		
-		System.out.println(minRangeNode);
 		
 		FixedDose fixedDose = new FixedDose(10.0, MG_DAY);
 		FlexibleDose lowFlexibleDose = new FlexibleDose(new Interval<Double>(0.0, 10.0), MG_DAY);
@@ -49,10 +49,10 @@ public class DoseRestrictedTreatmentTest {
 		d_treatment.setRootNode(rootNode);
 		
 		
-		assertEquals("Fixed Dose", d_treatment.getCategory(fixedDose));
-		assertEquals(DoseRestrictedTreatment.EXCLUDE, d_treatment.getCategory(lowFlexibleDose));
-		assertEquals("Flexible dose", d_treatment.getCategory(midFlexibleDose));
-		assertEquals(DoseRestrictedTreatment.EXCLUDE, d_treatment.getCategory(highFlexibleDose));
+		assertEquals("Fixed Dose", d_treatment.getCategoryName(fixedDose));
+		assertEquals(DosedDrugTreatment.EXCLUDE, d_treatment.getCategoryName(lowFlexibleDose));
+		assertEquals("Flexible dose", d_treatment.getCategoryName(midFlexibleDose));
+		assertEquals(DosedDrugTreatment.EXCLUDE, d_treatment.getCategoryName(highFlexibleDose));
 	}
 
 }
