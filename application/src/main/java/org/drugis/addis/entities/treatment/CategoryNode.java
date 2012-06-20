@@ -1,6 +1,8 @@
 package org.drugis.addis.entities.treatment;
 
-public class CategoryNode implements DecisionTreeNode {
+import org.drugis.common.beans.AbstractObservable;
+
+public class CategoryNode extends AbstractObservable implements DecisionTreeNode {
 	private final String d_name;
 
 	public CategoryNode(String name) {

@@ -3,6 +3,8 @@ package org.drugis.addis.entities.treatment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
@@ -19,7 +21,7 @@ public class DosedDrugTreatmentTest {
 
 	@Before
 	public void setUp() {
-		d_treatment = new DosedDrugTreatment(ExampleData.buildDrugCandesartan());
+		d_treatment = new DosedDrugTreatment("", ExampleData.buildDrugCandesartan());
 	}
 	
 	@Test
@@ -27,6 +29,13 @@ public class DosedDrugTreatmentTest {
 		Drug drugCandesartan = ExampleData.buildDrugCandesartan();
 		assertEquals(drugCandesartan, d_treatment.getDrug());
 		assertTrue((d_treatment.getRootNode() instanceof ExcludeNode));
+	}
+	
+	@Test 
+	public void testAddCategory() {
+		CategoryNode categoryNode = new CategoryNode("foo");
+		d_treatment.addCategory(categoryNode);
+		assertEquals(Arrays.asList(categoryNode), d_treatment.getCategories());
 	}
 	
 	@Test
@@ -50,9 +59,9 @@ public class DosedDrugTreatmentTest {
 		
 		
 		assertEquals("Fixed Dose", d_treatment.getCategoryName(fixedDose));
-		assertEquals(DosedDrugTreatment.EXCLUDE, d_treatment.getCategoryName(lowFlexibleDose));
+		assertEquals(ExcludeNode.NAME, d_treatment.getCategoryName(lowFlexibleDose));
 		assertEquals("Flexible dose", d_treatment.getCategoryName(midFlexibleDose));
-		assertEquals(DosedDrugTreatment.EXCLUDE, d_treatment.getCategoryName(highFlexibleDose));
+		assertEquals(ExcludeNode.NAME, d_treatment.getCategoryName(highFlexibleDose));
 	}
 
 }

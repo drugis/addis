@@ -26,14 +26,49 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+
+import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.common.beans.ContentAwareListModel;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.beans.BeanUtils;
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {
 
-	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {
+	private ContentAwareListModel<CategoryNode> d_categories;
+
+	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {		
 		super(bean);
+		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
+	}
+
+	public Object getDrug() {
+		return getBean().getDrug();
+	}
+
+	public ValueHolder<String> getName() {
+		return new ModifiableHolder<String>(getBean().getName());
+	}
+
+	public ObservableList<CategoryNode> getCategories() {
+		return d_categories;
+	}
+
+	public DoseUnit getDoseUnit() {
+		return getBean().getDoseUnit();
+	}
+
+	public void setDoseUnit(DoseUnit unit) {
+		getBean().setDoseUnit(unit);
+	}
+
+	public DoseUnitPresentation getDoseUnitPresentation() {
+		return new DoseUnitPresentation(getDoseUnit());
 	}
 }
