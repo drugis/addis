@@ -26,6 +26,7 @@
 
 package org.drugis.addis.presentation;
 
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
@@ -38,9 +39,15 @@ import com.jgoodies.binding.list.ObservableList;
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {
 
 	private ContentAwareListModel<CategoryNode> d_categories;
+	private final Domain d_domain;
+	
+	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {	
+		this(bean, null);
+	}
 
-	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {		
+	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean, Domain domain) {		
 		super(bean);
+		d_domain = domain;
 		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
 	}
 
@@ -66,5 +73,14 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 
 	public DoseUnitPresentation getDoseUnitPresentation() {
 		return new DoseUnitPresentation(getDoseUnit());
+	}
+	
+	public DosedDrugTreatment commit() {
+		if (d_domain.getTreatments().contains(getBean())) {
+			throw new IllegalStateException("Treatment already exists in domain");
+		}
+		
+		d_domain.getTreatments().add(getBean());
+		return getBean();
 	}
 }

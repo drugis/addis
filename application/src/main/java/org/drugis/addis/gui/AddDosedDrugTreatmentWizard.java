@@ -30,22 +30,58 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
+import org.drugis.addis.gui.wizard.SpecifyDoseRangeWizardStep;
+import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep.KNOWN_CATEGORY_SPECIFIERS;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.pietschy.wizard.Wizard;
+import org.pietschy.wizard.WizardEvent;
+import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.WizardModel;
-import org.pietschy.wizard.models.StaticModel;
+import org.pietschy.wizard.WizardStep;
+import org.pietschy.wizard.models.Condition;
+import org.pietschy.wizard.models.DynamicModel;
 
 @SuppressWarnings("serial")
 public class AddDosedDrugTreatmentWizard extends Wizard {
 
-	public AddDosedDrugTreatmentWizard(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
+	public AddDosedDrugTreatmentWizard(
+			final DosedDrugTreatmentPresentation pm, 
+			final AddisWindow mainWindow, 
+			final Domain domain, 
+			final JDialog dialog) {
 		super(buildModel(pm, mainWindow, domain, dialog));
-
+		addWizardListener(new WizardListener() {
+			public void wizardClosed(WizardEvent e) {
+				mainWindow.leftTreeFocus(pm.commit());
+			}
+			
+			public void wizardCancelled(WizardEvent e) {
+				mainWindow.leftTreeFocus(pm.getBean());
+			}
+		});
+		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
+
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
-		StaticModel wizardModel = new StaticModel();
-		wizardModel.add(new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow));
+		DynamicModel wizardModel = new DynamicModel();
+		final AddDosedDrugTreatmentWizardStep first = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
+		wizardModel.add(first);
+		Condition considerDose = new Condition() {
+			@Override
+			public boolean evaluate(WizardModel model) {
+				WizardStep step = model.getActiveStep();
+				if(step instanceof AddDosedDrugTreatmentWizardStep) { 
+					AddDosedDrugTreatmentWizardStep active = (AddDosedDrugTreatmentWizardStep)step;
+					return active.getKnownCategory().equals(KNOWN_CATEGORY_SPECIFIERS.CONSIDER.getTitle());
+				}
+				return false;
+			}
+		};
+		wizardModel.add(new SpecifyDoseRangeWizardStep(pm, domain, mainWindow), considerDose);
+
+		wizardModel.setLastVisible(false);
+
 		return wizardModel;
 	}
 	

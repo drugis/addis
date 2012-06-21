@@ -12,5 +12,9 @@ public class ExcludeNode implements DecisionTreeNode {
 	public DecisionTreeNode decide(Object object) {
 		return null;
 	}
+	
+	public String toString() { 
+		return "* " + ExcludeNode.NAME;
+	}
 
 }

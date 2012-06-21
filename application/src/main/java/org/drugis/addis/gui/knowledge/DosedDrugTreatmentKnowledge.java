@@ -52,9 +52,8 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	}
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
-//		return new AddDosedDrugTreatmentDialog(mainWindow, domain, selectionModel);
 		d_treatment = new DosedDrugTreatment();
-		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(d_treatment);
+		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(d_treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
 	}
 
@@ -62,8 +61,8 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 		JDialog dialog = new JDialog(mainWindow, title, true);
 		AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, mainWindow, domain, dialog);
 		dialog.getContentPane().add(wizard);
-		dialog.setMinimumSize(new Dimension(700, 550));
-		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(790, 750));
+		dialog.setMinimumSize(new Dimension(550, 400));
+		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(640, 600));
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
 		Main.bindPrintScreen(wizard);
@@ -78,4 +77,5 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
 		return new DosedDrugTreatmentView((DosedDrugTreatmentPresentation) main.getPresentationModelFactory().getModel(((DosedDrugTreatment) entity)), main);
 	}
+	
 }

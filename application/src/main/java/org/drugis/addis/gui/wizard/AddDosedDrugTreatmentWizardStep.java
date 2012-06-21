@@ -46,17 +46,22 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
+import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -69,8 +74,28 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	private JPanel d_dialogPanel = new JPanel();
 	private final Domain d_domain;
 	private final AddisWindow d_mainWindow;
-	private DosedDrugTreatmentPresentation d_pm; 
+	private DosedDrugTreatmentPresentation d_pm;
+	private NotEmptyValidator d_validator;
+	private JComboBox d_knownDoseCategory;
 
+	public static enum KNOWN_CATEGORY_SPECIFIERS {
+		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type");
+		
+		private final String d_title;
+
+		private KNOWN_CATEGORY_SPECIFIERS(String title) {
+			d_title = title; 
+		}
+
+		public String getTitle() {
+			return d_title;
+		}
+		
+		public String toString() { 
+			return getTitle();
+		}
+	}
+	
 	public AddDosedDrugTreatmentWizardStep(PresentationModel<DosedDrugTreatment> presentationModel, 
 			Domain domain, 
 			AddisWindow mainWindow) {
@@ -78,6 +103,7 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		d_model = presentationModel;
 		d_domain = domain;
 		d_mainWindow = mainWindow;
+		d_validator = new NotEmptyValidator();
 		d_pm = new DosedDrugTreatmentPresentation(d_model.getBean());
 		d_pm.getCategories().addListDataListener(new ListDataListener() {			
 			@Override
@@ -99,56 +125,60 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	
 	@Override
 	public void prepare() {
-		 this.setVisible(false);
-		 
+		 this.setVisible(false);		 
 		 buildWizardStep();
+		 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+
 		 this.setVisible(true);
 		 repaint();
 	}
 	
 	public void buildWizardStep() {
-		JPanel dialog = initialize();
+		JPanel dialog = buildPanel();
 		d_dialogPanel.setLayout(new BorderLayout());
 		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
 		d_dialogPanel.add(dialog);
 		add(d_dialogPanel, BorderLayout.CENTER);	
 	}	
 	
+	public String getKnownCategory()  { 
+		return d_knownDoseCategory.getSelectedItem().toString();
+	}
+	
 	private void rebuildPanel() {
 		d_dialogPanel.setVisible(false);
 		d_dialogPanel.removeAll();
-		d_dialogPanel.add(initialize());
+		d_dialogPanel.add(buildPanel());
 		d_dialogPanel.setVisible(true);
 	}
 	
-	private JPanel initialize() {
-		JTextField name = BasicComponentFactory.createTextField(d_model.getModel(DosedDrugTreatment.PROPERTY_NAME), false);
-		name.setColumns(20);
-		
+	private JPanel buildPanel() {
 		FormLayout layout = new FormLayout(
-				"right:pref, 3dlu, pref, 3dlu, pref, fill:pref:grow",
-				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+				"left:pref, 3dlu, pref, 3dlu, pref, fill:pref:grow, pref, 3dlu, pref",
+				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
 				);	
 		
 		PanelBuilder builder = new PanelBuilder(layout);
-		builder.setDefaultDialogBorder();
 		
 		CellConstraints cc = new CellConstraints();
 		int row = 1;
-		int colSpan = 6;
+		int colSpan = layout.getColumnCount();
 
+		JTextField name = BasicComponentFactory.createTextField(d_model.getModel(DosedDrugTreatment.PROPERTY_NAME), false);
+		name.setColumns(15);
+		
 		final AbstractValueModel drugModel = d_model.getModel(DosedDrugTreatment.PROPERTY_DRUG);
 		builder.addLabel("Drug:", cc.xy(1, row));
 		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_domain.getDrugs(), drugModel, true);
 		builder.add(drugSelect, cc.xy(3, row));
 		builder.add(createNewDrugButton(drugModel), cc.xy(5, row));
+		d_validator.add(drugSelect);
+
+		builder.addLabel("Name:", cc.xy(7, row));
+		builder.add(name, cc.xy(9, row));
+		d_validator.add(name);
 		
 		row += 2;
-		
-		builder.addLabel("Name:", cc.xy(1, row));
-		builder.add(name, cc.xy(3, row));
-		
-		row +=2;
 		builder.addSeparator("Category labels", cc.xyw(1, row, colSpan));
 		
 		row += 2;
@@ -158,12 +188,32 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		builder.add(catPane, cc.xyw(1, row, colSpan));
 		
 		row += 2;
-		builder.addSeparator("Dosage criteria", cc.xyw(1, row, colSpan));
+		builder.addSeparator("Dose criteria", cc.xyw(1, row, colSpan));
 		
 		row += 2;
-		builder.add(DoseView.createDoseUnitRow(d_pm.getDoseUnitPresentation(), d_domain.getUnits()), cc.xyw(1, row, colSpan));
+		builder.addLabel("Unit:", cc.xy(1, row));
+		builder.add(DoseView.createDoseUnitRow(d_pm.getDoseUnitPresentation(), d_domain.getUnits()), cc.xyw(3, row, colSpan - 2));
+		
+		row += 2;
+		builder.addLabel("Unknown dose:", cc.xy(1, row));
+		builder.add(createCategoryComboBox(), cc.xyw(3, row, colSpan - 2));
+		
+		row += 2;
+		builder.addLabel("Known dose:", cc.xy(1, row));
+		d_knownDoseCategory = createCategoryComboBox(KNOWN_CATEGORY_SPECIFIERS.CONSIDER.getTitle(), KNOWN_CATEGORY_SPECIFIERS.DO_NOT_CONSIDER.getTitle());
+		builder.add(d_knownDoseCategory, cc.xyw(3, row, colSpan - 2));
 		
 		return builder.getPanel();
+	}
+
+	private JComboBox createCategoryComboBox(String ... extraItems) {
+		ObservableList<Object> categories = new ArrayListModel<Object>();
+		categories.add(0, new ExcludeNode());
+		for (String item : extraItems) {
+			categories.add(GUIFactory.createBoxedString(item));
+		}
+		categories.addAll(d_pm.getCategories());
+		return new JComboBox(categories.toArray());
 	}
 	
 	private JButton createNewDrugButton(final AbstractValueModel drugModel) {
