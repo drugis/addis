@@ -26,27 +26,48 @@
 
 package org.drugis.addis.gui.knowledge;
 
+import java.awt.Dimension;
+
 import javax.swing.JDialog;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.gui.AddDosedDrugTreatmentDialog;
+import org.drugis.addis.gui.AddDosedDrugTreatmentWizard;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.DosedDrugTreatmentView;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.ViewBuilder;
+import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.value.ValueModel;
 
 public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
+	private DosedDrugTreatment d_treatment;
+
 	public DosedDrugTreatmentKnowledge() {
 		super("treatment", FileNames.ICON_HEART, DosedDrugTreatment.class);
 	}
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
-		return new AddDosedDrugTreatmentDialog(mainWindow, domain, selectionModel);
+//		return new AddDosedDrugTreatmentDialog(mainWindow, domain, selectionModel);
+		d_treatment = new DosedDrugTreatment();
+		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(d_treatment);
+		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
+	}
+
+	public static JDialog buildDosedDrugTreatmentWizardDialog(AddisWindow mainWindow, Domain domain, String title, DosedDrugTreatmentPresentation pm) {
+		JDialog dialog = new JDialog(mainWindow, title, true);
+		AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, mainWindow, domain, dialog);
+		dialog.getContentPane().add(wizard);
+		dialog.setMinimumSize(new Dimension(700, 550));
+		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(790, 750));
+		dialog.pack();
+		WizardFrameCloser.bind(wizard, dialog);
+		Main.bindPrintScreen(wizard);
+		return dialog;
 	}
 	
 	@Override

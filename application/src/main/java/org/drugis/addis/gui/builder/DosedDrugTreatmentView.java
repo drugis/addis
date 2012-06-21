@@ -35,12 +35,7 @@ import org.drugis.common.gui.ViewBuilder;
 
 public class DosedDrugTreatmentView implements ViewBuilder {
 
-	private DosedDrugTreatmentPresentation d_model;
-	private AddisWindow d_parent;
-
 	public DosedDrugTreatmentView(DosedDrugTreatmentPresentation model, AddisWindow parent) {
-		d_model = model;
-		d_parent = parent;
 	}
 	
 	public JComponent buildPanel() {

@@ -28,7 +28,11 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	private DoseUnit d_doseUnit;
 	
 	public DosedDrugTreatment() { 
-		super("");
+		this("", null);
+	}
+	
+	public DosedDrugTreatment(String name, Drug drug) {
+		this(name, drug, new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), new ExcludeNode());
 	}
 	
 	public DosedDrugTreatment(String name, Drug drug, DoseUnit unit, DecisionTreeNode rootNode) {
@@ -38,10 +42,6 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		d_rootNode = rootNode;
 	}
 
-	public DosedDrugTreatment(String name, Drug drug) {
-		this(name, drug, new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), new ExcludeNode());
-	}
-	
 	public void setName(String name) {
 		String oldVal = d_name;
 		d_name = name;

@@ -2,20 +2,14 @@ package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.common.JUnitUtil;
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit38ClassRunner;
 
 public class DosedDrugTreatmentPresentationTest {
 
