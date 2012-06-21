@@ -32,7 +32,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.gui.AddDrugTreatmentDialog;
+import org.drugis.addis.gui.AddDosedDrugTreatmentDialog;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.builder.DosedDrugTreatmentView;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -46,12 +46,12 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	}
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
-		return new AddDrugTreatmentDialog(mainWindow, domain, selectionModel);
+		return new AddDosedDrugTreatmentDialog(mainWindow, domain, selectionModel);
 	}
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name" };
+		return new String[] { "drug", "name", "categories" };
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {

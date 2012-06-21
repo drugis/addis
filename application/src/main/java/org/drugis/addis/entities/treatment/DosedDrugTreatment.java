@@ -18,6 +18,8 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> {
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
+	public static final String PROPERTY_DRUG = "drug";
+	public static final String PROPERTY_CATEGORIES = "categories";
 	
 	private final ObservableList<CategoryNode> d_categories = new ArrayListModel<CategoryNode>();
 	private Drug d_drug;
@@ -39,9 +41,31 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	public DosedDrugTreatment(String name, Drug drug) {
 		this(name, drug, new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), new ExcludeNode());
 	}
+	
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
 
 	public Drug getDrug() {
 		return d_drug;
+	}
+	
+	public void setDrug(Drug drug) { 
+		Drug oldVal = d_drug;
+		d_drug = drug;
+		firePropertyChange(PROPERTY_DRUG, oldVal, drug);
+	}
+
+	public void setDoseUnit(DoseUnit unit) {
+		DoseUnit oldVal = d_doseUnit;
+		d_doseUnit = unit;
+		firePropertyChange(PROPERTY_DOSE_UNIT, oldVal, unit);
+	}
+	
+	public DoseUnit getDoseUnit() {
+		return d_doseUnit;
 	}
 	
 	public DecisionTreeNode getRootNode() {
@@ -80,7 +104,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	
 	@Override
 	public String getLabel() {
-		return getName() + " " + getDrug().getLabel();
+		return getDrug().getLabel() + " " +  getName();
 	}
 	
 	@Override
@@ -92,17 +116,5 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	public Set<? extends Entity> getDependencies() {
 		return Collections.singleton(d_drug);
 	}
-
-	public void setDoseUnit(DoseUnit unit) {
-		DoseUnit oldVal = d_doseUnit;
-		d_doseUnit = unit;
-		firePropertyChange(PROPERTY_DOSE_UNIT, oldVal, unit);
-	}
-	
-	public DoseUnit getDoseUnit() {
-		return d_doseUnit;
-	}
-
-
 
 }

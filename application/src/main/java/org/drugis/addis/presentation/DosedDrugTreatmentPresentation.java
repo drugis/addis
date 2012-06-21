@@ -26,16 +26,12 @@
 
 package org.drugis.addis.presentation;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.common.beans.ContentAwareListModel;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")

@@ -30,29 +30,32 @@ import javax.swing.JOptionPane;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.gui.builder.AddDrugTreatmentView;
+import org.drugis.addis.gui.builder.AddDosedDrugTreatmentView;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-public class AddDrugTreatmentDialog extends OkCancelDialog {
+public class AddDosedDrugTreatmentDialog extends OkCancelDialog {
 	private Domain d_domain;
 	private DosedDrugTreatment d_treatment;
 	private AddisWindow d_mainWindow;
 	private ValueModel d_selectionModel;
 	
-	public AddDrugTreatmentDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
+	public AddDosedDrugTreatmentDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		super(mainWindow, "Add Treatment");
 		d_mainWindow = mainWindow;
 		this.setModal(true);
 		d_domain = domain;
 		d_treatment = new DosedDrugTreatment();
-		AddDrugTreatmentView view = new AddDrugTreatmentView(new PresentationModel<DosedDrugTreatment>(d_treatment), d_okButton);
+		AddDosedDrugTreatmentView view = new AddDosedDrugTreatmentView(new PresentationModel<DosedDrugTreatment>(d_treatment), 
+				domain, 
+				mainWindow,
+				d_okButton);
 		getUserPanel().add(view.buildPanel());
 		pack();
-//		d_okButton.setEnabled(false);
+		d_okButton.setEnabled(false);
 		getRootPane().setDefaultButton(d_okButton);
 		d_selectionModel = selectionModel;
 	}
