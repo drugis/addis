@@ -30,8 +30,8 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
+import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep.KnownCategorySpecifiers;
 import org.drugis.addis.gui.wizard.SpecifyDoseRangeWizardStep;
-import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep.KNOWN_CATEGORY_SPECIFIERS;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
@@ -64,22 +64,22 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
-		DynamicModel wizardModel = new DynamicModel();
+		final DynamicModel wizardModel = new DynamicModel();
 		final AddDosedDrugTreatmentWizardStep first = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
 		wizardModel.add(first);
-		Condition considerDose = new Condition() {
-			@Override
+		
+		final Condition considerDoseType = new Condition() {
 			public boolean evaluate(WizardModel model) {
 				WizardStep step = model.getActiveStep();
-				if(step instanceof AddDosedDrugTreatmentWizardStep) { 
-					AddDosedDrugTreatmentWizardStep active = (AddDosedDrugTreatmentWizardStep)step;
-					return active.getKnownCategory().equals(KNOWN_CATEGORY_SPECIFIERS.CONSIDER.getTitle());
+				if(step instanceof AddDosedDrugTreatmentWizardStep) { 	
+					return (first.getKnownCategory().getValue() != null) ?
+						first.getKnownCategory().getValue().toString().equals(KnownCategorySpecifiers.CONSIDER.getTitle()) : false;
 				}
 				return false;
 			}
 		};
-		wizardModel.add(new SpecifyDoseRangeWizardStep(pm, domain, mainWindow), considerDose);
-
+		
+		wizardModel.add(new SpecifyDoseRangeWizardStep(pm, domain, mainWindow), considerDoseType);
 		wizardModel.setLastVisible(false);
 
 		return wizardModel;

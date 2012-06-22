@@ -30,6 +30,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -63,27 +65,30 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
+	public static final String PROPERTY_KNOWN_CATEGORY = "knownCategory";
+
 	private static final long serialVersionUID = 7730051460456443680L;
-	private static final int PANEL_WIDTH = 600;
+	private static final int PANEL_WIDTH = 600;	
 	private PresentationModel<DosedDrugTreatment> d_model;
 	private JPanel d_dialogPanel = new JPanel();
 	private final Domain d_domain;
 	private final AddisWindow d_mainWindow;
 	private DosedDrugTreatmentPresentation d_pm;
 	private NotEmptyValidator d_validator;
-	private JComboBox d_knownDoseCategory;
+	private ValueHolder d_knownDoseCategory = new ValueHolder();
 
-	public static enum KNOWN_CATEGORY_SPECIFIERS {
+	public static enum KnownCategorySpecifiers {
 		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type");
 		
 		private final String d_title;
 
-		private KNOWN_CATEGORY_SPECIFIERS(String title) {
+		private KnownCategorySpecifiers(String title) {
 			d_title = title; 
 		}
 
@@ -141,8 +146,8 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		add(d_dialogPanel, BorderLayout.CENTER);	
 	}	
 	
-	public String getKnownCategory()  { 
-		return d_knownDoseCategory.getSelectedItem().toString();
+	public ValueHolder getKnownCategory()  { 
+		return d_knownDoseCategory;
 	}
 	
 	private void rebuildPanel() {
@@ -196,12 +201,15 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
-		builder.add(createCategoryComboBox(), cc.xyw(3, row, colSpan - 2));
+		JComboBox unkownDoseCategory = createCategoryComboBox();
+		builder.add(unkownDoseCategory, cc.xyw(3, row, colSpan - 2));
 		
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
-		d_knownDoseCategory = createCategoryComboBox(KNOWN_CATEGORY_SPECIFIERS.CONSIDER.getTitle(), KNOWN_CATEGORY_SPECIFIERS.DO_NOT_CONSIDER.getTitle());
-		builder.add(d_knownDoseCategory, cc.xyw(3, row, colSpan - 2));
+		JComboBox knownDoseCategory = createCategoryComboBox(KnownCategorySpecifiers.CONSIDER.getTitle(), KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle());
+		d_knownDoseCategory = new ValueHolder(knownDoseCategory.getSelectedItem());
+
+		builder.add(knownDoseCategory, cc.xyw(3, row, colSpan - 2));
 		
 		return builder.getPanel();
 	}
@@ -213,7 +221,15 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 			categories.add(GUIFactory.createBoxedString(item));
 		}
 		categories.addAll(d_pm.getCategories());
-		return new JComboBox(categories.toArray());
+		final JComboBox comboBox = new JComboBox(categories.toArray());
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				Object oldVal = e.getItem();
+				d_knownDoseCategory.setValue(comboBox.getSelectedItem());
+				firePropertyChange(PROPERTY_KNOWN_CATEGORY, oldVal, comboBox.getSelectedIndex());
+			}
+		});
+		return comboBox;
 	}
 	
 	private JButton createNewDrugButton(final AbstractValueModel drugModel) {
