@@ -26,7 +26,6 @@ public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
 		super("Overview","Overview of created treatment.");
 		d_pm = pm;
 		setComplete(true);
-	
 	}
 	
 	@Override

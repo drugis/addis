@@ -82,6 +82,7 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	private DosedDrugTreatmentPresentation d_pm;
 	private NotEmptyValidator d_validator;
 	private ValueHolder d_knownDoseCategory = new ValueHolder();
+	private JPanel d_dialogCache = null;
 
 	public static enum KnownCategorySpecifiers {
 		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type");
@@ -138,10 +139,12 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	}
 	
 	public void buildWizardStep() {
-		JPanel dialog = buildPanel();
+		if(d_dialogCache == null) { 
+			d_dialogCache = buildPanel();
+		}
 		d_dialogPanel.setLayout(new BorderLayout());
 		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
-		d_dialogPanel.add(dialog);
+		d_dialogPanel.add(d_dialogCache);
 		add(d_dialogPanel, BorderLayout.CENTER);	
 	}	
 	
@@ -153,7 +156,7 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		String selection = d_knownDoseCategory.getValue().toString();
 		if(selection.equals(KnownCategorySpecifiers.CONSIDER.getTitle())) {
 			return true;
-		} else if(selection.equals(KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle())) { 
+		} else if(selection.equals(KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle())) {
 			return false;
 		}
 		return null;
@@ -215,10 +218,10 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
-		JComboBox knownDoseCategory = createCategoryComboBox(KnownCategorySpecifiers.CONSIDER.getTitle(), KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle());
-		d_knownDoseCategory = new ValueHolder(knownDoseCategory.getSelectedItem());
 
-		builder.add(knownDoseCategory, cc.xyw(3, row, colSpan - 2));
+		JComboBox knownDoseCombo = createCategoryComboBox(KnownCategorySpecifiers.CONSIDER.getTitle(), KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle());
+		d_knownDoseCategory.setValue(knownDoseCombo.getSelectedItem());
+		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		
 		return builder.getPanel();
 	}

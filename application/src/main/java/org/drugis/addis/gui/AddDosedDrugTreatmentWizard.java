@@ -30,6 +30,7 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
+import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
 import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
 import org.drugis.addis.gui.wizard.SpecifyDoseRangeWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -39,6 +40,7 @@ import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.BranchingPath;
 import org.pietschy.wizard.models.Condition;
+import org.pietschy.wizard.models.DynamicModel;
 import org.pietschy.wizard.models.MultiPathModel;
 import org.pietschy.wizard.models.SimplePath;
 
@@ -63,34 +65,43 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
 		final SpecifyDoseRangeWizardStep specifyDoseRanges = new SpecifyDoseRangeWizardStep(pm, domain, mainWindow);
+		final DoseRangeWizardStep specifiedDose = new DoseRangeWizardStep(pm, domain, mainWindow);
+		
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
-		BranchingPath firstPath = new BranchingPath();
-		BranchingPath considerDoseTypePath = new BranchingPath();
+		BranchingPath generalPath = new BranchingPath();
+		SimplePath considerDoseTypePath = new SimplePath(); // Consider dose type -> set fixed dose -> set flexible lower -> set flexible upper -> overview
 		SimplePath lastPath = new SimplePath();
 		
-		firstPath.addStep(generalInfo);
+		generalPath.addStep(generalInfo);
+
 		considerDoseTypePath.addStep(specifyDoseRanges);
+		considerDoseTypePath.addStep(specifiedDose);
 		lastPath.addStep(overview);
 		
-		firstPath.addBranch(considerDoseTypePath, new Condition() {
-			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType() != null;
-			}
-		});
-		
-		firstPath.addBranch(lastPath, new Condition() {
+		generalPath.addBranch(lastPath, new Condition() {	
 			public boolean evaluate(WizardModel model) {
 				return generalInfo.considerDoseType() == null;
 			}
 		});
 
-		considerDoseTypePath.addStep(overview);
-		MultiPathModel model = new MultiPathModel(firstPath);
+		generalPath.addBranch(considerDoseTypePath, new Condition() {		
+			public boolean evaluate(WizardModel model) {
+				return generalInfo.considerDoseType();
+			}
+		});
+		generalPath.addBranch(lastPath, new Condition() {		
+			public boolean evaluate(WizardModel model) {
+				return !generalInfo.considerDoseType();
+			}
+		}); // TODO This is a dummy, it will be the "do not consider dose type" option
+
+		considerDoseTypePath.setNextPath(lastPath);
+		
+		MultiPathModel model = new MultiPathModel(generalPath);
 		model.setLastVisible(false);
 
 		return model;

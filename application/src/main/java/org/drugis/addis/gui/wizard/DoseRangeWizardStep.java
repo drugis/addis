@@ -11,9 +11,10 @@ import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SpecifyDoseRangeWizardStep extends PanelWizardStep {
+public class DoseRangeWizardStep extends PanelWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 	private static final int PANEL_WIDTH = 600;
 	private JPanel d_dialogPanel = new JPanel();
@@ -21,7 +22,7 @@ public class SpecifyDoseRangeWizardStep extends PanelWizardStep {
 	private final AddisWindow d_mainWindow;
 	private final DosedDrugTreatmentPresentation d_pm;
 
-	public SpecifyDoseRangeWizardStep(DosedDrugTreatmentPresentation pm,
+	public DoseRangeWizardStep(DosedDrugTreatmentPresentation pm,
 			Domain domain, AddisWindow mainWindow) {
 				d_pm = pm;
 				d_domain = domain;
@@ -53,7 +54,7 @@ public class SpecifyDoseRangeWizardStep extends PanelWizardStep {
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		
-		builder.addLabel("Wat te doen met fixed en met flexible doseringen");
+		builder.addLabel("Of flexible of fixed upper, of fixed lower afhankelijk van wat je hartje begeert (vorige scherm gekozen)");
 		
 		return builder.getPanel();
 	}
