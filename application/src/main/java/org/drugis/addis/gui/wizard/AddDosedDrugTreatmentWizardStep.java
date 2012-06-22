@@ -46,9 +46,14 @@ import javax.swing.event.ListDataListener;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.CategoryNode;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -72,9 +77,11 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	public static final String PROPERTY_KNOWN_CATEGORY = "knownCategory";
+	public static final String PROPERTY_UNKNOWN_CATEGORY = "unknownCategory";	
 
 	private static final long serialVersionUID = 7730051460456443680L;
-	private static final int PANEL_WIDTH = 600;	
+	private static final int PANEL_WIDTH = 600;
+
 	private PresentationModel<DosedDrugTreatment> d_model;
 	private JPanel d_dialogPanel = new JPanel();
 	private final Domain d_domain;
@@ -82,6 +89,8 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	private DosedDrugTreatmentPresentation d_pm;
 	private NotEmptyValidator d_validator;
 	private ValueHolder d_knownDoseCategory = new ValueHolder();
+	private ValueHolder d_unknownDoseCategory  = new ValueHolder();
+
 	private JPanel d_dialogCache = null;
 
 	public static enum KnownCategorySpecifiers {
@@ -152,6 +161,10 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		return d_knownDoseCategory;
 	}
 	
+	public ValueHolder getUnknownCategory() { 
+		return d_unknownDoseCategory;
+	}
+	
 	public Boolean considerDoseType() { 
 		String selection = d_knownDoseCategory.getValue().toString();
 		if(selection.equals(KnownCategorySpecifiers.CONSIDER.getTitle())) {
@@ -213,13 +226,23 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
-		JComboBox unkownDoseCategory = createCategoryComboBox();
-		builder.add(unkownDoseCategory, cc.xyw(3, row, colSpan - 2));
+		final JComboBox unkownDoseCategoryCombo = createCategoryComboBox();
+		unkownDoseCategoryCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				setUnkownDoseCategory(unkownDoseCategoryCombo.getSelectedItem());		
+			}
+		});
+		builder.add(unkownDoseCategoryCombo, cc.xyw(3, row, colSpan - 2));
 		
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
 
-		JComboBox knownDoseCombo = createCategoryComboBox(KnownCategorySpecifiers.CONSIDER.getTitle(), KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle());
+		final JComboBox knownDoseCombo = createCategoryComboBox(KnownCategorySpecifiers.CONSIDER.getTitle(), KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle());
+		knownDoseCombo.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				setKownDoseCategory(knownDoseCombo.getSelectedItem());
+			}
+		});
 		d_knownDoseCategory.setValue(knownDoseCombo.getSelectedItem());
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		
@@ -233,15 +256,7 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 			categories.add(GUIFactory.createBoxedString(item));
 		}
 		categories.addAll(d_pm.getCategories());
-		final JComboBox comboBox = new JComboBox(categories.toArray());
-		comboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				Object oldVal = e.getItem();
-				d_knownDoseCategory.setValue(comboBox.getSelectedItem());
-				firePropertyChange(PROPERTY_KNOWN_CATEGORY, oldVal, comboBox.getSelectedIndex());
-			}
-		});
-		return comboBox;
+		return new JComboBox(categories.toArray());
 	}
 	
 	private JButton createNewDrugButton(final AbstractValueModel drugModel) {
@@ -282,6 +297,34 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		return builder.getPanel();
 	}
 	
+	//TODO: move to presentation layer
+	private void setUnkownDoseCategory(Object selection) {
+		DecisionTreeNode node = d_pm.getBean().getRootNode();
+		Object oldVal = d_unknownDoseCategory.getValue();
+		d_unknownDoseCategory.setValue(selection);
+		DecisionTreeNode category = (DecisionTreeNode)selection;
+		if (node instanceof TypeNode) {
+			TypeNode typeNode = (TypeNode)d_pm.getBean().getRootNode();
+			typeNode.setType(UnknownDose.class, category);
+		}
+		firePropertyChange(PROPERTY_UNKNOWN_CATEGORY, oldVal, selection);
+	}
+
+	/** Sets the category of both FixedDose and FlexibleDose. 
+	 * @param selection the category to be set, excludes everything that is not a DecisionTreeNode 
+	 */
+	private void setKownDoseCategory(Object selection) {
+		DecisionTreeNode node = d_pm.getBean().getRootNode();
+		Object oldVal = d_knownDoseCategory.getValue();
+		d_knownDoseCategory.setValue(selection);
+		if (node instanceof TypeNode) {
+			DecisionTreeNode category = (selection instanceof DecisionTreeNode) ? (DecisionTreeNode)selection : new ExcludeNode(); 
+			TypeNode typeNode = (TypeNode)d_pm.getBean().getRootNode();
+			typeNode.setType(FixedDose.class, category);
+			typeNode.setType(FlexibleDose.class, category);
+		}
+		firePropertyChange(PROPERTY_KNOWN_CATEGORY, oldVal, selection);
+	}
 
 	private JButton createAddCategoryButton(final DosedDrugTreatmentPresentation model) {
 		JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);

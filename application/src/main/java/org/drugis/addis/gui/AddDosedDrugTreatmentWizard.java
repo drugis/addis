@@ -40,7 +40,6 @@ import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.BranchingPath;
 import org.pietschy.wizard.models.Condition;
-import org.pietschy.wizard.models.DynamicModel;
 import org.pietschy.wizard.models.MultiPathModel;
 import org.pietschy.wizard.models.SimplePath;
 

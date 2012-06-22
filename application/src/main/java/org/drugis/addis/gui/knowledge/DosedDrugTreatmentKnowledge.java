@@ -34,6 +34,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddDosedDrugTreatmentWizard;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
@@ -53,6 +54,8 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		d_treatment = new DosedDrugTreatment();
+		d_treatment.setRootNode(TypeNode.createDefaultTypeNode());
+		
 		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(d_treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
 	}
