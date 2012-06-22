@@ -133,7 +133,6 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		 this.setVisible(false);		 
 		 buildWizardStep();
 		 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-
 		 this.setVisible(true);
 		 repaint();
 	}
@@ -146,8 +145,18 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		add(d_dialogPanel, BorderLayout.CENTER);	
 	}	
 	
-	public ValueHolder getKnownCategory()  { 
+	public ValueHolder getKnownCategory() { 
 		return d_knownDoseCategory;
+	}
+	
+	public Boolean considerDoseType() { 
+		String selection = d_knownDoseCategory.getValue().toString();
+		if(selection.equals(KnownCategorySpecifiers.CONSIDER.getTitle())) {
+			return true;
+		} else if(selection.equals(KnownCategorySpecifiers.DO_NOT_CONSIDER.getTitle())) { 
+			return false;
+		}
+		return null;
 	}
 	
 	private void rebuildPanel() {

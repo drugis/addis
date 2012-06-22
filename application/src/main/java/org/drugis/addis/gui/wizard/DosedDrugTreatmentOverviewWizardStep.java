@@ -3,6 +3,7 @@ package org.drugis.addis.gui.wizard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
@@ -14,36 +15,35 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SpecifyDoseRangeWizardStep extends PanelWizardStep {
-	private static final long serialVersionUID = 3313939584326101804L;
+public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
+
+	private static final long serialVersionUID = -3991691781012756118L;
 	private static final int PANEL_WIDTH = 600;
-	private JPanel d_dialogPanel = new JPanel();
-	private final Domain d_domain;
-	private final AddisWindow d_mainWindow;
 	private final DosedDrugTreatmentPresentation d_pm;
+	private JPanel d_dialogPanel = new JPanel();
 
-	public SpecifyDoseRangeWizardStep(DosedDrugTreatmentPresentation pm,
-			Domain domain, AddisWindow mainWindow) {
-				d_pm = pm;
-				d_domain = domain;
-				d_mainWindow = mainWindow;
+	public DosedDrugTreatmentOverviewWizardStep(DosedDrugTreatmentPresentation pm, Domain domain, AddisWindow mainWindow) {
+		super("Overview","Overview of created treatment.");
+		d_pm = pm;
+		setComplete(true);
+	
 	}
-
+	
 	@Override
-	public void prepare() {
+	public void prepare() { 
 		this.setVisible(false);		 
 	 	buildWizardStep();
 	 	setComplete(true);
 	 	this.setVisible(true);
 	 	repaint();
 	}
-	
-	public void buildWizardStep() {
+
+	private void buildWizardStep() {
 		JPanel dialog = buildPanel();
 		d_dialogPanel.setLayout(new BorderLayout());
 		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
 		d_dialogPanel.add(dialog);
-		add(d_dialogPanel, BorderLayout.CENTER);	
+		add(d_dialogPanel, BorderLayout.CENTER);			
 	}
 
 	private JPanel buildPanel() {
@@ -58,7 +58,7 @@ public class SpecifyDoseRangeWizardStep extends PanelWizardStep {
 		int row = 1;
 		int colSpan = layout.getColumnCount();
 		
-		builder.addLabel("JEEEEEJ");
+		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel());
 		
 		return builder.getPanel();
 	}

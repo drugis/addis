@@ -30,16 +30,17 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
-import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep.KnownCategorySpecifiers;
+import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
 import org.drugis.addis.gui.wizard.SpecifyDoseRangeWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.WizardModel;
-import org.pietschy.wizard.WizardStep;
+import org.pietschy.wizard.models.BranchingPath;
 import org.pietschy.wizard.models.Condition;
-import org.pietschy.wizard.models.DynamicModel;
+import org.pietschy.wizard.models.MultiPathModel;
+import org.pietschy.wizard.models.SimplePath;
 
 @SuppressWarnings("serial")
 public class AddDosedDrugTreatmentWizard extends Wizard {
@@ -64,25 +65,35 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
-		final DynamicModel wizardModel = new DynamicModel();
-		final AddDosedDrugTreatmentWizardStep first = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
-		wizardModel.add(first);
+		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
+		final SpecifyDoseRangeWizardStep specifyDoseRanges = new SpecifyDoseRangeWizardStep(pm, domain, mainWindow);
+		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
-		final Condition considerDoseType = new Condition() {
+		BranchingPath firstPath = new BranchingPath();
+		BranchingPath considerDoseTypePath = new BranchingPath();
+		SimplePath lastPath = new SimplePath();
+		
+		firstPath.addStep(generalInfo);
+		considerDoseTypePath.addStep(specifyDoseRanges);
+		lastPath.addStep(overview);
+		
+		firstPath.addBranch(considerDoseTypePath, new Condition() {
 			public boolean evaluate(WizardModel model) {
-				WizardStep step = model.getActiveStep();
-				if(step instanceof AddDosedDrugTreatmentWizardStep) { 	
-					return (first.getKnownCategory().getValue() != null) ?
-						first.getKnownCategory().getValue().toString().equals(KnownCategorySpecifiers.CONSIDER.getTitle()) : false;
-				}
-				return false;
+				return generalInfo.considerDoseType() != null;
 			}
-		};
+		});
 		
-		wizardModel.add(new SpecifyDoseRangeWizardStep(pm, domain, mainWindow), considerDoseType);
-		wizardModel.setLastVisible(false);
+		firstPath.addBranch(lastPath, new Condition() {
+			public boolean evaluate(WizardModel model) {
+				return generalInfo.considerDoseType() == null;
+			}
+		});
 
-		return wizardModel;
+		considerDoseTypePath.addStep(overview);
+		MultiPathModel model = new MultiPathModel(firstPath);
+		model.setLastVisible(false);
+
+		return model;
 	}
 	
 }
