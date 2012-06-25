@@ -46,17 +46,16 @@ import org.pietschy.wizard.WizardFrameCloser;
 import com.jgoodies.binding.value.ValueModel;
 
 public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
-	private DosedDrugTreatment d_treatment;
 
 	public DosedDrugTreatmentKnowledge() {
 		super("treatment", FileNames.ICON_HEART, DosedDrugTreatment.class);
 	}
 	
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
-		d_treatment = new DosedDrugTreatment();
-		d_treatment.setRootNode(TypeNode.createDefaultTypeNode());
+		DosedDrugTreatment treatment = new DosedDrugTreatment();
+		treatment.setRootNode(TypeNode.createDefaultTypeNode());
 		
-		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(d_treatment, domain);
+		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
 	}
 

@@ -39,8 +39,8 @@ public class TypeNodeTest {
 		CategoryNode someCatNode = new CategoryNode("dog");
 		CategoryNode unknownNode = new CategoryNode("unknown");
 		TypeNode typeNode = new TypeNode(FixedDose.class, d_child);
-		typeNode.addType(FlexibleDose.class, someCatNode);
-		typeNode.addType(UnknownDose.class, unknownNode);
+		typeNode.setType(FlexibleDose.class, someCatNode);
+		typeNode.setType(UnknownDose.class, unknownNode);
 		
 		assertEquals(d_child, typeNode.decide(new FixedDose()));
 		assertEquals(someCatNode, typeNode.decide(new FlexibleDose()));

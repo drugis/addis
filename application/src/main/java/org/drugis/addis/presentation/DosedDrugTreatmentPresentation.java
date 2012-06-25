@@ -28,6 +28,7 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.common.beans.ContentAwareListModel;
@@ -51,7 +52,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
 	}
 
-	public Object getDrug() {
+	public Drug getDrug() {
 		return getBean().getDrug();
 	}
 

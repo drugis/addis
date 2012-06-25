@@ -3,12 +3,15 @@ package org.drugis.addis.gui.wizard;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -36,9 +39,17 @@ public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
 	 	this.setVisible(true);
 	 	repaint();
 	}
-
+	
+	private void rebuildPanel() {
+		d_dialogPanel.setVisible(false);
+		d_dialogPanel.removeAll();
+		d_dialogPanel.add(buildPanel());
+		d_dialogPanel.setVisible(true);
+	}
+	
 	private void buildWizardStep() {
 		JPanel dialog = buildPanel();
+		rebuildPanel(); // always rebuild the panel to ensure up-to date information
 		d_dialogPanel.setLayout(new BorderLayout());
 		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
 		d_dialogPanel.add(dialog);
@@ -47,7 +58,7 @@ public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
 
 	private JPanel buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu",
+				"left:pref, 3dlu, pref",
 				"p"
 				);	
 		
@@ -55,9 +66,17 @@ public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
 		
 		CellConstraints cc = new CellConstraints();
 		int row = 1;
-		int colSpan = layout.getColumnCount();
 		
-		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel());
+		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel(), cc.xy(1, row));
+	
+		// Inferred types
+		TypeNode types = (TypeNode)d_pm.getBean().getRootNode();
+		for(Class<? extends AbstractDose> type : types.getTypeMap().keySet()) {
+			row = LayoutUtil.addRow(layout, row);
+			builder.addLabel(type.getCanonicalName(), cc.xy(1, row));
+			DecisionTreeNode typeNode = types.getTypeMap().get(type);
+			builder.addLabel((typeNode != null) ? typeNode.toString() : "", cc.xy(3, row));		
+		}
 		
 		return builder.getPanel();
 	}

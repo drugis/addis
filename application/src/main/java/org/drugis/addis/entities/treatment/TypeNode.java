@@ -1,5 +1,6 @@
 package org.drugis.addis.entities.treatment;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,13 +10,13 @@ import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.FixedDose;
 
 public class TypeNode implements DecisionTreeNode {
-	private final Map<Class<?>, DecisionTreeNode> d_nodeMap =
-			new HashMap<Class<?>, DecisionTreeNode>();
+	private final Map<Class<? extends AbstractDose>, DecisionTreeNode> d_nodeMap =
+			new HashMap<Class<? extends AbstractDose>, DecisionTreeNode>();
 
-	public TypeNode() {
+	private TypeNode() {
 	}
 	
-	public TypeNode(Class<?> type, DecisionTreeNode child) {
+	public TypeNode(Class<? extends AbstractDose> type, DecisionTreeNode child) {
 		d_nodeMap.put(type, child);
 	}
 	
@@ -30,6 +31,10 @@ public class TypeNode implements DecisionTreeNode {
 
 	public void setType(Class<? extends AbstractDose> type, DecisionTreeNode node) {
 		d_nodeMap.put(type, node);
+	}
+	
+	public Map<Class<? extends AbstractDose>, DecisionTreeNode> getTypeMap() { 
+		return Collections.unmodifiableMap(d_nodeMap);
 	}
 	
 	@Override

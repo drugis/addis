@@ -48,7 +48,7 @@ public class DosedDrugTreatmentTest {
 		DoseRangeNode minRangeNode = new DoseRangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, MG_DAY, 
 				new ExcludeNode());
 		minRangeNode.addCutOff(50.0, true, maxRangeNode);
-		rootNode.addType(FlexibleDose.class, minRangeNode);
+		rootNode.setType(FlexibleDose.class, minRangeNode);
 		
 		FixedDose fixedDose = new FixedDose(10.0, MG_DAY);
 		FlexibleDose lowFlexibleDose = new FlexibleDose(new Interval<Double>(0.0, 10.0), MG_DAY);

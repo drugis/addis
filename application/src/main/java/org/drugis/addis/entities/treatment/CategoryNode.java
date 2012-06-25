@@ -6,7 +6,6 @@ import com.jgoodies.binding.value.ValueHolder;
 
 public class CategoryNode extends AbstractObservable implements DecisionTreeNode {
 	public static final String PROPERTY_NAME = "name";
-	private String d_name;
 	private ValueHolder d_nameModel;
 
 	public CategoryNode() { 
@@ -14,8 +13,7 @@ public class CategoryNode extends AbstractObservable implements DecisionTreeNode
 	}
 	
 	public CategoryNode(String name) {
-		d_name = name;
-		d_nameModel = new ValueHolder(d_name);
+		d_nameModel = new ValueHolder(name);
 	}
 	
 	public String getName() {

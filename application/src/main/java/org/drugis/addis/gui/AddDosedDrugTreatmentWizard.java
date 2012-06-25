@@ -67,7 +67,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
 		final SpecifyDoseRangeWizardStep specifyDoseRanges = new SpecifyDoseRangeWizardStep(pm, domain, mainWindow);
-		final DoseRangeWizardStep specifiedDose = new DoseRangeWizardStep(pm, domain, mainWindow);
+		final DoseRangeWizardStep specifiedDose = new DoseRangeWizardStep(pm, domain, mainWindow); // TODO this needs to be some sort of factory for the different bean properties 
 		
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
@@ -89,12 +89,12 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 		generalPath.addBranch(considerDoseTypePath, new Condition() {		
 			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType();
+				return generalInfo.considerDoseType() != null && generalInfo.considerDoseType();
 			}
 		});
 		generalPath.addBranch(lastPath, new Condition() {		
 			public boolean evaluate(WizardModel model) {
-				return !generalInfo.considerDoseType();
+				return generalInfo.considerDoseType() != null && !generalInfo.considerDoseType();
 			}
 		}); // TODO This is a dummy, it will be the "do not consider dose type" option
 
