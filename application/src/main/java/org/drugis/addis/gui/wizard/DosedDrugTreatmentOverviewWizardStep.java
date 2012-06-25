@@ -11,6 +11,7 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -69,11 +70,10 @@ public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
 		
 		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel(), cc.xy(1, row));
 	
-		// Inferred types
 		TypeNode types = (TypeNode)d_pm.getBean().getRootNode();
 		for(Class<? extends AbstractDose> type : types.getTypeMap().keySet()) {
 			row = LayoutUtil.addRow(layout, row);
-			builder.addLabel(type.getCanonicalName(), cc.xy(1, row));
+			builder.addLabel(GUIHelper.humanize(type.getSimpleName()), cc.xy(1, row));
 			DecisionTreeNode typeNode = types.getTypeMap().get(type);
 			builder.addLabel((typeNode != null) ? typeNode.toString() : "", cc.xy(3, row));		
 		}

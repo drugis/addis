@@ -11,7 +11,6 @@ import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class DoseRangeWizardStep extends PanelWizardStep {
