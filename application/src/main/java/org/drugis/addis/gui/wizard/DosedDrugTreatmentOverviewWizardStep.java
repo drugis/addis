@@ -1,63 +1,56 @@
 package org.drugis.addis.gui.wizard;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
-import org.pietschy.wizard.PanelWizardStep;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
+public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	private static final long serialVersionUID = -3991691781012756118L;
-	private static final int PANEL_WIDTH = 600;
-	private final DosedDrugTreatmentPresentation d_pm;
-	private JPanel d_dialogPanel = new JPanel();
+	private ObservableList<Class<? extends AbstractDose>> d_typeList;
+	private TypeNode d_typeNode;
 
 	public DosedDrugTreatmentOverviewWizardStep(DosedDrugTreatmentPresentation pm, Domain domain, AddisWindow mainWindow) {
-		super("Overview","Overview of created treatment.");
-		d_pm = pm;
-		setComplete(true);
+		super(pm, domain, mainWindow, "Overview","Overview of created treatment.");
+		d_typeNode = (TypeNode)d_pm.getModel(DosedDrugTreatment.PROPERTY_ROOT_NODE).getValue();
+		d_typeList = d_typeNode.getTypes();
+		d_typeList.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				rebuildPanel();
+			}
+
+			public void intervalAdded(ListDataEvent e) {
+				rebuildPanel();
+				
+			}
+			
+			public void contentsChanged(ListDataEvent e) {
+				rebuildPanel();
+			}
+		});	
 	}
 	
 	@Override
-	public void prepare() { 
-		this.setVisible(false);		 
-	 	buildWizardStep();
-	 	setComplete(true);
-	 	this.setVisible(true);
-	 	repaint();
+	public void initialize() { 
+		this.setComplete(true);
 	}
 	
-	private void rebuildPanel() {
-		d_dialogPanel.setVisible(false);
-		d_dialogPanel.removeAll();
-		d_dialogPanel.add(buildPanel());
-		d_dialogPanel.setVisible(true);
-	}
-	
-	private void buildWizardStep() {
-		JPanel dialog = buildPanel();
-		rebuildPanel(); // always rebuild the panel to ensure up-to date information
-		d_dialogPanel.setLayout(new BorderLayout());
-		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
-		d_dialogPanel.add(dialog);
-		add(d_dialogPanel, BorderLayout.CENTER);			
-	}
-
-	private JPanel buildPanel() {
+	protected JPanel buildPanel() {
 		FormLayout layout = new FormLayout(
 				"left:pref, 3dlu, pref",
 				"p"
@@ -70,13 +63,13 @@ public class DosedDrugTreatmentOverviewWizardStep extends PanelWizardStep {
 		
 		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel(), cc.xy(1, row));
 	
-		TypeNode types = (TypeNode)d_pm.getBean().getRootNode();
-		for(Class<? extends AbstractDose> type : types.getTypeMap().keySet()) {
+		for(Class<? extends AbstractDose> type : d_typeList) {
 			row = LayoutUtil.addRow(layout, row);
 			builder.addLabel(GUIHelper.humanize(type.getSimpleName()), cc.xy(1, row));
-			DecisionTreeNode typeNode = types.getTypeMap().get(type);
-			builder.addLabel((typeNode != null) ? typeNode.toString() : "", cc.xy(3, row));		
+			String typeCategory = d_typeNode.getTypeMap().get(type).toString();
+			builder.addLabel((typeCategory != null) ? typeCategory  : "", cc.xy(3, row));		
 		}
+		
 		
 		return builder.getPanel();
 	}

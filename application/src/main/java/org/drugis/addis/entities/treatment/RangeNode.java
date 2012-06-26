@@ -3,18 +3,26 @@ package org.drugis.addis.entities.treatment;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.util.BoundedInterval;
+import org.drugis.common.beans.AbstractObservable;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
-public class RangeNode implements DecisionTreeNode {
-	
+public class RangeNode extends AbstractObservable implements DecisionTreeNode {
 	public static final double EPSILON = 1.0E-14;
-
-	protected final Class<?> d_beanClass;
+	public static final String PROPERTY_RANGES = "rangeLabel";
+	
+	private final Class<?> d_beanClass;
 	protected final String d_propertyName;
-	private final ArrayList<BoundedInterval> d_ranges = new ArrayList<BoundedInterval>();
+	private final List<BoundedInterval> d_ranges = new ArrayList<BoundedInterval>();
+	
+	
+	public RangeNode(Class<?> beanClass, String propertyName) {
+		this(beanClass, propertyName, 0, false, Double.POSITIVE_INFINITY, true, new ExcludeNode());
+	}
 	
 	public RangeNode(Class<?> beanClass, String propertyName, 
 			DecisionTreeNode child) {
@@ -79,7 +87,7 @@ public class RangeNode implements DecisionTreeNode {
 
 		d_ranges.set(splitIdx, left);
 		d_ranges.add(splitIdx + 1, right);
-		
+		firePropertyChange(PROPERTY_RANGES, current, right);
 		return d_ranges.indexOf(right);
 	}
 
@@ -155,10 +163,10 @@ public class RangeNode implements DecisionTreeNode {
 	 */
 	public DecisionTreeNode decide(Object object) {
 		try { 
-			if(!d_beanClass.isInstance(object)) {
-				throw new IllegalArgumentException("Object not of the valid type " + d_beanClass.getName() + "  was: " + object.getClass().getName());
+			if(!getBeanClass().isInstance(object)) {
+				throw new IllegalArgumentException("Object not of the valid type " + getBeanClass().getName() + "  was: " + object.getClass().getName());
 			}
-			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(d_beanClass, d_propertyName);
+			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(getBeanClass(), d_propertyName);
 			try { 
 				Double doseValue = (Double)BeanUtils.getValue(object, propertyDescriptor);		
 				return getNodeByValue(doseValue);
@@ -189,15 +197,37 @@ public class RangeNode implements DecisionTreeNode {
 		return -1;
 	}
 
-	public String toString() {
+	public String getName() {
 		String result = "";
-		for (BoundedInterval interval : d_ranges) {
-			result += "{" + interval.getRange();
-			result += interval.isLowerBoundOpen() ? " T" : " F";
-			result += interval.isUpperBoundOpen() ? " T" : " F";
-			result += " node: " + interval.getNode().getClass().getName();
-			result += "}\n";
+		for (int i = 0; i < getChildCount(); ++i) {
+			result = result  + getRangeLabel(i) + "\n";
 		}
 		return result;
+	}
+
+	public String getRangeLabel(int i) { 
+		return getRangeLabel(i, null);
+	}
+	
+	public String getRangeLabel(int i, DoseUnit unit) {
+		String rangeText;
+		if (i < getChildCount() - 1) {
+			rangeText = String.format("%.2f %s dose %s %.2f %s",
+					getRangeLowerBound(i),
+					isRangeLowerBoundOpen(i) ? "<" : "<=",
+					isRangeUpperBoundOpen(i) ? "<" : "<=",
+					getRangeUpperBound(i),
+					unit == null ? "" : unit);
+		} else {
+			rangeText = String.format("dose %s %.2f %s",
+					isRangeLowerBoundOpen(i) ? ">" : ">=",
+					getRangeLowerBound(i),
+					unit == null ? "" : unit);
+		}
+		return rangeText;
+	}
+	
+	public Class<?> getBeanClass() {
+		return d_beanClass;
 	}
 }

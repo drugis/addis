@@ -58,10 +58,10 @@ public class DosedDrugTreatmentTest {
 		d_treatment.setRootNode(rootNode);
 		
 		
-		assertEquals("Fixed Dose", d_treatment.getCategoryName(fixedDose));
-		assertEquals(ExcludeNode.NAME, d_treatment.getCategoryName(lowFlexibleDose));
-		assertEquals("Flexible dose", d_treatment.getCategoryName(midFlexibleDose));
-		assertEquals(ExcludeNode.NAME, d_treatment.getCategoryName(highFlexibleDose));
+		assertEquals("Fixed Dose", d_treatment.getCategoryNode(fixedDose).getName());
+		assertEquals(ExcludeNode.NAME, d_treatment.getCategoryNode(lowFlexibleDose).getName());
+		assertEquals("Flexible dose", d_treatment.getCategoryNode(midFlexibleDose).getName());
+		assertEquals(ExcludeNode.NAME, d_treatment.getCategoryNode(highFlexibleDose).getName());
 	}
 
 }

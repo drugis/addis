@@ -16,5 +16,9 @@ public class ExcludeNode implements DecisionTreeNode {
 	public String toString() { 
 		return "* " + ExcludeNode.NAME;
 	}
+	
+	public String getName() {
+		return NAME;
+	}
 
 }

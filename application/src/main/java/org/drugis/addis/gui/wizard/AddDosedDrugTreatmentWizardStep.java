@@ -26,7 +26,6 @@
 
 package org.drugis.addis.gui.wizard;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,11 +59,10 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.LayoutUtil;
-import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -72,19 +70,12 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
+public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizardStep {
 
 
 	private static final long serialVersionUID = 7730051460456443680L;
-	private static final int PANEL_WIDTH = 600;
 
-	private JPanel d_dialogPanel = new JPanel();
-	private final Domain d_domain;
-	private final AddisWindow d_mainWindow;
-	private DosedDrugTreatmentPresentation d_pm;
 	private NotEmptyValidator d_validator;
-
-	private JPanel d_dialogCache = null;
 
 	public static enum CategorySpecifiers {
 		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type"),
@@ -109,12 +100,10 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 	public AddDosedDrugTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
 			Domain domain, 
 			AddisWindow mainWindow) {
-		super("Add characteristics", "Add the name, drug and categories for this treatment");
-		d_domain = domain;
-		d_mainWindow = mainWindow;
+		super(presentationModel, domain, mainWindow, "Add characteristics", "Add the name, drug and categories for this treatment");
 		d_validator = new NotEmptyValidator();
+		d_validators.add(d_validator);
 
-		d_pm = presentationModel;
 		d_pm.getCategories().addListDataListener(new ListDataListener() {			
 			@Override
 			public void intervalRemoved(ListDataEvent e) {
@@ -133,37 +122,9 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		});
 	}		
 	
-	@Override
-	public void prepare() {
-		 this.setVisible(false);		 
-		 buildWizardStep();
-
-		 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-		 this.setVisible(true);
-		 repaint();
-	}
-	
-	public void buildWizardStep() {
-		if(d_dialogCache == null) { 
-			d_dialogCache = buildPanel();
-		}
-		d_dialogPanel.setLayout(new BorderLayout());
-		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
-		d_dialogPanel.add(d_dialogCache);
-		add(d_dialogPanel, BorderLayout.CENTER);	
-	}	
-	
-
-	private void rebuildPanel() {
-		d_dialogPanel.setVisible(false);
-		d_dialogPanel.removeAll();
-		d_dialogPanel.add(buildPanel());
-		d_dialogPanel.setVisible(true);
-	}
-	
 	
 	public Boolean considerDoseType() {
-		Object selection = d_pm.getKnownCategory().getValue();
+		Object selection = d_pm.getSelectedKnownCategory().getValue();
 		if(CategorySpecifiers.CONSIDER.getTitle().equals(selection.toString())) {
 			return true;
 		} else if(CategorySpecifiers.DO_NOT_CONSIDER.getTitle().equals(selection.toString())) {
@@ -172,7 +133,7 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 		return null;
 	}
 	
-	private JPanel buildPanel() {
+	protected JPanel buildPanel() {
 		FormLayout layout = new FormLayout(
 				"left:pref, 3dlu, pref, 3dlu, pref, fill:pref:grow, pref, 3dlu, pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
@@ -223,6 +184,7 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 				d_pm.setDoseCategory(unknownDoseCombo.getSelectedItem(), UnknownDose.class);		
 			}
 		});
+		unknownDoseCombo.setSelectedItem(d_pm.getSelectedCategory(UnknownDose.class).getValue());
 		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
@@ -235,6 +197,10 @@ public class AddDosedDrugTreatmentWizardStep extends PanelWizardStep {
 				d_pm.setDoseCategory(knownDoseCombo.getSelectedItem(), FixedDose.class, FlexibleDose.class);
 			}
 		});
+		ValueHolder<Object> selectedKnown = d_pm.getSelectedKnownCategory();
+		if(selectedKnown != null) { 
+			knownDoseCombo.setSelectedItem(selectedKnown.getValue());
+		}
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
 	}

@@ -26,6 +26,8 @@
 
 package org.drugis.addis.presentation;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,11 +48,9 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {
-	public static final String PROPERTY_DOSE_CATEGORY = "doseCategory";
-	
+public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {	
 	private ContentAwareListModel<CategoryNode> d_categories;
-	private Map<Class<? extends AbstractDose>, ValueHolder<Object>> d_doseCategoryMap = 
+	private Map<Class<? extends AbstractDose>, ValueHolder<Object>> d_selectedCategoryMap = 
 			new HashMap<Class<? extends AbstractDose>, ValueHolder<Object>>(); 
 	
 	private final Domain d_domain;
@@ -67,7 +67,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		if(getBean().getRootNode() instanceof TypeNode) { 
 			TypeNode types = (TypeNode) getBean().getRootNode();
 			for(Class<? extends AbstractDose> type : types.getTypeMap().keySet()) { 
-				d_doseCategoryMap.put(type, new ModifiableHolder<Object>(d_excludeNode));
+				d_selectedCategoryMap.put(type, new ModifiableHolder<Object>(d_excludeNode));
 			}
 		}
 	}
@@ -96,15 +96,22 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return new DoseUnitPresentation(getDoseUnit());
 	}
 	
-	public ValueHolder<Object> getKnownCategory() { 
-		if((getCategory(FixedDose.class).getValue()).equals(getCategory(FlexibleDose.class).getValue())) { 
-			return getCategory(FlexibleDose.class);
+	/**
+	 * @return null if Fixed and flexible categorizations differ, the selected category ValueHolder otherwise
+	 */
+	public ValueHolder<Object> getSelectedKnownCategory() { 
+		if((getSelectedCategory(FixedDose.class).getValue()).equals(getSelectedCategory(FlexibleDose.class).getValue())) { 
+			return getSelectedCategory(FlexibleDose.class);
 		}
-		throw new IllegalStateException("Fixed and flexible categorizations differ, cannot return the category for all known doses");
+		return new UnmodifiableHolder<Object>(d_excludeNode);
 	}
 	
-	public ValueHolder<Object> getCategory(Class<? extends AbstractDose> type) { 
-		return d_doseCategoryMap.get(type);
+	public ValueHolder<Object> getSelectedCategory(Class<? extends AbstractDose> type) { 
+		return d_selectedCategoryMap.get(type);
+	}
+	
+	public Collection<ValueHolder<Object>> getSelectedCategories() { 
+		return Collections.unmodifiableCollection(d_selectedCategoryMap.values());
 	}
 	
 	/** Sets the category for one or more AbstractDose types
@@ -114,7 +121,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public void setDoseCategory(Object selection, Class<? extends AbstractDose> ... types) {
 		final DecisionTreeNode node = getBean().getRootNode();
 		for(Class<? extends AbstractDose> type : types) { 
-			d_doseCategoryMap.get(type).setValue(selection);
+			d_selectedCategoryMap.get(type).setValue(selection);
 		}
 		DecisionTreeNode category = (selection instanceof DecisionTreeNode) ? (DecisionTreeNode)selection : d_excludeNode;
 		if (node instanceof TypeNode) {
@@ -123,7 +130,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 				typeNode.setType(type, category);
 			}
 		}
-		firePropertyChange(PROPERTY_DOSE_CATEGORY, null, selection);
 	}
 	
 	public DosedDrugTreatment commit() {

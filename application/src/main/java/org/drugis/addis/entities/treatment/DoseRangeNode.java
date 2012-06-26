@@ -12,6 +12,11 @@ public class DoseRangeNode extends RangeNode {
 
 	private final DoseUnit d_doseUnit;
 
+	public DoseRangeNode(Class<?> beanClass, String propertyName, DoseUnit doseUnit) {
+		super(beanClass, propertyName);
+		d_doseUnit = doseUnit;
+	}
+	
 	public DoseRangeNode(Class<?> beanClass, String propertyName, DoseUnit doseUnit, DecisionTreeNode child) {
 		super(beanClass, propertyName, child);
 		d_doseUnit = doseUnit;
@@ -32,7 +37,7 @@ public class DoseRangeNode extends RangeNode {
 	@Override
 	public DecisionTreeNode decide(Object object) {
 		try {
-			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(d_beanClass, d_propertyName);
+			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(getBeanClass(), d_propertyName);
 			Object value = BeanUtils.getValue(object, propertyDescriptor);
 			try { 
 				DoseUnit unit = ((AbstractDose)object).getDoseUnit();		
@@ -45,4 +50,7 @@ public class DoseRangeNode extends RangeNode {
 		} 
 		throw new IllegalStateException("Could not decide the fate of " + object.toString());
 	}
+	
+
+	
 }

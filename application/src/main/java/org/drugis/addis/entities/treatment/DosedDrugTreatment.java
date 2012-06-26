@@ -20,6 +20,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_CATEGORIES = "categories";
+	public static final String PROPERTY_ROOT_NODE = "rootNode";
 	
 	private final ObservableList<CategoryNode> d_categories = new ArrayListModel<CategoryNode>();
 	private Drug d_drug;
@@ -73,7 +74,9 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	}
 
 	public void setRootNode(DecisionTreeNode rootNode) {
+		DecisionTreeNode oldVal = d_rootNode;
 		d_rootNode = rootNode;
+		firePropertyChange(PROPERTY_ROOT_NODE, oldVal, rootNode);
 	}
 	
 	public DecisionTreeNode getCategoryNode(AbstractDose dose) { 
@@ -83,17 +86,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		}
 		return node;
 	}
-	
-	public String getCategoryName(AbstractDose dose) {
-		DecisionTreeNode node = getCategoryNode(dose);
-		if (node instanceof CategoryNode) {
-			return ((CategoryNode)node).getName();
-		} else if (node instanceof ExcludeNode) {
-			return ExcludeNode.NAME;
-		}
-		return null;
-	}
-	
+
 	public void addCategory(CategoryNode categoryNode) {
 		d_categories.add(categoryNode);
 	}
@@ -104,7 +97,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	
 	@Override
 	public String getLabel() {
-		return getDrug().getLabel() + " " +  getName();
+		return (getDrug() == null ? "" : getDrug().getLabel()) + " " +  getName();
 	}
 	
 	@Override

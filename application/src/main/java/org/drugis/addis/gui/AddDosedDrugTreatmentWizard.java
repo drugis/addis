@@ -29,6 +29,8 @@ package org.drugis.addis.gui;
 import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.gui.wizard.AbstractDoseTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
 import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
@@ -66,9 +68,10 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
-		final SpecifyDoseRangeWizardStep specifyDoseRanges = new SpecifyDoseRangeWizardStep(pm, domain, mainWindow);
-		final DoseRangeWizardStep specifiedDose = new DoseRangeWizardStep(pm, domain, mainWindow); // TODO this needs to be some sort of factory for the different bean properties 
+		final AbstractDoseTreatmentWizardStep specifyDoseRanges = new SpecifyDoseRangeWizardStep(pm, domain, mainWindow);
 		
+		// Same for flexible upper, flexible lower and any (needs to set all)
+		final DoseRangeWizardStep specifyFixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
 		BranchingPath generalPath = new BranchingPath();
@@ -78,7 +81,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		generalPath.addStep(generalInfo);
 
 		considerDoseTypePath.addStep(specifyDoseRanges);
-		considerDoseTypePath.addStep(specifiedDose);
+		considerDoseTypePath.addStep(specifyFixedDose);
 		lastPath.addStep(overview);
 		
 		generalPath.addBranch(lastPath, new Condition() {	

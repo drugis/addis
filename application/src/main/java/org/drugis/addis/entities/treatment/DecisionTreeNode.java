@@ -12,4 +12,6 @@ public interface DecisionTreeNode {
 	 * @return The relevant child node. null if and only if {@link #isLeaf()}.
 	 */
 	public DecisionTreeNode decide(Object object);
+	
+	public String getName();
 }
