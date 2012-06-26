@@ -28,7 +28,6 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.Map;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;
@@ -39,14 +38,14 @@ import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 
-public abstract class AbstractSavedWrapper extends AbstractObservable implements MTCModelWrapper  {
-	protected NetworkBuilder<DrugSet> d_builder;
+public abstract class AbstractMTCSavedWrapper<TreatmentType> extends AbstractObservable implements MTCModelWrapper<TreatmentType>  {
+	protected NetworkBuilder<TreatmentType> d_builder;
 	private final MCMCSettingsCache d_settings;
 	protected final Map<Parameter, QuantileSummary> d_quantileSummaries;
 	protected final Map<Parameter, ConvergenceSummary> d_convergenceSummaries;
 	private boolean d_destroy;
 
-	public AbstractSavedWrapper(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings, 
+	public AbstractMTCSavedWrapper(NetworkBuilder<TreatmentType> builder, MCMCSettingsCache settings, 
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		d_builder = builder;
 		d_settings = settings;
@@ -55,7 +54,7 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 	}
 
 	@Override
-	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
+	public Parameter getRelativeEffect(TreatmentType a, TreatmentType b) {
 		return new BasicParameter(d_builder.getTreatmentMap().get(a), d_builder.getTreatmentMap().get(b));
 	}
 	

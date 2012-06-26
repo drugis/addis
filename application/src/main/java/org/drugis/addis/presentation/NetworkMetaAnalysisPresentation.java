@@ -54,17 +54,17 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
-	private Map<MTCModelWrapper, MCMCPresentation> d_models;
+	private Map<MTCModelWrapper<DrugSet>, MCMCPresentation> d_models;
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_models = new HashMap<MTCModelWrapper, MCMCPresentation>();
+		d_models = new HashMap<MTCModelWrapper<DrugSet>, MCMCPresentation>();
 		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getDescription());
 		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getDescription());
 		for (BasicParameter p : getBean().getSplitParameters()) {
-			NodeSplitWrapper m = getBean().getNodeSplitModel(p);
+			NodeSplitWrapper<DrugSet> m = getBean().getNodeSplitModel(p);
 			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getDescription());
 		}
-		for(MTCModelWrapper model : d_models.keySet()) { 
+		for(MTCModelWrapper<DrugSet> model : d_models.keySet()) { 
 			model.addPropertyChangeListener(new PropertyChangeListener() {		
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -103,11 +103,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TaskProgressModel getProgressModel(MTCModelWrapper mtc) {
+	public TaskProgressModel getProgressModel(MTCModelWrapper<DrugSet> mtc) {
 		return d_models.get(mtc).getProgressModel();
 	}
 	
-	private void addModel(MTCModelWrapper mtc, OutcomeMeasure om, String name) {
+	private void addModel(MTCModelWrapper<DrugSet> mtc, OutcomeMeasure om, String name) {
 		d_models.put(mtc, new MCMCPresentation(mtc, om, name));
 	}
 
@@ -115,15 +115,15 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getSplitParameters();
 	}
 
-	public NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
+	public NodeSplitWrapper<DrugSet> getNodeSplitModel(BasicParameter p) {
 		return getBean().getNodeSplitModel(p);
 	}
 
-	public ConsistencyWrapper getConsistencyModel() {
+	public ConsistencyWrapper<DrugSet> getConsistencyModel() {
 		return getBean().getConsistencyModel();
 	}
 	
-	public InconsistencyWrapper getInconsistencyModel() {
+	public InconsistencyWrapper<DrugSet> getInconsistencyModel() {
 		return getBean().getInconsistencyModel();
 	}
 
@@ -139,7 +139,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNetwork();
 	}
 	
-	public MCMCPresentation getWrappedModel(MTCModelWrapper m) {
+	public MCMCPresentation getWrappedModel(MTCModelWrapper<DrugSet> m) {
 		if(d_models.get(m) == null) {
 			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getDescription());
 		}

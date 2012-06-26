@@ -28,22 +28,22 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 
-public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentComparison> extends MCMCSimulationWrapper<MTCType> implements MTCModelWrapper {
-	protected final NetworkBuilder<DrugSet> d_builder;
-	protected AbstractSimulationWrapper(NetworkBuilder<DrugSet> builder, MTCType mtc, String description) {
+public abstract class AbstractMTCSimulationWrapper<TreatmentType, MTCType extends MixedTreatmentComparison> extends MCMCSimulationWrapper<MTCType> implements MTCModelWrapper<TreatmentType> {
+	private final Map<TreatmentType, Treatment> d_treatmentMap;
+	protected AbstractMTCSimulationWrapper(NetworkBuilder<TreatmentType> builder, MTCType mtc, String description, Map<TreatmentType, Treatment> treatmentMap) {
 		super(mtc, description);
-		d_builder = builder;
+		d_treatmentMap = treatmentMap;
 	}
 	
 	@Override
-	public Parameter getRelativeEffect(DrugSet a, DrugSet b) {
+	public Parameter getRelativeEffect(TreatmentType a, TreatmentType b) {
 		return d_nested.getRelativeEffect(getTreatment(a), getTreatment(b));
 	}
 
@@ -52,15 +52,15 @@ public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentCo
 		return d_nested.getRandomEffectsVariance();
 	}
 	
-	protected List<Treatment> getTreatments(List<DrugSet> drugs) {
+	protected List<Treatment> getTreatments(List<TreatmentType> drugs) {
 		List<Treatment> treatments = new ArrayList<Treatment>();
-		for (DrugSet d : drugs) {
+		for (TreatmentType d : drugs) {
 			treatments.add(getTreatment(d));
 		}
 		return treatments;
 	}
 
-	protected Treatment getTreatment(DrugSet d) {
-		return d_builder.getTreatmentMap().get(d);
+	protected Treatment getTreatment(TreatmentType d) {
+		return d_treatmentMap.get(d);
 	}
 }

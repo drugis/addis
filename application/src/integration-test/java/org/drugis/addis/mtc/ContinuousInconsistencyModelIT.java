@@ -44,13 +44,13 @@ import org.junit.Test;
 
 public class ContinuousInconsistencyModelIT {
 	private NetworkMetaAnalysis d_nma;
-	private SimulationInconsistencyWrapper d_wrapper;
+	private SimulationInconsistencyWrapper<DrugSet> d_wrapper;
 
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
        
-		d_wrapper = (SimulationInconsistencyWrapper) d_nma.getInconsistencyModel();
+		d_wrapper = (SimulationInconsistencyWrapper<DrugSet>) d_nma.getInconsistencyModel();
     }
     
     @Test

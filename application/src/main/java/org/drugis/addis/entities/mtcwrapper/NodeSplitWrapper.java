@@ -29,7 +29,7 @@ package org.drugis.addis.entities.mtcwrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 
-public interface NodeSplitWrapper extends MTCModelWrapper {
+public interface NodeSplitWrapper<TreatmentType> extends MTCModelWrapper<TreatmentType> {
 
 	public Parameter getDirectEffect();
 

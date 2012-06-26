@@ -39,10 +39,10 @@ import org.drugis.mtc.summary.QuantileSummary;
 @SuppressWarnings("serial")
 public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 	private NetworkMetaAnalysisPresentation d_pm;
-	MTCModelWrapper d_networkModel;
+	MTCModelWrapper<DrugSet> d_networkModel;
 	private final PropertyChangeListener d_listener;
 	
-	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MTCModelWrapper networkModel) {
+	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MTCModelWrapper<DrugSet> networkModel) {
 		d_pm = pm;
 		d_networkModel = networkModel;
 		d_listener = new PropertyChangeListener() {
@@ -62,7 +62,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MTCModelWrapper networkModel, DrugSet d1, DrugSet d2) {
+	private void attachListener(MTCModelWrapper<DrugSet> networkModel, DrugSet d1, DrugSet d2) {
 		QuantileSummary quantileSummary = getSummary(d1, d2);
 		if(quantileSummary != null) {
 			quantileSummary.addPropertyChangeListener(d_listener);

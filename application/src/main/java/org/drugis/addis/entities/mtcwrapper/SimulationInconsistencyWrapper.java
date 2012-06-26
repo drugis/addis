@@ -28,15 +28,14 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.List;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 
-public class SimulationInconsistencyWrapper extends AbstractSimulationWrapper<InconsistencyModel> implements InconsistencyWrapper {
+public class SimulationInconsistencyWrapper<TreatmentType> extends AbstractMTCSimulationWrapper<TreatmentType, InconsistencyModel> implements InconsistencyWrapper<TreatmentType> {
 
-	public SimulationInconsistencyWrapper(NetworkBuilder<DrugSet> builder, InconsistencyModel model) {
-		super(builder, model, "Inconsistency Model");
+	public SimulationInconsistencyWrapper(NetworkBuilder<TreatmentType> builder, InconsistencyModel model) {
+		super(builder, model, "Inconsistency Model", builder.getTreatmentMap());
 	}
 
 	@Override

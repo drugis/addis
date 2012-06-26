@@ -28,13 +28,12 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.List;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public interface ConsistencyWrapper extends MTCModelWrapper {
+public interface ConsistencyWrapper<TreatmentType> extends MTCModelWrapper<TreatmentType> {
 
 	/**
 	 * Return a multivariate summary of the effects for all treatments relative to the baseline. 
@@ -51,6 +50,6 @@ public interface ConsistencyWrapper extends MTCModelWrapper {
 	/**
 	 * @return A list of all <baseline, subject> pairs, where the subjects are given in their natural order  
 	 */	
-	public List<Pair<DrugSet>> getRelativeEffectsList();
+	public List<Pair<TreatmentType>> getRelativeEffectsList();
 
 }

@@ -91,7 +91,7 @@ public class NetworkTableModelTest {
 		assertEquals(d_analysis.getIncludedDrugs().get(2), d_tableModel.getValueAt(2, 2));
 
 		
-		ConsistencyWrapper consModel = d_analysis.getConsistencyModel();
+		ConsistencyWrapper<DrugSet> consModel = d_analysis.getConsistencyModel();
 		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(0), d_analysis.getIncludedDrugs().get(1));
 		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(1), d_analysis.getIncludedDrugs().get(0));
 		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(2), d_analysis.getIncludedDrugs().get(0));
@@ -108,7 +108,7 @@ public class NetworkTableModelTest {
 	
 	@Test
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
-		ConsistencyWrapper model =  d_analysis.getConsistencyModel();
+		ConsistencyWrapper<DrugSet> model =  d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getModel().getActivityTask());
 		DrugSet d1 = d_analysis.getIncludedDrugs().get(0);
 		DrugSet d2 = d_analysis.getIncludedDrugs().get(1);

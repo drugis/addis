@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
@@ -40,10 +41,10 @@ import org.drugis.mtc.summary.QuantileSummary;
 public class NetworkVarianceTableModel extends AbstractTableModel {
 
 	private static final int RANDOM_EFFECTS = 0;
-	private MTCModelWrapper d_mtc;
+	private MTCModelWrapper<DrugSet> d_mtc;
 	private PropertyChangeListener d_listener;
 	
-	public NetworkVarianceTableModel(MTCModelWrapper mtc) {
+	public NetworkVarianceTableModel(MTCModelWrapper<DrugSet> mtc) {
 		d_mtc = mtc;
 		
 		d_listener = new PropertyChangeListener() {
@@ -53,7 +54,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 		};
 		
 		if (isInconsistency()) {
-			attachListener(((InconsistencyWrapper) d_mtc).getInconsistencyVariance());
+			attachListener(((InconsistencyWrapper<DrugSet>) d_mtc).getInconsistencyVariance());
 		}
 		attachListener(mtc.getRandomEffectsVariance());
 	}
@@ -101,7 +102,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 
 	private QuantileSummary getInconsistencySummary() {
 		if (isInconsistency()) {
-			Parameter p = ((InconsistencyWrapper) d_mtc).getInconsistencyVariance();
+			Parameter p = ((InconsistencyWrapper<DrugSet>) d_mtc).getInconsistencyVariance();
 			return d_mtc.getQuantileSummary(p);
 		}
 		return null;

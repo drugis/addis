@@ -333,7 +333,7 @@ public class NetworkMetaAnalysisConverter {
 		nma.setInconsistencyResults(convertInconsistencyResults(ma));
 		nma.setConsistencyResults(convertConsistencyResults(ma));
 		
-		for(NodeSplitWrapper model : ma.getNodeSplitModels()) {
+		for(NodeSplitWrapper<DrugSet> model : ma.getNodeSplitModels()) {
 			if (model.isApproved()) {
 				nma.getNodeSplitResults().add(convertNodeSplitResults(ma, model));
 			}
@@ -341,7 +341,7 @@ public class NetworkMetaAnalysisConverter {
 		return nma; 
 	}
 
-	private static NodeSplitResults convertNodeSplitResults(NetworkMetaAnalysis ma, NodeSplitWrapper model) {
+	private static NodeSplitResults convertNodeSplitResults(NetworkMetaAnalysis ma, NodeSplitWrapper<DrugSet> model) {
 		NodeSplitResults results = new NodeSplitResults();
 		results.setMcmcSettings(convertMCMCSettings(model));
 		convertParameterSummaries(ma, model, results.getSummary());
@@ -356,7 +356,7 @@ public class NetworkMetaAnalysisConverter {
 
 	private static InconsistencyResults convertInconsistencyResults(NetworkMetaAnalysis ma) {
 		InconsistencyResults results = new InconsistencyResults();
-		InconsistencyWrapper model = ma.getInconsistencyModel();
+		InconsistencyWrapper<DrugSet> model = ma.getInconsistencyModel();
 		if (model.isApproved()) {
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
@@ -368,7 +368,7 @@ public class NetworkMetaAnalysisConverter {
 
 	private static ConsistencyResults convertConsistencyResults(NetworkMetaAnalysis ma) {
 		ConsistencyResults results = new ConsistencyResults();
-		ConsistencyWrapper model = ma.getConsistencyModel();
+		ConsistencyWrapper<DrugSet> model = ma.getConsistencyModel();
 		if (model.isApproved()) { 
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
@@ -397,16 +397,16 @@ public class NetworkMetaAnalysisConverter {
 		return null;
 	}
 
-	private static RelativeEffectsQuantileSummary convertRelativeEffectQuantileSummaries(NetworkMetaAnalysis ma, MTCModelWrapper model) {
+	private static RelativeEffectsQuantileSummary convertRelativeEffectQuantileSummaries(NetworkMetaAnalysis ma, MTCModelWrapper<DrugSet> model) {
 		RelativeEffectsQuantileSummary relativeEffectsSummary = new RelativeEffectsQuantileSummary();
 		relativeEffectsSummary.getRelativeEffectQuantileSummary().addAll(convertRelativeEffectParameters(ma, model));
 		return relativeEffectsSummary;
 	}
 	
-	private static void convertParameterSummaries(NetworkMetaAnalysis ma, MTCModelWrapper model, List<ParameterSummary> summaries) {
+	private static void convertParameterSummaries(NetworkMetaAnalysis ma, MTCModelWrapper<DrugSet> model, List<ParameterSummary> summaries) {
 		List<Parameter> parameters = new ArrayList<Parameter>(Arrays.asList(model.getParameters()));
 		if(model instanceof NodeSplitWrapper) { 
-			parameters.add(((NodeSplitWrapper) model).getIndirectEffect());
+			parameters.add(((NodeSplitWrapper<DrugSet>) model).getIndirectEffect());
 		}
 		Collections.sort(parameters, new ParameterComparator());
 		for (Parameter p : parameters) {
@@ -414,7 +414,7 @@ public class NetworkMetaAnalysisConverter {
 		}
 	}
 
-	private static ParameterSummary convertParameterSummary(Parameter p, MTCModelWrapper mtc, NetworkMetaAnalysis nma) { 
+	private static ParameterSummary convertParameterSummary(Parameter p, MTCModelWrapper<DrugSet> mtc, NetworkMetaAnalysis nma) { 
 		ParameterSummary ps = new ParameterSummary();
 		ps.setPsrf(mtc.getConvergenceSummary(p).getScaleReduction());
 		ps.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(p)));
@@ -462,7 +462,7 @@ public class NetworkMetaAnalysisConverter {
 		return l;
 	}
 
-	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MTCModelWrapper mtc) {
+	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MTCModelWrapper<DrugSet> mtc) {
 		List<DrugSet> includedDrugs = ma.getIncludedDrugs();
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
 		for (int i = 0; i < includedDrugs.size(); ++i) {
@@ -497,7 +497,7 @@ public class NetworkMetaAnalysisConverter {
 		return rel;
 	}
 
-	private static MCMCSettings convertMCMCSettings(MTCModelWrapper wrapper) {
+	private static MCMCSettings convertMCMCSettings(MTCModelWrapper<DrugSet> wrapper) {
 		MCMCSettings s = new MCMCSettings();
 		s.setSimulationIterations(wrapper.getSettings().getSimulationIterations());
 		s.setTuningIterations(wrapper.getSettings().getTuningIterations());

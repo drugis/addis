@@ -51,6 +51,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
@@ -189,7 +190,7 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 	
-	private int buildMemoryUsage(final MTCModelWrapper model, String name, PanelBuilder builder, FormLayout layout, int row) {
+	private int buildMemoryUsage(final MTCModelWrapper<DrugSet> model, String name, PanelBuilder builder, FormLayout layout, int row) {
 		CellConstraints cc = new CellConstraints();
 		if(model.isSaved()) {
 			LayoutUtil.addRow(layout);
@@ -268,7 +269,7 @@ implements ViewBuilder {
 
 		row += 2;
 
-		final InconsistencyWrapper inconsistencyModel = d_pm.getInconsistencyModel();
+		final InconsistencyWrapper<DrugSet> inconsistencyModel = d_pm.getInconsistencyModel();
 				
 		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, INCONSISTENCY_TAB_TITLE);
 		builder.add(simulationControls, cc.xyw(3, row, 3));
@@ -342,7 +343,7 @@ implements ViewBuilder {
 		builder.addSeparator("Results - network consistency model", cc.xyw(1, row, colSpan));
 		
 		row += 2;
-		final ConsistencyWrapper consistencyModel = d_pm.getConsistencyModel();
+		final ConsistencyWrapper<DrugSet> consistencyModel = d_pm.getConsistencyModel();
 		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, CONSISTENCY_TAB_TITLE);
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
@@ -416,7 +417,7 @@ implements ViewBuilder {
 			
 			LayoutUtil.addRow(layout);
 			row += 2;
-			NodeSplitWrapper model = d_pm.getNodeSplitModel(p);			
+			NodeSplitWrapper<DrugSet> model = d_pm.getNodeSplitModel(p);			
 			
 			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, NODE_SPLIT_TAB_TITLE);
 			builder.add(simulationControls, cc.xyw(1, row, 3));
@@ -456,7 +457,7 @@ implements ViewBuilder {
 		runAll.setToolTipText("Run all simulations");
 		final List<Task> tasks = new ArrayList<Task>();
 		for (BasicParameter p : d_pm.getSplitParameters()) {
-			final NodeSplitWrapper wrapper = d_pm.getNodeSplitModel(p);
+			final NodeSplitWrapper<DrugSet> wrapper = d_pm.getNodeSplitModel(p);
 			if (!wrapper.isSaved()) {
 				tasks.add(wrapper.getModel().getActivityTask());
 			}
@@ -498,11 +499,11 @@ implements ViewBuilder {
 		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitWrapper)) {
 			return new JLabel("Can not build density plot based on saved results.");
 		}
-		final SimulationNodeSplitWrapper splitWrapper = (SimulationNodeSplitWrapper) d_pm.getNodeSplitModel(p);
+		final SimulationNodeSplitWrapper<DrugSet> splitWrapper = (SimulationNodeSplitWrapper<DrugSet>) d_pm.getNodeSplitModel(p);
 		XYDataset dataset;
 		final MCMCResults splitResults = splitWrapper.getModel().getResults();
 		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyWrapper) {
-			final SimulationConsistencyWrapper consistencyWrapper = (SimulationConsistencyWrapper) d_pm.getConsistencyModel();
+			final SimulationConsistencyWrapper<DrugSet> consistencyWrapper = (SimulationConsistencyWrapper<DrugSet>) d_pm.getConsistencyModel();
 			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()), 
 					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()), 
 					new PlotParameter(consistencyWrapper.getModel().getResults(), p));
@@ -616,7 +617,7 @@ implements ViewBuilder {
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
-	private TablePanel createNetworkTablePanel(MTCModelWrapper mtc) {
+	private TablePanel createNetworkTablePanel(MTCModelWrapper<DrugSet> mtc) {
 		JTable table = new JTable(new NetworkRelativeEffectTableModel(d_pm, mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);

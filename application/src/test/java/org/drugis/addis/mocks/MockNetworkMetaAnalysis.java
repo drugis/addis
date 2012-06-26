@@ -49,8 +49,8 @@ import org.drugis.mtc.model.Treatment;
 
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	
-	private InconsistencyWrapper d_mockInconsistencyModel;
-	private ConsistencyWrapper d_mockConsistencyModel;
+	private InconsistencyWrapper<DrugSet> d_mockInconsistencyModel;
+	private ConsistencyWrapper<DrugSet> d_mockConsistencyModel;
 
 	public MockNetworkMetaAnalysis(String name, Indication indication,
 			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
@@ -59,8 +59,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		
 		d_builder = NetworkBuilderFactory.createBuilderStub(drugs);
 		
-		d_mockInconsistencyModel = new SimulationInconsistencyWrapper(d_builder, MockInconsistencyModel.buildMockSimulationInconsistencyModel(toTreatments(drugs)));
-		d_mockConsistencyModel = new SimulationConsistencyWrapper(d_builder, MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
+		d_mockInconsistencyModel = new SimulationInconsistencyWrapper<DrugSet>(d_builder, MockInconsistencyModel.buildMockSimulationInconsistencyModel(toTreatments(drugs)));
+		d_mockConsistencyModel = new SimulationConsistencyWrapper<DrugSet>(d_builder, MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs);
 
 	}
 
@@ -73,12 +73,12 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	}
 	
 	@Override
-	public InconsistencyWrapper getInconsistencyModel() {
+	public InconsistencyWrapper<DrugSet> getInconsistencyModel() {
 		return d_mockInconsistencyModel;
 	}
 	
 	@Override
-	public ConsistencyWrapper getConsistencyModel() {
+	public ConsistencyWrapper<DrugSet> getConsistencyModel() {
 		return d_mockConsistencyModel;
 	}
 	

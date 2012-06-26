@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
@@ -41,28 +40,28 @@ import org.drugis.mtc.summary.RankProbabilitySummary;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class SavedConsistencyWrapper extends AbstractSavedWrapper implements ConsistencyWrapper {
+public class SavedConsistencyWrapper<TreatmentType> extends AbstractMTCSavedWrapper<TreatmentType> implements ConsistencyWrapper<TreatmentType> {
 
 	private final MultivariateNormalSummary d_relativeEffectsSummary;
 	private final RankProbabilitySummary d_rankProbabilitySummary;
-	private List<DrugSet> d_drugs;
+	private List<TreatmentType> d_drugs;
 
-	public SavedConsistencyWrapper(NetworkBuilder<DrugSet> builder,
+	public SavedConsistencyWrapper(NetworkBuilder<TreatmentType> builder,
 			MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries,
 			Map<Parameter, ConvergenceSummary> convergenceSummaries, 
 			MultivariateNormalSummary relativeEffectsSummary, 
 			RankProbabilitySummary rankProbabilitySummary, 
-			List<DrugSet> drugs) {
+			List<TreatmentType> drugs) {
 		super(builder, settings, quantileSummaries, convergenceSummaries);
 		d_relativeEffectsSummary = relativeEffectsSummary;
 		d_rankProbabilitySummary = rankProbabilitySummary;
 		
 		d_drugs = drugs;
-		List<Pair<DrugSet>> relEffects = getRelativeEffectsList();
+		List<Pair<TreatmentType>> relEffects = getRelativeEffectsList();
 		Parameter[] parameters = new Parameter[relEffects.size()]; 
 		for (int i = 0; i < relEffects.size(); ++i) {
-			Pair<DrugSet> relEffect = relEffects.get(i);
+			Pair<TreatmentType> relEffect = relEffects.get(i);
 			parameters[i] = getRelativeEffect(relEffect.getFirst(), relEffect.getSecond());
 		}
 	}
@@ -78,10 +77,10 @@ public class SavedConsistencyWrapper extends AbstractSavedWrapper implements Con
 	}
 
 	@Override
-	public List<Pair<DrugSet>> getRelativeEffectsList() {
-		List<Pair<DrugSet>> list = new ArrayList<Pair<DrugSet>>(d_drugs.size() - 1); // first DrugSet is baseline-> excluded
+	public List<Pair<TreatmentType>> getRelativeEffectsList() {
+		List<Pair<TreatmentType>> list = new ArrayList<Pair<TreatmentType>>(d_drugs.size() - 1); // first DrugSet is baseline-> excluded
 		for (int i = 0; i < d_drugs.size() - 1; ++i) {
-			Pair<DrugSet> relEffect = new Pair<DrugSet>(d_drugs.get(0), d_drugs.get(i + 1));
+			Pair<TreatmentType> relEffect = new Pair<TreatmentType>(d_drugs.get(0), d_drugs.get(i + 1));
 			list.add(relEffect);
 		}
 		return list;

@@ -26,18 +26,17 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.NodeSplitModel;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 
-public class SimulationNodeSplitWrapper extends AbstractSimulationWrapper<NodeSplitModel> implements NodeSplitWrapper {
+public class SimulationNodeSplitWrapper<TreatmentType> extends AbstractMTCSimulationWrapper<TreatmentType, NodeSplitModel> implements NodeSplitWrapper<TreatmentType> {
 	private NodeSplitPValueSummary d_pValueSummary;
 
-	public SimulationNodeSplitWrapper(NetworkBuilder<DrugSet> builder, NodeSplitModel model) {
-		super(builder, model, "Node Split on " + model.getSplitNode().getName());
+	public SimulationNodeSplitWrapper(NetworkBuilder<TreatmentType> builder, NodeSplitModel model) {
+		super(builder, model, "Node Split on " + model.getSplitNode().getName(), builder.getTreatmentMap());
 	}
 
 	@Override

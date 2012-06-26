@@ -31,7 +31,7 @@ import java.util.List;
 import org.drugis.mtc.Parameter;
 
 
-public interface InconsistencyWrapper extends MTCModelWrapper {
+public interface InconsistencyWrapper<TreatmentType> extends MTCModelWrapper<TreatmentType> {
 
 	List<Parameter> getInconsistencyFactors();
 

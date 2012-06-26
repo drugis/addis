@@ -111,7 +111,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		if (d_modelConstructed.getValue().equals(false)){
 			return NA;
 		}
-		InconsistencyWrapper model = d_pm.getInconsistencyModel();
+		InconsistencyWrapper<DrugSet> model = d_pm.getInconsistencyModel();
 		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
 		if(col == 0) {
 			Set<String> descriptions = new TreeSet<String>();

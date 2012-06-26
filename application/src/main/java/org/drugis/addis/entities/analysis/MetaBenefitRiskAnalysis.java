@@ -368,7 +368,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<DrugSet> {
 		List<Task> tasks = new ArrayList<Task>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
-				ConsistencyWrapper wrapper = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				ConsistencyWrapper<DrugSet> wrapper = ((NetworkMetaAnalysis) ma).getConsistencyModel();
 				if (!wrapper.isSaved()) {
 					tasks.add((Task) wrapper.getModel().getActivityTask());
 				}

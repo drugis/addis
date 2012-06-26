@@ -37,7 +37,7 @@ import java.util.List;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkBuilderFactory;
-import org.drugis.addis.entities.mtcwrapper.AbstractSimulationWrapper;
+import org.drugis.addis.entities.mtcwrapper.AbstractMTCSimulationWrapper;
 import org.drugis.addis.mocks.MockConsistencyModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
@@ -47,7 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AbstractSimulationWrapperTest {
-	private AbstractSimulationWrapper<ConsistencyModel> d_model;
+	private AbstractMTCSimulationWrapper<DrugSet, ConsistencyModel> d_model;
 	private List<DrugSet> d_treatments;
 
 	@Before
@@ -59,7 +59,7 @@ public class AbstractSimulationWrapperTest {
 			treatmentList.add(builder.getTreatmentMap().get(s));
 		}
 		ConsistencyModel mtc = MockConsistencyModel.buildMockSimulationConsistencyModel(treatmentList);
-		d_model = new AbstractSimulationWrapper<ConsistencyModel>(builder, mtc, "Stub Model") {};
+		d_model = new AbstractMTCSimulationWrapper<DrugSet, ConsistencyModel>(builder, mtc, "Stub Model", builder.getTreatmentMap()) {};
 	}
 
 	@Test
