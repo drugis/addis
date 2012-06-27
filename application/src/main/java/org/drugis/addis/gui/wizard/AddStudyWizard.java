@@ -380,6 +380,16 @@ public class AddStudyWizard extends Wizard {
 			d_parent = parent;
 			d_mainWindow = mainWindow;
 			d_pm = pm;
+		}
+		
+		private void addValidator(String warning, ValueModel validator) {
+			d_validators.add(new Pair<String, ValueModel>(warning, validator));
+		}
+		
+		@Override
+		public void prepare() {
+			this.setVisible(false);
+			
 			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
 
 			addValidator("Some activities have missing data", new ActivitiesCompleteValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
@@ -392,21 +402,14 @@ public class AddStudyWizard extends Wizard {
 			}
 			d_readyValidator = new BooleanAndModel(validators);
 			PropertyConnector.connectAndUpdate(d_readyValidator, this, "complete");
-		}
-		
-		private void addValidator(String warning, ValueModel validator) {
-			 d_validators.add(new Pair<String, ValueModel>(warning, validator));
-		}
-		
-		@Override
-		public void prepare() {
-			 this.setVisible(false);
-			 if (d_scrollPane != null)
-				 remove(d_scrollPane);
+
 			 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
+			if (d_scrollPane != null)
+				remove(d_scrollPane);
+			
+			buildWizardStep();
+			this.setVisible(true);
+			repaint();
 		 }
 		
 		private void buildWizardStep() {
