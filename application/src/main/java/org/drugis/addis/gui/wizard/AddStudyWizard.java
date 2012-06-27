@@ -391,7 +391,7 @@ public class AddStudyWizard extends Wizard {
 			this.setVisible(false);
 			
 			d_tableModel = new StudyActivitiesTableModel(d_pm.getNewStudyPM().getBean());
-
+			d_validators.clear();
 			addValidator("Some activities have missing data", new ActivitiesCompleteValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
 			addValidator("Not all cells in the table are filled in", new TableFilledValidator(d_tableModel));
 			addValidator("Not all the activities are used", new AllActivitiesUsedValidator(d_pm.getNewStudyPM().getBean().getStudyActivities()));
