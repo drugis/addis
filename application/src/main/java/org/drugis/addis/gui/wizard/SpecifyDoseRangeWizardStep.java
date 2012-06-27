@@ -1,10 +1,14 @@
 package org.drugis.addis.gui.wizard;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep.CategorySpecifiers;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -38,15 +42,31 @@ public class SpecifyDoseRangeWizardStep extends AbstractDoseTreatmentWizardStep 
 		row = LayoutUtil.addRow(layout, row);
 		
 		builder.addLabel("Fixed dose", cc.xy(1, row));
-		JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), CategorySpecifiers.FIXED_CONSIDER);
+		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), CategorySpecifiers.FIXED_CONSIDER);
+		fixedCategoryComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				d_pm.setChildNode(d_pm.getBean().getRootNode(), FixedDose.class, fixedCategoryComboBox.getSelectedItem());
+			}
+		});
 		builder.add(fixedCategoryComboBox, cc.xy(3, row));
 		
 		row = LayoutUtil.addRow(layout, row);
 
 		builder.addLabel("Flexible dose", cc.xy(1, row));
-		JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER, CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
+	
+		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER, CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
+		flexibleCategoryComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				d_pm.setChildNode(d_pm.getBean().getRootNode(), FlexibleDose.class, flexibleCategoryComboBox.getSelectedItem());
+			}
+		});
 		builder.add(flexibleCategoryComboBox, cc.xy(3, row));
 		
 		return builder.getPanel();
+	}
+	
+	@Override
+	protected void initialize() {
+		rebuildPanel();
 	}
 }

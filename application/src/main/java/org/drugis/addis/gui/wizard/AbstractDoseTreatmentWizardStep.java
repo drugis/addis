@@ -64,7 +64,7 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	 	repaint();
 	}
 	
-	public void initialize() {}
+	protected void initialize() {}
 	
 	private void buildWizardStep() {
 		if(d_dialogCache == null) { 

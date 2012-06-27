@@ -41,7 +41,9 @@ import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
+import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
 
 import com.jgoodies.binding.PresentationModel;
@@ -49,9 +51,36 @@ import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {	
+	public class DecisionTreeCoordinate {
+		final public Class<? extends AbstractDose> beanClass;
+		final public String property;
+		final public int rangeIdx;
+		
+		public DecisionTreeCoordinate(Class<? extends AbstractDose> beanClass, String property, int rangeIdx) {
+			this.beanClass = beanClass;
+			this.property = property;
+			this.rangeIdx = rangeIdx; 
+		}
+		
+		@Override
+		public int hashCode() {
+			return beanClass.hashCode() + 31 * (property == null ? 0 : property.hashCode()) + 31 * 31 * rangeIdx;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(obj instanceof DecisionTreeCoordinate) { 
+				DecisionTreeCoordinate other = (DecisionTreeCoordinate) obj;
+				return EqualsUtil.equal(other.property, property) && EqualsUtil.equal(other.beanClass, beanClass) &&
+						other.rangeIdx == rangeIdx;
+			}
+			return false;
+		}
+	}
+	
 	private ContentAwareListModel<CategoryNode> d_categories;
-	private Map<Class<? extends AbstractDose>, ValueHolder<Object>> d_selectedCategoryMap = 
-			new HashMap<Class<? extends AbstractDose>, ValueHolder<Object>>(); 
+	private Map<DecisionTreeCoordinate, ValueHolder<Object>> d_selectedCategoryMap = 
+			new HashMap<DecisionTreeCoordinate, ValueHolder<Object>>(); 
 	
 	private final Domain d_domain;
 	private ExcludeNode d_excludeNode = new ExcludeNode();
@@ -64,12 +93,16 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		super(bean);
 		d_domain = domain;
 		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
-		if(getBean().getRootNode() instanceof TypeNode) { 
-			TypeNode types = (TypeNode) getBean().getRootNode();
-			for(Class<? extends AbstractDose> type : types.getTypeMap().keySet()) { 
-				d_selectedCategoryMap.put(type, new ModifiableHolder<Object>(d_excludeNode));
-			}
-		}
+	}
+
+	/**
+	 * 
+	 * @param The type to be added to the selection mapping
+	 * @return The newly-created ValueHolder
+	 */
+	private ValueHolder<Object> addDoseTypeHolder(DecisionTreeCoordinate dosePropertyPair) {
+		d_selectedCategoryMap.put(dosePropertyPair, new ModifiableHolder<Object>(d_excludeNode));
+		return d_selectedCategoryMap.get(dosePropertyPair);
 	}
 
 	public Drug getDrug() {
@@ -100,38 +133,87 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @return null if Fixed and flexible categorizations differ, the selected category ValueHolder otherwise
 	 */
 	public ValueHolder<Object> getSelectedKnownCategory() { 
-		if((getSelectedCategory(FixedDose.class).getValue()).equals(getSelectedCategory(FlexibleDose.class).getValue())) { 
+		if ((getSelectedCategory(FixedDose.class).getValue()).equals(getSelectedCategory(FlexibleDose.class).getValue())) { 
 			return getSelectedCategory(FlexibleDose.class);
 		}
 		return new UnmodifiableHolder<Object>(d_excludeNode);
 	}
 	
-	public ValueHolder<Object> getSelectedCategory(Class<? extends AbstractDose> type) { 
-		return d_selectedCategoryMap.get(type);
+	public ValueHolder<Object> getSelectedCategory(Class<? extends AbstractDose> type) { 	
+		return getSelectedCategory(type, null, 0);
+	}
+	
+	public ValueHolder<Object> getSelectedCategory(Class<? extends AbstractDose> type, String property) {
+		return getSelectedCategory(type, property, 0);
+	}
+
+	public ValueHolder<Object> getSelectedCategory(Class<? extends AbstractDose> type, String property, int rangeIdx) {
+		DecisionTreeCoordinate coordinate = new DecisionTreeCoordinate(type, property, rangeIdx);
+		if (d_selectedCategoryMap.get(coordinate ) == null) {
+			return addDoseTypeHolder(coordinate);
+		}
+		return d_selectedCategoryMap.get(coordinate);
 	}
 	
 	public Collection<ValueHolder<Object>> getSelectedCategories() { 
 		return Collections.unmodifiableCollection(d_selectedCategoryMap.values());
 	}
 	
-	/** Sets the category for one or more AbstractDose types
-	 * @param selection the category to be set, excludes everything that is not a DecisionTreeNode 
-	 * @param the types to be set
+	
+	/**
+	 * Sets the child of a node
+	 * @param node the node to set the child on, if not a RangeNode or TypeNode it will throw an IllegalArgumentException
+	 * @param beanType The subclass of AbstractDose to set the node on 
+	 * @param child the object to set as child, if not an DecisionTreeNode only the internal mapping is updated (@see {@link #getSelectedCategory(Class))}
 	 */
-	public void setDoseCategory(Object selection, Class<? extends AbstractDose> ... types) {
-		final DecisionTreeNode node = getBean().getRootNode();
-		for(Class<? extends AbstractDose> type : types) { 
-			d_selectedCategoryMap.get(type).setValue(selection);
-		}
-		DecisionTreeNode category = (selection instanceof DecisionTreeNode) ? (DecisionTreeNode)selection : d_excludeNode;
-		if (node instanceof TypeNode) {
-			TypeNode typeNode = (TypeNode)node;
-			for(Class<? extends AbstractDose> type : types) { 
-				typeNode.setType(type, category);
-			}
-		}
+	public void setChildNode(
+			final DecisionTreeNode node, 
+			Class<? extends AbstractDose> beanClass, 
+			Object child) {
+		setChildNode(node, new DecisionTreeCoordinate(beanClass, null, 0), child);
 	}
 	
+	public void setChildNode(DecisionTreeNode node, 
+			Class<? extends AbstractDose> beanClass, 
+			String property, 
+			Object child) {
+		setChildNode(node, new DecisionTreeCoordinate(beanClass, property, 0), child);
+	}
+	
+	
+	public void setChildNode(DecisionTreeNode node, 
+			Class<? extends AbstractDose> beanClass, 
+			String property,
+			int rangeIndex,
+			Object child) {
+		setChildNode(node, new DecisionTreeCoordinate(beanClass, property, rangeIndex), child);
+	}
+	
+	private void setChildNode(DecisionTreeNode node,
+			DecisionTreeCoordinate coordinate, 
+			Object child) {
+		ValueHolder<Object> valueHolder = d_selectedCategoryMap.get(coordinate);
+		if(valueHolder == null) {
+			valueHolder = addDoseTypeHolder(coordinate);
+		}
+		valueHolder.setValue(child);
+		DecisionTreeNode category = (child instanceof DecisionTreeNode) ? (DecisionTreeNode)child : d_excludeNode;
+		if (node instanceof TypeNode) {
+			TypeNode typeNode = (TypeNode)node;
+			typeNode.setType(coordinate.beanClass, category);
+		} else if(node instanceof RangeNode) {
+			RangeNode rangeNode = (RangeNode) node; 
+			rangeNode.setChildNode(coordinate.rangeIdx, rangeNode);
+		} else { 
+			throw new IllegalArgumentException("Cannot set the child of a " + node.getClass());
+		}
+	}
+
+	/**
+	 * Add the DosedDrugTreatment to the domain. Throws an exception if the treatment is already in the domain, throws an exception.
+	 * Note that domain can be null in which case a null-pointer exception will occur.
+	 * @return The DosedDrugTreatment that was added.
+	 */
 	public DosedDrugTreatment commit() {
 		if (d_domain.getTreatments().contains(getBean())) {
 			throw new IllegalStateException("Treatment already exists in domain");
@@ -140,4 +222,5 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		d_domain.getTreatments().add(getBean());
 		return getBean();
 	}
+
 }

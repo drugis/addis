@@ -46,7 +46,7 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 	}
 	
 	@Override
-	public void initialize() { 
+	protected void initialize() { 
 		this.setComplete(true);
 	}
 	

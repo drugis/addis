@@ -3,15 +3,20 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.AbstractDose;
@@ -21,14 +26,15 @@ import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.addis.presentation.RangeValidator;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.AffixableFormat;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -38,65 +44,13 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private final RangeNode d_node;
 	private final Class<? extends AbstractDose> d_beanClass;
 
-	/**
-	 * NOTE: this class abuses {@link #setPositivePrefix(String)} and {@link #setPositiveSuffix(String)}
-	 * from {@link DecimalFormat}, so this class is only usable for positive numbers.
-	 */
-	@SuppressWarnings("serial")
-	private final class AffixableFormat extends DecimalFormat {
-	
-		public void setPrefix(String prefixText) {
-			setPositivePrefix(prefixText);
-		}
-		
-		public void setSuffix(String suffixText) {
-			setPositiveSuffix(suffixText);
-		}
-	}
-	
 	private final class AddCutOffDialog extends OkCancelDialog {
-		@SuppressWarnings("serial")
-		public final class RangeValidator extends AbstractValueModel implements ValueHolder<Boolean> {
-			private static final String PROPERTY_VALID = "value";
-			private final ValueHolder<Double> d_range;
-			private final double d_maximum;
-			private final double d_minimum;
-			private boolean d_valid = false;
-			public RangeValidator(ValueHolder<Double> range, double minimum, double maximum) {
-				d_range = range;
-				d_maximum = maximum;
-				d_minimum = minimum;
-				d_range.addValueChangeListener(new PropertyChangeListener() {		
-					public void propertyChange(PropertyChangeEvent evt) {
-						validate();
-					}
-				});
-				validate();
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return d_valid;
-			}
-
-			@Override
-			public void setValue(Object newValue) {
-				throw new UnsupportedOperationException("Cannot set value on validators");
-			}
-			
-			public void validate() { 
-				boolean oldValue = d_valid;
-				d_valid =  d_range.getValue() <= d_maximum && d_range.getValue() >= d_minimum;
-				firePropertyChange(PROPERTY_VALID, oldValue, d_valid);
-			}
-		}
-
 		private static final long serialVersionUID = -7519390341921875264L;
 		private final int d_rangeIndex;
 		private final ValueHolder<Double> d_cutOff = new ModifiableHolder<Double>(0.0d);
 		private final ValueHolder<Boolean> d_upperOpen = new ModifiableHolder<Boolean>(false);
 		private String d_boundName;
-		private ValueHolder<Boolean> d_validator;
+		private RangeValidator d_validator;
 
 		public AddCutOffDialog(int rangeIndex, String boundName) {
 			super(d_mainWindow, "Split range", true);
@@ -125,8 +79,18 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			
 			row = LayoutUtil.addRow(layout, row);
 			builder.addLabel("Split range at:", cc.xy(1, row));
-			JFormattedTextField cutOffField = BasicComponentFactory.createFormattedTextField(d_cutOff, new DefaultFormatter());
+			final JFormattedTextField cutOffField = BasicComponentFactory.createFormattedTextField(d_cutOff, new DefaultFormatter());
 			cutOffField.setColumns(5);
+			cutOffField.addCaretListener(new CaretListener() {		
+				public void caretUpdate(CaretEvent e) {
+					try {
+						cutOffField.commitEdit();
+					} catch (ParseException exp) {
+						return; // we don't care
+					}
+				}
+			});
+			
 			builder.add(cutOffField, cc.xy(3, row));
 			String unitText = d_pm.getDoseUnitPresentation().getBean().toString();
 			builder.addLabel(unitText, cc.xy(5, row));
@@ -134,9 +98,13 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			row = LayoutUtil.addRow(layout, row);
 			builder.addLabel("Bound is open for:", cc.xyw(1, row, colSpan));
 			
+			DecimalFormat decimalFormat = new DecimalFormat();
+			decimalFormat.setMaximumFractionDigits(3);
+			
 			AffixableFormat formatLower = new AffixableFormat();
+			formatLower.setMaximumFractionDigits(3);
 			StringBuilder prefix = new StringBuilder()
-				.append(d_node.getRangeLowerBound(d_rangeIndex))
+				.append(decimalFormat.format(d_node.getRangeLowerBound(d_rangeIndex)))
 				.append((d_node.isRangeLowerBoundOpen(d_rangeIndex) ? " < " : " <= "))
 				.append(d_boundName + " < ");
 			formatLower.setPrefix(prefix.toString());
@@ -152,7 +120,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				StringBuilder suffix = new StringBuilder()
 					.append(" <= " + d_boundName)
 					.append((d_node.isRangeUpperBoundOpen(d_rangeIndex) ? " < " : " <= "))
-					.append(d_node.getRangeUpperBound(d_rangeIndex));
+					.append(decimalFormat.format(d_node.getRangeUpperBound(d_rangeIndex)));
 				formatLower.setSuffix(" " + unitText);
 				formatUpper.setSuffix(suffix.toString());
 			} else {
@@ -206,10 +174,9 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override 
 	public void initialize() { 
-		d_pm.setDoseCategory(d_node, d_beanClass);
+		d_pm.setChildNode(d_node, d_beanClass, d_pm.getSelectedCategory(d_beanClass));
 	}
 	
 	protected JPanel buildPanel() {
@@ -219,18 +186,17 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				);	
 		
 		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
 		
 		int row = 1;
 		for (int i = 0; i < d_node.getChildCount(); ++i) {
-			row = rangeRow(layout, builder, cc, row, i);
+			row = rangeRow(layout, builder, row, i);
 		}
 		
 		return builder.getPanel();
 	}
 
-	private int rangeRow(FormLayout layout, PanelBuilder builder,
-			CellConstraints cc, int row, final int index) {
+	private int rangeRow(FormLayout layout, PanelBuilder builder, int row, final int index) {
+		CellConstraints cc = new CellConstraints();
 		row = LayoutUtil.addRow(layout, row);
 		JButton splitBtn = new JButton("Split Range");
 		splitBtn.addActionListener(new ActionListener() {
@@ -245,10 +211,16 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		String rangeText = d_node.getRangeLabel(index);
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
-		JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
+		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
+		comboBox.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				Object selected = comboBox.getSelectedItem();
+				d_pm.setChildNode(d_node, d_beanClass, selected);
+			}
+		});
 		builder.add(comboBox, cc.xy(5, row));
 		return row;
 	}
-
-
 }

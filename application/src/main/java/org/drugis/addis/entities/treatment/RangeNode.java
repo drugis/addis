@@ -24,8 +24,7 @@ public class RangeNode extends AbstractObservable implements DecisionTreeNode {
 		this(beanClass, propertyName, 0, false, Double.POSITIVE_INFINITY, true, new ExcludeNode());
 	}
 	
-	public RangeNode(Class<?> beanClass, String propertyName, 
-			DecisionTreeNode child) {
+	public RangeNode(Class<?> beanClass, String propertyName, DecisionTreeNode child) {
 		this(beanClass, propertyName, 0, false, Double.POSITIVE_INFINITY, true, child);
 	}
 	
