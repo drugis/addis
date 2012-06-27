@@ -34,17 +34,14 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.AbstractMetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.MCMCPresentation;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntityTablePanel;
 import org.drugis.addis.gui.components.TablePanel;
@@ -53,6 +50,8 @@ import org.drugis.addis.gui.renderer.DistributionQuantileCellRenderer;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.mtc.gui.MainWindow;
+import org.drugis.mtc.gui.SimulationComponentFactory;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -101,17 +100,17 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		builder.add(createRunAllButton(), cc.xyw(1, 3, 3));
 		int row = 3;
 
-		for (MCMCPresentation mw : d_pm.getWrappedModels()) {
+		for (AddisMCMCPresentation mw : d_pm.getWrappedModels()) {
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(AnalysisComponentFactory.createSimulationControls(mw, d_mainWindow, true, null), cc.xyw(1, row, 3));
+			builder.add(SimulationComponentFactory.createSimulationControls(mw, d_mainWindow, true, AuxComponentFactory.COLOR_NOTE, d_mainWindow.getReloadRightPanelAction(null)), cc.xyw(1, row, 3));
 		}
 		
 		return builder.getPanel();
 	}
 	
 	private JButton createRunAllButton() {
-		JButton button = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		JButton button = new JButton(MainWindow.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_RUN));
 		button.setText("Run all required sub-analyses");
 		button.setToolTipText("Run all simulations");
 		button.addActionListener(new ActionListener() {

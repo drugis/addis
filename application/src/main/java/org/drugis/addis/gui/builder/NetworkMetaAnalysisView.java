@@ -54,14 +54,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
-import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
@@ -95,7 +88,14 @@ import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
+import org.drugis.mtc.gui.SimulationComponentFactory;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.presentation.ConsistencyWrapper;
+import org.drugis.mtc.presentation.InconsistencyWrapper;
+import org.drugis.mtc.presentation.MTCModelWrapper;
+import org.drugis.mtc.presentation.NodeSplitWrapper;
+import org.drugis.mtc.presentation.SimulationConsistencyWrapper;
+import org.drugis.mtc.presentation.SimulationNodeSplitWrapper;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
@@ -271,7 +271,7 @@ implements ViewBuilder {
 
 		final InconsistencyWrapper<DrugSet> inconsistencyModel = d_pm.getInconsistencyModel();
 				
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, INCONSISTENCY_TAB_TITLE);
+		JPanel simulationControls = SimulationComponentFactory.createSimulationControls(d_pm.getWrappedModel(inconsistencyModel), d_mainWindow, false, AuxComponentFactory.COLOR_NOTE, d_mainWindow.getReloadRightPanelAction(INCONSISTENCY_TAB_TITLE));
 		builder.add(simulationControls, cc.xyw(3, row, 3));
 
 		row += 2;
@@ -344,7 +344,9 @@ implements ViewBuilder {
 		
 		row += 2;
 		final ConsistencyWrapper<DrugSet> consistencyModel = d_pm.getConsistencyModel();
-		JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(consistencyModel), d_mainWindow, false, CONSISTENCY_TAB_TITLE);
+		JPanel simulationControls = SimulationComponentFactory.createSimulationControls(
+				d_pm.getWrappedModel(consistencyModel), d_mainWindow, false,
+				AuxComponentFactory.COLOR_NOTE, d_mainWindow.getReloadRightPanelAction(CONSISTENCY_TAB_TITLE));
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
 		row += 2;
@@ -419,7 +421,7 @@ implements ViewBuilder {
 			row += 2;
 			NodeSplitWrapper<DrugSet> model = d_pm.getNodeSplitModel(p);			
 			
-			JPanel simulationControls = AnalysisComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, NODE_SPLIT_TAB_TITLE);
+			JPanel simulationControls = SimulationComponentFactory.createSimulationControls(d_pm.getWrappedModel(model), d_mainWindow, true, AuxComponentFactory.COLOR_NOTE, d_mainWindow.getReloadRightPanelAction(NODE_SPLIT_TAB_TITLE));
 			builder.add(simulationControls, cc.xyw(1, row, 3));
 
 			
@@ -441,7 +443,7 @@ implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		PanelBuilder panelBuilder = new PanelBuilder(layout);
 		
-		JButton resetAll = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_REDO));
+		JButton resetAll = new JButton(MainWindow.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_REDO));
 		resetAll.setToolTipText("Reset all simulations");
 		resetAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {	
@@ -452,7 +454,7 @@ implements ViewBuilder {
 			}
 		});
 	
-		JButton runAll = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_RUN));
+		JButton runAll = new JButton(MainWindow.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_RUN));
 		runAll.setText("Run all node-split models");
 		runAll.setToolTipText("Run all simulations");
 		final List<Task> tasks = new ArrayList<Task>();

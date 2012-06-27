@@ -43,16 +43,6 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
-import org.drugis.addis.entities.mtcwrapper.SavedConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.SavedInconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.SavedNodeSplitWrapper;
-import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.status.TaskTerminatedModel;
@@ -69,6 +59,16 @@ import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.parameterization.ParameterComparator;
+import org.drugis.mtc.presentation.ConsistencyWrapper;
+import org.drugis.mtc.presentation.InconsistencyWrapper;
+import org.drugis.mtc.presentation.MCMCModelWrapper;
+import org.drugis.mtc.presentation.NodeSplitWrapper;
+import org.drugis.mtc.presentation.SavedConsistencyWrapper;
+import org.drugis.mtc.presentation.SavedInconsistencyWrapper;
+import org.drugis.mtc.presentation.SavedNodeSplitWrapper;
+import org.drugis.mtc.presentation.SimulationConsistencyWrapper;
+import org.drugis.mtc.presentation.SimulationInconsistencyWrapper;
+import org.drugis.mtc.presentation.SimulationNodeSplitWrapper;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
@@ -113,12 +113,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private InconsistencyWrapper<DrugSet> createInconsistencyModel() {
 		InconsistencyModel inconsistencyModel = (DefaultModelFactory.instance()).getInconsistencyModel(getBuilder().buildNetwork());
 		attachModelSavableListener(inconsistencyModel);
-		return new SimulationInconsistencyWrapper<DrugSet>(getBuilder(), inconsistencyModel);
+		return new SimulationInconsistencyWrapper<DrugSet>(inconsistencyModel, getBuilder().getTreatmentMap());
 	}
 	
 	private ConsistencyWrapper<DrugSet> createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		SimulationConsistencyWrapper<DrugSet> model = new SimulationConsistencyWrapper<DrugSet>(getBuilder(), consistencyModel, getIncludedDrugs());
+		SimulationConsistencyWrapper<DrugSet> model = new SimulationConsistencyWrapper<DrugSet>(consistencyModel, getIncludedDrugs(), getBuilder().getTreatmentMap());
 		d_relativeEffectsSummary.setNested(model.getRelativeEffectsSummary());	
 		attachModelSavableListener(consistencyModel);	
 		return model;
@@ -129,7 +129,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		d_nodeSplitPValueSummaries.put(node, new NodeSplitPValueSummary(nodeSplitModel.getResults(), 
 				nodeSplitModel.getDirectEffect(), nodeSplitModel.getIndirectEffect()));
 		attachModelSavableListener(nodeSplitModel);
-		return new SimulationNodeSplitWrapper<DrugSet>(getBuilder(), nodeSplitModel);
+		return new SimulationNodeSplitWrapper<DrugSet>(nodeSplitModel, getBuilder().getTreatmentMap());
 	}
 	
 	private NetworkBuilder<DrugSet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
@@ -170,7 +170,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 
 	public synchronized void loadInconsistencyModel(MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
-		d_inconsistencyModel = new SavedInconsistencyWrapper<DrugSet>(getBuilder(), settings, quantileSummaries, convergenceSummaries);
+		d_inconsistencyModel = new SavedInconsistencyWrapper<DrugSet>(settings, quantileSummaries, convergenceSummaries, d_builder.getTreatmentMap());
 		
 	}
 
@@ -179,13 +179,13 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			HashMap<Parameter, ConvergenceSummary> convergenceSummaries, 
 			MultivariateNormalSummary relativeEffectsSummary, 
 			RankProbabilitySummary rankProbabilitySummary) {
-		d_consistencyModel = new SavedConsistencyWrapper<DrugSet>(getBuilder(), 
-				mcmcSettingsCache, 
+		d_consistencyModel = new SavedConsistencyWrapper<DrugSet>(mcmcSettingsCache, 
 				quantileSummaries, 
 				convergenceSummaries, 
 				relativeEffectsSummary, 
-				rankProbabilitySummary,
-				getIncludedDrugs());	
+				rankProbabilitySummary, 
+				getIncludedDrugs(),
+				d_builder.getTreatmentMap());	
 		d_relativeEffectsSummary.setNested(d_consistencyModel.getRelativeEffectsSummary());	
 	}
 	
@@ -194,12 +194,12 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			HashMap<Parameter, QuantileSummary> quantileSummaries,
 			HashMap<Parameter, ConvergenceSummary> convergenceSummaries,
 			NodeSplitPValueSummary nodeSplitPValueSummary) {
-		SavedNodeSplitWrapper<DrugSet> nodeSplitModel = new SavedNodeSplitWrapper<DrugSet>(getBuilder(), 
-				settings, 
+		SavedNodeSplitWrapper<DrugSet> nodeSplitModel = new SavedNodeSplitWrapper<DrugSet>(settings, 
 				quantileSummaries, 
 				convergenceSummaries, 
 				splitParameter, 
-				nodeSplitPValueSummary);
+				nodeSplitPValueSummary, 
+				d_builder.getTreatmentMap());
 		d_nodeSplitModels.put(splitParameter, nodeSplitModel);
 	}
 	

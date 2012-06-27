@@ -40,7 +40,7 @@ import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.gui.MCMCPresentation;
+import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.addis.util.EntityUtil;
@@ -83,7 +83,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		d_br = (MetaBenefitRiskAnalysis) domain.getBenefitRiskAnalyses().get(0);
 		
 		d_brpm = new MetaBenefitRiskPresentation(d_br, null);
-		for (MCMCPresentation model : d_brpm.getWrappedModels()) {
+		for (AddisMCMCPresentation model : d_brpm.getWrappedModels()) {
 			System.out.println("Running " + model);
 			model.getModel().setSimulationIterations(50000);
 			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);

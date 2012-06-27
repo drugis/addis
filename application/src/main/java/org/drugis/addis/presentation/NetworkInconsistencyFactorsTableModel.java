@@ -36,10 +36,10 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
+import org.drugis.mtc.presentation.InconsistencyWrapper;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
 

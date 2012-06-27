@@ -32,9 +32,9 @@ import java.beans.PropertyChangeListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.presentation.InconsistencyWrapper;
+import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")

@@ -39,25 +39,25 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
-import org.drugis.addis.gui.MCMCPresentation;
+import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.presentation.ConsistencyWrapper;
+import org.drugis.mtc.presentation.InconsistencyWrapper;
+import org.drugis.mtc.presentation.MTCModelWrapper;
+import org.drugis.mtc.presentation.NodeSplitWrapper;
 import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
-	private Map<MTCModelWrapper<DrugSet>, MCMCPresentation> d_models;
+	private Map<MTCModelWrapper<DrugSet>, AddisMCMCPresentation> d_models;
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_models = new HashMap<MTCModelWrapper<DrugSet>, MCMCPresentation>();
+		d_models = new HashMap<MTCModelWrapper<DrugSet>, AddisMCMCPresentation>();
 		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getDescription());
 		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getDescription());
 		for (BasicParameter p : getBean().getSplitParameters()) {
@@ -108,7 +108,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 	
 	private void addModel(MTCModelWrapper<DrugSet> mtc, OutcomeMeasure om, String name) {
-		d_models.put(mtc, new MCMCPresentation(mtc, om, name));
+		d_models.put(mtc, new AddisMCMCPresentation(mtc, om, name));
 	}
 
 	public List<BasicParameter> getSplitParameters() {
@@ -139,7 +139,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNetwork();
 	}
 	
-	public MCMCPresentation getWrappedModel(MTCModelWrapper<DrugSet> m) {
+	public AddisMCMCPresentation getWrappedModel(MTCModelWrapper<DrugSet> m) {
 		if(d_models.get(m) == null) {
 			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getDescription());
 		}

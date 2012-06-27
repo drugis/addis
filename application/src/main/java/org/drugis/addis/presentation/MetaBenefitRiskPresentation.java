@@ -39,14 +39,14 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.gui.MCMCPresentation;
+import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.mtc.presentation.MCMCModelWrapper;
+import org.drugis.mtc.presentation.MTCModelWrapper;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -55,7 +55,7 @@ import com.jgoodies.binding.value.ValueModel;
 @SuppressWarnings("serial")
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	private ValueHolder<Boolean> d_measurementsReadyModel;
-	private HashMap<MCMCModelWrapper, MCMCPresentation> d_models;
+	private HashMap<MCMCModelWrapper, AddisMCMCPresentation> d_models;
 	
 	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
 		super(bean, pmf);
@@ -65,7 +65,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	
 	@Override
 	protected void initSimulations() {
-		d_models = new HashMap<MCMCModelWrapper, MCMCPresentation>();
+		d_models = new HashMap<MCMCModelWrapper, AddisMCMCPresentation>();
 		initAllBaselineModels();
 		initNetworkMetaAnalysisModels();
 	}
@@ -127,7 +127,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	private List<Task> getBaselineTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		for (MCMCPresentation model : d_models.values()) {
+		for (AddisMCMCPresentation model : d_models.values()) {
 			if(model.getModel() instanceof AbstractBaselineModel) {
 				tasks.add(model.getModel().getActivityTask());
 			}
@@ -143,7 +143,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	private void addBaselineModel(final OutcomeMeasure om) {
 		MCMCModelWrapper baselineModel = getBean().getBaselineModel(om);
-		d_models.put(baselineModel, new MCMCPresentation(baselineModel, om, om.getName() + " \u2014 " + baselineModel.getDescription()));
+		d_models.put(baselineModel, new AddisMCMCPresentation(baselineModel, om, om.getName() + " \u2014 " + baselineModel.getDescription()));
 		baselineModel.addPropertyChangeListener(new PropertyChangeListener() {		
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals(MCMCModelWrapper.PROPERTY_DESTROYED)) {
@@ -167,7 +167,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	private void addConsistencyModel(final NetworkMetaAnalysis nma) {
 		d_models.put(nma.getConsistencyModel(), 
-				new MCMCPresentation(nma.getConsistencyModel(), 
+				new AddisMCMCPresentation(nma.getConsistencyModel(), 
 				nma.getOutcomeMeasure(),
 				nma.getName() + " \u2014 " + nma.getConsistencyModel().getDescription()));
 		nma.getConsistencyModel().addPropertyChangeListener(new PropertyChangeListener() {
@@ -199,8 +199,8 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		return getBean().getBaseline();
 	}
 
-	public Collection<MCMCPresentation> getWrappedModels() {
-		return new TreeSet<MCMCPresentation>( d_models.values() );
+	public Collection<AddisMCMCPresentation> getWrappedModels() {
+		return new TreeSet<AddisMCMCPresentation>( d_models.values() );
 	}
 
 	public synchronized void startAllSimulations() {

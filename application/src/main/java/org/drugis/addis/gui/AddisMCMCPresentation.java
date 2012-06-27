@@ -24,36 +24,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.components.progressgraph;
+package org.drugis.addis.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.ValueModelWrapper;
+import org.drugis.mtc.presentation.MCMCModelWrapper;
+import org.drugis.mtc.presentation.MCMCPresentation;
+import org.drugis.mtc.presentation.MTCModelWrapper;
 
-import javax.swing.SwingConstants;
-
-public class GraphBar extends GraphComponent implements SwingConstants {
-
-	private static final long serialVersionUID = -8687904576467821237L;
-
-	public GraphBar(Dimension gridCellSize) {
-		this(gridCellSize, DEFAULT_LINE_WIDTH, DEFAULT_COLOR);
-	}
+public class AddisMCMCPresentation extends MCMCPresentation implements Comparable<AddisMCMCPresentation> {
+	protected final OutcomeMeasure d_om;
 	
-	public GraphBar(Dimension gridCellSize, int lineWidth, Color color) {
-		super(gridCellSize, lineWidth, color);
+	public AddisMCMCPresentation(final MCMCModelWrapper wrapper, final OutcomeMeasure om, final String name) {
+		super(wrapper, name);
+		d_om = om;
 	}
 	
 	@Override
-	protected void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D)g;  
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		Dimension s = getMaximumSize();
-		g2.setColor(d_color);
-		g2.fillRect(0, 0, (int)s.getWidth(), (int)s.getHeight());
+	public ValueHolder<Boolean> isModelConstructed() {
+		return new ValueModelWrapper<Boolean>(super.isModelConstructed());
+	}
+
+	@Override
+	public int compareTo(AddisMCMCPresentation o) {
+		int omCompare = d_om.compareTo(o.getOutcomeMeasure());
+		int modelComp = (o.getWrapper() instanceof MTCModelWrapper) ? 1 : -1;
+		return (omCompare == 0) ? modelComp : omCompare;
+	}
+
+	public OutcomeMeasure getOutcomeMeasure() {
+		return d_om;
 	}
 }
-
