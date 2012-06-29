@@ -180,7 +180,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		setChildNode(node, new DecisionTreeCoordinate(beanClass, property, 0), child);
 	}
 	
-	
 	public void setChildNode(DecisionTreeNode node, 
 			Class<? extends AbstractDose> beanClass, 
 			String property,

@@ -1,10 +1,8 @@
 package org.drugis.addis.entities.treatment;
 
-import org.drugis.common.beans.AbstractObservable;
-
 import com.jgoodies.binding.value.ValueHolder;
 
-public class CategoryNode extends AbstractObservable implements DecisionTreeNode {
+public class CategoryNode extends LeafNode implements DecisionTreeNode {
 	public static final String PROPERTY_NAME = "name";
 	private ValueHolder d_nameModel;
 
@@ -26,19 +24,5 @@ public class CategoryNode extends AbstractObservable implements DecisionTreeNode
 	
 	public void setName(String name) { 
 		d_nameModel.setValue(name);
-	}
-	
-	@Override
-	public DecisionTreeNode decide(Object object) {
-		return null;
-	}
-
-	@Override
-	public boolean isLeaf() {
-		return true;
-	}
-	
-	public String toString() { 
-		return getName();
 	}
 }

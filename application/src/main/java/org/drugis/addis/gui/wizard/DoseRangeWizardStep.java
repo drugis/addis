@@ -43,6 +43,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 	private final RangeNode d_node;
 	private final Class<? extends AbstractDose> d_beanClass;
+	private final String d_propertyName;
 
 	private final class AddCutOffDialog extends OkCancelDialog {
 		private static final long serialVersionUID = -7519390341921875264L;
@@ -156,16 +157,18 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			Class<? extends AbstractDose> beanClass, 
 			String propertyName) {
 	
-		return new DoseRangeWizardStep(pm, domain, mainWindow, beanClass, new DoseRangeNode(beanClass, propertyName, pm.getDoseUnit()));
+		return new DoseRangeWizardStep(pm, domain, mainWindow, beanClass, propertyName, new DoseRangeNode(beanClass, propertyName, pm.getDoseUnit()));
 	}
 	
 	private DoseRangeWizardStep(DosedDrugTreatmentPresentation presentationModel, 
 			Domain domain, 
 			AddisWindow mainWindow,
 			Class<? extends AbstractDose> beanClass, 
+			String propertyName,
 			DoseRangeNode node) {
 		super(presentationModel, domain, mainWindow);
 		d_beanClass = beanClass;
+		d_propertyName = propertyName;
 		d_node = node;
 		d_node.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -176,7 +179,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	@Override 
 	public void initialize() { 
-		d_pm.setChildNode(d_node, d_beanClass, d_pm.getSelectedCategory(d_beanClass));
+		rebuildPanel();
 	}
 	
 	protected JPanel buildPanel() {
@@ -217,9 +220,10 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				Object selected = comboBox.getSelectedItem();
-				d_pm.setChildNode(d_node, d_beanClass, selected);
+				d_pm.setChildNode(d_node, d_beanClass, d_propertyName, index, selected);
 			}
 		});
+		d_pm.setChildNode(d_node, d_beanClass, d_propertyName, index, d_pm.getSelectedCategory(d_beanClass, d_propertyName, index));
 		builder.add(comboBox, cc.xy(5, row));
 		return row;
 	}

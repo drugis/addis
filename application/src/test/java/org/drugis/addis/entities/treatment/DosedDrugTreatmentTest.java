@@ -28,7 +28,7 @@ public class DosedDrugTreatmentTest {
 	public void testInitialization() {
 		Drug drugCandesartan = ExampleData.buildDrugCandesartan();
 		assertEquals(drugCandesartan, d_treatment.getDrug());
-		assertTrue((d_treatment.getRootNode() instanceof ExcludeNode));
+		assertTrue((d_treatment.getRootNode() instanceof LeafNode));
 	}
 	
 	@Test 
