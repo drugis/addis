@@ -2,9 +2,7 @@ package org.drugis.addis.entities.treatment;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.drugis.common.beans.AbstractObservable;
-
-public class LeafNode extends AbstractObservable {
+public abstract class LeafNode extends DecisionTreeNode {
 
 	public LeafNode() {
 		super();
@@ -29,4 +27,12 @@ public class LeafNode extends AbstractObservable {
 	public void setChildNode(int index, DecisionTreeNode node) throws OperationNotSupportedException {
 		throw new OperationNotSupportedException("Leaf nodes cannot have children.");
 	}
-}
+	
+	public String getChildLabel(int index) {
+		return "";
+	}
+	
+	public String toString() { 
+		return getName();
+	}
+ }

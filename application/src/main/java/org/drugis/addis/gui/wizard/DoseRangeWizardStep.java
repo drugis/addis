@@ -76,7 +76,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			final int colSpan = builder.getColumnCount();
 			int row = 1;
 			
-			builder.addSeparator("Original range: " + d_node.getRangeLabel(d_rangeIndex), cc.xyw(1, row, colSpan));
+			builder.addSeparator("Original range: " + d_node.getChildLabel(d_rangeIndex), cc.xyw(1, row, colSpan));
 			
 			row = LayoutUtil.addRow(layout, row);
 			builder.addLabel("Split range at:", cc.xy(1, row));
@@ -86,6 +86,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				public void caretUpdate(CaretEvent e) {
 					try {
 						cutOffField.commitEdit();
+						pack();
 					} catch (ParseException exp) {
 						return; // we don't care
 					}
@@ -180,6 +181,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	@Override 
 	public void initialize() { 
 		rebuildPanel();
+		d_pm.setChildNode(d_beanClass, null, d_node);
 	}
 	
 	protected JPanel buildPanel() {
@@ -211,7 +213,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 		});
 		builder.add(splitBtn, cc.xy(1, row));
-		String rangeText = d_node.getRangeLabel(index);
+		String rangeText = d_node.getChildLabel(index);
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
 		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
@@ -220,10 +222,10 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				Object selected = comboBox.getSelectedItem();
-				d_pm.setChildNode(d_node, d_beanClass, d_propertyName, index, selected);
+				d_pm.setChildNode(d_beanClass, d_propertyName, index, selected);
 			}
 		});
-		d_pm.setChildNode(d_node, d_beanClass, d_propertyName, index, d_pm.getSelectedCategory(d_beanClass, d_propertyName, index));
+		comboBox.setSelectedItem(d_pm.getSelectedCategory(d_beanClass, d_propertyName, index));
 		builder.add(comboBox, cc.xy(5, row));
 		return row;
 	}

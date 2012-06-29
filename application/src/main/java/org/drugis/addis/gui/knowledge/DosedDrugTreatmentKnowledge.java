@@ -47,6 +47,26 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 
+	public static enum CategorySpecifiers {
+		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type"),
+		FLEXIBLE_CONSIDER_UPPER("* Consider upper bound"), FLEXIBLE_CONSIDER_LOWER("* Consider lower bound"),
+		FIXED_CONSIDER("* Consider range");
+		
+		private final String d_title;
+	
+		private CategorySpecifiers(String title) {
+			d_title = title; 
+		}
+	
+		public String getTitle() {
+			return d_title;
+		}
+		
+		public String toString() { 
+			return getTitle();
+		}
+	}
+
 	public DosedDrugTreatmentKnowledge() {
 		super("treatment", FileNames.ICON_HEART, DosedDrugTreatment.class);
 	}

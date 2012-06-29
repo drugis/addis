@@ -7,11 +7,10 @@ import java.util.List;
 
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.util.BoundedInterval;
-import org.drugis.common.beans.AbstractObservable;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
-public class RangeNode extends AbstractObservable implements DecisionTreeNode {
+public class RangeNode extends DecisionTreeNode {
 	public static final double EPSILON = 1.0E-14;
 	public static final String PROPERTY_RANGES = "rangeLabel";
 	
@@ -199,28 +198,28 @@ public class RangeNode extends AbstractObservable implements DecisionTreeNode {
 	public String getName() {
 		String result = "";
 		for (int i = 0; i < getChildCount(); ++i) {
-			result = result  + getRangeLabel(i) + "\n";
+			result = result  + getChildLabel(i) + "\n";
 		}
 		return result;
 	}
 
-	public String getRangeLabel(int i) { 
-		return getRangeLabel(i, null);
+	public String getChildLabel(int index) { 
+		return getChildLabel(index, null);
 	}
 	
-	public String getRangeLabel(int i, DoseUnit unit) {
+	public String getChildLabel(int index, DoseUnit unit) {
 		String rangeText;
-		if (i < getChildCount() - 1) {
+		if (index < getChildCount() - 1) {
 			rangeText = String.format("%.2f %s dose %s %.2f %s",
-					getRangeLowerBound(i),
-					isRangeLowerBoundOpen(i) ? "<" : "<=",
-					isRangeUpperBoundOpen(i) ? "<" : "<=",
-					getRangeUpperBound(i),
+					getRangeLowerBound(index),
+					isRangeLowerBoundOpen(index) ? "<" : "<=",
+					isRangeUpperBoundOpen(index) ? "<" : "<=",
+					getRangeUpperBound(index),
 					unit == null ? "" : unit);
 		} else {
 			rangeText = String.format("dose %s %.2f %s",
-					isRangeLowerBoundOpen(i) ? ">" : ">=",
-					getRangeLowerBound(i),
+					isRangeLowerBoundOpen(index) ? ">" : ">=",
+					getRangeLowerBound(index),
 					unit == null ? "" : unit);
 		}
 		return rangeText;

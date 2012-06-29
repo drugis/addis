@@ -51,12 +51,6 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.setDoseUnit(ExampleData.KILOGRAMS_PER_HOUR);
 		assertEquals(ExampleData.KILOGRAMS_PER_HOUR, d_pm.getDoseUnitPresentation().getBean());
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void testCannotSetChildOfExcludeNode() {
-		CategoryNode catNode1 = new CategoryNode("foo");
-		d_pm.setChildNode(d_pm.getBean().getRootNode(), FlexibleDose.class, catNode1);
-	}
 
 	@Test
 	public void testSetCategoryTypeNode() {
@@ -64,8 +58,8 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.getBean().setRootNode(rootNode);
 		CategoryNode catNode1 = new CategoryNode("foo");
 		CategoryNode catNode2 = new CategoryNode("bar");
-		d_pm.setChildNode(d_pm.getBean().getRootNode(), FixedDose.class, catNode1);
-		d_pm.setChildNode(d_pm.getBean().getRootNode(), UnknownDose.class, catNode2);
+		d_pm.setChildNode(FixedDose.class, catNode1);
+		d_pm.setChildNode(UnknownDose.class, catNode2);
 		assertEquals(catNode1, d_pm.getSelectedCategory(FixedDose.class).getValue());
 		assertEquals(catNode2, d_pm.getSelectedCategory(UnknownDose.class).getValue());
 	}
@@ -75,7 +69,7 @@ public class DosedDrugTreatmentPresentationTest {
 		RangeNode rootNode = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY);
 		d_pm.getBean().setRootNode(rootNode);
 		CategoryNode catNode1 = new CategoryNode("foo");
-		d_pm.setChildNode(d_pm.getBean().getRootNode(), FixedDose.class, FixedDose.PROPERTY_QUANTITY, catNode1);
+		d_pm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, catNode1);
 		assertEquals(catNode1, d_pm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY).getValue());
 	}
 	
@@ -86,8 +80,8 @@ public class DosedDrugTreatmentPresentationTest {
 		CategoryNode catNode1 = new CategoryNode("foo");
 		CategoryNode catNode2 = new CategoryNode("bar");
 		int node2 = rootNode.addCutOff(50, false);
-		d_pm.setChildNode(d_pm.getBean().getRootNode(), FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0, catNode1);
-		d_pm.setChildNode(d_pm.getBean().getRootNode(), FixedDose.class, FixedDose.PROPERTY_QUANTITY, node2, catNode2);
+		d_pm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0, catNode1);
+		d_pm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, node2, catNode2);
 		assertEquals(catNode1, d_pm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0).getValue());
 		assertEquals(catNode2, d_pm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY, node2).getValue());
 

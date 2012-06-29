@@ -34,7 +34,7 @@ import org.drugis.addis.gui.wizard.AbstractDoseTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
 import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
-import org.drugis.addis.gui.wizard.SpecifyDoseRangeWizardStep;
+import org.drugis.addis.gui.wizard.SpecifyDoseTypeWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
@@ -68,7 +68,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
-		final AbstractDoseTreatmentWizardStep specifyDoseRanges = new SpecifyDoseRangeWizardStep(pm, domain, mainWindow);
+		final AbstractDoseTreatmentWizardStep specifyDoseType = new SpecifyDoseTypeWizardStep(pm, domain, mainWindow);
 		
 		// Same for flexible upper, flexible lower and any (needs to set all)
 		final DoseRangeWizardStep specifyFixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
@@ -80,7 +80,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		
 		generalPath.addStep(generalInfo);
 
-		considerDoseTypePath.addStep(specifyDoseRanges);
+		considerDoseTypePath.addStep(specifyDoseType);
 		considerDoseTypePath.addStep(specifyFixedDose);
 		lastPath.addStep(overview);
 		

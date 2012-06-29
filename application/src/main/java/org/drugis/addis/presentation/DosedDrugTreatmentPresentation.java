@@ -45,6 +45,7 @@ import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
+import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -53,32 +54,35 @@ import com.jgoodies.binding.list.ObservableList;
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {	
 	public class DecisionTreeCoordinate {
 		final public Class<? extends AbstractDose> beanClass;
-		final public String property;
-		final public int rangeIdx;
+		final public String propertyName;
+		final public int index;
 		
 		public DecisionTreeCoordinate(Class<? extends AbstractDose> beanClass, String property, int rangeIdx) {
 			this.beanClass = beanClass;
-			this.property = property;
-			this.rangeIdx = rangeIdx; 
+			this.propertyName = property;
+			this.index = rangeIdx; 
 		}
 		
 		@Override
 		public int hashCode() {
-			return beanClass.hashCode() + 31 * (property == null ? 0 : property.hashCode()) + 31 * 31 * rangeIdx;
+			return beanClass.hashCode() + 31 * (propertyName == null ? 0 : propertyName.hashCode()) + 31 * 31 * index;
 		}
 		
 		@Override
 		public boolean equals(Object obj) {
 			if(obj instanceof DecisionTreeCoordinate) { 
 				DecisionTreeCoordinate other = (DecisionTreeCoordinate) obj;
-				return EqualsUtil.equal(other.property, property) && EqualsUtil.equal(other.beanClass, beanClass) &&
-						other.rangeIdx == rangeIdx;
+				return EqualsUtil.equal(other.propertyName, propertyName) && EqualsUtil.equal(other.beanClass, beanClass) &&
+						other.index == index;
 			}
 			return false;
 		}
 	}
 	
 	private ContentAwareListModel<CategoryNode> d_categories;
+	private Map<DecisionTreeCoordinate, DecisionTreeNode> d_nodeMap = 
+			new HashMap<DecisionTreeCoordinate, DecisionTreeNode>(); 
+	
 	private Map<DecisionTreeCoordinate, ValueHolder<Object>> d_selectedCategoryMap = 
 			new HashMap<DecisionTreeCoordinate, ValueHolder<Object>>(); 
 	
@@ -93,6 +97,12 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		super(bean);
 		d_domain = domain;
 		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
+		if(bean.getRootNode() instanceof TypeNode) {
+			TypeNode root = (TypeNode) bean.getRootNode();
+			for(Class<? extends AbstractDose> type : root.getTypes()) {
+				d_nodeMap.put(new DecisionTreeCoordinate(type, null, 0), bean.getRootNode());
+			}
+		}
 	}
 
 	/**
@@ -166,45 +176,42 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @param beanType The subclass of AbstractDose to set the node on 
 	 * @param child the object to set as child, if not an DecisionTreeNode only the internal mapping is updated (@see {@link #getSelectedCategory(Class))}
 	 */
-	public void setChildNode(
-			final DecisionTreeNode node, 
-			Class<? extends AbstractDose> beanClass, 
+	public void setChildNode(Class<? extends AbstractDose> beanClass, 
 			Object child) {
-		setChildNode(node, new DecisionTreeCoordinate(beanClass, null, 0), child);
+		setChildNode(new DecisionTreeCoordinate(beanClass, null, 0), child);
 	}
 	
-	public void setChildNode(DecisionTreeNode node, 
-			Class<? extends AbstractDose> beanClass, 
+	public void setChildNode(Class<? extends AbstractDose> beanClass, 
 			String property, 
 			Object child) {
-		setChildNode(node, new DecisionTreeCoordinate(beanClass, property, 0), child);
+		setChildNode(new DecisionTreeCoordinate(beanClass, property, 0), child);
 	}
 	
-	public void setChildNode(DecisionTreeNode node, 
-			Class<? extends AbstractDose> beanClass, 
+	public void setChildNode(Class<? extends AbstractDose> beanClass, 
 			String property,
 			int rangeIndex,
 			Object child) {
-		setChildNode(node, new DecisionTreeCoordinate(beanClass, property, rangeIndex), child);
+		setChildNode(new DecisionTreeCoordinate(beanClass, property, rangeIndex), child);
 	}
 	
-	private void setChildNode(DecisionTreeNode node,
-			DecisionTreeCoordinate coordinate, 
-			Object child) {
-		ValueHolder<Object> valueHolder = d_selectedCategoryMap.get(coordinate);
-		if(valueHolder == null) {
-			valueHolder = addDoseTypeHolder(coordinate);
-		}
-		valueHolder.setValue(child);
-		DecisionTreeNode category = (child instanceof DecisionTreeNode) ? (DecisionTreeNode)child : d_excludeNode;
-		if (node instanceof TypeNode) {
-			TypeNode typeNode = (TypeNode)node;
-			typeNode.setType(coordinate.beanClass, category);
-		} else if(node instanceof RangeNode) {
-			RangeNode rangeNode = (RangeNode) node; 
-			rangeNode.setChildNode(coordinate.rangeIdx, rangeNode);
-		} else { 
-			throw new IllegalArgumentException("Cannot set the child of a " + node.getClass());
+	private void setChildNode(DecisionTreeCoordinate coordinate, Object child) {
+		ValueHolder<Object> selection = d_selectedCategoryMap.get(coordinate);
+		selection.setValue(child);
+		if(child instanceof DecisionTreeNode) {
+			DecisionTreeNode node = d_nodeMap.get(coordinate);
+			DecisionTreeNode category = (DecisionTreeNode)child;
+			if(node == null) { 
+				d_nodeMap.put(coordinate, category);
+			}
+			if (node instanceof TypeNode) {
+				TypeNode typeNode = (TypeNode)node;
+				typeNode.setType(coordinate.beanClass, category);	
+			} else if(node instanceof RangeNode) {
+				RangeNode rangeNode = (RangeNode) node; 
+				rangeNode.setChildNode(coordinate.index, category);
+			} else if(node instanceof ExcludeNode){ 
+				throw new IllegalArgumentException("Cannot set the child of a " + GUIHelper.humanize(node.getClass().getSimpleName().toString()));
+			}
 		}
 	}
 

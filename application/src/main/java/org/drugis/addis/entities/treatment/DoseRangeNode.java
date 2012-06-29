@@ -51,6 +51,7 @@ public class DoseRangeNode extends RangeNode {
 		throw new IllegalStateException("Could not decide the fate of " + object.toString());
 	}
 	
-
-	
+	public String getChildLabel(int index) { 
+		return super.getChildLabel(index, d_doseUnit);
+	}
 }

@@ -1,16 +1,19 @@
 package org.drugis.addis.entities.treatment;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
-import org.drugis.common.beans.AbstractObservable;
+import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class TypeNode extends AbstractObservable implements DecisionTreeNode {
+public class TypeNode extends DecisionTreeNode {
 	
 	private ObservableList<Pair<Class<? extends AbstractDose>, DecisionTreeNode>> d_types = 
 			new ArrayListModel<Pair<Class<? extends AbstractDose>,DecisionTreeNode>>();
@@ -59,6 +62,15 @@ public class TypeNode extends AbstractObservable implements DecisionTreeNode {
 		setType(d_types.get(index).getKey(), node);
 	}
 	
+	public Collection<Class<? extends AbstractDose>> getTypes() {
+		ArrayListModel<Class<? extends AbstractDose>> result = new ArrayListModel<Class<? extends AbstractDose>>();
+		for(Pair<Class<? extends AbstractDose>, DecisionTreeNode> pair : d_types) { 
+			result.add(pair.getKey());
+		}
+		return Collections.unmodifiableList(result); 
+		
+	}
+	
 	@Override
 	public boolean isLeaf() {
 		return false;
@@ -74,12 +86,17 @@ public class TypeNode extends AbstractObservable implements DecisionTreeNode {
 		
 		return node;
 	}
-
+	
+	@Override
+	public String getChildLabel(int index) {
+		return GUIHelper.humanize(d_types.get(index).getKey().getSimpleName());
+	}
+	
 	@Override
 	public String getName() {
 		String result = "{";
-		for (Pair<Class<? extends AbstractDose>, DecisionTreeNode> type : d_types) {
-			result += type.getKey() + ": " + type.getValue().getName() + "; ";
+		for (int index = 0; index < d_types.getSize(); index++) {
+			result += getChildLabel(index) + "; \n";
 		}
 		result += "}";
 		return result;
@@ -103,5 +120,6 @@ public class TypeNode extends AbstractObservable implements DecisionTreeNode {
 		}
 		return -1;
 	}
-	
+
+
 }

@@ -2,30 +2,32 @@ package org.drugis.addis.entities.treatment;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.drugis.common.beans.AbstractObservable;
 
-public interface DecisionTreeNode {
+
+public abstract class DecisionTreeNode extends AbstractObservable {
 	/**
 	 * @return True if this node is a leaf node (has no children).
 	 */
-	public boolean isLeaf();
+	public abstract boolean isLeaf();
 	
 	/**
 	 * Classify the given object.
 	 * @param object Object to classify.
 	 * @return The relevant child node. null if and only if {@link #isLeaf()}.
 	 */
-	public DecisionTreeNode decide(Object object);
+	public abstract DecisionTreeNode decide(Object object);
 	
 	/**
 	 * @return the number of children of this node
 	 */
-	public int getChildCount();
+	public abstract int getChildCount();
 	
 	/**
 	 * Gets a child by an index
 	 * @return the DecisionTreeNode node
 	 */
-	public DecisionTreeNode getChildNode(int index);
+	public abstract DecisionTreeNode getChildNode(int index);
 	
 	/**
 	 * Set the child node for the index-th range.
@@ -34,7 +36,9 @@ public interface DecisionTreeNode {
 	 * @throws OperationNotSupportedException If node is a leaf node
 	 * @throws IndexOutOfBoundsException If index < 0 or index >= {@link #getChildCount()}.
 	 */
-	public void setChildNode(int index, DecisionTreeNode node) throws OperationNotSupportedException;
+	public abstract void setChildNode(int index, DecisionTreeNode node) throws OperationNotSupportedException;
 	
-	public String getName();
+	public abstract String getChildLabel(int index);
+	
+	public abstract String getName();
 }

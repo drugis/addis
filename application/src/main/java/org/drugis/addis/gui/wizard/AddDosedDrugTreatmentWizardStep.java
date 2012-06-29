@@ -58,6 +58,7 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.LayoutUtil;
@@ -77,26 +78,6 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 	private NotEmptyValidator d_validator;
 
-	public static enum CategorySpecifiers {
-		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type"),
-		FLEXIBLE_CONSIDER_UPPER("* Consider upper bound"), FLEXIBLE_CONSIDER_LOWER("* Consider lower bound"),
-		FIXED_CONSIDER("* Consider range");
-		
-		private final String d_title;
-
-		private CategorySpecifiers(String title) {
-			d_title = title; 
-		}
-
-		public String getTitle() {
-			return d_title;
-		}
-		
-		public String toString() { 
-			return getTitle();
-		}
-	}
-	
 	public AddDosedDrugTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
 			Domain domain, 
 			AddisWindow mainWindow) {
@@ -125,9 +106,9 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	
 	public Boolean considerDoseType() {
 		Object selection = d_pm.getSelectedKnownCategory().getValue();
-		if(CategorySpecifiers.CONSIDER.getTitle().equals(selection.toString())) {
+		if(DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER.getTitle().equals(selection.toString())) {
 			return true;
-		} else if(CategorySpecifiers.DO_NOT_CONSIDER.getTitle().equals(selection.toString())) {
+		} else if(DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER.getTitle().equals(selection.toString())) {
 			return false;
 		}
 		return null;
@@ -180,7 +161,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getCategories());
 		unknownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setChildNode(d_pm.getBean().getRootNode(), UnknownDose.class, unknownDoseCombo.getSelectedItem());		
+				d_pm.setChildNode(UnknownDose.class, unknownDoseCombo.getSelectedItem());		
 			}
 		});
 		unknownDoseCombo.setSelectedItem(d_pm.getSelectedCategory(UnknownDose.class).getValue());
@@ -189,11 +170,11 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
 
-		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getCategories(), CategorySpecifiers.CONSIDER, CategorySpecifiers.DO_NOT_CONSIDER);
+		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
 		knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setChildNode(d_pm.getBean().getRootNode(), FlexibleDose.class, knownDoseCombo.getSelectedItem());
-				d_pm.setChildNode(d_pm.getBean().getRootNode(), FixedDose.class, knownDoseCombo.getSelectedItem());
+				d_pm.setChildNode(FlexibleDose.class, knownDoseCombo.getSelectedItem());
+				d_pm.setChildNode(FixedDose.class, knownDoseCombo.getSelectedItem());
 			}
 		});
 		ValueHolder<Object> selectedKnown = d_pm.getSelectedKnownCategory();
@@ -204,10 +185,10 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		return builder.getPanel();
 	}
 
-	public static JComboBox createCategoryComboBox(List<CategoryNode> categories, CategorySpecifiers ... extraItems) {
+	public static JComboBox createCategoryComboBox(List<CategoryNode> categories, DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
 		ObservableList<Object> list = new ArrayListModel<Object>();
 		list.add(0, new ExcludeNode());
-		for (CategorySpecifiers item : extraItems) {
+		for (DosedDrugTreatmentKnowledge.CategorySpecifiers item : extraItems) {
 			list.add(GUIFactory.createBoxedString(item.getTitle()));
 		}
 		list.addAll(categories);

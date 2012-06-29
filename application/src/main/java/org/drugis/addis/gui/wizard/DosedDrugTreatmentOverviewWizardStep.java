@@ -25,6 +25,7 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 	
 	@Override
 	protected void initialize() { 
+		rebuildPanel();
 		this.setComplete(true);
 	}
 	
@@ -41,13 +42,25 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 		
 		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel(), cc.xy(1, row));
 
-//		for(Class<? extends AbstractDose> type : d_typeList) {
-//			row = LayoutUtil.addRow(layout, row);
-//			builder.addLabel(GUIHelper.humanize(type.getSimpleName()), cc.xy(1, row));
-//			String typeCategory = d_typeNode.getTypeMap().get(type).toString();
-//			builder.addLabel((typeCategory != null) ? typeCategory  : "", cc.xy(3, row));		
-//		}
+		buildOverview(d_rootNode, 0);
 		
 		return builder.getPanel();
+	}
+
+	private void buildOverview(DecisionTreeNode node, int level) {
+		System.out.println("level " + level + " " + node.getName());
+
+		for(int i = 0; i < node.getChildCount(); ++i) {
+			DecisionTreeNode child = node.getChildNode(i);
+			System.out.println(child.getName());
+			if(child.isLeaf()) {
+//				System.out.println("leaf " + child.getName());
+			} else { 
+//				System.out.println(node.getChildLabel(i));
+				buildOverview(child, level++);
+
+			}
+
+		}
 	}
 }
