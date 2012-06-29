@@ -196,6 +196,9 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	
 	private void setChildNode(DecisionTreeCoordinate coordinate, Object child) {
 		ValueHolder<Object> selection = d_selectedCategoryMap.get(coordinate);
+		if(selection == null) {
+			selection = addDoseTypeHolder(coordinate);
+		}
 		selection.setValue(child);
 		if(child instanceof DecisionTreeNode) {
 			DecisionTreeNode node = d_nodeMap.get(coordinate);
