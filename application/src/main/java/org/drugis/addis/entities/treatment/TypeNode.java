@@ -94,11 +94,11 @@ public class TypeNode extends DecisionTreeNode {
 	
 	@Override
 	public String getName() {
-		String result = "{";
+		String result = "{TypeNode [";
 		for (int index = 0; index < d_types.getSize(); index++) {
-			result += getChildLabel(index) + "; \n";
+			result += getChildLabel(index) + "; ";
 		}
-		result += "}";
+		result += "]}";
 		return result;
 	}
 

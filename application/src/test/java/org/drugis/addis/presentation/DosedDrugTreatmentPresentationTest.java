@@ -1,18 +1,22 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.FixedDose;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.CategoryNode;
+import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
+import org.drugis.addis.presentation.DosedDrugTreatmentPresentation.DecisionTreeCoordinate;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,11 +83,70 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.getBean().setRootNode(rootNode);
 		CategoryNode catNode1 = new CategoryNode("foo");
 		CategoryNode catNode2 = new CategoryNode("bar");
+		
 		int node2 = rootNode.addCutOff(50, false);
 		d_pm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0, catNode1);
 		d_pm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, node2, catNode2);
 		assertEquals(catNode1, d_pm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0).getValue());
 		assertEquals(catNode2, d_pm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY, node2).getValue());
+	}
+	
+	@Test
+	public void testCoordinateEquals() {
+		DecisionTreeCoordinate c0 = new DosedDrugTreatmentPresentation.DecisionTreeCoordinate(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0);
+		DecisionTreeCoordinate c1 = new DosedDrugTreatmentPresentation.DecisionTreeCoordinate(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 0);
+		assertEquals(c1.hashCode(), c0.hashCode());
+		assertTrue(c0.equals(c1));
+		assertTrue(c1.equals(c0));
+
+		DecisionTreeCoordinate c2 = new DosedDrugTreatmentPresentation.DecisionTreeCoordinate(FixedDose.class, null, 0);
+		assertEquals(c2.hashCode(), c1.hashCode());
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.equals(c2));
+		
+		DecisionTreeCoordinate c3 = new DosedDrugTreatmentPresentation.DecisionTreeCoordinate(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 1);
+		DecisionTreeCoordinate c4 = new DosedDrugTreatmentPresentation.DecisionTreeCoordinate(FixedDose.class, FixedDose.PROPERTY_QUANTITY, 2);
+		DecisionTreeCoordinate c5 = new DosedDrugTreatmentPresentation.DecisionTreeCoordinate(FixedDose.class, FixedDose.PROPERTY_QUANTITY, null);
+
+		JUnitUtil.assertNotEquals(c3.hashCode(), c4.hashCode());
+		assertFalse(c3.equals(c4));
+		assertFalse(c4.equals(c3));
+		assertTrue(c4.equals(c5));
+		assertTrue(c3.equals(c5));
+
+	}
+	
+	@Test
+	public void testChainSetNodes() { 
+		CategoryNode catNode1 = new CategoryNode("foo");
+		CategoryNode catNode2 = new CategoryNode("bar");
+		DosedDrugTreatment bean = new DosedDrugTreatment();
+		bean.setRootNode(TypeNode.createDefaultTypeNode());
+		DosedDrugTreatmentPresentation dpm = new DosedDrugTreatmentPresentation(bean);
+		dpm.setChildNode(FixedDose.class, catNode1);
+		dpm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, catNode2);
+		assertEquals(catNode2, dpm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY).getValue());
+
+		CategoryNode catNode3 = new CategoryNode("baz");
+		CategoryNode catNode4 = new CategoryNode("fus");
+
+		RangeNode range = new DoseRangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, ExampleData.MILLIGRAMS_A_DAY);
+		int right1 = range.addCutOff(12, false);
+		int right2 = range.addCutOff(60, false);
+
+		System.out.println("Setting range node");
+		dpm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, range);
+		dpm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, right1, catNode3);
+		dpm.setChildNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, right2, catNode4);
+		
+		assertEquals(catNode3, dpm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY, right1).getValue());
+		assertEquals(catNode4, dpm.getSelectedCategory(FixedDose.class, FixedDose.PROPERTY_QUANTITY, right2).getValue());
+		
+		FixedDose low = new FixedDose(6, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose high = new FixedDose(15, ExampleData.MILLIGRAMS_A_DAY);
+
+		assertEquals(catNode3, dpm.getBean().getCategoryNode(low));
+		assertEquals(catNode4, dpm.getBean().getCategoryNode(high));
 
 	}
 }

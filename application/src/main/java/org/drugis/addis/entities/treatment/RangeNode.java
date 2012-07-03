@@ -196,10 +196,11 @@ public class RangeNode extends DecisionTreeNode {
 	}
 
 	public String getName() {
-		String result = "";
+		String result = "{RangeNode [";
 		for (int i = 0; i < getChildCount(); ++i) {
-			result = result  + getChildLabel(i) + "\n";
+			result = result  + getChildLabel(i) + ";\n";
 		}
+		result += "]}";
 		return result;
 	}
 
