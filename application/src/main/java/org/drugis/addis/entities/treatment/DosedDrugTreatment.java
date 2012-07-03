@@ -15,18 +15,15 @@ import org.drugis.addis.util.EntityUtil;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-import edu.uci.ics.jung.graph.DelegateTree;
-
 
 public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> {
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_CATEGORIES = "categories";
-	public static final String PROPERTY_ROOT_NODE = "rootNode";
 	
 	private final ObservableList<CategoryNode> d_categories = new ArrayListModel<CategoryNode>();
 	private Drug d_drug;
-	private DelegateTree<DecisionTreeNode, String> d_decisionTree = new DelegateTree<DecisionTreeNode, String>(); 
+	private final DoseDecisionTree d_decisionTree;
 	
 	private DoseUnit d_doseUnit;
 	
@@ -35,14 +32,14 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	}
 	
 	public DosedDrugTreatment(String name, Drug drug) {
-		this(name, drug, new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), new ExcludeNode());
+		this(name, drug, new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), new EmptyNode());
 	}
 	
 	public DosedDrugTreatment(String name, Drug drug, DoseUnit unit, DecisionTreeNode rootNode) {
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
-		d_decisionTree.setRoot(rootNode);
+		d_decisionTree = new DoseDecisionTree(rootNode);
 	}
 
 	public void setName(String name) {
@@ -71,23 +68,6 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_doseUnit;
 	}
 	
-	public DecisionTreeNode getRootNode() {
-		return d_decisionTree.getRoot();
-	}
-
-	public void setRootNode(DecisionTreeNode rootNode) {
-		DecisionTreeNode oldVal = d_decisionTree.getRoot();
-		d_decisionTree.setRoot(rootNode);
-		firePropertyChange(PROPERTY_ROOT_NODE, oldVal, rootNode);
-	}
-	
-	public DecisionTreeNode getCategoryNode(AbstractDose dose) { 
-		DecisionTreeNode node = getRootNode();
-		while (!node.isLeaf()) {
-			node = node.decide(dose);
-		}
-		return node;
-	}
 
 	public void addCategory(CategoryNode categoryNode) {
 		d_categories.add(categoryNode);
@@ -95,6 +75,10 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	
 	public ObservableList<CategoryNode> getCategories() {
 		return d_categories;
+	}
+	
+	public DecisionTreeNode getNode(AbstractDose dose) { 
+		return d_decisionTree.getCategory(dose);
 	}
 	
 	@Override
@@ -110,6 +94,10 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		return Collections.singleton(d_drug);
+	}
+
+	public DoseDecisionTree getDecisionTree() {
+		return d_decisionTree;
 	}
 
 }

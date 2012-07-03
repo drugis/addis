@@ -1,17 +1,12 @@
 package org.drugis.addis.util;
 
 import org.apache.commons.lang.math.DoubleRange;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.RangeNode;
-import org.drugis.common.beans.AbstractObservable;
 
-public class BoundedInterval extends AbstractObservable {
-	public static String PROPERTY_NODE = "node";
-	
+public class BoundedInterval {
 	private final DoubleRange d_range;
 	private final boolean d_lowerBoundIsOpen;
 	private final boolean d_upperBoundIsOpen;
-	private DecisionTreeNode d_node;
 	
 	public BoundedInterval(DoubleRange range, boolean lowerBoundIsOpen, boolean upperBoundIsOpen) {
 		d_range = range;
@@ -37,15 +32,5 @@ public class BoundedInterval extends AbstractObservable {
 
 	public boolean isUpperBoundOpen() {
 		return d_upperBoundIsOpen;
-	}
-
-	public DecisionTreeNode getNode() {
-		return d_node;
-	}
-
-	public void setNode(DecisionTreeNode node) {
-		DecisionTreeNode old = d_node;
-		d_node = node;
-		firePropertyChange(PROPERTY_NODE, old, d_node);
 	}
 }

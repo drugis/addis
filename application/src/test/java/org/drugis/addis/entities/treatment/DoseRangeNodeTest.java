@@ -1,6 +1,5 @@
 package org.drugis.addis.entities.treatment;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.ExampleData;
@@ -18,9 +17,7 @@ public class DoseRangeNodeTest {
 		FixedDose fixd2 = new FixedDose(0.0001, ExampleData.KILOGRAMS_PER_HOUR);
 		assertTrue(fixd1.equals(fixd2));
 		
-		assertEquals(child, node.decide(fixd1));
-		assertEquals(child, node.decide(fixd2));
-
+		assertTrue(node.decide(fixd1));
+		assertTrue(node.decide(fixd2));
 	}
-
 }

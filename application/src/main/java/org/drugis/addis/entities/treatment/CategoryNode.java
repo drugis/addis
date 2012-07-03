@@ -2,7 +2,7 @@ package org.drugis.addis.entities.treatment;
 
 import com.jgoodies.binding.value.ValueHolder;
 
-public class CategoryNode extends LeafNode {
+public class CategoryNode extends DecisionTreeNode {
 	public static final String PROPERTY_NAME = "name";
 	private ValueHolder d_nameModel;
 
@@ -24,5 +24,10 @@ public class CategoryNode extends LeafNode {
 	
 	public void setName(String name) { 
 		d_nameModel.setValue(name);
+	}
+
+	@Override
+	public boolean decide(Object object) {
+		return true;
 	}
 }

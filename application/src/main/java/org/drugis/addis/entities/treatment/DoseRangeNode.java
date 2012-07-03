@@ -17,11 +17,6 @@ public class DoseRangeNode extends RangeNode {
 		d_doseUnit = doseUnit;
 	}
 	
-	public DoseRangeNode(Class<?> beanClass, String propertyName, DoseUnit doseUnit, DecisionTreeNode child) {
-		super(beanClass, propertyName, child);
-		d_doseUnit = doseUnit;
-	}
-	
 	public DoseRangeNode(Class<?> beanClass, String propertyName,
 			double lowerBound, 
 			boolean lowerBoundIsOpen, 
@@ -30,18 +25,18 @@ public class DoseRangeNode extends RangeNode {
 			DoseUnit doseUnit,
 			DecisionTreeNode child) {
 		super(beanClass, propertyName, lowerBound, lowerBoundIsOpen, upperBound,
-				upperBoundIsOpen, child);
+				upperBoundIsOpen);
 		d_doseUnit = doseUnit;
 	}
 	
 	@Override
-	public DecisionTreeNode decide(Object object) {
+	public boolean decide(Object object) {
 		try {
 			PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(getBeanClass(), d_propertyName);
 			Object value = BeanUtils.getValue(object, propertyDescriptor);
 			try { 
 				DoseUnit unit = ((AbstractDose)object).getDoseUnit();		
-				return getNodeByValue(DoseUnit.convert((Double)value, unit, d_doseUnit));
+				return getInterval().getRange().containsDouble((DoseUnit.convert((Double)value, unit, d_doseUnit)));
 			} catch(ClassCastException e) { 
 				throw new IllegalArgumentException("Object was not an AbstractDose, or property was not numeric. Object was a: " + object.getClass().getName());
 			}
@@ -52,6 +47,7 @@ public class DoseRangeNode extends RangeNode {
 	}
 	
 	public String getChildLabel(int index) { 
-		return super.getChildLabel(index, d_doseUnit);
+//		return super.getChildLabel(index, d_doseUnit);
+		return "";
 	}
 }
