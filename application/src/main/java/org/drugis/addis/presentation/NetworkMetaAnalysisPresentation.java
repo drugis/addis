@@ -43,7 +43,7 @@ import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
-import org.drugis.addis.gui.MCMCPresentation;
+import org.drugis.addis.presentation.mcmc.MCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;

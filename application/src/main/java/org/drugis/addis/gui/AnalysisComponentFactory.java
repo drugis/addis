@@ -43,6 +43,7 @@ import javax.swing.JToggleButton;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
 import org.drugis.addis.gui.components.progressgraph.ProgressGraph;
+import org.drugis.addis.presentation.mcmc.MCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressBar;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
