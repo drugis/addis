@@ -15,6 +15,8 @@ import org.drugis.addis.util.EntityUtil;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
+import edu.uci.ics.jung.graph.DelegateTree;
+
 
 public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> {
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
@@ -24,8 +26,8 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	
 	private final ObservableList<CategoryNode> d_categories = new ArrayListModel<CategoryNode>();
 	private Drug d_drug;
-	private DecisionTreeNode d_rootNode;
-
+	private DelegateTree<DecisionTreeNode, String> d_decisionTree = new DelegateTree<DecisionTreeNode, String>(); 
+	
 	private DoseUnit d_doseUnit;
 	
 	public DosedDrugTreatment() { 
@@ -40,7 +42,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
-		d_rootNode = rootNode;
+		d_decisionTree.setRoot(rootNode);
 	}
 
 	public void setName(String name) {
@@ -70,12 +72,12 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	}
 	
 	public DecisionTreeNode getRootNode() {
-		return d_rootNode;
+		return d_decisionTree.getRoot();
 	}
 
 	public void setRootNode(DecisionTreeNode rootNode) {
-		DecisionTreeNode oldVal = d_rootNode;
-		d_rootNode = rootNode;
+		DecisionTreeNode oldVal = d_decisionTree.getRoot();
+		d_decisionTree.setRoot(rootNode);
 		firePropertyChange(PROPERTY_ROOT_NODE, oldVal, rootNode);
 	}
 	
