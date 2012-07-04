@@ -2,6 +2,7 @@ package org.drugis.addis.util;
 
 import org.apache.commons.lang.math.DoubleRange;
 import org.drugis.addis.entities.treatment.RangeNode;
+import org.drugis.common.EqualsUtil;
 
 public class BoundedInterval {
 	private final DoubleRange d_range;
@@ -33,4 +34,21 @@ public class BoundedInterval {
 	public boolean isUpperBoundOpen() {
 		return d_upperBoundIsOpen;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BoundedInterval) {
+			BoundedInterval other = (BoundedInterval) obj;
+			return EqualsUtil.equal(d_range, other.d_range) &&
+					d_lowerBoundIsOpen == other.d_lowerBoundIsOpen &&
+					d_upperBoundIsOpen == other.d_upperBoundIsOpen;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return d_range.hashCode() + 31 * (d_lowerBoundIsOpen ? 1 : 0) + 31 * 31 * (d_upperBoundIsOpen ? 1 : 0);
+	}
+	
 }

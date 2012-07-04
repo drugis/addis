@@ -161,7 +161,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getCategories());
 		unknownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setChildNode(UnknownDose.class, unknownDoseCombo.getSelectedItem());		
+				d_pm.setSelected(UnknownDose.class, unknownDoseCombo.getSelectedItem());		
 			}
 		});
 		unknownDoseCombo.setSelectedItem(d_pm.getSelectedCategory(UnknownDose.class).getValue());
@@ -173,8 +173,8 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
 		knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setChildNode(FlexibleDose.class, knownDoseCombo.getSelectedItem());
-				d_pm.setChildNode(FixedDose.class, knownDoseCombo.getSelectedItem());
+				d_pm.setSelected(FlexibleDose.class, knownDoseCombo.getSelectedItem());
+				d_pm.setSelected(FixedDose.class, knownDoseCombo.getSelectedItem());
 			}
 		});
 		ValueHolder<Object> selectedKnown = d_pm.getSelectedKnownCategory();

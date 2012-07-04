@@ -45,7 +45,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.FIXED_CONSIDER);
 		fixedCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setChildNode(FixedDose.class, fixedCategoryComboBox.getSelectedItem());
+				d_pm.setSelected(FixedDose.class, fixedCategoryComboBox.getSelectedItem());
 			}
 		});
 		builder.add(fixedCategoryComboBox, cc.xy(3, row));
@@ -57,7 +57,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER, DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
 		flexibleCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setChildNode(FlexibleDose.class, flexibleCategoryComboBox.getSelectedItem());
+				d_pm.setSelected(FlexibleDose.class, flexibleCategoryComboBox.getSelectedItem());
 			}
 		});
 		builder.add(flexibleCategoryComboBox, cc.xy(3, row));

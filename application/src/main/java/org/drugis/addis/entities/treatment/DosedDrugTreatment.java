@@ -100,4 +100,8 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_decisionTree;
 	}
 
+	public DecisionTreeNode getRootNode() {
+		return d_decisionTree.getRoot();
+	}
+	
 }

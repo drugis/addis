@@ -1,6 +1,11 @@
 package org.drugis.addis.entities.treatment;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.util.BoundedInterval;
 
 import edu.uci.ics.jung.graph.DelegateTree;
 
@@ -29,23 +34,45 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	 * @throws IllegalArgumentException If the value does not lie within the specified range for this node, 
 	 * or if it is equal to an existing cut-off value.
 	 */
-	public RangeNode addCutOff(DecisionTreeNode parent, double value, boolean includeInRightSide) {
-		RangeNode leftNode = findByValue(parent, value);
+	public List<RangeNode> splitChildRange(DecisionTreeNode parent, double value, boolean includeInRightSide) {
+		RangeNode rangeToSplit = findByValue(parent, value);
 
-		if (leftNode != null) {
-			RangeNode rightNode = leftNode.splitOnValue(value, includeInRightSide);
-			addChild(parent, rightNode);
-			return rightNode;
+		if (rangeToSplit != null) {
+			List<RangeNode> ranges = splitOnValue(rangeToSplit, value, includeInRightSide);
+			setChild(parent, ranges.get(0));
+			setChild(parent, ranges.get(1));
+			removeChild(rangeToSplit);
+			return ranges;
 		}
-		return null;
+		return Collections.emptyList();
 	}
 	
-	public void addChild(DecisionTreeNode parent, DecisionTreeNode child) {
+
+	private static List<RangeNode> splitOnValue(RangeNode range, double value, boolean includeInRightSide) {
+		BoundedInterval interval = range.getInterval();
+		BoundedInterval left = new BoundedInterval(interval.getRange().getMinimumDouble(), interval.isLowerBoundOpen(), value, includeInRightSide);
+		BoundedInterval right = new BoundedInterval(value, !includeInRightSide, interval.getRange().getMaximumDouble(), interval.isUpperBoundOpen());
+
+		RangeNode leftNode 	= new RangeNode(range.getBeanClass(), range.getPropertyName(), left);
+		RangeNode rightNode	= new RangeNode(range.getBeanClass(), range.getPropertyName(), right);
+		
+		return Arrays.asList(leftNode, rightNode);
+	}
+	
+	/**
+	 * Sets the child of a parent node in the tree,
+	 * @param parent if parent is not present it will be added as a child of the root.
+	 * @param child
+	 */
+	public void setChild(DecisionTreeNode parent, DecisionTreeNode child) {
 		String edgeName = parent.hashCode() + child.hashCode() + ""; // needs to be unique
+		if(!containsVertex(parent)) {
+			setChild(getRoot(), parent);
+		}
 		addChild(edgeName, parent, child);
 	}
 	
-	private RangeNode findByValue(DecisionTreeNode parent, double value) {
+	public RangeNode findByValue(DecisionTreeNode parent, double value) {
 		for(DecisionTreeNode child : getChildren(parent)) {
 			if(child instanceof RangeNode) {
 				if(((RangeNode) child).getInterval().getRange().containsDouble(value)) return (RangeNode) child;

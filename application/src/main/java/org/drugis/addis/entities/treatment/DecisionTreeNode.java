@@ -12,4 +12,8 @@ public abstract class DecisionTreeNode extends AbstractObservable {
 	public abstract boolean decide(Object object);
 	
 	public abstract String getName();
+	
+	public String toString() { 
+		return getName();
+	}
 }

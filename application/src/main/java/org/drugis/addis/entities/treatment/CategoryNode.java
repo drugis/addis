@@ -1,5 +1,7 @@
 package org.drugis.addis.entities.treatment;
 
+import org.drugis.common.EqualsUtil;
+
 import com.jgoodies.binding.value.ValueHolder;
 
 public class CategoryNode extends DecisionTreeNode {
@@ -29,5 +31,19 @@ public class CategoryNode extends DecisionTreeNode {
 	@Override
 	public boolean decide(Object object) {
 		return true;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof CategoryNode) {
+			CategoryNode other = (CategoryNode) obj; 
+			return EqualsUtil.equal(getName(), other.getName());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
 	}
 }

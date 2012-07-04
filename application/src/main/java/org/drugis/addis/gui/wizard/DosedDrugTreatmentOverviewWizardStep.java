@@ -4,9 +4,7 @@ package org.drugis.addis.gui.wizard;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 

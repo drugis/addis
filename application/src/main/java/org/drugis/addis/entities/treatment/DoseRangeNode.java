@@ -5,6 +5,7 @@ import java.beans.PropertyDescriptor;
 
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
@@ -50,4 +51,19 @@ public class DoseRangeNode extends RangeNode {
 //		return super.getChildLabel(index, d_doseUnit);
 		return "";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof DoseRangeNode) {
+			DoseRangeNode other = (DoseRangeNode) obj;
+			return super.equals(other) && EqualsUtil.equal(d_doseUnit, other.d_doseUnit);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return d_doseUnit.hashCode() + 31 * super.hashCode();
+	}
+	
 }

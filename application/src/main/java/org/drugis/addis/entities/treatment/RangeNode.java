@@ -4,6 +4,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 
 import org.drugis.addis.util.BoundedInterval;
+import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
@@ -13,7 +14,7 @@ public class RangeNode extends DecisionTreeNode {
 	
 	private final Class<?> d_beanClass;
 	protected final String d_propertyName;
-	private BoundedInterval d_interval;
+	private final BoundedInterval d_interval;
 	
 	
 
@@ -37,13 +38,15 @@ public class RangeNode extends DecisionTreeNode {
 	public RangeNode(Class<?> beanClass, String propertyName,
 			double lowerBound, boolean lowerBoundIsOpen,
 			double upperBound, boolean upperBoundIsOpen) {
-
-		d_beanClass = beanClass;
-		d_propertyName = propertyName;
-		
-		d_interval = new BoundedInterval(lowerBound, lowerBoundIsOpen, upperBound, upperBoundIsOpen);
+		this(beanClass, propertyName, new BoundedInterval(lowerBound, lowerBoundIsOpen, upperBound, upperBoundIsOpen));
 	}
 	
+	public RangeNode(Class<?> beanClass, String propertyName, BoundedInterval interval) {
+		d_beanClass = beanClass;
+		d_propertyName = propertyName;
+		d_interval = interval;
+	}
+
 	/**
 	 * Get the lower bound of the range.
 	 * @return The lower bound.
@@ -108,11 +111,11 @@ public class RangeNode extends DecisionTreeNode {
 
 	public String getName() {
 //		if (index < getChildCount() - 1) {
-//			rangeText = String.format("%.2f %s dose %s %.2f %s",
-//					getRangeLowerBound(index),
-//					isRangeLowerBoundOpen(index) ? "<" : "<=",
-//					isRangeUpperBoundOpen(index) ? "<" : "<=",
-//					getRangeUpperBound(index),
+			String rangeText = String.format("%s %s dose %s %s",
+					getRangeLowerBound(),
+					isRangeLowerBoundOpen() ? "<" : "<=",
+					isRangeUpperBoundOpen() ? "<" : "<=",
+					getRangeUpperBound());
 //					unit == null ? "" : unit);
 //		} else {
 //			rangeText = String.format("dose %s %.2f %s",
@@ -120,8 +123,7 @@ public class RangeNode extends DecisionTreeNode {
 //					getRangeLowerBound(index),
 //					unit == null ? "" : unit);
 //		}
-//		return rangeText;
-		return "";
+			return rangeText;
 	}
 	
 	
@@ -132,21 +134,24 @@ public class RangeNode extends DecisionTreeNode {
 	public BoundedInterval getInterval() {
 		return d_interval;
 	}
-
-	public void setInterval(BoundedInterval interval) {
-		BoundedInterval old = d_interval;
-		d_interval = interval;
-		firePropertyChange(PROPERTY_INTERVAL, old, interval);
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof RangeNode) {
+			RangeNode other = (RangeNode) obj;
+			return EqualsUtil.equal(getInterval(), other.getInterval()) 
+					&& EqualsUtil.equal(getBeanClass(), other.getBeanClass())
+					&& EqualsUtil.equal(d_propertyName, other.d_propertyName);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getInterval().hashCode() + 41 * d_beanClass.hashCode() + 41 * 41 * d_propertyName.hashCode();
 	}
 
-	public RangeNode splitOnValue(double value, boolean includeInRightSide) {
-		BoundedInterval left = new BoundedInterval(d_interval.getRange().getMinimumDouble(), d_interval.isLowerBoundOpen(), value, includeInRightSide);
-		BoundedInterval right = new BoundedInterval(value, !includeInRightSide, d_interval.getRange().getMaximumDouble(), d_interval.isUpperBoundOpen());
-		
-		setInterval(left);
-		RangeNode rightNode = new RangeNode(d_beanClass, d_propertyName);
-		rightNode.setInterval(right);
-		
-		return rightNode;
+	public String getPropertyName() {
+		return d_propertyName;
 	}
 }
