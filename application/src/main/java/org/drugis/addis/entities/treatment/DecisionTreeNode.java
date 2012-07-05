@@ -13,7 +13,16 @@ public abstract class DecisionTreeNode extends AbstractObservable {
 	
 	public abstract String getName();
 	
+	public Class<?> getBeanClass() { 
+		return null;
+	}
+	
+	public String getPropertyName() {
+		return "";
+	}
+	
 	public String toString() { 
 		return getName();
 	}
+	
 }

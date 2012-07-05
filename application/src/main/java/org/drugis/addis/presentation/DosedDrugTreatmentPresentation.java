@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
@@ -38,6 +39,7 @@ import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.common.beans.ContentAwareListModel;
@@ -53,6 +55,8 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	private Map<DecisionTreeNode, ValueHolder<Object>> d_selectedCategoryMap = 
 			new HashMap<DecisionTreeNode, ValueHolder<Object>>(); 
 	
+	private Map<Pair<Class<?>, String>, DecisionTreeNode> d_parentMap = new HashMap<Pair<Class<?>,String>, DecisionTreeNode>();
+	
 	private final Domain d_domain;
 
 	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {	
@@ -67,7 +71,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		Collection<DecisionTreeNode> children = bean.getDecisionTree().getChildren(bean.getRootNode());
 		for(DecisionTreeNode child : children) { 
 			if(child instanceof TypeNode) {
-				addDoseTypeHolder((TypeNode) child);
+				addNodeMapping((TypeNode) child);
 			}
 		}
 	}
@@ -102,9 +106,8 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @param The type to be added to the selection mapping
 	 * @return The newly-created ValueHolder
 	 */
-	private ValueHolder<Object> addDoseTypeHolder(DecisionTreeNode node) {
-		d_selectedCategoryMap.put(node, new ModifiableHolder<Object>(null));
-		return d_selectedCategoryMap.get(node);
+	private void addNodeMapping(DecisionTreeNode node) {
+		setNodeMapping(new ModifiableHolder<Object>(new ExcludeNode()), getBean().getRootNode(), node);
 	}
 	
 	public ValueHolder<Object> getSelectedCategory(DecisionTreeNode node) {
@@ -117,18 +120,21 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	/**
 	 * Sets the child of a node
 	 * @param node the node to set the child on
-	 * @param category the object to set as child, if not an DecisionTreeNode only the internal mapping is updated (@see {@link #getSelectedCategory(Class))}
+	 * @param selected the object to set as child, if not an DecisionTreeNode only the internal mapping is updated (@see {@link #getSelectedCategory(Class))}
 	 */
-	public void setSelected(DecisionTreeNode node, Object category) {
+	public void setSelected(DecisionTreeNode node, Object selected) {
+
 		ValueHolder<Object> selection = d_selectedCategoryMap.get(node); // Only used to maintain a state for the combo boxes
 		if(selection == null) {
-			selection = addDoseTypeHolder(node);
+			addNodeMapping(node);
+			selection = d_selectedCategoryMap.get(node);
 		}
-		selection.setValue(category);
+		selection.setValue(selected);
 
-		if(category instanceof DecisionTreeNode) {
-			DecisionTreeNode catNode = (DecisionTreeNode) category;
-			getBean().getDecisionTree().setChild(node, catNode);
+		if(selected instanceof DecisionTreeNode) {
+			DecisionTreeNode child = (DecisionTreeNode) selected;
+			setNodeMapping(selection, node, child);
+			getBean().getDecisionTree().setChild(node, child);
 		}
 	}
 
@@ -155,9 +161,27 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		List<RangeNode> ranges = tree.splitChildRange(parent, value, includeInRightSide);
 		
 		d_selectedCategoryMap.remove(node);
-		d_selectedCategoryMap.put(ranges.get(0), new ModifiableHolder<Object>(selected.getValue()));
-		d_selectedCategoryMap.put(ranges.get(1), new ModifiableHolder<Object>(selected.getValue()));
+		setNodeMapping(selected, parent, ranges.get(0));
+		setNodeMapping(selected, parent, ranges.get(1));
+
 		return ranges;
+	}
+
+	private void setNodeMapping(ValueHolder<Object> selected, DecisionTreeNode parent, DecisionTreeNode child) {
+		d_parentMap.put(new Pair<Class<?>, String>(child.getBeanClass(), child.getPropertyName()), parent);
+		d_selectedCategoryMap.put(child, new ModifiableHolder<Object>(selected.getValue()));
+	}
+
+	/**
+	 * Gets the parent node of a node with a combination of a given beanClass and propertyName
+	 * @param beanClass any class, usually Class<? extends AbstractDose>
+	 * @param propertyName
+	 * @return the parent of the beanClass-propertyName pair if present, 
+	 * otherwise the parent of the node mapped to only beanClass, the root of the tree if none present
+	 */
+	public DecisionTreeNode getParentNode(Class<?> beanClass, String propertyName) {
+		DecisionTreeNode parent = d_parentMap.get(new Pair<Class<?>, String>(beanClass, propertyName));
+		return parent == null ? getBean().getRootNode() : parent; // return the root of the tree otherwise
 	}
 
 }

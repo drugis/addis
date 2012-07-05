@@ -69,6 +69,9 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		if(!containsVertex(parent)) {
 			setChild(getRoot(), parent);
 		}
+		if(containsVertex(child)) { 
+			removeChild(child);
+		}
 		addChild(edgeName, parent, child);
 	}
 	

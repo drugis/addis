@@ -52,6 +52,7 @@ import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -61,6 +62,7 @@ import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.EqualsUtil;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -75,6 +77,9 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 
 	private static final long serialVersionUID = 7730051460456443680L;
+	private final TypeNode d_unknownNode = new TypeNode(UnknownDose.class);
+	private final TypeNode d_fixedNode = new TypeNode(FixedDose.class);
+	private final TypeNode d_flexibleNode = new TypeNode(FlexibleDose.class);
 
 	private NotEmptyValidator d_validator;
 
@@ -84,7 +89,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		super(presentationModel, domain, mainWindow, "Add characteristics", "Add the name, drug and categories for this treatment");
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
-
+		
 		d_pm.getCategories().addListDataListener(new ListDataListener() {			
 			@Override
 			public void intervalRemoved(ListDataEvent e) {
@@ -105,7 +110,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	
 	
 	public Boolean considerDoseType() {
-		Object selection = d_pm.getSelectedKnownCategory().getValue();
+		Object selection = getSelectedKnownCategory().getValue();
 		if(DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER.getTitle().equals(selection.toString())) {
 			return true;
 		} else if(DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER.getTitle().equals(selection.toString())) {
@@ -161,10 +166,10 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getCategories());
 		unknownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(UnknownDose.class, unknownDoseCombo.getSelectedItem());		
+				d_pm.setSelected(d_unknownNode, unknownDoseCombo.getSelectedItem());		
 			}
 		});
-		unknownDoseCombo.setSelectedItem(d_pm.getSelectedCategory(UnknownDose.class).getValue());
+		unknownDoseCombo.setSelectedItem(d_pm.getSelectedCategory(d_unknownNode).getValue());
 		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
@@ -173,17 +178,27 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
 		knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(FlexibleDose.class, knownDoseCombo.getSelectedItem());
-				d_pm.setSelected(FixedDose.class, knownDoseCombo.getSelectedItem());
+				d_pm.setSelected(d_fixedNode, knownDoseCombo.getSelectedItem());
+				d_pm.setSelected(d_flexibleNode, knownDoseCombo.getSelectedItem());
 			}
 		});
-		ValueHolder<Object> selectedKnown = d_pm.getSelectedKnownCategory();
+		ValueHolder<Object> selectedKnown = getSelectedKnownCategory();
 		if(selectedKnown != null) { 
 			knownDoseCombo.setSelectedItem(selectedKnown.getValue());
 		}
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
 	}
+
+	private ValueHolder<Object> getSelectedKnownCategory() {
+		ValueHolder<Object> fixed = d_pm.getSelectedCategory(d_fixedNode);
+		ValueHolder<Object> flexible = d_pm.getSelectedCategory(d_flexibleNode);
+		if(EqualsUtil.equal(fixed.getValue(), flexible.getValue())) {
+			return fixed;
+		}
+		return null;
+	}
+
 
 	public static JComboBox createCategoryComboBox(List<CategoryNode> categories, DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
 		ObservableList<Object> list = new ArrayListModel<Object>();

@@ -3,24 +3,23 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.math.DoubleRange;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.CategoryNode;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.util.BoundedInterval;
+import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mvel2.ast.AssertNode;
 
 public class DosedDrugTreatmentPresentationTest {
 
@@ -134,4 +133,28 @@ public class DosedDrugTreatmentPresentationTest {
 		assertEquals(highDoseNode, d_pm.getBean().getNode(highDose));
 
 	}
+	
+	@Test
+	public void testGetParentNode() {
+		TypeNode fixedDose = new TypeNode(FixedDose.class);
+		TypeNode flexibleDose = new TypeNode(FlexibleDose.class);
+
+		RangeNode range1 = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY);
+		RangeNode range2 = new RangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE);
+
+		d_pm.setSelected(d_pm.getBean().getRootNode(), fixedDose);
+		d_pm.setSelected(d_pm.getBean().getRootNode(), flexibleDose);
+
+		assertEquals(d_pm.getBean().getRootNode(), d_pm.getParentNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
+		assertEquals(d_pm.getBean().getRootNode(), d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
+
+		d_pm.setSelected(fixedDose, range1);
+		d_pm.setSelected(flexibleDose, range2);
+
+		assertEquals(fixedDose, d_pm.getParentNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
+		assertEquals(flexibleDose, d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
+		JUnitUtil.assertNotEquals(d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE), d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
+
+	}
+	
 }

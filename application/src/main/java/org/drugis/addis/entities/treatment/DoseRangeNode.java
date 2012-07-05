@@ -65,5 +65,9 @@ public class DoseRangeNode extends RangeNode {
 	public int hashCode() {
 		return d_doseUnit.hashCode() + 31 * super.hashCode();
 	}
+
+	public String getLabel(boolean nodeIsLast) {
+		return super.getLabel(nodeIsLast, d_doseUnit);
+	}
 	
 }

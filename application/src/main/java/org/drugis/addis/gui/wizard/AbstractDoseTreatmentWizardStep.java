@@ -56,8 +56,8 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	@Override
 	public void prepare() {
 		this.setVisible(false);
-	 	buildWizardStep();
 		initialize();
+	 	buildWizardStep();
 	 	BooleanAndModel valid = new BooleanAndModel(d_validators);  
 	 	PropertyConnector.connectAndUpdate(valid, this, "complete");
 	 	this.setVisible(true);

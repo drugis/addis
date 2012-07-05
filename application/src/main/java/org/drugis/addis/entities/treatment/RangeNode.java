@@ -3,6 +3,7 @@ package org.drugis.addis.entities.treatment;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.util.BoundedInterval;
 import org.drugis.common.EqualsUtil;
 
@@ -109,24 +110,8 @@ public class RangeNode extends DecisionTreeNode {
 		return false;
 	}
 
-	public String getName() {
-//		if (index < getChildCount() - 1) {
-			String rangeText = String.format("%s %s dose %s %s",
-					getRangeLowerBound(),
-					isRangeLowerBoundOpen() ? "<" : "<=",
-					isRangeUpperBoundOpen() ? "<" : "<=",
-					getRangeUpperBound());
-//					unit == null ? "" : unit);
-//		} else {
-//			rangeText = String.format("dose %s %.2f %s",
-//					isRangeLowerBoundOpen(index) ? ">" : ">=",
-//					getRangeLowerBound(index),
-//					unit == null ? "" : unit);
-//		}
-			return rangeText;
-	}
 	
-	
+	@Override
 	public Class<?> getBeanClass() {
 		return d_beanClass;
 	}
@@ -150,8 +135,35 @@ public class RangeNode extends DecisionTreeNode {
 	public int hashCode() {
 		return getInterval().hashCode() + 41 * d_beanClass.hashCode() + 41 * 41 * d_propertyName.hashCode();
 	}
-
+	
+	@Override
 	public String getPropertyName() {
 		return d_propertyName;
+	}
+	
+	public String getLabel(boolean nodeIsLast, DoseUnit unit) {
+		String rangeText;
+		if (!nodeIsLast) {
+			rangeText = String.format("%.2f %s dose %s %.2f %s",
+					getRangeLowerBound(),
+					isRangeLowerBoundOpen() ? "<" : "<=",
+					isRangeUpperBoundOpen() ? "<" : "<=",
+					getRangeUpperBound(),
+					unit == null ? "" : unit);
+		} else {
+			rangeText = String.format("dose %s %.2f %s",
+					isRangeLowerBoundOpen() ? ">" : ">=",
+					getRangeLowerBound(),
+					unit == null ? "" : unit);
+		}		
+		return rangeText;
+	}
+
+	public String getName() {
+		return getLabel(false, null); //NOTE: the argument is arbitrary
+	}
+	
+	public String getLabel(boolean nodeIsLast) {
+		return getLabel(nodeIsLast, null);
 	}
 }

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -20,6 +21,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
+	private final TypeNode d_fixedDoseNode = new TypeNode(FixedDose.class);
+	private final TypeNode d_flexibleDoseNode = new TypeNode(FlexibleDose.class);
+
 	JPanel d_dialogPanel = new JPanel();
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm,
 			Domain domain, AddisWindow mainWindow) {
@@ -44,8 +48,9 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		builder.addLabel("Fixed dose", cc.xy(1, row));
 		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.FIXED_CONSIDER);
 		fixedCategoryComboBox.addItemListener(new ItemListener() {
+
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(FixedDose.class, fixedCategoryComboBox.getSelectedItem());
+				d_pm.setSelected(d_fixedDoseNode, fixedCategoryComboBox.getSelectedItem());
 			}
 		});
 		builder.add(fixedCategoryComboBox, cc.xy(3, row));
@@ -57,7 +62,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER, DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
 		flexibleCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(FlexibleDose.class, flexibleCategoryComboBox.getSelectedItem());
+				d_pm.setSelected(d_flexibleDoseNode, flexibleCategoryComboBox.getSelectedItem());
 			}
 		});
 		builder.add(flexibleCategoryComboBox, cc.xy(3, row));
