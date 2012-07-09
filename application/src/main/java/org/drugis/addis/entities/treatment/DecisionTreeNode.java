@@ -3,7 +3,7 @@ package org.drugis.addis.entities.treatment;
 import org.drugis.common.beans.AbstractObservable;
 
 
-public abstract class DecisionTreeNode extends AbstractObservable {
+public abstract class DecisionTreeNode extends AbstractObservable implements Cloneable {
 	/**
 	 * Classify the given object.
 	 * @param object Object to classify.
@@ -25,4 +25,7 @@ public abstract class DecisionTreeNode extends AbstractObservable {
 		return getName();
 	}
 	
+	public DecisionTreeNode clone() throws CloneNotSupportedException { 
+		return (DecisionTreeNode) super.clone();
+	}
 }

@@ -2,13 +2,18 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
@@ -28,6 +33,11 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm,
 			Domain domain, AddisWindow mainWindow) {
 		super(pm, domain, mainWindow, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.");
+	}
+	
+	@Override
+	protected void initialize() {
+		rebuildPanel();
 	}
 
 	protected JPanel buildPanel() {
@@ -53,6 +63,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 				d_pm.setSelected(d_fixedDoseNode, fixedCategoryComboBox.getSelectedItem());
 			}
 		});
+		fixedCategoryComboBox.setSelectedItem(d_pm.getSelectedCategory(d_fixedDoseNode));
 		builder.add(fixedCategoryComboBox, cc.xy(3, row));
 		
 		row = LayoutUtil.addRow(layout, row);
@@ -65,13 +76,10 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 				d_pm.setSelected(d_flexibleDoseNode, flexibleCategoryComboBox.getSelectedItem());
 			}
 		});
+		flexibleCategoryComboBox.setSelectedItem(d_pm.getSelectedCategory(d_flexibleDoseNode));
+
 		builder.add(flexibleCategoryComboBox, cc.xy(3, row));
 		
 		return builder.getPanel();
-	}
-	
-	@Override
-	protected void initialize() {
-		rebuildPanel();
 	}
 }

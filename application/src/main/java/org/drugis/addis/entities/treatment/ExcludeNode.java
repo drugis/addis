@@ -1,5 +1,6 @@
 package org.drugis.addis.entities.treatment;
 
+
 public class ExcludeNode extends DecisionTreeNode {
 	public static final String NAME = "Exclude";
 	
@@ -14,5 +15,10 @@ public class ExcludeNode extends DecisionTreeNode {
 	@Override
 	public boolean decide(Object object) {
 		return true;
+	}
+	
+	@Override
+	public DecisionTreeNode clone() throws CloneNotSupportedException {
+		return new ExcludeNode();
 	}
 }

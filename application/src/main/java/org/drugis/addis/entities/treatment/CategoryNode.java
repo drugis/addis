@@ -46,4 +46,9 @@ public class CategoryNode extends DecisionTreeNode {
 	public int hashCode() {
 		return getName().hashCode();
 	}
+	
+	@Override
+	public DecisionTreeNode clone() throws CloneNotSupportedException {
+		return new CategoryNode(getName());
+	}
 }

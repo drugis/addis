@@ -74,8 +74,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizardStep {
-
-
 	private static final long serialVersionUID = 7730051460456443680L;
 	private final TypeNode d_unknownNode = new TypeNode(UnknownDose.class);
 	private final TypeNode d_fixedNode = new TypeNode(FixedDose.class);
@@ -110,10 +108,11 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	
 	
 	public Boolean considerDoseType() {
-		Object selection = getSelectedKnownCategory().getValue();
-		if(DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER.getTitle().equals(selection.toString())) {
+		ValueHolder<Object> selection = getSelectedKnownCategory();
+		if(selection == null) return null;
+		if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER.getTitle(), selection.getValue().toString())) {
 			return true;
-		} else if(DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER.getTitle().equals(selection.toString())) {
+		} else if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER.getTitle(), selection.getValue().toString())) {
 			return false;
 		}
 		return null;

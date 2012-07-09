@@ -39,6 +39,7 @@ import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.EmptyNode;
 import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
@@ -107,7 +108,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @return The newly-created ValueHolder
 	 */
 	private void addNodeMapping(DecisionTreeNode node) {
-		setNodeMapping(new ModifiableHolder<Object>(new ExcludeNode()), getBean().getRootNode(), node);
+		setNodeMapping(new ModifiableHolder<Object>(new EmptyNode()), getParentNode(node.getBeanClass(), node.getPropertyName()), node);
 	}
 	
 	public ValueHolder<Object> getSelectedCategory(DecisionTreeNode node) {
@@ -134,7 +135,16 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		if(selected instanceof DecisionTreeNode) {
 			DecisionTreeNode child = (DecisionTreeNode) selected;
 			setNodeMapping(selection, node, child);
+			if(child instanceof CategoryNode || child instanceof ExcludeNode) {
+				try {
+					child = child.clone(); // To ensure uniqueness in the tree implementation
+				} catch (Exception e) {
+					throw new IllegalStateException("Tried to clone an uncopyable object to ensure uniqueness in the DecisionTree");
+				}
+			}
 			getBean().getDecisionTree().setChild(node, child);
+		} else { 
+			setNodeMapping(selection, node, new EmptyNode());
 		}
 	}
 

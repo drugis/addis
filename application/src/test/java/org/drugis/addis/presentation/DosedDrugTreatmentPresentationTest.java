@@ -19,7 +19,6 @@ import org.drugis.addis.util.BoundedInterval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.mvel2.ast.AssertNode;
 
 public class DosedDrugTreatmentPresentationTest {
 

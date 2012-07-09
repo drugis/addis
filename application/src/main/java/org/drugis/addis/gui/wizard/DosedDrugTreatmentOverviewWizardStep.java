@@ -1,6 +1,8 @@
 package org.drugis.addis.gui.wizard;
 
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
@@ -17,6 +19,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
 public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentWizardStep {
 
@@ -52,7 +56,9 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 
 	private static JPanel buildOverview(DoseDecisionTree tree) {      
 		Layout<DecisionTreeNode, String> layout = new TreeLayout<DecisionTreeNode, String>(tree);
-		BasicVisualizationServer<DecisionTreeNode, String> vv = new BasicVisualizationServer<DecisionTreeNode, String>(layout);
+		VisualizationViewer<DecisionTreeNode, String> vv = new VisualizationViewer<DecisionTreeNode, String>(layout);
+		vv.setVertexToolTipTransformer(new ToStringLabeller<DecisionTreeNode>());
+		vv.setPreferredSize(new Dimension(PANEL_WIDTH, 700));
 		return vv;
 	}
 }

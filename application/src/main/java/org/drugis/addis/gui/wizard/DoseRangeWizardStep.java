@@ -24,7 +24,7 @@ import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
-import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.EmptyNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -63,7 +63,9 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			super(d_mainWindow, "Split range", true);
 			d_rangeIndex = rangeIndex;
 			d_boundName = boundName;
-			d_validator = new RangeValidator(d_cutOff, d_nodes.get(rangeIndex).getRangeLowerBound(), d_nodes.get(rangeIndex).getRangeUpperBound());
+			d_validator = 
+					new RangeValidator(d_cutOff, d_nodes.get(rangeIndex).getRangeLowerBound(), 
+							d_nodes.get(rangeIndex).getRangeUpperBound());
 			getUserPanel().add(buildPanel());
 			pack(); 
 		}
@@ -196,7 +198,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		if(d_nodes.isEmpty()) { 
 			DoseRangeNode node = new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit());
 			d_nodes.add(node);
-			d_pm.setSelected(node, new ExcludeNode());
+			d_pm.setSelected(node, new EmptyNode());
 		}
 		rebuildPanel();
 	}
@@ -210,7 +212,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		int row = 1;
-		for (int i = 0; i < d_pm.getBean().getDecisionTree().getChildCount(d_parent); ++i) {
+		for (int i = 0; i < d_nodes.size(); ++i) {
 			row = rangeRow(layout, builder, row, i);
 		}
 		

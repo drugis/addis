@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.util.BoundedInterval;
 
@@ -61,18 +63,22 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	
 	/**
 	 * Sets the child of a parent node in the tree,
-	 * @param parent if parent is not present it will be added as a child of the root.
+	 * @param parent
 	 * @param child
 	 */
 	public void setChild(DecisionTreeNode parent, DecisionTreeNode child) {
-		String edgeName = parent.hashCode() + child.hashCode() + ""; // needs to be unique
+		String edge =  Integer.toString(parent.hashCode() + 31 * child.hashCode()); // needs to be unique
 		if(!containsVertex(parent)) {
 			setChild(getRoot(), parent);
 		}
-		if(containsVertex(child)) { 
-			removeChild(child);
+		if(isSuccessor(parent, child)) { 
+			CollectionUtils.forAllDo(getChildren(parent), new Closure<DecisionTreeNode>() {
+				public void execute(DecisionTreeNode orphan) {
+					removeChild(orphan);
+				}
+			});
 		}
-		addChild(edgeName, parent, child);
+		addChild(edge, parent, child);
 	}
 	
 	public RangeNode findByValue(DecisionTreeNode parent, double value) {
