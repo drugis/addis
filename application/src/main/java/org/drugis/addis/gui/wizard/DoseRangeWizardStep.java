@@ -20,6 +20,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.text.DefaultFormatter;
 
+import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
@@ -180,7 +182,6 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		super(presentationModel, domain, mainWindow);
 		d_beanClass = beanClass;
 		d_propertyName = propertyName;
-		d_parent = d_pm.getParentNode(d_beanClass, d_propertyName);
 		d_nodes.addListDataListener((new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {}
 			
@@ -195,11 +196,16 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	@Override 
 	public void initialize() { 
 		d_parent = d_pm.getParentNode(d_beanClass, d_propertyName);
-		if(d_nodes.isEmpty()) { 
-			DoseRangeNode node = new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit());
+		System.out.println("The parent of " + d_beanClass + " " + d_propertyName + " is " + d_parent);
+		final DoseRangeNode node = new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit());
+		if(d_nodes.isEmpty()) {
 			d_nodes.add(node);
-			d_pm.setSelected(node, new EmptyNode());
 		}
+		CollectionUtils.forAllDo(d_nodes, new Closure<DecisionTreeNode>() {
+			public void execute(DecisionTreeNode node) {
+				d_pm.setSelected(node, new EmptyNode());
+			}
+		});
 		rebuildPanel();
 	}
 	

@@ -66,19 +66,22 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	 * @param parent
 	 * @param child
 	 */
-	public void setChild(DecisionTreeNode parent, DecisionTreeNode child) {
-		String edge =  Integer.toString(parent.hashCode() + 31 * child.hashCode()); // needs to be unique
+	public void setChild(final DecisionTreeNode parent, final DecisionTreeNode child) {
+		System.out.println("Setting " + parent + " on " + child);
+		CollectionUtils.forAllDo(getChildren(parent), new Closure<DecisionTreeNode>() {
+			public void execute(DecisionTreeNode orphan) {
+				System.out.println("Removing " + orphan + " of " + parent);
+				removeChild(orphan);
+			}
+		});
+		addChild(parent, child);
+	}
+	
+	private void addChild(DecisionTreeNode parent, DecisionTreeNode child) { 
 		if(!containsVertex(parent)) {
-			setChild(getRoot(), parent);
+			addChild(Integer.toString(getRoot().hashCode() + 31 * parent.hashCode()), getRoot(), parent);
 		}
-		if(isSuccessor(parent, child)) { 
-			CollectionUtils.forAllDo(getChildren(parent), new Closure<DecisionTreeNode>() {
-				public void execute(DecisionTreeNode orphan) {
-					removeChild(orphan);
-				}
-			});
-		}
-		addChild(edge, parent, child);
+		addChild(Integer.toString(parent.hashCode() + 31 * child.hashCode()), parent, child);
 	}
 	
 	public RangeNode findByValue(DecisionTreeNode parent, double value) {

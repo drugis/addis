@@ -26,7 +26,8 @@ public class TypeNode extends DecisionTreeNode {
 	
 	@Override
 	public String getName() {
-		return GUIHelper.humanize(d_type.getValue().getSimpleName());
+//		return GUIHelper.humanize(d_type.getValue().getSimpleName());
+		return d_type.getValue().getSimpleName();
 	}
 	
 	public ValueHolder<Class<? extends AbstractDose>> getType() {

@@ -9,7 +9,7 @@ public class EmptyNode extends DecisionTreeNode {
 
 	@Override
 	public String getName() {
-		return "Empty root node";
+		return "Empty node";
 	}
 
 }
