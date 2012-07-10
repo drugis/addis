@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections15.CollectionUtils;
+import static org.apache.commons.collections15.CollectionUtils.*;
+
+import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.Domain;
@@ -42,7 +44,7 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.EmptyNode;
-import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.common.EqualsUtil;
@@ -74,9 +76,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	private Map<DecisionTreeNode, NamedValueHolder<Object>> d_selectedCategoryMap = 
 			new HashMap<DecisionTreeNode, NamedValueHolder<Object>>(); 
 	
-	private Map<Pair<Class<?>, String>, DecisionTreeNode> d_parentMap = new HashMap<Pair<Class<?>,String>, DecisionTreeNode>();
+	private Map<Pair<Class<?>, String>, DecisionTreeNode> d_nodeMap = new HashMap<Pair<Class<?>,String>, DecisionTreeNode>();
 	
 	private final Domain d_domain;
+
+	private DoseDecisionTree d_tree;
 
 	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {	
 		this(bean, null);
@@ -86,8 +90,9 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		super(bean);
 		d_domain = domain;
 		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
+		d_tree = getBean().getDecisionTree();
 
-		Collection<DecisionTreeNode> children = bean.getDecisionTree().getChildren(bean.getRootNode());
+		Collection<DecisionTreeNode> children = d_tree.getChildren(bean.getRootNode());
 		for(DecisionTreeNode child : children) { 
 			if(child instanceof TypeNode) {
 				addNodeMapping((TypeNode) child);
@@ -126,8 +131,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @return The newly-created ValueHolder
 	 */
 	private void addNodeMapping(DecisionTreeNode node) {
-		DecisionTreeNode parent  = getBean().getDecisionTree().getParent(node);
-		setNodeMapping(new ModifiableHolder<Object>(new EmptyNode()), parent == null ? parent : getBean().getRootNode(), node);
+		updateNodeMapping(new ModifiableHolder<Object>(new EmptyNode()), node);
 	}
 	
 	public ValueHolder<Object> getSelectedCategory(DecisionTreeNode node) {
@@ -139,32 +143,36 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	
 	/**
 	 * Sets the child of a node
-	 * @param node the node to set the child on
+	 * @param parent the node to set the child on
 	 * @param selected the object to set as child, if not an DecisionTreeNode only the internal mapping is updated 
 	 * @see DosedDrugTreatmentPresentation#getSelectedCategory(DecisionTreeNode)
 	 */
-	public void setSelected(DecisionTreeNode node, Object selected) {
-		ValueHolder<Object> selection = d_selectedCategoryMap.get(node); // Only used to maintain a state for the combo boxes
-		if(selection == null) {
-			addNodeMapping(node);
-			selection = d_selectedCategoryMap.get(node);
+	public void setSelected(DecisionTreeNode parent, Object selected) {
+		ValueHolder<Object> current = d_selectedCategoryMap.get(parent); // Only used to maintain a state for the combo boxes
+		if(current == null) {
+			addNodeMapping(parent);
+			current = d_selectedCategoryMap.get(parent);
 		}
-		selection.setValue(selected);
+		current.setValue(selected);
 
 		if(selected instanceof DecisionTreeNode) {
 			DecisionTreeNode child = (DecisionTreeNode) selected;
-			setNodeMapping(selection, node, child);
-			if(child instanceof CategoryNode || child instanceof ExcludeNode) {
-				try {
-					child = child.clone(); // To ensure uniqueness in the tree implementation
-				} catch (Exception e) {
-					throw new IllegalStateException("Tried to clone an uncopyable object to ensure uniqueness in the DecisionTree");
-				}
-			}
-			getBean().getDecisionTree().setChild(node, child);
+			setDecisionTree(parent, child);
+			updateNodeMapping(current, child);
 		} else { 
-			setNodeMapping(selection, node, new EmptyNode());
+			updateNodeMapping(current, new EmptyNode());
 		}
+	}
+
+	private void setDecisionTree(DecisionTreeNode parent, DecisionTreeNode child) {
+		if(child instanceof LeafNode) {
+			try {
+				child = child.clone(); // To ensure uniqueness in the tree implementation
+			} catch (Exception e) {
+				throw new IllegalStateException("Tried to clone an uncopyable object to ensure uniqueness in the DecisionTree");
+			}
+		}
+		d_tree.setChild(parent, child);
 	}
 
 	/**
@@ -183,22 +191,20 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 
 	public List<RangeNode> splitRange(RangeNode node, double value, boolean includeInRightSide) {
 		ValueHolder<Object> selected = getSelectedCategory(node);
-		DoseDecisionTree tree = getBean().getDecisionTree();
 		
-		DecisionTreeNode parent = getParentNode(node.getBeanClass(), node.getPropertyName());
+		List<RangeNode> ranges = d_tree.splitChildRange(getBean().getDecisionTree().getParent(node), value, includeInRightSide);
 
-		List<RangeNode> ranges = tree.splitChildRange(parent, value, includeInRightSide);
-		
 		d_selectedCategoryMap.remove(node);
-		setNodeMapping(selected, parent, ranges.get(0));
-		setNodeMapping(selected, parent, ranges.get(1));
+		d_nodeMap.remove(new Pair<Class<?>, String>(node.getBeanClass(), node.getPropertyName()));
+		
+		updateNodeMapping(selected, ranges.get(0));
+		updateNodeMapping(selected, ranges.get(1));
 
 		return ranges;
 	}
 
-	private void setNodeMapping(ValueHolder<Object> selected, DecisionTreeNode parent, DecisionTreeNode child) {
-		System.out.println("Setting parent of " + child.getBeanClass() + " " + child.getPropertyName() + " to " + parent);
-		d_parentMap.put(new Pair<Class<?>, String>(child.getBeanClass(), child.getPropertyName()), parent);
+	private void updateNodeMapping(ValueHolder<Object> selected, DecisionTreeNode child) {
+		d_nodeMap.put(new Pair<Class<?>, String>(child.getBeanClass(), child.getPropertyName()), child);
 		d_selectedCategoryMap.put(child, new NamedValueHolder<Object>(selected.getValue()));
 	}
 
@@ -209,20 +215,29 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @return the parent of the beanClass-propertyName pair if present, 
 	 * otherwise the parent of the node mapped to only beanClass, the root of the tree if none present
 	 */
-	public DecisionTreeNode getParentNode(final Class<?> beanClass, final String propertyName) {
-		DecisionTreeNode parent = d_parentMap.get(new Pair<Class<?>, String>(beanClass, propertyName));
+	public DecisionTreeNode getNode(final Class<?> beanClass, final String propertyName) {
+		DecisionTreeNode parent = d_nodeMap.get(new Pair<Class<?>, String>(beanClass, propertyName));
 		if(parent == null) { 
-			System.out.println("Couldn't find parent of " + beanClass + " " + propertyName);
-			Pair<Class<?>, String> key = CollectionUtils.find(d_parentMap.keySet(), new Predicate<Pair<Class<?>, String>>() {
+			Pair<Class<?>, String> key = find(d_nodeMap.keySet(), new Predicate<Pair<Class<?>, String>>() {
 				public boolean evaluate(Pair<Class<?>, String> object) {
 					return EqualsUtil.equal(object.getKey(), beanClass);
 				}
 			});
-			System.out.println(key != null ? " but did find " + key.getKey() + " " + key.getValue() : " and nothing that looks like it either");
-			parent = d_parentMap.get(key);
-			System.out.println(" whose parent is " + parent);
+			parent = d_nodeMap.get(key);
 		}
 		return parent == null ? getBean().getRootNode() : parent; // return the root of the tree otherwise
+	}
+	
+	/**
+	 * Removes all children of a specified node
+	 * @param node 
+	 */
+	public void clearNode(DecisionTreeNode node) { 
+		forAllDo(d_tree.getChildren(node), new Closure<DecisionTreeNode>() {
+			public void execute(DecisionTreeNode orphan) {
+				d_tree.removeChild(orphan);
+			}
+		});
 	}
 
 }

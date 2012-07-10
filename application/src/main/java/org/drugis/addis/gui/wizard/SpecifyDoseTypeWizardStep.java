@@ -2,19 +2,13 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Arrays;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.EmptyNode;
-import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;

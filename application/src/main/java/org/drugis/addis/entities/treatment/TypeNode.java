@@ -4,7 +4,6 @@ import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.EqualsUtil;
-import org.drugis.common.gui.GUIHelper;
 
 public class TypeNode extends DecisionTreeNode {
 	public static final String PROPERTY_TYPE = "type";

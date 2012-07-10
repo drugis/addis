@@ -1,7 +1,7 @@
 package org.drugis.addis.entities.treatment;
 
 
-public class ExcludeNode extends DecisionTreeNode {
+public class ExcludeNode extends DecisionTreeNode implements LeafNode {
 	public static final String NAME = "Exclude";
 	
 	public String toString() { 

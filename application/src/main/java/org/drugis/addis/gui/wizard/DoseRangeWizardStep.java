@@ -1,6 +1,8 @@
 package org.drugis.addis.gui.wizard;
 
 
+import static org.apache.commons.collections15.CollectionUtils.forAllDo;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -21,7 +23,6 @@ import javax.swing.event.ListDataListener;
 import javax.swing.text.DefaultFormatter;
 
 import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
@@ -52,22 +53,23 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private final String d_propertyName;
 	private final ObservableList<RangeNode> d_nodes = new ArrayListModel<RangeNode>();
 	private DecisionTreeNode d_parent;
-
 	private final class AddCutOffDialog extends OkCancelDialog {
 		private static final long serialVersionUID = -7519390341921875264L;
 		private final int d_rangeIndex;
 		private final ValueHolder<Double> d_cutOff = new ModifiableHolder<Double>(0.0d);
 		private final ValueHolder<Boolean> d_upperOpen = new ModifiableHolder<Boolean>(false);
 		private String d_boundName;
-		private RangeValidator d_validator;
+		private final RangeValidator d_validator;
+		private final RangeNode d_node;
 
 		public AddCutOffDialog(int rangeIndex, String boundName) {
 			super(d_mainWindow, "Split range", true);
 			d_rangeIndex = rangeIndex;
 			d_boundName = boundName;
+			d_node = d_nodes.get(rangeIndex);
 			d_validator = 
-					new RangeValidator(d_cutOff, d_nodes.get(rangeIndex).getRangeLowerBound(), 
-							d_nodes.get(rangeIndex).getRangeUpperBound());
+					new RangeValidator(d_cutOff, d_node.getRangeLowerBound(), 
+							d_node.getRangeUpperBound());
 			getUserPanel().add(buildPanel());
 			pack(); 
 		}
@@ -87,7 +89,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			int row = 1;
 			
 			boolean nodeIsLast = (d_rangeIndex == d_nodes.size() - 1);
-			builder.addSeparator("Original range: " + d_nodes.get(d_rangeIndex).getLabel(nodeIsLast), cc.xyw(1, row, colSpan));
+			builder.addSeparator("Original range: " + d_node.getLabel(nodeIsLast), cc.xyw(1, row, colSpan));
 			
 			row = LayoutUtil.addRow(layout, row);
 			builder.addLabel("Split range at:", cc.xy(1, row));
@@ -117,8 +119,8 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			AffixableFormat formatLower = new AffixableFormat();
 			formatLower.setMaximumFractionDigits(3);
 			StringBuilder prefix = new StringBuilder()
-				.append(decimalFormat.format(d_nodes.get(d_rangeIndex).getRangeLowerBound()))
-				.append((d_nodes.get(d_rangeIndex).isRangeLowerBoundOpen() ? " < " : " <= "))
+				.append(decimalFormat.format(d_node.getRangeLowerBound()))
+				.append((d_node.isRangeLowerBoundOpen() ? " < " : " <= "))
 				.append(d_boundName + " < ");
 			formatLower.setPrefix(prefix.toString());
 			formatLower.setSuffix(" " + unitText);
@@ -132,8 +134,8 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			if ( d_rangeIndex < d_pm.getBean().getDecisionTree().getChildCount(d_parent) - 1) { 
 				StringBuilder suffix = new StringBuilder()
 					.append(" <= " + d_boundName)
-					.append((d_nodes.get(d_rangeIndex).isRangeUpperBoundOpen() ? " < " : " <= "))
-					.append(decimalFormat.format(d_nodes.get(d_rangeIndex).getRangeUpperBound()));
+					.append((d_node.isRangeUpperBoundOpen() ? " < " : " <= "))
+					.append(decimalFormat.format(d_node.getRangeUpperBound()));
 				formatLower.setSuffix(" " + unitText);
 				formatUpper.setSuffix(suffix.toString());
 			} else {
@@ -151,7 +153,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		
 		@Override
 		protected void commit() {
-			List<RangeNode> ranges = d_pm.splitRange(d_nodes.get(d_rangeIndex), d_cutOff.getValue(), !d_upperOpen.getValue());
+			List<RangeNode> ranges = d_pm.splitRange(d_node, d_cutOff.getValue(), !d_upperOpen.getValue());
 			d_nodes.set(d_rangeIndex, ranges.get(0));
 			d_nodes.add(d_rangeIndex + 1, ranges.get(1));
 			setVisible(false);
@@ -182,6 +184,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		super(presentationModel, domain, mainWindow);
 		d_beanClass = beanClass;
 		d_propertyName = propertyName;
+		d_pm.getBean().getDecisionTree();
 		d_nodes.addListDataListener((new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {}
 			
@@ -195,14 +198,15 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	@Override 
 	public void initialize() { 
-		d_parent = d_pm.getParentNode(d_beanClass, d_propertyName);
-		System.out.println("The parent of " + d_beanClass + " " + d_propertyName + " is " + d_parent);
+		d_parent = d_pm.getNode(d_beanClass, d_propertyName);
+		d_pm.clearNode(d_parent);
 		final DoseRangeNode node = new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit());
 		if(d_nodes.isEmpty()) {
 			d_nodes.add(node);
 		}
-		CollectionUtils.forAllDo(d_nodes, new Closure<DecisionTreeNode>() {
+		forAllDo(d_nodes, new Closure<DecisionTreeNode>() {
 			public void execute(DecisionTreeNode node) {
+				d_pm.setSelected(d_parent, node);
 				d_pm.setSelected(node, new EmptyNode());
 			}
 		});

@@ -128,13 +128,13 @@ public class DosedDrugTreatmentPresentationTest {
 		FixedDose lowDose = new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY);
 		FixedDose highDose = new FixedDose(30.0, ExampleData.MILLIGRAMS_A_DAY);
 		
-		assertEquals(lowDoseNode, d_pm.getBean().getNode(lowDose));
-		assertEquals(highDoseNode, d_pm.getBean().getNode(highDose));
+		assertEquals(lowDoseNode.getName(), d_pm.getBean().getNode(lowDose).getName());
+		assertEquals(highDoseNode.getName(), d_pm.getBean().getNode(highDose).getName());
 
 	}
 	
 	@Test
-	public void testGetParentNode() {
+	public void testGetNode() {
 		TypeNode fixedDose = new TypeNode(FixedDose.class);
 		TypeNode flexibleDose = new TypeNode(FlexibleDose.class);
 
@@ -144,15 +144,15 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.setSelected(d_pm.getBean().getRootNode(), fixedDose);
 		d_pm.setSelected(d_pm.getBean().getRootNode(), flexibleDose);
 
-		assertEquals(d_pm.getBean().getRootNode(), d_pm.getParentNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
-		assertEquals(d_pm.getBean().getRootNode(), d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
+		assertEquals(fixedDose, d_pm.getNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
+		assertEquals(flexibleDose, d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
 
 		d_pm.setSelected(fixedDose, range1);
 		d_pm.setSelected(flexibleDose, range2);
 
-		assertEquals(fixedDose, d_pm.getParentNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
-		assertEquals(flexibleDose, d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
-		JUnitUtil.assertNotEquals(d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE), d_pm.getParentNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
+		assertEquals(range1, d_pm.getNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
+		assertEquals(range2, d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
+		JUnitUtil.assertNotEquals(d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE), d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
 
 	}
 	

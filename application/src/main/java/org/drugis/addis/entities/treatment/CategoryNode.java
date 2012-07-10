@@ -2,7 +2,7 @@ package org.drugis.addis.entities.treatment;
 
 import com.jgoodies.binding.value.ValueHolder;
 
-public class CategoryNode extends DecisionTreeNode {
+public class CategoryNode extends DecisionTreeNode implements LeafNode {
 	public static final String PROPERTY_NAME = "name";
 	private ValueHolder d_nameModel;
 

@@ -18,7 +18,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
@@ -38,7 +37,7 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 	
 	protected JPanel buildPanel() {
 		FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, pref",
+				"left:pref, 3dlu, pref:grow:fill",
 				"p"
 				);	
 		
@@ -49,8 +48,7 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 		
 		builder.addLabel("Overview of" + " " + d_pm.getBean().getLabel(), cc.xy(1, row));
 		row = LayoutUtil.addRow(layout, row);
-		JPanel overview = buildOverview(d_pm.getBean().getDecisionTree());
-		builder.add(overview, cc.xyw(1, row, 3));
+		builder.add(buildOverview(d_pm.getBean().getDecisionTree()), cc.xyw(1, row, 3));
 		return builder.getPanel();
 	}
 

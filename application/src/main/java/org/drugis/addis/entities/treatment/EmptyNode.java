@@ -1,6 +1,6 @@
 package org.drugis.addis.entities.treatment;
 
-public class EmptyNode extends DecisionTreeNode {
+public class EmptyNode extends DecisionTreeNode implements LeafNode {
 
 	@Override
 	public boolean decide(Object object) {

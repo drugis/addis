@@ -23,8 +23,7 @@ public class DoseRangeNode extends RangeNode {
 			boolean lowerBoundIsOpen, 
 			double upperBound,
 			boolean upperBoundIsOpen, 
-			DoseUnit doseUnit,
-			DecisionTreeNode child) {
+			DoseUnit doseUnit) {
 		super(beanClass, propertyName, lowerBound, lowerBoundIsOpen, upperBound,
 				upperBoundIsOpen);
 		d_doseUnit = doseUnit;
