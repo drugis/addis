@@ -13,6 +13,8 @@ import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.EqualsUtil;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -51,30 +53,57 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		row = LayoutUtil.addRow(layout, row);
 		
 		builder.addLabel("Fixed dose", cc.xy(1, row));
-		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.FIXED_CONSIDER);
+		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
+				d_pm.getCategories(), 
+				d_pm.getSelectedCategory(d_fixedDoseNode), 
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.FIXED_CONSIDER);
 		fixedCategoryComboBox.addItemListener(new ItemListener() {
 
 			public void itemStateChanged(ItemEvent e) {
 				d_pm.setSelected(d_fixedDoseNode, fixedCategoryComboBox.getSelectedItem());
 			}
 		});
-		fixedCategoryComboBox.setSelectedItem(d_pm.getSelectedCategory(d_fixedDoseNode));
 		builder.add(fixedCategoryComboBox, cc.xy(3, row));
 		
 		row = LayoutUtil.addRow(layout, row);
 
 		builder.addLabel("Flexible dose", cc.xy(1, row));
 	
-		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER, DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
+		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
+				d_pm.getCategories(),
+				d_pm.getSelectedCategory(d_flexibleDoseNode), 
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER,
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
 		flexibleCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				d_pm.setSelected(d_flexibleDoseNode, flexibleCategoryComboBox.getSelectedItem());
 			}
 		});
-		flexibleCategoryComboBox.setSelectedItem(d_pm.getSelectedCategory(d_flexibleDoseNode));
 
 		builder.add(flexibleCategoryComboBox, cc.xy(3, row));
 		
 		return builder.getPanel();
 	}
+	
+	public Boolean considerFixedDose() {
+		ValueHolder<Object> selection = d_pm.getSelectedCategory(d_fixedDoseNode);
+		if(selection == null) return null;
+		if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.FIXED_CONSIDER.getName(), selection.getValue().toString())) {
+			return true;
+		} else { 
+			return false;
+		}
+	}
+	
+	public Boolean considerFlexibleUpper() {
+		ValueHolder<Object> selection = d_pm.getSelectedCategory(d_flexibleDoseNode);
+		if(selection == null) return null;
+		if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER.getName(), selection.getValue().toString())) {
+			return true;
+		} else if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER.getName(), selection.getValue().toString())) {
+			return false;
+		}
+		return null;
+	}
+	
 }

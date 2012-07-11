@@ -57,12 +57,12 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 			d_title = title; 
 		}
 	
-		public String getTitle() {
+		public String getName() {
 			return d_title;
 		}
 		
 		public String toString() { 
-			return getTitle();
+			return getName();
 		}
 	}
 

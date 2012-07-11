@@ -30,6 +30,7 @@ import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.gui.wizard.AbstractDoseTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
@@ -72,6 +73,9 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		
 		// Same for flexible upper, flexible lower and any (needs to set all)
 		final DoseRangeWizardStep specifyFixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
+		final DoseRangeWizardStep specifyFlexibleUpperDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
+		final DoseRangeWizardStep specifyFlexibleLowerDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE);
+		
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
 		BranchingPath generalPath = new BranchingPath();
@@ -82,6 +86,9 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 		considerDoseTypePath.addStep(specifyDoseType);
 		considerDoseTypePath.addStep(specifyFixedDose);
+		considerDoseTypePath.addStep(specifyFlexibleLowerDose);
+		considerDoseTypePath.addStep(specifyFlexibleUpperDose);
+		
 		lastPath.addStep(overview);
 		
 		generalPath.addBranch(lastPath, new Condition() {	

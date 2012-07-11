@@ -44,6 +44,7 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.EmptyNode;
+import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
@@ -71,16 +72,15 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			return this.toString().hashCode() * 31;
 		}
 	}
-	private ContentAwareListModel<CategoryNode> d_categories;
-	
-	private Map<DecisionTreeNode, NamedValueHolder<Object>> d_selectedCategoryMap = 
+	private final ContentAwareListModel<CategoryNode> d_categories;
+	private final Map<DecisionTreeNode, NamedValueHolder<Object>> d_selectedCategoryMap = 
 			new HashMap<DecisionTreeNode, NamedValueHolder<Object>>(); 
 	
-	private Map<Pair<Class<?>, String>, DecisionTreeNode> d_nodeMap = new HashMap<Pair<Class<?>,String>, DecisionTreeNode>();
+	private final Map<Pair<Class<?>, String>, DecisionTreeNode> d_nodeMap = 
+			new HashMap<Pair<Class<?>,String>, DecisionTreeNode>();
 	
 	private final Domain d_domain;
-
-	private DoseDecisionTree d_tree;
+	private final DoseDecisionTree d_tree;
 
 	public DosedDrugTreatmentPresentation(DosedDrugTreatment bean) {	
 		this(bean, null);
@@ -136,8 +136,10 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	
 	public ValueHolder<Object> getSelectedCategory(DecisionTreeNode node) {
 		if (d_selectedCategoryMap.get(node) == null) {
-			return new ModifiableHolder<Object>(null);
+			System.out.println("There was no selection for the object " + node);
+			return new NamedValueHolder<Object>(buildDefaultNode());
 		}
+		System.out.println("The selected category is  " + d_nodeMap.get(node) + " for " + node);
 		return d_selectedCategoryMap.get(node);
 	}
 	
@@ -160,7 +162,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			setDecisionTree(parent, child);
 			updateNodeMapping(current, child);
 		} else { 
-			updateNodeMapping(current, new EmptyNode());
+			updateNodeMapping(current, buildDefaultNode());
 		}
 	}
 
@@ -169,7 +171,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			try {
 				child = child.clone(); // To ensure uniqueness in the tree implementation
 			} catch (Exception e) {
-				throw new IllegalStateException("Tried to clone an uncopyable object to ensure uniqueness in the DecisionTree");
+				throw new IllegalStateException("Tried to clone an uncopyable object " + child + " to ensure uniqueness in the DecisionTree");
 			}
 		}
 		d_tree.setChild(parent, child);
@@ -240,4 +242,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		});
 	}
 
+	public static DecisionTreeNode buildDefaultNode() {
+		return new ExcludeNode(); 
+	}
 }

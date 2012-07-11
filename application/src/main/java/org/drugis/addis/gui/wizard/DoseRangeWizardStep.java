@@ -246,7 +246,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		String rangeText = d_nodes.get(index).getLabel(nodeIsLast);
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
-		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
+		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), d_pm.getSelectedCategory(d_nodes.get(index)));
 		comboBox.addItemListener(new ItemListener() {
 			
 			@Override
@@ -255,7 +255,6 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				d_pm.setSelected(d_nodes.get(index), selected);
 			}
 		});
-		comboBox.setSelectedItem(d_pm.getSelectedCategory(d_nodes.get(index)));
 		builder.add(comboBox, cc.xy(5, row));
 		return row;
 	}

@@ -110,9 +110,9 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	public Boolean considerDoseType() {
 		ValueHolder<Object> selection = getSelectedKnownCategory();
 		if(selection == null) return null;
-		if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER.getTitle(), selection.getValue().toString())) {
+		if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER.getName(), selection.getValue().toString())) {
 			return true;
-		} else if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER.getTitle(), selection.getValue().toString())) {
+		} else if(EqualsUtil.equal(DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER.getName(), selection.getValue().toString())) {
 			return false;
 		}
 		return null;
@@ -162,29 +162,24 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
-		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getCategories());
+		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getCategories(), d_pm.getSelectedCategory(d_unknownNode));
 		unknownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				d_pm.setSelected(d_unknownNode, unknownDoseCombo.getSelectedItem());		
 			}
 		});
-		unknownDoseCombo.setSelectedItem(d_pm.getSelectedCategory(d_unknownNode).getValue());
 		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
 
-		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
+		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getCategories(), getSelectedKnownCategory(),  DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
 		knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				d_pm.setSelected(d_fixedNode, knownDoseCombo.getSelectedItem());
 				d_pm.setSelected(d_flexibleNode, knownDoseCombo.getSelectedItem());
 			}
 		});
-		ValueHolder<Object> selectedKnown = getSelectedKnownCategory();
-		if(selectedKnown != null) { 
-			knownDoseCombo.setSelectedItem(selectedKnown.getValue());
-		}
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
 	}
@@ -199,14 +194,18 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	}
 
 
-	public static JComboBox createCategoryComboBox(List<CategoryNode> categories, DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
+	public static JComboBox createCategoryComboBox(List<CategoryNode> categories, ValueHolder<Object> selection, DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
 		ObservableList<Object> list = new ArrayListModel<Object>();
 		list.add(0, new ExcludeNode());
 		for (DosedDrugTreatmentKnowledge.CategorySpecifiers item : extraItems) {
-			list.add(GUIFactory.createBoxedString(item.getTitle()));
+			list.add(GUIFactory.createBoxedString(item.getName()));
 		}
 		list.addAll(categories);
-		return new JComboBox(list.toArray());
+		JComboBox box = new JComboBox(list.toArray());
+		if(selection != null)  {
+			box.setSelectedItem(selection.getValue());
+		}
+		return box;
 	}
 	
 	private JButton createNewDrugButton(final AbstractValueModel drugModel) {
