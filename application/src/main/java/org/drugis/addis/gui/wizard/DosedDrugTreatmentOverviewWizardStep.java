@@ -4,7 +4,6 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
-import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
@@ -16,7 +15,6 @@ import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.LayoutUtil;
-import org.jgraph.graph.VertexRenderer;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -25,9 +23,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentWizardStep {
 
@@ -70,8 +66,8 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 		VisualizationViewer<DecisionTreeNode, String> vv = new VisualizationViewer<DecisionTreeNode, String>(layout);
 		vv.setVertexToolTipTransformer(new ToStringLabeller<DecisionTreeNode>());
         vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
-        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<DecisionTreeNode>());
+//        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
+//        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<DecisionTreeNode>());
 		vv.setPreferredSize(new Dimension(PANEL_WIDTH, 700));
 		return vv;
 	}

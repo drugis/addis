@@ -27,7 +27,6 @@ import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
-import org.drugis.addis.entities.treatment.EmptyNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -68,8 +67,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			d_boundName = boundName;
 			d_node = d_nodes.get(rangeIndex);
 			d_validator = 
-					new RangeValidator(d_cutOff, d_node.getRangeLowerBound(), 
-							d_node.getRangeUpperBound());
+					new RangeValidator(d_cutOff, d_node.getRangeLowerBound(), d_node.getRangeUpperBound());
 			getUserPanel().add(buildPanel());
 			pack(); 
 		}
@@ -195,19 +193,16 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			public void contentsChanged(ListDataEvent e) {}
 		}));
 	}
-	
+
 	@Override 
 	public void initialize() { 
 		d_parent = d_pm.getNode(d_beanClass, d_propertyName);
-		d_pm.clearNode(d_parent);
-		final DoseRangeNode node = new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit());
 		if(d_nodes.isEmpty()) {
-			d_nodes.add(node);
+			d_nodes.add(new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit()));
 		}
 		forAllDo(d_nodes, new Closure<DecisionTreeNode>() {
 			public void execute(DecisionTreeNode node) {
 				d_pm.setSelected(d_parent, node);
-				d_pm.setSelected(node, new EmptyNode());
 			}
 		});
 		rebuildPanel();
@@ -246,7 +241,9 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		String rangeText = d_nodes.get(index).getLabel(nodeIsLast);
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
-		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories(), d_pm.getSelectedCategory(d_nodes.get(index)));
+		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
+				d_pm.getCategories(),
+				d_pm.getSelectedCategory(d_nodes.get(index)));
 		comboBox.addItemListener(new ItemListener() {
 			
 			@Override

@@ -134,12 +134,14 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		updateNodeMapping(new ModifiableHolder<Object>(new EmptyNode()), node);
 	}
 	
+	/**
+	 * @param node the node of which the selection was set
+	 * @return the item previously selected by a combobox, the DefaultNode if none set
+	 */
 	public ValueHolder<Object> getSelectedCategory(DecisionTreeNode node) {
 		if (d_selectedCategoryMap.get(node) == null) {
-			System.out.println("There was no selection for the object " + node);
 			return new NamedValueHolder<Object>(buildDefaultNode());
 		}
-		System.out.println("The selected category is  " + d_nodeMap.get(node) + " for " + node);
 		return d_selectedCategoryMap.get(node);
 	}
 	
@@ -155,8 +157,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			addNodeMapping(parent);
 			current = d_selectedCategoryMap.get(parent);
 		}
-		current.setValue(selected);
-
 		if(selected instanceof DecisionTreeNode) {
 			DecisionTreeNode child = (DecisionTreeNode) selected;
 			setDecisionTree(parent, child);
@@ -164,6 +164,8 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		} else { 
 			updateNodeMapping(current, buildDefaultNode());
 		}
+		
+		current.setValue(selected);
 	}
 
 	private void setDecisionTree(DecisionTreeNode parent, DecisionTreeNode child) {
@@ -218,16 +220,20 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * otherwise the parent of the node mapped to only beanClass, the root of the tree if none present
 	 */
 	public DecisionTreeNode getNode(final Class<?> beanClass, final String propertyName) {
-		DecisionTreeNode parent = d_nodeMap.get(new Pair<Class<?>, String>(beanClass, propertyName));
-		if(parent == null) { 
+		System.out.println("Getting node for " + beanClass + " " + propertyName);
+		DecisionTreeNode node = d_nodeMap.get(new Pair<Class<?>, String>(beanClass, propertyName));
+		System.out.println(node != null ? "Node for " + beanClass + " " + propertyName + " is " + node :  beanClass + " " + propertyName + " has no node ");
+		if(node == null) { 
 			Pair<Class<?>, String> key = find(d_nodeMap.keySet(), new Predicate<Pair<Class<?>, String>>() {
 				public boolean evaluate(Pair<Class<?>, String> object) {
 					return EqualsUtil.equal(object.getKey(), beanClass);
 				}
 			});
-			parent = d_nodeMap.get(key);
+			node = d_nodeMap.get(key);
+			System.out.println(node != null ? "But did find " + key.getKey() + " " + key.getValue() : " and nothing that looks like it eiter ");
+
 		}
-		return parent == null ? getBean().getRootNode() : parent; // return the root of the tree otherwise
+		return node == null ? getBean().getRootNode() : node; // return the root of the tree otherwise
 	}
 	
 	/**
@@ -238,6 +244,8 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		forAllDo(d_tree.getChildren(node), new Closure<DecisionTreeNode>() {
 			public void execute(DecisionTreeNode orphan) {
 				d_tree.removeChild(orphan);
+				d_selectedCategoryMap.remove(orphan);
+				d_nodeMap.remove(new Pair<Class<?>, String>(orphan.getBeanClass(), orphan.getPropertyName()));
 			}
 		});
 	}
