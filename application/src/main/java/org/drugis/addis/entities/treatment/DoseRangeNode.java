@@ -9,7 +9,7 @@ import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
-public class DoseRangeNode extends RangeNode {
+public class DoseRangeNode extends RangeNode implements Comparable<RangeNode> {
 
 	private final DoseUnit d_doseUnit;
 
@@ -46,11 +46,6 @@ public class DoseRangeNode extends RangeNode {
 		throw new IllegalStateException("Could not decide the fate of " + object.toString());
 	}
 	
-	public String getChildLabel(int index) { 
-//		return super.getChildLabel(index, d_doseUnit);
-		return "";
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof DoseRangeNode) {
@@ -68,5 +63,13 @@ public class DoseRangeNode extends RangeNode {
 	public String getLabel(boolean nodeIsLast) {
 		return super.getLabel(nodeIsLast, d_doseUnit);
 	}
-	
+		
+	@Override
+	public int compareTo(RangeNode o) {
+		if(o instanceof DoseRangeNode) { 
+			return super.compareTo((DoseRangeNode)o);
+		} else { 
+			return -1;
+		}
+	}
 }

@@ -1,7 +1,9 @@
 package org.drugis.addis.gui.wizard;
 
 
+import static org.apache.commons.collections15.CollectionUtils.collect;
 import static org.apache.commons.collections15.CollectionUtils.forAllDo;
+import static org.apache.commons.collections15.CollectionUtils.select;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +11,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +24,8 @@ import javax.swing.event.ListDataListener;
 import javax.swing.text.DefaultFormatter;
 
 import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
@@ -52,6 +55,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private final String d_propertyName;
 	private final ObservableList<RangeNode> d_nodes = new ArrayListModel<RangeNode>();
 	private DecisionTreeNode d_parent;
+	
 	private final class AddCutOffDialog extends OkCancelDialog {
 		private static final long serialVersionUID = -7519390341921875264L;
 		private final int d_rangeIndex;
@@ -151,9 +155,9 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		
 		@Override
 		protected void commit() {
-			List<RangeNode> ranges = d_pm.splitRange(d_node, d_cutOff.getValue(), !d_upperOpen.getValue());
-			d_nodes.set(d_rangeIndex, ranges.get(0));
-			d_nodes.add(d_rangeIndex + 1, ranges.get(1));
+			d_nodes.remove(d_rangeIndex);
+			d_nodes.addAll(d_rangeIndex, d_pm.splitRange(d_node, d_cutOff.getValue(), !d_upperOpen.getValue()));
+
 			setVisible(false);
 		}
 
@@ -169,20 +173,31 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			Domain domain, 
 			AddisWindow mainWindow,
 			Class<? extends AbstractDose> beanClass, 
-			String propertyName) {
+			String propertyName,
+			String name, 
+			String summary) {
 	
-		return new DoseRangeWizardStep(pm, domain, mainWindow, beanClass, propertyName);
+		return new DoseRangeWizardStep(pm, domain, mainWindow, beanClass, propertyName, name, summary);
+	}
+	
+	public static DoseRangeWizardStep createOnKnownDose(
+			DosedDrugTreatmentPresentation pm, 
+			Domain domain, 
+			AddisWindow mainWindow,
+			Class<? extends AbstractDose> beanClass) {
+		return null;
 	}
 	
 	private DoseRangeWizardStep(DosedDrugTreatmentPresentation presentationModel, 
 			Domain domain, 
 			AddisWindow mainWindow,
 			Class<? extends AbstractDose> beanClass, 
-			String propertyName) {
-		super(presentationModel, domain, mainWindow);
+			String propertyName,
+			String name, 
+			String summary) {
+		super(presentationModel, domain, mainWindow, name, summary);
 		d_beanClass = beanClass;
 		d_propertyName = propertyName;
-		d_pm.getBean().getDecisionTree();
 		d_nodes.addListDataListener((new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {}
 			
@@ -196,7 +211,19 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	@Override 
 	public void initialize() { 
-		d_parent = d_pm.getNode(d_beanClass, d_propertyName);
+		d_parent = d_pm.getType(d_beanClass);
+		d_nodes.clear();
+		d_nodes.addAll(
+			collect(
+				select(d_pm.getChildNodes(d_parent), new Predicate<DecisionTreeNode>() {
+					public boolean evaluate(DecisionTreeNode object) {
+						return object instanceof RangeNode;
+					}
+					}), new Transformer<DecisionTreeNode, RangeNode>() {
+						public RangeNode transform(DecisionTreeNode input) {
+							return ((RangeNode)input);
+						}
+					}));
 		if(d_nodes.isEmpty()) {
 			d_nodes.add(new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit()));
 		}
@@ -205,6 +232,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				d_pm.setSelected(d_parent, node);
 			}
 		});
+		setComplete(false);
 		rebuildPanel();
 	}
 	

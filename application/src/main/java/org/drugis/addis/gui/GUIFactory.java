@@ -126,6 +126,10 @@ public class GUIFactory {
 	}
 	
 	public static Object createBoxedString(final String item)  {
-		return new Object() { public String toString() { return item; } };
+		return new Object() { 
+			public String toString() { return item; } 
+			public boolean equals(Object obj) { return obj.toString().equals(toString()); }
+			public int hashCode() { return toString().hashCode(); }
+		};
 	}
 }

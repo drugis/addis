@@ -31,12 +31,16 @@ import javax.swing.JDialog;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.gui.wizard.AbstractDoseTreatmentWizardStep;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
 import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
 import org.drugis.addis.gui.wizard.SpecifyDoseTypeWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.ValueHolder;
+import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.WizardListener;
@@ -44,6 +48,7 @@ import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.BranchingPath;
 import org.pietschy.wizard.models.Condition;
 import org.pietschy.wizard.models.MultiPathModel;
+import org.pietschy.wizard.models.Path;
 import org.pietschy.wizard.models.SimplePath;
 
 @SuppressWarnings("serial")
@@ -67,30 +72,73 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	private static WizardModel buildModel(DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
+	private static WizardModel buildModel(final DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
-		final AbstractDoseTreatmentWizardStep specifyDoseType = new SpecifyDoseTypeWizardStep(pm, domain, mainWindow);
+		final SpecifyDoseTypeWizardStep specifyDoseType = new SpecifyDoseTypeWizardStep(pm, domain, mainWindow);
 		
 		// Same for flexible upper, flexible lower and any (needs to set all)
-		final DoseRangeWizardStep specifyFixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
-		final DoseRangeWizardStep specifyFlexibleUpperDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
-		final DoseRangeWizardStep specifyFlexibleLowerDose = DoseRangeWizardStep.createOnBeanProperty(pm, domain, mainWindow, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE);
+		final DoseRangeWizardStep specifyFixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, 
+				domain, 
+				mainWindow, 
+				FixedDose.class, 
+				FixedDose.PROPERTY_QUANTITY,
+				"Specify ranges for fixed doses",
+				"");
 		
+		final DoseRangeWizardStep specifyFlexibleLowerDose = DoseRangeWizardStep.createOnBeanProperty(
+				pm, 
+				domain, 
+				mainWindow, 
+				FlexibleDose.class, 
+				FlexibleDose.PROPERTY_MIN_DOSE,
+				"Specify the ranges for the minimum of flexible doses",
+				"");
+		
+		final DoseRangeWizardStep specifyFlexibleUpperDose = DoseRangeWizardStep.createOnBeanProperty(
+				pm, 
+				domain, 
+				mainWindow, 
+				FlexibleDose.class, 
+				FlexibleDose.PROPERTY_MAX_DOSE,
+				"Specify the ranges for the maximum of flexible doses",
+				"");
+
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
+		SimplePath lastPath = new SimplePath(overview);
 		BranchingPath generalPath = new BranchingPath();
-		SimplePath considerDoseTypePath = new SimplePath(); // Consider dose type -> set fixed dose -> set flexible lower -> set flexible upper -> overview
-		SimplePath lastPath = new SimplePath();
+		BranchingPath considerDoseTypePath = new BranchingPath();
+		
+		SimplePath fixedOnlyPath = createSimplePath(lastPath, specifyFixedDose);
+		
+		SimplePath flexibleOnlyLowerPath = createSimplePath(lastPath, specifyFlexibleLowerDose);
+		SimplePath flexibleOnlyUpperPath = createSimplePath(lastPath, specifyFlexibleUpperDose);
+		SimplePath flexibleBothPath = createSimplePath(lastPath, specifyFlexibleLowerDose, specifyFlexibleUpperDose);  // FIXME the upper step needs to loop over the previous rangenodes
+		
+		BranchingPath fixedAndFlexiblePath = new BranchingPath();
+		fixedAndFlexiblePath.addStep(specifyFixedDose);
+		fixedAndFlexiblePath.addBranch(flexibleOnlyLowerPath, 
+				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER));
+		fixedAndFlexiblePath.addBranch(flexibleOnlyUpperPath, 
+				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER));
+		fixedAndFlexiblePath.addBranch(flexibleBothPath, 
+				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH));
 		
 		generalPath.addStep(generalInfo);
 
 		considerDoseTypePath.addStep(specifyDoseType);
-		considerDoseTypePath.addStep(specifyFixedDose);
-		considerDoseTypePath.addStep(specifyFlexibleLowerDose);
-		considerDoseTypePath.addStep(specifyFlexibleUpperDose);
-		
-		lastPath.addStep(overview);
-		
+		considerDoseTypePath.addBranch(fixedOnlyPath,
+				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.DO_NOT_CONSIDER));
+		considerDoseTypePath.addBranch(flexibleOnlyLowerPath,
+				createRangeCondition(pm, CategorySpecifiers.DO_NOT_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER));
+		considerDoseTypePath.addBranch(flexibleOnlyUpperPath,
+				createRangeCondition(pm, CategorySpecifiers.DO_NOT_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER));
+		considerDoseTypePath.addBranch(flexibleBothPath,
+				createRangeCondition(pm, CategorySpecifiers.DO_NOT_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH));
+
+		considerDoseTypePath.addBranch(fixedAndFlexiblePath,
+				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, null));
+
 		generalPath.addBranch(lastPath, new Condition() {	
 			public boolean evaluate(WizardModel model) {
 				return generalInfo.considerDoseType() == null;
@@ -99,21 +147,51 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 		generalPath.addBranch(considerDoseTypePath, new Condition() {		
 			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType() != null && generalInfo.considerDoseType();
+				return generalInfo.considerDoseType() != null && generalInfo.considerDoseType() == true;
 			}
 		});
-		generalPath.addBranch(lastPath, new Condition() {		
+		generalPath.addBranch(lastPath, new Condition() {
 			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType() != null && !generalInfo.considerDoseType();
+				return generalInfo.considerDoseType() != null && generalInfo.considerDoseType() == false;
 			}
 		}); // TODO This is a dummy, it will be the "do not consider dose type" option
 
-		considerDoseTypePath.setNextPath(lastPath);
 		
 		MultiPathModel model = new MultiPathModel(generalPath);
 		model.setLastVisible(false);
 
 		return model;
 	}
-	
+
+	private static Condition createRangeCondition(final DosedDrugTreatmentPresentation pm,
+			final CategorySpecifiers fixedSpec, final CategorySpecifiers flexibleSpec) {
+		Condition condition = new Condition() {
+			public boolean evaluate(WizardModel model) {
+				final ValueHolder<Object> fixed = pm.getSelectedCategory(pm.getType(FixedDose.class));
+				final ValueHolder<Object> flexible = pm.getSelectedCategory(pm.getType(FlexibleDose.class));
+				
+				boolean fixedMatches = (fixedSpec == null)
+						|| ((fixedSpec == CategorySpecifiers.DO_NOT_CONSIDER) && (fixed.getValue() instanceof DecisionTreeNode))
+						|| (fixed.getValue().equals(fixedSpec));
+				boolean flexibleMatches = (flexibleSpec == null)
+						|| ((flexibleSpec == CategorySpecifiers.DO_NOT_CONSIDER) && (flexible.getValue() instanceof DecisionTreeNode))
+						|| (flexible.getValue().equals(flexibleSpec));
+				System.out.println("specs: <" + fixedSpec + "> <" + flexibleSpec + ">");
+				System.out.println("  data: <" + fixed.getValue() + "> <" + flexible.getValue() + ">");
+				System.out.println("  matches: " + fixedMatches + ", " + flexibleMatches);
+				return fixedMatches && flexibleMatches;
+				
+			}
+		};
+		return condition;
+	}
+
+	public static SimplePath createSimplePath(Path nextPath, PanelWizardStep ... steps) { 
+		SimplePath path = new SimplePath(); 
+		for(PanelWizardStep step : steps) { 
+			path.addStep(step);
+		}
+		path.setNextPath(nextPath);
+		return path;
+	}
 }

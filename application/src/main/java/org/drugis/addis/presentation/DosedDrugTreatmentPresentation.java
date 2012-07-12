@@ -26,12 +26,14 @@
 
 package org.drugis.addis.presentation;
 
+import static org.apache.commons.collections15.CollectionUtils.*;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.commons.collections15.CollectionUtils.*;
+import java.util.TreeSet;
 
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Predicate;
@@ -43,7 +45,6 @@ import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.EmptyNode;
 import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeNode;
@@ -126,12 +127,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	
 	
 	/**
-	 * 
 	 * @param The type to be added to the selection mapping
 	 * @return The newly-created ValueHolder
 	 */
 	private void addNodeMapping(DecisionTreeNode node) {
-		updateNodeMapping(new ModifiableHolder<Object>(new EmptyNode()), node);
+		updateNodeMapping(new ModifiableHolder<Object>(buildDefaultNode()), node);
 	}
 	
 	/**
@@ -157,15 +157,18 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			addNodeMapping(parent);
 			current = d_selectedCategoryMap.get(parent);
 		}
+		current.setValue(selected);
+
 		if(selected instanceof DecisionTreeNode) {
 			DecisionTreeNode child = (DecisionTreeNode) selected;
+			if(child instanceof LeafNode) { 
+				clearNode(parent);
+			}
 			setDecisionTree(parent, child);
 			updateNodeMapping(current, child);
 		} else { 
 			updateNodeMapping(current, buildDefaultNode());
-		}
-		
-		current.setValue(selected);
+		}		
 	}
 
 	private void setDecisionTree(DecisionTreeNode parent, DecisionTreeNode child) {
@@ -212,28 +215,19 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		d_selectedCategoryMap.put(child, new NamedValueHolder<Object>(selected.getValue()));
 	}
 
-	/**
-	 * Gets the parent node of a node with a combination of a given beanClass and propertyName
-	 * @param beanClass any class, usually Class<? extends AbstractDose>
-	 * @param propertyName
-	 * @return the parent of the beanClass-propertyName pair if present, 
-	 * otherwise the parent of the node mapped to only beanClass, the root of the tree if none present
-	 */
-	public DecisionTreeNode getNode(final Class<?> beanClass, final String propertyName) {
-		System.out.println("Getting node for " + beanClass + " " + propertyName);
-		DecisionTreeNode node = d_nodeMap.get(new Pair<Class<?>, String>(beanClass, propertyName));
-		System.out.println(node != null ? "Node for " + beanClass + " " + propertyName + " is " + node :  beanClass + " " + propertyName + " has no node ");
-		if(node == null) { 
-			Pair<Class<?>, String> key = find(d_nodeMap.keySet(), new Predicate<Pair<Class<?>, String>>() {
+	public DecisionTreeNode getType(final Class<?> beanClass) {
+			Collection<Pair<Class<?>, String>> candidates = select(d_nodeMap.keySet(), new Predicate<Pair<Class<?>, String>>() {
 				public boolean evaluate(Pair<Class<?>, String> object) {
 					return EqualsUtil.equal(object.getKey(), beanClass);
 				}
 			});
-			node = d_nodeMap.get(key);
-			System.out.println(node != null ? "But did find " + key.getKey() + " " + key.getValue() : " and nothing that looks like it eiter ");
-
-		}
-		return node == null ? getBean().getRootNode() : node; // return the root of the tree otherwise
+			DecisionTreeNode node = null;
+			for(Pair<Class<?>, String> pair : candidates) { 
+				if(d_nodeMap.get(pair) instanceof TypeNode) { 
+					node = d_nodeMap.get(pair);
+				}
+			}
+		return node; 
 	}
 	
 	/**
@@ -250,6 +244,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		});
 	}
 
+	public Collection<? extends DecisionTreeNode> getChildNodes(DecisionTreeNode node) {
+		Collection<DecisionTreeNode> children = d_tree.getChildren(node);
+		return children != null ? new TreeSet<DecisionTreeNode>(children) : Collections.<DecisionTreeNode>emptyList();
+	}
+	
 	public static DecisionTreeNode buildDefaultNode() {
 		return new ExcludeNode(); 
 	}

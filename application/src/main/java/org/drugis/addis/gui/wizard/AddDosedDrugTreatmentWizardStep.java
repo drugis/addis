@@ -107,6 +107,11 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	}		
 	
 	
+	@Override
+	protected void initialize() {
+		rebuildPanel();
+	}
+	
 	public Boolean considerDoseType() {
 		ValueHolder<Object> selection = getSelectedKnownCategory();
 		if(selection == null) return null;
@@ -242,7 +247,6 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		}
 		
 		builder.add(createAddCategoryButton(model), cc.xy(1, row));
-		
 		return builder.getPanel();
 	}
 	
@@ -250,8 +254,6 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	private JButton createAddCategoryButton(final DosedDrugTreatmentPresentation model) {
 		JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);
 		btn.addActionListener(new ActionListener() {
-			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				model.getCategories().add(new CategoryNode());
 			}

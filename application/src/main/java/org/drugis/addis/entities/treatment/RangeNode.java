@@ -9,7 +9,7 @@ import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
-public class RangeNode extends DecisionTreeNode {
+public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode> {
 	public static final double EPSILON = 1.0E-14;
 	public static final String PROPERTY_INTERVAL = "interval";
 	
@@ -141,6 +141,10 @@ public class RangeNode extends DecisionTreeNode {
 		return d_propertyName;
 	}
 	
+	public String getLabel(boolean nodeIsLast) {
+		return getLabel(nodeIsLast, null);
+	}
+	
 	public String getLabel(boolean nodeIsLast, DoseUnit unit) {
 		String rangeText;
 		if (!nodeIsLast) {
@@ -163,7 +167,16 @@ public class RangeNode extends DecisionTreeNode {
 		return getLabel(false, null); //NOTE: the argument is arbitrary
 	}
 	
-	public String getLabel(boolean nodeIsLast) {
-		return getLabel(nodeIsLast, null);
+	@Override
+	public int compareTo(RangeNode o) {
+		if(o.equals(this)) {
+			return 0;
+		}
+		boolean lowerDiff = getRangeLowerBound() != o.getRangeLowerBound();
+		if(lowerDiff) { 
+			return getRangeLowerBound() > o.getRangeLowerBound() ? 1 : -1;
+		} else {
+			return getRangeUpperBound() > o.getRangeUpperBound() ? 1 : -1;
+		}
 	}
 }

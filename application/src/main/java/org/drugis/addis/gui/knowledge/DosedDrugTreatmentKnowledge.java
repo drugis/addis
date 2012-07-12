@@ -47,8 +47,11 @@ import com.jgoodies.binding.value.ValueModel;
 public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 
 	public static enum CategorySpecifiers {
-		CONSIDER("* Consider dose type"), DO_NOT_CONSIDER("* Do not consider dose type"),
-		FLEXIBLE_CONSIDER_UPPER("* Consider upper bound"), FLEXIBLE_CONSIDER_LOWER("* Consider lower bound"),
+		CONSIDER("* Consider dose type"), 
+		DO_NOT_CONSIDER("* Do not consider dose type"),
+		FLEXIBLE_CONSIDER_BOTH("* Consider upper and lower bound"),
+		FLEXIBLE_CONSIDER_UPPER("* Only consider upper bound"), 
+		FLEXIBLE_CONSIDER_LOWER("* Only consider lower bound"),
 		FIXED_CONSIDER("* Consider range");
 		
 		private final String d_title;

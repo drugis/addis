@@ -3,8 +3,10 @@ package org.drugis.addis.presentation;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.math.DoubleRange;
 import org.drugis.addis.ExampleData;
@@ -12,6 +14,8 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.CategoryNode;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
@@ -134,7 +138,7 @@ public class DosedDrugTreatmentPresentationTest {
 	}
 	
 	@Test
-	public void testGetNode() {
+	public void testGetType() {
 		TypeNode fixedDose = new TypeNode(FixedDose.class);
 		TypeNode flexibleDose = new TypeNode(FlexibleDose.class);
 
@@ -144,16 +148,35 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.setSelected(d_pm.getBean().getRootNode(), fixedDose);
 		d_pm.setSelected(d_pm.getBean().getRootNode(), flexibleDose);
 
-		assertEquals(fixedDose, d_pm.getNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
-		assertEquals(flexibleDose, d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
+		assertEquals(fixedDose, d_pm.getType(FixedDose.class));
+		assertEquals(flexibleDose, d_pm.getType(FlexibleDose.class));
 
 		d_pm.setSelected(fixedDose, range1);
 		d_pm.setSelected(flexibleDose, range2);
 
-		assertEquals(range1, d_pm.getNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY));
-		assertEquals(range2, d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
-		JUnitUtil.assertNotEquals(d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE), d_pm.getNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
+		assertEquals(fixedDose, d_pm.getType(FixedDose.class));
+		assertEquals(flexibleDose, d_pm.getType(FlexibleDose.class));
 
+		assertEquals(d_pm.getType(FlexibleDose.class), 
+				d_pm.getType(FlexibleDose.class));
+	}
+
+	@Test
+	public void testGetChildren() {
+		TypeNode fixedDose = new TypeNode(FixedDose.class);
+		TypeNode flexibleDose = new TypeNode(FlexibleDose.class);
+
+		RangeNode range1 = new DoseRangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, ExampleData.MILLIGRAMS_A_DAY);
+		RangeNode range2 = new DoseRangeNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, ExampleData.MILLIGRAMS_A_DAY);
+
+		d_pm.setSelected(d_pm.getBean().getRootNode(), fixedDose);
+		d_pm.setSelected(d_pm.getBean().getRootNode(), flexibleDose);
+		d_pm.setSelected(fixedDose, range1);
+		d_pm.setSelected(flexibleDose, range2);
+		
+		Collection<DecisionTreeNode> sortedSet = new TreeSet<DecisionTreeNode>();
+		sortedSet.addAll(Arrays.asList(range1));
+		JUnitUtil.assertAllAndOnly(sortedSet, d_pm.getChildNodes(fixedDose));
 	}
 	
 }
