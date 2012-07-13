@@ -3,7 +3,10 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JPanel;
 
@@ -24,6 +27,7 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentWizardStep {
 
@@ -56,18 +60,38 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 		return builder.getPanel();
 	}
 
-	private static JPanel buildOverview(DoseDecisionTree tree) {      
-		Layout<DecisionTreeNode, String> layout = new TreeLayout<DecisionTreeNode, String>(tree, 130);
+	/**
+	 * Builds a graph overview using Jung's functionality.
+	 * FIXME: the layout uses static spacing so nodes with long labels still mess up the layout.
+	 *        (perhaps 'ellipsize' them beyond a certain maximum length? or wrap text? or make spacing dynamic?)
+	 * @param tree
+	 * @return
+	 */
+	private static JPanel buildOverview(DoseDecisionTree tree) {
+		Layout<DecisionTreeNode, String> layout = new TreeLayout<DecisionTreeNode, String>(tree, 150, 50);
 		Transformer<DecisionTreeNode,Paint> vertexPaint = new Transformer<DecisionTreeNode,Paint>() {
             public Paint transform(DecisionTreeNode node) {
-                return (node instanceof LeafNode) ? Color.BLUE : Color.ORANGE;
+                return (node instanceof LeafNode) ? new Color(0.55f, 0.55f, 1.0f) : Color.ORANGE;
             }
         };
-		VisualizationViewer<DecisionTreeNode, String> vv = new VisualizationViewer<DecisionTreeNode, String>(layout);
+		final VisualizationViewer<DecisionTreeNode, String> vv = new VisualizationViewer<DecisionTreeNode, String>(layout);
 		vv.setVertexToolTipTransformer(new ToStringLabeller<DecisionTreeNode>());
         vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-//        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
-//        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<DecisionTreeNode>());
+        
+        vv.getRenderContext().setVertexShapeTransformer(new Transformer<DecisionTreeNode, Shape>() {
+			public Shape transform(DecisionTreeNode input) {
+				FontMetrics fontMetrics = vv.getGraphics().getFontMetrics();
+				double width = fontMetrics.stringWidth(input.toString());
+				double height = fontMetrics.getHeight();
+				double arc = 5;
+				return new RoundRectangle2D.Double(-width / 2, -height / 2, width, height, arc, arc);
+			}
+		});
+        
+//		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
+        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
+		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<DecisionTreeNode>());
+        
 		vv.setPreferredSize(new Dimension(PANEL_WIDTH, 700));
 		return vv;
 	}
