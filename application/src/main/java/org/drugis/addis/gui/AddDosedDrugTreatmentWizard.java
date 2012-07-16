@@ -26,20 +26,21 @@
 
 package org.drugis.addis.gui;
 
+import java.util.Arrays;
+
 import javax.swing.JDialog;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.LeafNode;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
 import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
 import org.drugis.addis.gui.wizard.SpecifyDoseTypeWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
-import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.common.validation.BooleanNotModel;
+import org.drugis.common.validation.BooleanOrModel;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
@@ -50,6 +51,8 @@ import org.pietschy.wizard.models.Condition;
 import org.pietschy.wizard.models.MultiPathModel;
 import org.pietschy.wizard.models.Path;
 import org.pietschy.wizard.models.SimplePath;
+
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class AddDosedDrugTreatmentWizard extends Wizard {
@@ -118,41 +121,72 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		BranchingPath fixedAndFlexiblePath = new BranchingPath();
 		fixedAndFlexiblePath.addStep(specifyFixedDose);
 		fixedAndFlexiblePath.addBranch(flexibleOnlyLowerPath, 
-				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER));
+				createCondition(new BooleanAndModel(
+						specifyDoseType.getConsiderFixed(), 
+						specifyDoseType.getConsiderFlexibleLower())));
 		fixedAndFlexiblePath.addBranch(flexibleOnlyUpperPath, 
-				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER));
+				createCondition(new BooleanAndModel(
+						specifyDoseType.getConsiderFixed(), 
+						specifyDoseType.getConsiderFlexibleUpper())));
 		fixedAndFlexiblePath.addBranch(flexibleBothPath, 
-				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH));
+				createCondition(new BooleanAndModel(
+						specifyDoseType.getConsiderFixed(), 
+						specifyDoseType.getConsiderFlexibleBoth())));
 		
 		generalPath.addStep(generalInfo);
 
 		considerDoseTypePath.addStep(specifyDoseType);
 		considerDoseTypePath.addBranch(fixedOnlyPath,
-				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, CategorySpecifiers.DO_NOT_CONSIDER));
+				createCondition(new BooleanAndModel(Arrays.<ValueModel>asList(
+						specifyDoseType.getConsiderFixed(), 
+						new BooleanNotModel(specifyDoseType.getConsiderFlexibleBoth()),
+						new BooleanNotModel(specifyDoseType.getConsiderFlexibleLower()),
+						new BooleanNotModel(specifyDoseType.getConsiderFlexibleUpper())))));
+
 		considerDoseTypePath.addBranch(flexibleOnlyLowerPath,
-				createRangeCondition(pm, CategorySpecifiers.DO_NOT_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER));
+				createCondition(new BooleanAndModel(
+						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
+						specifyDoseType.getConsiderFlexibleLower())));
+		
 		considerDoseTypePath.addBranch(flexibleOnlyUpperPath,
-				createRangeCondition(pm, CategorySpecifiers.DO_NOT_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER));
+				createCondition(new BooleanAndModel(
+						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
+						specifyDoseType.getConsiderFlexibleUpper())));
+		
 		considerDoseTypePath.addBranch(flexibleBothPath,
-				createRangeCondition(pm, CategorySpecifiers.DO_NOT_CONSIDER, CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH));
+				createCondition(new BooleanAndModel(
+						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
+						specifyDoseType.getConsiderFlexibleBoth())));
+
+		considerDoseTypePath.addBranch(lastPath,
+				createCondition(new BooleanAndModel(Arrays.<ValueModel>asList(
+						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
+						new BooleanNotModel(specifyDoseType.getConsiderFlexibleBoth()),
+						new BooleanNotModel(specifyDoseType.getConsiderFlexibleLower()),
+						new BooleanNotModel(specifyDoseType.getConsiderFlexibleUpper())))));
 
 		considerDoseTypePath.addBranch(fixedAndFlexiblePath,
-				createRangeCondition(pm, CategorySpecifiers.FIXED_CONSIDER, null));
+				createCondition(new BooleanAndModel(
+						specifyDoseType.getConsiderFixed(), 
+						new BooleanOrModel(Arrays.<ValueModel>asList(
+								specifyDoseType.getConsiderFlexibleBoth(), 
+								specifyDoseType.getConsiderFlexibleLower(), 
+								specifyDoseType.getConsiderFlexibleUpper())))));
 
 		generalPath.addBranch(lastPath, new Condition() {	
 			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType() == null;
+				return generalInfo.getConsiderDoseType().getValue() == null;
 			}
 		});
 
 		generalPath.addBranch(considerDoseTypePath, new Condition() {		
 			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType() != null && generalInfo.considerDoseType() == true;
+				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == true;
 			}
 		});
 		generalPath.addBranch(lastPath, new Condition() {
 			public boolean evaluate(WizardModel model) {
-				return generalInfo.considerDoseType() != null && generalInfo.considerDoseType() == false;
+				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == false;
 			}
 		}); // TODO This is a dummy, it will be the "do not consider dose type" option
 
@@ -163,27 +197,17 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		return model;
 	}
 
-	private static Condition createRangeCondition(final DosedDrugTreatmentPresentation pm,
-			final CategorySpecifiers fixedSpec, final CategorySpecifiers flexibleSpec) {
-		Condition condition = new Condition() {
+	private static Condition createCondition(
+			final ValueModel condition) {
+		Condition result = new Condition() {
 			public boolean evaluate(WizardModel model) {
-				final ValueHolder<Object> fixed = pm.getSelectedCategory(pm.getType(FixedDose.class));
-				final ValueHolder<Object> flexible = pm.getSelectedCategory(pm.getType(FlexibleDose.class));
-				
-				boolean fixedMatches = (fixedSpec == null)
-						|| ((fixedSpec == CategorySpecifiers.DO_NOT_CONSIDER) && (fixed.getValue() instanceof DecisionTreeNode))
-						|| (fixed.getValue().equals(fixedSpec));
-				boolean flexibleMatches = (flexibleSpec == null)
-						|| ((flexibleSpec == CategorySpecifiers.DO_NOT_CONSIDER) && (flexible.getValue() instanceof DecisionTreeNode))
-						|| (flexible.getValue().equals(flexibleSpec));
-				System.out.println("specs: <" + fixedSpec + "> <" + flexibleSpec + ">");
-				System.out.println("  data: <" + fixed.getValue() + "> <" + flexible.getValue() + ">");
-				System.out.println("  matches: " + fixedMatches + ", " + flexibleMatches);
-				return fixedMatches && flexibleMatches;
-				
+				if(condition.getValue() instanceof Boolean) {
+					return (Boolean) condition.getValue();
+				}
+				return false;
 			}
 		};
-		return condition;
+		return result;
 	}
 
 	public static SimplePath createSimplePath(Path nextPath, PanelWizardStep ... steps) { 

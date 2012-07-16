@@ -58,24 +58,7 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {	
 	
-	public static class NamedValueHolder<T> extends ModifiableHolder<T> { 
-		public NamedValueHolder(T value) {
-			super(value);
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			return EqualsUtil.equal(this.toString(), obj.toString());
-		}
-		
-		@Override
-		public int hashCode() {
-			return this.toString().hashCode() * 31;
-		}
-	}
 	private final ContentAwareListModel<CategoryNode> d_categories;
-	private final Map<DecisionTreeNode, NamedValueHolder<Object>> d_selectedCategoryMap = 
-			new HashMap<DecisionTreeNode, NamedValueHolder<Object>>(); 
 	
 	private final Map<Pair<Class<?>, String>, DecisionTreeNode> d_nodeMap = 
 			new HashMap<Pair<Class<?>,String>, DecisionTreeNode>();
@@ -96,7 +79,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		Collection<DecisionTreeNode> children = d_tree.getChildren(bean.getRootNode());
 		for(DecisionTreeNode child : children) { 
 			if(child instanceof TypeNode) {
-				addNodeMapping((TypeNode) child);
+				updateNodeMapping((TypeNode) child);
 			}
 		}
 	}
@@ -124,51 +107,21 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public DoseUnitPresentation getDoseUnitPresentation() {
 		return new DoseUnitPresentation(getDoseUnit());
 	}
-	
-	
-	/**
-	 * @param The type to be added to the selection mapping
-	 * @return The newly-created ValueHolder
-	 */
-	private void addNodeMapping(DecisionTreeNode node) {
-		updateNodeMapping(new ModifiableHolder<Object>(buildDefaultNode()), node);
-	}
-	
-	/**
-	 * @param node the node of which the selection was set
-	 * @return the item previously selected by a combobox, the DefaultNode if none set
-	 */
-	public ValueHolder<Object> getSelectedCategory(DecisionTreeNode node) {
-		if (d_selectedCategoryMap.get(node) == null) {
-			return new NamedValueHolder<Object>(buildDefaultNode());
-		}
-		return d_selectedCategoryMap.get(node);
-	}
-	
 	/**
 	 * Sets the child of a node
 	 * @param parent the node to set the child on
-	 * @param selected the object to set as child, if not an DecisionTreeNode only the internal mapping is updated 
-	 * @see DosedDrugTreatmentPresentation#getSelectedCategory(DecisionTreeNode)
+	 * @param selected the object to set as child, 
 	 */
 	public void setSelected(DecisionTreeNode parent, Object selected) {
-		ValueHolder<Object> current = d_selectedCategoryMap.get(parent); // Only used to maintain a state for the combo boxes
-		if(current == null) {
-			addNodeMapping(parent);
-			current = d_selectedCategoryMap.get(parent);
-		}
-		current.setValue(selected);
-
 		if(selected instanceof DecisionTreeNode) {
 			DecisionTreeNode child = (DecisionTreeNode) selected;
 			if(child instanceof LeafNode) { 
 				clearNode(parent);
 			}
 			setDecisionTree(parent, child);
-			updateNodeMapping(current, child);
-		} else { 
-			updateNodeMapping(current, buildDefaultNode());
-		}		
+			updateNodeMapping(child);
+		} 
+		updateNodeMapping(parent);
 	}
 
 	private void setDecisionTree(DecisionTreeNode parent, DecisionTreeNode child) {
@@ -197,22 +150,19 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	}
 
 	public List<RangeNode> splitRange(RangeNode node, double value, boolean includeInRightSide) {
-		ValueHolder<Object> selected = getSelectedCategory(node);
 		
 		List<RangeNode> ranges = d_tree.splitChildRange(getBean().getDecisionTree().getParent(node), value, includeInRightSide);
 
-		d_selectedCategoryMap.remove(node);
 		d_nodeMap.remove(new Pair<Class<?>, String>(node.getBeanClass(), node.getPropertyName()));
 		
-		updateNodeMapping(selected, ranges.get(0));
-		updateNodeMapping(selected, ranges.get(1));
+		updateNodeMapping(ranges.get(0));
+		updateNodeMapping(ranges.get(1));
 
 		return ranges;
 	}
 
-	private void updateNodeMapping(ValueHolder<Object> selected, DecisionTreeNode child) {
+	private void updateNodeMapping(DecisionTreeNode child) {
 		d_nodeMap.put(new Pair<Class<?>, String>(child.getBeanClass(), child.getPropertyName()), child);
-		d_selectedCategoryMap.put(child, new NamedValueHolder<Object>(selected.getValue()));
 	}
 
 	public DecisionTreeNode getType(final Class<?> beanClass) {
@@ -238,7 +188,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		forAllDo(d_tree.getChildren(node), new Closure<DecisionTreeNode>() {
 			public void execute(DecisionTreeNode orphan) {
 				d_tree.removeChild(orphan);
-				d_selectedCategoryMap.remove(orphan);
 				d_nodeMap.remove(new Pair<Class<?>, String>(orphan.getBeanClass(), orphan.getPropertyName()));
 			}
 		});

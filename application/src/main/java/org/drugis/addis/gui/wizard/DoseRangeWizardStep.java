@@ -1,9 +1,7 @@
 package org.drugis.addis.gui.wizard;
 
 
-import static org.apache.commons.collections15.CollectionUtils.collect;
 import static org.apache.commons.collections15.CollectionUtils.forAllDo;
-import static org.apache.commons.collections15.CollectionUtils.select;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,8 +22,6 @@ import javax.swing.event.ListDataListener;
 import javax.swing.text.DefaultFormatter;
 
 import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
@@ -213,17 +209,11 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	public void initialize() { 
 		d_parent = d_pm.getType(d_beanClass);
 		d_nodes.clear();
-		d_nodes.addAll(
-			collect(
-				select(d_pm.getChildNodes(d_parent), new Predicate<DecisionTreeNode>() {
-					public boolean evaluate(DecisionTreeNode object) {
-						return object instanceof RangeNode;
-					}
-					}), new Transformer<DecisionTreeNode, RangeNode>() {
-						public RangeNode transform(DecisionTreeNode input) {
-							return ((RangeNode)input);
-						}
-					}));
+		for(DecisionTreeNode node : d_pm.getChildNodes(d_parent)) {
+			if(node instanceof RangeNode) { 
+				d_nodes.add((RangeNode)node);
+			}
+		}
 		if(d_nodes.isEmpty()) {
 			d_nodes.add(new DoseRangeNode(d_beanClass, d_propertyName, d_pm.getDoseUnit()));
 		}
@@ -232,8 +222,6 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				d_pm.setSelected(d_parent, node);
 			}
 		});
-		setComplete(false);
-		rebuildPanel();
 	}
 	
 	protected JPanel buildPanel() {
@@ -270,8 +258,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
 		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
-				d_pm.getCategories(),
-				d_pm.getSelectedCategory(d_nodes.get(index)));
+				d_pm.getCategories());
 		comboBox.addItemListener(new ItemListener() {
 			
 			@Override

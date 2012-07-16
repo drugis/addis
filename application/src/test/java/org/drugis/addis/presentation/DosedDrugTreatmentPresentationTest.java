@@ -8,18 +8,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.math.DoubleRange;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
-import org.drugis.addis.util.BoundedInterval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,61 +57,6 @@ public class DosedDrugTreatmentPresentationTest {
 		assertEquals(ExampleData.KILOGRAMS_PER_HOUR, d_pm.getDoseUnitPresentation().getBean());
 	}
 
-	@Test
-	public void testSetCategoryTypeNode() {
-		CategoryNode catNode1 = new CategoryNode("foo");
-		CategoryNode catNode2 = new CategoryNode("bar");
-		
-		d_pm.setSelected(new TypeNode(FixedDose.class), catNode1);
-		d_pm.setSelected(new TypeNode(UnknownDose.class), catNode2);
-		assertEquals(catNode1, d_pm.getSelectedCategory(new TypeNode(FixedDose.class)).getValue());
-		assertEquals(catNode2, d_pm.getSelectedCategory(new TypeNode(UnknownDose.class)).getValue());
-	}
-	
-	@Test
-	public void testSetCategoryRangeNode() {
-		CategoryNode catNode1 = new CategoryNode("foo");
-		RangeNode node = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY);
-		d_pm.setSelected(node, catNode1);
-		assertEquals(catNode1, d_pm.getSelectedCategory(node).getValue());
-	}
-	
-	@Test
-	public void overwriteCategory() { 
-		CategoryNode catNode1 = new CategoryNode("foo");
-		CategoryNode catNode2 = new CategoryNode("bar");
-		CategoryNode catNode3 = new CategoryNode("qux");
-		
-		RangeNode range1 = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, new BoundedInterval(new DoubleRange(0.0, 15.0), false, true));
-		RangeNode range2 = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, new BoundedInterval(new DoubleRange(0.0, 20.0), false, true));
-
-		d_pm.setSelected(range1, catNode1);
-		d_pm.setSelected(range2, catNode2);
-		assertEquals(catNode1, d_pm.getSelectedCategory(range1).getValue());
-		assertEquals(catNode2, d_pm.getSelectedCategory(range2).getValue());
-
-		d_pm.setSelected(range2, catNode3);
-		assertEquals(catNode1, d_pm.getSelectedCategory(range1).getValue());
-		assertEquals(catNode3, d_pm.getSelectedCategory(range2).getValue());
-
-	}
-	
-	@Test
-	public void testSetCategoryOnRangeNode() { 
-		CategoryNode catNode1 = new CategoryNode("foo");
-		CategoryNode catNode2 = new CategoryNode("bar");
-		
-		RangeNode node1 = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY);
-		d_pm.setSelected(node1, catNode1);
-		
-		List<RangeNode> ranges = d_pm.splitRange(node1, 50, false);
-		d_pm.setSelected(ranges.get(0), catNode1);
-		d_pm.setSelected(ranges.get(1), catNode2);
-
-		assertEquals(catNode1, d_pm.getSelectedCategory(ranges.get(0)).getValue());
-		assertEquals(catNode2, d_pm.getSelectedCategory(ranges.get(1)).getValue());
-	}
-	
 	@Test
 	public void testChainSetNodes() { 
 		TypeNode fixedDose = new TypeNode(FixedDose.class);
