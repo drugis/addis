@@ -31,10 +31,10 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	JPanel d_dialogPanel = new JPanel();
 	private JComboBox d_flexibleCategoryComboBox;
 	private JComboBox d_fixedCategoryComboBox;
-	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>();
-	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>();
-	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>();
-	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>();
+	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
 
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm,
 			Domain domain, AddisWindow mainWindow) {
@@ -43,7 +43,6 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	@Override
 	protected void initialize() {
-//		rebuildPanel();
 	}
 
 	protected JPanel buildPanel() {
@@ -79,7 +78,6 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		row = LayoutUtil.addRow(layout, row);
 
 		builder.addLabel("Flexible dose", cc.xy(1, row));
-	
 		d_flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
 				d_pm.getCategories(),
 				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH,
@@ -93,7 +91,6 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 				}
 			}
 		});
-
 		builder.add(d_flexibleCategoryComboBox, cc.xy(3, row));
 		
 		return builder.getPanel();
@@ -137,7 +134,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		return d_considerFixed;
 	}
 	
-	private void setCategorySelection(Object selection, ValueHolder<Boolean> holder, String desired) {
+	private static void setCategorySelection(Object selection, ValueHolder<Boolean> holder, String desired) {
 		if(EqualsUtil.equal(desired, selection.toString())) {
 			holder.setValue(true);
 		} else {

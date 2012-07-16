@@ -189,7 +189,6 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
-
 		d_knownDoseCombo = createCategoryComboBox(d_pm.getCategories(),  DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
 		d_knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {

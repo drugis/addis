@@ -222,7 +222,6 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				d_pm.setSelected(d_parent, node);
 			}
 		});
-		setComplete(false);
 	}
 	
 	protected JPanel buildPanel() {
