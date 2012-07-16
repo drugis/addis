@@ -118,6 +118,11 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		SimplePath flexibleOnlyUpperPath = createSimplePath(lastPath, specifyFlexibleUpperDose);
 		SimplePath flexibleBothPath = createSimplePath(lastPath, specifyFlexibleLowerDose, specifyFlexibleUpperDose);  // FIXME the upper step needs to loop over the previous rangenodes
 		
+		generalPath.addStep(generalInfo);
+		considerDoseTypePath.addStep(specifyDoseType);
+
+		
+		/* Path for setting the ranges for both the fixed and flexible doses */
 		BranchingPath fixedAndFlexiblePath = new BranchingPath();
 		fixedAndFlexiblePath.addStep(specifyFixedDose);
 		fixedAndFlexiblePath.addBranch(flexibleOnlyLowerPath, 
@@ -133,16 +138,19 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 						specifyDoseType.getConsiderFixed(), 
 						specifyDoseType.getConsiderFlexibleBoth())));
 		
-		generalPath.addStep(generalInfo);
-
-		considerDoseTypePath.addStep(specifyDoseType);
-		considerDoseTypePath.addBranch(fixedOnlyPath,
-				createCondition(new BooleanAndModel(Arrays.<ValueModel>asList(
+		considerDoseTypePath.addBranch(fixedAndFlexiblePath,
+				createCondition(new BooleanAndModel(
 						specifyDoseType.getConsiderFixed(), 
-						new BooleanNotModel(specifyDoseType.getConsiderFlexibleBoth()),
-						new BooleanNotModel(specifyDoseType.getConsiderFlexibleLower()),
-						new BooleanNotModel(specifyDoseType.getConsiderFlexibleUpper())))));
+						new BooleanOrModel(Arrays.<ValueModel>asList(
+								specifyDoseType.getConsiderFlexibleBoth(), 
+								specifyDoseType.getConsiderFlexibleLower(), 
+								specifyDoseType.getConsiderFlexibleUpper())))));
 
+		considerDoseTypePath.addBranch(flexibleBothPath,
+				createCondition(new BooleanAndModel(
+						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
+						specifyDoseType.getConsiderFlexibleBoth())));
+		
 		considerDoseTypePath.addBranch(flexibleOnlyLowerPath,
 				createCondition(new BooleanAndModel(
 						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
@@ -150,13 +158,17 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		
 		considerDoseTypePath.addBranch(flexibleOnlyUpperPath,
 				createCondition(new BooleanAndModel(
-						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
-						specifyDoseType.getConsiderFlexibleUpper())));
+						new BooleanNotModel(specifyDoseType.getConsiderFixed()),
+						specifyDoseType.getConsiderFlexibleUpper()
+						)));
 		
-		considerDoseTypePath.addBranch(flexibleBothPath,
-				createCondition(new BooleanAndModel(
-						new BooleanNotModel(specifyDoseType.getConsiderFixed()), 
-						specifyDoseType.getConsiderFlexibleBoth())));
+		considerDoseTypePath.addBranch(fixedOnlyPath,
+				createCondition(new BooleanAndModel(Arrays.<ValueModel>asList(
+						specifyDoseType.getConsiderFixed(), 
+						new BooleanNotModel(new BooleanOrModel(Arrays.<ValueModel>asList(
+						specifyDoseType.getConsiderFlexibleBoth(),
+						specifyDoseType.getConsiderFlexibleLower(),
+						specifyDoseType.getConsiderFlexibleUpper())))))));
 
 		considerDoseTypePath.addBranch(lastPath,
 				createCondition(new BooleanAndModel(Arrays.<ValueModel>asList(
@@ -165,13 +177,6 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 						new BooleanNotModel(specifyDoseType.getConsiderFlexibleLower()),
 						new BooleanNotModel(specifyDoseType.getConsiderFlexibleUpper())))));
 
-		considerDoseTypePath.addBranch(fixedAndFlexiblePath,
-				createCondition(new BooleanAndModel(
-						specifyDoseType.getConsiderFixed(), 
-						new BooleanOrModel(Arrays.<ValueModel>asList(
-								specifyDoseType.getConsiderFlexibleBoth(), 
-								specifyDoseType.getConsiderFlexibleLower(), 
-								specifyDoseType.getConsiderFlexibleUpper())))));
 
 		generalPath.addBranch(lastPath, new Condition() {	
 			public boolean evaluate(WizardModel model) {
@@ -199,7 +204,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 	private static Condition createCondition(
 			final ValueModel condition) {
-		Condition result = new Condition() {
+		return new Condition() {
 			public boolean evaluate(WizardModel model) {
 				if(condition.getValue() instanceof Boolean) {
 					return (Boolean) condition.getValue();
@@ -207,7 +212,6 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				return false;
 			}
 		};
-		return result;
 	}
 
 	public static SimplePath createSimplePath(Path nextPath, PanelWizardStep ... steps) { 

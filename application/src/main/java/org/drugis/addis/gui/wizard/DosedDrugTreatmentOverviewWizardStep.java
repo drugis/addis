@@ -40,7 +40,6 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 	@Override
 	protected void initialize() { 
 		rebuildPanel();
-		this.setComplete(true);
 	}
 	
 	protected JPanel buildPanel() {

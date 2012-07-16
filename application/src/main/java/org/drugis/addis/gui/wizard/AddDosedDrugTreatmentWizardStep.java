@@ -180,7 +180,9 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		d_unknownDoseCombo = createCategoryComboBox(d_pm.getCategories());
 		d_unknownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(d_unknownNode, d_unknownDoseCombo.getSelectedItem());		
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					d_pm.setSelected(d_unknownNode, d_unknownDoseCombo.getSelectedItem());	
+				}
 			}
 		});
 		builder.add(d_unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
@@ -191,9 +193,11 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		d_knownDoseCombo = createCategoryComboBox(d_pm.getCategories(),  DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
 		d_knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(d_fixedNode, d_knownDoseCombo.getSelectedItem());
-				d_pm.setSelected(d_flexibleNode, d_knownDoseCombo.getSelectedItem());
-				setConsiderDoseType();
+				if (e.getStateChange() == ItemEvent.SELECTED) { 
+					d_pm.setSelected(d_fixedNode, d_knownDoseCombo.getSelectedItem());
+					d_pm.setSelected(d_flexibleNode, d_knownDoseCombo.getSelectedItem());
+					setConsiderDoseType();
+				}
 			}
 		});
 		builder.add(d_knownDoseCombo, cc.xyw(3, row, colSpan - 2));

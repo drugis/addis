@@ -31,10 +31,10 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	JPanel d_dialogPanel = new JPanel();
 	private JComboBox d_flexibleCategoryComboBox;
 	private JComboBox d_fixedCategoryComboBox;
-	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>();
+	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>();
+	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>();
+	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>();
 
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm,
 			Domain domain, AddisWindow mainWindow) {
@@ -68,8 +68,10 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		d_fixedCategoryComboBox.addItemListener(new ItemListener() {
 
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(d_fixedDoseNode, d_fixedCategoryComboBox.getSelectedItem());
-				setConsiderFixed();
+				if (e.getStateChange() == ItemEvent.SELECTED) { 
+					d_pm.setSelected(d_fixedDoseNode, d_fixedCategoryComboBox.getSelectedItem());
+					setConsiderFixed();
+				}
 			}
 		});
 		builder.add(d_fixedCategoryComboBox, cc.xy(3, row));
@@ -85,8 +87,10 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
 		d_flexibleCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				d_pm.setSelected(d_flexibleDoseNode, d_flexibleCategoryComboBox.getSelectedItem());
-				setConsiderFlexible();
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					d_pm.setSelected(d_flexibleDoseNode, d_flexibleCategoryComboBox.getSelectedItem());
+					setConsiderFlexible();
+				}
 			}
 		});
 
@@ -98,16 +102,16 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	public void setConsiderFlexible() { 
 		setCategorySelection(
 				d_flexibleCategoryComboBox.getSelectedItem(),
-				d_considerFlexibleBoth, 
-				CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH.getName());
+				d_considerFlexibleLower, 
+				CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER.getName());
 		setCategorySelection(
 				d_flexibleCategoryComboBox.getSelectedItem(),
 				d_considerFlexibleUpper, 
 				CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER.getName());
 		setCategorySelection(
 				d_flexibleCategoryComboBox.getSelectedItem(),
-				d_considerFlexibleLower, 
-				CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER.getName());
+				d_considerFlexibleBoth, 
+				CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH.getName());
 	}
 	
 	public ValueHolder<Boolean> getConsiderFlexibleBoth() { 
