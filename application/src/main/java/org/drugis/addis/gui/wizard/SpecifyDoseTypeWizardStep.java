@@ -135,7 +135,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	}
 	
 	private static void setCategorySelection(Object selection, ValueHolder<Boolean> holder, String desired) {
-		if(EqualsUtil.equal(desired, selection.toString())) {
+		if(selection.toString().equals(desired)) {
 			holder.setValue(true);
 		} else {
 			holder.setValue(false);

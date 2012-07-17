@@ -26,7 +26,11 @@
 
 package org.drugis.addis.gui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JDialog;
 
@@ -40,6 +44,7 @@ import org.drugis.addis.gui.wizard.SpecifyDoseTypeWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.ValueModelWrapper;
+import org.drugis.common.beans.AbstractObservable;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.BooleanNotModel;
 import org.drugis.common.validation.BooleanOrModel;
@@ -58,16 +63,29 @@ import com.jgoodies.binding.value.ValueModel;
 @SuppressWarnings("serial")
 public class AddDosedDrugTreatmentWizard extends Wizard {
 
-	private static final class ValueHolderCondition implements Condition {
+
+	private static final class ValueHolderCondition extends AbstractObservable implements Condition {
 		private final ValueHolder<Boolean> d_condition;
+		private String d_name;
 		
-		private ValueHolderCondition(ValueModel condition) {
+		private ValueHolderCondition(String name, ValueModel condition) {
+			d_name = name;
 			d_condition = new ValueModelWrapper<Boolean>(condition);
+			d_condition.addValueChangeListener(new PropertyChangeListener() {	
+				public void propertyChange(PropertyChangeEvent evt) {
+					firePropertyChange("value", evt.getOldValue(), evt.getNewValue());
+				}
+			});
 		}
 
 		public boolean evaluate(WizardModel model) {
 			return d_condition.getValue();
 		}
+		
+		public String toString() {
+			return d_name + " condition[" + d_condition.getValue() + "]";
+		}
+
 	}
 
 	public AddDosedDrugTreatmentWizard(
@@ -149,47 +167,76 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				type.getConsiderFlexibleBoth(),
 				type.getConsiderFlexibleLower(),
 				type.getConsiderFlexibleUpper()));
-		final ValueHolder<Boolean> considerFixed = type.getConsiderFixed();
+		final ValueModel considerFixed = type.getConsiderFixed();
 
+		final List<Condition> conditions = new ArrayList<Condition>();
 		/** Only fixed **/
-		addBranch(typePath, createSimplePath(lastPath, fixedDose), 
-				createCondition(new BooleanAndModel(considerFixed, new BooleanNotModel(anyFlexibleDose))));
+		Condition fixed = createCondition("Fixed", new BooleanAndModel(considerFixed, new BooleanNotModel(anyFlexibleDose)));
+		conditions.add(fixed);
+		addBranch(typePath, 
+				createSimplePath(lastPath, fixedDose), 
+				fixed);
 		
 		/** Only flexible **/
-		addBranch(typePath, createSimplePath(lastPath, flexibleLowerDose), 
-				createCondition(
-						new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleLower())));
+		Condition lower = createCondition("Flexible lower", new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleLower()));
+		conditions.add(lower);
+		addBranch(typePath, 
+				createSimplePath(lastPath, flexibleLowerDose), 
+				lower);
 
-		addBranch(typePath, createSimplePath(lastPath, flexibleUpperDose), 
-				createCondition(
-						new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleUpper())));
+		Condition upper = createCondition("Flexible upper", new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleUpper()));
+		conditions.add(upper);
+		addBranch(typePath, 
+				createSimplePath(lastPath, flexibleUpperDose), 
+				upper);
 		
-		addBranch(typePath, createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDose), 
-				createCondition(
-						new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleBoth())));
+		Condition both = createCondition("Flexible both", new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleBoth()));
+		conditions.add(both);
+		addBranch(typePath,
+				createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDose), 
+				both);
 		
 		/** Fixed and flexible **/
-		addBranch(typePath, createSimplePath(lastPath, fixedDose, flexibleLowerDose), 
-				createCondition(
-						new BooleanAndModel(considerFixed, type.getConsiderFlexibleLower())));
+		Condition fixedAndLower = createCondition("Fixed and flexible lower", 
+				new BooleanAndModel(considerFixed, type.getConsiderFlexibleLower()));
+		conditions.add(fixedAndLower);
+		addBranch(typePath, 
+				createSimplePath(lastPath, fixedDose, flexibleLowerDose), 
+				fixedAndLower);
 
-		addBranch(typePath, createSimplePath(lastPath,fixedDose, flexibleUpperDose), 
-				createCondition(
-						new BooleanAndModel(considerFixed, type.getConsiderFlexibleUpper())));
+		Condition fixedAndUpper = createCondition("Fixed and flexible upper", 
+				new BooleanAndModel(considerFixed, type.getConsiderFlexibleUpper()));
+		conditions.add(fixedAndUpper);
+		addBranch(typePath,
+				createSimplePath(lastPath,fixedDose, flexibleUpperDose), 
+				fixedAndUpper);
 		
-		addBranch(typePath, createSimplePath(lastPath, fixedDose, flexibleLowerDose, flexibleUpperDose), 
-				createCondition(
-						new BooleanAndModel(considerFixed, type.getConsiderFlexibleBoth())));
+		Condition fixedAndBoth = createCondition("Fixed and flexible both", 
+				new BooleanAndModel(considerFixed, type.getConsiderFlexibleBoth()));
+		conditions.add(fixedAndBoth);
+		addBranch(typePath, 
+				createSimplePath(lastPath, fixedDose, flexibleLowerDose, flexibleUpperDose), 
+				fixedAndBoth);
 		
 		/** Neither **/
-		typePath.addBranch(lastPath,
-				createCondition(new BooleanAndModel(
-						new BooleanNotModel(considerFixed), 
-						new BooleanNotModel(anyFlexibleDose))));
+		Condition neither = createCondition("Neither", 
+				new BooleanAndModel(new BooleanNotModel(considerFixed), new BooleanNotModel(anyFlexibleDose)));
+		conditions.add(neither);
+		addBranch(typePath, lastPath, neither);
 		
 		final MultiPathModel model = new MultiPathModel(startPath);
+		
+		for(Condition condition : conditions) {
+			if(condition instanceof ValueHolderCondition) {
+				final ValueHolderCondition wrapped = (ValueHolderCondition) condition; 
+				wrapped.addPropertyChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						model.refreshModelState();
+					}
+				});
+			}
+		}
 		model.setLastVisible(false);
-
 		return model;
 	}
 
@@ -197,8 +244,8 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		origin.addBranch(destination, condition);
 	}
 	
-	private static Condition createCondition(final ValueModel condition) {
-		return new ValueHolderCondition(condition);
+	private static Condition createCondition(final String name, final ValueModel condition) {
+		return new ValueHolderCondition(name, condition);
 	}
 
 	public static SimplePath createSimplePath(SimplePath nextPath, PanelWizardStep ... steps) { 
