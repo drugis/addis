@@ -53,23 +53,47 @@ import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardEvent;
 import org.pietschy.wizard.WizardListener;
 import org.pietschy.wizard.WizardModel;
+import org.pietschy.wizard.WizardStep;
 import org.pietschy.wizard.models.BranchingPath;
 import org.pietschy.wizard.models.Condition;
 import org.pietschy.wizard.models.MultiPathModel;
+import org.pietschy.wizard.models.Path;
 import org.pietschy.wizard.models.SimplePath;
 
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class AddDosedDrugTreatmentWizard extends Wizard {
+	private static List<Condition> s_conditions;
 
+	private static final class DynamicMultiPathModel extends MultiPathModel {
+		public DynamicMultiPathModel(Path firstPath) {
+			super(firstPath);
+			for(Condition condition : s_conditions) {
+				if(condition instanceof ValueHolderCondition) {
+					final ValueHolderCondition wrapped = (ValueHolderCondition) condition; 
+					attachListener(wrapped);
+				}
+			}
+			setLastVisible(false);
+		}
 
+		private void attachListener(final ValueHolderCondition wrapped) {
+			wrapped.addPropertyChangeListener(new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					refreshModelState();
+					WizardStep activeStep = getActiveStep();
+					reset();
+					setActiveStep(activeStep);
+				}
+			});
+		}
+		
+	}
 	private static final class ValueHolderCondition extends AbstractObservable implements Condition {
 		private final ValueHolder<Boolean> d_condition;
-		private String d_name;
 		
-		private ValueHolderCondition(String name, ValueModel condition) {
-			d_name = name;
+		private ValueHolderCondition(ValueModel condition) {
 			d_condition = new ValueModelWrapper<Boolean>(condition);
 			d_condition.addValueChangeListener(new PropertyChangeListener() {	
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -83,7 +107,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		}
 		
 		public String toString() {
-			return d_name + " condition[" + d_condition.getValue() + "]";
+			return "condition[" + d_condition.getValue() + "]";
 		}
 
 	}
@@ -110,7 +134,6 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
 		final SpecifyDoseTypeWizardStep type = new SpecifyDoseTypeWizardStep(pm, domain, mainWindow);
 		
-		// Same for flexible upper, flexible lower and any (needs to set all)
 		final DoseRangeWizardStep fixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, 
 				domain, 
 				mainWindow, 
@@ -140,10 +163,51 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
 		
 		SimplePath lastPath = new SimplePath(overview);
-		BranchingPath startPath = new BranchingPath();
-		BranchingPath typePath = new BranchingPath();
+		BranchingPath startPath = new BranchingPath(generalInfo);
+		BranchingPath typePath = new BranchingPath(type);
+		
+		s_conditions = new ArrayList<Condition>();
+		final ValueModel anyFlexibleDose = new BooleanOrModel(Arrays.<ValueModel>asList(
+				type.getConsiderFlexibleBoth(),
+				type.getConsiderFlexibleLower(),
+				type.getConsiderFlexibleUpper()));
+		final ValueModel considerFixed = type.getConsiderFixed();
+
+		
+		SimplePath lowerOnlyPath = createSimplePath(lastPath, flexibleLowerDose);
+		SimplePath upperOnlyPath = createSimplePath(lastPath, flexibleUpperDose);
+		SimplePath bothPath = createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDose);
+
+		BranchingPath fixedAndFlexiblePath = new BranchingPath(fixedDose);
+		addBranch(fixedAndFlexiblePath, lowerOnlyPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleLower()));
+		addBranch(fixedAndFlexiblePath, upperOnlyPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleUpper()));
+		addBranch(fixedAndFlexiblePath, bothPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleBoth()));
+		addBranch(fixedAndFlexiblePath, lastPath,  new BooleanNotModel(anyFlexibleDose)); // Failsafe
+		
+		addBranch(typePath, 
+				createSimplePath(lastPath, fixedDose), 
+				new BooleanAndModel(new BooleanNotModel(anyFlexibleDose), considerFixed));
+		
+		addBranch(typePath, 
+				lastPath, 
+				new BooleanAndModel(new BooleanNotModel(anyFlexibleDose), new BooleanNotModel(considerFixed)));
+
+			addBranch(typePath, 
+					lowerOnlyPath, 
+					new BooleanAndModel(type.getConsiderFlexibleLower(), new BooleanNotModel(considerFixed)));
 			
-		startPath.addStep(generalInfo);
+			addBranch(typePath, 
+					upperOnlyPath, 
+					new BooleanAndModel(type.getConsiderFlexibleUpper(), new BooleanNotModel(considerFixed)));
+			
+			addBranch(typePath, 
+					bothPath, 
+					new BooleanAndModel(type.getConsiderFlexibleBoth(), new BooleanNotModel(considerFixed)));
+		
+		addBranch(typePath, 
+				fixedAndFlexiblePath, 
+				new BooleanAndModel(considerFixed, anyFlexibleDose));
+		
 		startPath.addBranch(lastPath, new Condition() {	
 			public boolean evaluate(WizardModel model) {
 				return generalInfo.getConsiderDoseType().getValue() == null;
@@ -160,92 +224,19 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == false;
 			}
 		}); // TODO This is a dummy, it will be the "do not consider dose type" option
-
-		typePath.addStep(type);
 		
-		final ValueModel anyFlexibleDose = new BooleanOrModel(Arrays.<ValueModel>asList(
-				type.getConsiderFlexibleBoth(),
-				type.getConsiderFlexibleLower(),
-				type.getConsiderFlexibleUpper()));
-		final ValueModel considerFixed = type.getConsiderFixed();
-
-		final List<Condition> conditions = new ArrayList<Condition>();
-		/** Only fixed **/
-		Condition fixed = createCondition("Fixed", new BooleanAndModel(considerFixed, new BooleanNotModel(anyFlexibleDose)));
-		conditions.add(fixed);
-		addBranch(typePath, 
-				createSimplePath(lastPath, fixedDose), 
-				fixed);
-		
-		/** Only flexible **/
-		Condition lower = createCondition("Flexible lower", new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleLower()));
-		conditions.add(lower);
-		addBranch(typePath, 
-				createSimplePath(lastPath, flexibleLowerDose), 
-				lower);
-
-		Condition upper = createCondition("Flexible upper", new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleUpper()));
-		conditions.add(upper);
-		addBranch(typePath, 
-				createSimplePath(lastPath, flexibleUpperDose), 
-				upper);
-		
-		Condition both = createCondition("Flexible both", new BooleanAndModel(new BooleanNotModel(considerFixed), type.getConsiderFlexibleBoth()));
-		conditions.add(both);
-		addBranch(typePath,
-				createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDose), 
-				both);
-		
-		/** Fixed and flexible **/
-		Condition fixedAndLower = createCondition("Fixed and flexible lower", 
-				new BooleanAndModel(considerFixed, type.getConsiderFlexibleLower()));
-		conditions.add(fixedAndLower);
-		addBranch(typePath, 
-				createSimplePath(lastPath, fixedDose, flexibleLowerDose), 
-				fixedAndLower);
-
-		Condition fixedAndUpper = createCondition("Fixed and flexible upper", 
-				new BooleanAndModel(considerFixed, type.getConsiderFlexibleUpper()));
-		conditions.add(fixedAndUpper);
-		addBranch(typePath,
-				createSimplePath(lastPath,fixedDose, flexibleUpperDose), 
-				fixedAndUpper);
-		
-		Condition fixedAndBoth = createCondition("Fixed and flexible both", 
-				new BooleanAndModel(considerFixed, type.getConsiderFlexibleBoth()));
-		conditions.add(fixedAndBoth);
-		addBranch(typePath, 
-				createSimplePath(lastPath, fixedDose, flexibleLowerDose, flexibleUpperDose), 
-				fixedAndBoth);
-		
-		/** Neither **/
-		Condition neither = createCondition("Neither", 
-				new BooleanAndModel(new BooleanNotModel(considerFixed), new BooleanNotModel(anyFlexibleDose)));
-		conditions.add(neither);
-		addBranch(typePath, lastPath, neither);
-		
-		final MultiPathModel model = new MultiPathModel(startPath);
-		
-		for(Condition condition : conditions) {
-			if(condition instanceof ValueHolderCondition) {
-				final ValueHolderCondition wrapped = (ValueHolderCondition) condition; 
-				wrapped.addPropertyChangeListener(new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						model.refreshModelState();
-					}
-				});
-			}
-		}
-		model.setLastVisible(false);
+		final MultiPathModel model = new DynamicMultiPathModel(startPath);
 		return model;
 	}
 
-	private static void addBranch(BranchingPath origin, SimplePath destination, Condition condition) { 
+	private static void addBranch(BranchingPath origin, Path destination, ValueModel model) { 
+		Condition condition = createCondition(model);
+		s_conditions.add(condition);
 		origin.addBranch(destination, condition);
 	}
 	
-	private static Condition createCondition(final String name, final ValueModel condition) {
-		return new ValueHolderCondition(name, condition);
+	private static Condition createCondition(final ValueModel condition) {
+		return new ValueHolderCondition(condition);
 	}
 
 	public static SimplePath createSimplePath(SimplePath nextPath, PanelWizardStep ... steps) { 
