@@ -90,6 +90,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		}
 		
 	}
+	
 	private static final class ValueHolderCondition extends AbstractObservable implements Condition {
 		private final ValueHolder<Boolean> d_condition;
 		
@@ -109,7 +110,6 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		public String toString() {
 			return "condition[" + d_condition.getValue() + "]";
 		}
-
 	}
 
 	public AddDosedDrugTreatmentWizard(
@@ -172,17 +172,10 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				type.getConsiderFlexibleLower(),
 				type.getConsiderFlexibleUpper()));
 		final ValueModel considerFixed = type.getConsiderFixed();
-
 		
 		SimplePath lowerOnlyPath = createSimplePath(lastPath, flexibleLowerDose);
 		SimplePath upperOnlyPath = createSimplePath(lastPath, flexibleUpperDose);
 		SimplePath bothPath = createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDose);
-
-		BranchingPath fixedAndFlexiblePath = new BranchingPath(fixedDose);
-		addBranch(fixedAndFlexiblePath, lowerOnlyPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleLower()));
-		addBranch(fixedAndFlexiblePath, upperOnlyPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleUpper()));
-		addBranch(fixedAndFlexiblePath, bothPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleBoth()));
-		addBranch(fixedAndFlexiblePath, lastPath,  new BooleanNotModel(anyFlexibleDose)); // Failsafe
 		
 		addBranch(typePath, 
 				createSimplePath(lastPath, fixedDose), 
@@ -204,9 +197,15 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 					bothPath, 
 					new BooleanAndModel(type.getConsiderFlexibleBoth(), new BooleanNotModel(considerFixed)));
 		
-		addBranch(typePath, 
-				fixedAndFlexiblePath, 
-				new BooleanAndModel(considerFixed, anyFlexibleDose));
+		BranchingPath fixedAndFlexiblePath = new BranchingPath(fixedDose);
+		addBranch(fixedAndFlexiblePath, lowerOnlyPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleLower()));
+		addBranch(fixedAndFlexiblePath, upperOnlyPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleUpper()));
+		addBranch(fixedAndFlexiblePath, bothPath, new BooleanAndModel(anyFlexibleDose, type.getConsiderFlexibleBoth()));
+		addBranch(fixedAndFlexiblePath, lastPath,  new BooleanNotModel(anyFlexibleDose)); // Failsafe
+			
+			addBranch(typePath, 
+					fixedAndFlexiblePath, 
+					new BooleanAndModel(considerFixed, anyFlexibleDose));
 		
 		startPath.addBranch(lastPath, new Condition() {	
 			public boolean evaluate(WizardModel model) {
