@@ -11,11 +11,9 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.JPanel;
 
 import org.apache.commons.collections15.Transformer;
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.LeafNode;
-import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
@@ -33,8 +31,8 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 
 	private static final long serialVersionUID = -3991691781012756118L;
 
-	public DosedDrugTreatmentOverviewWizardStep(DosedDrugTreatmentPresentation pm, Domain domain, AddisWindow mainWindow) {
-		super(pm, domain, mainWindow, "Overview","Overview of created treatment.");
+	public DosedDrugTreatmentOverviewWizardStep(DosedDrugTreatmentPresentation pm) {
+		super(pm, "Overview","Overview of created treatment.");
 	}
 	
 	@Override

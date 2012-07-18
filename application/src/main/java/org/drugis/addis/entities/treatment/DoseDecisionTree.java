@@ -7,6 +7,9 @@ import java.util.List;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.CollectionUtils;
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.util.BoundedInterval;
 
 import edu.uci.ics.jung.graph.DelegateTree;
@@ -14,6 +17,24 @@ import edu.uci.ics.jung.graph.DelegateTree;
 public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 
 	private static final long serialVersionUID = 5924217742805415944L;	
+	
+	public static DoseDecisionTree createDefaultTree() {
+		EmptyNode rootNode = new EmptyNode();
+		DoseDecisionTree tree = new DoseDecisionTree(rootNode);
+		TypeNode unknownDoseNode = new TypeNode(UnknownDose.class);
+		TypeNode fixedDoseNode = new TypeNode(FixedDose.class);
+		TypeNode flexibleDoseNode = new TypeNode(FlexibleDose.class);
+		
+		tree.addChild(rootNode, unknownDoseNode);
+		tree.addChild(rootNode, fixedDoseNode);
+		tree.addChild(rootNode, flexibleDoseNode);
+		
+		tree.addChild(unknownDoseNode, new ExcludeNode());
+		tree.addChild(fixedDoseNode, new ExcludeNode());
+		tree.addChild(flexibleDoseNode, new ExcludeNode());
+		
+		return tree;
+	}
 	
 	public DoseDecisionTree(DecisionTreeNode rootNode) { 
 		setRoot(rootNode);

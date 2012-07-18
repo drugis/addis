@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.swing.JDialog;
 
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
@@ -87,8 +86,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 					setActiveStep(activeStep);
 				}
 			});
-		}
-		
+		}	
 	}
 	
 	private static final class ValueHolderCondition extends AbstractObservable implements Condition {
@@ -113,11 +111,10 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 	}
 
 	public AddDosedDrugTreatmentWizard(
-			final DosedDrugTreatmentPresentation pm, 
-			final AddisWindow mainWindow, 
-			final Domain domain, 
+			final DosedDrugTreatmentPresentation pm,
 			final JDialog dialog) {
-		super(buildModel(pm, mainWindow, domain, dialog));
+		super(buildModel(pm, dialog));
+		final AddisWindow mainWindow = Main.getMainWindow();
 		addWizardListener(new WizardListener() {
 			public void wizardClosed(WizardEvent e) {
 				mainWindow.leftTreeFocus(pm.commit());
@@ -130,37 +127,46 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
-	private static WizardModel buildModel(final DosedDrugTreatmentPresentation pm, AddisWindow mainWindow, Domain domain, JDialog dialog) {
-		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, domain, mainWindow);
-		final SpecifyDoseTypeWizardStep type = new SpecifyDoseTypeWizardStep(pm, domain, mainWindow);
+	private static WizardModel buildModel(final DosedDrugTreatmentPresentation pm, JDialog dialog) {
+		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm);
+		final SpecifyDoseTypeWizardStep type = new SpecifyDoseTypeWizardStep(pm);
 		
-		final DoseRangeWizardStep fixedDose = DoseRangeWizardStep.createOnBeanProperty(pm, 
-				domain, 
-				mainWindow, 
+		final DoseRangeWizardStep fixedDose = DoseRangeWizardStep.createOnBeanProperty(
+				pm, 
 				FixedDose.class, 
 				FixedDose.PROPERTY_QUANTITY,
 				"Specify ranges for fixed doses",
-				"");
+				"For each of the categories, define a range in which the administered dose must lie. ");
 		
 		final DoseRangeWizardStep flexibleLowerDose = DoseRangeWizardStep.createOnBeanProperty(
 				pm, 
-				domain, 
-				mainWindow, 
 				FlexibleDose.class, 
 				FlexibleDose.PROPERTY_MIN_DOSE,
-				"Specify the ranges for the minimum of flexible doses",
-				"");
+				"Specify the ranges for lower bound of flexible doses",
+				"For each of the categories, define a range in which the lower bound of the administered dose must lie. ");
 		
 		final DoseRangeWizardStep flexibleUpperDose = DoseRangeWizardStep.createOnBeanProperty(
 				pm, 
-				domain, 
-				mainWindow, 
 				FlexibleDose.class, 
 				FlexibleDose.PROPERTY_MAX_DOSE,
-				"Specify the ranges for the maximum of flexible doses",
-				"");
-
-		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm, domain, mainWindow);
+				"Specify the ranges for upper bound of flexible doses",
+				"For each of the categories, define a range in which the upper bound of the administered dose must lie.");
+		
+		final DoseRangeWizardStep flexibleUpperDoseRanges = DoseRangeWizardStep.createOnBeanPropertyChildren(
+				pm, 
+				FlexibleDose.class, 
+				FlexibleDose.PROPERTY_MIN_DOSE,
+				FlexibleDose.PROPERTY_MAX_DOSE,
+				"Specify the ranges for upper bound of flexible doses",
+				"For each of the categories, define a range in which the upper bound of the administered dose must lie. ");
+		
+		final DoseRangeWizardStep allKnownDoses = DoseRangeWizardStep.createOnKnownDose(
+				pm, 
+				"",
+				"For each of the categories, define a range in which the dose must lie. " +
+				"For flexible dose the entire administered dose range must be within the specified range to be in the category.");
+		
+		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm);
 		
 		SimplePath lastPath = new SimplePath(overview);
 		BranchingPath startPath = new BranchingPath(generalInfo);
@@ -175,7 +181,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		
 		SimplePath lowerOnlyPath = createSimplePath(lastPath, flexibleLowerDose);
 		SimplePath upperOnlyPath = createSimplePath(lastPath, flexibleUpperDose);
-		SimplePath bothPath = createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDose);
+		SimplePath bothPath = createSimplePath(lastPath, flexibleLowerDose, flexibleUpperDoseRanges);
 		
 		addBranch(typePath, 
 				createSimplePath(lastPath, fixedDose), 
@@ -218,11 +224,12 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == true;
 			}
 		});
-		startPath.addBranch(lastPath, new Condition() {
+		
+		startPath.addBranch(createSimplePath(lastPath, allKnownDoses), new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == false;
 			}
-		}); // TODO This is a dummy, it will be the "do not consider dose type" option
+		});
 		
 		final MultiPathModel model = new DynamicMultiPathModel(startPath);
 		return model;

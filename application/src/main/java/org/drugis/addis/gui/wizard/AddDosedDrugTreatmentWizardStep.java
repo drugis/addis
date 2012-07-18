@@ -44,7 +44,6 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -53,7 +52,6 @@ import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
-import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
@@ -87,10 +85,8 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	
 	private ValueHolder<Boolean> d_considerDoseType = new ModifiableHolder<Boolean>(false);
 
-	public AddDosedDrugTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
-			Domain domain, 
-			AddisWindow mainWindow) {
-		super(presentationModel, domain, mainWindow, "Add characteristics", "Add the name, drug and categories for this treatment");
+	public AddDosedDrugTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel) {
+		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment");
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
 		

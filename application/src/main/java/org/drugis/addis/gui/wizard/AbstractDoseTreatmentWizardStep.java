@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.validation.BooleanAndModel;
 import org.pietschy.wizard.PanelWizardStep;
@@ -27,30 +28,25 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	protected final AddisWindow d_mainWindow;
 	protected final DosedDrugTreatmentPresentation d_pm;
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
-			Domain domain, 
-			AddisWindow mainWindow) {
-		this(presentationModel, domain, mainWindow, null, null, null);
+	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel) {
+		this(presentationModel, null, null, null);
 	}
 
 	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
-			Domain domain, 
-			AddisWindow mainWindow, 
 			String name, 
 			String summary) {
-		this(presentationModel, domain, mainWindow, name, summary, null);
+		this(presentationModel, name, summary, null);
 	}
 
 	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
-			Domain domain, 
-			AddisWindow mainWindow,
 			String name, 
 			String summary,
 			Icon icon) {
 		super(name, summary, icon);
 		d_pm = presentationModel;
-		d_domain = domain;
-		d_mainWindow = mainWindow;
+		d_mainWindow = Main.getMainWindow();
+		d_domain = d_mainWindow.getDomain();
+
 	}
 
 	@Override

@@ -6,11 +6,9 @@ import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.treatment.TypeNode;
-import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
@@ -35,9 +33,8 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
 	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
 
-	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm,
-			Domain domain, AddisWindow mainWindow) {
-		super(pm, domain, mainWindow, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.");
+	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm) {
+		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.");
 	}
 	
 	@Override

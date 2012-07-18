@@ -18,7 +18,9 @@ public class DoseRangeNode extends RangeNode implements Comparable<RangeNode> {
 		d_doseUnit = doseUnit;
 	}
 	
-	public DoseRangeNode(Class<?> beanClass, String propertyName,
+	public DoseRangeNode(
+			Class<?> beanClass, 
+			String propertyName,
 			double lowerBound, 
 			boolean lowerBoundIsOpen, 
 			double upperBound,

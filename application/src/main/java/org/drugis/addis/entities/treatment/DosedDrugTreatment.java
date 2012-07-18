@@ -39,7 +39,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
-		d_decisionTree = new DoseDecisionTree(rootNode);
+		d_decisionTree = DoseDecisionTree.createDefaultTree();
 	}
 
 	public void setName(String name) {

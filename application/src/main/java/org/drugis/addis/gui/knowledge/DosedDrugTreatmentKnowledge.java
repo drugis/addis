@@ -82,7 +82,7 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 
 	public static JDialog buildDosedDrugTreatmentWizardDialog(AddisWindow mainWindow, Domain domain, String title, DosedDrugTreatmentPresentation pm) {
 		JDialog dialog = new JDialog(mainWindow, title, true);
-		AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, mainWindow, domain, dialog);
+		AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.setMinimumSize(new Dimension(550, 400));
 		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(640, 600));
