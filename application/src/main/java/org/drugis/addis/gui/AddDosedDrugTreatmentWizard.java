@@ -160,12 +160,6 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				"Specify the ranges for upper bound of flexible doses",
 				"For each of the categories, define a range in which the upper bound of the administered dose must lie. ");
 		
-		final DoseRangeWizardStep allKnownDoses = DoseRangeWizardStep.createOnKnownDose(
-				pm, 
-				"",
-				"For each of the categories, define a range in which the dose must lie. " +
-				"For flexible dose the entire administered dose range must be within the specified range to be in the category.");
-		
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm);
 		
 		SimplePath lastPath = new SimplePath(overview);
@@ -225,7 +219,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 			}
 		});
 		
-		startPath.addBranch(createSimplePath(lastPath, allKnownDoses), new Condition() {
+		startPath.addBranch(lastPath, new Condition() {
 			public boolean evaluate(WizardModel model) {
 				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == false;
 			}

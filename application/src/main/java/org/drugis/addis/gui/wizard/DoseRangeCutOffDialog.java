@@ -2,8 +2,6 @@ package org.drugis.addis.gui.wizard;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JFormattedTextField;
@@ -13,8 +11,6 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
-import org.apache.commons.collections15.CollectionUtils;
-import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep.Family;
@@ -42,18 +38,15 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	private final RangeValidator d_validator;
 	private final RangeNode d_childToSplit;
 	private Family d_family;
-	private Collection<List<Family>> d_nodes;
 
 	public DoseRangeCutOffDialog(
 			DosedDrugTreatmentPresentation model, 
 			int rangeIndex, 
 			Family family,
-			Collection<List<Family>> families, 
 			String boundName) {
 		super(Main.getMainWindow(), "Split range", true);
 		d_pm = model;
 		d_rangeIndex = rangeIndex;
-		d_nodes = families; // Each element of the collection was mapped to a Bean/Property pair, each pair has a list of subsequent nodes(with parents) 
 		d_boundName = boundName;
 		d_family =  family;
 		d_childToSplit = d_family.children.get(rangeIndex);
@@ -120,7 +113,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		builder.add(cutOffLower, cc.xy(3, row));
 		
 		AffixableFormat formatUpper = new AffixableFormat();
-		if ( d_rangeIndex < d_pm.getBean().getDecisionTree().getChildCount(d_family.parent) - 1) { 
+		if (d_rangeIndex < d_pm.getBean().getDecisionTree().getChildCount(d_family.parent) - 1) { 
 			StringBuilder suffix = new StringBuilder()
 				.append(" <= " + d_boundName)
 				.append((d_childToSplit.isRangeUpperBoundOpen() ? " < " : " <= "))
@@ -141,30 +134,10 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	}
 	
 	@Override
-	protected void commit() {
-		Collection<Family> families = new ArrayList<Family>();
-		for(final List<Family> node : d_nodes) { // for every bean/property pair
-			families.addAll(CollectionUtils.select(node, new Predicate<Family>() {
-				public boolean evaluate(Family object) {
-					RangeNode o = d_family.children.get(d_rangeIndex);
-					for(RangeNode child : object.children) { 
-						if(child.toString().equals(o.toString())) return true;
-					}
-					return false;
-				}
-			}));
-		}
-		for(Family family : families) { 
-			System.out.println(family);
-			RangeNode split = family.children.get(d_rangeIndex);
-			System.out.println("Split " + split);
-			System.out.println("On range " + d_rangeIndex);
-			family.children.remove(d_rangeIndex);
-			List<RangeNode> splitRange = d_pm.splitRange(split, d_cutOff.getValue(), !d_upperOpen.getValue());
-			System.out.println("After " + family);
-
-			family.children.addAll(d_rangeIndex, splitRange);
-		}
+	protected void commit() {	
+		d_family.children.remove(d_rangeIndex);
+		List<RangeNode> splitRange = d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
+		d_family.children.addAll(d_rangeIndex, splitRange);
 		setVisible(false);
 	}
 

@@ -28,10 +28,10 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private Object d_previousFixed;
 	private Object d_previousFlexible;
 	
-	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
+	private volatile ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
+	private volatile ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
+	private volatile ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
+	private volatile ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
 
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm) {
 		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.");
