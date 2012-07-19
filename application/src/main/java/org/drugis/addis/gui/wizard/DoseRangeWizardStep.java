@@ -1,7 +1,7 @@
 package org.drugis.addis.gui.wizard;
 
 
-import static org.apache.commons.collections15.CollectionUtils.forAllDo;
+import static org.apache.commons.collections15.CollectionUtils.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +21,7 @@ import javax.swing.event.ListDataListener;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.RangeNode;
@@ -86,8 +87,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			String childPropertyName,
 			String name, 
 			String summary) {	
-		Pair<Class<? extends AbstractDose>, String> beanProperty = new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName);
-		return new DoseRangeWizardStep(pm, beanProperty, childPropertyName, name, summary);
+		return new DoseRangeWizardStep(pm, new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName), childPropertyName, name, summary);
 	}
 	
 	public static DoseRangeWizardStep createOnBeanProperty(
@@ -96,18 +96,24 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			String propertyName,
 			String name, 
 			String summary) {
-		Pair<Class<? extends AbstractDose>, String> beanProperty = new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName);
-		return new DoseRangeWizardStep(pm, beanProperty, null, name, summary);
+		return new DoseRangeWizardStep(pm, new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName), null, name, summary);
+	}
+	
+	public static DoseRangeWizardStep createOnKnownDoses(
+			DosedDrugTreatmentPresentation pm, 
+			String name, 
+			String summary) {
+		return new DoseRangeWizardStep(pm, null, null, name, summary);
 	}
 
 	private DoseRangeWizardStep(
 			DosedDrugTreatmentPresentation presentationModel, 
-			Pair<Class<? extends AbstractDose>, String> beanProperties,
+			Pair<Class<? extends AbstractDose>, String> beanProperty,
 			String childPropertyName,
 			String name, 
 			String summary) {
 		super(presentationModel, name, summary);
-		d_beanProperty = beanProperties;
+		d_beanProperty = beanProperty;
 		d_childPropertyName = childPropertyName;
 	}
 
@@ -126,9 +132,10 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	@Override 
 	public void initialize() {
 		d_families.clear();
+		DecisionTreeNode typeNode = (d_beanProperty == null) ? d_pm.getType(FixedDose.class) : d_pm.getType(d_beanProperty.getKey());
 		if(d_childPropertyName != null) {
 			ArrayList<Family> childrenList = new ArrayList<Family>();
-			for(DecisionTreeNode parent : d_pm.getChildNodes(d_pm.getType(d_beanProperty.getKey()))) {
+			for(DecisionTreeNode parent : d_pm.getChildNodes(typeNode)) {
 				ArrayListModel<RangeNode> children = new ArrayListModel<RangeNode>();
 				attachListener(children);
 				childrenList.add(new Family(parent, children));
@@ -137,7 +144,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		} else { 
 			ArrayListModel<RangeNode> children = new ArrayListModel<RangeNode>();
 			attachListener(children);
-			DecisionTreeNode parent = d_pm.getType(d_beanProperty.getKey());
+			DecisionTreeNode parent = typeNode;
 			d_families.add(new Family(parent, children));
 		}
 		populateChildren();
@@ -184,7 +191,11 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 					false,
 					d_pm.getDoseUnit());
 		} else {
-			return new DoseRangeNode(beanProperty.getKey(), beanProperty.getValue(), d_pm.getDoseUnit());
+			if (d_beanProperty == null) {
+				return (DoseRangeNode)d_pm.setKnownDoses(new DoseRangeNode(null, null, d_pm.getDoseUnit()));
+			} else {
+				return new DoseRangeNode(beanProperty.getKey(), beanProperty.getValue(), d_pm.getDoseUnit());
+			}
 		}
 	}
 	
@@ -225,7 +236,12 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		JButton splitBtn = new JButton("Split Range");
 		splitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DoseRangeCutOffDialog dialog = new DoseRangeCutOffDialog(d_pm, index, family, "bound");
+				DoseRangeCutOffDialog dialog;
+				if (d_beanProperty != null) {
+					dialog = new DoseRangeCutOffDialog(d_pm, index, family, GUIHelper.humanize(d_beanProperty.getValue()), false);
+				} else {
+					dialog = new DoseRangeCutOffDialog(d_pm, index, family, "known doses", true);
+				}
 				GUIHelper.centerWindow(dialog, d_mainWindow);
 				dialog.setVisible(true);
 			}
@@ -236,12 +252,15 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		String rangeText = family.children.get(index).getLabel(nodeIsLast);
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
-		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
-				d_pm.getCategories());
+		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				Object selected = comboBox.getSelectedItem();
-				d_pm.setSelected(family.children.get(index), selected);
+				if(d_beanProperty == null) { 
+					d_pm.setKnownDoses(family.children.get(index), selected);
+				} else {
+					d_pm.setSelected(family.children.get(index), selected);
+				}
 			}
 		});
 		builder.add(comboBox, cc.xy(5, row));

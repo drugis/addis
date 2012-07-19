@@ -21,4 +21,8 @@ public class ExcludeNode extends DecisionTreeNode implements LeafNode {
 	public DecisionTreeNode clone() throws CloneNotSupportedException {
 		return new ExcludeNode();
 	}
+	
+	public boolean similar(DecisionTreeNode other) {
+		return other instanceof ExcludeNode;
+	}
 }

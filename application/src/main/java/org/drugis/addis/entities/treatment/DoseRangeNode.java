@@ -74,4 +74,13 @@ public class DoseRangeNode extends RangeNode implements Comparable<RangeNode> {
 			return -1;
 		}
 	}
+	
+	@Override
+	public boolean similar(DecisionTreeNode other) {
+		if(other instanceof DoseRangeNode) { 
+			DoseRangeNode o = (DoseRangeNode) other;
+			return o.d_doseUnit.equals(d_doseUnit) && super.similar(other);
+		}
+		return false;
+	}
 }

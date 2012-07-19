@@ -38,17 +38,20 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	private final RangeValidator d_validator;
 	private final RangeNode d_childToSplit;
 	private Family d_family;
+	private boolean d_onKnownDoses;
 
 	public DoseRangeCutOffDialog(
 			DosedDrugTreatmentPresentation model, 
 			int rangeIndex, 
 			Family family,
-			String boundName) {
+			String boundName,
+			boolean onKnownDoses) {
 		super(Main.getMainWindow(), "Split range", true);
 		d_pm = model;
 		d_rangeIndex = rangeIndex;
 		d_boundName = boundName;
 		d_family =  family;
+		d_onKnownDoses = onKnownDoses;
 		d_childToSplit = d_family.children.get(rangeIndex);
 		d_validator = 
 				new RangeValidator(d_cutOff, d_childToSplit.getRangeLowerBound(), d_childToSplit.getRangeUpperBound());
@@ -136,7 +139,12 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	@Override
 	protected void commit() {	
 		d_family.children.remove(d_rangeIndex);
-		List<RangeNode> splitRange = d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
+		List<RangeNode> splitRange;
+		if (!d_onKnownDoses) {
+			splitRange = d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
+		} else {
+			splitRange = d_pm.splitKnowDoseRanges(d_cutOff.getValue(), !d_upperOpen.getValue());
+		}
 		d_family.children.addAll(d_rangeIndex, splitRange);
 		setVisible(false);
 	}

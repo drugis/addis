@@ -13,6 +13,8 @@ public abstract class DecisionTreeNode extends AbstractObservable implements Clo
 	
 	public abstract String getName();
 	
+	public abstract boolean similar(DecisionTreeNode other);
+	
 	public Class<?> getBeanClass() { 
 		return null;
 	}

@@ -56,4 +56,11 @@ public class TypeNode extends DecisionTreeNode {
 	public String getPropertyName() {
 		return getBeanClass().getSimpleName();
 	}
+	
+	public boolean similar(DecisionTreeNode other) {
+		if(other instanceof TypeNode) { 
+			return ((TypeNode)other).getType().equals(getType());
+		}
+		return false;
+	}
 }

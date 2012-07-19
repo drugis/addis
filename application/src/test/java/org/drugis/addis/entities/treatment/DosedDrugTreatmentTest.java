@@ -22,7 +22,7 @@ public class DosedDrugTreatmentTest {
 
 	@Before
 	public void setUp() {
-		d_treatment = new DosedDrugTreatment("", ExampleData.buildDrugCandesartan());
+		d_treatment = new DosedDrugTreatment("", ExampleData.buildDrugCandesartan(), false);
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class DosedDrugTreatmentTest {
 		tree.setChild(tree.getRoot(), fixedDoseNode);
 		tree.setChild(fixedDoseNode, new CategoryNode("Fixed Dose"));
 		FixedDose fixedDose = new FixedDose();
-		assertEquals("Fixed Dose", d_treatment.getNode(fixedDose).getName());
+		assertEquals("Fixed Dose", d_treatment.getCategory(fixedDose).getName());
 		
 		TypeNode flexibleDoseNode = new TypeNode(FlexibleDose.class);
 		tree.setChild(tree.getRoot(), flexibleDoseNode);
@@ -66,8 +66,8 @@ public class DosedDrugTreatmentTest {
 		FlexibleDose lowDose = new FlexibleDose(new Interval<Double>(0.0, 15.0), ExampleData.MILLIGRAMS_A_DAY);
 		FlexibleDose highDose = new FlexibleDose(new Interval<Double>(20.0, 30.0), ExampleData.MILLIGRAMS_A_DAY);
 
-		assertEquals("Flexible Dose", d_treatment.getNode(lowDose).getName());
-		assertEquals(ExcludeNode.NAME, d_treatment.getNode(highDose).getName());
+		assertEquals("Flexible Dose", d_treatment.getCategory(lowDose).getName());
+		assertEquals(ExcludeNode.NAME, d_treatment.getCategory(highDose).getName());
 
 		FlexibleDose superHighDose = new FlexibleDose(new Interval<Double>(20.0, 700.0), ExampleData.MILLIGRAMS_A_DAY);
 		FlexibleDose someDose = new FlexibleDose(new Interval<Double>(20.0, 300.0), ExampleData.MILLIGRAMS_A_DAY);
@@ -75,8 +75,8 @@ public class DosedDrugTreatmentTest {
 		List<RangeNode> ranges2 = tree.splitChildRange(flexibleDoseNode, 500.0, true);
 		RangeNode highRight = ranges2.get(1);
 		tree.setChild(highRight, new CategoryNode("Super high dose"));
-		assertEquals("Super high dose", d_treatment.getNode(superHighDose).getName());
-		JUnitUtil.assertNotEquals("Super high dose", d_treatment.getNode(someDose).getName());
+		assertEquals("Super high dose", d_treatment.getCategory(superHighDose).getName());
+		JUnitUtil.assertNotEquals("Super high dose", d_treatment.getCategory(someDose).getName());
 
 	}
 
@@ -99,9 +99,9 @@ public class DosedDrugTreatmentTest {
 		tree.setChild(flexibleNode, excludeNode);
 		tree.setChild(unknownDose, unknownNode);
 
-		assertEquals(someCatNode, d_treatment.getNode(new FixedDose()));
-		assertEquals(excludeNode, d_treatment.getNode(new FlexibleDose()));
-		assertEquals(unknownNode, d_treatment.getNode(new UnknownDose()));
+		assertEquals(someCatNode, d_treatment.getCategory(new FixedDose()));
+		assertEquals(excludeNode, d_treatment.getCategory(new FlexibleDose()));
+		assertEquals(unknownNode, d_treatment.getCategory(new UnknownDose()));
 	}
 	
 	@Test
@@ -114,7 +114,7 @@ public class DosedDrugTreatmentTest {
 		List<RangeNode> ranges = tree.splitChildRange(root, 1500, true);
 		// (1000..1500), [1500..2000]
 
-		assertEquals(tree.getChildCount(root), 2);
+		assertEquals(2, tree.getChildCount(root));
 		RangeNode leftSide = ranges.get(0);
 		RangeNode rightSide = ranges.get(1);
 		assertTrue(tree.getChildren(root).contains(rightSide ));

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -15,6 +16,17 @@ import org.drugis.addis.util.BoundedInterval;
 import edu.uci.ics.jung.graph.DelegateTree;
 
 public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
+
+	private final class DosePredicate implements Predicate<DecisionTreeNode> {
+		private AbstractDose d_dose;
+		public DosePredicate(AbstractDose dose) {
+			d_dose = dose;
+		}
+
+		public boolean evaluate(DecisionTreeNode object) {
+			return object.decide(d_dose);
+		}
+	}
 
 	private static final long serialVersionUID = 5924217742805415944L;	
 	
@@ -32,7 +44,6 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		tree.addChild(unknownDoseNode, new ExcludeNode());
 		tree.addChild(fixedDoseNode, new ExcludeNode());
 		tree.addChild(flexibleDoseNode, new ExcludeNode());
-		
 		return tree;
 	}
 	
@@ -116,15 +127,20 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		throw new IllegalArgumentException("No range matches " + value + " in " + parent.getName() );
 	}
 	
+	
 	private DecisionTreeNode searchNode(AbstractDose dose, DecisionTreeNode parent) {
+		return searchNode(new DosePredicate(dose), parent);
+	}
+	
+	public DecisionTreeNode searchNode(Predicate<DecisionTreeNode> predicate, DecisionTreeNode parent) {
 		if (getChildCount(parent) == 0
-				&& parent.decide(dose)) {
+				&& predicate.evaluate(parent)) {
 			return parent;
 		}
 		for (DecisionTreeNode child : getChildren(parent)) {
 			DecisionTreeNode match = null;
-			if (child.decide(dose)) {
-				match = searchNode(dose, child);
+			if (predicate.evaluate(child)) {
+				match = searchNode(predicate, child);
 				if (match != null) {
 					return match;
 				}

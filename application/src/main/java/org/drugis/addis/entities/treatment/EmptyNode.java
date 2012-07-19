@@ -11,5 +11,10 @@ public class EmptyNode extends DecisionTreeNode implements LeafNode {
 	public String getName() {
 		return "Empty node";
 	}
+	
+	@Override
+	public boolean similar(DecisionTreeNode other) {
+		return other instanceof EmptyNode;
+	}
 
 }

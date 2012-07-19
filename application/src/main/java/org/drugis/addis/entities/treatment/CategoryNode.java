@@ -35,4 +35,12 @@ public class CategoryNode extends DecisionTreeNode implements LeafNode {
 	public DecisionTreeNode clone() throws CloneNotSupportedException {
 		return new CategoryNode(getName());
 	}
+	
+	@Override
+	public boolean similar(DecisionTreeNode other) {
+		if(other instanceof CategoryNode) { 
+			return ((CategoryNode)other).getName().equals(getName());
+		}
+		return false;
+	}
 }

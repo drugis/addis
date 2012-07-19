@@ -28,18 +28,30 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	private DoseUnit d_doseUnit;
 	
 	public DosedDrugTreatment() { 
-		this("", null);
+		this("", null, false);
 	}
 	
 	public DosedDrugTreatment(String name, Drug drug) {
-		this(name, drug, new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), new EmptyNode());
+		this(name, drug, true);
 	}
 	
-	public DosedDrugTreatment(String name, Drug drug, DoseUnit unit, DecisionTreeNode rootNode) {
+	public DosedDrugTreatment(String name, Drug drug, boolean withDefaultTree) {
+		this(name, 
+			drug, 
+			new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D")), 
+			new EmptyNode(),
+			withDefaultTree);
+	}
+	
+	public DosedDrugTreatment(String name, Drug drug, DoseUnit unit, DecisionTreeNode rootNode, boolean withDefaultTree) {
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
-		d_decisionTree = DoseDecisionTree.createDefaultTree();
+		if(withDefaultTree) { 
+			d_decisionTree = DoseDecisionTree.createDefaultTree();
+		} else { 
+			d_decisionTree = new DoseDecisionTree(rootNode);
+		}
 	}
 
 	public void setName(String name) {
@@ -77,7 +89,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_categories;
 	}
 	
-	public DecisionTreeNode getNode(AbstractDose dose) { 
+	public DecisionTreeNode getCategory(AbstractDose dose) { 
 		return d_decisionTree.getCategory(dose);
 	}
 	

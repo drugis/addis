@@ -3,14 +3,16 @@ package org.drugis.addis.entities.treatment;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 
+import org.apache.commons.math3.util.Precision;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.util.BoundedInterval;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
 public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode> {
-	public static final double EPSILON = 1.0E-14;
+	public static final double EPSILON = 1.0E-18;
 	public static final String PROPERTY_INTERVAL = "interval";
 	
 	private final Class<?> d_beanClass;
@@ -148,14 +150,16 @@ public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode>
 	public String getLabel(boolean nodeIsLast, DoseUnit unit) {
 		String rangeText;
 		if (!nodeIsLast) {
-			rangeText = String.format("%.2f %s dose %s %.2f %s",
+			rangeText = String.format("%.2f %s %s %s %.2f %s",
 					getRangeLowerBound(),
 					isRangeLowerBoundOpen() ? "<" : "<=",
+					GUIHelper.humanize(getPropertyName()),
 					isRangeUpperBoundOpen() ? "<" : "<=",
 					getRangeUpperBound(),
 					unit == null ? "" : unit);
 		} else {
-			rangeText = String.format("dose %s %.2f %s",
+			rangeText = String.format("%s %s %.2f %s",
+					GUIHelper.humanize(getPropertyName()),
 					isRangeLowerBoundOpen() ? ">" : ">=",
 					getRangeLowerBound(),
 					unit == null ? "" : unit);
@@ -178,5 +182,17 @@ public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode>
 		} else {
 			return getRangeUpperBound() > o.getRangeUpperBound() ? 1 : -1;
 		}
+	}
+	
+	@Override
+	public boolean similar(DecisionTreeNode other) {
+		if(other instanceof RangeNode) {
+			RangeNode o = (RangeNode) other; 
+			return	Precision.equals(o.getRangeLowerBound(), getRangeLowerBound(), Precision.EPSILON) && 
+					o.isRangeLowerBoundOpen() == isRangeLowerBoundOpen() &&
+					Precision.equals(o.getRangeUpperBound(), getRangeUpperBound(), Precision.EPSILON) && 
+					o.isRangeUpperBoundOpen() == isRangeUpperBoundOpen();
+		}
+		return false;
 	}
 }
