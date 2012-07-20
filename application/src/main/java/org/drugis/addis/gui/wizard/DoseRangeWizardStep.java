@@ -42,8 +42,8 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	private Pair<Class<? extends AbstractDose>, String> d_beanProperty;
 	private String d_childPropertyName;
-	
-	static class Family { 
+
+	public static class Family { 
 		public final DecisionTreeNode parent;
 		public final ObservableList<RangeNode> children;
 
@@ -132,7 +132,12 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	@Override 
 	public void initialize() {
 		d_families.clear();
-		DecisionTreeNode typeNode = (d_beanProperty == null) ? d_pm.getType(FixedDose.class) : d_pm.getType(d_beanProperty.getKey());
+		DecisionTreeNode typeNode; // Defaults to fixed if null, also default for all known doses
+		if (d_beanProperty == null) {
+			typeNode = d_pm.getType(FixedDose.class);
+		} else {
+			typeNode = d_pm.getType(d_beanProperty.getKey());
+		}
 		if(d_childPropertyName != null) {
 			ArrayList<Family> childrenList = new ArrayList<Family>();
 			for(DecisionTreeNode parent : d_pm.getChildNodes(typeNode)) {
@@ -255,11 +260,13 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				Object selected = comboBox.getSelectedItem();
-				if(d_beanProperty == null) { 
-					d_pm.setKnownDoses(family.children.get(index), selected);
-				} else {
-					d_pm.setSelected(family.children.get(index), selected);
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					Object selected = comboBox.getSelectedItem();
+					if(d_beanProperty == null) { 
+						d_pm.setKnownDoses(family.children.get(index), selected);
+					} else {
+						d_pm.setSelected(family.children.get(index), selected);
+					}
 				}
 			}
 		});

@@ -101,7 +101,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		return builder.getPanel();
 	}	
 	
-	public void setConsiderFlexible(Object selected) { 		
+	private void setConsiderFlexible(Object selected) { 		
 		d_previousFlexible = selected;
 		setCategorySelection(
 				selected,
@@ -129,7 +129,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		return d_considerFlexibleLower;
 	}
 	
-	public void setConsiderFixed(Object selected) { 
+	private void setConsiderFixed(Object selected) { 
 		d_previousFixed = selected;
 		setCategorySelection(
 				selected,

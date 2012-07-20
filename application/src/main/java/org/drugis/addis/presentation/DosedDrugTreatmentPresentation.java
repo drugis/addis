@@ -51,7 +51,6 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
@@ -155,11 +154,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return getBean();
 	}
 
-	public List<RangeNode> splitRange(RangeNode node, double value, boolean includeInRightSide) {
-		List<RangeNode> ranges = splitRange(getBean().getDecisionTree().getParent(node), value, includeInRightSide);
-		return ranges;
-	}
-
 	private List<RangeNode> splitRange(DecisionTreeNode parent, double value, boolean includeInRightSide) {
 		List<RangeNode> ranges = d_tree.splitChildRange(parent, value, includeInRightSide);
 
@@ -167,6 +161,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		
 		updateNodeMapping(ranges.get(0));
 		updateNodeMapping(ranges.get(1));
+		return ranges;
+	}
+	
+	public List<RangeNode> splitRange(RangeNode node, double value, boolean includeInRightSide) {
+		List<RangeNode> ranges = splitRange(d_tree.getParent(node), value, includeInRightSide);
 		return ranges;
 	}
 	
@@ -211,7 +210,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * Removes all children of a specified node
 	 * @param node 
 	 */
-	public void clearNode(DecisionTreeNode node) { 
+	private void clearNode(DecisionTreeNode node) { 
 		forAllDo(d_tree.getChildren(node), new Closure<DecisionTreeNode>() {
 			public void execute(DecisionTreeNode orphan) {
 				d_tree.removeChild(orphan);
@@ -223,10 +222,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public Collection<? extends DecisionTreeNode> getChildNodes(DecisionTreeNode node) {
 		Collection<DecisionTreeNode> children = d_tree.getChildren(node);
 		return children != null ? new TreeSet<DecisionTreeNode>(children) : Collections.<DecisionTreeNode>emptyList();
-	}
-	
-	public static DecisionTreeNode buildDefaultNode() {
-		return new ExcludeNode(); 
 	}
 
 	public DecisionTreeNode setKnownDoses(DecisionTreeNode prototype) {
@@ -256,15 +251,19 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public void setKnownDoses(final DecisionTreeNode parent, final Object selected) { 
 		setSelected(parent, selected); // Fixed case
 		if(parent instanceof RangeNode) { 
-			final DecisionTreeNode flexibleProto = inheritPrototype((RangeNode)parent, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE); 
-			DecisionTreeNode flexibleLeaf = d_tree.searchNode(new Predicate<DecisionTreeNode>() {
-				public boolean evaluate(DecisionTreeNode node) {
-					return node.getPropertyName().equals(flexibleProto.getPropertyName())
-						&& node.toString().equals(flexibleProto.toString())
-						&& node.getBeanClass().equals(flexibleProto.getBeanClass());
+			final DecisionTreeNode prototype = inheritPrototype((RangeNode)parent, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE); 
+			final DecisionTreeNode node = find(d_tree.getVertices(), new Predicate<DecisionTreeNode>() { // this is super inefficient
+				public boolean evaluate(DecisionTreeNode input) {
+					return 	input.similar(prototype) &&
+							input.getBeanClass().equals(prototype.getBeanClass()) && 
+							input.getPropertyName().equals(prototype.getPropertyName())  ; 
 				}
-			}, getType(FlexibleDose.class));
-			setSelected(flexibleLeaf, selected);
+			});
+			if(node != null) {
+				setSelected(node, selected);
+			} else { 
+				throw new IllegalArgumentException("Leaf " + node + " did not match prototype " + prototype);
+			}
 		}
 	}
 

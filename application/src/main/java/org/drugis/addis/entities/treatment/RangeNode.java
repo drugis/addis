@@ -12,7 +12,7 @@ import org.drugis.common.gui.GUIHelper;
 import com.jgoodies.binding.beans.BeanUtils;
 
 public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode> {
-	public static final double EPSILON = 1.0E-18;
+	public static final double EPSILON = 1.0E-14;
 	public static final String PROPERTY_INTERVAL = "interval";
 	
 	private final Class<?> d_beanClass;
@@ -188,9 +188,9 @@ public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode>
 	public boolean similar(DecisionTreeNode other) {
 		if(other instanceof RangeNode) {
 			RangeNode o = (RangeNode) other; 
-			return	Precision.equals(o.getRangeLowerBound(), getRangeLowerBound(), Precision.EPSILON) && 
+			return	Precision.equals(o.getRangeLowerBound(), getRangeLowerBound(), RangeNode.EPSILON * 10) && 
 					o.isRangeLowerBoundOpen() == isRangeLowerBoundOpen() &&
-					Precision.equals(o.getRangeUpperBound(), getRangeUpperBound(), Precision.EPSILON) && 
+					Precision.equals(o.getRangeUpperBound(), getRangeUpperBound(), RangeNode.EPSILON * 10) && 
 					o.isRangeUpperBoundOpen() == isRangeUpperBoundOpen();
 		}
 		return false;

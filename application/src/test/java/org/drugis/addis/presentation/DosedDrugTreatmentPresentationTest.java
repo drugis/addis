@@ -1,7 +1,6 @@
 package org.drugis.addis.presentation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -18,6 +17,7 @@ import org.drugis.addis.entities.treatment.CategoryNode;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.ExcludeNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.common.Interval;
@@ -201,7 +201,7 @@ public class DosedDrugTreatmentPresentationTest {
 		assertTrue(containsNodeString(flexibleDose1, flexType));
 		assertTrue(containsNodeString(fixedDose1, fixedType));
 
-		List<RangeNode> splits = d_pm.splitKnowDoseRanges(30, true);
+		d_pm.splitKnowDoseRanges(30, true);
 		
 		assertTrue(containsNodeString(flexibleDose1, flexType));
 		assertTrue(containsNodeString(fixedDose1, fixedType));
@@ -212,13 +212,41 @@ public class DosedDrugTreatmentPresentationTest {
 
 	private boolean containsNodeString(AbstractDose dose, DecisionTreeNode parent) {
 		DecisionTreeNode doseCategory = d_pm.getBean().getCategory(dose);
-		System.out.println("doseCat: " + doseCategory);
 		for(DecisionTreeNode node : d_pm.getChildNodes(parent)) { 
-			System.out.println("  comparing to: " + node);
 			if(node.similar(doseCategory)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	
+	@Test
+	public void testSetKnownDosesTree() { 
+		FixedDose fixedDose1 = new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose flexibleDose1 = new FlexibleDose(new Interval<Double>(10.0, 20.0), ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose fixedDose2 = new FixedDose(40, ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose flexibleDose2 = new FlexibleDose(new Interval<Double>(40.0, 40.0), ExampleData.MILLIGRAMS_A_DAY);
+		
+		RangeNode prototype = new RangeNode(AbstractDose.class, AbstractDose.PROPERTY_DOSE_TYPE);
+		d_pm.setKnownDoses(prototype);
+		List<RangeNode> splits = d_pm.splitKnowDoseRanges(30, true);
+		
+		CategoryNode cat1 = new CategoryNode("foo");
+		CategoryNode cat2 = new CategoryNode("bar");
+
+		d_pm.setKnownDoses(splits.get(0), cat1);
+		d_pm.setKnownDoses(splits.get(1), cat2);
+		
+		assertEquals(cat1.toString(), d_pm.getCategory(fixedDose1));
+		assertEquals(cat1.toString(), d_pm.getCategory(flexibleDose1));
+		
+		assertEquals(cat2.toString(), d_pm.getCategory(fixedDose2));
+		assertEquals(cat2.toString(), d_pm.getCategory(flexibleDose2));
+		
+		ExcludeNode exclude = new ExcludeNode();
+		d_pm.setKnownDoses(splits.get(1), exclude);
+		assertEquals(exclude.toString(), d_pm.getCategory(fixedDose2));
+		assertEquals(exclude.toString(), d_pm.getCategory(flexibleDose2));
 	}
 }

@@ -129,10 +129,15 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	
 	
 	private DecisionTreeNode searchNode(AbstractDose dose, DecisionTreeNode parent) {
-		return searchNode(new DosePredicate(dose), parent);
+		return searchLeafNode(new DosePredicate(dose), parent);
 	}
 	
-	public DecisionTreeNode searchNode(Predicate<DecisionTreeNode> predicate, DecisionTreeNode parent) {
+	/** 
+	 * @param predicate a predicate functor which returns true if a node should match
+	 * @param parent the start of the recursive search
+	 * @return the leaf node for which all elements on the path return true for the predicate, null if no such node exists
+	 */
+	private DecisionTreeNode searchLeafNode(Predicate<DecisionTreeNode> predicate, DecisionTreeNode parent) {
 		if (getChildCount(parent) == 0
 				&& predicate.evaluate(parent)) {
 			return parent;
@@ -140,7 +145,7 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		for (DecisionTreeNode child : getChildren(parent)) {
 			DecisionTreeNode match = null;
 			if (predicate.evaluate(child)) {
-				match = searchNode(predicate, child);
+				match = searchLeafNode(predicate, child);
 				if (match != null) {
 					return match;
 				}
