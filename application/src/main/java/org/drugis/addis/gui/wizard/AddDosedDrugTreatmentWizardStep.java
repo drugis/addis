@@ -83,7 +83,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	private JComboBox d_knownDoseCombo;
 	private JComboBox d_unknownDoseCombo;
 	
-	private ValueHolder<Boolean> d_considerDoseType = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerDoseType = new ModifiableHolder<Boolean>(null);
 
 	public AddDosedDrugTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel) {
 		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment");
@@ -189,6 +189,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		d_knownDoseCombo.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) { 
+					d_pm.resetTree();
 					d_pm.setSelected(d_fixedNode, d_knownDoseCombo.getSelectedItem());
 					d_pm.setSelected(d_flexibleNode, d_knownDoseCombo.getSelectedItem());
 					setConsiderDoseType();

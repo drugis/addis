@@ -28,7 +28,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	private DoseUnit d_doseUnit;
 	
 	public DosedDrugTreatment() { 
-		this("", null, false);
+		this("", null, true);
 	}
 	
 	public DosedDrugTreatment(String name, Drug drug) {
@@ -115,5 +115,4 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	public DecisionTreeNode getRootNode() {
 		return d_decisionTree.getRoot();
 	}
-	
 }

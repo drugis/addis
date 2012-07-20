@@ -38,7 +38,7 @@ public final class RangeValidator extends AbstractValueModel implements ValueHol
 	
 	public void validate() { 
 		boolean oldValue = d_valid;
-		d_valid =  d_range.getValue() <= d_maximum && d_range.getValue() >= d_minimum;
+		d_valid =  d_range.getValue() < d_maximum && d_range.getValue() > d_minimum;
 		firePropertyChange(PROPERTY_VALID, oldValue, d_valid);
 	}
 }

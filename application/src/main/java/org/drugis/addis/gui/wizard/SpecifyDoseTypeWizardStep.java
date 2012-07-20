@@ -68,6 +68,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) { 
+					d_pm.resetTree();
 					Object selected = fixedCategoryComboBox.getSelectedItem();
 					d_pm.setSelected(d_fixedDoseNode, selected);
 					setConsiderFixed(selected);
@@ -90,6 +91,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		flexibleCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
+					d_pm.resetTree();
 					Object selected = flexibleCategoryComboBox.getSelectedItem();
 					d_pm.setSelected(d_flexibleDoseNode, selected);
 					setConsiderFlexible(selected);

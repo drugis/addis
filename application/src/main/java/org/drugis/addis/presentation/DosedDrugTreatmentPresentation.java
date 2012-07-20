@@ -80,8 +80,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		d_domain = domain;
 		d_categories = new ContentAwareListModel<CategoryNode>(bean.getCategories());
 		d_tree = getBean().getDecisionTree();
+		initializeNodeMap();
+	}
 
-		Collection<DecisionTreeNode> children = d_tree.getChildren(bean.getRootNode());
+	private void initializeNodeMap() {
+		Collection<DecisionTreeNode> children = d_tree.getChildren(d_tree.getRoot());
 		for(DecisionTreeNode child : children) { 
 			if(child instanceof TypeNode) {
 				updateNodeMapping((TypeNode) child);
@@ -112,6 +115,13 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public DoseUnitPresentation getDoseUnitPresentation() {
 		return new DoseUnitPresentation(getDoseUnit());
 	}
+	
+	public void resetTree() {
+		d_tree.resetToDefault();
+		d_nodeMap.clear();
+		initializeNodeMap();
+	}
+	
 	/**
 	 * Sets the child of a node
 	 * @param parent the node to set the child on
@@ -122,7 +132,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			DecisionTreeNode child = (DecisionTreeNode) selected;
 			if(child instanceof LeafNode) { 
 				clearNode(parent);
-			}
+			} 
 			setDecisionTree(parent, child);
 			updateNodeMapping(child);
 		} 
@@ -136,7 +146,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 			} catch (Exception e) {
 				throw new IllegalStateException("Tried to clone an uncopyable object " + child + " to ensure uniqueness in the DecisionTree");
 			}
-		}
+		} 
 		d_tree.setChild(parent, child);
 	}
 
@@ -165,8 +175,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	}
 	
 	public List<RangeNode> splitRange(RangeNode node, double value, boolean includeInRightSide) {
-		List<RangeNode> ranges = splitRange(d_tree.getParent(node), value, includeInRightSide);
-		return ranges;
+		return splitRange(d_tree.getParent(node), value, includeInRightSide);
 	}
 	
 	public List<RangeNode> splitKnowDoseRanges(double value, boolean includeInRightSide) {
@@ -177,6 +186,10 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		
 		RangeNode left = flexibleSplits.get(0);
 		RangeNode right = flexibleSplits.get(1);
+		
+		System.out.println("parent of left (" + left + ") = " + d_tree.getParent(left));
+		System.out.println("parent of right (" + right + ") = " + d_tree.getParent(right));
+		
 		if(left.getPropertyName().equals(FlexibleDose.PROPERTY_MIN_DOSE)) { 
 			setSelected(left, inheritPrototype(left, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
 			setSelected(right, inheritPrototype(right, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
@@ -219,7 +232,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		});
 	}
 
-	public Collection<? extends DecisionTreeNode> getChildNodes(DecisionTreeNode node) {
+	public Collection<DecisionTreeNode> getChildNodes(DecisionTreeNode node) {
 		Collection<DecisionTreeNode> children = d_tree.getChildren(node);
 		return children != null ? new TreeSet<DecisionTreeNode>(children) : Collections.<DecisionTreeNode>emptyList();
 	}

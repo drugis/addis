@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.CollectionUtils;
+import static org.apache.commons.collections15.CollectionUtils.*;
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.FixedDose;
@@ -33,6 +33,12 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	public static DoseDecisionTree createDefaultTree() {
 		EmptyNode rootNode = new EmptyNode();
 		DoseDecisionTree tree = new DoseDecisionTree(rootNode);
+		createDefaultTypes(tree);
+		return tree;
+	}
+
+	private static void createDefaultTypes(DoseDecisionTree tree) {
+		DecisionTreeNode rootNode = tree.getRoot();
 		TypeNode unknownDoseNode = new TypeNode(UnknownDose.class);
 		TypeNode fixedDoseNode = new TypeNode(FixedDose.class);
 		TypeNode flexibleDoseNode = new TypeNode(FlexibleDose.class);
@@ -44,7 +50,6 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		tree.addChild(unknownDoseNode, new ExcludeNode());
 		tree.addChild(fixedDoseNode, new ExcludeNode());
 		tree.addChild(flexibleDoseNode, new ExcludeNode());
-		return tree;
 	}
 	
 	public DoseDecisionTree(DecisionTreeNode rootNode) { 
@@ -62,11 +67,6 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	 * @param parent The parent of the set of range nodes to split.
 	 * @param value The cut-off value.
 	 * @param includeInRightSide True if the value should be included in the range
-	 * where it is a lower bound, and excluded where it is an upper bound.
-	 * @param rightNode The child node to set for the new upper range, or null to use the child node of the original range. 
-	 * @return The index of the range where this cut-off is a lower bound.
-	 * @throws IllegalArgumentException If the value does not lie within the specified range for this node, 
-	 * or if it is equal to an existing cut-off value.
 	 */
 	public List<RangeNode> splitChildRange(DecisionTreeNode parent, double value, boolean includeInRightSide) {
 		RangeNode rangeToSplit = findByValue(parent, value);
@@ -99,19 +99,22 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	 * @param child
 	 */
 	public void setChild(final DecisionTreeNode parent, final DecisionTreeNode child) {
-		CollectionUtils.forAllDo(getChildren(parent), new Closure<DecisionTreeNode>() {
-			public void execute(DecisionTreeNode orphan) {
-				if(	orphan instanceof LeafNode) {
-					removeChild(orphan);
+		forAllDo(getChildren(parent), new Closure<DecisionTreeNode>() {
+			public void execute(DecisionTreeNode child) {
+				if(child instanceof LeafNode) {
+					removeChild(child);
 				}
 			}
 		});
 		addChild(parent, child);
+		if(isLeaf(child) && !(child instanceof LeafNode)) { 
+			addChild(child, new ExcludeNode());
+		}
 	}
 	
 	private void addChild(DecisionTreeNode parent, DecisionTreeNode child) { 
 		if(!containsVertex(parent)) {
-			addChild(Integer.toString(getRoot().hashCode() + 31 * parent.hashCode()), getRoot(), parent);
+			throw new IllegalArgumentException("Parent node " + parent + " does not exist, cannot set child " + child);
 		}
 		if(!containsVertex(child)) {
 			addChild(Integer.toString(parent.hashCode() + 31 * child.hashCode()), parent, child);
@@ -154,4 +157,10 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		return null;
 	}
 	
+	public void resetToDefault() { 
+		for(DecisionTreeNode child : getChildren(getRoot())) { 
+			removeVertex(child);
+		}
+		DoseDecisionTree.createDefaultTypes(this);
+	}
 }

@@ -1,14 +1,16 @@
 package org.drugis.addis.gui.wizard;
 
 
-import static org.apache.commons.collections15.CollectionUtils.*;
+import static org.apache.commons.collections15.CollectionUtils.forAllDo;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,14 +44,15 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	private Pair<Class<? extends AbstractDose>, String> d_beanProperty;
 	private String d_childPropertyName;
+	public final Map<RangeNode, Object> d_selections = new HashMap<RangeNode, Object>();
 
 	public static class Family { 
 		public final DecisionTreeNode parent;
 		public final ObservableList<RangeNode> children;
-
+		
 		public Family(DecisionTreeNode parent, ObservableList<RangeNode> children) {
 			this.parent = parent;
-			this.children = children;	
+			this.children = children;
 		}
 		
 		/**
@@ -149,8 +152,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		} else { 
 			ArrayListModel<RangeNode> children = new ArrayListModel<RangeNode>();
 			attachListener(children);
-			DecisionTreeNode parent = typeNode;
-			d_families.add(new Family(parent, children));
+			d_families.add(new Family(typeNode, children));
 		}
 		populateChildren();
 	}
@@ -245,7 +247,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 				if (d_beanProperty != null) {
 					dialog = new DoseRangeCutOffDialog(d_pm, index, family, GUIHelper.humanize(d_beanProperty.getValue()), false);
 				} else {
-					dialog = new DoseRangeCutOffDialog(d_pm, index, family, "known doses", true);
+					dialog = new DoseRangeCutOffDialog(d_pm, index, family, "quantity", true);
 				}
 				GUIHelper.centerWindow(dialog, d_mainWindow);
 				dialog.setVisible(true);
@@ -254,19 +256,24 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		});
 		builder.add(splitBtn, cc.xy(1, row));
 		boolean nodeIsLast = (index == family.children.size() - 1);
-		String rangeText = family.children.get(index).getLabel(nodeIsLast);
+		final RangeNode rangeNode = family.children.get(index);
+		String rangeText = rangeNode.getLabel(nodeIsLast);
 		builder.add(new JLabel(rangeText), cc.xy(3, row));
 		
 		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
+		if(d_selections.get(rangeNode) != null) { 
+			comboBox.setSelectedItem(d_selections.get(rangeNode));
+		}
 		comboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					Object selected = comboBox.getSelectedItem();
 					if(d_beanProperty == null) { 
-						d_pm.setKnownDoses(family.children.get(index), selected);
+						d_pm.setKnownDoses(rangeNode, selected);
 					} else {
-						d_pm.setSelected(family.children.get(index), selected);
+						d_pm.setSelected(rangeNode, selected);
 					}
+					d_selections.put(rangeNode, selected);
 				}
 			}
 		});

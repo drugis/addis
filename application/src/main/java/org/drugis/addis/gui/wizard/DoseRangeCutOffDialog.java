@@ -31,7 +31,7 @@ import com.jgoodies.forms.layout.FormLayout;
 final class DoseRangeCutOffDialog extends OkCancelDialog {
 	private final DosedDrugTreatmentPresentation d_pm;
 	private static final long serialVersionUID = -7519390341921875264L;
-	private final int d_rangeIndex;
+	private final int d_index;
 	private final ValueHolder<Double> d_cutOff = new ModifiableHolder<Double>(0.0d);
 	private final ValueHolder<Boolean> d_upperOpen = new ModifiableHolder<Boolean>(false);
 	private String d_boundName;
@@ -48,7 +48,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 			boolean onKnownDoses) {
 		super(Main.getMainWindow(), "Split range", true);
 		d_pm = model;
-		d_rangeIndex = rangeIndex;
+		d_index = rangeIndex;
 		d_boundName = boundName;
 		d_family =  family;
 		d_onKnownDoses = onKnownDoses;
@@ -73,7 +73,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		final int colSpan = builder.getColumnCount();
 		int row = 1;
 		
-		boolean nodeIsLast = (d_rangeIndex == d_family.children.size() - 1);
+		boolean nodeIsLast = (d_index == d_family.children.size() - 1);
 		builder.addSeparator("Original range: " + d_childToSplit.getLabel(nodeIsLast), cc.xyw(1, row, colSpan));
 		
 		row = LayoutUtil.addRow(layout, row);
@@ -116,7 +116,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		builder.add(cutOffLower, cc.xy(3, row));
 		
 		AffixableFormat formatUpper = new AffixableFormat();
-		if (d_rangeIndex < d_pm.getBean().getDecisionTree().getChildCount(d_family.parent) - 1) { 
+		if (d_index < d_pm.getBean().getDecisionTree().getChildCount(d_family.parent) - 1) { 
 			StringBuilder suffix = new StringBuilder()
 				.append(" <= " + d_boundName)
 				.append((d_childToSplit.isRangeUpperBoundOpen() ? " < " : " <= "))
@@ -124,8 +124,9 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 			formatLower.setSuffix(" " + unitText);
 			formatUpper.setSuffix(suffix.toString());
 		} else {
-			formatUpper.setPrefix(d_boundName + " >= ");
+			formatUpper.setPrefix(d_boundName + " > ");
 			formatLower.setSuffix(" " + unitText);
+			formatUpper.setSuffix(" " + unitText);
 		}
 		JLabel cutOffUpper = BasicComponentFactory.createLabel(d_cutOff, formatUpper);
 		
@@ -138,14 +139,14 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	
 	@Override
 	protected void commit() {	
-		d_family.children.remove(d_rangeIndex);
+		d_family.children.remove(d_index);
 		List<RangeNode> splitRange;
 		if (!d_onKnownDoses) {
 			splitRange = d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
 		} else {
 			splitRange = d_pm.splitKnowDoseRanges(d_cutOff.getValue(), !d_upperOpen.getValue());
 		}
-		d_family.children.addAll(d_rangeIndex, splitRange);
+		d_family.children.addAll(d_index, splitRange);
 		setVisible(false);
 	}
 

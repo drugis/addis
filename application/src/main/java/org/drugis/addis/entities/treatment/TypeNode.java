@@ -4,6 +4,7 @@ import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.gui.GUIHelper;
 
 public class TypeNode extends DecisionTreeNode {
 	public static final String PROPERTY_TYPE = "type";
@@ -25,8 +26,7 @@ public class TypeNode extends DecisionTreeNode {
 	
 	@Override
 	public String getName() {
-//		return GUIHelper.humanize(d_type.getValue().getSimpleName());
-		return d_type.getValue().getSimpleName();
+		return GUIHelper.humanize(d_type.getValue().getSimpleName());
 	}
 	
 	public ValueHolder<Class<? extends AbstractDose>> getType() {

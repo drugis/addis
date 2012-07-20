@@ -164,5 +164,4 @@ public class DosedDrugTreatmentTest {
 		assertTrue(node1.decide(flexDose1));
 		assertFalse(node1.decide(flexDose2));		
 	}
-
 }
