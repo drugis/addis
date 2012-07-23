@@ -1,11 +1,10 @@
 package org.drugis.addis.gui.wizard;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Domain;
@@ -20,33 +19,33 @@ import com.jgoodies.binding.value.ValueModel;
 
 public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	private static final long serialVersionUID = 5608736267613312255L;
-	protected JPanel d_dialogPanel = new JPanel();
 	protected static final int PANEL_WIDTH = 600;
 	protected List<ValueModel> d_validators = new ArrayList<ValueModel>();
 	private JPanel d_dialogCache = null;
 	protected final Domain d_domain;
 	protected final AddisWindow d_mainWindow;
 	protected final DosedDrugTreatmentPresentation d_pm;
+	protected JDialog d_dialog;
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel) {
-		this(presentationModel, null, null, null);
+	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, JDialog dialog) {
+		this(presentationModel, null, null, null, dialog);
 	}
 
 	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
 			String name, 
-			String summary) {
-		this(presentationModel, name, summary, null);
+			String summary, JDialog dialog) {
+		this(presentationModel, name, summary, null, dialog);
 	}
 
 	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
 			String name, 
 			String summary,
-			Icon icon) {
+			Icon icon, JDialog dialog) {
 		super(name, summary, icon);
 		d_pm = presentationModel;
+		d_dialog = dialog;
 		d_mainWindow = Main.getMainWindow();
 		d_domain = d_mainWindow.getDomain();
-
 	}
 
 	@Override
@@ -57,7 +56,6 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	 	BooleanAndModel valid = new BooleanAndModel(d_validators);  
 	 	PropertyConnector.connectAndUpdate(valid, this, "complete");
 	 	this.setVisible(true);
-	 	repaint();
 	}
 	
 	protected void initialize() {}
@@ -66,20 +64,17 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 		if(d_dialogCache == null) { 
 			d_dialogCache = buildPanel();
 		}
-		d_dialogPanel.setLayout(new BorderLayout());
-		d_dialogPanel.setPreferredSize(new Dimension(PANEL_WIDTH, 500));
-		d_dialogPanel.add(d_dialogCache);
-		add(d_dialogPanel, BorderLayout.CENTER);	
+		removeAll();
+		add(d_dialogCache);
 	}
 	
 	protected void rebuildPanel() {
-		d_dialogPanel.setVisible(false);
-		d_dialogPanel.removeAll();
+		setVisible(false);
+		removeAll();
 		d_dialogCache = buildPanel();
-		d_dialogPanel.add(d_dialogCache);
-		d_dialogPanel.setVisible(true);
+		add(d_dialogCache);
+		setVisible(true);
 	}
 	
 	protected abstract JPanel buildPanel();
-	
 }

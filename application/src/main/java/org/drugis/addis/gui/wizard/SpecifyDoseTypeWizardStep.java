@@ -28,13 +28,13 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private Object d_previousFixed;
 	private Object d_previousFlexible;
 	
-	private volatile ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
-	private volatile ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
-	private volatile ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
-	private volatile ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
+	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
 
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm) {
-		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.");
+		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.", null);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		builder.addLabel("Fixed dose", cc.xy(1, row));
 		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
 				d_pm.getCategories(), 
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.FIXED_CONSIDER);
+				CategorySpecifiers.FIXED_CONSIDER);
 		if(d_previousFixed != null) {
 			fixedCategoryComboBox.setSelectedItem(d_previousFixed);
 		}

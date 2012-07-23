@@ -86,7 +86,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	private ValueHolder<Boolean> d_considerDoseType = new ModifiableHolder<Boolean>(null);
 
 	public AddDosedDrugTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel) {
-		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment");
+		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", null);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
 		

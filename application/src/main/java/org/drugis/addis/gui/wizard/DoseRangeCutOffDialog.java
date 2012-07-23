@@ -2,8 +2,8 @@ package org.drugis.addis.gui.wizard;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.List;
 
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,7 +12,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.treatment.RangeNode;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep.Family;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
@@ -44,18 +43,20 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	private boolean d_onKnownDoses;
 
 	public DoseRangeCutOffDialog(
+			JDialog parent,
 			DosedDrugTreatmentPresentation model, 
 			int rangeIndex, 
 			Family family,
 			String boundName,
 			boolean onKnownDoses) {
-		super(Main.getMainWindow(), "Split range", true);
+		super(parent, "Split range", true);
+		setLocationByPlatform(true);
 		d_pm = model;
 		d_index = rangeIndex;
 		d_boundName = boundName;
 		d_family =  family;
 		d_onKnownDoses = onKnownDoses;
-		d_childToSplit = d_family.children.get(rangeIndex);
+		d_childToSplit = (RangeNode)d_family.getChildren().get(rangeIndex);
 		d_validator = 
 				new RangeValidator(d_cutOff, d_childToSplit.getRangeLowerBound(), d_childToSplit.getRangeUpperBound());
 		getUserPanel().add(buildPanel());
@@ -76,7 +77,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		final int colSpan = builder.getColumnCount();
 		int row = 1;
 		
-		boolean nodeIsLast = (d_index == d_family.children.size() - 1);
+		boolean nodeIsLast = (d_index == d_family.getChildren().size() - 1);
 		builder.addSeparator("Original range: " + d_childToSplit.getLabel(nodeIsLast), cc.xyw(1, row, colSpan));
 		
 		row = LayoutUtil.addRow(layout, row);
@@ -141,14 +142,11 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 	
 	@Override
 	protected void commit() {	
-		d_family.children.remove(d_index);
-		List<RangeNode> splitRange;
 		if (!d_onKnownDoses) {
-			splitRange = d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
+			d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
 		} else {
-			splitRange = d_pm.splitKnowDoseRanges(d_cutOff.getValue(), !d_upperOpen.getValue());
+			d_pm.splitKnowDoseRanges(d_cutOff.getValue(), !d_upperOpen.getValue());
 		}
-		d_family.children.addAll(d_index, splitRange);
 		setVisible(false);
 	}
 

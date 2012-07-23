@@ -1,5 +1,6 @@
 package org.drugis.addis.entities.treatment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,10 @@ import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.util.BoundedInterval;
 
 import edu.uci.ics.jung.graph.DelegateTree;
+import edu.uci.ics.jung.graph.DirectedGraph;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 
 public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 
@@ -52,8 +57,20 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 		tree.addChild(flexibleDoseNode, new ExcludeNode());
 	}
 	
-	public DoseDecisionTree(DecisionTreeNode rootNode) { 
+	public static class ObservableDirectedGraph<V, E> extends ObservableGraph<V, E> implements DirectedGraph<V, E> {
+		private static final long serialVersionUID = 442135818546886998L;
+		public ObservableDirectedGraph(Graph<V, E> delegate) {
+			super(delegate);
+		}
+	}
+	
+	public DoseDecisionTree(DecisionTreeNode rootNode) {
+		super(new ObservableDirectedGraph<DecisionTreeNode, String>(new DirectedSparseGraph<DecisionTreeNode, String>()));
 		setRoot(rootNode);
+	}
+	
+	public ObservableGraph<DecisionTreeNode, String> getObservableGraph() {
+		return (ObservableGraph<DecisionTreeNode, String>) delegate;
 	}
 	
 	public DecisionTreeNode getCategory(AbstractDose dose) {
@@ -94,7 +111,7 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	}
 	
 	/**
-	 * Sets the child of a parent node in the tree,
+	 * Sets the child of a parent node in the tree. Removes all current children.
 	 * @param parent
 	 * @param child
 	 */
@@ -158,7 +175,7 @@ public class DoseDecisionTree extends DelegateTree<DecisionTreeNode, String> {
 	}
 	
 	public void resetToDefault() { 
-		for(DecisionTreeNode child : getChildren(getRoot())) { 
+		for(DecisionTreeNode child : new ArrayList<DecisionTreeNode>(getChildren(getRoot()))) { 
 			removeVertex(child);
 		}
 		DoseDecisionTree.createDefaultTypes(this);

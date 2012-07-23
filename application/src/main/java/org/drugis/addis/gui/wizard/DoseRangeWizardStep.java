@@ -1,26 +1,23 @@
 package org.drugis.addis.gui.wizard;
 
 
-import static org.apache.commons.collections15.CollectionUtils.forAllDo;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.apache.commons.collections15.Closure;
 import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.FixedDose;
@@ -30,8 +27,8 @@ import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
+import org.pietschy.wizard.WizardStep;
 
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -40,19 +37,102 @@ import com.jgoodies.forms.layout.FormLayout;
 public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 	
-	private List<Family> d_families = new ArrayList<Family>();
-	
 	private Pair<Class<? extends AbstractDose>, String> d_beanProperty;
-	private String d_childPropertyName;
-	public final Map<RangeNode, Object> d_selections = new HashMap<RangeNode, Object>();
+	private Family d_family;
+	
+	public static class RangeInputBuilder {
+		private final Pair<Class<? extends AbstractDose>, String> d_beanProperty;
+		private final Map<RangeNode, Object> d_selections = new HashMap<RangeNode, Object>();
+		private final Family d_family;
+		private JDialog d_dialog;
+		private DosedDrugTreatmentPresentation d_pm;
+		
+		public RangeInputBuilder(JDialog dialog, DosedDrugTreatmentPresentation presentationModel,
+				Pair<Class<? extends AbstractDose>, String> beanProperty, Family family) {
+			d_dialog = dialog;
+			d_pm = presentationModel;
+			d_beanProperty = beanProperty;
+			d_family = family;
+		}
+		
+		public int addFamilyToPanel(PanelBuilder builder, int row) {
+			FormLayout layout = builder.getLayout();
+			CellConstraints cc = new CellConstraints();
+			DecisionTreeNode parent = d_family.parent;
+			if (parent instanceof RangeNode) {
+				boolean nodeIsLast = Double.isInfinite(((RangeNode) parent).getRangeUpperBound());
+				row = LayoutUtil.addRow(layout, row);
+				builder.addSeparator(((RangeNode)parent).getLabel(nodeIsLast), cc.xyw(1, row, 6));
+			}
+			
+			ObservableList<DecisionTreeNode> children = d_family.getChildren();
+			for (int i = 0; i < children.size(); ++i) {
+				row = rangeRow(layout, builder, row, d_family, i);
+			}
+			return row;
+		}
+
+		private int rangeRow(FormLayout layout,
+				PanelBuilder builder, 
+				int row, 
+				final Family family,
+				final int index) {
+			
+			if (!(family.getChildren().get(index) instanceof RangeNode)) {
+				return row;
+			}
+			
+			CellConstraints cc = new CellConstraints();
+			row = LayoutUtil.addRow(layout, row);
+			
+			JButton splitBtn = new JButton("Split Range");
+			splitBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DoseRangeCutOffDialog dialog;
+					if (d_beanProperty != null) {
+						dialog = new DoseRangeCutOffDialog(d_dialog, d_pm, index, family, GUIHelper.humanize(d_beanProperty.getValue()), false);
+					} else {
+						dialog = new DoseRangeCutOffDialog(d_dialog, d_pm, index, family, "quantity", true);
+					}
+					dialog.setVisible(true);
+				}
+
+			});
+			builder.add(splitBtn, cc.xy(1, row));
+			final RangeNode rangeNode = (RangeNode)family.getChildren().get(index);
+			boolean nodeIsLast = Double.isInfinite(rangeNode.getRangeUpperBound());
+			String rangeText = rangeNode.getLabel(nodeIsLast);
+			builder.add(new JLabel(rangeText), cc.xy(3, row));
+			
+			final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
+			if(d_selections.get(rangeNode) != null) { 
+				comboBox.setSelectedItem(d_selections.get(rangeNode));
+			}
+			comboBox.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						Object selected = comboBox.getSelectedItem();
+						if(d_beanProperty == null) { 
+							d_pm.setKnownDoses(rangeNode, selected);
+						} else {
+							d_pm.setSelected(rangeNode, selected);
+						}
+						d_selections.put(rangeNode, selected);
+					}
+				}
+			});
+			builder.add(comboBox, cc.xy(5, row));
+			return row;
+		}
+	}
 
 	public static class Family { 
 		public final DecisionTreeNode parent;
-		public final ObservableList<RangeNode> children;
+		private final ObservableList<DecisionTreeNode> children;
 		
-		public Family(DecisionTreeNode parent, ObservableList<RangeNode> children) {
+		public Family(DosedDrugTreatmentPresentation pm, DecisionTreeNode parent) {
 			this.parent = parent;
-			this.children = children;
+			this.children = pm.getChildNodes(parent);
 		}
 		
 		/**
@@ -62,67 +142,72 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		public boolean equals(Object obj) {
 			if(obj instanceof Family) { 
 				Family other = (Family) obj;
-				return parent.toString().equals(other.parent.toString());
+				return parent.similar(other.parent);
 			}
 			return false;
 		}
 		
 		@Override
 		public int hashCode() {
-			return children.hashCode() + 31 * parent.hashCode();
+			return getChildren().hashCode() + 31 * parent.hashCode();
 		}
 		
 		@Override
 		public String toString() {
 			String s = "";
 			s = s + parent.toString() + "\n";
-			for(RangeNode c : children) { 
+			for(DecisionTreeNode c : getChildren()) { 
 				s = s + "\t\t child: " +  c + "\n";
 			}
 			return s;
 		}
+
+		public ObservableList<DecisionTreeNode> getChildren() {
+			return children;
+		}
 	}
 	
-	public static DoseRangeWizardStep createOnBeanPropertyChildren (
+	public static WizardStep createOnBeanPropertyChildren (
+			JDialog dialog, 
 			DosedDrugTreatmentPresentation pm, 
-			Class<? extends AbstractDose> beanClass, 
+			Class<? extends AbstractDose> beanClass,
 			String propertyName,
-			String childPropertyName,
-			String name, 
-			String summary) {	
-		return new DoseRangeWizardStep(pm, new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName), childPropertyName, name, summary);
+			String childPropertyName, 
+			String name, String summary) {	
+		return new DoseRangesWizardStep(dialog, pm, new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName), childPropertyName, name, summary);
 	}
 	
-	public static DoseRangeWizardStep createOnBeanProperty(
+	public static WizardStep createOnBeanProperty(
+			JDialog dialog, 
 			DosedDrugTreatmentPresentation pm, 
-			Class<? extends AbstractDose> beanClass, 
-			String propertyName,
-			String name, 
-			String summary) {
-		return new DoseRangeWizardStep(pm, new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName), null, name, summary);
+			Class<? extends AbstractDose> beanClass,
+			String propertyName, 
+			String name, String summary) {
+		return new DoseRangeWizardStep(dialog, pm, new Pair<Class<? extends AbstractDose>, String>(beanClass, propertyName), name, summary);
 	}
 	
-	public static DoseRangeWizardStep createOnKnownDoses(
+	public static WizardStep createOnKnownDoses(
+			JDialog dialog, 
 			DosedDrugTreatmentPresentation pm, 
-			String name, 
-			String summary) {
-		return new DoseRangeWizardStep(pm, null, null, name, summary);
+			String name, String summary) {
+		return new DoseRangeWizardStep(dialog, pm, null, name, summary);
 	}
 
 	private DoseRangeWizardStep(
-			DosedDrugTreatmentPresentation presentationModel, 
+			JDialog dialog, 
+			DosedDrugTreatmentPresentation presentationModel,
 			Pair<Class<? extends AbstractDose>, String> beanProperty,
-			String childPropertyName,
 			String name, 
 			String summary) {
-		super(presentationModel, name, summary);
+		super(presentationModel, name, summary, null);
 		d_beanProperty = beanProperty;
-		d_childPropertyName = childPropertyName;
 	}
 
 	private void attachListener(ListModel model) {
 		model.addListDataListener((new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {}
+			public void intervalRemoved(ListDataEvent e) {
+				rebuildPanel();
+			}
 			
 			public void intervalAdded(ListDataEvent e) {
 				rebuildPanel();
@@ -133,76 +218,51 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	}
 
 	@Override 
-	public void initialize() {
-		d_families.clear();
+	public void initialize() { // FIXME: move code into constructor instead of prepare().
 		DecisionTreeNode typeNode; // Defaults to fixed if null, also default for all known doses
 		if (d_beanProperty == null) {
 			typeNode = d_pm.getType(FixedDose.class);
 		} else {
 			typeNode = d_pm.getType(d_beanProperty.getKey());
 		}
-		if(d_childPropertyName != null) {
-			ArrayList<Family> childrenList = new ArrayList<Family>();
-			for(DecisionTreeNode parent : d_pm.getChildNodes(typeNode)) {
-				ArrayListModel<RangeNode> children = new ArrayListModel<RangeNode>();
-				attachListener(children);
-				childrenList.add(new Family(parent, children));
-			}
-			d_families.addAll(childrenList);
-		} else { 
-			ArrayListModel<RangeNode> children = new ArrayListModel<RangeNode>();
-			attachListener(children);
-			d_families.add(new Family(typeNode, children));
-		}
-		populateChildren();
-	}
+		d_family = new Family(d_pm, typeNode);
+		attachListener(d_family.getChildren());
 
-	private void populateChildren() {
-		for (Family family : d_families) {
-			populateFamily(family);
-		}
+		populateFamily(d_family);
 	}
 
 	private void populateFamily(Family family) {
-		ObservableList<RangeNode> nodes = family.children;
-		final DecisionTreeNode parent = family.parent;
-		nodes.clear();
-		for(DecisionTreeNode node : d_pm.getChildNodes(parent)) {
-			if(node instanceof RangeNode) { 
-				nodes.add((RangeNode)node);
+		DecisionTreeNodeBuilder<DoseRangeNode> nodeBuilder = new DecisionTreeNodeBuilder<DoseRangeNode>() {
+			public DoseRangeNode create(DecisionTreeNode parent) {
+				return createRangeNode(parent);
 			}
-		}
-		if(nodes.isEmpty()) {
-			DoseRangeNode rangeNode = createRangeNode(parent, d_beanProperty);
-			nodes.add(rangeNode);
-		}
-		forAllDo(nodes, new Closure<DecisionTreeNode>() {
-			public void execute(DecisionTreeNode node) {
-				d_pm.setSelected(parent, node);
-			}
-		});
+		};
+		populate(d_pm, nodeBuilder, family);
 	}
 
-	private DoseRangeNode createRangeNode(
-			final DecisionTreeNode parent,
-			final Pair<Class<? extends AbstractDose>, 
-			String> beanProperty) {
-		if (d_childPropertyName != null) {
-			RangeNode start = (RangeNode)parent;
-			return new DoseRangeNode(
-					beanProperty.getKey(),
-					d_childPropertyName, 
-					start.getRangeLowerBound(),
-					start.isRangeLowerBoundOpen(),
-					Double.POSITIVE_INFINITY,
-					false,
-					d_pm.getDoseUnit());
-		} else {
-			if (d_beanProperty == null) {
-				return (DoseRangeNode)d_pm.setKnownDoses(new DoseRangeNode(null, null, d_pm.getDoseUnit()));
-			} else {
-				return new DoseRangeNode(beanProperty.getKey(), beanProperty.getValue(), d_pm.getDoseUnit());
+	public static void populate(final DosedDrugTreatmentPresentation pm,
+			DecisionTreeNodeBuilder<DoseRangeNode> nodeBuilder,
+			Family family) {
+		boolean shouldClear = false;
+		for (DecisionTreeNode node : new ArrayList<DecisionTreeNode>(family.getChildren())) {
+			if (!(node instanceof RangeNode)) {
+				shouldClear = true;
 			}
+		}
+		if (shouldClear || family.getChildren().isEmpty()) {
+			pm.setSelected(family.parent, nodeBuilder.create(family.parent));
+		}
+	}
+	
+	public interface DecisionTreeNodeBuilder<ChildType extends DecisionTreeNode> {
+		public ChildType create(DecisionTreeNode parent);
+	}
+
+	private DoseRangeNode createRangeNode(final DecisionTreeNode parent) {
+		if (d_beanProperty == null) {
+			return (DoseRangeNode)d_pm.setKnownDoses(new DoseRangeNode(null, null, d_pm.getDoseUnit()));
+		} else {
+			return new DoseRangeNode(d_beanProperty.getKey(), d_beanProperty.getValue(), d_pm.getDoseUnit());
 		}
 	}
 	
@@ -210,74 +270,14 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu",
 				"p"
-				);	
+				);
 		
 		PanelBuilder builder = new PanelBuilder(layout);
 		int row = 1;
 		
-		for(Family family : d_families) {
-			CellConstraints cc = new CellConstraints();
-			DecisionTreeNode parent = family.parent;
-			if (parent instanceof RangeNode) {
-				boolean nodeIsLast = parent.equals(d_families.get(d_families.size() - 1).parent);
-				row = LayoutUtil.addRow(layout, row);
-				builder.addSeparator(((RangeNode)parent).getLabel(nodeIsLast), cc.xyw(1, row, 6));
-			}
-			
-			ObservableList<RangeNode> children = family.children;
-			for (int i = 0; i < children.size(); ++i) {
-				row = rangeRow(layout, builder, row, family, i);
-			}
-		}
+		RangeInputBuilder rangeBuilder = new RangeInputBuilder(d_dialog, d_pm, d_beanProperty, d_family);
+		row = rangeBuilder.addFamilyToPanel(builder, row);
+		
 		return builder.getPanel();
-	}
-
-	private int rangeRow(FormLayout layout,
-			PanelBuilder builder, 
-			int row, 
-			final Family family,
-			final int index) {
-		CellConstraints cc = new CellConstraints();
-		row = LayoutUtil.addRow(layout, row);
-		
-		JButton splitBtn = new JButton("Split Range");
-		splitBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DoseRangeCutOffDialog dialog;
-				if (d_beanProperty != null) {
-					dialog = new DoseRangeCutOffDialog(d_pm, index, family, GUIHelper.humanize(d_beanProperty.getValue()), false);
-				} else {
-					dialog = new DoseRangeCutOffDialog(d_pm, index, family, "quantity", true);
-				}
-				GUIHelper.centerWindow(dialog, d_mainWindow);
-				dialog.setVisible(true);
-			}
-
-		});
-		builder.add(splitBtn, cc.xy(1, row));
-		boolean nodeIsLast = (index == family.children.size() - 1);
-		final RangeNode rangeNode = family.children.get(index);
-		String rangeText = rangeNode.getLabel(nodeIsLast);
-		builder.add(new JLabel(rangeText), cc.xy(3, row));
-		
-		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(d_pm.getCategories());
-		if(d_selections.get(rangeNode) != null) { 
-			comboBox.setSelectedItem(d_selections.get(rangeNode));
-		}
-		comboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					Object selected = comboBox.getSelectedItem();
-					if(d_beanProperty == null) { 
-						d_pm.setKnownDoses(rangeNode, selected);
-					} else {
-						d_pm.setSelected(rangeNode, selected);
-					}
-					d_selections.put(rangeNode, selected);
-				}
-			}
-		});
-		builder.add(comboBox, cc.xy(5, row));
-		return row;
 	}
 }

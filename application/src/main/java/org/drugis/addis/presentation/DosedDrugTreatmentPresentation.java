@@ -31,11 +31,9 @@ import static org.apache.commons.collections15.CollectionUtils.forAllDo;
 import static org.apache.commons.collections15.CollectionUtils.select;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Predicate;
@@ -187,9 +185,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		RangeNode left = flexibleSplits.get(0);
 		RangeNode right = flexibleSplits.get(1);
 		
-		System.out.println("parent of left (" + left + ") = " + d_tree.getParent(left));
-		System.out.println("parent of right (" + right + ") = " + d_tree.getParent(right));
-		
 		if(left.getPropertyName().equals(FlexibleDose.PROPERTY_MIN_DOSE)) { 
 			setSelected(left, inheritPrototype(left, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
 			setSelected(right, inheritPrototype(right, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
@@ -232,9 +227,8 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		});
 	}
 
-	public Collection<DecisionTreeNode> getChildNodes(DecisionTreeNode node) {
-		Collection<DecisionTreeNode> children = d_tree.getChildren(node);
-		return children != null ? new TreeSet<DecisionTreeNode>(children) : Collections.<DecisionTreeNode>emptyList();
+	public ObservableList<DecisionTreeNode> getChildNodes(DecisionTreeNode node) {
+		return new DecisionTreeNodeChildrenModel(d_tree, node);
 	}
 
 	public DecisionTreeNode setKnownDoses(DecisionTreeNode prototype) {
