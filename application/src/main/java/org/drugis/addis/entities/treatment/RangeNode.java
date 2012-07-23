@@ -152,15 +152,15 @@ public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode>
 		if (!nodeIsLast) {
 			rangeText = String.format("%.2f %s %s %s %.2f %s",
 					getRangeLowerBound(),
-					isRangeLowerBoundOpen() ? "<" : "<=",
+					isRangeLowerBoundOpen() ? "\u003C" : "\u2264",
 					GUIHelper.humanize(getPropertyName()),
-					isRangeUpperBoundOpen() ? "<" : "<=",
+					isRangeUpperBoundOpen() ? "\u003C" : "\u2264",
 					getRangeUpperBound(),
 					unit == null ? "" : unit);
 		} else {
 			rangeText = String.format("%s %s %.2f %s",
 					GUIHelper.humanize(getPropertyName()),
-					isRangeLowerBoundOpen() ? ">" : ">=",
+					isRangeLowerBoundOpen() ? "\u003E" : "\u2265",
 					getRangeLowerBound(),
 					unit == null ? "" : unit);
 		}		

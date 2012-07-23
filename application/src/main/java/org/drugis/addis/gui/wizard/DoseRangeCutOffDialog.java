@@ -29,6 +29,9 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 final class DoseRangeCutOffDialog extends OkCancelDialog {
+	private static final String GREATER_THAN = "\u003E";
+	private static final String LESS_THAN = "\u003C";
+	private static final String LESS_THAN_OR_EQUAL = "\u2264";
 	private final DosedDrugTreatmentPresentation d_pm;
 	private static final long serialVersionUID = -7519390341921875264L;
 	private final int d_index;
@@ -105,8 +108,8 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		formatLower.setMaximumFractionDigits(3);
 		StringBuilder prefix = new StringBuilder()
 			.append(decimalFormat.format(d_childToSplit.getRangeLowerBound()))
-			.append((d_childToSplit.isRangeLowerBoundOpen() ? " < " : " <= "))
-			.append(d_boundName + " < ");
+			.append((d_childToSplit.isRangeLowerBoundOpen() ? " " + LESS_THAN + " " : " " + LESS_THAN_OR_EQUAL + " "))
+			.append(d_boundName + " \u003C ");
 		formatLower.setPrefix(prefix.toString());
 		formatLower.setSuffix(" " + unitText);
 		JLabel cutOffLower = BasicComponentFactory.createLabel(d_cutOff, formatLower);
@@ -114,17 +117,16 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		row = LayoutUtil.addRow(layout, row);
 		builder.add(BasicComponentFactory.createRadioButton(d_upperOpen, false, ""), cc.xy(1, row));
 		builder.add(cutOffLower, cc.xy(3, row));
-		
 		AffixableFormat formatUpper = new AffixableFormat();
 		if (d_index < d_pm.getBean().getDecisionTree().getChildCount(d_family.parent) - 1) { 
 			StringBuilder suffix = new StringBuilder()
-				.append(" <= " + d_boundName)
-				.append((d_childToSplit.isRangeUpperBoundOpen() ? " < " : " <= "))
+				.append(" " + LESS_THAN_OR_EQUAL + " " + d_boundName)
+				.append(" " + (d_childToSplit.isRangeUpperBoundOpen() ? LESS_THAN : LESS_THAN_OR_EQUAL) + " ")
 				.append(decimalFormat.format(d_childToSplit.getRangeUpperBound()));
 			formatLower.setSuffix(" " + unitText);
 			formatUpper.setSuffix(suffix.toString());
 		} else {
-			formatUpper.setPrefix(d_boundName + " > ");
+			formatUpper.setPrefix(d_boundName + " " + GREATER_THAN + " ");
 			formatLower.setSuffix(" " + unitText);
 			formatUpper.setSuffix(" " + unitText);
 		}
