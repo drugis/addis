@@ -30,6 +30,7 @@ import static org.apache.commons.collections15.CollectionUtils.find;
 import static org.apache.commons.collections15.CollectionUtils.forAllDo;
 import static org.apache.commons.collections15.CollectionUtils.select;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +83,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	}
 
 	private void initializeNodeMap() {
-		Collection<DecisionTreeNode> children = d_tree.getChildren(d_tree.getRoot());
+		Collection<DecisionTreeNode> children = new ArrayList<DecisionTreeNode>(d_tree.getChildren(d_tree.getRoot()));
 		for(DecisionTreeNode child : children) { 
 			if(child instanceof TypeNode) {
 				updateNodeMapping((TypeNode) child);
@@ -119,6 +120,12 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		d_nodeMap.clear();
 		initializeNodeMap();
 	}
+
+	public void resetSubTree(DecisionTreeNode node) {
+		d_tree.resetChildren(node);
+		d_nodeMap.clear();
+		initializeNodeMap();
+	}
 	
 	/**
 	 * Sets the child of a node
@@ -126,14 +133,14 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * @param selected the object to set as child, 
 	 */
 	public void setSelected(DecisionTreeNode parent, Object selected) {
-		if(selected instanceof DecisionTreeNode) {
+		if (selected instanceof DecisionTreeNode) {
 			DecisionTreeNode child = (DecisionTreeNode) selected;
-			if(child instanceof LeafNode) { 
+			if(child instanceof LeafNode) {
 				clearNode(parent);
-			} 
+			}
 			setDecisionTree(parent, child);
 			updateNodeMapping(child);
-		} 
+		}
 		updateNodeMapping(parent);
 	}
 

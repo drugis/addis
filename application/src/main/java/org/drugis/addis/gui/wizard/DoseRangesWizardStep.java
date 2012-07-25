@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -16,8 +15,6 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep.DecisionTreeNodeBuilder;
-import org.drugis.addis.gui.wizard.DoseRangeWizardStep.Family;
-import org.drugis.addis.gui.wizard.DoseRangeWizardStep.RangeInputBuilder;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -31,6 +28,18 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 	private Pair<Class<? extends AbstractDose>, String> d_beanProperty;
 	private String d_childPropertyName;
 
+	private ListDataListener d_listener = new ListDataListener() {
+		public void intervalRemoved(ListDataEvent e) {
+			rebuildPanel();
+		}
+		
+		public void intervalAdded(ListDataEvent e) {
+			rebuildPanel();
+		}
+		
+		public void contentsChanged(ListDataEvent e) {}
+	};
+
 	public DoseRangesWizardStep(
 			JDialog dialog,
 			DosedDrugTreatmentPresentation presentationModel, 
@@ -43,29 +52,20 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 		d_childPropertyName = childPropertyName;
 	}
 
-	private void attachListener(ListModel model) {
-		model.addListDataListener((new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {}
-			
-			public void intervalAdded(ListDataEvent e) {
-				rebuildPanel();
-			}
-			
-			public void contentsChanged(ListDataEvent e) {}
-		}));
-	}
-
 	@Override 
 	public void initialize() {
+		for(Family family : d_families) { 
+			family.getChildren().removeListDataListener(d_listener);
+		}
 		d_families.clear();
+		
 		DecisionTreeNode typeNode = d_pm.getType(d_beanProperty.getKey());
-		ArrayList<Family> childrenList = new ArrayList<Family>();
+		
 		for(DecisionTreeNode parent : d_pm.getChildNodes(typeNode)) {
 			Family family = new Family(d_pm, parent);
-			childrenList.add(family);
-			attachListener(family.getChildren());
+			family.getChildren().addListDataListener(d_listener);
+			d_families.add(family);
 		}
-		d_families.addAll(childrenList);
 		populateChildren();
 	}
 
@@ -102,7 +102,7 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 		int row = 1;
 		
 		for(Family family : d_families) {
-			RangeInputBuilder rangeBuilder = new RangeInputBuilder(d_dialog, d_pm, d_beanProperty, family);
+			RangeInputBuilder rangeBuilder = new RangeInputBuilder(d_dialog, new RangeInputPresentation(d_pm, d_beanProperty, null, family));
 			row = rangeBuilder.addFamilyToPanel(builder, row);
 		}
 		return builder.getPanel();

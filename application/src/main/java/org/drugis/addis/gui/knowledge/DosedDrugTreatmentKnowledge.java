@@ -49,9 +49,10 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	public static enum CategorySpecifiers {
 		CONSIDER("* Consider dose type"), 
 		DO_NOT_CONSIDER("* Do not consider dose type"),
-		FLEXIBLE_CONSIDER_BOTH("* Consider upper and lower bound"),
-		FLEXIBLE_CONSIDER_UPPER("* Only consider upper bound"), 
-		FLEXIBLE_CONSIDER_LOWER("* Only consider lower bound"),
+		FLEXIBLE_CONSIDER_UPPER_1("* Consider upper bound first"), 
+		FLEXIBLE_CONSIDER_LOWER_1("* Consider lower bound first"),
+		FLEXIBLE_CONSIDER_LOWER_2("* Consider lower bound"),		
+		FLEXIBLE_CONSIDER_UPPER_2("* Consider upper bound"),
 		FIXED_CONSIDER("* Consider range");
 		
 		private final String d_title;

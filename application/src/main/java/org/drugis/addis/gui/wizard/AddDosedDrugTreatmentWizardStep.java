@@ -116,9 +116,9 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	
 	public void setConsiderDoseType() {
 		Object selection = d_knownDoseCombo.getSelectedItem();
-		if(EqualsUtil.equal(selection, CategorySpecifiers.CONSIDER.getName())) {
+		if(EqualsUtil.equal(selection, CategorySpecifiers.CONSIDER)) {
 			d_considerDoseType.setValue(true);
-		} else if(EqualsUtil.equal(selection, CategorySpecifiers.DO_NOT_CONSIDER.getName())) {
+		} else if(EqualsUtil.equal(selection, CategorySpecifiers.DO_NOT_CONSIDER)) {
 			d_considerDoseType.setValue(false);
 		} else { 
 			d_considerDoseType.setValue(null);

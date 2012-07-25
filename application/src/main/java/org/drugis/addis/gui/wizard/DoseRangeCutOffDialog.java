@@ -12,7 +12,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.treatment.RangeNode;
-import org.drugis.addis.gui.wizard.DoseRangeWizardStep.Family;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.RangeValidator;
@@ -77,8 +76,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		final int colSpan = builder.getColumnCount();
 		int row = 1;
 		
-		boolean nodeIsLast = (d_index == d_family.getChildren().size() - 1);
-		builder.addSeparator("Original range: " + d_childToSplit.getLabel(nodeIsLast), cc.xyw(1, row, colSpan));
+		builder.addSeparator("Original range: " + d_childToSplit.getLabel(), cc.xyw(1, row, colSpan));
 		
 		row = LayoutUtil.addRow(layout, row);
 		builder.addLabel("Split range at:", cc.xy(1, row));

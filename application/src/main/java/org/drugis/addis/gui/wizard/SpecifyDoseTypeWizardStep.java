@@ -30,7 +30,6 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	private ValueHolder<Boolean> d_considerFlexibleLower = new ModifiableHolder<Boolean>(false);
 	private ValueHolder<Boolean> d_considerFlexibleUpper = new ModifiableHolder<Boolean>(false);
-	private ValueHolder<Boolean> d_considerFlexibleBoth = new ModifiableHolder<Boolean>(false);
 	private ValueHolder<Boolean> d_considerFixed = new ModifiableHolder<Boolean>(false);
 
 	public SpecifyDoseTypeWizardStep(DosedDrugTreatmentPresentation pm) {
@@ -107,19 +106,11 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		setCategorySelection(
 				selected,
 				d_considerFlexibleLower, 
-				CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER.getName());
+				CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER_1);
 		setCategorySelection(
 				selected,
 				d_considerFlexibleUpper, 
-				CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER.getName());
-		setCategorySelection(
-				selected,
-				d_considerFlexibleBoth, 
-				CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH.getName());
-	}
-	
-	public ValueHolder<Boolean> getConsiderFlexibleBoth() { 
-		return d_considerFlexibleBoth;
+				CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER_1);
 	}
 	
 	public ValueHolder<Boolean> getConsiderFlexibleUpper() { 
@@ -135,15 +126,15 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		setCategorySelection(
 				selected,
 				d_considerFixed, 
-				CategorySpecifiers.FIXED_CONSIDER.getName());
+				CategorySpecifiers.FIXED_CONSIDER);
 	}
 	
 	public ValueHolder<Boolean> getConsiderFixed() { 
 		return d_considerFixed;
 	}
 	
-	private static void setCategorySelection(Object selection, ValueHolder<Boolean> holder, String desired) {
-		if(selection.toString().equals(desired)) {
+	private static void setCategorySelection(Object selection, ValueHolder<Boolean> holder, CategorySpecifiers desired) {
+		if(selection.equals(desired)) {
 			holder.setValue(true);
 		} else {
 			holder.setValue(false);
