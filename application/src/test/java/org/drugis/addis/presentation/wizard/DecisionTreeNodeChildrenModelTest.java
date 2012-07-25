@@ -7,10 +7,10 @@ import java.util.Collections;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.drugis.addis.entities.treatment.CategoryNode;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
-import org.drugis.addis.entities.treatment.EmptyNode;
+import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.presentation.DecisionTreeNodeChildrenModel;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.event.ListDataEventMatcher;
@@ -48,9 +48,9 @@ public class DecisionTreeNodeChildrenModelTest {
 		EasyMock.replay(mockListener);
 		
 		model1.addListDataListener(mockListener);
-		CategoryNode cat1 = new CategoryNode("foo");
+		LeafNode cat1 = new LeafNode(new Category("foo"));
 		d_tree.setChild(d_child, cat1);
-		d_tree.setChild(cat1, new CategoryNode("bar"));
+		d_tree.setChild(cat1, new LeafNode(new Category("bar")));
 
 		JUnitUtil.assertAllAndOnly(d_tree.getChildren(d_child), model1);
 		EasyMock.verify(mockListener);
@@ -59,6 +59,6 @@ public class DecisionTreeNodeChildrenModelTest {
 	@Test(expected=UnsupportedOperationException.class)
 	public void testModify() {
 		DecisionTreeNodeChildrenModel model1 = new DecisionTreeNodeChildrenModel(d_tree, d_child);
-		model1.add(new CategoryNode("foobar"));
+		model1.add(new LeafNode(new Category("foobar")));
 	}
 }

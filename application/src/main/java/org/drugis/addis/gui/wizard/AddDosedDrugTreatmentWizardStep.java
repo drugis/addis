@@ -48,9 +48,9 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
-import org.drugis.addis.entities.treatment.CategoryNode;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
@@ -66,6 +66,7 @@ import org.drugis.common.EqualsUtil;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
@@ -200,13 +201,15 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		return builder.getPanel();
 	}
 
-	public static JComboBox createCategoryComboBox(List<CategoryNode> categories, DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
+	public static JComboBox createCategoryComboBox(List<Category> categories, DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
 		ObservableList<Object> list = new ArrayListModel<Object>();
-		list.add(0, new ExcludeNode());
+		list.add(0, new LeafNode());
 		for (DosedDrugTreatmentKnowledge.CategorySpecifiers item : extraItems) {
 			list.add(item);
 		}
-		list.addAll(categories);
+		for (Category category : categories) {
+			list.add(new LeafNode(category));
+		}
 		return new JComboBox(list.toArray());
 	}
 	
@@ -229,9 +232,9 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		builder.setDefaultDialogBorder();
 		int row = 1;
 
-		for(final CategoryNode category : model.getCategories()) {
+		for(final Category category : model.getCategories()) {
 			builder.add(new JLabel("Category name"), cc.xy(1, row));
-			JTextField name = BasicComponentFactory.createTextField(category.getNameModel(), false);
+			JTextField name = BasicComponentFactory.createTextField(new PropertyAdapter<Category>(category, Category.PROPERTY_NAME), false);
 			builder.add(name, cc.xy(3, row));
 			JButton remove = GUIFactory.createIconButton(FileNames.ICON_DELETE, "delete");
 			remove.addActionListener(new ActionListener() {
@@ -252,7 +255,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.getCategories().add(new CategoryNode());
+				model.getCategories().add(new Category());
 			}
 		});
 		return btn;

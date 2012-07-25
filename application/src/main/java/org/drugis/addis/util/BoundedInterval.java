@@ -1,13 +1,13 @@
 package org.drugis.addis.util;
 
 import org.apache.commons.lang.math.DoubleRange;
-import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.common.EqualsUtil;
 
 public class BoundedInterval {
 	private final DoubleRange d_range;
 	private final boolean d_lowerBoundIsOpen;
 	private final boolean d_upperBoundIsOpen;
+	public static final double EPSILON = 1.0E-14;
 	
 	public BoundedInterval(DoubleRange range, boolean lowerBoundIsOpen, boolean upperBoundIsOpen) {
 		d_range = range;
@@ -17,8 +17,8 @@ public class BoundedInterval {
 
 	public BoundedInterval(double lowerBound, boolean lowerBoundIsOpen, double upperBound, boolean upperBoundIsOpen) {
 		this(new DoubleRange(
-				 lowerBound + (lowerBoundIsOpen ? RangeNode.EPSILON : 0), 
-				 upperBound	- (upperBoundIsOpen ? RangeNode.EPSILON : 0)),
+				 lowerBound + (lowerBoundIsOpen ? BoundedInterval.EPSILON : 0), 
+				 upperBound	- (upperBoundIsOpen ? BoundedInterval.EPSILON : 0)),
 				 lowerBoundIsOpen,
 				 upperBoundIsOpen);
 	}

@@ -13,12 +13,12 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
-import org.drugis.addis.entities.treatment.CategoryNode;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.DoseRangeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.ExcludeNode;
+import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.entities.treatment.TypeNode;
 import org.drugis.common.Interval;
@@ -46,8 +46,8 @@ public class DosedDrugTreatmentPresentationTest {
 	
 	@Test
 	public void testMessWithCategories() {
-		CategoryNode catNode1 = new CategoryNode("foo");
-		CategoryNode catNode2 = new CategoryNode("bar");
+		Category catNode1 = new Category("foo");
+		Category catNode2 = new Category("bar");
 		d_pm.getCategories().add(catNode1);
 		d_pm.getCategories().add(catNode2);
 		assertEquals(Arrays.asList(catNode1, catNode2), d_pm.getCategories());
@@ -66,8 +66,8 @@ public class DosedDrugTreatmentPresentationTest {
 	public void testChainSetNodes() { 
 		TypeNode fixedDose = new TypeNode(FixedDose.class);
 		RangeNode range = new RangeNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY);
-		CategoryNode lowDoseNode = new CategoryNode("Low dose");
-		CategoryNode highDoseNode = new CategoryNode("High dose");
+		CategoryNode lowDoseNode = new LeafNode(new Category("Low dose"));
+		CategoryNode highDoseNode = new LeafNode(new Category("High dose"));
 
 		d_pm.setSelected(d_pm.getBean().getRootNode(), fixedDose);
 		d_pm.setSelected(fixedDose, range);
@@ -131,7 +131,7 @@ public class DosedDrugTreatmentPresentationTest {
 		FixedDose fixedDose = new FixedDose(10, ExampleData.KILOGRAMS_PER_HOUR);
 		FlexibleDose flexibleDose = new FlexibleDose(new Interval<Double>(10.0, 20.0), ExampleData.KILOGRAMS_PER_HOUR);
 		
-		CategoryNode prototype1 = new CategoryNode("Some dose");
+		CategoryNode prototype1 = new LeafNode(new Category("Some dose"));
 		d_pm.setKnownDoses(prototype1);
 
 		DecisionTreeNode fixedNode1 = d_pm.getBean().getCategory(fixedDose);
@@ -177,8 +177,8 @@ public class DosedDrugTreatmentPresentationTest {
 		
 		List<RangeNode> splits = d_pm.splitKnowDoseRanges(30, false);
 		
-		d_pm.setKnownDoses(splits.get(0), new CategoryNode("foo"));
-		d_pm.setKnownDoses(splits.get(1), new CategoryNode("bar"));
+		d_pm.setKnownDoses(splits.get(0), new LeafNode(new Category("foo")));
+		d_pm.setKnownDoses(splits.get(1), new LeafNode(new Category("bar")));
 		
 		// left hand of the split
 		assertEquals(d_pm.getCategory(flexibleDose1), "foo");
@@ -201,8 +201,8 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.setKnownDoses(prototype);
 		List<RangeNode> splits = d_pm.splitKnowDoseRanges(30, true);
 		
-		CategoryNode cat1 = new CategoryNode("foo");
-		CategoryNode cat2 = new CategoryNode("bar");
+		CategoryNode cat1 = new LeafNode(new Category("foo"));
+		CategoryNode cat2 = new LeafNode(new Category("bar"));
 
 		d_pm.setKnownDoses(splits.get(0), cat1);
 		d_pm.setKnownDoses(splits.get(1), cat2);
@@ -213,7 +213,7 @@ public class DosedDrugTreatmentPresentationTest {
 		assertEquals(cat2.toString(), d_pm.getCategory(fixedDose2));
 		assertEquals(cat2.toString(), d_pm.getCategory(flexibleDose2));
 		
-		ExcludeNode exclude = new ExcludeNode();
+		ExcludeNode exclude = new LeafNode();
 		d_pm.setKnownDoses(splits.get(1), exclude);
 		assertEquals(exclude.toString(), d_pm.getCategory(fixedDose2));
 		assertEquals(exclude.toString(), d_pm.getCategory(flexibleDose2));
@@ -237,8 +237,8 @@ public class DosedDrugTreatmentPresentationTest {
 		d_pm.splitKnowDoseRanges(5, false);
 		List<RangeNode> splits = d_pm.splitKnowDoseRanges(2.5, false);
 		
-		d_pm.setKnownDoses(splits.get(0), new CategoryNode("foo"));
-		d_pm.setKnownDoses(splits.get(1), new CategoryNode("bar"));
+		d_pm.setKnownDoses(splits.get(0), new LeafNode(new Category("foo")));
+		d_pm.setKnownDoses(splits.get(1), new LeafNode(new Category("bar")));
 		// left hand of the split
 		assertEquals(d_pm.getCategory(flexibleDose1), "foo");
 		assertEquals(d_pm.getCategory(fixedDose1), "foo");
