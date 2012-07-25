@@ -68,7 +68,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) { 
-					d_pm.resetTree();
+					d_pm.resetSubTree(d_fixedDoseNode);
 					Object selected = fixedCategoryComboBox.getSelectedItem();
 					d_pm.setSelected(d_fixedDoseNode, selected);
 					setConsiderFixed(selected);
@@ -82,16 +82,15 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		builder.addLabel("Flexible dose", cc.xy(1, row));
 		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
 				d_pm.getCategories(),
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_BOTH,
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER,
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER);
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_LOWER_1,
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.FLEXIBLE_CONSIDER_UPPER_1);
 		if(d_previousFlexible != null) {
 			flexibleCategoryComboBox.setSelectedItem(d_previousFlexible);
 		}
 		flexibleCategoryComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					d_pm.resetTree();
+					d_pm.resetSubTree(d_flexibleDoseNode);
 					Object selected = flexibleCategoryComboBox.getSelectedItem();
 					d_pm.setSelected(d_flexibleDoseNode, selected);
 					setConsiderFlexible(selected);
