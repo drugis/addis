@@ -143,13 +143,13 @@ public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode>
 		return d_propertyName;
 	}
 	
-	public String getLabel(boolean nodeIsLast) {
-		return getLabel(nodeIsLast, null);
+	public String getLabel() {
+		return getLabel(null);
 	}
 	
-	public String getLabel(boolean nodeIsLast, DoseUnit unit) {
+	public String getLabel(DoseUnit unit) {
 		String rangeText;
-		if (!nodeIsLast) {
+		if (!Double.isInfinite(getRangeUpperBound())) {
 			rangeText = String.format("%.2f %s %s %s %.2f %s",
 					getRangeLowerBound(),
 					isRangeLowerBoundOpen() ? "\u003C" : "\u2264",
@@ -168,7 +168,7 @@ public class RangeNode extends DecisionTreeNode implements Comparable<RangeNode>
 	}
 
 	public String getName() {
-		return getLabel(false, null); //NOTE: the argument is arbitrary
+		return getLabel(null); //NOTE: the argument is arbitrary
 	}
 	
 	@Override

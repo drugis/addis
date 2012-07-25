@@ -204,7 +204,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		ObservableList<Object> list = new ArrayListModel<Object>();
 		list.add(0, new ExcludeNode());
 		for (DosedDrugTreatmentKnowledge.CategorySpecifiers item : extraItems) {
-			list.add(GUIFactory.createBoxedString(item.getName()));
+			list.add(item);
 		}
 		list.addAll(categories);
 		return new JComboBox(list.toArray());
