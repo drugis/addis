@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.gui.AddDosedDrugTreatmentWizard;
 import org.drugis.addis.gui.AddisWindow;
@@ -46,26 +47,28 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 
-	public static enum CategorySpecifiers {
-		CONSIDER("* Consider dose type"), 
+	public static enum CategorySpecifiers implements DecisionTreeNode {
+		CONSIDER("* Consider dose type"),
 		DO_NOT_CONSIDER("* Do not consider dose type"),
-		FLEXIBLE_CONSIDER_UPPER_1("* Consider upper bound first"), 
+		FLEXIBLE_CONSIDER_UPPER_1("* Consider upper bound first"),
 		FLEXIBLE_CONSIDER_LOWER_1("* Consider lower bound first"),
-		FLEXIBLE_CONSIDER_LOWER_2("* Consider lower bound"),		
+		FLEXIBLE_CONSIDER_LOWER_2("* Consider lower bound"),
 		FLEXIBLE_CONSIDER_UPPER_2("* Consider upper bound"),
 		FIXED_CONSIDER("* Consider range");
-		
+
 		private final String d_title;
-	
-		private CategorySpecifiers(String title) {
-			d_title = title; 
+
+		private CategorySpecifiers(final String title) {
+			d_title = title;
 		}
-	
+
+		@Override
 		public String getName() {
 			return d_title;
 		}
-		
-		public String toString() { 
+
+		@Override
+		public String toString() {
 			return getName();
 		}
 	}
@@ -73,17 +76,18 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	public DosedDrugTreatmentKnowledge() {
 		super("treatment", FileNames.ICON_HEART, DosedDrugTreatment.class);
 	}
-	
-	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
-		DosedDrugTreatment treatment = new DosedDrugTreatment();
-		
-		DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(treatment, domain);
+
+	@Override
+	public JDialog getAddDialog(final AddisWindow mainWindow, final Domain domain, final ValueModel selectionModel) {
+		final DosedDrugTreatment treatment = new DosedDrugTreatment();
+
+		final DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
 	}
 
-	public static JDialog buildDosedDrugTreatmentWizardDialog(AddisWindow mainWindow, Domain domain, String title, DosedDrugTreatmentPresentation pm) {
-		JDialog dialog = new JDialog(mainWindow, title, true);
-		AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, dialog);
+	public static JDialog buildDosedDrugTreatmentWizardDialog(final AddisWindow mainWindow, final Domain domain, final String title, final DosedDrugTreatmentPresentation pm) {
+		final JDialog dialog = new JDialog(mainWindow, title, true);
+		final AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, dialog);
 		dialog.getContentPane().add(wizard);
 		dialog.setMinimumSize(new Dimension(550, 400));
 		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(640, 600));
@@ -92,14 +96,15 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 		Main.bindPrintScreen(wizard);
 		return dialog;
 	}
-	
+
 	@Override
 	protected String[] getShownProperties() {
 		return new String[] { "drug", "name", "categories" };
 	}
 
-	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
+	@Override
+	public ViewBuilder getEntityViewBuilder(final AddisWindow main, final Domain domain, final Entity entity) {
 		return new DosedDrugTreatmentView((DosedDrugTreatmentPresentation) main.getPresentationModelFactory().getModel(((DosedDrugTreatment) entity)), main);
 	}
-	
+
 }

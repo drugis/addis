@@ -1,6 +1,6 @@
 package org.drugis.addis.entities.treatment;
 
-public class LeafNode extends DecisionTreeNode {
+public class LeafNode implements DecisionTreeNode {
 	public static final String NAME_EXCLUDE = "* Exclude";
 	private final Category d_category;
 
@@ -15,6 +15,11 @@ public class LeafNode extends DecisionTreeNode {
 	@Override
 	public String getName() {
 		return d_category == null ? NAME_EXCLUDE : d_category.getName();
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 	public Category getCategory() {

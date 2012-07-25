@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 
 import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.DoseDecisionTree;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 

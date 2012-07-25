@@ -11,7 +11,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 

@@ -26,27 +26,15 @@
 
 package org.drugis.addis.presentation;
 
-import static org.apache.commons.collections15.CollectionUtils.find;
-import static org.apache.commons.collections15.CollectionUtils.forAllDo;
-import static org.apache.commons.collections15.CollectionUtils.select;
-
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.collections15.Closure;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.FixedDose;
-import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.DecisionTree;
+import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.LeafNode;
-import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
 
 import com.jgoodies.binding.PresentationModel;
@@ -96,34 +84,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	}
 
 	/**
-	 * Sets the child of a node
-	 * @param parent the node to set the child on
-	 * @param selected the object to set as child,
-	 */
-	public void setSelected(final DecisionTreeNode parent, final Object selected) {
-		if (selected instanceof DecisionTreeNode) {
-			final DecisionTreeNode child = (DecisionTreeNode) selected;
-			if(child instanceof LeafNode) {
-				clearNode(parent);
-			}
-			setDecisionTree(parent, child);
-			updateNodeMapping(child);
-		}
-		updateNodeMapping(parent);
-	}
-
-	private void setDecisionTree(final DecisionTreeNode parent, DecisionTreeNode child) {
-		if(child instanceof LeafNode) {
-			try {
-				child = child.clone(); // To ensure uniqueness in the tree implementation
-			} catch (final Exception e) {
-				throw new IllegalStateException("Tried to clone an uncopyable object " + child + " to ensure uniqueness in the DecisionTree");
-			}
-		}
-		d_tree.replaceChild(parent, child);
-	}
-
-	/**
 	 * Add the DosedDrugTreatment to the domain. Throws an exception if the treatment is already in the domain.
 	 * Note that domain can be null in which case a null-pointer exception will occur.
 	 * @return The DosedDrugTreatment that was added.
@@ -137,133 +97,72 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return getBean();
 	}
 
-	private List<RangeNode> splitRange(final DecisionTreeNode parent, final double value, final boolean includeInRightSide) {
-		final List<RangeNode> ranges = d_tree.splitChildRange(parent, value, includeInRightSide);
-
-		d_nodeMap.remove(new Pair<Class<?>, String>(ranges.get(0).getBeanClass(), ranges.get(0).getPropertyName()));
-
-		updateNodeMapping(ranges.get(0));
-		updateNodeMapping(ranges.get(1));
-		return ranges;
+	public ObservableList<DecisionTreeEdge> getOutEdges(final DecisionTreeNode node) {
+		return new DecisionTreeOutEdgesModel(getBean().getDecisionTree(), node);
 	}
 
-	public List<RangeNode> splitRange(final RangeNode node, final double value, final boolean includeInRightSide) {
-		return splitRange(d_tree.getParent(node), value, includeInRightSide);
-	}
-
-	public List<RangeNode> splitKnowDoseRanges(final double value, final boolean includeInRightSide) {
-		final List<RangeNode> fixedSplits = splitRange(getType(FixedDose.class), value, includeInRightSide);
-
-		final DecisionTreeNode flexibleType = getType(FlexibleDose.class);
-		final List<RangeNode> flexibleSplits = splitRange(flexibleType, value, includeInRightSide);
-
-		final RangeNode left = flexibleSplits.get(0);
-		final RangeNode right = flexibleSplits.get(1);
-
-		if(left.getPropertyName().equals(FlexibleDose.PROPERTY_MIN_DOSE)) {
-			setSelected(left, inheritPrototype(left, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
-			setSelected(right, inheritPrototype(right, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE));
-		} else if(left.getPropertyName().equals(FlexibleDose.PROPERTY_MAX_DOSE)) {
-			setSelected(left, inheritPrototype(left, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
-			setSelected(right, inheritPrototype(right, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE));
-		}
-		return fixedSplits;
-	}
-
-	private void updateNodeMapping(final DecisionTreeNode child) {
-		d_nodeMap.put(new Pair<Class<?>, String>(child.getBeanClass(), child.getPropertyName()), child);
-	}
-
-	public DecisionTreeNode getType(final Class<?> beanClass) {
-		final Collection<Pair<Class<?>, String>> candidates = select(d_nodeMap.keySet(), new Predicate<Pair<Class<?>, String>>() {
-			@Override
-			public boolean evaluate(final Pair<Class<?>, String> object) {
-				return EqualsUtil.equal(object.getKey(), beanClass);
-			}
-		});
-		DecisionTreeNode node = null;
-		for(final Pair<Class<?>, String> pair : candidates) {
-			if(d_nodeMap.get(pair) instanceof TypeNode) {
-				node = d_nodeMap.get(pair);
-			}
-		}
-		return node;
-	}
-
-	/**
-	 * Removes all children of a specified node
-	 * @param node
-	 */
-	private void clearNode(final DecisionTreeNode node) {
-		forAllDo(d_tree.getChildren(node), new Closure<DecisionTreeNode>() {
-			@Override
-			public void execute(final DecisionTreeNode orphan) {
-				d_tree.removeChild(orphan);
-				d_nodeMap.remove(new Pair<Class<?>, String>(orphan.getBeanClass(), orphan.getPropertyName()));
-			}
-		});
-	}
-
-	public ObservableList<DecisionTreeNode> getChildNodes(final DecisionTreeNode node) {
-		return new DecisionTreeNodeChildrenModel(d_tree, node);
-	}
-
-	public DecisionTreeNode setKnownDoses(final DecisionTreeNode prototype) {
-		final DecisionTreeNode fixed = getType(FixedDose.class);
-		final DecisionTreeNode flexible = getType(FlexibleDose.class);
-
-		if(prototype instanceof LeafNode) {
-			setSelected(fixed, prototype);
-			setSelected(flexible, prototype);
-			return prototype;
-		} else if (prototype instanceof RangeNode) {
-			final RangeNode protoRange = (RangeNode) prototype;
-			final DoseRangeNode fixedRange = inheritPrototype(protoRange, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
-			final DoseRangeNode flexLowerRange = inheritPrototype(protoRange, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE);
-			final DoseRangeNode flexUpperRange = inheritPrototype(protoRange, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
-
-			setSelected(fixed, fixedRange);
-			setSelected(flexible, flexLowerRange);
-			setSelected(flexLowerRange, flexUpperRange);
-
-			return fixedRange;
-		}
-
-		throw new IllegalArgumentException("prototype is not compatible (must be a LeafNode or a RangeNode, was: " + prototype + ")");
-	}
-
-	public void setKnownDoses(final DecisionTreeNode parent, final Object selected) {
-		setSelected(parent, selected); // Fixed case
-		if(parent instanceof RangeNode) {
-			final DecisionTreeNode prototype = inheritPrototype((RangeNode)parent, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
-			final DecisionTreeNode node = find(d_tree.getVertices(), new Predicate<DecisionTreeNode>() { // this is super inefficient
-				@Override
-				public boolean evaluate(final DecisionTreeNode input) {
-					return 	input.similar(prototype) &&
-							input.getBeanClass().equals(prototype.getBeanClass()) &&
-							input.getPropertyName().equals(prototype.getPropertyName())  ;
-				}
-			});
-			if(node != null) {
-				setSelected(node, selected);
-			} else {
-				throw new IllegalArgumentException("Leaf " + node + " did not match prototype " + prototype);
-			}
-		}
-	}
-
-	private DoseRangeNode inheritPrototype(final RangeNode protoRange, final Class<? extends AbstractDose> beanClass, final String property) {
-		 return new DoseRangeNode(
-				beanClass,
-				property,
-				protoRange.getRangeLowerBound(),
-				protoRange.isRangeLowerBoundOpen(),
-				protoRange.getRangeUpperBound(),
-				protoRange.isRangeUpperBoundOpen(),
-				getDoseUnit());
-		}
+//	public DecisionTreeNode setKnownDoses(final DecisionTreeNode prototype) {
+//		final DecisionTreeNode fixed = getType(FixedDose.class);
+//		final DecisionTreeNode flexible = getType(FlexibleDose.class);
+//
+//		if(prototype instanceof LeafNode) {
+//			setSelected(fixed, prototype);
+//			setSelected(flexible, prototype);
+//			return prototype;
+//		} else if (prototype instanceof RangeNode) {
+//			final RangeNode protoRange = (RangeNode) prototype;
+//			final DoseRangeNode fixedRange = inheritPrototype(protoRange, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
+//			final DoseRangeNode flexLowerRange = inheritPrototype(protoRange, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE);
+//			final DoseRangeNode flexUpperRange = inheritPrototype(protoRange, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
+//
+//			setSelected(fixed, fixedRange);
+//			setSelected(flexible, flexLowerRange);
+//			setSelected(flexLowerRange, flexUpperRange);
+//
+//			return fixedRange;
+//		}
+//
+//		throw new IllegalArgumentException("prototype is not compatible (must be a LeafNode or a RangeNode, was: " + prototype + ")");
+//	}
+//
+//	public void setKnownDoses(final DecisionTreeNode parent, final Object selected) {
+//		setSelected(parent, selected); // Fixed case
+//		if(parent instanceof RangeNode) {
+//			final DecisionTreeNode prototype = inheritPrototype((RangeNode)parent, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
+//			final DecisionTreeNode node = find(d_tree.getVertices(), new Predicate<DecisionTreeNode>() { // this is super inefficient
+//				@Override
+//				public boolean evaluate(final DecisionTreeNode input) {
+//					return 	input.similar(prototype) &&
+//							input.getBeanClass().equals(prototype.getBeanClass()) &&
+//							input.getPropertyName().equals(prototype.getPropertyName())  ;
+//				}
+//			});
+//			if(node != null) {
+//				setSelected(node, selected);
+//			} else {
+//				throw new IllegalArgumentException("Leaf " + node + " did not match prototype " + prototype);
+//			}
+//		}
+//	}
+//
+//	private DoseRangeNode inheritPrototype(final RangeNode protoRange, final Class<? extends AbstractDose> beanClass, final String property) {
+//		 return new DoseRangeNode(
+//				beanClass,
+//				property,
+//				protoRange.getRangeLowerBound(),
+//				protoRange.isRangeLowerBoundOpen(),
+//				protoRange.getRangeUpperBound(),
+//				protoRange.isRangeUpperBoundOpen(),
+//				getDoseUnit());
+//		}
 
 	public String getCategory(final AbstractDose dose) {
 		return getBean().getCategory(dose).toString();
+	}
+
+	public DecisionTreeChildModel getChoiceModelForType(final Class<?> type) {
+		final DecisionTree tree = getBean().getDecisionTree();
+		final DecisionTreeChildModel model = new DecisionTreeChildModel(tree, tree.findMatchingEdge(tree.getRoot(), type));
+		return model;
 	}
 }

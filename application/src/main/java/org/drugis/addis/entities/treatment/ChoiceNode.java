@@ -8,7 +8,7 @@ import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.beans.BeanUtils;
 
-public class ChoiceNode extends DecisionTreeNode {
+public class ChoiceNode implements DecisionTreeNode {
 	private final Class<?> d_beanClass;
 	private final PropertyDescriptor d_descriptor;
 
@@ -43,4 +43,8 @@ public class ChoiceNode extends DecisionTreeNode {
 		return StringUtils.capitalize(GUIHelper.humanize(d_descriptor.getName()));
 	}
 
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

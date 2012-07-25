@@ -13,8 +13,6 @@ import org.apache.commons.math3.util.Pair;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.DoseRangeNode;
-import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.pietschy.wizard.WizardStep;

@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,11 +66,11 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 	private static final List<Condition> s_conditions = new ArrayList<Condition>();
 
 	private static final class DynamicMultiPathModel extends MultiPathModel {
-		public DynamicMultiPathModel(Path firstPath) {
+		public DynamicMultiPathModel(final Path firstPath) {
 			super(firstPath);
-			for(Condition condition : s_conditions) {
+			for(final Condition condition : s_conditions) {
 				if(condition instanceof ValueHolderCondition) {
-					final ValueHolderCondition wrapped = (ValueHolderCondition) condition; 
+					final ValueHolderCondition wrapped = (ValueHolderCondition) condition;
 					attachListener(wrapped);
 				}
 			}
@@ -79,29 +79,33 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 		private void attachListener(final ValueHolderCondition wrapped) {
 			wrapped.addPropertyChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
+				@Override
+				public void propertyChange(final PropertyChangeEvent evt) {
 					refreshModelState();
 				}
 			});
-		}	
+		}
 	}
-	
+
 	private static final class ValueHolderCondition extends AbstractObservable implements Condition {
 		private final ValueHolder<Boolean> d_condition;
-		
-		private ValueHolderCondition(ValueModel condition) {
+
+		private ValueHolderCondition(final ValueModel condition) {
 			d_condition = new ValueModelWrapper<Boolean>(condition);
-			d_condition.addValueChangeListener(new PropertyChangeListener() {	
-				public void propertyChange(PropertyChangeEvent evt) {
+			d_condition.addValueChangeListener(new PropertyChangeListener() {
+				@Override
+				public void propertyChange(final PropertyChangeEvent evt) {
 					firePropertyChange("value", evt.getOldValue(), evt.getNewValue());
 				}
 			});
 		}
 
-		public boolean evaluate(WizardModel model) {
+		@Override
+		public boolean evaluate(final WizardModel model) {
 			return d_condition.getValue();
 		}
-		
+
+		@Override
 		public String toString() {
 			return "condition[" + d_condition.getValue() + "]";
 		}
@@ -113,11 +117,13 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		super(buildModel(pm, dialog));
 		final AddisWindow mainWindow = Main.getMainWindow();
 		addWizardListener(new WizardListener() {
-			public void wizardClosed(WizardEvent e) {
+			@Override
+			public void wizardClosed(final WizardEvent e) {
 				mainWindow.leftTreeFocus(pm.commit());
 			}
-			
-			public void wizardCancelled(WizardEvent e) {
+
+			@Override
+			public void wizardCancelled(final WizardEvent e) {
 			}
 		});
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
@@ -127,51 +133,54 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm);
 		final SpecifyDoseTypeWizardStep type = new SpecifyDoseTypeWizardStep(pm);
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm);
-		
+
 		final SimplePath lastPath = new SimplePath(overview);
 		final BranchingPath typePath = new BranchingPath(type);
 		final BranchingPath firstStep = new BranchingPath(generalInfo);
 		final BranchingPath fixedAndFlexiblePath = new BranchingPath(createFixedDose(dialog, pm));
-		
+
 		final ValueModel considerFixed = type.getConsiderFixed();
 		buildFlexiblePath(pm, dialog, fixedAndFlexiblePath, type, lastPath, new UnmodifiableHolder<Boolean>(true));
 		buildFlexiblePath(pm, dialog, typePath, type, lastPath, new BooleanNotModel(considerFixed));
-		
+
 		final ValueModel anyFlexibleDose = new BooleanOrModel(Arrays.<ValueModel>asList(
 				type.getConsiderFlexibleLower(),
 				type.getConsiderFlexibleUpper()));
 
-		addBranch(typePath, createSimplePath(lastPath, createFixedDose(dialog, pm)), 
+		addBranch(typePath, createSimplePath(lastPath, createFixedDose(dialog, pm)),
 				new BooleanAndModel(new BooleanNotModel(anyFlexibleDose), considerFixed));
-		
-		addBranch(typePath, lastPath, 
+
+		addBranch(typePath, lastPath,
 				new BooleanAndModel(new BooleanNotModel(anyFlexibleDose), new BooleanNotModel(considerFixed)));
-		
+
 		addBranch(typePath, fixedAndFlexiblePath,
 				new BooleanAndModel(considerFixed, anyFlexibleDose));
-		
-		addBranch(firstStep, lastPath, new Condition() {	
-			public boolean evaluate(WizardModel model) {
+
+		addBranch(firstStep, lastPath, new Condition() {
+			@Override
+			public boolean evaluate(final WizardModel model) {
 				return generalInfo.getConsiderDoseType().getValue() == null;
 			}
 		});
 
-		addBranch(firstStep, typePath, new Condition() {		
-			public boolean evaluate(WizardModel model) {
+		addBranch(firstStep, typePath, new Condition() {
+			@Override
+			public boolean evaluate(final WizardModel model) {
 				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == true;
 			}
 		});
-		
+
 		addBranch(firstStep, createSimplePath(lastPath, createKnownDose(dialog, pm)), new Condition() {
-			public boolean evaluate(WizardModel model) {
+			@Override
+			public boolean evaluate(final WizardModel model) {
 				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == false;
 			}
 		});
-		
+
 		return new DynamicMultiPathModel(firstStep);
 	}
 
-	private static void buildFlexiblePath(final DosedDrugTreatmentPresentation pm, final JDialog dialog, BranchingPath flexiblePath, SpecifyDoseTypeWizardStep type, SimplePath lastPath, ValueModel condition) {
+	private static void buildFlexiblePath(final DosedDrugTreatmentPresentation pm, final JDialog dialog, final BranchingPath flexiblePath, final SpecifyDoseTypeWizardStep type, final SimplePath lastPath, final ValueModel condition) {
 		final DoseRangeWizardStep lowerFirst = createFlexibleLowerDose(dialog, pm);
 		final DoseRangeWizardStep upperFirst = createFlexibleUpperDose(dialog, pm);
 		final BranchingPath lowerFirstPath = new BranchingPath(lowerFirst);
@@ -179,75 +188,75 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 
 		addBranch(flexiblePath, lowerFirstPath, new BooleanAndModel(condition, type.getConsiderFlexibleLower()));
 		addBranch(flexiblePath, upperFirstPath, new BooleanAndModel(condition, type.getConsiderFlexibleUpper()));
-		
+
 		addBranch(lowerFirstPath, createSimplePath(lastPath, createFlexibleUpperRanges(dialog, pm)), lowerFirst.getConsiderNextProperty());
 		addBranch(upperFirstPath, createSimplePath(lastPath, createFlexibleLowerRanges(dialog, pm)), upperFirst.getConsiderNextProperty());
 		addBranch(lowerFirstPath, lastPath, new BooleanNotModel(lowerFirst.getConsiderNextProperty()));
 		addBranch(upperFirstPath, lastPath, new BooleanNotModel(upperFirst.getConsiderNextProperty()));
 	}
 
-	private static WizardStep createFlexibleUpperRanges(JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+	private static WizardStep createFlexibleUpperRanges(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnMultipleParentRanges(
-				dialog, 
-				pm, 
+				dialog,
+				pm,
 				FlexibleDose.class,
 				FlexibleDose.PROPERTY_MIN_DOSE,
 				FlexibleDose.PROPERTY_MAX_DOSE,
 				"Specify the ranges for upper bound of flexible doses", "For each of the categories, define a range in which the upper bound of the administered dose must lie. ");
 	}
-	
-	private static WizardStep createFlexibleLowerRanges(JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+
+	private static WizardStep createFlexibleLowerRanges(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnMultipleParentRanges(
-				dialog, 
-				pm, 
+				dialog,
+				pm,
 				FlexibleDose.class,
 				FlexibleDose.PROPERTY_MAX_DOSE,
 				FlexibleDose.PROPERTY_MIN_DOSE,
 				"Specify the ranges for lower bound of flexible doses", "For each of the categories, define a range in which the lower bound of the administered dose must lie.");
 	}
 
-	private static DoseRangeWizardStep createFlexibleUpperDose(JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+	private static DoseRangeWizardStep createFlexibleUpperDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnBeanProperty(
-				dialog, 
-				pm, 
+				dialog,
+				pm,
 				FlexibleDose.class,
 				FlexibleDose.PROPERTY_MAX_DOSE,
 				FlexibleDose.PROPERTY_MIN_DOSE,
 				"Specify the ranges for upper bound of flexible doses", "For each of the categories, define a range in which the upper bound of the administered dose must lie.");
 	}
 
-	private static DoseRangeWizardStep createFixedDose(JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+	private static DoseRangeWizardStep createFixedDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnBeanProperty(
-				dialog, 
-				pm, 
+				dialog,
+				pm,
 				FixedDose.class,
 				FixedDose.PROPERTY_QUANTITY,
-				null, 
+				null,
 				"Specify ranges for fixed doses", "For each of the categories, define a range in which the administered dose must lie.");
 	}
 
-	private static DoseRangeWizardStep createFlexibleLowerDose(JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+	private static DoseRangeWizardStep createFlexibleLowerDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnBeanProperty(
-				dialog, 
-				pm, 
+				dialog,
+				pm,
 				FlexibleDose.class,
 				FlexibleDose.PROPERTY_MIN_DOSE,
 				FlexibleDose.PROPERTY_MAX_DOSE,
 				"Specify the ranges for lower bound of flexible doses", "For each of the categories, define a range in which the lower bound of the administered dose must lie.");
 	}
-	
-	private static WizardStep createKnownDose(JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+
+	private static WizardStep createKnownDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnKnownDoses(dialog,
-				pm, 
+				pm,
 				"Any dose type", "For each of the categories, define a range in which the dose must lie. For flexible dose the entire administered dose range must be within the specified range to be in the category.");
 	}
-	
-	private static void addBranch(BranchingPath origin, Path destination, ValueModel model) { 
-		Condition condition = createCondition(model);
+
+	private static void addBranch(final BranchingPath origin, final Path destination, final ValueModel model) {
+		final Condition condition = createCondition(model);
 		addBranch(origin, destination, condition);
 	}
-	
-	private static void addBranch(BranchingPath origin, Path destination, Condition condition) { 
+
+	private static void addBranch(final BranchingPath origin, final Path destination, final Condition condition) {
 		s_conditions.add(condition);
 		origin.addBranch(destination, condition);
 	}
@@ -256,9 +265,9 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		return new ValueHolderCondition(condition);
 	}
 
-	private static SimplePath createSimplePath(SimplePath nextPath, WizardStep ... steps) { 
-		SimplePath path = new SimplePath(); 
-		for(WizardStep step : steps) { 
+	private static SimplePath createSimplePath(final SimplePath nextPath, final WizardStep ... steps) {
+		final SimplePath path = new SimplePath();
+		for(final WizardStep step : steps) {
 			path.addStep(step);
 		}
 		path.setNextPath(nextPath);

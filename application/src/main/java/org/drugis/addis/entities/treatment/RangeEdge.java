@@ -3,7 +3,7 @@ package org.drugis.addis.entities.treatment;
 import org.drugis.addis.util.BoundedInterval;
 
 
-public class RangeEdge implements DecisionTreeEdge {
+public class RangeEdge implements DecisionTreeEdge, Comparable<RangeEdge> {
 	private final double d_lowerBound;
 	private final boolean d_lowerBoundOpen;
 	private final double d_upperBound;
@@ -50,6 +50,17 @@ public class RangeEdge implements DecisionTreeEdge {
 
 	public BoundedInterval getInterval() {
 		return d_boundedInterval;
+	}
+
+	@Override
+	public int compareTo(final RangeEdge other) {
+		if (getLowerBound() != other.getLowerBound()) {
+			return getLowerBound() > other.getLowerBound() ? 1 : -1;
+		} else if (getUpperBound() != other.getUpperBound()) {
+			return getUpperBound() > other.getUpperBound() ? 1 : -1;
+		} else {
+			return 0;
+		}
 	}
 
 }

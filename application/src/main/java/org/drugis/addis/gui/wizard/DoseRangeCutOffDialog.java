@@ -11,7 +11,6 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
-import org.drugis.addis.entities.treatment.RangeNode;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.RangeValidator;
