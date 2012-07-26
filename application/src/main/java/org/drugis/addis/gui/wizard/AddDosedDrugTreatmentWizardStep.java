@@ -29,8 +29,6 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +44,6 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.FixedDose;
-import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
@@ -58,11 +54,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
-import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.EqualsUtil;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -70,7 +62,6 @@ import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.list.SelectionInList;
-import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -80,10 +71,6 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	private static final long serialVersionUID = 7730051460456443680L;
 
 	private final NotEmptyValidator d_validator;
-	private JComboBox d_knownDoseCombo;
-	private JComboBox d_unknownDoseCombo;
-
-	private final ValueHolder<Boolean> d_considerDoseType = new ModifiableHolder<Boolean>(null);
 
 	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentPresentation presentationModel) {
 		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", null);
@@ -114,21 +101,6 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 //		rebuildPanel();
 	}
 
-	public void setConsiderDoseType() {
-		final Object selection = d_knownDoseCombo.getSelectedItem();
-		if(EqualsUtil.equal(selection, CategorySpecifiers.CONSIDER)) {
-			d_considerDoseType.setValue(true);
-		} else if(EqualsUtil.equal(selection, CategorySpecifiers.DO_NOT_CONSIDER)) {
-			d_considerDoseType.setValue(false);
-		} else {
-			d_considerDoseType.setValue(null);
-		}
-	}
-
-	public ValueHolder<Boolean> getConsiderDoseType() {
-		return d_considerDoseType;
-	}
-
 	@Override
 	protected JPanel buildPanel() {
 		final FormLayout layout = new FormLayout(
@@ -145,11 +117,10 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		final JTextField name = BasicComponentFactory.createTextField(d_pm.getModel(DosedDrugTreatment.PROPERTY_NAME), false);
 		name.setColumns(15);
 
-		final AbstractValueModel drugModel = d_pm.getModel(DosedDrugTreatment.PROPERTY_DRUG);
 		builder.addLabel("Drug:", cc.xy(1, row));
-		final JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_domain.getDrugs(), drugModel, true);
+		final JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_domain.getDrugs(), d_pm.getDrug(), true);
 		builder.add(drugSelect, cc.xy(3, row));
-		builder.add(createNewDrugButton(drugModel), cc.xy(5, row));
+		builder.add(createNewDrugButton(d_pm.getDrug()), cc.xy(5, row));
 		d_validator.add(drugSelect);
 
 		builder.addLabel("Name:", cc.xy(7, row));
@@ -174,21 +145,14 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
-		d_unknownDoseCombo = createCategoryComboBox(d_pm.getChoiceModelForType(UnknownDose.class), d_pm.getCategories());
-		builder.add(d_unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
+		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getModelForUnknownDose(), d_pm.getCategories());
+		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
-		d_knownDoseCombo = createCategoryComboBox(d_pm.getChoiceModelForType(FixedDose.class), d_pm.getCategories(), DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
-		d_knownDoseCombo.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(final ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					setConsiderDoseType();
-				}
-			}
-		});
-		builder.add(d_knownDoseCombo, cc.xyw(3, row, colSpan - 2));
+		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getModelForKnownDose(), d_pm.getCategories(),
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
+		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
 	}
 
@@ -216,7 +180,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		return BasicComponentFactory.createComboBox(new SelectionInList<Object>(list, model));
 	}
 
-	private JButton createNewDrugButton(final AbstractValueModel drugModel) {
+	private JButton createNewDrugButton(final ValueModel drugModel) {
 		final JButton btn = GUIFactory.createPlusButton("Create drug");
 		btn.addActionListener(new ActionListener() {
 			@Override

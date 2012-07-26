@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.swing.JDialog;
 
-import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
@@ -139,13 +138,13 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		final BranchingPath firstStep = new BranchingPath(generalInfo);
 		final BranchingPath fixedAndFlexiblePath = new BranchingPath(createFixedDose(dialog, pm));
 
-		final ValueModel considerFixed = type.getConsiderFixed();
+		final ValueModel considerFixed = pm.getConsiderFixed();
 		buildFlexiblePath(pm, dialog, fixedAndFlexiblePath, type, lastPath, new UnmodifiableHolder<Boolean>(true));
 		buildFlexiblePath(pm, dialog, typePath, type, lastPath, new BooleanNotModel(considerFixed));
 
 		final ValueModel anyFlexibleDose = new BooleanOrModel(Arrays.<ValueModel>asList(
-				type.getConsiderFlexibleLower(),
-				type.getConsiderFlexibleUpper()));
+				pm.getConsiderFlexibleLowerFirst(),
+				pm.getConsiderFlexibleUpperFirst()));
 
 		addBranch(typePath, createSimplePath(lastPath, createFixedDose(dialog, pm)),
 				new BooleanAndModel(new BooleanNotModel(anyFlexibleDose), considerFixed));
@@ -156,26 +155,11 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		addBranch(typePath, fixedAndFlexiblePath,
 				new BooleanAndModel(considerFixed, anyFlexibleDose));
 
-		addBranch(firstStep, lastPath, new Condition() {
-			@Override
-			public boolean evaluate(final WizardModel model) {
-				return generalInfo.getConsiderDoseType().getValue() == null;
-			}
-		});
+		addBranch(firstStep, lastPath, new BooleanNotModel(new BooleanOrModel(pm.getConsiderDoseType(), pm.getIgnoreDoseType())));
 
-		addBranch(firstStep, typePath, new Condition() {
-			@Override
-			public boolean evaluate(final WizardModel model) {
-				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == true;
-			}
-		});
+		addBranch(firstStep, typePath, pm.getConsiderDoseType());
 
-		addBranch(firstStep, createSimplePath(lastPath, createKnownDose(dialog, pm)), new Condition() {
-			@Override
-			public boolean evaluate(final WizardModel model) {
-				return generalInfo.getConsiderDoseType().getValue() != null && generalInfo.getConsiderDoseType().getValue() == false;
-			}
-		});
+		addBranch(firstStep, createSimplePath(lastPath, createKnownDose(dialog, pm)), pm.getIgnoreDoseType());
 
 		return new DynamicMultiPathModel(firstStep);
 	}
@@ -186,8 +170,8 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		final BranchingPath lowerFirstPath = new BranchingPath(lowerFirst);
 		final BranchingPath upperFirstPath = new BranchingPath(upperFirst);
 
-		addBranch(flexiblePath, lowerFirstPath, new BooleanAndModel(condition, type.getConsiderFlexibleLower()));
-		addBranch(flexiblePath, upperFirstPath, new BooleanAndModel(condition, type.getConsiderFlexibleUpper()));
+		addBranch(flexiblePath, lowerFirstPath, new BooleanAndModel(condition, pm.getConsiderFlexibleLowerFirst()));
+		addBranch(flexiblePath, upperFirstPath, new BooleanAndModel(condition, pm.getConsiderFlexibleUpperFirst()));
 
 		addBranch(lowerFirstPath, createSimplePath(lastPath, createFlexibleUpperRanges(dialog, pm)), lowerFirst.getConsiderNextProperty());
 		addBranch(upperFirstPath, createSimplePath(lastPath, createFlexibleLowerRanges(dialog, pm)), upperFirst.getConsiderNextProperty());
@@ -199,9 +183,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		return DoseRangeWizardStep.createOnMultipleParentRanges(
 				dialog,
 				pm,
-				FlexibleDose.class,
-				FlexibleDose.PROPERTY_MIN_DOSE,
-				FlexibleDose.PROPERTY_MAX_DOSE,
+				pm.getFlexibleLowerRanges(),
 				"Specify the ranges for upper bound of flexible doses", "For each of the categories, define a range in which the upper bound of the administered dose must lie. ");
 	}
 
@@ -209,28 +191,15 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		return DoseRangeWizardStep.createOnMultipleParentRanges(
 				dialog,
 				pm,
-				FlexibleDose.class,
-				FlexibleDose.PROPERTY_MAX_DOSE,
-				FlexibleDose.PROPERTY_MIN_DOSE,
+				pm.getFlexibleUpperRanges(),
 				"Specify the ranges for lower bound of flexible doses", "For each of the categories, define a range in which the lower bound of the administered dose must lie.");
-	}
-
-	private static DoseRangeWizardStep createFlexibleUpperDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
-		return DoseRangeWizardStep.createOnBeanProperty(
-				dialog,
-				pm,
-				FlexibleDose.class,
-				FlexibleDose.PROPERTY_MAX_DOSE,
-				FlexibleDose.PROPERTY_MIN_DOSE,
-				"Specify the ranges for upper bound of flexible doses", "For each of the categories, define a range in which the upper bound of the administered dose must lie.");
 	}
 
 	private static DoseRangeWizardStep createFixedDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
 		return DoseRangeWizardStep.createOnBeanProperty(
 				dialog,
 				pm,
-				FixedDose.class,
-				FixedDose.PROPERTY_QUANTITY,
+				pm.getFixedRangeNode(),
 				null,
 				"Specify ranges for fixed doses", "For each of the categories, define a range in which the administered dose must lie.");
 	}
@@ -239,10 +208,18 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 		return DoseRangeWizardStep.createOnBeanProperty(
 				dialog,
 				pm,
-				FlexibleDose.class,
-				FlexibleDose.PROPERTY_MIN_DOSE,
+				pm.getFlexibleLowerRangeNode(),
 				FlexibleDose.PROPERTY_MAX_DOSE,
 				"Specify the ranges for lower bound of flexible doses", "For each of the categories, define a range in which the lower bound of the administered dose must lie.");
+	}
+
+	private static DoseRangeWizardStep createFlexibleUpperDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {
+		return DoseRangeWizardStep.createOnBeanProperty(
+				dialog,
+				pm,
+				pm.getFlexibleUpperRangeNode(),
+				FlexibleDose.PROPERTY_MIN_DOSE,
+				"Specify the ranges for upper bound of flexible doses", "For each of the categories, define a range in which the upper bound of the administered dose must lie.");
 	}
 
 	private static WizardStep createKnownDose(final JDialog dialog, final DosedDrugTreatmentPresentation pm) {

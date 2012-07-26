@@ -2,8 +2,8 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DecisionTreeEdgeComparator;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.common.beans.ReadOnlyObservableList;
 import org.drugis.common.beans.SortedSetModel;
 
@@ -16,7 +16,9 @@ public class DecisionTreeOutEdgesModel extends ReadOnlyObservableList<DecisionTr
 	private static final class ModelImpl extends SortedSetModel<DecisionTreeEdge> {
 		public ModelImpl(final DecisionTree tree, final DecisionTreeNode parent) {
 			super(new DecisionTreeEdgeComparator());
-			this.addAll(tree.getOutEdges(parent));
+			if (tree.containsVertex(parent)) {
+				this.addAll(tree.getOutEdges(parent));
+			}
 			tree.getObservableGraph().addGraphEventListener(new GraphEventListener<DecisionTreeNode, DecisionTreeEdge>() {
 				@Override
 				public void handleGraphEvent(final GraphEvent<DecisionTreeNode, DecisionTreeEdge> evt) {

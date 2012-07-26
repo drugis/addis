@@ -130,7 +130,8 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	 * The lower range will always be initialized with the child node of the original range, the higher range will be excluded by default.
 	 * @param parent The parent of the set of range nodes to split.
 	 * @param value The cut-off value.
-	 * @param lowerRangeOpen True if the value should be included in the range
+	 * @param lowerRangeOpen If true, the upper bound of the lower range will be open.
+	 * Otherwise, it will be closed. Vice versa for the lower bound of the upper range.
 	 */
 	public Pair<RangeEdge> splitRange(final ChoiceNode parent, final double value, final boolean lowerRangeOpen) {
 		final RangeEdge edge = (RangeEdge) d_decisionTree.findMatchingEdge(parent, value);

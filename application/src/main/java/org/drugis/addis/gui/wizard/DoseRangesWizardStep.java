@@ -1,107 +1,93 @@
 package org.drugis.addis.gui.wizard;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.apache.commons.math3.util.Pair;
-import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.treatment.ChoiceNode;
+import org.drugis.addis.entities.treatment.DecisionTree;
+import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.gui.wizard.DoseRangeWizardStep.DecisionTreeNodeBuilder;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
-	
-	private List<Family> d_families = new ArrayList<Family>();
-	
-	private Pair<Class<? extends AbstractDose>, String> d_beanProperty;
-	private String d_childPropertyName;
 
-	private ListDataListener d_listener = new ListDataListener() {
-		public void intervalRemoved(ListDataEvent e) {
+	private final ObservableList<DecisionTreeEdge> d_parents;
+
+	private final ListDataListener d_listener = new ListDataListener() { // FIXME
+		@Override
+		public void intervalRemoved(final ListDataEvent e) {
 			rebuildPanel();
 		}
-		
-		public void intervalAdded(ListDataEvent e) {
+
+		@Override
+		public void intervalAdded(final ListDataEvent e) {
 			rebuildPanel();
 		}
-		
-		public void contentsChanged(ListDataEvent e) {}
+
+		@Override
+		public void contentsChanged(final ListDataEvent e) {}
 	};
 
 	public DoseRangesWizardStep(
-			JDialog dialog,
-			DosedDrugTreatmentPresentation presentationModel, 
-			Pair<Class<? extends AbstractDose>, String> beanProperty,
-			String childPropertyName,
-			String name, 
-			String summary) {
+			final JDialog dialog,
+			final DosedDrugTreatmentPresentation presentationModel,
+			final ObservableList<DecisionTreeEdge> parentRanges,
+			final String name,
+			final String summary) {
 		super(presentationModel, name, summary, dialog);
-		d_beanProperty = beanProperty;
-		d_childPropertyName = childPropertyName;
+		d_parents = parentRanges;
 	}
 
-	@Override 
+	@Override
 	public void initialize() {
-		for(Family family : d_families) { 
-			family.getChildren().removeListDataListener(d_listener);
-		}
-		d_families.clear();
-		
-		DecisionTreeNode typeNode = d_pm.getType(d_beanProperty.getKey());
-		
-		for(DecisionTreeNode parent : d_pm.getChildNodes(typeNode)) {
-			Family family = new Family(d_pm, parent);
-			family.getChildren().addListDataListener(d_listener);
-			d_families.add(family);
-		}
-		populateChildren();
-	}
-
-	private void populateChildren() {
-		DecisionTreeNodeBuilder<DoseRangeNode> nodeBuilder = new DecisionTreeNodeBuilder<DoseRangeNode>() {
-			public DoseRangeNode create(DecisionTreeNode parent) {
-				return createRangeNode(parent);
+		final DecisionTree tree = d_pm.getBean().getDecisionTree();
+		for (final DecisionTreeEdge edge : d_parents) {
+			final DecisionTreeNode node = tree.getEdgeTarget(edge);
+			if (node  instanceof ChoiceNode) {
+				DoseRangeWizardStep.populate(d_pm, (ChoiceNode)node); // FIXME: take into account parent ranges
 			}
-		};
-		for (Family family : d_families) {
-			DoseRangeWizardStep.populate(d_pm, nodeBuilder, family);
 		}
 	}
 
-	private DoseRangeNode createRangeNode(final DecisionTreeNode parent) {
-		RangeNode start = (RangeNode)parent;
-		return new DoseRangeNode(
-				d_beanProperty.getKey(),
-				d_childPropertyName, 
-				start.getRangeLowerBound(),
-				start.isRangeLowerBoundOpen(),
-				Double.POSITIVE_INFINITY,
-				false,
-				d_pm.getDoseUnit());
-	}
-	
+//	private DoseRangeNode createRangeNode(final DecisionTreeNode parent) {
+//		final RangeNode start = (RangeNode)parent;
+//		return new DoseRangeNode(
+//				d_beanProperty.getKey(),
+//				d_childPropertyName,
+//				start.getRangeLowerBound(),
+//				start.isRangeLowerBoundOpen(),
+//				Double.POSITIVE_INFINITY,
+//				false,
+//				d_pm.getDoseUnit());
+//	}
+
+	@Override
 	protected JPanel buildPanel() {
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu",
 				"p"
-				);	
-		
-		PanelBuilder builder = new PanelBuilder(layout);
+				);
+
+		final PanelBuilder builder = new PanelBuilder(layout);
 		int row = 1;
-		
-		for(Family family : d_families) {
-			RangeInputBuilder rangeBuilder = new RangeInputBuilder(d_dialog, new RangeInputPresentation(d_pm, d_beanProperty, null, family));
-			row = rangeBuilder.addFamilyToPanel(builder, row);
+
+		final DecisionTree tree = d_pm.getBean().getDecisionTree();
+		for (final DecisionTreeEdge edge : d_parents) { // FIXME: separator
+			final DecisionTreeNode node = tree.getEdgeTarget(edge);
+			if (node instanceof ChoiceNode) {
+				final RangeInputBuilder rangeBuilder = new RangeInputBuilder(d_dialog, new RangeInputPresentation(d_pm, (ChoiceNode) node, null));
+				row = rangeBuilder.addFamilyToPanel(builder, row);
+			} else {
+
+			}
 		}
 		return builder.getPanel();
 	}

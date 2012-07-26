@@ -1,21 +1,24 @@
 package org.drugis.addis.gui.wizard;
 
-import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.ParseException;
+import java.text.ParsePosition;
 
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.DefaultFormatter;
 
+import org.drugis.addis.entities.treatment.ChoiceNode;
+import org.drugis.addis.entities.treatment.RangeEdge;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.RangeValidator;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.AffixableFormat;
+import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
 
@@ -26,129 +29,115 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 final class DoseRangeCutOffDialog extends OkCancelDialog {
-	private static final String GREATER_THAN = "\u003E";
-	private static final String LESS_THAN = "\u003C";
-	private static final String LESS_THAN_OR_EQUAL = "\u2264";
+	private final class FormatRange extends Format {
+		private static final long serialVersionUID = -8624949198891358088L;
+
+		private final String d_variableName;
+		private final boolean d_isUpperBoundOpen;
+
+		private FormatRange(final String variableName, final boolean isUpperBoundOpen) {
+			d_variableName = variableName;
+			d_isUpperBoundOpen = isUpperBoundOpen;
+		}
+
+		@Override
+		public StringBuffer format(final Object toFormat, final StringBuffer toAppendTo, final FieldPosition pos) {
+			final double cutOff = (Double) toFormat;
+			toAppendTo.append(RangeEdge.format(d_variableName,
+					d_rangeToSplit.getLowerBound(), d_rangeToSplit.isLowerBoundOpen(),
+					cutOff, d_isUpperBoundOpen));
+			return toAppendTo;
+		}
+
+		@Override
+		public Object parseObject(final String arg0, final ParsePosition arg1) {
+			return null;
+		}
+	}
+
 	private final DosedDrugTreatmentPresentation d_pm;
 	private static final long serialVersionUID = -7519390341921875264L;
-	private final int d_index;
 	private final ValueHolder<Double> d_cutOff = new ModifiableHolder<Double>(0.0d);
-	private final ValueHolder<Boolean> d_upperOpen = new ModifiableHolder<Boolean>(false);
-	private String d_boundName;
+	private final ValueHolder<Boolean> d_lowerOpen = new ModifiableHolder<Boolean>(false);
 	private final RangeValidator d_validator;
-	private final RangeNode d_childToSplit;
-	private Family d_family;
-	private boolean d_onKnownDoses;
+	private final RangeEdge d_rangeToSplit;
+	private final ChoiceNode d_choice;
 
 	public DoseRangeCutOffDialog(
-			JDialog parent,
-			DosedDrugTreatmentPresentation model, 
-			int rangeIndex, 
-			Family family,
-			String boundName,
-			boolean onKnownDoses) {
+			final JDialog parent,
+			final DosedDrugTreatmentPresentation model,
+			final ChoiceNode choice,
+			final RangeEdge rangeToSplit) {
 		super(parent, "Split range", true);
 		setLocationByPlatform(true);
 		d_pm = model;
-		d_index = rangeIndex;
-		d_boundName = boundName;
-		d_family =  family;
-		d_onKnownDoses = onKnownDoses;
-		d_childToSplit = (RangeNode)d_family.getChildren().get(rangeIndex);
-		d_validator = 
-				new RangeValidator(d_cutOff, d_childToSplit.getRangeLowerBound(), d_childToSplit.getRangeUpperBound());
+		d_choice = choice;
+		d_rangeToSplit = rangeToSplit;
+		d_validator =
+				new RangeValidator(d_cutOff, d_rangeToSplit.getLowerBound(), d_rangeToSplit.getUpperBound());
 		getUserPanel().add(buildPanel());
-		pack(); 
+		pack();
 	}
-	
-	protected JPanel buildPanel() { 
+
+	protected JPanel buildPanel() {
 		Bindings.bind(d_okButton, "enabled", d_validator);
 
-		FormLayout layout = new FormLayout(
+		final FormLayout layout = new FormLayout(
 				"pref, 3dlu, pref, 3dlu, fill:pref:grow",
 				"p"
-				);	
-		
-		PanelBuilder builder = new PanelBuilder(layout);
+				);
+
+		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 		final int colSpan = builder.getColumnCount();
 		int row = 1;
-		
-		builder.addSeparator("Original range: " + d_childToSplit.getLabel(), cc.xyw(1, row, colSpan));
-		
+
+		final String variableName = GUIHelper.humanize(d_choice.getPropertyName());
+
+		builder.addSeparator("Original range: " + RangeEdge.format(variableName, d_rangeToSplit), cc.xyw(1, row, colSpan));
+
 		row = LayoutUtil.addRow(layout, row);
 		builder.addLabel("Split range at:", cc.xy(1, row));
 		final JFormattedTextField cutOffField = BasicComponentFactory.createFormattedTextField(d_cutOff, new DefaultFormatter());
 		cutOffField.setColumns(5);
-		cutOffField.addCaretListener(new CaretListener() {		
-			public void caretUpdate(CaretEvent e) {
+		cutOffField.addCaretListener(new CaretListener() {
+			@Override
+			public void caretUpdate(final CaretEvent e) {
 				try {
 					cutOffField.commitEdit();
 					pack();
-				} catch (ParseException exp) {
+				} catch (final ParseException exp) {
 					return; // we don't care
 				}
 			}
 		});
-		
+
 		builder.add(cutOffField, cc.xy(3, row));
-		String unitText = d_pm.getDoseUnitPresentation().getBean().toString();
+		final String unitText = d_pm.getDoseUnitPresentation().getBean().toString();
 		builder.addLabel(unitText, cc.xy(5, row));
-		
+
 		row = LayoutUtil.addRow(layout, row);
-		builder.addLabel("Bound is open for:", cc.xyw(1, row, colSpan));
-		
-		DecimalFormat decimalFormat = new DecimalFormat();
-		decimalFormat.setMaximumFractionDigits(3);
-		
-		AffixableFormat formatLower = new AffixableFormat();
-		formatLower.setMaximumFractionDigits(3);
-		StringBuilder prefix = new StringBuilder()
-			.append(decimalFormat.format(d_childToSplit.getRangeLowerBound()))
-			.append((d_childToSplit.isRangeLowerBoundOpen() ? " " + LESS_THAN + " " : " " + LESS_THAN_OR_EQUAL + " "))
-			.append(d_boundName + " \u003C ");
-		formatLower.setPrefix(prefix.toString());
-		formatLower.setSuffix(" " + unitText);
-		JLabel cutOffLower = BasicComponentFactory.createLabel(d_cutOff, formatLower);
-		
+		builder.addLabel("Bound is inclusive/exclusive for lower range:", cc.xyw(1, row, colSpan));
+
 		row = LayoutUtil.addRow(layout, row);
-		builder.add(BasicComponentFactory.createRadioButton(d_upperOpen, false, ""), cc.xy(1, row));
-		builder.add(cutOffLower, cc.xy(3, row));
-		AffixableFormat formatUpper = new AffixableFormat();
-		if (d_index < d_pm.getBean().getDecisionTree().getChildCount(d_family.parent) - 1) { 
-			StringBuilder suffix = new StringBuilder()
-				.append(" " + LESS_THAN_OR_EQUAL + " " + d_boundName)
-				.append(" " + (d_childToSplit.isRangeUpperBoundOpen() ? LESS_THAN : LESS_THAN_OR_EQUAL) + " ")
-				.append(decimalFormat.format(d_childToSplit.getRangeUpperBound()));
-			formatLower.setSuffix(" " + unitText);
-			formatUpper.setSuffix(suffix.toString());
-		} else {
-			formatUpper.setPrefix(d_boundName + " " + GREATER_THAN + " ");
-			formatLower.setSuffix(" " + unitText);
-			formatUpper.setSuffix(" " + unitText);
-		}
-		JLabel cutOffUpper = BasicComponentFactory.createLabel(d_cutOff, formatUpper);
-		
+		builder.add(BasicComponentFactory.createRadioButton(d_lowerOpen, false, ""), cc.xy(1, row));
+		builder.add(BasicComponentFactory.createLabel(d_cutOff, new FormatRange(variableName, false)), cc.xy(3, row));
 		row = LayoutUtil.addRow(layout, row);
-		builder.add(BasicComponentFactory.createRadioButton(d_upperOpen, true, ""), cc.xy(1, row));
-		builder.add(cutOffUpper, cc.xy(3, row));
+		builder.add(BasicComponentFactory.createRadioButton(d_lowerOpen, true, ""), cc.xy(1, row));
+		builder.add(BasicComponentFactory.createLabel(d_cutOff, new FormatRange(variableName, true)), cc.xy(3, row));
 
 		return builder.getPanel();
 	}
-	
+
 	@Override
-	protected void commit() {	
-		if (!d_onKnownDoses) {
-			d_pm.splitRange(d_childToSplit, d_cutOff.getValue(), !d_upperOpen.getValue());
-		} else {
-			d_pm.splitKnowDoseRanges(d_cutOff.getValue(), !d_upperOpen.getValue());
-		}
-		setVisible(false);
+	protected void commit() {
+		d_pm.getBean().splitRange(d_choice, d_cutOff.getValue(), d_lowerOpen.getValue());
+		dispose();
 	}
 
 	@Override
 	protected void cancel() {
-		setVisible(false);			
-	} 
+		dispose();
+	}
 }

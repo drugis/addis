@@ -29,21 +29,43 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
-import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.common.beans.ContentAwareListModel;
+import org.drugis.common.beans.ValueEqualsModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {
 	private final Domain d_domain;
 	private final ObservableList<Category> d_categories;
+	private final ValueModel d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>();
+	private final ValueModel d_considerDoseType;
+	private final ValueModel d_ignoreDoseType;
+	private final ValueModel d_unknownDoseChoice;
+	private final ValueModel d_fixedDoseChoice;
+	private final ValueModel d_flexibleDoseChoice;
+
+	private final DoseQuantityChoiceNode d_fixedRangeNode;
+	private final DoseQuantityChoiceNode d_flexibleLowerNode;
+	private final DoseQuantityChoiceNode d_flexibleUpperNode;
+
+	private final ValueModel d_considerFixed;
+	private final ValueModel d_considerFlexibleLower;
+	private final ValueModel d_considerFlexibleUpper;
+
 
 	public DosedDrugTreatmentPresentation(final DosedDrugTreatment bean) {
 		this(bean, null);
@@ -53,14 +75,28 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		super(bean);
 		d_domain = domain;
 		d_categories = new ContentAwareListModel<Category>(bean.getCategories());
+		d_considerDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.CONSIDER);
+		d_ignoreDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.DO_NOT_CONSIDER);
+
+		d_unknownDoseChoice = getModelForType(UnknownDose.class);
+		d_fixedDoseChoice = getModelForType(FixedDose.class);
+		d_flexibleDoseChoice = getModelForType(FlexibleDose.class);
+
+		d_fixedRangeNode = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, getBean().getDoseUnit());
+		d_flexibleLowerNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, getBean().getDoseUnit());
+		d_flexibleUpperNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
+
+		d_considerFixed = new ValueEqualsModel(d_fixedDoseChoice, d_fixedRangeNode);
+		d_considerFlexibleLower = new ValueEqualsModel(d_flexibleDoseChoice, d_flexibleLowerNode);
+		d_considerFlexibleUpper = new ValueEqualsModel(d_flexibleDoseChoice, d_flexibleUpperNode);
 	}
 
-	public Drug getDrug() {
-		return getBean().getDrug();
+	public ValueModel getDrug() {
+		return getModel(DosedDrugTreatment.PROPERTY_DRUG);
 	}
 
-	public ValueHolder<String> getName() {
-		return new ModifiableHolder<String>(getBean().getName());
+	public ValueModel getName() {
+		return getModel(DosedDrugTreatment.PROPERTY_NAME);
 	}
 
 	public ObservableList<Category> getCategories() {
@@ -101,50 +137,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return new DecisionTreeOutEdgesModel(getBean().getDecisionTree(), node);
 	}
 
-//	public DecisionTreeNode setKnownDoses(final DecisionTreeNode prototype) {
-//		final DecisionTreeNode fixed = getType(FixedDose.class);
-//		final DecisionTreeNode flexible = getType(FlexibleDose.class);
-//
-//		if(prototype instanceof LeafNode) {
-//			setSelected(fixed, prototype);
-//			setSelected(flexible, prototype);
-//			return prototype;
-//		} else if (prototype instanceof RangeNode) {
-//			final RangeNode protoRange = (RangeNode) prototype;
-//			final DoseRangeNode fixedRange = inheritPrototype(protoRange, FixedDose.class, FixedDose.PROPERTY_QUANTITY);
-//			final DoseRangeNode flexLowerRange = inheritPrototype(protoRange, FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE);
-//			final DoseRangeNode flexUpperRange = inheritPrototype(protoRange, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
-//
-//			setSelected(fixed, fixedRange);
-//			setSelected(flexible, flexLowerRange);
-//			setSelected(flexLowerRange, flexUpperRange);
-//
-//			return fixedRange;
-//		}
-//
-//		throw new IllegalArgumentException("prototype is not compatible (must be a LeafNode or a RangeNode, was: " + prototype + ")");
-//	}
-//
-//	public void setKnownDoses(final DecisionTreeNode parent, final Object selected) {
-//		setSelected(parent, selected); // Fixed case
-//		if(parent instanceof RangeNode) {
-//			final DecisionTreeNode prototype = inheritPrototype((RangeNode)parent, FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE);
-//			final DecisionTreeNode node = find(d_tree.getVertices(), new Predicate<DecisionTreeNode>() { // this is super inefficient
-//				@Override
-//				public boolean evaluate(final DecisionTreeNode input) {
-//					return 	input.similar(prototype) &&
-//							input.getBeanClass().equals(prototype.getBeanClass()) &&
-//							input.getPropertyName().equals(prototype.getPropertyName())  ;
-//				}
-//			});
-//			if(node != null) {
-//				setSelected(node, selected);
-//			} else {
-//				throw new IllegalArgumentException("Leaf " + node + " did not match prototype " + prototype);
-//			}
-//		}
-//	}
-//
 //	private DoseRangeNode inheritPrototype(final RangeNode protoRange, final Class<? extends AbstractDose> beanClass, final String property) {
 //		 return new DoseRangeNode(
 //				beanClass,
@@ -160,9 +152,96 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return getBean().getCategory(dose).toString();
 	}
 
-	public DecisionTreeChildModel getChoiceModelForType(final Class<?> type) {
+	/**
+	 * ValueModel that holds the decision (DecisionTreeNode) for the given dose type.
+	 */
+	private ValueModel getModelForType(final Class<?> type) {
 		final DecisionTree tree = getBean().getDecisionTree();
 		final DecisionTreeChildModel model = new DecisionTreeChildModel(tree, tree.findMatchingEdge(tree.getRoot(), type));
 		return model;
 	}
+
+	/**
+	 * Selection holder for action on unknown doses.
+	 */
+	public ValueModel getModelForUnknownDose() {
+		return d_unknownDoseChoice;
+	}
+
+	/**
+	 * Selection holder for action on "known" doses (fixed or flexible).
+	 */
+	public ValueModel getModelForKnownDose() {
+		return d_knownDoseChoice;
+	}
+
+	/**
+	 * Selection holder for action on fixed doses.
+	 */
+	public ValueModel getModelForFixedDose() {
+		return d_fixedDoseChoice;
+	}
+
+	/**
+	 * Selection holder for action on flexible doses.
+	 */
+	public ValueModel getModelForFlexibleDose() {
+		return d_flexibleDoseChoice;
+	}
+
+	/**
+	 * ValueModel (Boolean) that indicates whether fixed and flexible doses should be treated separately.
+	 */
+	public ValueModel getConsiderDoseType() {
+		return d_considerDoseType;
+	}
+
+	/**
+	 * ValueModel (Boolean) that indicates whether fixed and flexible doses should be treated identically.
+	 */
+	public ValueModel getIgnoreDoseType() {
+		return d_ignoreDoseType;
+	}
+
+	/**
+	 * ValueModel (Boolean) that indicates whether quantity should be considered for fixed doses.
+	 */
+	public ValueModel getConsiderFixed() {
+		return d_considerFixed;
+	}
+
+	/**
+	 * ValueModel (Boolean) that indicates whether the MIN_DOSE should be considered first for flexible doses.
+	 */
+	public ValueModel getConsiderFlexibleLowerFirst() {
+		return d_considerFlexibleLower;
+	}
+
+	/**
+	 * ValueModel (Boolean) that indicates whether the MAX_DOSE should be considered first for flexible doses.
+	 */
+	public ValueModel getConsiderFlexibleUpperFirst() {
+		return d_considerFlexibleUpper;
+	}
+
+	public ObservableList<DecisionTreeEdge> getFlexibleLowerRanges() {
+		return new DecisionTreeOutEdgesModel(getBean().getDecisionTree(), d_flexibleLowerNode);
+	}
+
+	public ObservableList<DecisionTreeEdge> getFlexibleUpperRanges() {
+		return new DecisionTreeOutEdgesModel(getBean().getDecisionTree(), d_flexibleUpperNode);
+	}
+
+	public ChoiceNode getFlexibleLowerRangeNode() {
+		return d_flexibleLowerNode;
+	}
+
+	public ChoiceNode getFlexibleUpperRangeNode() {
+		return d_flexibleUpperNode;
+	}
+
+	public ChoiceNode getFixedRangeNode() {
+		return d_fixedRangeNode;
+	}
+
 }
