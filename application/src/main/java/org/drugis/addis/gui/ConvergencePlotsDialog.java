@@ -55,7 +55,6 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -124,7 +123,6 @@ public class ConvergencePlotsDialog extends JDialog {
 		Runnable r = new Runnable() {
 			public void run() {
 				final int noResults = results.getNumberOfSamples();
-				
 				final int resolution = noResults / DATA_SCALE;
 				
 				for (int i = resolution; i <= noResults; i += resolution) {
