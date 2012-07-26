@@ -41,6 +41,7 @@ import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MCMCResultsListener;
+import org.drugis.mtc.MCMCSettings;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.convergence.GelmanRubinConvergence;
 import org.jfree.chart.ChartFactory;
@@ -66,12 +67,12 @@ public class ConvergencePlotsDialog extends JDialog {
 	private XYSeries d_wSeries;
 	private SimpleSuspendableTask d_task;
 
-	public ConvergencePlotsDialog(final JFrame main, final MCMCModel mcmcModel, final Parameter p) {
+	public ConvergencePlotsDialog(final JFrame main, MCMCSettings settings, final MCMCModel mcmcModel, final Parameter p) {
 		super(main, p + " convergence diagnostics", false);
 		d_rHatSeries = new XYSeries("R-Hat");
 		d_vHatSeries = new XYSeries("sqrt(vHat)");
 		d_wSeries = new XYSeries("sqrt(W)");
-		d_task = createTask(mcmcModel.getResults(), p);
+		d_task = createTask(mcmcModel.getResults(), settings, p);
 		
 		super.add(new JScrollPane(createPanel()));
 
@@ -118,17 +119,17 @@ public class ConvergencePlotsDialog extends JDialog {
 		ThreadHandler.getInstance().scheduleTask(d_task);
 	}
 
-	private SimpleSuspendableTask createTask(final MCMCResults results,	final Parameter p) {
+	private SimpleSuspendableTask createTask(final MCMCResults results,	final MCMCSettings settings, final Parameter p) {
 		Runnable r = new Runnable() {
 			public void run() {
 				final int noResults = results.getNumberOfSamples();
-				
 				final int resolution = noResults / DATA_SCALE;
 				
 				for (int i = resolution; i <= noResults; i += resolution) {
-					d_rHatSeries.add(i, GelmanRubinConvergence.diagnose(results, p, i));
-					d_vHatSeries.add(i, GelmanRubinConvergence.calculatePooledVariance(results, p, i));
-					d_wSeries.add(i, GelmanRubinConvergence.calculateWithinChainVariance(results, p, i));
+					int iter = i * settings.getThinningInterval();
+					d_rHatSeries.add(iter, GelmanRubinConvergence.diagnose(results, p, i));
+					d_vHatSeries.add(iter, GelmanRubinConvergence.calculatePooledVariance(results, p, i));
+					d_wSeries.add(iter, GelmanRubinConvergence.calculateWithinChainVariance(results, p, i));
 				}
 			}
 		};

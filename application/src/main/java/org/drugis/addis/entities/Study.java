@@ -67,9 +67,13 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	private ObjectWithNotes<Indication> d_indication;
 	private CharacteristicsMap d_chars = new CharacteristicsMap();
 
-	private final ObservableList<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayListModel<StudyOutcomeMeasure<Endpoint>>();
-	private final ObservableList<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayListModel<StudyOutcomeMeasure<AdverseEvent>>();
-	private final ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayListModel<StudyOutcomeMeasure<PopulationCharacteristic>>();
+	private final ObservableList<StudyOutcomeMeasure<? extends Variable>> d_outcomeMeasures = new ArrayListModel<StudyOutcomeMeasure<? extends Variable>>();
+	private ObservableList<StudyOutcomeMeasure<Endpoint>> d_endpoints;
+	private ObservableList<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents;
+	private ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars;
+//	private final ObservableList<StudyOutcomeMeasure<Endpoint>> d_endpoints = new ArrayListModel<StudyOutcomeMeasure<Endpoint>>();
+//	private final ObservableList<StudyOutcomeMeasure<AdverseEvent>> d_adverseEvents = new ArrayListModel<StudyOutcomeMeasure<AdverseEvent>>();
+//	private final ObservableList<StudyOutcomeMeasure<PopulationCharacteristic>> d_populationChars = new ArrayListModel<StudyOutcomeMeasure<PopulationCharacteristic>>();
 
 	private final ObservableList<Arm> d_arms = new ArrayListModel<Arm>();
 	private final ObservableList<Epoch> d_epochs = new ArrayListModel<Epoch>();
@@ -106,9 +110,20 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			}
 		};
 		d_arms.addListDataListener(orphanListener);
-		new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(d_endpoints).addListDataListener(orphanListener);
-		new ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>>(d_adverseEvents).addListDataListener(orphanListener);
-		new ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>>(d_populationChars).addListDataListener(orphanListener);
+		new ContentAwareListModel<StudyOutcomeMeasure<?>>(d_outcomeMeasures).addListDataListener(orphanListener);
+		
+		d_endpoints = convert(Endpoint.class, d_outcomeMeasures);
+		d_adverseEvents = convert(AdverseEvent.class, d_outcomeMeasures);
+		d_populationChars = convert(PopulationCharacteristic.class, d_outcomeMeasures);
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> convert(final Class<T> cls, ObservableList<StudyOutcomeMeasure<? extends Variable>> list) {
+		return (ObservableList<StudyOutcomeMeasure<T>>) (ObservableList) new FilteredObservableList<StudyOutcomeMeasure<? extends Variable>>(list, new Filter<StudyOutcomeMeasure<? extends Variable>>() {
+			public boolean accept(StudyOutcomeMeasure<? extends Variable> obj) {
+				return cls.equals(obj.getValueClass());
+			}
+		});
 	}
 
 	@Override
@@ -544,15 +559,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		throw new IllegalArgumentException("Unknown variable type " + type.getSimpleName());
 	}
 
-	private List<StudyOutcomeMeasure<?>> getStudyOutcomeMeasures() {
-		List<StudyOutcomeMeasure<?>> l = new ArrayList<StudyOutcomeMeasure<?>>();
-		l.addAll(getAdverseEvents());
-		l.addAll(getEndpoints());
-		l.addAll(getPopulationChars());
-		return l;
+	public ObservableList<StudyOutcomeMeasure<?>> getStudyOutcomeMeasures() {
+		return d_outcomeMeasures;
 	}
-
-
 
 	public void addVariable(Variable om) {
 		addVariable(om, null);

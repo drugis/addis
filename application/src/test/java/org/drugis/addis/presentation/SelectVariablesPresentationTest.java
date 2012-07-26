@@ -157,7 +157,7 @@ public class SelectVariablesPresentationTest {
 				Boolean.TRUE, Boolean.FALSE);
 		d_pm.getInputCompleteModel().addValueChangeListener(mock);
 		ArrayList<StudyOutcomeMeasure<AdverseEvent>> slots = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
-		slots.add(new StudyOutcomeMeasure<AdverseEvent>(null));
+		slots.add(new StudyOutcomeMeasure<AdverseEvent>(AdverseEvent.class));
 		d_pm.setSlots(slots);
 		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
@@ -168,7 +168,7 @@ public class SelectVariablesPresentationTest {
 		ArrayList<StudyOutcomeMeasure<AdverseEvent>> list = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
 		d_pm.setSlots(list);
 		d_pm.addSlot();
-		assertEquals(Collections.singletonList(new StudyOutcomeMeasure<Variable>(null)), list);		
+		assertEquals(Collections.singletonList(new StudyOutcomeMeasure<Variable>(Variable.class)), list);		
 	}
 	
 	@Test
