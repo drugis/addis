@@ -170,6 +170,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		
 		// add "remove" button 
 		JButton removeBtn = new JButton("Remove");
+		Bindings.bind(removeBtn, "enabled", d_pm.getRemovable(d_pm.getList().get(idx)));
 		builder.add(removeBtn, cc.xy(1, rows));
 		removeBtn.addActionListener(new RemoveItemListener(idx));
 		

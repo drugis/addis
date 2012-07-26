@@ -197,7 +197,7 @@ public class ClinicaltrialsImporter {
 	private static void addStudyEndpoints(Study study, ClinicalStudy studyImport) {
 		// Outcome Measures
 		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
-			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
+			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
 			om.setIsPrimary(true);
 			String noteStr = endp.getMeasure();
 			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
@@ -210,7 +210,7 @@ public class ClinicaltrialsImporter {
 		}
 		
 		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
-			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(null);
+			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
 			om.setIsPrimary(false);
 			String noteStr = endp.getMeasure();
 			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());

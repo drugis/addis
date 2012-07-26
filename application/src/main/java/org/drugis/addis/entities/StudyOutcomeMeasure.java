@@ -50,8 +50,19 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 				}
 			});
 
+	private final Class<? extends Variable> d_class;
+
+	public StudyOutcomeMeasure(Class<T> cls) {
+		this((T)null, cls);
+	}
+	
 	public StudyOutcomeMeasure(T obj) {
+		this(obj, obj.getClass());
+	}
+	
+	private StudyOutcomeMeasure(T obj, Class<? extends Variable> cls) { 
 		super(obj);
+		d_class = cls;
 		d_whenTaken.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				firePropertyChange(PROPERTY_WHEN_TAKEN_CHANGED, false, true);
@@ -112,5 +123,9 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	public String toString() {
 		return (d_isPrimary ? "primary measure: " : "secondary measure: ") +
 				(getValue() != null ? getValue().getName() : "???") + " " + d_whenTaken + " " + getNotes();
+	}
+
+	public Class<? extends Variable> getValueClass() {
+		return d_class;
 	}
 }
