@@ -31,6 +31,8 @@ import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.Study;
 
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueHolder;
+import com.jgoodies.binding.value.ValueModel;
 
 public class AddArmsPresentation extends AddListItemsPresentation<Arm> {
 	private Study d_study;
@@ -43,6 +45,12 @@ public class AddArmsPresentation extends AddListItemsPresentation<Arm> {
 	@Override
 	public ObservableList<Note> getNotes(Arm t) {
 		return t.getNotes();
+	}
+	
+
+	@Override
+	public ValueModel getRemovable(Arm t) {
+		return new ValueHolder(true);
 	}
 	
 	@Override
@@ -64,4 +72,5 @@ public class AddArmsPresentation extends AddListItemsPresentation<Arm> {
 		Arm oldArm = d_list.get(idx);
 		d_study.replaceArm(oldArm, oldArm.rename(newName));
 	}
+
 }

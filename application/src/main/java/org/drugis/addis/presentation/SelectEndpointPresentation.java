@@ -37,7 +37,7 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectEndpointPresentation extends SelectVariablesPresentation<Endpoint> {
 	public SelectEndpointPresentation(ObservableList<Endpoint> options, WhenTakenFactory wtf, AddisWindow mainWindow) {
-		super(options, "Endpoint", "Select Endpoint", "Please select the appropriate endpoints.", wtf, mainWindow);
+		super(options, Endpoint.class, "Select Endpoint", "Please select the appropriate endpoints.", wtf, mainWindow);
 	}
 
 	@Override
