@@ -26,6 +26,8 @@
 
 package org.drugis.addis.presentation;
 
+import java.util.HashMap;
+
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
@@ -39,8 +41,12 @@ import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
-import org.drugis.common.beans.ContentAwareListModel;
+import org.drugis.common.beans.SuffixedObservableList;
+import org.drugis.common.beans.TransformOnceObservableList;
+import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.beans.ValueEqualsModel;
 
 import com.jgoodies.binding.PresentationModel;
@@ -51,12 +57,12 @@ import com.jgoodies.binding.value.ValueModel;
 public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment> {
 	private final Domain d_domain;
 	private final ObservableList<Category> d_categories;
-	private final ValueModel d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>();
+
+	private final ValueModel d_knownDoseChoice;
+	private final ObservableList<DecisionTreeNode> d_knownDoseOptions;
+
 	private final ValueModel d_considerDoseType;
 	private final ValueModel d_ignoreDoseType;
-	private final ValueModel d_unknownDoseChoice;
-	private final ValueModel d_fixedDoseChoice;
-	private final ValueModel d_flexibleDoseChoice;
 
 	private final DoseQuantityChoiceNode d_fixedRangeNode;
 	private final DoseQuantityChoiceNode d_flexibleLowerNode;
@@ -65,7 +71,8 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	private final ValueModel d_considerFixed;
 	private final ValueModel d_considerFlexibleLower;
 	private final ValueModel d_considerFlexibleUpper;
-
+	private final HashMap<DecisionTreeEdge, ValueModel> d_choiceForEdge = new HashMap<DecisionTreeEdge, ValueModel>();
+	private final HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>> d_optionsForEdge = new HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>>();
 
 	public DosedDrugTreatmentPresentation(final DosedDrugTreatment bean) {
 		this(bean, null);
@@ -74,21 +81,35 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public DosedDrugTreatmentPresentation(final DosedDrugTreatment bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
-		d_categories = new ContentAwareListModel<Category>(bean.getCategories());
-		d_considerDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.CONSIDER);
-		d_ignoreDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.DO_NOT_CONSIDER);
+		d_categories = bean.getCategories();
 
-		d_unknownDoseChoice = getModelForType(UnknownDose.class);
-		d_fixedDoseChoice = getModelForType(FixedDose.class);
-		d_flexibleDoseChoice = getModelForType(FlexibleDose.class);
-
+		// Magic nodes
 		d_fixedRangeNode = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, getBean().getDoseUnit());
 		d_flexibleLowerNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, getBean().getDoseUnit());
 		d_flexibleUpperNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
 
-		d_considerFixed = new ValueEqualsModel(d_fixedDoseChoice, d_fixedRangeNode);
-		d_considerFlexibleLower = new ValueEqualsModel(d_flexibleDoseChoice, d_flexibleLowerNode);
-		d_considerFlexibleUpper = new ValueEqualsModel(d_flexibleDoseChoice, d_flexibleUpperNode);
+		d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>();
+		d_knownDoseOptions = createOptions(
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER,
+				DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER,
+				new LeafNode());
+
+		d_considerDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.CONSIDER);
+		d_ignoreDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.DO_NOT_CONSIDER);
+
+		final DecisionTreeEdge unknownDoseEdge = findTypeEdge(UnknownDose.class);
+		d_choiceForEdge.put(unknownDoseEdge, createModelForEdge(unknownDoseEdge));
+		d_optionsForEdge.put(unknownDoseEdge, createOptions(new LeafNode()));
+		final DecisionTreeEdge fixedDoseEdge = findTypeEdge(FixedDose.class);
+		d_choiceForEdge.put(fixedDoseEdge, createModelForEdge(fixedDoseEdge));
+		d_optionsForEdge.put(fixedDoseEdge, createOptions(d_fixedRangeNode, new LeafNode()));
+		final DecisionTreeEdge flexibleDoseEdge = findTypeEdge(FlexibleDose.class);
+		d_choiceForEdge.put(flexibleDoseEdge, createModelForEdge(flexibleDoseEdge));
+		d_optionsForEdge.put(flexibleDoseEdge, createOptions(d_flexibleLowerNode, d_flexibleUpperNode, new LeafNode()));
+
+		d_considerFixed = new ValueEqualsModel(getModelForFixedDose(), d_fixedRangeNode);
+		d_considerFlexibleLower = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleLowerNode);
+		d_considerFlexibleUpper = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleUpperNode);
 	}
 
 	public ValueModel getDrug() {
@@ -113,10 +134,6 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 
 	public DoseUnitPresentation getDoseUnitPresentation() {
 		return new DoseUnitPresentation(getDoseUnit());
-	}
-
-	public void resetTree() {
-		getBean().resetTree();
 	}
 
 	/**
@@ -153,19 +170,24 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	}
 
 	/**
-	 * ValueModel that holds the decision (DecisionTreeNode) for the given dose type.
+	 * ValueModel that holds the decision (DecisionTreeNode) for the given edge.
 	 */
-	private ValueModel getModelForType(final Class<?> type) {
+	private ValueModel createModelForEdge(final DecisionTreeEdge edge) {
 		final DecisionTree tree = getBean().getDecisionTree();
-		final DecisionTreeChildModel model = new DecisionTreeChildModel(tree, tree.findMatchingEdge(tree.getRoot(), type));
+		final DecisionTreeChildModel model = new DecisionTreeChildModel(tree, edge);
 		return model;
+	}
+
+	public DecisionTreeEdge findTypeEdge(final Class<?> type) {
+		final DecisionTree tree = getBean().getDecisionTree();
+		return getBean().getDecisionTree().findMatchingEdge(tree.getRoot(), type);
 	}
 
 	/**
 	 * Selection holder for action on unknown doses.
 	 */
 	public ValueModel getModelForUnknownDose() {
-		return d_unknownDoseChoice;
+		return d_choiceForEdge.get(findTypeEdge(UnknownDose.class));
 	}
 
 	/**
@@ -179,14 +201,14 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	 * Selection holder for action on fixed doses.
 	 */
 	public ValueModel getModelForFixedDose() {
-		return d_fixedDoseChoice;
+		return d_choiceForEdge.get(findTypeEdge(FixedDose.class));
 	}
 
 	/**
 	 * Selection holder for action on flexible doses.
 	 */
 	public ValueModel getModelForFlexibleDose() {
-		return d_flexibleDoseChoice;
+		return d_choiceForEdge.get(findTypeEdge(FlexibleDose.class));
 	}
 
 	/**
@@ -244,4 +266,37 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return d_fixedRangeNode;
 	}
 
+	private ObservableList<DecisionTreeNode> createOptions(final DecisionTreeNode ... extraOptions) {
+		final TransformOnceObservableList<Category, DecisionTreeNode> transformedCategories = new TransformOnceObservableList<Category, DecisionTreeNode>(d_categories,
+				new Transform<Category, DecisionTreeNode>() {
+					@Override
+					public DecisionTreeNode transform(final Category a) {
+						return new LeafNode(a);
+					}
+		});
+		return new SuffixedObservableList<DecisionTreeNode>(transformedCategories, extraOptions);
+	}
+
+	public ObservableList<DecisionTreeNode> getOptionsForEdge(final DecisionTreeEdge edge) {
+		if (d_optionsForEdge.get(edge) == null) {
+			d_optionsForEdge.put(edge, createOptions(new LeafNode()));
+		}
+		return d_optionsForEdge.get(edge);
+	}
+
+	public ObservableList<DecisionTreeNode> getOptionsForKnownDose() {
+		return d_knownDoseOptions;
+	}
+
+	public ObservableList<DecisionTreeNode> getOptionsForUnknownDose() {
+		return getOptionsForEdge(findTypeEdge(UnknownDose.class));
+	}
+
+	public ObservableList<DecisionTreeNode> getOptionsForFixedDose() {
+		return getOptionsForEdge(findTypeEdge(FixedDose.class));
+	}
+
+	public ObservableList<DecisionTreeNode> getOptionsForFlexibleDose() {
+		return getOptionsForEdge(findTypeEdge(FlexibleDose.class));
+	}
 }

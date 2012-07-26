@@ -53,13 +53,16 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private DoseRangeWizardStep(
 			final JDialog dialog,
 			final DosedDrugTreatmentPresentation presentationModel,
-			final ChoiceNode parent,
+			ChoiceNode parent,
 			final String nextPropertyName,
 			final String name,
 			final String summary) {
 		super(presentationModel, name, summary, null);
 		d_nextPropertyName = nextPropertyName;
-		d_rangeInputPresentation = new RangeInputPresentation(d_pm, parent,d_nextPropertyName);
+		if (parent == null) {
+			parent = presentationModel.getFixedRangeNode();
+		}
+		d_rangeInputPresentation = new RangeInputPresentation(d_pm, parent, d_nextPropertyName);
 		attachListener(d_rangeInputPresentation.getRanges());
 	}
 
@@ -82,6 +85,12 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	@Override
 	public void initialize() {
+		// Handle the "ignore dose type" case
+		if (!d_pm.getBean().getDecisionTree().containsVertex(d_rangeInputPresentation.getParent())) {
+			d_pm.getModelForFixedDose().setValue(d_rangeInputPresentation.getParent());
+		}
+
+		// Add default ranges if necessary
 		populate(d_pm, d_rangeInputPresentation.getParent());
 	}
 
