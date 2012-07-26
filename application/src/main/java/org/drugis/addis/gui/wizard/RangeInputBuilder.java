@@ -7,14 +7,17 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.ListModel;
 
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
-import org.drugis.addis.presentation.DecisionTreeChildModel;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 
+import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -63,9 +66,12 @@ public class RangeInputBuilder {
 		builder.add(splitBtn, cc.xy(1, row));
 		final String variableName = GUIHelper.humanize(d_pm.getParent().getPropertyName());
 		builder.add(new JLabel(RangeEdge.format(variableName, range)), cc.xy(3, row));
-		final JComboBox comboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
-				new DecisionTreeChildModel(d_pm.getParentPresentation().getBean().getDecisionTree(), range),
-				d_pm.getParentPresentation().getCategories(), d_pm.getExtraOptions());
+
+		final JComboBox comboBox = BasicComponentFactory.createComboBox(
+				new SelectionInList<DecisionTreeNode>(
+						(ListModel)d_pm.getParentPresentation().getOptionsForEdge(range),
+						d_pm.getParentPresentation().getModelForEdge(range)));
+
 		builder.add(comboBox, cc.xy(5, row));
 		return row;
 	}

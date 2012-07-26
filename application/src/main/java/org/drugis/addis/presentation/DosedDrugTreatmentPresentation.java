@@ -299,4 +299,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public ObservableList<DecisionTreeNode> getOptionsForFlexibleDose() {
 		return getOptionsForEdge(findTypeEdge(FlexibleDose.class));
 	}
+
+	public ValueModel getModelForEdge(final DecisionTreeEdge edge) {
+		if (d_choiceForEdge.get(edge) == null) {
+			d_choiceForEdge.put(edge, createModelForEdge(edge));
+		}
+		return d_choiceForEdge.get(edge);
+	}
 }
