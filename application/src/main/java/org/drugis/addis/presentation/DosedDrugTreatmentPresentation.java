@@ -27,12 +27,19 @@
 package org.drugis.addis.presentation;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.drugis.addis.entities.AbstractDose;
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.ChoiceNode;
@@ -42,8 +49,10 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
+import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.SuffixedObservableList;
 import org.drugis.common.beans.TransformOnceObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
@@ -51,6 +60,7 @@ import org.drugis.common.beans.ValueEqualsModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
@@ -71,11 +81,55 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	private final ValueModel d_considerFixed;
 	private final ValueModel d_considerFlexibleLower;
 	private final ValueModel d_considerFlexibleUpper;
+	
+	private Map<Category, StudyListPresentation> d_studyListPresentations = new HashMap<Category, StudyListPresentation>();
+
+	private class StudyCategoryFilter implements FilteredObservableList.Filter<Study> {
+		private Category d_category;
+
+		public StudyCategoryFilter(Category category) {
+			d_category = category;
+		}
+
+		public boolean accept(Study s) {
+			for(Arm arm : s.getArms()) {
+				TreatmentActivity treatment = s.getTreatment(arm);
+				for(DrugTreatment drugTreatment : treatment.getTreatments()) {
+					String category = getCategory(drugTreatment.getDose());
+					if(drugTreatment.getDrug().equals(getDrug()) && category.equals(d_category.getName())) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	};
+
+
+	private class CategorizedStudyListPresentation implements StudyListPresentation {
+		private FilteredObservableList<Study> d_studies;
+		private CharacteristicVisibleMap d_characteristicVisibleMap;
+
+		public CategorizedStudyListPresentation(final Category category) {
+			final StudyCategoryFilter filter = new StudyCategoryFilter(category);
+			d_studies = new FilteredObservableList<Study>(d_domain.getStudies(((Drug)getDrug().getValue())), filter);
+			d_characteristicVisibleMap = new CharacteristicVisibleMap();
+		}
+
+		public ObservableList<Study> getIncludedStudies() {
+			return d_studies;
+		}
+
+		public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
+			return d_characteristicVisibleMap.get(c);
+		}
+	}
+	
 	private final HashMap<DecisionTreeEdge, ValueModel> d_choiceForEdge = new HashMap<DecisionTreeEdge, ValueModel>();
 	private final HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>> d_optionsForEdge = new HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>>();
 
 	public DosedDrugTreatmentPresentation(final DosedDrugTreatment bean) {
-		this(bean, null);
+		this(bean, Main.getMainWindow().getDomain());
 	}
 
 	public DosedDrugTreatmentPresentation(final DosedDrugTreatment bean, final Domain domain) {
@@ -87,6 +141,10 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		d_fixedRangeNode = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, getBean().getDoseUnit());
 		d_flexibleLowerNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, getBean().getDoseUnit());
 		d_flexibleUpperNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
+
+		for(Category category : getCategories()) {
+			d_studyListPresentations.put(category, new CategorizedStudyListPresentation(category));
+		}
 
 		d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>();
 		d_knownDoseOptions = createOptions(
@@ -266,6 +324,19 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		return d_fixedRangeNode;
 	}
 
+	public StudyListPresentation getCategorizedStudyList(Category category) {
+		StudyListPresentation result = d_studyListPresentations.get(category);
+		if (result == null) {
+			result = new CategorizedStudyListPresentation(category);
+			d_studyListPresentations.put(category, result);
+		}
+		return result;
+	}
+
+	public DrugPresentation getDrugPresentation() {
+		return new DrugPresentation(((Drug)getDrug().getValue()), d_domain);
+	}
+	
 	private ObservableList<DecisionTreeNode> createOptions(final DecisionTreeNode ... extraOptions) {
 		final TransformOnceObservableList<Category, DecisionTreeNode> transformedCategories = new TransformOnceObservableList<Category, DecisionTreeNode>(d_categories,
 				new Transform<Category, DecisionTreeNode>() {

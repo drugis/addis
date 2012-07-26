@@ -45,18 +45,20 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 
 	/**
 	 * Builds a graph overview using Jung's functionality.
-	 * FIXME: the layout uses static spacing so nodes with long labels still mess up the layout.
-	 *        (perhaps 'ellipsize' them beyond a certain maximum length? or wrap text? or make spacing dynamic?)
 	 * @param tree
 	 * @return panel
 	 */
 	private static JPanel buildOverview(final DecisionTree tree) {
+        return new GraphZoomScrollPane(buildDecisionTreeView(tree));
+	}
+	
+	public static VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> buildDecisionTreeView(final DecisionTree tree) { 
 		// Crazy hack because sizes start at 600x600 by default.
 		final Layout<DecisionTreeNode, DecisionTreeEdge> layout = new TreeLayout<DecisionTreeNode, DecisionTreeEdge>(new DecisionTree(new LeafNode()), 150, 75);
 		layout.getSize().height = 1;
 		layout.getSize().width = 1;
 		layout.setGraph(tree);
-
+		
 		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> vv = new VisualizationViewer<DecisionTreeNode, DecisionTreeEdge>(layout);
 
 		vv.setVertexToolTipTransformer(new ToStringLabeller<DecisionTreeNode>());
@@ -84,8 +86,6 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<DecisionTreeEdge>());
 		vv.getRenderContext().getEdgeLabelRenderer().setRotateEdgeLabels(false);
 		vv.getRenderContext().setEdgeLabelClosenessTransformer(new ConstantDirectionalEdgeValueTransformer<DecisionTreeNode, DecisionTreeEdge>(0.5, 0.4));
-
-        final GraphZoomScrollPane pane = new GraphZoomScrollPane(vv);
-        return pane;
+		return vv;
 	}
 }

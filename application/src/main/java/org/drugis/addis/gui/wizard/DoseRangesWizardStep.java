@@ -3,8 +3,6 @@ package org.drugis.addis.gui.wizard;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTree;
@@ -20,21 +18,6 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 
 	private final ObservableList<DecisionTreeEdge> d_parents;
-
-	private final ListDataListener d_listener = new ListDataListener() { // FIXME
-		@Override
-		public void intervalRemoved(final ListDataEvent e) {
-			rebuildPanel();
-		}
-
-		@Override
-		public void intervalAdded(final ListDataEvent e) {
-			rebuildPanel();
-		}
-
-		@Override
-		public void contentsChanged(final ListDataEvent e) {}
-	};
 
 	public DoseRangesWizardStep(
 			final JDialog dialog,

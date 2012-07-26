@@ -27,20 +27,84 @@
 package org.drugis.addis.gui.builder;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.DecisionTreeEdge;
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
+import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.CategoryKnowledgeFactory;
+import org.drugis.addis.gui.Main;
+import org.drugis.addis.gui.components.AddisTabbedPane;
+import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.SingleColumnPanelBuilder;
 import org.drugis.common.gui.ViewBuilder;
+
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+
+import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 public class DosedDrugTreatmentView implements ViewBuilder {
 
+	private DosedDrugTreatmentPresentation d_model;
+
 	public DosedDrugTreatmentView(DosedDrugTreatmentPresentation model, AddisWindow parent) {
+		d_model = model;
 	}
 	
 	public JComponent buildPanel() {
-				
-		return new JPanel();	
+		SingleColumnPanelBuilder builder = new SingleColumnPanelBuilder();
+		
+		// ---------- Overview ----------
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(DosedDrugTreatment.class).getSingularCapitalized());
+		builder.add(buildOverviewPanel());
+		JTabbedPane tabbedPane = new AddisTabbedPane();
+		tabbedPane.addTab("Overview", builder.getPanel());
+		
+		// ---------- Tree visualization ----------
+		builder = new SingleColumnPanelBuilder();
+		builder.addSeparator("Dose Decision Tree");
+		VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = DosedDrugTreatmentOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
+		builder.add(treeView);
+		tabbedPane.addTab("Decision tree", builder.getPanel());
+		
+		return tabbedPane;
 	}
-
+	
+	private JComponent buildOverviewPanel() {
+		FormLayout layout = new FormLayout("fill:pref:grow", "p");	
+		
+		PanelBuilder builder = new PanelBuilder(layout);	
+		CellConstraints cc = new CellConstraints();
+		int row = 1;
+		
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingularCapitalized(), cc.xy(1, row));
+		row = LayoutUtil.addRow(layout, row);
+		builder.add(DrugView.createDrugOverviewPanel(d_model.getDrugPresentation()), cc.xy(1, row));
+		layout.appendRow(RowSpec.decode("10dlu"));
+		row += 1;
+		
+		row = LayoutUtil.addRow(layout, row);
+		builder.addSeparator("Dose categories", cc.xy(1, row));
+		for(Category category : d_model.getCategories()) { 
+			row = LayoutUtil.addRow(layout, row);
+			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural()
+					+ " measuring this "
+					+  CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingular()
+					+ " categorized as '" + category.getName() + "'", cc.xy(1, row));
+			row = LayoutUtil.addRow(layout, row);
+			builder.add(DrugView.buildStudyListComponent(d_model.getCategorizedStudyList(category), Main.getMainWindow()), cc.xy(1, row));
+			layout.appendRow(RowSpec.decode("10dlu"));
+			row += 1;
+		}
+		return builder.getPanel();
+	}
 }
