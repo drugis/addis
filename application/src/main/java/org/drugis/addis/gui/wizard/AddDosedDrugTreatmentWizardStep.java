@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -145,13 +146,14 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
-		final JComboBox unknownDoseCombo = createCategoryComboBox(d_pm.getModelForUnknownDose(), d_pm.getCategories());
+		final JComboBox unknownDoseCombo = BasicComponentFactory.createComboBox(
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForUnknownDose(), d_pm.getModelForUnknownDose()));
 		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
-		final JComboBox knownDoseCombo = createCategoryComboBox(d_pm.getModelForKnownDose(), d_pm.getCategories(),
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER, DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER);
+		final JComboBox knownDoseCombo = BasicComponentFactory.createComboBox(
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForKnownDose(), d_pm.getModelForKnownDose()));
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
 	}

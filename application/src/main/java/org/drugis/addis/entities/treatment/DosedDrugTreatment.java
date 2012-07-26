@@ -116,15 +116,6 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_decisionTree.getRoot();
 	}
 
-	public void resetTree() {
-		final DecisionTreeNode root = d_decisionTree.getRoot();
-		for (final DecisionTreeNode child : d_decisionTree.getChildren(root)) {
-			d_decisionTree.removeChild(child);
-		}
-		addDefaultEdges(d_decisionTree);
-	}
-
-
 	/**
 	 * Add a cut-off value. This splits an existing range in two.
 	 * The lower range will always be initialized with the child node of the original range, the higher range will be excluded by default.

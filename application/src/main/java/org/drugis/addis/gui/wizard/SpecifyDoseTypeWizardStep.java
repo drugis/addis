@@ -2,10 +2,14 @@ package org.drugis.addis.gui.wizard;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.ListModel;
 
+import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
+import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -39,20 +43,15 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 		row = LayoutUtil.addRow(layout, row);
 
 		builder.addLabel("Fixed dose", cc.xy(1, row));
-		final JComboBox fixedCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
-				d_pm.getModelForFixedDose(),
-				d_pm.getCategories(),
-				d_pm.getFixedRangeNode());
+		final JComboBox fixedCategoryComboBox = BasicComponentFactory.createComboBox(
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForFixedDose(), d_pm.getModelForFixedDose()));
 		builder.add(fixedCategoryComboBox, cc.xy(3, row));
 
 		row = LayoutUtil.addRow(layout, row);
 
 		builder.addLabel("Flexible dose", cc.xy(1, row));
-		final JComboBox flexibleCategoryComboBox = AddDosedDrugTreatmentWizardStep.createCategoryComboBox(
-				d_pm.getModelForFlexibleDose(),
-				d_pm.getCategories(),
-				d_pm.getFlexibleLowerRangeNode(),
-				d_pm.getFlexibleUpperRangeNode());
+		final JComboBox flexibleCategoryComboBox = BasicComponentFactory.createComboBox(
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForFlexibleDose(), d_pm.getModelForFlexibleDose()));
 		builder.add(flexibleCategoryComboBox, cc.xy(3, row));
 
 		return builder.getPanel();
