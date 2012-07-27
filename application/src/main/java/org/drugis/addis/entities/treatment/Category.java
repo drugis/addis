@@ -28,4 +28,10 @@ public class Category extends AbstractNamedEntity<Category> {
 	public Set<? extends Entity> getDependencies() {
 		return Collections.emptySet();
 	}
+	
+	public void setName(String name) {
+		String oldVal = d_name;
+		d_name = name;
+		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
 }
