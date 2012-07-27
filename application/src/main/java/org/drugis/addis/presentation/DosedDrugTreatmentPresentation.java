@@ -32,11 +32,11 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 
 		@Override
 		public boolean accept(final Study s) {
-			for(final Arm arm : s.getArms()) {
+			for (final Arm arm : s.getArms()) {
 				final TreatmentActivity treatment = s.getTreatment(arm);
-				for(final DrugTreatment drugTreatment : treatment.getTreatments()) {
+				for (final DrugTreatment drugTreatment : treatment.getTreatments()) {
 					final Category category = ((LeafNode)getBean().getCategory(drugTreatment.getDose())).getCategory();
-					if(drugTreatment.getDrug().equals(getBean().getDrug()) && category.equals(d_category)) {
+					if (drugTreatment.getDrug().equals(getBean().getDrug()) && d_category.equals(category)) {
 						return true;
 					}
 				}

@@ -30,7 +30,7 @@ import static org.drugis.addis.entities.AssertEntityEquals.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.DrugTreatment;
@@ -50,7 +50,7 @@ public class DrugTreatmentPresentationTest {
 	
 	@Test
 	public void testFixedDoseModelInitialValues() {
-		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		assertEquals(dose.getQuantity(), d_pm.getDoseModel().getMinModel().getValue());
 		assertEquals(dose.getQuantity(), d_pm.getDoseModel().getMaxModel().getValue());
@@ -58,7 +58,7 @@ public class DrugTreatmentPresentationTest {
 		
 	@Test
 	public void testFlexibleDoseModelInitialValues() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		assertEquals(dose.getFlexibleDose().getLowerBound(), d_pm.getDoseModel().getMinModel().getValue());
 		assertEquals(dose.getFlexibleDose().getUpperBound(), d_pm.getDoseModel().getMaxModel().getValue());
@@ -66,7 +66,7 @@ public class DrugTreatmentPresentationTest {
 	
 	@Test
 	public void testFixedToFlexible() {
-		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		d_pm.getDoseModel().getMaxModel().setValue(dose.getQuantity() + 2);
 		assertTrue(d_pm.getBean().getDose() instanceof FlexibleDose);
@@ -74,7 +74,7 @@ public class DrugTreatmentPresentationTest {
 	
 	@Test
 	public void testFlexibleToFixed() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(25.5, 30.2), DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		d_pm.getDoseModel().getMaxModel().setValue(dose.getFlexibleDose().getLowerBound());
 		assertTrue(d_pm.getBean().getDose() instanceof FixedDose);
@@ -82,7 +82,7 @@ public class DrugTreatmentPresentationTest {
 	
 	@Test
 	public void testSetMaxLowerThanMinDose() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0, 20.0), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0, 20.0), DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		d_pm.getDoseModel().getMaxModel().setValue(8d);
 		assertEquals(8d, d_pm.getDoseModel().getMaxModel().doubleValue(), 0.001);
@@ -92,7 +92,7 @@ public class DrugTreatmentPresentationTest {
 	
 	@Test
 	public void testSetMinHigherThanMaxDose() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0, 20.0), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0, 20.0), DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		d_pm.getDoseModel().getMinModel().setValue(25d);
 		assertEquals(25d, d_pm.getDoseModel().getMaxModel().doubleValue(), 0.001);
@@ -102,7 +102,7 @@ public class DrugTreatmentPresentationTest {
 
 	@Test
 	public void testSetDoseUnit() {
-		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), ExampleData.MILLIGRAMS_A_DAY);
+		FlexibleDose dose = new FlexibleDose(new Interval<Double>(10.0,20.0), DoseUnit.MILLIGRAMS_A_DAY);
 		d_drugTreatment.setDose(dose);
 		assertEntityEquals(d_pm.getDoseModel().getDoseUnitPresentation().getBean(), d_drugTreatment.getDose().getDoseUnit());
 	}

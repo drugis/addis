@@ -28,6 +28,8 @@ package org.drugis.addis.presentation.wizard;
 
 import java.util.HashMap;
 
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
@@ -42,12 +44,16 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.RangeEdge;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.addis.presentation.DecisionTreeChildModel;
 import org.drugis.addis.presentation.DecisionTreeOutEdgesModel;
 import org.drugis.addis.presentation.DoseUnitPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.common.EqualsUtil;
+import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.SuffixedObservableList;
 import org.drugis.common.beans.TransformOnceObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
@@ -57,12 +63,14 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
+import edu.uci.ics.jung.graph.util.Pair;
+
 @SuppressWarnings("serial")
 public class DosedDrugTreatmentWizardPresentation extends PresentationModel<DosedDrugTreatment> {
 	private final Domain d_domain;
-	private final ObservableList<Category> d_categories;
+	private final ObservableList<Category> d_contentAwareCategories;
 
-	private final ValueModel d_knownDoseChoice;
+	private final ValueHolder<DecisionTreeNode> d_knownDoseChoice;
 	private final ObservableList<DecisionTreeNode> d_knownDoseOptions;
 
 	private final ValueModel d_considerDoseType;
@@ -82,35 +90,41 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	public DosedDrugTreatmentWizardPresentation(final DosedDrugTreatment bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
-		d_categories = bean.getCategories();
+		d_contentAwareCategories = new ContentAwareListModel<Category>(bean.getCategories());
 
 		// Magic nodes
 		d_fixedRangeNode = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, getBean().getDoseUnit());
-		d_flexibleLowerNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, getBean().getDoseUnit());
-		d_flexibleUpperNode = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
+		d_flexibleLowerNode = createMinDoseNode();
+		d_flexibleUpperNode = createMaxDoseNode();
 
-		d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>();
+		d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>(new LeafNode());
 		d_knownDoseOptions = createOptions(
 				DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER,
 				DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER,
-				new LeafNode());
+				d_knownDoseChoice.getValue());
 
 		d_considerDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.CONSIDER);
 		d_ignoreDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.DO_NOT_CONSIDER);
 
 		final DecisionTreeEdge unknownDoseEdge = findTypeEdge(UnknownDose.class);
 		d_choiceForEdge.put(unknownDoseEdge, createModelForEdge(unknownDoseEdge));
-		d_optionsForEdge.put(unknownDoseEdge, createOptions(new LeafNode()));
+		d_optionsForEdge.put(unknownDoseEdge, createOptions(getEdgeTarget(unknownDoseEdge)));
+		
 		final DecisionTreeEdge fixedDoseEdge = findTypeEdge(FixedDose.class);
 		d_choiceForEdge.put(fixedDoseEdge, createModelForEdge(fixedDoseEdge));
-		d_optionsForEdge.put(fixedDoseEdge, createOptions(d_fixedRangeNode, new LeafNode()));
+		d_optionsForEdge.put(fixedDoseEdge, createOptions(d_fixedRangeNode, getEdgeTarget(fixedDoseEdge)));
+		
 		final DecisionTreeEdge flexibleDoseEdge = findTypeEdge(FlexibleDose.class);
 		d_choiceForEdge.put(flexibleDoseEdge, createModelForEdge(flexibleDoseEdge));
-		d_optionsForEdge.put(flexibleDoseEdge, createOptions(d_flexibleLowerNode, d_flexibleUpperNode, new LeafNode()));
+		d_optionsForEdge.put(flexibleDoseEdge, createOptions(d_flexibleLowerNode, d_flexibleUpperNode, getEdgeTarget(flexibleDoseEdge)));
 
 		d_considerFixed = new ValueEqualsModel(getModelForFixedDose(), d_fixedRangeNode);
 		d_considerFlexibleLower = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleLowerNode);
 		d_considerFlexibleUpper = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleUpperNode);
+	}
+
+	private DecisionTreeNode getEdgeTarget(final DecisionTreeEdge edge) {
+		return getBean().getDecisionTree().getEdgeTarget(edge);
 	}
 
 	public ValueModel getDrug() {
@@ -122,7 +136,7 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	}
 
 	public ObservableList<Category> getCategories() {
-		return d_categories;
+		return getBean().getCategories();
 	}
 
 	public DoseUnit getDoseUnit() {
@@ -150,17 +164,6 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	public ObservableList<DecisionTreeEdge> getOutEdges(final DecisionTreeNode node) {
 		return new DecisionTreeOutEdgesModel(getBean().getDecisionTree(), node);
 	}
-
-//	private DoseRangeNode inheritPrototype(final RangeNode protoRange, final Class<? extends AbstractDose> beanClass, final String property) {
-//		 return new DoseRangeNode(
-//				beanClass,
-//				property,
-//				protoRange.getRangeLowerBound(),
-//				protoRange.isRangeLowerBoundOpen(),
-//				protoRange.getRangeUpperBound(),
-//				protoRange.isRangeUpperBoundOpen(),
-//				getDoseUnit());
-//		}
 
 	public String getCategory(final AbstractDose dose) {
 		return getBean().getCategory(dose).toString();
@@ -271,9 +274,9 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	}
 
 	private ObservableList<DecisionTreeNode> createOptions(final DecisionTreeNode ... extraOptions) {
-		final TransformOnceObservableList<Category, DecisionTreeNode> transformedCategories = new TransformOnceObservableList<Category, DecisionTreeNode>(d_categories,
+		final TransformOnceObservableList<Category, DecisionTreeNode> transformedCategories = new TransformOnceObservableList<Category, DecisionTreeNode>(
+				d_contentAwareCategories,
 				new Transform<Category, DecisionTreeNode>() {
-					@Override
 					public DecisionTreeNode transform(final Category a) {
 						return new LeafNode(a);
 					}
@@ -302,5 +305,113 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 
 	public ObservableList<DecisionTreeNode> getOptionsForFlexibleDose() {
 		return getOptionsForEdge(findTypeEdge(FlexibleDose.class));
+	}
+
+	/**
+	 * Transform the tree according to the option chosen for "known dose".
+	 */
+	public void transformTree() {
+		Object knownDose = getModelForKnownDose().getValue();
+		if (knownDose instanceof LeafNode) {
+			transformLeaf();
+		} else if (knownDose.equals(CategorySpecifiers.DO_NOT_CONSIDER)) { 
+			assert(d_fixedRangeNode == getModelForFixedDose().getValue());
+			transformSubtree();
+		}
+	}
+
+	private void transformSubtree() {
+		DecisionTree tree = getBean().getDecisionTree();
+		getModelForFlexibleDose().setValue(d_flexibleLowerNode);
+		
+		for (DecisionTreeEdge edge : getOutEdges(d_fixedRangeNode)) {
+			DoseQuantityChoiceNode node = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getDoseUnit());
+			RangeEdge rangeEdge = (RangeEdge) edge;
+			tree.addChild(RangeEdge.copy(rangeEdge), d_flexibleLowerNode, node);
+			
+			LeafNode leafChild = new LeafNode(((LeafNode)tree.getEdgeTarget(edge)).getCategory());
+
+			if (leafChild.getCategory() == null) {
+				RangeEdge upperEdge = new RangeEdge(rangeEdge.getLowerBound(), rangeEdge.isLowerBoundOpen(), Double.POSITIVE_INFINITY, true);
+				tree.addChild(upperEdge, node, new LeafNode());
+			} else { 
+				tree.addChild(RangeEdge.copy(rangeEdge), node, leafChild);
+				if (!Double.isInfinite(rangeEdge.getUpperBound())) { 
+					RangeEdge upperEdge = new RangeEdge(rangeEdge.getUpperBound(), !rangeEdge.isUpperBoundOpen(), Double.POSITIVE_INFINITY, true);
+					tree.addChild(upperEdge, node, new LeafNode());
+				}
+			}
+		}
+	}
+
+	private void transformLeaf() {
+		final Category category = ((LeafNode) getModelForKnownDose().getValue()).getCategory();
+		getModelForFlexibleDose().setValue(findLeafNode(getOptionsForFlexibleDose(), category));
+		getModelForFixedDose().setValue(findLeafNode(getOptionsForFixedDose(), category));
+	}
+	
+	/**
+	 * {@link DosedDrugTreatment#splitRange(RangeEdge, double, boolean)}
+	 */
+	public Pair<RangeEdge> splitRange(final RangeEdge range, final double value, final boolean lowerRangeOpen) {
+		ObservableList<DecisionTreeNode> options1 = getOptionsForEdge(range);
+		Pair<RangeEdge> ranges = getBean().splitRange(range, value, lowerRangeOpen);
+		
+		// Ensure options list is preserved for first range
+		d_optionsForEdge.remove(range);
+		d_optionsForEdge.put(ranges.getFirst(), options1);
+		
+		// Ensure exclude-node for second range is in the options list
+		DecisionTree tree = getBean().getDecisionTree();
+		ObservableList<DecisionTreeNode> options2 = createOptionsForChildrenOfNode((ChoiceNode) tree.getEdgeSource(ranges.getSecond()));
+		d_optionsForEdge.put(ranges.getSecond(), options2);
+		getModelForEdge(ranges.getSecond()).setValue(findLeafNode(options2, null));
+		
+		return ranges;
+	}
+	
+	/**
+	 * In the haystack, find a leaf node with the needle as its category.
+	 */
+	public static LeafNode findLeafNode(final ObservableList<DecisionTreeNode> haystack, final Category needle) {
+		return (LeafNode)CollectionUtils.find(haystack, new Predicate<DecisionTreeNode>() {
+			public boolean evaluate(DecisionTreeNode object) {
+				if (object instanceof LeafNode) {
+					LeafNode node = (LeafNode) object;
+					return EqualsUtil.equal(node.getCategory(), needle);
+				}
+				return false;
+			}
+		});
+	}
+
+	public RangeEdge addDefaultRangeEdge(ChoiceNode node) {
+		RangeEdge rangeEdge = RangeEdge.createDefault();
+		ObservableList<DecisionTreeNode> options = createOptionsForChildrenOfNode(node);
+		d_optionsForEdge.put(rangeEdge, options);
+		getBean().getDecisionTree().addChild(rangeEdge, node, findLeafNode(options, null));
+		return rangeEdge;
+	}
+
+	private ObservableList<DecisionTreeNode> createOptionsForChildrenOfNode(ChoiceNode node) {
+		DecisionTree tree = getBean().getDecisionTree();
+		String nodeProperty = node.getPropertyName();
+		String parentProperty = ((ChoiceNode)tree.getParent(node)).getPropertyName();
+		LeafNode excludeNode = new LeafNode();
+		if (nodeProperty.equals(FlexibleDose.PROPERTY_MIN_DOSE) && !parentProperty.equals(FlexibleDose.PROPERTY_MAX_DOSE)) {
+			return createOptions(createMaxDoseNode(), excludeNode);
+		} else if (nodeProperty.equals(FlexibleDose.PROPERTY_MAX_DOSE) && !parentProperty.equals(FlexibleDose.PROPERTY_MIN_DOSE)) {
+			return createOptions(createMinDoseNode(), excludeNode);
+		} else {
+			return createOptions(excludeNode);
+		}
+	}
+	
+	private DoseQuantityChoiceNode createMinDoseNode() {
+		return new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MIN_DOSE, getBean().getDoseUnit());
+	}
+	
+	private DoseQuantityChoiceNode createMaxDoseNode() {
+		return new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
 	}
 }

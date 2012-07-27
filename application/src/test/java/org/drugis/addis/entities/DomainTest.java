@@ -344,7 +344,7 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s1);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, DoseUnit.MILLIGRAMS_A_DAY));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		ExampleData.addDefaultMeasurementMoments(s1);
 		s1.setMeasurement(e, g1, m1);
@@ -356,8 +356,8 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));		
-		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, DoseUnit.MILLIGRAMS_A_DAY));		
+		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, DoseUnit.MILLIGRAMS_A_DAY));
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		ExampleData.addDefaultMeasurementMoments(s2);
@@ -394,7 +394,7 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s1);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, DoseUnit.MILLIGRAMS_A_DAY));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		ExampleData.addDefaultMeasurementMoments(s1);
 		s1.setMeasurement(e, g1, m1);
@@ -406,8 +406,8 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));		
-		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, DoseUnit.MILLIGRAMS_A_DAY));		
+		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, DoseUnit.MILLIGRAMS_A_DAY));
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		ExampleData.addDefaultMeasurementMoments(s1);
@@ -477,13 +477,13 @@ public class DomainTest {
 		
 		Study s1 = new Study("X", d_indication);
 		ExampleData.addDefaultEpochs(s1);
-		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
-		s1.createAndAddArm("parox", 23, parox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("parox", 23, parox, new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY));
 	
 		Study s2 = new Study("Y", d_indication);
 		ExampleData.addDefaultEpochs(s2);
-		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
-		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
+		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY));
+		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY));
 		
 		d_domain.getIndications().add(d_indication);
 		d_domain.getDrugs().addAll(Arrays.asList(fluox, parox));
@@ -519,7 +519,7 @@ public class DomainTest {
 		Drug d = new Drug("d", "atc");
 		d_domain.getDrugs().add(d);
 	
-		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY));
 		d_domain.deleteEntity(d);
 	}
 

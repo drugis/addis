@@ -34,6 +34,7 @@ public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentW
 
 	@Override
 	protected void initialize() {
+		d_pm.transformTree();
 		setLayout(new GridLayout(1, 1));
 		rebuildPanel();
 	}

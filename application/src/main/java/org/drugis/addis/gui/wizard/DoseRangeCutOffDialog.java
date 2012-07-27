@@ -132,7 +132,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 
 	@Override
 	protected void commit() {
-		d_pm.getBean().splitRange(d_choice, d_cutOff.getValue(), d_lowerOpen.getValue());
+		d_pm.splitRange(d_rangeToSplit, d_cutOff.getValue(), d_lowerOpen.getValue());
 		dispose();
 	}
 

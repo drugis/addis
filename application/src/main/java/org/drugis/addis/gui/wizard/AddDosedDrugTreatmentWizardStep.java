@@ -35,6 +35,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -73,8 +74,8 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 	private final NotEmptyValidator d_validator;
 
-	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentWizardPresentation presentationModel) {
-		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", null);
+	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentWizardPresentation presentationModel, JDialog dialog) {
+		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
 

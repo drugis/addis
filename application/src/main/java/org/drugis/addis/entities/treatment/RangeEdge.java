@@ -14,7 +14,15 @@ public class RangeEdge implements DecisionTreeEdge, Comparable<RangeEdge> {
 	private final double d_upperBound;
 	private final boolean d_upperBoundOpen;
 	private final BoundedInterval d_boundedInterval;
+	
+	public static RangeEdge createDefault() {
+		return new RangeEdge(0.0, false, Double.POSITIVE_INFINITY, true);
+	}
 
+	public static RangeEdge copy(RangeEdge edge) { 
+		return new RangeEdge(edge.getLowerBound(), edge.isLowerBoundOpen(), edge.getUpperBound(), edge.isUpperBoundOpen());
+	}
+	
 	/**
 	 * Construct a RangeEdge that accepts or rejects Double values depending on whether they lie within the specified range.
 	 * @param lowerBound Lower bound all property values should satisfy.

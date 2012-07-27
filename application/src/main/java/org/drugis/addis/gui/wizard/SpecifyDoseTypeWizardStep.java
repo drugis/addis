@@ -1,6 +1,7 @@
 package org.drugis.addis.gui.wizard;
 
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 
@@ -17,8 +18,8 @@ import com.jgoodies.forms.layout.FormLayout;
 public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 
-	public SpecifyDoseTypeWizardStep(final DosedDrugTreatmentWizardPresentation pm) {
-		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.", null);
+	public SpecifyDoseTypeWizardStep(final DosedDrugTreatmentWizardPresentation pm, JDialog dialog) {
+		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.", dialog);
 	}
 
 	@Override

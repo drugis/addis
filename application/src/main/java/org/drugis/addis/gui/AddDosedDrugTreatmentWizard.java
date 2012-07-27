@@ -129,8 +129,8 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 	}
 
 	private static WizardModel buildModel(final DosedDrugTreatmentWizardPresentation pm, final JDialog dialog) {
-		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm);
-		final SpecifyDoseTypeWizardStep type = new SpecifyDoseTypeWizardStep(pm);
+		final AddDosedDrugTreatmentWizardStep generalInfo = new AddDosedDrugTreatmentWizardStep(pm, dialog);
+		final SpecifyDoseTypeWizardStep type = new SpecifyDoseTypeWizardStep(pm, dialog);
 		final DosedDrugTreatmentOverviewWizardStep overview = new DosedDrugTreatmentOverviewWizardStep(pm);
 
 		final SimplePath lastPath = new SimplePath(overview);

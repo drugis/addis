@@ -3,7 +3,6 @@ package org.drugis.addis.entities.treatment;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.AbstractNamedEntity;
 import org.drugis.addis.entities.DoseUnit;
@@ -30,7 +29,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	private final DoseUnit d_doseUnit;
 
 	public DosedDrugTreatment() {
-		this("", null, ExampleData.MILLIGRAMS_A_DAY);
+		this("", null, DoseUnit.MILLIGRAMS_A_DAY);
 	}
 
 	public DosedDrugTreatment(final String name, final Drug drug, final DoseUnit unit) {
@@ -110,16 +109,22 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_decisionTree.getRoot();
 	}
 
+	@Deprecated
+	public Pair<RangeEdge> splitRange(final ChoiceNode parent, final double value, final boolean lowerRangeOpen) {
+		final RangeEdge edge = (RangeEdge) d_decisionTree.findMatchingEdge(parent, value);
+		return splitRange(edge, value, lowerRangeOpen);
+	}
+	
 	/**
-	 * Add a cut-off value. This splits an existing range in two.
+	 * Add a cut-off value. This splits the existing range in two.
 	 * The lower range will always be initialized with the child node of the original range, the higher range will be excluded by default.
-	 * @param parent The parent of the set of range nodes to split.
+	 * @param range The range to split.
 	 * @param value The cut-off value.
 	 * @param lowerRangeOpen If true, the upper bound of the lower range will be open.
 	 * Otherwise, it will be closed. Vice versa for the lower bound of the upper range.
 	 */
-	public Pair<RangeEdge> splitRange(final ChoiceNode parent, final double value, final boolean lowerRangeOpen) {
-		final RangeEdge edge = (RangeEdge) d_decisionTree.findMatchingEdge(parent, value);
+	public Pair<RangeEdge> splitRange(final RangeEdge edge, final double value, final boolean lowerRangeOpen) {
+		final DecisionTreeNode parent = d_decisionTree.getEdgeSource(edge);
 		final DecisionTreeNode child = d_decisionTree.getEdgeTarget(edge);
 
 		final Pair<RangeEdge> ranges = splitOnValue(edge, value, lowerRangeOpen);

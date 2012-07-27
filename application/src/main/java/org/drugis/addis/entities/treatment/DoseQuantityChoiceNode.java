@@ -29,4 +29,7 @@ public class DoseQuantityChoiceNode extends ChoiceNode {
 		return DoseUnit.convert(value, (DoseUnit) BeanUtils.getValue(obj, d_descriptor), d_doseUnit);
 	}
 
+	public DoseUnit getDoseUnit() {
+		return d_doseUnit;
+	}
 }
