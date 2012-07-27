@@ -8,7 +8,7 @@ import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -21,7 +21,7 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	public DoseRangesWizardStep(
 			final JDialog dialog,
-			final DosedDrugTreatmentPresentation presentationModel,
+			final DosedDrugTreatmentWizardPresentation presentationModel,
 			final ObservableList<DecisionTreeEdge> parentRanges,
 			final String name,
 			final String summary) {

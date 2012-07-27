@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 import org.drugis.common.validation.BooleanAndModel;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -24,20 +24,20 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	private JPanel d_dialogCache = null;
 	protected final Domain d_domain;
 	protected final AddisWindow d_mainWindow;
-	protected final DosedDrugTreatmentPresentation d_pm;
+	protected final DosedDrugTreatmentWizardPresentation d_pm;
 	protected JDialog d_dialog;
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, JDialog dialog) {
+	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, JDialog dialog) {
 		this(presentationModel, null, null, null, dialog);
 	}
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
+	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, 
 			String name, 
 			String summary, JDialog dialog) {
 		this(presentationModel, name, summary, null, dialog);
 	}
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentPresentation presentationModel, 
+	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, 
 			String name, 
 			String summary,
 			Icon icon, JDialog dialog) {

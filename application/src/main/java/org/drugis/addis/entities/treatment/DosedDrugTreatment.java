@@ -27,7 +27,7 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 	private Drug d_drug;
 	private final DecisionTree d_decisionTree;
 
-	private DoseUnit d_doseUnit;
+	private final DoseUnit d_doseUnit;
 
 	public DosedDrugTreatment() {
 		this("", null, ExampleData.MILLIGRAMS_A_DAY);
@@ -68,12 +68,6 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		final Drug oldVal = d_drug;
 		d_drug = drug;
 		firePropertyChange(PROPERTY_DRUG, oldVal, drug);
-	}
-
-	public void setDoseUnit(final DoseUnit unit) {
-		final DoseUnit oldVal = d_doseUnit;
-		d_doseUnit = unit;
-		firePropertyChange(PROPERTY_DOSE_UNIT, oldVal, unit);
 	}
 
 	public DoseUnit getDoseUnit() {

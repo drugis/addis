@@ -14,10 +14,10 @@ import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.RangeValidator;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
@@ -55,7 +55,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 		}
 	}
 
-	private final DosedDrugTreatmentPresentation d_pm;
+	private final DosedDrugTreatmentWizardPresentation d_pm;
 	private static final long serialVersionUID = -7519390341921875264L;
 	private final ValueHolder<Double> d_cutOff = new ModifiableHolder<Double>(0.0d);
 	private final ValueHolder<Boolean> d_lowerOpen = new ModifiableHolder<Boolean>(false);
@@ -65,7 +65,7 @@ final class DoseRangeCutOffDialog extends OkCancelDialog {
 
 	public DoseRangeCutOffDialog(
 			final JDialog parent,
-			final DosedDrugTreatmentPresentation model,
+			final DosedDrugTreatmentWizardPresentation model,
 			final ChoiceNode choice,
 			final RangeEdge rangeToSplit) {
 		super(parent, "Split range", true);

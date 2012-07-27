@@ -40,6 +40,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.DosedDrugTreatmentView;
 import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.WizardFrameCloser;
 
@@ -81,11 +82,11 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 	public JDialog getAddDialog(final AddisWindow mainWindow, final Domain domain, final ValueModel selectionModel) {
 		final DosedDrugTreatment treatment = new DosedDrugTreatment();
 
-		final DosedDrugTreatmentPresentation pm = new DosedDrugTreatmentPresentation(treatment, domain);
+		final DosedDrugTreatmentWizardPresentation pm = new DosedDrugTreatmentWizardPresentation(treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
 	}
 
-	public static JDialog buildDosedDrugTreatmentWizardDialog(final AddisWindow mainWindow, final Domain domain, final String title, final DosedDrugTreatmentPresentation pm) {
+	public static JDialog buildDosedDrugTreatmentWizardDialog(final AddisWindow mainWindow, final Domain domain, final String title, final DosedDrugTreatmentWizardPresentation pm) {
 		final JDialog dialog = new JDialog(mainWindow, title, true);
 		final AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, dialog);
 		dialog.getContentPane().add(wizard);

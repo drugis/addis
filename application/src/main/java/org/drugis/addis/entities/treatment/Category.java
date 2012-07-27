@@ -1,26 +1,31 @@
 package org.drugis.addis.entities.treatment;
 
-import org.drugis.common.beans.AbstractObservable;
+import java.util.Collections;
+import java.util.Set;
 
-public class Category extends AbstractObservable {
-	public static final String PROPERTY_NAME = "name";
-	private String d_name;
-	
+import org.drugis.addis.entities.AbstractNamedEntity;
+import org.drugis.addis.entities.Entity;
+
+public class Category extends AbstractNamedEntity<Category> {
 	public Category() {
 		this("");
 	}
-	
-	public Category(String name) {
+
+	public Category(final String name) {
+		super(name);
 		d_name = name;
 	}
 
-	public String getName() {
-		return d_name;
+	@Override
+	public boolean equals(final Object o) {
+		if (o instanceof Category) {
+			return super.equals(o);
+		}
+		return false;
 	}
 
-	public void setName(String newValue) {
-		String oldValue = d_name;
-		d_name = newValue;
-		firePropertyChange(PROPERTY_NAME, oldValue, newValue);
+	@Override
+	public Set<? extends Entity> getDependencies() {
+		return Collections.emptySet();
 	}
 }

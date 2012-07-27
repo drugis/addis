@@ -55,7 +55,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -73,7 +73,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 
 	private final NotEmptyValidator d_validator;
 
-	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentPresentation presentationModel) {
+	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentWizardPresentation presentationModel) {
 		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", null);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
@@ -193,7 +193,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		return btn;
 	}
 
-	private JComponent createCategoriesPanel(final DosedDrugTreatmentPresentation model) {
+	private JComponent createCategoriesPanel(final DosedDrugTreatmentWizardPresentation model) {
 		final FormLayout layout = new FormLayout(
 				"left:pref, 3dlu, fill:pref:grow, 3dlu, pref",
 				"p");
@@ -222,7 +222,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	}
 
 
-	private JButton createAddCategoryButton(final DosedDrugTreatmentPresentation model) {
+	private JButton createAddCategoryButton(final DosedDrugTreatmentWizardPresentation model) {
 		final JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);
 		btn.addActionListener(new ActionListener() {
 			@Override

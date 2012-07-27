@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -54,47 +54,48 @@ import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 public class DosedDrugTreatmentView implements ViewBuilder {
 
-	private DosedDrugTreatmentPresentation d_model;
+	private final DosedDrugTreatmentPresentation d_model;
 
-	public DosedDrugTreatmentView(DosedDrugTreatmentPresentation model, AddisWindow parent) {
-		d_model = model;
+	public DosedDrugTreatmentView(final DosedDrugTreatmentPresentation dosedDrugTreatmentPresentation, final AddisWindow parent) {
+		d_model = dosedDrugTreatmentPresentation;
 	}
-	
+
+	@Override
 	public JComponent buildPanel() {
 		SingleColumnPanelBuilder builder = new SingleColumnPanelBuilder();
-		
+
 		// ---------- Overview ----------
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(DosedDrugTreatment.class).getSingularCapitalized());
 		builder.add(buildOverviewPanel());
-		JTabbedPane tabbedPane = new AddisTabbedPane();
+		final JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", builder.getPanel());
-		
+
 		// ---------- Tree visualization ----------
 		builder = new SingleColumnPanelBuilder();
 		builder.addSeparator("Dose Decision Tree");
-		VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = DosedDrugTreatmentOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
+		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = DosedDrugTreatmentOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
 		builder.add(treeView);
 		tabbedPane.addTab("Decision tree", builder.getPanel());
-		
+
 		return tabbedPane;
 	}
-	
+
 	private JComponent buildOverviewPanel() {
-		FormLayout layout = new FormLayout("fill:pref:grow", "p");	
-		
-		PanelBuilder builder = new PanelBuilder(layout);	
-		CellConstraints cc = new CellConstraints();
+		final FormLayout layout = new FormLayout("fill:pref:grow", "p");
+
+		final PanelBuilder builder = new PanelBuilder(layout);
+		final CellConstraints cc = new CellConstraints();
 		int row = 1;
-		
+
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingularCapitalized(), cc.xy(1, row));
 		row = LayoutUtil.addRow(layout, row);
 		builder.add(DrugView.createDrugOverviewPanel(d_model.getDrugPresentation()), cc.xy(1, row));
 		layout.appendRow(RowSpec.decode("10dlu"));
 		row += 1;
-		
+
 		row = LayoutUtil.addRow(layout, row);
 		builder.addSeparator("Dose categories", cc.xy(1, row));
-		for(Category category : d_model.getCategories()) { 
+		for(final Category category : d_model.getBean().getCategories()) {
 			row = LayoutUtil.addRow(layout, row);
 			builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural()
 					+ " measuring this "

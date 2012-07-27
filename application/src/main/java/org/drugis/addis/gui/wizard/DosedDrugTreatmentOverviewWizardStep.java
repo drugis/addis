@@ -15,7 +15,7 @@ import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.LeafNode;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
@@ -28,7 +28,7 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 public class DosedDrugTreatmentOverviewWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = -3991691781012756118L;
 
-	public DosedDrugTreatmentOverviewWizardStep(final DosedDrugTreatmentPresentation pm) {
+	public DosedDrugTreatmentOverviewWizardStep(final DosedDrugTreatmentWizardPresentation pm) {
 		super(pm, "Overview","Overview of created treatment.", null);
 	}
 
