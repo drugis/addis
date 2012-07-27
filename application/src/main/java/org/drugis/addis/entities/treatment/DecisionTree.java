@@ -1,5 +1,8 @@
 package org.drugis.addis.entities.treatment;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import edu.uci.ics.jung.graph.DelegateTree;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -15,6 +18,11 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		private static final long serialVersionUID = 442135818546886998L;
 		public ObservableDirectedGraph(final Graph<V, E> delegate) {
 			super(delegate);
+		}
+		
+		@Override
+		public Collection<V> getSuccessors(V vertex) {
+			return new ArrayList<V>(super.getSuccessors(vertex));
 		}
 	}
 
