@@ -10,7 +10,8 @@ import javax.swing.ListCellRenderer;
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.LeafNode;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation.CategorySpecifiers;
 
 public class CategoryComboboxRenderer implements ListCellRenderer {
 	private boolean d_alternate;

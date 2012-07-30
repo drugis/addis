@@ -26,7 +26,6 @@ import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -148,7 +147,7 @@ public class DosedDrugTreatmentWizardPresentationTest {
 		Category bar = new Category("bar");
 		d_pm.getCategories().add(bar);
 		
-		d_pm.getModelForKnownDose().setValue(CategorySpecifiers.DO_NOT_CONSIDER);
+		d_pm.getModelForKnownDose().setValue(DosedDrugTreatmentWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
 		d_pm.getModelForFixedDose().setValue(d_pm.getFixedRangeNode());
 		// Add ranges to tree (normally handled by RangeInputPresentation).
 		
@@ -204,7 +203,7 @@ public class DosedDrugTreatmentWizardPresentationTest {
 		Category bar = new Category("bar");
 		d_pm.getCategories().add(bar);
 		
-		d_pm.getModelForKnownDose().setValue(CategorySpecifiers.DO_NOT_CONSIDER);
+		d_pm.getModelForKnownDose().setValue(DosedDrugTreatmentWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
 		d_pm.getModelForFixedDose().setValue(d_pm.getFixedRangeNode());
 		// Add ranges to tree (normally handled by RangeInputPresentation).
 		RangeEdge edge0 = RangeEdge.createDefault();

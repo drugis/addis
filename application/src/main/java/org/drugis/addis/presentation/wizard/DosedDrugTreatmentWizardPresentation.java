@@ -26,9 +26,10 @@
 
 package org.drugis.addis.presentation.wizard;
 
+import static org.apache.commons.collections15.CollectionUtils.find;
+
 import java.util.HashMap;
 
-import static org.apache.commons.collections15.CollectionUtils.*;
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
@@ -45,8 +46,6 @@ import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge.CategorySpecifiers;
 import org.drugis.addis.presentation.DecisionTreeChildModel;
 import org.drugis.addis.presentation.DecisionTreeOutEdgesModel;
 import org.drugis.addis.presentation.DoseUnitPresentation;
@@ -67,6 +66,27 @@ import edu.uci.ics.jung.graph.util.Pair;
 
 @SuppressWarnings("serial")
 public class DosedDrugTreatmentWizardPresentation extends PresentationModel<DosedDrugTreatment> {
+	public static enum CategorySpecifiers implements DecisionTreeNode {
+		CONSIDER("Consider dose type"),
+		DO_NOT_CONSIDER("Do not consider dose type");
+	
+		private final String d_title;
+	
+		private CategorySpecifiers(final String title) {
+			d_title = title;
+		}
+	
+		@Override
+		public String getName() {
+			return d_title;
+		}
+	
+		@Override
+		public String toString() {
+			return getName();
+		}
+	}
+
 	private final Domain d_domain;
 	private final ObservableList<Category> d_contentAwareCategories;
 
@@ -99,8 +119,8 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 
 		d_knownDoseChoice = new ModifiableHolder<DecisionTreeNode>(new LeafNode());
 		d_knownDoseOptions = createOptions(
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.CONSIDER,
-				DosedDrugTreatmentKnowledge.CategorySpecifiers.DO_NOT_CONSIDER,
+				CategorySpecifiers.CONSIDER,
+				CategorySpecifiers.DO_NOT_CONSIDER,
 				d_knownDoseChoice.getValue());
 
 		d_considerDoseType = new ValueEqualsModel(d_knownDoseChoice, CategorySpecifiers.CONSIDER);

@@ -33,7 +33,6 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
 import org.drugis.addis.gui.AddDosedDrugTreatmentWizard;
 import org.drugis.addis.gui.AddisWindow;
@@ -47,32 +46,6 @@ import org.pietschy.wizard.WizardFrameCloser;
 import com.jgoodies.binding.value.ValueModel;
 
 public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
-
-	public static enum CategorySpecifiers implements DecisionTreeNode {
-		CONSIDER("* Consider dose type"),
-		DO_NOT_CONSIDER("* Do not consider dose type"),
-		FLEXIBLE_CONSIDER_UPPER_1("* Consider upper bound first"),
-		FLEXIBLE_CONSIDER_LOWER_1("* Consider lower bound first"),
-		FLEXIBLE_CONSIDER_LOWER_2("* Consider lower bound"),
-		FLEXIBLE_CONSIDER_UPPER_2("* Consider upper bound"),
-		FIXED_CONSIDER("* Consider range");
-
-		private final String d_title;
-
-		private CategorySpecifiers(final String title) {
-			d_title = title;
-		}
-
-		@Override
-		public String getName() {
-			return d_title;
-		}
-
-		@Override
-		public String toString() {
-			return getName();
-		}
-	}
 
 	public DosedDrugTreatmentKnowledge() {
 		super("treatment", FileNames.ICON_HEART, DosedDrugTreatment.class);
