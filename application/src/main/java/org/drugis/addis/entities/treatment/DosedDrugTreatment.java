@@ -109,7 +109,6 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_decisionTree.getRoot();
 	}
 
-	@Deprecated
 	public Pair<RangeEdge> splitRange(final ChoiceNode parent, final double value, final boolean lowerRangeOpen) {
 		final RangeEdge edge = (RangeEdge) d_decisionTree.findMatchingEdge(parent, value);
 		return splitRange(edge, value, lowerRangeOpen);
