@@ -19,14 +19,14 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class RangeInputPresentation {
 	private final DosedDrugTreatmentWizardPresentation d_pm;
-	private final ChoiceNode d_parent;
+	private final DecisionTreeNode d_parent;
 	private final String d_nextPropertyName;
 	private final DecisionTreeOutEdgesModel d_edges;
 	private final ValueHolder<Boolean> d_considerNext;
 
 	public RangeInputPresentation(
 			final DosedDrugTreatmentWizardPresentation presentationModel,
-			final ChoiceNode parent,
+			final DecisionTreeNode parent,
 			final String nextPropertyName) {
 		d_pm = presentationModel;
 		d_parent = parent;
@@ -57,7 +57,7 @@ public class RangeInputPresentation {
 	}
 
 	public ChoiceNode getParent() {
-		return d_parent;
+		return (ChoiceNode)d_parent;
 	}
 
 	public ObservableList<DecisionTreeEdge> getRanges() {

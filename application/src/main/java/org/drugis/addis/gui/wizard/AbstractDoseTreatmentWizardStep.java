@@ -6,6 +6,8 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.AddisWindow;
@@ -26,6 +28,20 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 	protected final AddisWindow d_mainWindow;
 	protected final DosedDrugTreatmentWizardPresentation d_pm;
 	protected JDialog d_dialog;
+	protected ListDataListener d_rebuildListener = new ListDataListener() {
+			@Override
+			public void intervalRemoved(final ListDataEvent e) {
+				rebuildPanel();
+			}
+	
+			@Override
+			public void intervalAdded(final ListDataEvent e) {
+				rebuildPanel();
+			}
+	
+			@Override
+			public void contentsChanged(final ListDataEvent e) {}
+		};
 
 	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, JDialog dialog) {
 		this(presentationModel, null, null, null, dialog);

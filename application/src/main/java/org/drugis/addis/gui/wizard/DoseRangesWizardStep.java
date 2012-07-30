@@ -1,6 +1,9 @@
 package org.drugis.addis.gui.wizard;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
@@ -23,6 +26,7 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 
 	private final ObservableList<DecisionTreeEdge> d_parents;
+	private List<ObservableList<DecisionTreeEdge>> d_observed = new ArrayList<ObservableList<DecisionTreeEdge>>();
 
 	public DoseRangesWizardStep(
 			final JDialog dialog,
@@ -36,6 +40,13 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	@Override
 	public void initialize() {
+		// Remove old listeners
+		for (ObservableList<DecisionTreeEdge> list : d_observed) {
+			list.removeListDataListener(d_rebuildListener);
+		}
+		d_observed.clear();
+		
+		// Initialize ranges
 		final DecisionTree tree = d_pm.getBean().getDecisionTree();
 		for (final DecisionTreeEdge edge : d_parents) {
 			final DecisionTreeNode node = tree.getEdgeTarget(edge);
@@ -43,6 +54,18 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 				DoseRangeWizardStep.populate(d_pm, (ChoiceNode)node);
 			}
 		}
+		
+		// Listen to range lists
+		for (DecisionTreeEdge edge : d_parents) {
+			DecisionTreeNode node = tree.getEdgeTarget(edge);
+			if (node instanceof ChoiceNode) {
+				ObservableList<DecisionTreeEdge> ranges = d_pm.getOutEdges(node);
+				ranges.addListDataListener(d_rebuildListener);
+				d_observed.add(ranges);
+			}
+		}
+		
+		rebuildPanel();
 	}
 
 	@Override

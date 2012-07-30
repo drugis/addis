@@ -3,9 +3,6 @@ package org.drugis.addis.gui.wizard;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
@@ -22,7 +19,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	private final RangeInputPresentation d_rangeInputPresentation;
 	private final String d_nextPropertyName;
-
+	
 	public static WizardStep createOnMultipleParentRanges (
 			final JDialog dialog,
 			final DosedDrugTreatmentWizardPresentation pm,
@@ -61,24 +58,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 			parent = presentationModel.getFixedRangeNode();
 		}
 		d_rangeInputPresentation = new RangeInputPresentation(d_pm, parent, d_nextPropertyName);
-		attachListener(d_rangeInputPresentation.getRanges());
-	}
-
-	private void attachListener(final ListModel model) {
-		model.addListDataListener((new ListDataListener() {
-			@Override
-			public void intervalRemoved(final ListDataEvent e) {
-				rebuildPanel();
-			}
-
-			@Override
-			public void intervalAdded(final ListDataEvent e) {
-				rebuildPanel();
-			}
-
-			@Override
-			public void contentsChanged(final ListDataEvent e) {}
-		}));
+		d_rangeInputPresentation.getRanges().addListDataListener(d_rebuildListener);
 	}
 
 	@Override
