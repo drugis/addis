@@ -49,20 +49,17 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
+import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
 import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.beans.PropertyAdapter;
-import com.jgoodies.binding.list.ArrayListModel;
-import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -148,39 +145,17 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
 		final JComboBox unknownDoseCombo = BasicComponentFactory.createComboBox(
-				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForUnknownDose(), d_pm.getModelForUnknownDose()));
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForUnknownDose(), d_pm.getModelForUnknownDose()),
+				new CategoryComboboxRenderer(false));
 		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
 		final JComboBox knownDoseCombo = BasicComponentFactory.createComboBox(
-				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForKnownDose(), d_pm.getModelForKnownDose()));
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForKnownDose(), d_pm.getModelForKnownDose()),
+				new CategoryComboboxRenderer(false));
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
-	}
-
-	public static JComboBox createCategoryComboBox(final List<Category> categories, final DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
-		final ObservableList<Object> list = new ArrayListModel<Object>();
-		list.add(0, new LeafNode());
-		for (final DosedDrugTreatmentKnowledge.CategorySpecifiers item : extraItems) {
-			list.add(item);
-		}
-		for (final Category category : categories) {
-			list.add(new LeafNode(category));
-		}
-		return new JComboBox(list.toArray());
-	}
-
-	public static JComboBox createCategoryComboBox(final ValueModel model, final List<Category> categories, final DecisionTreeNode ... extraItems) {
-		final List<Object> list = new ArrayList<Object>();
-		list.add(new LeafNode());
-		for (final Category category : categories) {
-			list.add(new LeafNode(category));
-		}
-		for (final DecisionTreeNode item : extraItems) {
-			list.add(item);
-		}
-		return BasicComponentFactory.createComboBox(new SelectionInList<Object>(list, model));
 	}
 
 	private JButton createNewDrugButton(final ValueModel drugModel) {

@@ -12,6 +12,7 @@ import javax.swing.ListModel;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
+import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 
@@ -70,7 +71,7 @@ public class RangeInputBuilder {
 		final JComboBox comboBox = BasicComponentFactory.createComboBox(
 				new SelectionInList<DecisionTreeNode>(
 						(ListModel)d_pm.getParentPresentation().getOptionsForEdge(range),
-						d_pm.getParentPresentation().getModelForEdge(range)));
+						d_pm.getParentPresentation().getModelForEdge(range)), new CategoryComboboxRenderer(d_pm.hasPrevious()));
 
 		builder.add(comboBox, cc.xy(5, row));
 		return row;

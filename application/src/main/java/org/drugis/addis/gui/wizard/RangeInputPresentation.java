@@ -66,7 +66,7 @@ public class RangeInputPresentation {
 
 	public DecisionTreeNode[] getExtraOptions() {
 		if (d_nextPropertyName != null) {
-			return new ChoiceNode[] { new ChoiceNode(d_parent.getBeanClass(), d_nextPropertyName) };
+			return new ChoiceNode[] { new ChoiceNode(((ChoiceNode) d_parent).getBeanClass(), d_nextPropertyName) };
 		}
 		return new CategorySpecifiers[] {};
 	}
@@ -77,5 +77,9 @@ public class RangeInputPresentation {
 
 	public ValueHolder<Boolean> getConsiderNext() {
 		return d_considerNext;
+	}
+	
+	public boolean hasPrevious() { 
+		return d_nextPropertyName != null;
 	}
 }
