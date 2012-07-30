@@ -28,7 +28,7 @@ package org.drugis.addis.presentation.wizard;
 
 import java.util.HashMap;
 
-import org.apache.commons.collections15.CollectionUtils;
+import static org.apache.commons.collections15.CollectionUtils.*;
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
@@ -374,7 +374,7 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	 * In the haystack, find a leaf node with the needle as its category.
 	 */
 	public static LeafNode findLeafNode(final ObservableList<DecisionTreeNode> haystack, final Category needle) {
-		return (LeafNode)CollectionUtils.find(haystack, new Predicate<DecisionTreeNode>() {
+		return (LeafNode)find(haystack, new Predicate<DecisionTreeNode>() {
 			public boolean evaluate(DecisionTreeNode object) {
 				if (object instanceof LeafNode) {
 					LeafNode node = (LeafNode) object;
@@ -386,24 +386,41 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	}
 
 	public RangeEdge addDefaultRangeEdge(ChoiceNode node) {
-		RangeEdge rangeEdge = RangeEdge.createDefault();
+		RangeEdge rangeEdge = createRangeEdge(node);
 		ObservableList<DecisionTreeNode> options = createOptionsForChildrenOfNode(node);
 		d_optionsForEdge.put(rangeEdge, options);
 		getBean().getDecisionTree().addChild(rangeEdge, node, findLeafNode(options, null));
 		return rangeEdge;
 	}
 
+	private RangeEdge createRangeEdge(ChoiceNode node) {
+		DecisionTree tree = getBean().getDecisionTree();
+		String nodeProperty = node.getPropertyName();
+		ChoiceNode parentNode = (ChoiceNode)tree.getParent(node);
+		if (EqualsUtil.equal(nodeProperty, FlexibleDose.PROPERTY_MIN_DOSE) 
+				&& EqualsUtil.equal(parentNode.getPropertyName(), FlexibleDose.PROPERTY_MAX_DOSE)) {
+			RangeEdge range = (RangeEdge) tree.getParentEdge(node);
+			return new RangeEdge(0.0, false, range.getUpperBound(), range.isUpperBoundOpen());
+		} else if (EqualsUtil.equal(nodeProperty, FlexibleDose.PROPERTY_MAX_DOSE) 
+				&& EqualsUtil.equal(parentNode.getPropertyName(), FlexibleDose.PROPERTY_MIN_DOSE)) {
+			RangeEdge range = (RangeEdge) tree.getParentEdge(node);
+			return new RangeEdge(range.getLowerBound(), range.isLowerBoundOpen(), Double.POSITIVE_INFINITY, true);
+		} else { 
+			return RangeEdge.createDefault();
+
+		}
+	}
+
 	private ObservableList<DecisionTreeNode> createOptionsForChildrenOfNode(ChoiceNode node) {
 		DecisionTree tree = getBean().getDecisionTree();
 		String nodeProperty = node.getPropertyName();
 		String parentProperty = ((ChoiceNode)tree.getParent(node)).getPropertyName();
-		LeafNode excludeNode = new LeafNode();
 		if (nodeProperty.equals(FlexibleDose.PROPERTY_MIN_DOSE) && !parentProperty.equals(FlexibleDose.PROPERTY_MAX_DOSE)) {
-			return createOptions(createMaxDoseNode(), excludeNode);
+			return createOptions(createMaxDoseNode(), new LeafNode());
 		} else if (nodeProperty.equals(FlexibleDose.PROPERTY_MAX_DOSE) && !parentProperty.equals(FlexibleDose.PROPERTY_MIN_DOSE)) {
-			return createOptions(createMinDoseNode(), excludeNode);
+			return createOptions(createMinDoseNode(), new LeafNode());
 		} else {
-			return createOptions(excludeNode);
+			return createOptions(new LeafNode());
 		}
 	}
 	
