@@ -39,7 +39,7 @@ public class SelectAdverseEventsPresentation
 extends SelectVariablesPresentation<AdverseEvent> {
 	
 	public SelectAdverseEventsPresentation(ObservableList<AdverseEvent> options, WhenTakenFactory wtf, AddisWindow mainWindow) {
-		super(options, "Adverse Event", "Select Adverse Events", "Please select the appropriate adverse events.", wtf, mainWindow);
+		super(options, AdverseEvent.class, "Select Adverse Events", "Please select the appropriate adverse events.", wtf, mainWindow);
 	}
 
 	@Override

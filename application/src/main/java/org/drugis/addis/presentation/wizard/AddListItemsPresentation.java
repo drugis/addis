@@ -31,6 +31,7 @@ import org.drugis.addis.entities.TypeWithName;
 import org.drugis.common.beans.AbstractObservable;
 
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.ValueModel;
 
 public abstract class AddListItemsPresentation<T extends TypeWithName> extends AbstractObservable {
 
@@ -50,7 +51,7 @@ public abstract class AddListItemsPresentation<T extends TypeWithName> extends A
 
 	public abstract T createItem();
 	public abstract ObservableList<Note> getNotes(T t);
-
+	public abstract ValueModel getRemovable(T t);
 
 	public ObservableList<T> getList() {
 		return d_list;
