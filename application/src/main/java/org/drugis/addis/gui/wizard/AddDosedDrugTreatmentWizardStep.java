@@ -29,8 +29,6 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -99,7 +97,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	protected void initialize() {
 //		rebuildPanel();
 	}
-
+	
 	@Override
 	protected JPanel buildPanel() {
 		final FormLayout layout = new FormLayout(

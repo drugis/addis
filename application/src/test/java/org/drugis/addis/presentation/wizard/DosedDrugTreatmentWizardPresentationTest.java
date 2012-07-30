@@ -275,7 +275,7 @@ public class DosedDrugTreatmentWizardPresentationTest {
 	}
 
 	private static DoseQuantityChoiceNode findDoseQuantityNode(ObservableList<DecisionTreeNode> options, final String propertyName) {
-		DecisionTreeNode x = CollectionUtils.find(options, new Predicate<DecisionTreeNode>() {
+		return (DoseQuantityChoiceNode) CollectionUtils.find(options, new Predicate<DecisionTreeNode>() {
 			public boolean evaluate(DecisionTreeNode object) {
 				if (object instanceof DoseQuantityChoiceNode) {
 					DoseQuantityChoiceNode node = (DoseQuantityChoiceNode) object;
@@ -284,7 +284,6 @@ public class DosedDrugTreatmentWizardPresentationTest {
 				return false;
 			}
 		});
-		return (DoseQuantityChoiceNode) x;
 	}
 
 	private static void assertNodeHasCategory(DecisionTreeNode node, Category category) {

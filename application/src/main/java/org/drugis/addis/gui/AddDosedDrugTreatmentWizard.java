@@ -35,6 +35,7 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.gui.wizard.AbstractDoseTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.AddDosedDrugTreatmentWizardStep;
 import org.drugis.addis.gui.wizard.DoseRangeWizardStep;
 import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
@@ -195,7 +196,7 @@ public class AddDosedDrugTreatmentWizard extends Wizard {
 				"Specify the ranges for lower bound of flexible doses", "For each of the categories, define a range in which the lower bound of the administered dose must lie.");
 	}
 
-	private static DoseRangeWizardStep createFixedDose(final JDialog dialog, final DosedDrugTreatmentWizardPresentation pm) {
+	private static AbstractDoseTreatmentWizardStep createFixedDose(final JDialog dialog, final DosedDrugTreatmentWizardPresentation pm) {
 		return DoseRangeWizardStep.createOnBeanProperty(
 				dialog,
 				pm,

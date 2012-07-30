@@ -34,12 +34,6 @@ public class RangeInputBuilder {
 
 	public int addFamilyToPanel(final PanelBuilder builder, int row) {
 		final FormLayout layout = builder.getLayout();
-//		final CellConstraints cc = new CellConstraints();
-//		final DecisionTreeNode parent = d_pm.getParent();
-//		if (parent instanceof RangeNode) {
-//			row = LayoutUtil.addRow(layout, row);
-//			builder.addSeparator(((RangeNode)parent).getLabel(), cc.xyw(1, row, 6));
-//		}
 
 		final ObservableList<DecisionTreeEdge> ranges = d_pm.getRanges();
 		for (final DecisionTreeEdge edge : ranges) {
@@ -57,7 +51,6 @@ public class RangeInputBuilder {
 
 		final JButton splitBtn = new JButton("Split Range");
 		splitBtn.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final DoseRangeCutOffDialog dialog = new DoseRangeCutOffDialog(d_dialog, d_pm.getParentPresentation(), d_pm.getParent(), range);
 				dialog.setVisible(true);
