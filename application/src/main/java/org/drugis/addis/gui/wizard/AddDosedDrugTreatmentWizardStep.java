@@ -57,6 +57,7 @@ import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
@@ -181,6 +182,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 			final JTextField name = BasicComponentFactory.createTextField(new PropertyAdapter<Category>(category, Category.PROPERTY_NAME), false);
 			builder.add(name, cc.xy(3, row));
 			final JButton remove = GUIFactory.createIconButton(FileNames.ICON_DELETE, "delete");
+			Bindings.bind(remove, "enabled", d_pm.getCategoryUsed(category));
 			remove.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {

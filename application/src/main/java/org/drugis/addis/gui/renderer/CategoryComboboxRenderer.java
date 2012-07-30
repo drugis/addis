@@ -10,7 +10,6 @@ import javax.swing.ListCellRenderer;
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.LeafNode;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
 import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation.CategorySpecifiers;
 
 public class CategoryComboboxRenderer implements ListCellRenderer {
@@ -24,9 +23,11 @@ public class CategoryComboboxRenderer implements ListCellRenderer {
 	
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
-		boolean isChoiceNode = false;
+		
+		// Pre-processing 
+		boolean postprocess = false;
 		if(value instanceof ChoiceNode) {
-			isChoiceNode = true;
+			postprocess = true;
 			String property = StringUtils.lowerCase(value.toString());
 			if(d_alternate) {
 				value = "Consider " + property;
@@ -36,9 +37,9 @@ public class CategoryComboboxRenderer implements ListCellRenderer {
 		}
 		
 		Component c = d_defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-		if(value instanceof CategorySpecifiers 
-			|| isChoiceNode
+		//Post-processing 
+		if(	postprocess
+			|| value instanceof CategorySpecifiers 
 			|| (value instanceof LeafNode && value.toString().equals(LeafNode.NAME_EXCLUDE))) {
 			c.setFont(c.getFont().deriveFont(Font.BOLD));
 		}

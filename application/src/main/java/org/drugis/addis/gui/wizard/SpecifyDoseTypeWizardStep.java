@@ -31,7 +31,7 @@ public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
 	@Override
 	protected JPanel buildPanel() {
 		final FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, pref",
+				"left:pref, 3dlu, fill:pref:grow",
 				"p"
 				);
 

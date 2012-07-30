@@ -26,8 +26,12 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import static org.apache.commons.collections15.CollectionUtils.find;
+import static org.apache.commons.collections15.CollectionUtils.*;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.collections15.Predicate;
@@ -62,6 +66,8 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
+import edu.uci.ics.jung.graph.event.GraphEvent;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import edu.uci.ics.jung.graph.util.Pair;
 
 @SuppressWarnings("serial")
@@ -106,7 +112,8 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 
 	private final HashMap<DecisionTreeEdge, ValueModel> d_choiceForEdge = new HashMap<DecisionTreeEdge, ValueModel>();
 	private final HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>> d_optionsForEdge = new HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>>();
-
+	private final HashMap<Category, ValueHolder<Boolean>> d_categoryUsed = new HashMap<Category, ValueHolder<Boolean>>();
+	
 	public DosedDrugTreatmentWizardPresentation(final DosedDrugTreatment bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
@@ -141,6 +148,21 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 		d_considerFixed = new ValueEqualsModel(getModelForFixedDose(), d_fixedRangeNode);
 		d_considerFlexibleLower = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleLowerNode);
 		d_considerFlexibleUpper = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleUpperNode);
+	}
+	
+	private void attachCategoryUsedListener(final ValueModel categoryUsed, final Category category) {
+		final DecisionTree tree = getBean().getDecisionTree();
+		GraphEventListener<DecisionTreeNode, DecisionTreeEdge> listener = new GraphEventListener<DecisionTreeNode, DecisionTreeEdge>() {
+			public void handleGraphEvent(GraphEvent<DecisionTreeNode, DecisionTreeEdge> evt) {
+				categoryUsed.setValue(findLeafNode(tree.getVertices(), category) == null);
+			}
+		}; 
+		getBean().getDecisionTree().getObservableGraph().addGraphEventListener(listener);
+		d_knownDoseChoice.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				categoryUsed.setValue(findLeafNode(Collections.singleton(d_knownDoseChoice.getValue()), category) == null);
+			}
+		});
 	}
 
 	private DecisionTreeNode getEdgeTarget(final DecisionTreeEdge edge) {
@@ -292,6 +314,20 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	public ChoiceNode getFixedRangeNode() {
 		return d_fixedRangeNode;
 	}
+	
+	/**
+	 * A utility for checking if a category is used in the tree.
+	 * @param category
+	 * @return a ValueModel which is true when the category is used in the tree, false otherwise
+	 */
+	public ValueModel getCategoryUsed(Category category) { 
+		if(d_categoryUsed.get(category) == null) { 
+			ModifiableHolder<Boolean> value = new ModifiableHolder<Boolean>(true);
+			attachCategoryUsedListener(value, category);
+			d_categoryUsed.put(category, value);
+		}
+		return d_categoryUsed.get(category);
+	}
 
 	private ObservableList<DecisionTreeNode> createOptions(final DecisionTreeNode ... extraOptions) {
 		final TransformOnceObservableList<Category, DecisionTreeNode> transformedCategories = new TransformOnceObservableList<Category, DecisionTreeNode>(
@@ -393,7 +429,7 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	/**
 	 * In the haystack, find a leaf node with the needle as its category.
 	 */
-	public static LeafNode findLeafNode(final ObservableList<DecisionTreeNode> haystack, final Category needle) {
+	public static LeafNode findLeafNode(final Collection<DecisionTreeNode> haystack, final Category needle) {
 		return (LeafNode)find(haystack, new Predicate<DecisionTreeNode>() {
 			public boolean evaluate(DecisionTreeNode object) {
 				if (object instanceof LeafNode) {
@@ -421,13 +457,14 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 				&& EqualsUtil.equal(parentNode.getPropertyName(), FlexibleDose.PROPERTY_MAX_DOSE)) {
 			RangeEdge range = (RangeEdge) tree.getParentEdge(node);
 			return new RangeEdge(0.0, false, range.getUpperBound(), range.isUpperBoundOpen());
+			
 		} else if (EqualsUtil.equal(nodeProperty, FlexibleDose.PROPERTY_MAX_DOSE) 
 				&& EqualsUtil.equal(parentNode.getPropertyName(), FlexibleDose.PROPERTY_MIN_DOSE)) {
 			RangeEdge range = (RangeEdge) tree.getParentEdge(node);
 			return new RangeEdge(range.getLowerBound(), range.isLowerBoundOpen(), Double.POSITIVE_INFINITY, true);
+			
 		} else { 
 			return RangeEdge.createDefault();
-
 		}
 	}
 
