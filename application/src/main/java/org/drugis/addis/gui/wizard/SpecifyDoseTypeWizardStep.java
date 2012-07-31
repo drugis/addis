@@ -33,7 +33,7 @@ import javax.swing.ListModel;
 
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -42,10 +42,10 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SpecifyDoseTypeWizardStep extends AbstractDoseTreatmentWizardStep {
+public class SpecifyDoseTypeWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 
-	public SpecifyDoseTypeWizardStep(final DosedDrugTreatmentWizardPresentation pm, JDialog dialog) {
+	public SpecifyDoseTypeWizardStep(final TreatmentCategorizationWizardPresentation pm, JDialog dialog) {
 		super(pm, "Specify criteria","Select for the category or criteria for the fixed and flexible dose types.", dialog);
 	}
 

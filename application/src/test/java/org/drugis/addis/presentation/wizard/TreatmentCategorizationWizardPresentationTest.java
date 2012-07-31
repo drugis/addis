@@ -26,7 +26,7 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import static org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation.findLeafNode;
+import static org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation.findLeafNode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -49,7 +49,7 @@ import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
 import org.junit.Before;
@@ -59,15 +59,15 @@ import com.jgoodies.binding.list.ObservableList;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class DosedDrugTreatmentWizardPresentationTest {
+public class TreatmentCategorizationWizardPresentationTest {
 
-	private DosedDrugTreatment d_bean;
-	private DosedDrugTreatmentWizardPresentation d_pm;
+	private TreatmentCategorization d_bean;
+	private TreatmentCategorizationWizardPresentation d_pm;
 
 	@Before
 	public void setUp() {
-		d_bean = new DosedDrugTreatment("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
-		d_pm = new DosedDrugTreatmentWizardPresentation(d_bean, null);
+		d_bean = new TreatmentCategorization("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_pm = new TreatmentCategorizationWizardPresentation(d_bean, null);
 	}
 
 	@Test
@@ -173,7 +173,7 @@ public class DosedDrugTreatmentWizardPresentationTest {
 		Category bar = new Category("bar");
 		d_pm.getCategories().add(bar);
 		
-		d_pm.getModelForKnownDose().setValue(DosedDrugTreatmentWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
+		d_pm.getModelForKnownDose().setValue(TreatmentCategorizationWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
 		d_pm.getModelForFixedDose().setValue(d_pm.getFixedRangeNode());
 		// Add ranges to tree (normally handled by RangeInputPresentation).
 		
@@ -229,7 +229,7 @@ public class DosedDrugTreatmentWizardPresentationTest {
 		Category bar = new Category("bar");
 		d_pm.getCategories().add(bar);
 		
-		d_pm.getModelForKnownDose().setValue(DosedDrugTreatmentWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
+		d_pm.getModelForKnownDose().setValue(TreatmentCategorizationWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
 		d_pm.getModelForFixedDose().setValue(d_pm.getFixedRangeNode());
 		// Add ranges to tree (normally handled by RangeInputPresentation).
 		RangeEdge edge0 = RangeEdge.createDefault();

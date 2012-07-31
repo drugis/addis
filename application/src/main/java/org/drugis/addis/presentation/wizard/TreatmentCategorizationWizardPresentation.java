@@ -47,7 +47,7 @@ import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
 import org.drugis.addis.presentation.DecisionTreeChildModel;
@@ -71,7 +71,7 @@ import edu.uci.ics.jung.graph.event.GraphEventListener;
 import edu.uci.ics.jung.graph.util.Pair;
 
 @SuppressWarnings("serial")
-public class DosedDrugTreatmentWizardPresentation extends PresentationModel<DosedDrugTreatment> {
+public class TreatmentCategorizationWizardPresentation extends PresentationModel<TreatmentCategorization> {
 	public static enum CategorySpecifiers implements DecisionTreeNode {
 		CONSIDER("Consider dose type"),
 		DO_NOT_CONSIDER("Do not consider dose type");
@@ -114,7 +114,7 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	private final HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>> d_optionsForEdge = new HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>>();
 	private final HashMap<Category, ValueHolder<Boolean>> d_categoryUsed = new HashMap<Category, ValueHolder<Boolean>>();
 	
-	public DosedDrugTreatmentWizardPresentation(final DosedDrugTreatment bean, final Domain domain) {
+	public TreatmentCategorizationWizardPresentation(final TreatmentCategorization bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
 		d_contentAwareCategories = new ContentAwareListModel<Category>(bean.getCategories());
@@ -170,11 +170,11 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	}
 
 	public ValueModel getDrug() {
-		return getModel(DosedDrugTreatment.PROPERTY_DRUG);
+		return getModel(TreatmentCategorization.PROPERTY_DRUG);
 	}
 
 	public ValueModel getName() {
-		return getModel(DosedDrugTreatment.PROPERTY_NAME);
+		return getModel(TreatmentCategorization.PROPERTY_NAME);
 	}
 
 	public ObservableList<Category> getCategories() {
@@ -194,7 +194,7 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	 * Note that domain can be null in which case a null-pointer exception will occur.
 	 * @return The DosedDrugTreatment that was added.
 	 */
-	public DosedDrugTreatment commit() {
+	public TreatmentCategorization commit() {
 		if (d_domain.getTreatments().contains(getBean())) {
 			throw new IllegalStateException("Treatment already exists in domain");
 		}
@@ -407,7 +407,7 @@ public class DosedDrugTreatmentWizardPresentation extends PresentationModel<Dose
 	}
 	
 	/**
-	 * {@link DosedDrugTreatment#splitRange(RangeEdge, double, boolean)}
+	 * {@link TreatmentCategorization#splitRange(RangeEdge, double, boolean)}
 	 */
 	public Pair<RangeEdge> splitRange(final RangeEdge range, final double value, final boolean lowerRangeOpen) {
 		ObservableList<DecisionTreeNode> options1 = getOptionsForEdge(range);

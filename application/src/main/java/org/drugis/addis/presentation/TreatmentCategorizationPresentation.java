@@ -36,16 +36,18 @@ import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.common.beans.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
-public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugTreatment>{
+public class TreatmentCategorizationPresentation extends PresentationModel<TreatmentCategorization> implements StudyListPresentation {
 	private static final long serialVersionUID = 134566312654511102L;
+	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
 	private final Map<Category, StudyListPresentation> d_studyListPresentations = new HashMap<Category, StudyListPresentation>();
 	private final Domain d_domain;
 
@@ -92,7 +94,7 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 		}
 	}
 
-	public DosedDrugTreatmentPresentation(final DosedDrugTreatment bean, final Domain domain) {
+	public TreatmentCategorizationPresentation(final TreatmentCategorization bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
 
@@ -113,4 +115,21 @@ public class DosedDrugTreatmentPresentation extends PresentationModel<DosedDrugT
 	public DrugPresentation getDrugPresentation() {
 		return new DrugPresentation(getBean().getDrug(), d_domain);
 	}
-}
+
+	@Override
+	public ObservableList<Study> getIncludedStudies() {
+		ObservableList<Study> result = new ArrayListModel<Study>();
+		for (StudyListPresentation slp : d_studyListPresentations.values()) {
+			for (Study study : slp.getIncludedStudies()) {
+				if (!result.contains(study)) {
+					result.add(study);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
+		return d_charVisibleMap.get(c);
+	}}

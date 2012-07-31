@@ -43,7 +43,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> {
+public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCategorization> {
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_CATEGORIES = "categories";
@@ -54,11 +54,11 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 
 	private final DoseUnit d_doseUnit;
 
-	public DosedDrugTreatment() {
+	public TreatmentCategorization() {
 		this("", null, DoseUnit.MILLIGRAMS_A_DAY);
 	}
 
-	public DosedDrugTreatment(final String name, final Drug drug, final DoseUnit unit) {
+	public TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit) {
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;

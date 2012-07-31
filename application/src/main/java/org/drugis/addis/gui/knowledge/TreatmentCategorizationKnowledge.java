@@ -33,33 +33,33 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AddDosedDrugTreatmentWizard;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.builder.DosedDrugTreatmentView;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.gui.builder.TreatmentCategorizationView;
+import org.drugis.addis.presentation.TreatmentCategorizationPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.WizardFrameCloser;
 
 import com.jgoodies.binding.value.ValueModel;
 
-public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
+public class TreatmentCategorizationKnowledge extends CategoryKnowledgeBase {
 
-	public DosedDrugTreatmentKnowledge() {
-		super("treatment", FileNames.ICON_HEART, DosedDrugTreatment.class);
+	public TreatmentCategorizationKnowledge() {
+		super("treatment", FileNames.ICON_HEART, TreatmentCategorization.class);
 	}
 
 	@Override
 	public JDialog getAddDialog(final AddisWindow mainWindow, final Domain domain, final ValueModel selectionModel) {
-		final DosedDrugTreatment treatment = new DosedDrugTreatment();
+		final TreatmentCategorization treatment = new TreatmentCategorization();
 
-		final DosedDrugTreatmentWizardPresentation pm = new DosedDrugTreatmentWizardPresentation(treatment, domain);
+		final TreatmentCategorizationWizardPresentation pm = new TreatmentCategorizationWizardPresentation(treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);
 	}
 
-	public static JDialog buildDosedDrugTreatmentWizardDialog(final AddisWindow mainWindow, final Domain domain, final String title, final DosedDrugTreatmentWizardPresentation pm) {
+	public static JDialog buildDosedDrugTreatmentWizardDialog(final AddisWindow mainWindow, final Domain domain, final String title, final TreatmentCategorizationWizardPresentation pm) {
 		final JDialog dialog = new JDialog(mainWindow, title, true);
 		final AddDosedDrugTreatmentWizard wizard = new AddDosedDrugTreatmentWizard(pm, dialog);
 		dialog.getContentPane().add(wizard);
@@ -78,7 +78,7 @@ public class DosedDrugTreatmentKnowledge extends CategoryKnowledgeBase {
 
 	@Override
 	public ViewBuilder getEntityViewBuilder(final AddisWindow main, final Domain domain, final Entity entity) {
-		return new DosedDrugTreatmentView((DosedDrugTreatmentPresentation) main.getPresentationModelFactory().getModel(((DosedDrugTreatment) entity)), main);
+		return new TreatmentCategorizationView((TreatmentCategorizationPresentation) main.getPresentationModelFactory().getModel(((TreatmentCategorization) entity)), main);
 	}
 
 }

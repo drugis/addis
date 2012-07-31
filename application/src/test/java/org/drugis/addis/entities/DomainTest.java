@@ -44,7 +44,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -608,7 +608,7 @@ public class DomainTest {
 	@Test
 	public void testGetCategories() {
 		assertEquals(11, d_domain.getCategories().size());
-		List<Class<?>> cats = Arrays.<Class<?>>asList(Unit.class, Indication.class, Drug.class, DosedDrugTreatment.class, Endpoint.class, AdverseEvent.class, PopulationCharacteristic.class, 
+		List<Class<?>> cats = Arrays.<Class<?>>asList(Unit.class, Indication.class, Drug.class, TreatmentCategorization.class, Endpoint.class, AdverseEvent.class, PopulationCharacteristic.class, 
 				Study.class, PairWiseMetaAnalysis.class, NetworkMetaAnalysis.class, BenefitRiskAnalysis.class);
 		List<Class<?>> domainCats = new ArrayListModel<Class<?>>();
 		for (EntityCategory ec : d_domain.getCategories()) {

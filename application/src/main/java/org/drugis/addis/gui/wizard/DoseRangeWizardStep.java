@@ -33,14 +33,14 @@ import javax.swing.JPanel;
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.pietschy.wizard.WizardStep;
 
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
+public class DoseRangeWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 
 	private final RangeInputPresentation d_rangeInputPresentation;
@@ -48,7 +48,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 	
 	public static WizardStep createOnMultipleParentRanges (
 			final JDialog dialog,
-			final DosedDrugTreatmentWizardPresentation pm,
+			final TreatmentCategorizationWizardPresentation pm,
 			final ObservableList<DecisionTreeEdge> parentRanges,
 			final String name, final String summary) {
 		return new DoseRangesWizardStep(dialog, pm, parentRanges, name, summary);
@@ -56,7 +56,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	public static DoseRangeWizardStep createOnBeanProperty(
 			final JDialog dialog,
-			final DosedDrugTreatmentWizardPresentation pm,
+			final TreatmentCategorizationWizardPresentation pm,
 			final ChoiceNode parent,
 			final String nextPropertyName,
 			final String name,
@@ -66,14 +66,14 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	public static WizardStep createOnKnownDoses(
 			final JDialog dialog,
-			final DosedDrugTreatmentWizardPresentation pm,
+			final TreatmentCategorizationWizardPresentation pm,
 			final String name, final String summary) {
 		return new DoseRangeWizardStep(dialog, pm, null, null, name, summary);
 	}
 
 	private DoseRangeWizardStep(
 			final JDialog dialog,
-			final DosedDrugTreatmentWizardPresentation presentationModel,
+			final TreatmentCategorizationWizardPresentation presentationModel,
 			ChoiceNode parent,
 			final String nextPropertyName,
 			final String name,
@@ -98,7 +98,7 @@ public class DoseRangeWizardStep extends AbstractDoseTreatmentWizardStep {
 		populate(d_pm, d_rangeInputPresentation.getParent());
 	}
 
-	public static void populate(final DosedDrugTreatmentWizardPresentation pm, final ChoiceNode parent) {
+	public static void populate(final TreatmentCategorizationWizardPresentation pm, final ChoiceNode parent) {
 		if (pm.getBean().getDecisionTree().getOutEdges(parent).size() == 0) {
 			pm.addDefaultRangeEdge(parent);
 		}

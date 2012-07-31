@@ -33,8 +33,8 @@ import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.presentation.DecisionTreeOutEdgesModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.ValueModelWrapper;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation.CategorySpecifiers;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation.CategorySpecifiers;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList;
@@ -44,14 +44,14 @@ import org.drugis.common.validation.ListMinimumSizeModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public class RangeInputPresentation {
-	private final DosedDrugTreatmentWizardPresentation d_pm;
+	private final TreatmentCategorizationWizardPresentation d_pm;
 	private final DecisionTreeNode d_parent;
 	private final String d_nextPropertyName;
 	private final DecisionTreeOutEdgesModel d_edges;
 	private final ValueHolder<Boolean> d_considerNext;
 
 	public RangeInputPresentation(
-			final DosedDrugTreatmentWizardPresentation presentationModel,
+			final TreatmentCategorizationWizardPresentation presentationModel,
 			final DecisionTreeNode parent,
 			final String nextPropertyName) {
 		d_pm = presentationModel;
@@ -97,7 +97,7 @@ public class RangeInputPresentation {
 		return new CategorySpecifiers[] {};
 	}
 
-	public DosedDrugTreatmentWizardPresentation getParentPresentation() {
+	public TreatmentCategorizationWizardPresentation getParentPresentation() {
 		return d_pm;
 	}
 

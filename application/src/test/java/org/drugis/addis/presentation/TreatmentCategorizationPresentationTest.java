@@ -35,10 +35,10 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,20 +46,20 @@ import com.jgoodies.binding.list.ObservableList;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class DosedDrugTreatmentPresentationTest {
+public class TreatmentCategorizationPresentationTest {
 
-	private DosedDrugTreatment d_bean;
-	private DosedDrugTreatmentPresentation d_pm;
+	private TreatmentCategorization d_bean;
+	private TreatmentCategorizationPresentation d_pm;
 	private Domain d_domain;
-	private DosedDrugTreatmentWizardPresentation d_wpm;
+	private TreatmentCategorizationWizardPresentation d_wpm;
 
 	@Before
 	public void setUp() {
-		d_bean = new DosedDrugTreatment("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_bean = new TreatmentCategorization("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_pm = new DosedDrugTreatmentPresentation(d_bean, d_domain);
-		d_wpm = new DosedDrugTreatmentWizardPresentation(d_bean, d_domain);
+		d_pm = new TreatmentCategorizationPresentation(d_bean, d_domain);
+		d_wpm = new TreatmentCategorizationWizardPresentation(d_bean, d_domain);
 	}
 
 	@Test

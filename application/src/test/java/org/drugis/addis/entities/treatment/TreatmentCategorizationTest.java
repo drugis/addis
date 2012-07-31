@@ -46,12 +46,12 @@ import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DosedDrugTreatmentTest {
-	private DosedDrugTreatment d_treatment;
+public class TreatmentCategorizationTest {
+	private TreatmentCategorization d_treatment;
 
 	@Before
 	public void setUp() {
-		d_treatment = new DosedDrugTreatment("", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_treatment = new TreatmentCategorization("", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
 	}
 
 	public static void assertDefaultTree(final DecisionTree tree) {

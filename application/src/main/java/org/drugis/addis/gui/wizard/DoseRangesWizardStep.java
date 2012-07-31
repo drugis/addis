@@ -39,7 +39,7 @@ import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 
@@ -48,7 +48,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
+public class DoseRangesWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 3313939584326101804L;
 
 	private final ObservableList<DecisionTreeEdge> d_parents;
@@ -56,7 +56,7 @@ public class DoseRangesWizardStep extends AbstractDoseTreatmentWizardStep {
 
 	public DoseRangesWizardStep(
 			final JDialog dialog,
-			final DosedDrugTreatmentWizardPresentation presentationModel,
+			final TreatmentCategorizationWizardPresentation presentationModel,
 			final ObservableList<DecisionTreeEdge> parentRanges,
 			final String name,
 			final String summary) {

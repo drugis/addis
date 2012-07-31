@@ -46,14 +46,14 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -65,12 +65,12 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizardStep {
+public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 7730051460456443680L;
 
 	private final NotEmptyValidator d_validator;
 
-	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentWizardPresentation presentationModel, JDialog dialog) {
+	public AddTreatmentCategorizationWizardStep(final TreatmentCategorizationWizardPresentation presentationModel, JDialog dialog) {
 		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
@@ -112,7 +112,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		int row = 1;
 		final int colSpan = layout.getColumnCount();
 
-		final JTextField name = BasicComponentFactory.createTextField(d_pm.getModel(DosedDrugTreatment.PROPERTY_NAME), false);
+		final JTextField name = BasicComponentFactory.createTextField(d_pm.getModel(TreatmentCategorization.PROPERTY_NAME), false);
 		name.setColumns(15);
 
 		builder.addLabel("Drug:", cc.xy(1, row));
@@ -168,7 +168,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		return btn;
 	}
 
-	private JComponent createCategoriesPanel(final DosedDrugTreatmentWizardPresentation model) {
+	private JComponent createCategoriesPanel(final TreatmentCategorizationWizardPresentation model) {
 		final FormLayout layout = new FormLayout(
 				"left:pref, 3dlu, fill:pref:grow, 3dlu, pref",
 				"p");
@@ -198,7 +198,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	}
 
 
-	private JButton createAddCategoryButton(final DosedDrugTreatmentWizardPresentation model) {
+	private JButton createAddCategoryButton(final TreatmentCategorizationWizardPresentation model) {
 		final JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);
 		btn.addActionListener(new ActionListener() {
 			@Override

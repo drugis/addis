@@ -38,21 +38,21 @@ import javax.swing.event.ListDataListener;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.validation.BooleanAndModel;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.value.ValueModel;
 
-public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
+public abstract class AbstractTreatmentCategorizationWizardStep extends PanelWizardStep {
 	private static final long serialVersionUID = 5608736267613312255L;
 	protected static final int PANEL_WIDTH = 600;
 	protected List<ValueModel> d_validators = new ArrayList<ValueModel>();
 	private JPanel d_dialogCache = null;
 	protected final Domain d_domain;
 	protected final AddisWindow d_mainWindow;
-	protected final DosedDrugTreatmentWizardPresentation d_pm;
+	protected final TreatmentCategorizationWizardPresentation d_pm;
 	protected JDialog d_dialog;
 	protected ListDataListener d_rebuildListener = new ListDataListener() {
 			@Override
@@ -69,17 +69,17 @@ public abstract class AbstractDoseTreatmentWizardStep extends PanelWizardStep {
 			public void contentsChanged(final ListDataEvent e) {}
 		};
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, JDialog dialog) {
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel, JDialog dialog) {
 		this(presentationModel, null, null, null, dialog);
 	}
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, 
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel, 
 			String name, 
 			String summary, JDialog dialog) {
 		this(presentationModel, name, summary, null, dialog);
 	}
 
-	public AbstractDoseTreatmentWizardStep(DosedDrugTreatmentWizardPresentation presentationModel, 
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel, 
 			String name, 
 			String summary,
 			Icon icon, JDialog dialog) {
