@@ -49,6 +49,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Study;
@@ -215,7 +216,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 	private void addCitalopram() {
 		Arm arm = ExampleData.buildStudyBennie().createAndAddArm("Citalopram-2", 100, 
-				ExampleData.buildDrugCitalopram(), new FixedDose(12, ExampleData.MILLIGRAMS_A_DAY));
+				ExampleData.buildDrugCitalopram(), new FixedDose(12, DoseUnit.MILLIGRAMS_A_DAY));
 		ExampleData.buildStudyBennie().setMeasurement(ExampleData.buildEndpointCgi(), arm, 
 				new BasicContinuousMeasurement(3.0, 1.2, 103));
 		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));

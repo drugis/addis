@@ -37,8 +37,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Activity;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FixedDose;
@@ -68,7 +68,7 @@ public class StudyActivityPresentationTest {
 		d_activity = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
 		
 		d_drug = new Drug("Fluoxetine", "SomeCode");
-		d_dose = new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY);
+		d_dose = new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY);
 		d_treatment = new DrugTreatment(d_drug, d_dose);
 		d_treatmentActivity = new StudyActivity("Treatment", new TreatmentActivity(d_treatment));
 	}
@@ -141,7 +141,7 @@ public class StudyActivityPresentationTest {
 		// Test initialization with combination treatment
 		TreatmentActivity ct = new TreatmentActivity();
 		ct.getTreatments().add(d_treatment);
-		ct.getTreatments().add(new DrugTreatment(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY)));
+		ct.getTreatments().add(new DrugTreatment(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)));
 		StudyActivity activity2 = new StudyActivity("Treatment", ct);
 		StudyActivityPresentation pm3 = new StudyActivityPresentation(d_emptyList, null, activity2);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));

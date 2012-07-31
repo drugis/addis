@@ -1,9 +1,34 @@
+/*
+ * This file is part of ADDIS (Aggregate Data Drug Information System).
+ * ADDIS is distributed from http://drugis.org/.
+ * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Ahmad Kamal, Daniel Reid.
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.drugis.addis.entities.treatment;
 
 import java.util.Collections;
 import java.util.Set;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.AbstractNamedEntity;
 import org.drugis.addis.entities.DoseUnit;
@@ -18,7 +43,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> {
+public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCategorization> {
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_CATEGORIES = "categories";
@@ -29,11 +54,11 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 
 	private final DoseUnit d_doseUnit;
 
-	public DosedDrugTreatment() {
-		this("", null, ExampleData.MILLIGRAMS_A_DAY);
+	public TreatmentCategorization() {
+		this("", null, DoseUnit.MILLIGRAMS_A_DAY);
 	}
 
-	public DosedDrugTreatment(final String name, final Drug drug, final DoseUnit unit) {
+	public TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit) {
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
@@ -110,16 +135,21 @@ public class DosedDrugTreatment extends AbstractNamedEntity<DosedDrugTreatment> 
 		return d_decisionTree.getRoot();
 	}
 
+	public Pair<RangeEdge> splitRange(final ChoiceNode parent, final double value, final boolean lowerRangeOpen) {
+		final RangeEdge edge = (RangeEdge) d_decisionTree.findMatchingEdge(parent, value);
+		return splitRange(edge, value, lowerRangeOpen);
+	}
+	
 	/**
-	 * Add a cut-off value. This splits an existing range in two.
+	 * Add a cut-off value. This splits the existing range in two.
 	 * The lower range will always be initialized with the child node of the original range, the higher range will be excluded by default.
-	 * @param parent The parent of the set of range nodes to split.
+	 * @param range The range to split.
 	 * @param value The cut-off value.
 	 * @param lowerRangeOpen If true, the upper bound of the lower range will be open.
 	 * Otherwise, it will be closed. Vice versa for the lower bound of the upper range.
 	 */
-	public Pair<RangeEdge> splitRange(final ChoiceNode parent, final double value, final boolean lowerRangeOpen) {
-		final RangeEdge edge = (RangeEdge) d_decisionTree.findMatchingEdge(parent, value);
+	public Pair<RangeEdge> splitRange(final RangeEdge edge, final double value, final boolean lowerRangeOpen) {
+		final DecisionTreeNode parent = d_decisionTree.getEdgeSource(edge);
 		final DecisionTreeNode child = d_decisionTree.getEdgeTarget(edge);
 
 		final Pair<RangeEdge> ranges = splitOnValue(edge, value, lowerRangeOpen);

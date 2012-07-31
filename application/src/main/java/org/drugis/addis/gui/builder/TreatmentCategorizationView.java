@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.AddisTabbedPane;
-import org.drugis.addis.gui.wizard.DosedDrugTreatmentOverviewWizardStep;
-import org.drugis.addis.presentation.DosedDrugTreatmentPresentation;
+import org.drugis.addis.gui.wizard.TreatmentCategorizationOverviewWizardStep;
+import org.drugis.addis.presentation.TreatmentCategorizationPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.SingleColumnPanelBuilder;
 import org.drugis.common.gui.ViewBuilder;
@@ -52,12 +52,12 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 
-public class DosedDrugTreatmentView implements ViewBuilder {
+public class TreatmentCategorizationView implements ViewBuilder {
 
-	private final DosedDrugTreatmentPresentation d_model;
+	private final TreatmentCategorizationPresentation d_model;
 
-	public DosedDrugTreatmentView(final DosedDrugTreatmentPresentation dosedDrugTreatmentPresentation, final AddisWindow parent) {
-		d_model = dosedDrugTreatmentPresentation;
+	public TreatmentCategorizationView(final TreatmentCategorizationPresentation treatmentCategorizationPresentation, final AddisWindow parent) {
+		d_model = treatmentCategorizationPresentation;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class DosedDrugTreatmentView implements ViewBuilder {
 		SingleColumnPanelBuilder builder = new SingleColumnPanelBuilder();
 
 		// ---------- Overview ----------
-		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(DosedDrugTreatment.class).getSingularCapitalized());
+		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(TreatmentCategorization.class).getSingularCapitalized());
 		builder.add(buildOverviewPanel());
 		final JTabbedPane tabbedPane = new AddisTabbedPane();
 		tabbedPane.addTab("Overview", builder.getPanel());
@@ -73,7 +73,7 @@ public class DosedDrugTreatmentView implements ViewBuilder {
 		// ---------- Tree visualization ----------
 		builder = new SingleColumnPanelBuilder();
 		builder.addSeparator("Dose Decision Tree");
-		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = DosedDrugTreatmentOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
+		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = TreatmentCategorizationOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
 		builder.add(treeView);
 		tabbedPane.addTab("Decision tree", builder.getPanel());
 
