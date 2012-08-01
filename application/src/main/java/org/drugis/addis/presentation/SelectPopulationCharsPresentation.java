@@ -38,7 +38,7 @@ import com.jgoodies.binding.list.ObservableList;
 public class SelectPopulationCharsPresentation
 extends SelectVariablesPresentation<PopulationCharacteristic> {
 	public SelectPopulationCharsPresentation(ObservableList<PopulationCharacteristic> options, WhenTakenFactory wtf, AddisWindow mainWindow) {
-		super(options, "Population Baseline Characteristics", "Select Population Baseline Characteristics",
+		super(options, PopulationCharacteristic.class, "Select Population Baseline Characteristics",
 			"Please select the appropriate population baseline characteristics.", wtf, mainWindow);
 	}
 	
