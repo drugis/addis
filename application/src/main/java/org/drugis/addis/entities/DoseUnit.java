@@ -45,6 +45,7 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 	private ScaleModifier d_scaleModifier;
 	private Unit d_unit;
 	private Duration d_perTime;
+	public static DoseUnit MILLIGRAMS_A_DAY = new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D"));
 
 	public DoseUnit(Unit u, ScaleModifier scaleMod, Duration perTime) {
 		d_unit = u;

@@ -50,6 +50,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
@@ -93,7 +94,7 @@ public class DomainTreeModelTest {
 		
 		ExampleData.addDefaultEpochs(d_firstStudy);
 
-		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, DoseUnit.MILLIGRAMS_A_DAY));
 		
 		d_firstStudy.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_firstEndpoint));
 		d_firstStudy.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(d_firstADE));

@@ -40,6 +40,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.DerivedStudyCharacteristic;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FlexibleDose;
@@ -120,7 +121,7 @@ public class StudyPresentationTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
-		d_study.createAndAddArm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), ExampleData.MILLIGRAMS_A_DAY));
+		d_study.createAndAddArm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), DoseUnit.MILLIGRAMS_A_DAY));
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());

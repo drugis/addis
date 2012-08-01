@@ -180,8 +180,5 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	protected void buildDrugHolders() {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void buildDrugHolders() {	}
 }

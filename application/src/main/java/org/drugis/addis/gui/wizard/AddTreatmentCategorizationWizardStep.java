@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,12 +29,11 @@ package org.drugis.addis.gui.wizard;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -47,34 +46,32 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
-import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
-import org.drugis.addis.gui.knowledge.DosedDrugTreatmentKnowledge;
-import org.drugis.addis.presentation.wizard.DosedDrugTreatmentWizardPresentation;
+import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
+import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.gui.LayoutUtil;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyAdapter;
-import com.jgoodies.binding.list.ArrayListModel;
-import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizardStep {
+public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 7730051460456443680L;
 
 	private final NotEmptyValidator d_validator;
 
-	public AddDosedDrugTreatmentWizardStep(final DosedDrugTreatmentWizardPresentation presentationModel) {
-		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", null);
+	public AddTreatmentCategorizationWizardStep(final TreatmentCategorizationWizardPresentation presentationModel, JDialog dialog) {
+		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
 
@@ -101,7 +98,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	protected void initialize() {
 //		rebuildPanel();
 	}
-
+	
 	@Override
 	protected JPanel buildPanel() {
 		final FormLayout layout = new FormLayout(
@@ -115,7 +112,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		int row = 1;
 		final int colSpan = layout.getColumnCount();
 
-		final JTextField name = BasicComponentFactory.createTextField(d_pm.getModel(DosedDrugTreatment.PROPERTY_NAME), false);
+		final JTextField name = BasicComponentFactory.createTextField(d_pm.getModel(TreatmentCategorization.PROPERTY_NAME), false);
 		name.setColumns(15);
 
 		builder.addLabel("Drug:", cc.xy(1, row));
@@ -147,39 +144,17 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		row += 2;
 		builder.addLabel("Unknown dose:", cc.xy(1, row));
 		final JComboBox unknownDoseCombo = BasicComponentFactory.createComboBox(
-				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForUnknownDose(), d_pm.getModelForUnknownDose()));
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForUnknownDose(), d_pm.getModelForUnknownDose()),
+				new CategoryComboboxRenderer(false));
 		builder.add(unknownDoseCombo, cc.xyw(3, row, colSpan - 2));
 
 		row += 2;
 		builder.addLabel("Known dose:", cc.xy(1, row));
 		final JComboBox knownDoseCombo = BasicComponentFactory.createComboBox(
-				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForKnownDose(), d_pm.getModelForKnownDose()));
+				new SelectionInList<DecisionTreeNode>((ListModel)d_pm.getOptionsForKnownDose(), d_pm.getModelForKnownDose()),
+				new CategoryComboboxRenderer(false));
 		builder.add(knownDoseCombo, cc.xyw(3, row, colSpan - 2));
 		return builder.getPanel();
-	}
-
-	public static JComboBox createCategoryComboBox(final List<Category> categories, final DosedDrugTreatmentKnowledge.CategorySpecifiers ... extraItems) {
-		final ObservableList<Object> list = new ArrayListModel<Object>();
-		list.add(0, new LeafNode());
-		for (final DosedDrugTreatmentKnowledge.CategorySpecifiers item : extraItems) {
-			list.add(item);
-		}
-		for (final Category category : categories) {
-			list.add(new LeafNode(category));
-		}
-		return new JComboBox(list.toArray());
-	}
-
-	public static JComboBox createCategoryComboBox(final ValueModel model, final List<Category> categories, final DecisionTreeNode ... extraItems) {
-		final List<Object> list = new ArrayList<Object>();
-		list.add(new LeafNode());
-		for (final Category category : categories) {
-			list.add(new LeafNode(category));
-		}
-		for (final DecisionTreeNode item : extraItems) {
-			list.add(item);
-		}
-		return BasicComponentFactory.createComboBox(new SelectionInList<Object>(list, model));
 	}
 
 	private JButton createNewDrugButton(final ValueModel drugModel) {
@@ -193,7 +168,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 		return btn;
 	}
 
-	private JComponent createCategoriesPanel(final DosedDrugTreatmentWizardPresentation model) {
+	private JComponent createCategoriesPanel(final TreatmentCategorizationWizardPresentation model) {
 		final FormLayout layout = new FormLayout(
 				"left:pref, 3dlu, fill:pref:grow, 3dlu, pref",
 				"p");
@@ -207,6 +182,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 			final JTextField name = BasicComponentFactory.createTextField(new PropertyAdapter<Category>(category, Category.PROPERTY_NAME), false);
 			builder.add(name, cc.xy(3, row));
 			final JButton remove = GUIFactory.createIconButton(FileNames.ICON_DELETE, "delete");
+			Bindings.bind(remove, "enabled", d_pm.getCategoryUsed(category));
 			remove.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
@@ -222,7 +198,7 @@ public class AddDosedDrugTreatmentWizardStep extends AbstractDoseTreatmentWizard
 	}
 
 
-	private JButton createAddCategoryButton(final DosedDrugTreatmentWizardPresentation model) {
+	private JButton createAddCategoryButton(final TreatmentCategorizationWizardPresentation model) {
 		final JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);
 		btn.addActionListener(new ActionListener() {
 			@Override

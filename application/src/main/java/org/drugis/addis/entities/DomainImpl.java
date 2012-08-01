@@ -40,7 +40,7 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.treatment.DosedDrugTreatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.FilteredObservableList.Filter;
@@ -58,7 +58,7 @@ public class DomainImpl extends Domain {
 	private static final EntityCategory CATEGORY_DRUGS =
 		new EntityCategory("drugs", Drug.class);
 	private static final EntityCategory CATEGORY_TREATMENTS =
-			new EntityCategory("treatments", DosedDrugTreatment.class);
+			new EntityCategory("treatments", TreatmentCategorization.class);
 	private static final EntityCategory CATEGORY_ENDPOINTS =
 		new EntityCategory("endpoints", Endpoint.class);
 	private static final EntityCategory CATEGORY_ADVERSE_EVENTS =
@@ -123,7 +123,7 @@ public class DomainImpl extends Domain {
 	private SortedSetModel<Study> d_studies = new DomainSortedSetModel<Study>();
 	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new DomainSortedSetModel<MetaAnalysis>();		
 	private SortedSetModel<Drug> d_drugs = new DomainSortedSetModel<Drug>();
-	private ObservableList<DosedDrugTreatment> d_treatments = new ArrayListModel<DosedDrugTreatment>();
+	private ObservableList<TreatmentCategorization> d_treatments = new ArrayListModel<TreatmentCategorization>();
 
 	private SortedSetModel<Indication> d_indications = new DomainSortedSetModel<Indication>();	
 	private SortedSetModel<Unit> d_units = new DomainSortedSetModel<Unit>();
@@ -234,8 +234,8 @@ public class DomainImpl extends Domain {
 	public void deleteEntity(Entity entity) throws DependentEntitiesException {
 		if (entity instanceof Drug) {
 			getDrugs().remove(((Drug) entity));
-		} else if (entity instanceof DosedDrugTreatment) {
-			getTreatments().remove(((DosedDrugTreatment) entity));
+		} else if (entity instanceof TreatmentCategorization) {
+			getTreatments().remove(((TreatmentCategorization) entity));
 		} else if (entity instanceof Endpoint) {
 			getEndpoints().remove(((Endpoint) entity));
 		} else if (entity instanceof AdverseEvent) {
@@ -330,7 +330,7 @@ public class DomainImpl extends Domain {
 	}
 	
 	@Override
-	public ObservableList<DosedDrugTreatment> getTreatments() {
+	public ObservableList<TreatmentCategorization> getTreatments() {
 		return d_treatments;
 	}
 
