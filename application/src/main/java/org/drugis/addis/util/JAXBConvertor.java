@@ -146,9 +146,12 @@ import org.drugis.addis.entities.data.StringWithNotes;
 import org.drugis.addis.entities.data.Studies;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
+import org.drugis.addis.entities.data.TreatmentCategorizations;
 import org.drugis.addis.entities.data.Units;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.addis.util.convertors.NetworkMetaAnalysisConverter;
+import org.drugis.addis.util.convertors.TreatmentCategorizationsConverter;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
 
@@ -181,6 +184,9 @@ public class JAXBConvertor {
 		}
 		for (org.drugis.addis.entities.data.Drug d : addisData.getDrugs().getDrug()) {
 			newDomain.getDrugs().add(convertDrug(d));
+		}
+		for (org.drugis.addis.entities.data.TreatmentCategorization t : addisData.getTreatmentCategorizations().getTreatmentCategorization()) {
+			newDomain.getTreatmentCategorizations().add(TreatmentCategorizationsConverter.load(t, newDomain));
 		}
 		for (org.drugis.addis.entities.data.OutcomeMeasure om : addisData.getEndpoints().getEndpoint()) {
 			newDomain.getEndpoints().add(convertEndpoint(om));
@@ -218,6 +224,10 @@ public class JAXBConvertor {
 		addisData.setDrugs(new Drugs());
 		for (Drug d : domain.getDrugs()) {
 			addisData.getDrugs().getDrug().add(convertDrug(d));
+		}
+		addisData.setTreatmentCategorizations(new TreatmentCategorizations());
+		for(TreatmentCategorization t : domain.getTreatmentCategorizations()) { 
+			addisData.getTreatmentCategorizations().getTreatmentCategorization().add(TreatmentCategorizationsConverter.save(t));
 		}
 		addisData.setEndpoints(new Endpoints());
 		for (Endpoint e : domain.getEndpoints()) {
@@ -274,6 +284,16 @@ public class JAXBConvertor {
 
 	static Drug convertDrug(org.drugis.addis.entities.data.Drug d) {
 		return new Drug(d.getName(), d.getAtcCode());
+	}
+	
+	static org.drugis.addis.entities.treatment.TreatmentCategorization convertTreatmentCategorization(
+			org.drugis.addis.entities.data.TreatmentCategorization t,
+			Domain domain) throws ConversionException {
+		return TreatmentCategorizationsConverter.load(t, domain);	
+	}
+	
+	static org.drugis.addis.entities.data.TreatmentCategorization convertTreatmentCategorization(org.drugis.addis.entities.treatment.TreatmentCategorization t) {
+		return TreatmentCategorizationsConverter.save(t);	
 	}
 
 	public static org.drugis.addis.entities.data.Drug convertDrug(Drug d) {
@@ -440,7 +460,7 @@ public class JAXBConvertor {
 	}
 	
 	
-	private static DoseUnit convertDoseUnit(org.drugis.addis.entities.data.DoseUnit doseUnit, Domain domain) {
+	public static DoseUnit convertDoseUnit(org.drugis.addis.entities.data.DoseUnit doseUnit, Domain domain) {
 		Unit findNamedItem = findNamedItem(domain.getUnits(), doseUnit.getUnit().getName());
 		return new DoseUnit(findNamedItem, doseUnit.getScaleModifier(), doseUnit.getPerTime());
 	}
@@ -517,7 +537,7 @@ public class JAXBConvertor {
 		return newDose;
 	}
 
-	static org.drugis.addis.entities.data.DoseUnit convertDoseUnit(DoseUnit unit) {
+	public static org.drugis.addis.entities.data.DoseUnit convertDoseUnit(DoseUnit unit) {
 		org.drugis.addis.entities.data.DoseUnit du = new org.drugis.addis.entities.data.DoseUnit();
 		du.setUnit(nameReference(unit.getUnit().getName()));
 		du.setScaleModifier(unit.getScaleModifier());
@@ -1104,7 +1124,7 @@ public class JAXBConvertor {
 		
 		for(org.drugis.addis.entities.data.MetaAnalysis ma : analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
 			if(ma instanceof org.drugis.addis.entities.data.NetworkMetaAnalysis) {
-				list.add(NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis((org.drugis.addis.entities.data.NetworkMetaAnalysis)ma, domain));
+				list.add(NetworkMetaAnalysisConverter.load((org.drugis.addis.entities.data.NetworkMetaAnalysis)ma, domain));
 			} else if(ma instanceof PairwiseMetaAnalysis) {
 				list.add(convertPairWiseMetaAnalysis((PairwiseMetaAnalysis)ma, domain));
 			} else {
@@ -1118,7 +1138,7 @@ public class JAXBConvertor {
 		MetaAnalyses analyses = new MetaAnalyses();
 		for(MetaAnalysis ma : list) {
 			if(ma instanceof NetworkMetaAnalysis) {
-				analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis((NetworkMetaAnalysis) ma));
+				analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(NetworkMetaAnalysisConverter.save((NetworkMetaAnalysis) ma));
 			} else if(ma instanceof RandomEffectsMetaAnalysis) {
 				analyses.getPairwiseMetaAnalysisOrNetworkMetaAnalysis().add(convertPairWiseMetaAnalysis((RandomEffectsMetaAnalysis) ma));
 			} else {

@@ -44,6 +44,7 @@ import com.jgoodies.binding.list.ObservableList;
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCategorization> {
+	private static final ChoiceNode ROOT_NODE = new ChoiceNode(AbstractDose.class, "class");
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_CATEGORIES = "categories";
@@ -57,16 +58,24 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 	public TreatmentCategorization() {
 		this("", null, DoseUnit.MILLIGRAMS_A_DAY);
 	}
-
+	
 	public TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit) {
+		this(name, drug, unit, true);
+	}
+
+	public TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit, boolean withDefault) {
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
-		d_decisionTree = createDefaultTree();
+		if(withDefault) { 
+			d_decisionTree = createDefaultTree();
+		} else { 
+			d_decisionTree = new DecisionTree(ROOT_NODE);
+		}
 	}
 
 	private static DecisionTree createDefaultTree() {
-		final ChoiceNode root = new ChoiceNode(AbstractDose.class, "class");
+		final ChoiceNode root = ROOT_NODE;
 		final DecisionTree tree = new DecisionTree(root);
 		addDefaultEdges(tree);
 		return tree;

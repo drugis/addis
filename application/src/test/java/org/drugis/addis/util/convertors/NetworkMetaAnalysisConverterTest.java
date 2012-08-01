@@ -116,9 +116,9 @@ public class NetworkMetaAnalysisConverterTest {
 				ExampleData.buildEndpointCgi(), studies, drugs, armMap);
 		
 		assertEntityEquals(expected,
-				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(ma.d_nwma, domain));
+				NetworkMetaAnalysisConverter.load(ma.d_nwma, domain));
 		assertEquals(ma.d_nwma,
-				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(expected));
+				NetworkMetaAnalysisConverter.save(expected));
 	}
 
 	@Test

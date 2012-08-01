@@ -1643,7 +1643,7 @@ public class JAXBConvertorTest {
 		List<MetaAnalysis> expected = new ArrayList<MetaAnalysis>();
 		expected.add(JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma,
 				domain));
-		expected.add(NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(ma2.d_nwma,
+		expected.add(NetworkMetaAnalysisConverter.load(ma2.d_nwma,
 				domain));
 
 		assertEntityEquals(expected,
@@ -1811,7 +1811,7 @@ public class JAXBConvertorTest {
 		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor
 				.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
 		domain.getMetaAnalyses().add(ma1ent);
-		MetaAnalysis ma2ent = NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(
+		MetaAnalysis ma2ent = NetworkMetaAnalysisConverter.load(
 				ma2.d_nwma, domain);
 		domain.getMetaAnalyses().add(ma2ent);
 
@@ -1923,7 +1923,7 @@ public class JAXBConvertorTest {
 						pairWiseMetaAnalysis.d_pwma, domain));
 		addStudies(domain, networkMetaAnalysis);
 		domain.getMetaAnalyses().add(
-				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(
+				NetworkMetaAnalysisConverter.load(
 						networkMetaAnalysis.d_nwma, domain));
 
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR(

@@ -16,14 +16,6 @@
 			</xs:sequence>
 		</xs:complexType>
 		<!-- Keys and keyrefs -->
-		<xs:key name="doseUnitNameKey">
-			<xs:selector xpath="units/unit"/>
-			<xs:field xpath="@name"/>
-		</xs:key>
-		<xs:keyref name="doseUnitKeyRef" refer="doseUnitNameKey">
-			<xs:selector xpath="treatmentCategorizations/treatmentCategorization/unit"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
 		<xs:key name="drugNameKey">
 			<xs:selector xpath="drugs/drug"/>
 			<xs:field xpath="@name"/>
@@ -226,7 +218,7 @@
 	<xs:complexType name="TreatmentCategorization">
 		<xs:sequence minOccurs="1" maxOccurs="1">
 			<xs:element name="drug" type="NameReference"/>
-			<xs:element name="unit" type="NameReference"/>
+			<xs:element name="unit" type="DoseUnit"/>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="category" type="Category"/>
 			</xs:sequence>

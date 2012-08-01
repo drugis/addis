@@ -37,11 +37,15 @@ public class TypeEdge implements DecisionTreeEdge {
 
 	@Override
 	public boolean decide(final Object object) {
-		return object == d_type;
+		return object == getType();
 	}
 
 	@Override
 	public String toString() {
-		return GUIHelper.humanize(d_type.getSimpleName().replace("Dose", ""));
+		return GUIHelper.humanize(getType().getSimpleName().replace("Dose", ""));
+	}
+
+	public Class<?> getType() {
+		return d_type;
 	}
 }
