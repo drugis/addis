@@ -26,6 +26,7 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.drugis.addis.entities.DrugSet;
@@ -35,6 +36,7 @@ import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.parameterization.ParameterComparator;
 import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.summary.ConvergenceSummary;
 import org.drugis.mtc.summary.QuantileSummary;
@@ -91,7 +93,9 @@ public abstract class AbstractSavedWrapper extends AbstractObservable implements
 	
 	@Override
 	public Parameter[] getParameters() { 
-		return d_convergenceSummaries.keySet().toArray(new Parameter[] {});
+		Parameter[] parameters = d_convergenceSummaries.keySet().toArray(new Parameter[] {});
+		Arrays.sort(parameters, new ParameterComparator());
+		return parameters;
 	}
 
 	@Override

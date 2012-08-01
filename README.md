@@ -16,6 +16,7 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
+1.14.1: Bugfix release. 
 
 1.14: Network meta-analysis results can now be saved in the ADDIS data
    file. In addition, the computations can be reset and there is a new
