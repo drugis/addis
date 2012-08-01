@@ -47,53 +47,54 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 
 import com.jgoodies.binding.PresentationModel;
 
 public class PresentationModelFactory {
-	private Map<Object, PresentationModel<?>> d_cache = new	WeakHashMap<Object, PresentationModel<?>>();
-	private Domain d_domain;
-	
-	public PresentationModelFactory(Domain domain) {
+	private final Map<Object, PresentationModel<?>> d_cache = new	WeakHashMap<Object, PresentationModel<?>>();
+	private final Domain d_domain;
+
+	public PresentationModelFactory(final Domain domain) {
 		d_domain = domain;
 	}
-	
-	public <T> LabeledPresentation getLabeledModel(T obj) {
+
+	public <T> LabeledPresentation getLabeledModel(final T obj) {
 		try {
 			return (LabeledPresentation)getModel(obj);
-		} catch (ClassCastException e) {
+		} catch (final ClassCastException e) {
 			return null;
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> PresentationModel<T> getModel(T obj) {
+	public <T> PresentationModel<T> getModel(final T obj) {
 		PresentationModel mod = d_cache.get(obj);
 		if ((mod != null) && (mod.getBean() == obj)) {
 			return mod;
 		}
-	
+
 		mod = createModel(obj);
 		d_cache.put(obj, mod);
-		return (PresentationModel<T>)mod;
+		return mod;
 	}
-	
+
 	public void clearCache() {
 		d_cache.clear();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private PresentationModel createModel(Object obj) {
+	private PresentationModel createModel(final Object obj) {
 		if (obj instanceof Variable) {
 			return new VariablePresentation((Variable)obj,
 					d_domain.getStudies((Variable)obj), this);
 		}
 		if (obj instanceof Unit) {
 			return new UnitPresentation((Unit) obj);
-		}		
+		}
 		if (obj instanceof Study) {
 			return new StudyPresentation((Study) obj, this);
-		}		
+		}
 		if (obj instanceof Indication) {
 			return new IndicationPresentation((Indication)obj, d_domain.getStudies());
 		}
@@ -114,6 +115,9 @@ public class PresentationModelFactory {
 		}
 		if (obj instanceof DrugTreatment) {
 			return new DrugTreatmentPresentation((DrugTreatment)obj);
+		}
+		if (obj instanceof TreatmentCategorization) {
+			return new TreatmentCategorizationPresentation((TreatmentCategorization)obj, d_domain);
 		}
 		if (obj instanceof Drug) {
 			return new DrugPresentation((Drug) obj, d_domain);

@@ -86,7 +86,7 @@ import edu.uci.ics.jung.graph.util.Pair;
 public class NetworkMetaAnalysisConverter {
 	
 	// From JAXB to ADDIS (load)
-	public static NetworkMetaAnalysis convertNetworkMetaAnalysis(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
+	public static NetworkMetaAnalysis load(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
 		String name = nma.getName();
 		Indication indication = JAXBConvertor.findNamedItem(domain.getIndications(), nma.getIndication().getName());
 		org.drugis.addis.entities.OutcomeMeasure om = JAXBConvertor.findOutcomeMeasure(domain, nma);
@@ -304,7 +304,7 @@ public class NetworkMetaAnalysisConverter {
 	}
 	
 	//  From ADDIS to JAXB (save)
-	public static org.drugis.addis.entities.data.NetworkMetaAnalysis convertNetworkMetaAnalysis(NetworkMetaAnalysis ma) throws ConversionException {
+	public static org.drugis.addis.entities.data.NetworkMetaAnalysis save(NetworkMetaAnalysis ma) throws ConversionException {
 		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
 		nma.setName(ma.getName());
 		nma.setIndication(JAXBConvertor.nameReference(ma.getIndication().getName()));

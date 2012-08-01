@@ -65,6 +65,12 @@ public class GUIFactory {
 		button.setToolTipText(toolTipText);
 		return button;
 	}
+	
+	public static JButton createLabeledIconButton(String label, String iconName) {
+		JButton btn = createIconButton(iconName, label);
+		btn.setText(label);
+		return btn;
+	}
 
 	public static JComponent createOutcomeMeasureLabelWithIcon(Variable e, boolean isPrimary) {
 		String fname = FileNames.ICON_STUDY;
@@ -118,5 +124,4 @@ public class GUIFactory {
 		return "<html><b>From " + note.getSource().toString() + "</b><br>\n" + 
 			GUIHelper.wordWrap(note.getText(), false) + "</html>";
 	}
-
 }

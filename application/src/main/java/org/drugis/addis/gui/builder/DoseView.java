@@ -32,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultFormatter;
 
@@ -41,6 +42,7 @@ import org.drugis.addis.entities.Unit;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
 import org.drugis.addis.presentation.DosePresentation;
+import org.drugis.addis.presentation.DoseUnitPresentation;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -55,8 +57,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class DoseView implements ViewBuilder {
 	private DosePresentation d_model;
-	private JComboBox d_scaleModifierCB;
-	private JComboBox d_unitCB;
 	private JFormattedTextField d_quantityMin;
 	private JFormattedTextField d_quantityMax;
 	private final List<Unit> d_unitOptions;
@@ -74,38 +74,51 @@ public class DoseView implements ViewBuilder {
 		d_quantityMin.setColumns(8);
 		d_quantityMax.setColumns(8);
 		
-		SelectionInList<ScaleModifier> scaleModifierSelectionInList = new SelectionInList<ScaleModifier>(
-				ScaleModifier.values(),
-				d_model.getDoseUnitPresentation().getModel(DoseUnit.PROPERTY_SCALE_MODIFIER));
-		
-		SelectionInList<Unit> unitSelectionInList = new SelectionInList<Unit>(
-				d_unitOptions,
-				d_model.getDoseUnitPresentation().getModel(DoseUnit.PROPERTY_UNIT));
-		
-		d_scaleModifierCB = BasicComponentFactory.createComboBox(scaleModifierSelectionInList);
-		d_unitCB = BasicComponentFactory.createComboBox(unitSelectionInList);
-		ComboBoxPopupOnFocusListener.add(d_unitCB);
-		ComboBoxPopupOnFocusListener.add(d_scaleModifierCB);
-		
 	}
 
 	public JComponent buildPanel() {
-		FormLayout layout = new FormLayout("p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p",
+		FormLayout layout = new FormLayout("p, 3dlu, p, 3dlu, p, fill:pref:grow",
 				"p");
 		initComponents();
 		PanelBuilder builder = new PanelBuilder(layout);
 		
 		CellConstraints cc = new CellConstraints();
-		builder.add(d_quantityMin, cc.xyw(1, 1, 3));
-		builder.add(new JLabel(" up to "), cc.xyw(4, 1, 3));
-		builder.add(d_quantityMax, cc.xyw(7, 1, 3));
+		builder.add(d_quantityMin, cc.xy(1, 1));
+		builder.add(new JLabel(" up to "), cc.xy(3, 1));
+		builder.add(d_quantityMax, cc.xy(5, 1));
 		
 		int row = LayoutUtil.addRow(layout, 1);
 		
-		builder.add(d_scaleModifierCB, cc.xy(1, row));
-		builder.add(d_unitCB, cc.xy(3, row));
+		DosePresentation model = d_model;
+
+		JPanel doseUnitRow = createDoseUnitRow(model.getDoseUnitPresentation(), d_unitOptions);
+		builder.add(doseUnitRow, cc.xyw(1, row, 6));
+		JPanel panel = builder.getPanel();
+		return panel;
+	}
+
+	public static JPanel createDoseUnitRow(DoseUnitPresentation model, List<Unit> unitOptions) {
+		FormLayout layout = new FormLayout("p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p",
+				"p");
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		
+		SelectionInList<ScaleModifier> scaleModifierSelectionInList = new SelectionInList<ScaleModifier>(
+				ScaleModifier.values(),
+				model.getModel(DoseUnit.PROPERTY_SCALE_MODIFIER));
+		
+		SelectionInList<Unit> unitSelectionInList = new SelectionInList<Unit>(
+				unitOptions,
+				model.getModel(DoseUnit.PROPERTY_UNIT));
+		
+		ComboBoxPopupOnFocusListener.add(BasicComponentFactory.createComboBox(unitSelectionInList));
+		ComboBoxPopupOnFocusListener.add(BasicComponentFactory.createComboBox(scaleModifierSelectionInList));
+		
+		int row = 1;
+		builder.add(BasicComponentFactory.createComboBox(scaleModifierSelectionInList), cc.xy(1, row));
+		builder.add(BasicComponentFactory.createComboBox(unitSelectionInList), cc.xy(3, row));
 		builder.add(new JLabel(" per "), cc.xy(5, row));
-		DurationPresentation<DoseUnit> durationModel = d_model.getDoseUnitPresentation().getDurationPresentation();
+		DurationPresentation<DoseUnit> durationModel = model.getDurationPresentation();
 		
 		// duration quantity input
 		final JTextField quantityField = BasicComponentFactory.createFormattedTextField(

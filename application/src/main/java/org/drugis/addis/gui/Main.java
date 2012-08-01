@@ -75,7 +75,7 @@ public class Main extends AbstractObservable {
 	static final String DISPLAY_NEW = "New File";
 	public static final String PROPERTY_DISPLAY_NAME = "displayName";
 
-	private AddisWindow d_window;
+	private static AddisWindow s_window;
 
 	private DomainManager d_domainMgr;
 	private String d_curFilename = null;
@@ -146,7 +146,7 @@ public class Main extends AbstractObservable {
 
 	protected void quitApplication() {
 		if(isDataChanged()) {
-			if(d_window == null || d_window.saveChangesDialog()) {
+			if(s_window == null || s_window.saveChangesDialog()) {
 				quit();
 			}
 		} else {
@@ -155,8 +155,8 @@ public class Main extends AbstractObservable {
 	}
 
 	private void quit() {
-		if (d_window != null) {
-			d_window.dispose(); 
+		if (s_window != null) {
+			s_window.dispose(); 
 		}
 		System.exit(0);
 	}
@@ -204,11 +204,11 @@ public class Main extends AbstractObservable {
 				return false;
 			}
 			if (!loadedVersion.isValid()) {
-				JOptionPane.showMessageDialog(d_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
+				JOptionPane.showMessageDialog(s_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
 			} else if (loadedVersion.isFuture()) {
-				JOptionPane.showMessageDialog(d_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
+				JOptionPane.showMessageDialog(s_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
 			} else if (loadedVersion.isLegacy()) {
@@ -219,7 +219,7 @@ public class Main extends AbstractObservable {
 				return true;
 			}
 		} else {
-			JOptionPane.showMessageDialog(d_window, "File \"" + fileName + "\" not found.",
+			JOptionPane.showMessageDialog(s_window, "File \"" + fileName + "\" not found.",
 					"Error loading file", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
@@ -244,7 +244,7 @@ public class Main extends AbstractObservable {
 	}
 
 	private void askToConvertToNew(String fileName) {
-		int response = JOptionPane.showConfirmDialog(d_window, 
+		int response = JOptionPane.showConfirmDialog(s_window, 
 				"The data format for ADDIS has changed.\n\nWould you like to save this file in the new file format (.addis)?", 
 				"Save in new format?", JOptionPane.YES_NO_OPTION);
 		
@@ -288,16 +288,16 @@ public class Main extends AbstractObservable {
 	}
 
 	private void disposeMainWindow() {
-		if (d_window != null) {
-			d_window.setVisible(false);
-			d_window.dispose();
-			d_window = null;
+		if (s_window != null) {
+			s_window.setVisible(false);
+			s_window.dispose();
+			s_window = null;
 		}
 	}
 
 	public int fileLoadActions() {
 		final boolean[] loaded = { false };
-		FileLoadDialog d = new FileLoadDialog(d_window, new String[][] {{"addis", "xml"}, {"addis"}, {"xml"}}, new String[] {"ADDIS or legacy XML files", "ADDIS data files", "ADDIS legacy XML files"}) {
+		FileLoadDialog d = new FileLoadDialog(s_window, new String[][] {{"addis", "xml"}, {"addis"}, {"xml"}}, new String[] {"ADDIS or legacy XML files", "ADDIS data files", "ADDIS legacy XML files"}) {
 			@Override
 			public void doAction(String path, String extension) {
 				loaded[0] = loadDomainFromFile(path);
@@ -369,7 +369,7 @@ public class Main extends AbstractObservable {
 	}
 
 	public void leftTreeFocus(Object node) {
-		d_window.leftTreeFocus(node);
+		s_window.leftTreeFocus(node);
 	}
 
 	public void setCurFilename(String curFilename) {
@@ -390,13 +390,21 @@ public class Main extends AbstractObservable {
 
 	public void showMainWindow() {
 		if (!d_headless) {
-			d_window = new AddisWindow(this, getDomain());
-			d_window.pack();
-			GUIHelper.centerWindow(d_window);
-			d_window.setVisible(true);
+			s_window = new AddisWindow(this, getDomain());
+			s_window.pack();
+			GUIHelper.centerWindow(s_window);
+			s_window.setVisible(true);
 		}
 	}
 
+	/**
+	 * Beware of the singleton! 
+	 * @return returns the only AddisWindow currently in existence for this process 
+	 */
+	public static AddisWindow getMainWindow() { 
+		return s_window;
+	}
+	
 	public DomainChangedModel getDomainChangedModel() {
 		return d_domainChanged;
 	}

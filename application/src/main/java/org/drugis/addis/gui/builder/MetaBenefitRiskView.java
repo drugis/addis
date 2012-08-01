@@ -43,7 +43,6 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.EntityTablePanel;
@@ -51,6 +50,7 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.DistributionParameterCellRenderer;
 import org.drugis.addis.gui.renderer.DistributionQuantileCellRenderer;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
+import org.drugis.addis.presentation.mcmc.MCMCPresentation;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 
