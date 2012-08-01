@@ -35,8 +35,8 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.StringUtils;
-import org.drugis.addis.gui.MCMCPresentation;
 import org.drugis.addis.gui.components.progressgraph.GraphSimpleNode.GraphSimpleNodeType;
+import org.drugis.addis.presentation.mcmc.MCMCPresentation;
 import org.drugis.common.threading.Task;
 import org.drugis.mtc.MCMCModel;
 

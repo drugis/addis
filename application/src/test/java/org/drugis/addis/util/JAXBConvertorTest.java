@@ -78,6 +78,7 @@ import org.drugis.addis.entities.CharacteristicsMap;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
@@ -433,7 +434,7 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setDoseUnit(JAXBConvertor
-				.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
+				.convertDoseUnit(DoseUnit.MILLIGRAMS_A_DAY));
 
 		org.drugis.addis.entities.data.DrugTreatment dt = new org.drugis.addis.entities.data.DrugTreatment();
 		dt.setDrug(nameReference(name));
@@ -450,7 +451,7 @@ public class JAXBConvertorTest {
 		flexDose.setMinDose(quantity);
 		flexDose.setMaxDose(maxQuantity);
 		flexDose.setDoseUnit(JAXBConvertor
-				.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
+				.convertDoseUnit(DoseUnit.MILLIGRAMS_A_DAY));
 
 		org.drugis.addis.entities.data.DrugTreatment dt2 = new org.drugis.addis.entities.data.DrugTreatment();
 		dt2.setDrug(nameReference(name));
@@ -522,7 +523,7 @@ public class JAXBConvertorTest {
 		org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setDoseUnit(JAXBConvertor
-				.convertDoseUnit(ExampleData.MILLIGRAMS_A_DAY));
+				.convertDoseUnit(DoseUnit.MILLIGRAMS_A_DAY));
 		org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(drugName1));
 		t.setFixedDose(fixDose);
@@ -607,7 +608,7 @@ public class JAXBConvertorTest {
 	}
 
 	private DrugTreatment buildFixedDoseDrugTreatment(Drug drug, double quantity) {
-		FixedDose dose = new FixedDose(quantity, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(quantity, DoseUnit.MILLIGRAMS_A_DAY);
 		DrugTreatment dt = new DrugTreatment(drug, dose);
 		return dt;
 	}
@@ -615,7 +616,7 @@ public class JAXBConvertorTest {
 	private TreatmentActivity buildFlexibleDoseTreatmentActivity(Drug drug,
 			double minQuantity, double maxQuantity) {
 		FlexibleDose dose = new FlexibleDose(new Interval<Double>(minQuantity,
-				maxQuantity), ExampleData.MILLIGRAMS_A_DAY);
+				maxQuantity), DoseUnit.MILLIGRAMS_A_DAY);
 		return new TreatmentActivity(new DrugTreatment(drug, dose));
 	}
 
@@ -1074,10 +1075,10 @@ public class JAXBConvertorTest {
 						PredefinedActivity.RANDOMIZATION));
 		DrugTreatment fluoxActivity = new DrugTreatment(
 				ExampleData.buildDrugFluoxetine(), new FixedDose(12.5,
-						ExampleData.MILLIGRAMS_A_DAY));
+						DoseUnit.MILLIGRAMS_A_DAY));
 		DrugTreatment sertrActivity = new DrugTreatment(
 				ExampleData.buildDrugSertraline(), new FixedDose(12.5,
-						ExampleData.MILLIGRAMS_A_DAY));
+						DoseUnit.MILLIGRAMS_A_DAY));
 		List<DrugTreatment> combTreatment = Arrays.asList(fluoxActivity,
 				sertrActivity);
 		sas.getStudyActivity().add(
@@ -1085,7 +1086,7 @@ public class JAXBConvertorTest {
 						new TreatmentActivity(combTreatment)));
 		DrugTreatment paroxActivity = new DrugTreatment(
 				ExampleData.buildDrugParoxetine(), new FixedDose(12.0,
-						ExampleData.MILLIGRAMS_A_DAY));
+						DoseUnit.MILLIGRAMS_A_DAY));
 		sas.getStudyActivity().add(
 				buildStudyActivity("Parox fixed dose", new TreatmentActivity(
 						paroxActivity)));
@@ -1311,10 +1312,10 @@ public class JAXBConvertorTest {
 				"Randomization", PredefinedActivity.RANDOMIZATION);
 		DrugTreatment fluoxDrugTreatment = new DrugTreatment(
 				ExampleData.buildDrugFluoxetine(), new FixedDose(12.5,
-						ExampleData.MILLIGRAMS_A_DAY));
+						DoseUnit.MILLIGRAMS_A_DAY));
 		DrugTreatment sertrDrugTreatment = new DrugTreatment(
 				ExampleData.buildDrugSertraline(), new FixedDose(12.5,
-						ExampleData.MILLIGRAMS_A_DAY));
+						DoseUnit.MILLIGRAMS_A_DAY));
 		;
 		StudyActivity combTreatmentActivity = new StudyActivity(
 				"Fluox + Sertr fixed dose", new TreatmentActivity(
@@ -1322,7 +1323,7 @@ public class JAXBConvertorTest {
 		StudyActivity paroxTreatmentActivity = new StudyActivity(
 				"Parox fixed dose", new TreatmentActivity(new DrugTreatment(
 						ExampleData.buildDrugParoxetine(), new FixedDose(12.0,
-								ExampleData.MILLIGRAMS_A_DAY))));
+								DoseUnit.MILLIGRAMS_A_DAY))));
 		study2.getStudyActivities().add(randomizationActivity);
 		study2.getStudyActivities().add(combTreatmentActivity);
 		study2.getStudyActivities().add(paroxTreatmentActivity);

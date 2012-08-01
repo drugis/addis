@@ -357,7 +357,7 @@ public class StudyTest {
 		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
 		dep.add(ExampleData.buildDrugFluoxetine());
 		dep.add(ExampleData.buildDrugParoxetine());
-		dep.add(ExampleData.MILLIGRAMS_A_DAY.getUnit());
+		dep.add(DoseUnit.MILLIGRAMS_A_DAY.getUnit());
 		dep.add(s.getIndication());
 		assertEquals(dep, s.getDependencies());
 	}	
@@ -405,7 +405,7 @@ public class StudyTest {
 		PopulationCharacteristic v = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		Study s = new Study("X", new Indication(0L, "Y"));
 		ExampleData.addDefaultEpochs(s);
-		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, ExampleData.MILLIGRAMS_A_DAY));
+		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, DoseUnit.MILLIGRAMS_A_DAY));
 		s.getPopulationChars().clear();
 		s.getPopulationChars().addAll(Study.wrapVariables(Collections.singletonList(v)));
 		BasicContinuousMeasurement m = new BasicContinuousMeasurement(0.0, 1.0, 5);
@@ -421,7 +421,7 @@ public class StudyTest {
 	public void testChangePopulationCharRetainMeasurements() {
 		Study s = new Study("X", new Indication(0L, "Y"));
 		ExampleData.addDefaultEpochs(s);
-		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, ExampleData.MILLIGRAMS_A_DAY));
+		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, DoseUnit.MILLIGRAMS_A_DAY));
 		
 		PopulationCharacteristic v1 = new PopulationCharacteristic("Age1", new ContinuousVariableType());
 		PopulationCharacteristic v2 = new PopulationCharacteristic("Age2", new ContinuousVariableType());

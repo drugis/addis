@@ -48,8 +48,8 @@ public class TreatmentActivityTest {
 	public void setUp() {
 		d_empty = new TreatmentActivity();
 		d_orig = new TreatmentActivity();
-		d_orig.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY));
-		d_orig.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), ExampleData.MILLIGRAMS_A_DAY));
+		d_orig.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		d_orig.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), DoseUnit.MILLIGRAMS_A_DAY));
 		d_clone = d_orig.clone();
 	}
 	
@@ -77,9 +77,9 @@ public class TreatmentActivityTest {
 	public void testEquals() {
 		assertEquals(new TreatmentActivity(), d_empty);
 		TreatmentActivity ct = new TreatmentActivity();
-		ct.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY));
+		ct.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
 		JUnitUtil.assertNotEquals(ct, d_orig);
-		ct.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), ExampleData.MILLIGRAMS_A_DAY));
+		ct.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), DoseUnit.MILLIGRAMS_A_DAY));
 		assertEquals(ct, d_orig);
 		JUnitUtil.assertNotEquals(d_empty, d_orig);
 	}

@@ -26,7 +26,7 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.common.EqualsUtil;
+import org.apache.commons.math3.util.Precision;
 import org.drugis.common.Interval;
 
 public class FlexibleDose extends AbstractDose {
@@ -95,7 +95,8 @@ public class FlexibleDose extends AbstractDose {
 	public boolean equals(Object o) {
 		if (o instanceof FlexibleDose) {
 			FlexibleDose other = (FlexibleDose)o;
-			return EqualsUtil.equal(other.getFlexibleDose(), getFlexibleDose()) && EqualsUtil.equal(other.getDoseUnit(), getDoseUnit());
+			return Precision.equals(DoseUnit.convert(getMinDose(), d_unit, other.getDoseUnit()), other.getMinDose(), Precision.EPSILON) &&
+				   Precision.equals(DoseUnit.convert(getMaxDose(), d_unit, other.getDoseUnit()), other.getMaxDose(), Precision.EPSILON);
 		}
 		return false;
 	}
@@ -113,5 +114,4 @@ public class FlexibleDose extends AbstractDose {
 	public AbstractDose clone() {
 		return new FlexibleDose(getFlexibleDose(), getDoseUnit().clone());
 	}
-
 }
