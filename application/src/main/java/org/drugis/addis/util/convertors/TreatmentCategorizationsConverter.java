@@ -137,7 +137,9 @@ public class TreatmentCategorizationsConverter {
 
 	private static org.drugis.addis.entities.data.Node convertNodes(DecisionTreeNode parent, DecisionTree tree) {
 		org.drugis.addis.entities.data.Node node = convertNode(parent);
-		for(DecisionTreeEdge e : tree.getOutEdges(parent)) { 
+		List<DecisionTreeEdge> outEdges = new ArrayList<DecisionTreeEdge>(tree.getOutEdges(parent));
+		Collections.sort(outEdges, new DecisionTreeEdgeComparator());
+		for(DecisionTreeEdge e : outEdges) { 
 			node.getEdge().add(convertEdge(tree, e));
 		}
 		return node;
