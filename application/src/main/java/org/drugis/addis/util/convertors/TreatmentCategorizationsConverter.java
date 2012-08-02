@@ -1,7 +1,9 @@
 package org.drugis.addis.util.convertors;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections15.bidimap.DualHashBidiMap;
@@ -17,6 +19,7 @@ import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
+import org.drugis.addis.entities.treatment.DecisionTreeEdgeComparator;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
 import org.drugis.addis.entities.treatment.LeafNode;
@@ -47,11 +50,10 @@ public class TreatmentCategorizationsConverter {
 		TreatmentCategorization tc = new TreatmentCategorization(name, drug, unit, false);
 		
 		for (org.drugis.addis.entities.data.Category category : t.getCategory()) {
-			tc.addCategory(new Category(category.getName()));
+			tc.addCategory(new Category(tc, category.getName()));
 		}
 		
 		convertDecisionTree(t.getDecisionTree(), tc.getDecisionTree(), t, tc, domain);
-		
 		return tc;
 	}
 

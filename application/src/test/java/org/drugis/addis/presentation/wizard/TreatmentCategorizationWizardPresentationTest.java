@@ -84,8 +84,8 @@ public class TreatmentCategorizationWizardPresentationTest {
 
 	@Test
 	public void testMessWithCategories() {
-		final Category catNode1 = new Category("foo");
-		final Category catNode2 = new Category("bar");
+		final Category catNode1 = new Category(d_bean, "foo");
+		final Category catNode2 = new Category(d_bean, "bar");
 		d_pm.getCategories().add(catNode1);
 		d_pm.getCategories().add(catNode2);
 		assertEquals(Arrays.asList(catNode1, catNode2), d_pm.getCategories());
@@ -95,7 +95,7 @@ public class TreatmentCategorizationWizardPresentationTest {
 	
 	@Test
 	public void testSplitNodePreservesOptions() {
-		Category foo = new Category("foo");
+		Category foo = new Category(d_bean, "foo");
 		d_pm.getCategories().add(foo);
 		
 		d_pm.getModelForFixedDose().setValue(d_pm.getFixedRangeNode());
@@ -114,7 +114,7 @@ public class TreatmentCategorizationWizardPresentationTest {
 	
 	@Test
 	public void testUnknownDoseDirectlyToTree() {
-		Category foo = new Category("foo");
+		Category foo = new Category(d_bean, "foo");
 		d_pm.getCategories().add(foo);
 		
 		d_pm.getModelForUnknownDose().setValue(findLeafNode(d_pm.getOptionsForUnknownDose(), foo));
@@ -125,7 +125,7 @@ public class TreatmentCategorizationWizardPresentationTest {
 	
 	@Test
 	public void testKnownDoseNotToTree() {
-		Category foo = new Category("foo");
+		Category foo = new Category(d_bean, "foo");
 		d_pm.getCategories().add(foo);
 		
 		DecisionTreeNode fixedExpected = d_bean.getDecisionTree().getEdgeTarget(d_pm.findTypeEdge(FixedDose.class));
@@ -142,9 +142,9 @@ public class TreatmentCategorizationWizardPresentationTest {
 
 	@Test
 	public void testRewriteWithLeaf() {
-		Category foo = new Category("foo");
+		Category foo = new Category(d_bean, "foo");
 		d_pm.getCategories().add(foo);
-		Category bar = new Category("bar");
+		Category bar = new Category(d_bean, "bar");
 		d_pm.getCategories().add(bar);
 		
 		d_pm.getModelForUnknownDose().setValue(findLeafNode(d_pm.getOptionsForUnknownDose(), foo));
@@ -168,9 +168,9 @@ public class TreatmentCategorizationWizardPresentationTest {
 	
 	@Test
 	public void testRewriteDoNotConsiderDoseType() {
-		Category foo = new Category("foo");
+		Category foo = new Category(d_bean, "foo");
 		d_pm.getCategories().add(foo);
-		Category bar = new Category("bar");
+		Category bar = new Category(d_bean, "bar");
 		d_pm.getCategories().add(bar);
 		
 		d_pm.getModelForKnownDose().setValue(TreatmentCategorizationWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);
@@ -226,7 +226,7 @@ public class TreatmentCategorizationWizardPresentationTest {
 	
 	@Test
 	public void testRewriteDoNotConsiderDoseTypeWithExclusion() {
-		Category bar = new Category("bar");
+		Category bar = new Category(d_bean, "bar");
 		d_pm.getCategories().add(bar);
 		
 		d_pm.getModelForKnownDose().setValue(TreatmentCategorizationWizardPresentation.CategorySpecifiers.DO_NOT_CONSIDER);

@@ -33,12 +33,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
@@ -52,34 +55,6 @@ public class TreatmentCategorizationTest {
 	@Before
 	public void setUp() {
 		d_treatment = new TreatmentCategorization("", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
-	}
-
-	public static void assertDefaultTree(final DecisionTree tree) {
-		assertTrue(tree.getRoot() instanceof ChoiceNode);
-		assertEquals(AbstractDose.class, ((ChoiceNode)tree.getRoot()).getBeanClass());
-		assertEquals("class", ((ChoiceNode)tree.getRoot()).getPropertyName());
-
-		final Collection<DecisionTreeNode> children = tree.getChildren(tree.getRoot());
-		assertEquals(3, children.size());
-		for (final DecisionTreeNode child : children) {
-			assertTrue(child instanceof LeafNode);
-			assertNull(((LeafNode)child).getCategory()); // EXCLUDE
-		}
-
-		final Collection<DecisionTreeEdge> edges = tree.getOutEdges(tree.getRoot());
-		final Class<?> type = FixedDose.class;
-		final DecisionTreeEdge find = findTypeEdge(edges, type);
-		assertNotNull(find);
-	}
-
-	private static DecisionTreeEdge findTypeEdge(final Collection<DecisionTreeEdge> edges, final Class<?> type) {
-		final DecisionTreeEdge find = CollectionUtils.find(edges, new Predicate<DecisionTreeEdge>() {
-			@Override
-			public boolean evaluate(final DecisionTreeEdge object) {
-				return (object instanceof TypeEdge) && object.decide(type);
-			}
-		});
-		return find;
 	}
 
 	@Test
@@ -133,7 +108,7 @@ public class TreatmentCategorizationTest {
 		final ChoiceNode choice = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, DoseUnit.MILLIGRAMS_A_DAY);
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), choice);
 
-		final LeafNode child = new LeafNode(new Category("Low Dose"));
+		final LeafNode child = new LeafNode(new Category(d_treatment, "Low Dose"));
 		tree.addChild(new RangeEdge(0.0, false, Double.POSITIVE_INFINITY, false), choice, child);
 		d_treatment.splitRange(choice, 20.0, false);
 
@@ -145,7 +120,7 @@ public class TreatmentCategorizationTest {
 		assertEquals(child, tree.getCategory(new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY)));
 		assertNull(tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
 
-		final DecisionTreeNode medium = new LeafNode(new Category("Med Dose"));
+		final DecisionTreeNode medium = new LeafNode(new Category(d_treatment, "Med Dose"));
 		tree.replaceChild(tree.findMatchingEdge(choice, 18.0), medium);
 		assertEquals(medium, tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
 	}
@@ -153,8 +128,8 @@ public class TreatmentCategorizationTest {
 	@Test
 	public void testMultipleTypes() {
 		final LeafNode excludeNode = new LeafNode();
-		final LeafNode someCatNode = new LeafNode(new Category("dog"));
-		final LeafNode unknownNode = new LeafNode(new Category("unknown"));
+		final LeafNode someCatNode = new LeafNode(new Category(d_treatment, "dog"));
+		final LeafNode unknownNode = new LeafNode(new Category(d_treatment, "unknown"));
 
 		final DecisionTree tree = d_treatment.getDecisionTree();
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), someCatNode);
@@ -164,5 +139,33 @@ public class TreatmentCategorizationTest {
 		assertEquals(someCatNode, d_treatment.getCategory(new FixedDose()));
 		assertEquals(excludeNode, d_treatment.getCategory(new FlexibleDose()));
 		assertEquals(unknownNode, d_treatment.getCategory(new UnknownDose()));
+	}
+
+	public static void assertDefaultTree(final DecisionTree tree) {
+		assertTrue(tree.getRoot() instanceof ChoiceNode);
+		assertEquals(AbstractDose.class, ((ChoiceNode)tree.getRoot()).getBeanClass());
+		assertEquals("class", ((ChoiceNode)tree.getRoot()).getPropertyName());
+
+		final Collection<DecisionTreeNode> children = tree.getChildren(tree.getRoot());
+		assertEquals(3, children.size());
+		for (final DecisionTreeNode child : children) {
+			assertTrue(child instanceof LeafNode);
+			assertNull(((LeafNode)child).getCategory()); // EXCLUDE
+		}
+
+		final Collection<DecisionTreeEdge> edges = tree.getOutEdges(tree.getRoot());
+		final Class<?> type = FixedDose.class;
+		final DecisionTreeEdge find = findTypeEdge(edges, type);
+		assertNotNull(find);
+	}
+
+	private static DecisionTreeEdge findTypeEdge(final Collection<DecisionTreeEdge> edges, final Class<?> type) {
+		final DecisionTreeEdge find = CollectionUtils.find(edges, new Predicate<DecisionTreeEdge>() {
+			@Override
+			public boolean evaluate(final DecisionTreeEdge object) {
+				return (object instanceof TypeEdge) && object.decide(type);
+			}
+		});
+		return find;
 	}
 }

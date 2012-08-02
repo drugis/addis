@@ -39,6 +39,7 @@ import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TypeEdge;
 import org.drugis.addis.presentation.DecisionTreeOutEdgesModel;
 import org.drugis.common.JUnitUtil;
@@ -80,7 +81,7 @@ public class DecisionTreeOutEdgesModelTest {
 		EasyMock.replay(mockListener);
 
 		model1.addListDataListener(mockListener);
-		final LeafNode cat1 = new LeafNode(new Category("foo"));
+		final LeafNode cat1 = new LeafNode(new Category(new TreatmentCategorization(), "foo"));
 		d_tree.replaceChild(d_edge, cat1);
 
 		JUnitUtil.assertAllAndOnly(d_tree.getOutEdges(d_root), model1);

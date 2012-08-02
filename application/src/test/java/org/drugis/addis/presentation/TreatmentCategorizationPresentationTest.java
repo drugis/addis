@@ -48,18 +48,18 @@ import edu.uci.ics.jung.graph.util.Pair;
 
 public class TreatmentCategorizationPresentationTest {
 
-	private TreatmentCategorization d_bean;
+	private TreatmentCategorization d_tc;
 	private TreatmentCategorizationPresentation d_pm;
 	private Domain d_domain;
 	private TreatmentCategorizationWizardPresentation d_wpm;
 
 	@Before
 	public void setUp() {
-		d_bean = new TreatmentCategorization("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_tc = new TreatmentCategorization("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_pm = new TreatmentCategorizationPresentation(d_bean, d_domain);
-		d_wpm = new TreatmentCategorizationWizardPresentation(d_bean, d_domain);
+		d_pm = new TreatmentCategorizationPresentation(d_tc, d_domain);
+		d_wpm = new TreatmentCategorizationWizardPresentation(d_tc, d_domain);
 	}
 
 	@Test
@@ -67,9 +67,9 @@ public class TreatmentCategorizationPresentationTest {
 		final Study studyBennie = ExampleData.buildStudyBennie();		//dose 20
 		final Study studyChouinard = ExampleData.buildStudyChouinard();	//dose 27.5
 		final Study studyFava2002 = ExampleData.buildStudyFava2002();	//dose 30
-		final Category foo = new Category("foo");
-		final Category bar = new Category("bar");
-		final Category baz = new Category("baz");
+		final Category foo = new Category(d_tc, "foo");
+		final Category bar = new Category(d_tc, "bar");
+		final Category baz = new Category(d_tc, "baz");
 
 		// NOTE: studies Bennie and Chouinard have already been added by default, so just add Fava2002 and its dependencies here
 		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
