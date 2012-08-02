@@ -1014,7 +1014,7 @@ public class ExampleData {
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
-		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), TreatmentCategorySet.createTrivial(fluox), TreatmentCategorySet.createTrivial(parox));
+		MetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), TreatmentCategorySet.createTrivial(fluox), TreatmentCategorySet.createTrivial(parox));
 		MetaBenefitRiskAnalysis br = new MockMetaBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(ma), 
 				TreatmentCategorySet.createTrivial(fluox), 
@@ -1054,4 +1054,30 @@ public class ExampleData {
         
         return study;
     }
+
+	public static RandomEffectsMetaAnalysis createRandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
+			List<Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
+		if (studies.size() == 0) {
+			throw new IllegalArgumentException("No studies in MetaAnalysis");
+		}
+		for (Study s : studies) {
+			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2))) {
+				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
+			}
+		}
+		return new RandomEffectsMetaAnalysis(name, om, ExampleData.createStudyArmEntries(studies, drug1, drug2));
+	}
+
+	public static List<StudyArmsEntry> createStudyArmEntries(
+			List<? extends Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+	
+		for (Study s : studies) {
+			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
+			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
+			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
+		}
+		
+		return studyArms;
+	}
 }

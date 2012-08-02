@@ -60,29 +60,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_CORRECTED = "isCorrected";
 	private boolean d_isCorrected = false;
-	
-	/**
-	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
-	 * if the list of studies is empty
-	 */
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<Study> studies,
-			TreatmentCategorySet drug1, TreatmentCategorySet drug2) 
-	throws IllegalArgumentException {
-		super(ANALYSIS_TYPE,
-				name, studies.get(0).getIndication(), om, studies, 
-				drugSetList(drug1, drug2), getArmMap(studies, drug1, drug2));
-		checkREDataConsistency(studies, drug1, drug2);
-	}
 
-	private void checkREDataConsistency(List<? extends Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
-		if (studies.size() == 0)
-			throw new IllegalArgumentException("No studies in MetaAnalysis");
-		for (Study s : studies)
-			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2)))
-				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
-	}
-
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms, Boolean corr)
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms, boolean corr)
 	throws IllegalArgumentException {
 		super(ANALYSIS_TYPE,
 				name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
@@ -100,19 +79,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) {
 		this(name, om, studyArms, false);
-	}
-	
-	private static Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap(
-			List<? extends Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
-		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
-
-		for (Study s : studies) {
-			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
-			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
-			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
-		}
-		
-		return getArmMap(studyArms);
 	}
 	
 	private static Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {

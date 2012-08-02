@@ -76,9 +76,10 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		d_armMap = new ArmMap();
 	}
 	
-	public AbstractMetaAnalysis(String type, 
-			String name, Indication indication,
-			OutcomeMeasure om, List<Study> studies, List<TreatmentCategorySet> drugs, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) 
+	public AbstractMetaAnalysis(String type, String name,
+			Indication indication, OutcomeMeasure om,
+			List<Study> studies, List<TreatmentCategorySet> drugs,
+			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) 
 	throws IllegalArgumentException {
 		super(name);
 		checkDataConsistency(studies, indication, om);
@@ -96,7 +97,9 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		}
 	}
 	
-	public AbstractMetaAnalysis(String type, String name, Indication indication, OutcomeMeasure om, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) { 
+	public AbstractMetaAnalysis(String type, String name,
+			Indication indication, OutcomeMeasure om,
+			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) { 
 		this(type, name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
 	}
 

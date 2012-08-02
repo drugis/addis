@@ -104,8 +104,7 @@ public class DomainTreeModelTest {
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, d_firstEndpoint.buildMeasurement(pg));
 		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
 		
-		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
-				Collections.singletonList((Study)d_firstStudy), TreatmentCategorySet.createTrivial(d_firstDrug), TreatmentCategorySet.createTrivial(d_firstDrug));
+		d_firstMetaAnalysis = ExampleData.createRandomEffectsMetaAnalysis("meta", d_firstEndpoint, Collections.singletonList((Study)d_firstStudy), TreatmentCategorySet.createTrivial(d_firstDrug), TreatmentCategorySet.createTrivial(d_firstDrug));
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
@@ -320,8 +319,7 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
-				TreatmentCategorySet.createTrivial(d_firstDrug), TreatmentCategorySet.createTrivial(d_firstDrug));
+		RandomEffectsMetaAnalysis study = ExampleData.createRandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)), TreatmentCategorySet.createTrivial(d_firstDrug), TreatmentCategorySet.createTrivial(d_firstDrug));
 		d_domain.getMetaAnalyses().add(study);
 		assertTrue(d_treeModel.isLeaf(study));
 		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));

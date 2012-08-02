@@ -31,11 +31,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
@@ -94,13 +95,17 @@ public class ForestPlotPresentation {
 	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		this(analysis.getIncludedStudies(), analysis.getOutcomeMeasure(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf, analysis);
 	}
-		
-	public ForestPlotPresentation(Study s, OutcomeMeasure om, TreatmentCategorySet baseline, TreatmentCategorySet subject,
+	
+	public static ForestPlotPresentation createStudyForestPlot(Study s, OutcomeMeasure om, Arm arm1, Arm arm2,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf, new
-				RandomEffectsMetaAnalysis("", om, Collections.singletonList((Study)s), baseline, subject));
+		List<Study> studyList = Collections.singletonList((Study)s);
+		TreatmentCategorySet catSet1 = s.getDrugs(arm1);
+		TreatmentCategorySet catSet2 = s.getDrugs(arm2);
+		StudyArmsEntry entry = new StudyArmsEntry(s, arm1, arm2);
+		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("", om, Collections.singletonList(entry));
+		return new ForestPlotPresentation(studyList, om, catSet1, catSet2, type, pmf, analysis);
 	}
-
+		
 	private void addRelativeEffect(Study s) {
 		d_studies.add(s);
 		d_relEffects.add((BasicRelativeEffect<?>) 
@@ -270,7 +275,7 @@ public class ForestPlotPresentation {
 		tickVals.add(df.format(toRender.getMax()));
 		return tickVals;
 	}
-	
+
 	private double getWeightAt(int index) {
 		return (double) (((BasicRelativeEffect<?>)getRelativeEffectAt(index)).getSampleSize()) / d_max;
 	}
