@@ -34,7 +34,6 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
@@ -43,6 +42,7 @@ import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.mcmc.MCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;

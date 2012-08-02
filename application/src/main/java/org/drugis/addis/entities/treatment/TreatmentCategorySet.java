@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.treatment;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +37,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Entity;
 import org.drugis.addis.util.EntityUtil;
 
 public class TreatmentCategorySet extends AbstractEntity implements Comparable<TreatmentCategorySet> {

@@ -35,8 +35,8 @@ import java.util.TreeSet;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.lang.StringUtils;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;

@@ -32,10 +32,10 @@ import java.util.List;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 
 import fi.smaa.jsmaa.model.Alternative;

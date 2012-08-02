@@ -32,8 +32,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")

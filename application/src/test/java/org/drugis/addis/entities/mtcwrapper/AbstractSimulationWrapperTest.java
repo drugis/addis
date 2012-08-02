@@ -35,9 +35,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.analysis.NetworkBuilderFactory;
 import org.drugis.addis.entities.mtcwrapper.AbstractSimulationWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.mocks.MockConsistencyModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.NetworkBuilder;

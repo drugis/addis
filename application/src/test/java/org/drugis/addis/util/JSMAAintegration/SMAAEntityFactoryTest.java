@@ -35,13 +35,13 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.JSMAAintegration.MetaBenefitRiskSMAAFactory;
 import org.drugis.addis.util.JSMAAintegration.StudyBenefitRiskSMAAFactory;
 import org.junit.Before;

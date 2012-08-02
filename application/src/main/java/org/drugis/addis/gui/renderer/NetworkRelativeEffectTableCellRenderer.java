@@ -34,7 +34,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
 
 public class NetworkRelativeEffectTableCellRenderer extends SummaryCellRenderer implements TableCellRenderer {

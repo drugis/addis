@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -41,6 +40,7 @@ import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.NetworkBuilder;

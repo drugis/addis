@@ -26,7 +26,7 @@
 
 package org.drugis.addis.gui;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;
 import org.jgraph.JGraph;

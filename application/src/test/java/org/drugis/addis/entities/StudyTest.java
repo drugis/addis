@@ -48,6 +48,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;

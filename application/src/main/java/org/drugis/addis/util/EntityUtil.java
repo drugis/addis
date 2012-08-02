@@ -37,10 +37,10 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {

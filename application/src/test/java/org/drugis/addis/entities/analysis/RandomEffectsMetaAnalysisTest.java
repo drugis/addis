@@ -40,11 +40,11 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
@@ -52,8 +52,14 @@ import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectTestBase;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.DecisionTree;
+import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {

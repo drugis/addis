@@ -29,7 +29,7 @@ package org.drugis.addis.entities.mtcwrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;

@@ -28,12 +28,12 @@ package org.drugis.addis.entities.analysis;
 
 import java.util.List;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 
 public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis>, TypeWithName {

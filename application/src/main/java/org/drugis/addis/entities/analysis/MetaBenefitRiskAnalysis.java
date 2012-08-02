@@ -40,7 +40,6 @@ import javax.swing.SwingUtilities;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -57,6 +56,7 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;

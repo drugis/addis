@@ -37,11 +37,11 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 

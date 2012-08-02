@@ -33,7 +33,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
@@ -48,6 +47,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 
 import com.jgoodies.binding.PresentationModel;
 

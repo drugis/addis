@@ -29,7 +29,7 @@ package org.drugis.addis.entities.mtcwrapper;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.beans.AbstractObservable;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.MixedTreatmentComparison;

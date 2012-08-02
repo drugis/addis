@@ -36,8 +36,8 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.collections15.BidiMap;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;

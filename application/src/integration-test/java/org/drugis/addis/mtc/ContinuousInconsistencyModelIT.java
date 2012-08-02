@@ -33,10 +33,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.junit.Before;

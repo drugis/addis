@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -51,6 +50,7 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelative
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.SimpleMultivariateNormalSummary;

@@ -26,7 +26,7 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCSettings;
 import org.drugis.mtc.Parameter;

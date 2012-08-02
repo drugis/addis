@@ -33,11 +33,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
 import org.drugis.addis.presentation.RiskScalePresentation;

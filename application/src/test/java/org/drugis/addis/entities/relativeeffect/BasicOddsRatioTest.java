@@ -30,8 +30,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;

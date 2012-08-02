@@ -41,10 +41,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;

@@ -41,6 +41,7 @@ import javax.swing.event.ListDataListener;
 import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;

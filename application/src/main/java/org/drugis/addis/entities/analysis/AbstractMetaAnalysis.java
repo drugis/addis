@@ -38,12 +38,12 @@ import java.util.TreeSet;
 
 import org.drugis.addis.entities.AbstractNamedEntity;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 

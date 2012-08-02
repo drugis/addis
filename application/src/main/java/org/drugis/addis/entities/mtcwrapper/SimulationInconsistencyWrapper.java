@@ -28,7 +28,7 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.List;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;

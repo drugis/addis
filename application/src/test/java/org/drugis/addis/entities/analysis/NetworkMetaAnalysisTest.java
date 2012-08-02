@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;

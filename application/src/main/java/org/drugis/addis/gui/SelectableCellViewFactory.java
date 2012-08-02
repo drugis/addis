@@ -28,7 +28,7 @@ package org.drugis.addis.gui;
 
 import java.awt.Color;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphConstants;

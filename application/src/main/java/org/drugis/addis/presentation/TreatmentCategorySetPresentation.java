@@ -28,8 +28,8 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.FilteredObservableList;
 

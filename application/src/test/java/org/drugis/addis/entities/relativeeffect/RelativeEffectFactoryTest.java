@@ -31,10 +31,10 @@ import static org.junit.Assert.assertEquals;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 

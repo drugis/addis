@@ -28,7 +28,7 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.List;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 

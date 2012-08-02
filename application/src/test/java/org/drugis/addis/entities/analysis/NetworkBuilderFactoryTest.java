@@ -14,8 +14,8 @@ import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 

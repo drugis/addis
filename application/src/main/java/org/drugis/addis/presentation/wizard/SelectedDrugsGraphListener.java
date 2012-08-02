@@ -31,7 +31,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;

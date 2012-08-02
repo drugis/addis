@@ -39,11 +39,11 @@ import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drugis.addis.entities.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;

@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -53,6 +52,7 @@ import org.drugis.addis.entities.mtcwrapper.SavedNodeSplitWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.status.TaskTerminatedModel;

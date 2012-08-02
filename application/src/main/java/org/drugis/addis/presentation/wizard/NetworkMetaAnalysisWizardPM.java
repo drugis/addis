@@ -35,11 +35,11 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel;

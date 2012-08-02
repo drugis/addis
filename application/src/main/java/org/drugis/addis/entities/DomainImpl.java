@@ -41,6 +41,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.SortedSetModel;

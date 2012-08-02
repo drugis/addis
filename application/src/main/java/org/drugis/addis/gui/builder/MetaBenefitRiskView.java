@@ -35,10 +35,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.analysis.AbstractMetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;

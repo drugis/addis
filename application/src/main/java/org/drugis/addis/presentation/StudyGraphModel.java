@@ -38,9 +38,9 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.collections15.CollectionUtils;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 
 import com.jgoodies.binding.list.ObservableList;
