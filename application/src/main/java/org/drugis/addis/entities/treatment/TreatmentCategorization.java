@@ -214,7 +214,6 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 		return new Pair<RangeEdge>(left, right);
 	}
 
-
 	@Override
 	public int compareTo(TreatmentCategorization o) {
 		int drugCompare = d_drug.compareTo(o.d_drug);
@@ -229,6 +228,22 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 		if (obj instanceof TreatmentCategorization) { 
 			TreatmentCategorization other = (TreatmentCategorization) obj;
 			return d_drug.equals(other.d_drug) && d_name.equals(other.d_name);
+		}
+		return false;
+	}
+	
+	/**
+	 * The implementation of deepEquals(Entity) for TreatmentCategorization and
+	 * Category is complicated by their circular dependency. However, Category
+	 * is just a (TreatmentCategorization, String) pair, and here we can assume
+	 * the TreatmentCategorizations to be known. Therefore it suffices to
+	 * shallow equals the categories.
+	 */
+	@Override
+	public boolean deepEquals(Entity obj) {
+		if (equals(obj)) { 
+			TreatmentCategorization other = (TreatmentCategorization) obj;
+			return d_categories.equals(other.d_categories) && d_drug.deepEquals(other.d_drug);
 		}
 		return false;
 	}

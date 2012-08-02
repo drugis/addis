@@ -78,7 +78,22 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	public boolean equals(final Object o) {
 		if (o instanceof Category) {
 			Category other = (Category) o;
-			return d_owner.equals(other.getCategorization()) && getName().equals(other.getName());
+			return d_name.equals(other.d_name) && d_owner.equals(other.d_owner);
+		}
+		return false;
+	}
+	
+	/**
+	 * The implementation of deepEquals(Entity) for TreatmentCategorization and
+	 * Category is complicated by their circular dependency. However,
+	 * {@link TreatmentCategorization#deepEquals(Entity)} only shallow equals
+	 * the categories, so we can safely deepEquals the TreatmentCategorization.
+	 */
+	@Override
+	public boolean deepEquals(Entity obj) {
+		if(obj instanceof Category) { 
+			Category other = (Category) obj;
+			return d_name.equals(other.d_name) && d_owner.deepEquals(other.d_owner);
 		}
 		return false;
 	}

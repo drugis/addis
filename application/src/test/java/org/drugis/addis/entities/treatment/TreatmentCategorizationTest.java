@@ -42,6 +42,7 @@ import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -181,6 +182,26 @@ public class TreatmentCategorizationTest {
 		assertTrue(catA.compareTo(catA2) < 0);
 		assertTrue(catA2.compareTo(catA) > 0);
 		assertTrue(catB.compareTo(catA2) < 0);
+	}
+	
+	@Test
+	public void testDeepEquals() {
+		TreatmentCategorization catz1 = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentCategorization catz2 = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
+		assertTrue(catz1.deepEquals(catz2));
+		
+		catz1.getCategories().get(0).setName("Include");
+		assertFalse(catz1.deepEquals(catz2));
+		catz2.getCategories().get(0).setName("Include");
+		assertTrue(catz1.deepEquals(catz2));
+		
+		catz1.setName("CATZ");
+		assertFalse(catz1.deepEquals(catz2));
+		catz2.setName("CATZ");
+		assertTrue(catz1.deepEquals(catz2));
+		
+		catz1.setDrug(new Drug(catz1.getDrug().getName(), "FAKEATCCODE"));
+		assertFalse(catz1.deepEquals(catz2));
 	}
 
 	public static void assertDefaultTree(final DecisionTree tree) {

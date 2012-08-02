@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.common.JUnitUtil;
@@ -67,6 +68,27 @@ public class CategoryTest {
 		assertTrue(catA.compareTo(catA2) < 0);
 		assertTrue(catA2.compareTo(catA) > 0);
 		assertTrue(catB.compareTo(catA2) < 0);
+	}
+	
+	@Test
+	public void testDeepEquals() {
+		Category catA = new Category(d_catz1, "A");
+		Category catAdup = new Category(d_catz1, "A");
+		Category catB = new Category(d_catz1, "B");
+		Category catA2 = new Category(d_catz2, "A");
+		
+		// Consistency with equals()
+		assertTrue(catA.deepEquals(catAdup));
+		assertTrue(catAdup.deepEquals(catA));
+		assertFalse(catA.deepEquals(catB));
+		assertFalse(catA.deepEquals(ExampleData.buildDrugFluoxetine()));
+		assertFalse(catA.deepEquals(null));
+		assertFalse(catA.deepEquals(catA2));
+		
+		d_catz2.setName(d_catz1.getName());
+		assertTrue(catA.deepEquals(catA2));
+		d_catz2.setDrug(new Drug(d_catz1.getDrug().getName(), "ANOTHERATC"));
+		assertFalse(catA.deepEquals(catA2));
 	}
 	
 	@Test
