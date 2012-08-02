@@ -156,6 +156,32 @@ public class TreatmentCategorizationTest {
 		
 		assertEquals(root.getCategory(), trivial.getCategories().get(0));
 	}
+	
+	@Test
+	public void testEqualsHashCodeCompareTo() {
+		TreatmentCategorization catA = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentCategorization catAdup = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentCategorization catB = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
+		catB.setName("B");
+		TreatmentCategorization catA2 = TreatmentCategorization.createTrivial(ExampleData.buildDrugParoxetine());
+		
+		// With equal drugs
+		assertTrue(catA.equals(catAdup));
+		assertTrue(catAdup.equals(catA));
+		assertEquals(catA.hashCode(), catAdup.hashCode());
+		assertFalse(catA.equals(catB));
+		assertFalse(catA.equals(ExampleData.buildDrugFluoxetine()));
+		assertFalse(catA.equals(null));
+		assertEquals(0, catA.compareTo(catAdup));
+		assertTrue(catA.compareTo(catB) < 0);
+		assertTrue(catB.compareTo(catA) > 0);
+		
+		// With different drugs 
+		assertFalse(catA.equals(catA2));
+		assertTrue(catA.compareTo(catA2) < 0);
+		assertTrue(catA2.compareTo(catA) > 0);
+		assertTrue(catB.compareTo(catA2) < 0);
+	}
 
 	public static void assertDefaultTree(final DecisionTree tree) {
 		assertTrue(tree.getRoot() instanceof ChoiceNode);

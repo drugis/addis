@@ -31,12 +31,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractDose;
-import org.drugis.addis.entities.AbstractNamedEntity;
+import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.UnknownDose;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -44,7 +45,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 import edu.uci.ics.jung.graph.util.Pair;
 
-public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCategorization> {
+public class TreatmentCategorization extends AbstractEntity implements Comparable<TreatmentCategorization>, TypeWithName {
 	public static final ChoiceNode ROOT_NODE = new ChoiceNode(AbstractDose.class, "class");
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
@@ -55,6 +56,7 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 	private DecisionTree d_decisionTree;
 
 	private final DoseUnit d_doseUnit;
+	private String d_name;
 
 	/**
 	 * Create a TreatmentCategorization with a decision tree consisting solely of {@link TreatmentCategorization#ROOT_NODE}.
@@ -100,7 +102,7 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 	}
 	
 	private TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit, boolean withDefault) {
-		super(name);
+		d_name = name;
 		d_drug = drug;
 		d_doseUnit = unit;
 		d_decisionTree = new DecisionTree(ROOT_NODE);
@@ -120,6 +122,12 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 		return getRootNode() instanceof LeafNode;
 	}
 
+	@Override
+	public String getName() {
+		return d_name;
+	}
+
+	
 	public void setName(final String name) {
 		final String oldVal = d_name;
 		d_name = name;
@@ -204,5 +212,29 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 		final RangeEdge left = new RangeEdge(range.getLowerBound(), range.isLowerBoundOpen(), value, isLowerRangeOpen);
 		final RangeEdge right = new RangeEdge(value, !isLowerRangeOpen, range.getUpperBound(), range.isUpperBoundOpen());
 		return new Pair<RangeEdge>(left, right);
+	}
+
+
+	@Override
+	public int compareTo(TreatmentCategorization o) {
+		int drugCompare = d_drug.compareTo(o.d_drug);
+		if (drugCompare != 0) { 
+			return drugCompare;
+		}
+		return d_name.compareTo(o.d_name);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof TreatmentCategorization) { 
+			TreatmentCategorization other = (TreatmentCategorization) obj;
+			return d_drug.equals(other.d_drug) && d_name.equals(other.d_name);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return d_drug.hashCode() * 31 + d_name.hashCode();
 	}
 }
