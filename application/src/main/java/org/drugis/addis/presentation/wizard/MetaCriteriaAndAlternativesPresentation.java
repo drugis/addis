@@ -320,7 +320,7 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		Set<TreatmentCategorySet> alternatives = new TreeSet<TreatmentCategorySet>();
 		for(MetaAnalysis ma : d_metaAnalyses) {
 			if(ma.getIndication() == d_indicationModel.getValue())
-				alternatives.addAll(ma.getIncludedDrugs());
+				alternatives.addAll(ma.getAlternatives());
 		}
 		return alternatives;
 	}
@@ -357,7 +357,7 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		for (CriterionAnalysisPair pair : d_selectedMetaAnalysesPairs) {
 			if (selectedCriteria.contains(pair.getCriterion()) && pair.getAnalysis() != null) {
 				noAnalysesSelected = false;
-				if (!pair.getAnalysis().getIncludedDrugs().contains(alternative)) {
+				if (!pair.getAnalysis().getAlternatives().contains(alternative)) {
 					return false;
 				}
 			}

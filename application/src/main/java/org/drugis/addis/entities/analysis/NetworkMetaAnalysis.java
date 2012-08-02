@@ -93,9 +93,9 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<Study> studies, Collection<TreatmentCategorySet> drugs,
+			OutcomeMeasure om, List<Study> studies, Collection<TreatmentCategorySet> alternatives,
 			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) throws IllegalArgumentException {
-		super(ANALYSIS_TYPE, name, indication, om, studies, sortDrugs(drugs), armMap);
+		super(ANALYSIS_TYPE, name, indication, om, studies, sortAlternatives(alternatives), armMap);
 	}
 	
 	public NetworkMetaAnalysis(String name, Indication indication,
@@ -104,8 +104,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 
-	private static List<TreatmentCategorySet> sortDrugs(Collection<TreatmentCategorySet> drugs) {
-		ArrayList<TreatmentCategorySet> list = new ArrayList<TreatmentCategorySet>(drugs);
+	private static List<TreatmentCategorySet> sortAlternatives(Collection<TreatmentCategorySet> alternatives) {
+		ArrayList<TreatmentCategorySet> list = new ArrayList<TreatmentCategorySet>(alternatives);
 		Collections.sort(list);
 		return list;
 	}
@@ -118,7 +118,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	private ConsistencyWrapper createConsistencyModel() {
 		ConsistencyModel consistencyModel = (DefaultModelFactory.instance()).getConsistencyModel(getBuilder().buildNetwork());
-		SimulationConsistencyWrapper model = new SimulationConsistencyWrapper(getBuilder(), consistencyModel, getIncludedDrugs());
+		SimulationConsistencyWrapper model = new SimulationConsistencyWrapper(getBuilder(), consistencyModel, getAlternatives());
 		d_relativeEffectsSummary.setNested(model.getRelativeEffectsSummary());	
 		attachModelSavableListener(consistencyModel);	
 		return model;
@@ -132,8 +132,8 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return new SimulationNodeSplitWrapper(getBuilder(), nodeSplitModel);
 	}
 	
-	private NetworkBuilder<TreatmentCategorySet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentCategorySet> drugs, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
-		return NetworkBuilderFactory.createBuilder(outcomeMeasure, studies, drugs, armMap);
+	private NetworkBuilder<TreatmentCategorySet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentCategorySet> alternatives, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
+		return NetworkBuilderFactory.createBuilder(outcomeMeasure, studies, alternatives, armMap);
 	}
 	
 	private void attachModelSavableListener(MixedTreatmentComparison model) {
@@ -185,7 +185,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 				convergenceSummaries, 
 				relativeEffectsSummary, 
 				rankProbabilitySummary,
-				getIncludedDrugs());	
+				getAlternatives());	
 		d_relativeEffectsSummary.setNested(d_consistencyModel.getRelativeEffectsSummary());	
 	}
 	
@@ -207,7 +207,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	
 	public NetworkBuilder<TreatmentCategorySet> getBuilder() {
 		if (d_builder == null) {
-			d_builder = createBuilder(d_outcome, d_studies, getIncludedDrugs(), d_armMap);
+			d_builder = createBuilder(d_outcome, d_studies, getAlternatives(), d_armMap);
 		}
 		return d_builder;
 	}
@@ -247,7 +247,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return false;
 		}
 		NetworkMetaAnalysis o = (NetworkMetaAnalysis) other;
-		for (TreatmentCategorySet d : o.getIncludedDrugs()) {
+		for (TreatmentCategorySet d : o.getAlternatives()) {
 			for (Study s : o.getIncludedStudies()) {
 				if (!EntityUtil.deepEqual(getArm(s, d), o.getArm(s, d))) {
 					return false;

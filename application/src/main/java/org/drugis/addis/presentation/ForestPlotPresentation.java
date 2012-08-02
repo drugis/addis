@@ -93,7 +93,7 @@ public class ForestPlotPresentation {
 	}
 	
 	public ForestPlotPresentation(RandomEffectsMetaAnalysis analysis, Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
-		this(analysis.getIncludedStudies(), analysis.getOutcomeMeasure(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf, analysis);
+		this(analysis.getIncludedStudies(), analysis.getOutcomeMeasure(), analysis.getFirstAlternative(), analysis.getSecondAlternative(), type, pmf, analysis);
 	}
 	
 	public static ForestPlotPresentation createStudyForestPlot(Study s, OutcomeMeasure om, Arm arm1, Arm arm2,

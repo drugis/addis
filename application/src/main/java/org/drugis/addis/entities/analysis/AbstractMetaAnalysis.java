@@ -64,7 +64,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	protected OutcomeMeasure d_outcome;
 	protected Indication d_indication;
 	protected List<Study> d_studies;
-	protected List<TreatmentCategorySet> d_drugs;
+	protected List<TreatmentCategorySet> d_alternatives;
 	protected String d_name = "";
 	protected int d_totalSampleSize;
 	protected ArmMap d_armMap;
@@ -85,7 +85,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		checkDataConsistency(studies, indication, om);
 		d_type = type;
 
-		d_drugs = drugs;
+		d_alternatives = drugs;
 		d_studies = studies;
 		d_indication = indication;
 		d_outcome = om;
@@ -156,7 +156,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	@Override
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
-		HashSet<Category> categories = EntityUtil.flatten(getIncludedDrugs());
+		HashSet<Category> categories = EntityUtil.flatten(getAlternatives());
 		for (Category category : categories) { 
 			deps.addAll(category.getDependencies());
 		}
@@ -179,8 +179,8 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		return false;
 	}
 	
-	public List<TreatmentCategorySet> getIncludedDrugs() {
-		return Collections.unmodifiableList(new ArrayList<TreatmentCategorySet>(d_drugs));
+	public List<TreatmentCategorySet> getAlternatives() {
+		return Collections.unmodifiableList(new ArrayList<TreatmentCategorySet>(d_alternatives));
 	}
 	
 	public Arm getArm(Study s, TreatmentCategorySet d) {
@@ -220,7 +220,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		return 
 			EqualsUtil.equal(getType(), o.getType()) &&
 			EntityUtil.deepEqual(getIncludedStudies(), o.getIncludedStudies()) &&
-			EntityUtil.deepEqual(getIncludedDrugs(), o.getIncludedDrugs()) &&
+			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
 			EqualsUtil.equal(getSampleSize(), o.getSampleSize()) &&
 			EntityUtil.deepEqual(getOutcomeMeasure(), o.getOutcomeMeasure()) &&
 			EntityUtil.deepEqual(getIndication(), o.getIndication());

@@ -188,7 +188,7 @@ public class NetworkMetaAnalysisConverter {
 		
 		// TreatmentCategorySets are always sorted in their natural order
 		List<Treatment> treatments = new ArrayList<Treatment>();
-		for(TreatmentCategorySet d : networkMetaAnalysis.getIncludedDrugs()) {
+		for(TreatmentCategorySet d : networkMetaAnalysis.getAlternatives()) {
 			treatments.add(networkMetaAnalysis.getTreatment(d));
 		}		
 		double[][] rankProbabilityMatrix = new double[treatments.size()][treatments.size()];
@@ -315,7 +315,7 @@ public class NetworkMetaAnalysisConverter {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + ma.getOutcomeMeasure());
 		}
-		for(TreatmentCategorySet d : ma.getIncludedDrugs()) {
+		for(TreatmentCategorySet d : ma.getAlternatives()) {
 			Alternative alt = new Alternative();
 			alt.setDrugs(JAXBConvertor.convertAnalysisTreatmentCategorySet(d));
 			AnalysisArms arms = new AnalysisArms();
@@ -463,7 +463,7 @@ public class NetworkMetaAnalysisConverter {
 	}
 
 	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MTCModelWrapper mtc) {
-		List<TreatmentCategorySet> includedDrugs = ma.getIncludedDrugs();
+		List<TreatmentCategorySet> includedDrugs = ma.getAlternatives();
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
 		for (int i = 0; i < includedDrugs.size(); ++i) {
 			for (int j = 0; j < includedDrugs.size(); ++j) {

@@ -1055,13 +1055,13 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + reMa.getOutcomeMeasure());
 		}
-		for(TreatmentCategorySet d : reMa.getIncludedDrugs()) {
+		for(TreatmentCategorySet d : reMa.getAlternatives()) {
 			Alternative alt = new Alternative();
 			alt.setDrugs(convertAnalysisTreatmentCategorySet(d));
 			AnalysisArms arms = new AnalysisArms();
 			for(StudyArmsEntry item : reMa.getStudyArms()) {
 				Arm arm = null;
-				if (reMa.getFirstDrug().equals(d)) {
+				if (reMa.getFirstAlternative().equals(d)) {
 					arm = item.getBase();
 				} else {
 					arm = item.getSubject();

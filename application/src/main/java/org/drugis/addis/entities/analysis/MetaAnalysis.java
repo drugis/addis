@@ -49,8 +49,8 @@ public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis>, TypeWith
 	public static final String PROPERTY_SAMPLE_SIZE = "sampleSize";
 	public int getSampleSize();
 
-	public static final String PROPERTY_INCLUDED_DRUGS = "includedDrugs";
-	public List<TreatmentCategorySet> getIncludedDrugs();
+	public static final String PROPERTY_ALTERNATIVES = "alternatives";
+	public List<TreatmentCategorySet> getAlternatives();
 	
 	public static final String PROPERTY_INCLUDED_STUDIES = "includedStudies";
 	public List<Study> getIncludedStudies();

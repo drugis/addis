@@ -144,7 +144,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 	 */
 	private double[][] createTransform(MetaAnalysis ma) {
 		final List<TreatmentCategorySet> rowAlternatives = getNonBaselineAlternatives();
-		final List<TreatmentCategorySet> columnAlternatives = new ArrayList<TreatmentCategorySet>(ma.getIncludedDrugs());
+		final List<TreatmentCategorySet> columnAlternatives = new ArrayList<TreatmentCategorySet>(ma.getAlternatives());
 
 		final TreatmentCategorySet rowBaseline = d_baseline;
 		final TreatmentCategorySet columnBaseline = columnAlternatives.remove(0); // first drugSet in metaAnalysis is baseline by definition

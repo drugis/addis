@@ -1829,7 +1829,7 @@ public class JAXBConvertorTest {
 		metaList.add(ma2ent);
 
 		List<TreatmentCategorySet> drugsEnt = new ArrayList<TreatmentCategorySet>(
-				ma1ent.getIncludedDrugs());
+				ma1ent.getAlternatives());
 		TreatmentCategorySet baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name,

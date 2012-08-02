@@ -110,7 +110,7 @@ public class MetaBenefitRiskAnalysisTest {
 		final MetaAnalysis ma = ExampleData.buildMetaAnalysisHamd();
 		MultivariateNormalSummary summary = ma.getRelativeEffectsSummary();
 		LogGaussian expected = new LogGaussian(summary.getMeanVector()[0], Math.sqrt(summary.getCovarianceMatrix()[0][0])); 
-		assertEquals(TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()), ma.getIncludedDrugs().get(0));
+		assertEquals(TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()), ma.getAlternatives().get(0));
 
 		assertEquals(expected.getQuantile(0.50), actualDist.getQuantile(0.50), 0.00001);
 		assertEquals(expected.getQuantile(0.025), actualDist.getQuantile(0.025), 0.00001);

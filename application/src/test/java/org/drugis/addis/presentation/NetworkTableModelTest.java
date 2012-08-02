@@ -70,12 +70,12 @@ public class NetworkTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_analysis.getIncludedDrugs().size(), d_tableModel.getColumnCount());
+		assertEquals(d_analysis.getAlternatives().size(), d_tableModel.getColumnCount());
 	}
 
 	@Test
 	public void testGetRowCount() {
-		assertEquals(d_analysis.getIncludedDrugs().size(), d_tableModel.getRowCount());
+		assertEquals(d_analysis.getAlternatives().size(), d_tableModel.getRowCount());
 	}
 
 	@Test
@@ -86,15 +86,15 @@ public class NetworkTableModelTest {
 		assertEquals(null, d_tableModel.getDescriptionAt(0, 0));
 		assertEquals(null, d_tableModel.getDescriptionAt(1, 1));
 		assertEquals(null, d_tableModel.getDescriptionAt(2, 2));
-		assertEquals(d_analysis.getIncludedDrugs().get(0), d_tableModel.getValueAt(0, 0));
-		assertEquals(d_analysis.getIncludedDrugs().get(1), d_tableModel.getValueAt(1, 1));
-		assertEquals(d_analysis.getIncludedDrugs().get(2), d_tableModel.getValueAt(2, 2));
+		assertEquals(d_analysis.getAlternatives().get(0), d_tableModel.getValueAt(0, 0));
+		assertEquals(d_analysis.getAlternatives().get(1), d_tableModel.getValueAt(1, 1));
+		assertEquals(d_analysis.getAlternatives().get(2), d_tableModel.getValueAt(2, 2));
 
 		
 		ConsistencyWrapper consModel = d_analysis.getConsistencyModel();
-		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(0), d_analysis.getIncludedDrugs().get(1));
-		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(1), d_analysis.getIncludedDrugs().get(0));
-		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getIncludedDrugs().get(2), d_analysis.getIncludedDrugs().get(0));
+		Parameter relativeEffect01 = consModel.getRelativeEffect(d_analysis.getAlternatives().get(0), d_analysis.getAlternatives().get(1));
+		Parameter relativeEffect10 = consModel.getRelativeEffect(d_analysis.getAlternatives().get(1), d_analysis.getAlternatives().get(0));
+		Parameter relativeEffect20 = consModel.getRelativeEffect(d_analysis.getAlternatives().get(2), d_analysis.getAlternatives().get(0));
 
 		assertSame(consModel.getQuantileSummary(relativeEffect01), d_tableModel.getValueAt(0, 1));
 		assertEquals("\"Paroxetine\" relative to \"Fluoxetine\"", d_tableModel.getDescriptionAt(0, 1));
@@ -110,8 +110,8 @@ public class NetworkTableModelTest {
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
 		ConsistencyWrapper model =  d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getModel().getActivityTask());
-		TreatmentCategorySet d1 = d_analysis.getIncludedDrugs().get(0);
-		TreatmentCategorySet d2 = d_analysis.getIncludedDrugs().get(1);
+		TreatmentCategorySet d1 = d_analysis.getAlternatives().get(0);
+		TreatmentCategorySet d2 = d_analysis.getAlternatives().get(1);
 		QuantileSummary quantileSummary = model.getQuantileSummary(model.getRelativeEffect(d1, d2));
 		
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));

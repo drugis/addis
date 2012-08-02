@@ -34,8 +34,8 @@ public interface PairWiseMetaAnalysis extends MetaAnalysis {
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 
-	public TreatmentCategorySet getFirstDrug();
+	public TreatmentCategorySet getFirstAlternative();
 
-	public TreatmentCategorySet getSecondDrug();
+	public TreatmentCategorySet getSecondAlternative();
 	
 }

@@ -165,7 +165,7 @@ public class BenefitRiskWizardPMTest {
 		List<TreatmentCategorySet> expected = new ArrayList<TreatmentCategorySet>();
 		for (MetaAnalysis ma : d_domain.getMetaAnalyses()) {
 			if (ma.getIndication().equals(d_indication))
-				expected.addAll(ma.getIncludedDrugs());
+				expected.addAll(ma.getAlternatives());
 		}
 		
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
@@ -191,7 +191,7 @@ public class BenefitRiskWizardPMTest {
 		for (TreatmentCategorySet d : pm.getAlternativesListModel()) {
 			boolean expected = true;
 			for (MetaAnalysis mah : pm.getSelectedMetaAnalyses()) {
-				if (mah != null && !mah.getIncludedDrugs().contains(d)) {
+				if (mah != null && !mah.getAlternatives().contains(d)) {
 					expected = false;
 				}
 			}

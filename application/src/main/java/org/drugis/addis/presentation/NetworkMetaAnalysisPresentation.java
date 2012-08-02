@@ -82,7 +82,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
-				new ArrayListModel<TreatmentCategorySet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
+				new ArrayListModel<TreatmentCategorySet>(getBean().getAlternatives()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
@@ -128,7 +128,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public List<TreatmentCategorySet> getIncludedDrugs() {
-		return getBean().getIncludedDrugs();
+		return getBean().getAlternatives();
 	}
 
 	public boolean isContinuous() {

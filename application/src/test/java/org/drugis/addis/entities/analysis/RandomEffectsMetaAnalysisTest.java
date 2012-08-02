@@ -38,12 +38,12 @@ import java.util.List;
 import org.drugis.addis.ADDISTestUtil;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
-import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
@@ -51,7 +51,6 @@ import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectTestBase;
-import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -132,17 +131,17 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testGetFirstDrug() {
-		assertEquals(TreatmentCategorySet.createTrivial(d_fluox), d_rema.getFirstDrug());
+		assertEquals(TreatmentCategorySet.createTrivial(d_fluox), d_rema.getFirstAlternative());
 	}
 	
 	@Test
 	public void testGetSecondDrug() {
-		assertEquals(TreatmentCategorySet.createTrivial(d_sertr), d_rema.getSecondDrug());
+		assertEquals(TreatmentCategorySet.createTrivial(d_sertr), d_rema.getSecondAlternative());
 	}
 	
 	@Test
 	public void testIncludedDrugs() {
-		assertEquals(Arrays.asList(new TreatmentCategorySet [] {TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr)}), d_rema.getIncludedDrugs());
+		assertEquals(Arrays.asList(new TreatmentCategorySet [] {TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr)}), d_rema.getAlternatives());
 	}
 	
 	@Test
