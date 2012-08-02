@@ -26,7 +26,8 @@
 
 package org.drugis.addis.entities.treatment;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractDose;
@@ -133,7 +134,7 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
-		return Collections.singleton(d_drug);
+		return new HashSet<Entity>(Arrays.asList(d_drug, d_doseUnit.getUnit()));
 	}
 
 	public DecisionTree getDecisionTree() {

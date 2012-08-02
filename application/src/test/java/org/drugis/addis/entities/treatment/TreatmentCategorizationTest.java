@@ -92,22 +92,32 @@ public class TreatmentCategorizationTest {
 
 	@Test
 	public void testAddCategory() {
-		final Category category = new Category("foo");
+		final Category category = new Category(d_treatment, "foo");
 		d_treatment.addCategory(category);
 		assertEquals(Arrays.asList(category), d_treatment.getCategories());
+	}
+	
+	@Test
+	public void testGetDependencies() {
+		final Category category = new Category(d_treatment, "foo");
+		d_treatment.addCategory(category);
+		Set<Entity> expected = new HashSet<Entity>();
+		expected.add(d_treatment.getDrug());
+		expected.add(d_treatment.getDoseUnit().getUnit());
+		assertEquals(expected, d_treatment.getDependencies());
 	}
 
 	@Test
 	public void testCategorization() {
 		final DecisionTree tree = d_treatment.getDecisionTree();
-		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(new Category("Fixed Dose")));
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(new Category(d_treatment, "Fixed Dose")));
 		final FixedDose fixedDose = new FixedDose();
 		assertEquals("Fixed Dose", d_treatment.getCategory(fixedDose).getName());
 
 		final ChoiceNode maxDoseChoice = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, DoseUnit.MILLIGRAMS_A_DAY);
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), maxDoseChoice);
 
-		tree.addChild(new RangeEdge(0.0, false, 20.0, false), maxDoseChoice, new LeafNode(new Category("Flexible Dose")));
+		tree.addChild(new RangeEdge(0.0, false, 20.0, false), maxDoseChoice, new LeafNode(new Category(d_treatment, "Flexible Dose")));
 		tree.addChild(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, false), maxDoseChoice, new LeafNode());
 
 		final FlexibleDose lowDose = new FlexibleDose(new Interval<Double>(0.0, 15.0), DoseUnit.MILLIGRAMS_A_DAY);
