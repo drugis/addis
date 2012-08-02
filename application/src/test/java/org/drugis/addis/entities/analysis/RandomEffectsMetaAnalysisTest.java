@@ -119,7 +119,25 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		armsList.add(new StudyArmsEntry(newStudy, subject, base));
 		
 		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, newStudy.getDrugs(base), newStudy.getDrugs(subject), armsList, false);
-	}	
+	}
+	
+	@Test
+	@Ignore
+	public void testCategoryMatching() {
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.MILLIGRAMS_A_DAY);
+		Category fluoxCat = new Category(catz, "Include");
+		catz.addCategory(fluoxCat);
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(fluoxCat));
+		Category sertrCat = Category.createTrivial(d_sertr);
+		List<StudyArmsEntry> entries = ExampleData.createStudyArmEntries(d_studyList,  TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr));
+		
+		// The following should *not* throw an IllegalArgumentException
+		new RandomEffectsMetaAnalysis("meta", d_rateEndpoint,
+				new TreatmentCategorySet(fluoxCat),
+				new TreatmentCategorySet(sertrCat),
+				entries, false);
+	}
 	
 	
 	@Test
