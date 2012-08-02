@@ -48,11 +48,11 @@ public class CorrectedOddsRatioTest extends RelativeEffectTestBase {
 		d_fava = createRateStudy("Fava 2002", 0, 92, 70, 96);
 		d_newhouse = createRateStudy("Newhouse 2000", 50,119, 0,117);
 		d_sechter = createRateStudy("Sechter 1999", 70,120, 86,118);
-		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
-		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
-		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
-		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
-		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, true);
+		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicOddsRatio.class, true);
+		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicOddsRatio.class, true);
+		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicOddsRatio.class, true);
+		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicOddsRatio.class, true);
+		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicOddsRatio.class, true);
 
 	}
 

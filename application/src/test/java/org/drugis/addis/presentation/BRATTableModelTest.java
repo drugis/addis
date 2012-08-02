@@ -79,7 +79,7 @@ public class BRATTableModelTest {
 	@Before
 	public void setUp() {
 		d_mba = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_btmMeta = new BRATTableModel<DrugSet, MetaBenefitRiskAnalysis>(d_mba, new DrugSet(ExampleData.buildDrugFluoxetine()));
+		d_btmMeta = new BRATTableModel<DrugSet, MetaBenefitRiskAnalysis>(d_mba, DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
 		StudyBenefitRiskAnalysis sba = ExampleData.buildStudyBenefitRiskAnalysis();
 		d_btmMockStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(sba, sba.getAlternatives().get(1));
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
@@ -172,13 +172,13 @@ public class BRATTableModelTest {
 		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(1), d_subject),
 				((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
 		
-		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), new DrugSet(ExampleData.buildDrugFluoxetine())),
+		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())),
 				((BRATDifference)d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	}
 
 	@Test
 	public void testForestConfidenceIntervals() {
-		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), new DrugSet(ExampleData.buildDrugFluoxetine()));
+		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
 		assertEquals((Double)relEff.getQuantile(0.025), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getLowerBound());
 		assertEquals((Double)relEff.getQuantile(0.5), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getPointEstimate());
 		assertEquals((Double)relEff.getQuantile(0.975), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getUpperBound());

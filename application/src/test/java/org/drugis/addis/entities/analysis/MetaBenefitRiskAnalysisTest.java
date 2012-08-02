@@ -88,12 +88,12 @@ public class MetaBenefitRiskAnalysisTest {
 	public void testGetDistribution() {
 		OutcomeMeasure om = ExampleData.buildEndpointHamd();
 		
-		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(om, new DrugSet(ExampleData.buildDrugFluoxetine()));
+		GaussianBase actualDist = d_BRAnalysis.getRelativeEffectDistribution(om, DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
 		
 		final MetaAnalysis ma = ExampleData.buildMetaAnalysisHamd();
 		MultivariateNormalSummary summary = ma.getRelativeEffectsSummary();
 		LogGaussian expected = new LogGaussian(summary.getMeanVector()[0], Math.sqrt(summary.getCovarianceMatrix()[0][0])); 
-		assertEquals(new DrugSet(ExampleData.buildDrugParoxetine()), ma.getIncludedDrugs().get(0));
+		assertEquals(DrugSet.createTrivial(ExampleData.buildDrugParoxetine()), ma.getIncludedDrugs().get(0));
 
 		assertEquals(expected.getQuantile(0.50), actualDist.getQuantile(0.50), 0.00001);
 		assertEquals(expected.getQuantile(0.025), actualDist.getQuantile(0.025), 0.00001);
@@ -107,15 +107,15 @@ public class MetaBenefitRiskAnalysisTest {
 		Drug parox = ExampleData.buildDrugParoxetine();
 		
 		LogGaussian baseline = (LogGaussian)d_BRAnalysis.getBaselineDistribution(om);
-		LogGaussian relative = (LogGaussian)d_BRAnalysis.getRelativeEffectDistribution(om, new DrugSet(fluox));
+		LogGaussian relative = (LogGaussian)d_BRAnalysis.getRelativeEffectDistribution(om, DrugSet.createTrivial(fluox));
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
-		LogitGaussian absoluteF = (LogitGaussian)d_BRAnalysis.getMeasurement(om, new DrugSet(fluox));
+		LogitGaussian absoluteF = (LogitGaussian)d_BRAnalysis.getMeasurement(om, DrugSet.createTrivial(fluox));
 		assertEquals(expectedMu, absoluteF.getMu(), 0.0000001);
 		assertEquals(expectedSigma, absoluteF.getSigma(), 0.0000001);
 
-		LogitGaussian absoluteP = (LogitGaussian)d_BRAnalysis.getMeasurement(om, new DrugSet(parox));
+		LogitGaussian absoluteP = (LogitGaussian)d_BRAnalysis.getMeasurement(om, DrugSet.createTrivial(parox));
 		assertEquals(baseline.getMu(), absoluteP.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteP.getSigma(), 0.0001);
 	}
@@ -128,15 +128,15 @@ public class MetaBenefitRiskAnalysisTest {
 		MetaBenefitRiskAnalysis br = ExampleData.realBuildContinuousMockBenefitRisk();
 		
 		Gaussian baseline = (Gaussian)br.getBaselineDistribution(om);
-		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(om, new DrugSet(parox));
+		Gaussian relative = (Gaussian)br.getRelativeEffectDistribution(om, DrugSet.createTrivial(parox));
 		double expectedMu = baseline.getMu() + relative.getMu();
 		double expectedSigma = Math.sqrt(Math.pow(baseline.getSigma(), 2) + Math.pow(relative.getSigma(), 2));
 
-		Gaussian absoluteP = (Gaussian)br.getMeasurement(om, new DrugSet(parox));
+		Gaussian absoluteP = (Gaussian)br.getMeasurement(om, DrugSet.createTrivial(parox));
 		assertEquals(expectedMu, absoluteP.getMu(), 0.0000001);
 		assertEquals(expectedSigma, absoluteP.getSigma(), 0.0000001);
 		
-		Gaussian absoluteF = (Gaussian)br.getMeasurement(om, new DrugSet(fluox));
+		Gaussian absoluteF = (Gaussian)br.getMeasurement(om, DrugSet.createTrivial(fluox));
 		assertEquals(baseline.getMu(), absoluteF.getMu(), 0.0000001);
 		assertEquals(baseline.getSigma(), absoluteF.getSigma(), 0.0001);
 	}
@@ -155,13 +155,13 @@ public class MetaBenefitRiskAnalysisTest {
 		
 		Drug parox = ExampleData.buildDrugParoxetine();
 		List<DrugSet> drugList = new ArrayList<DrugSet>();
-		drugList.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		drugList.add(new DrugSet(ExampleData.buildDrugSertraline()));
+		drugList.add(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		drugList.add(DrugSet.createTrivial(ExampleData.buildDrugSertraline()));
 		
 		boolean caught = false;
 		try {
 			new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis", indication, 
-					metaAnalysisList, new DrugSet(parox), drugList, AnalysisType.LyndOBrien);	
+					metaAnalysisList, DrugSet.createTrivial(parox), drugList, AnalysisType.LyndOBrien);	
 		} catch(IllegalArgumentException a)
 		{caught = true;}
 		assertTrue(caught);

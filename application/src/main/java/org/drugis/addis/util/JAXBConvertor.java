@@ -1305,7 +1305,7 @@ public class JAXBConvertor {
 		for(NameReference d : drugs.getDrug()) {
 			out.add(JAXBConvertor.findNamedItem(domain.getDrugs(), d.getName()));
 		}
-		return new DrugSet(out);
+		return DrugSet.createTrivial(out);
 	}
 	
 	public static DrugSet convertDrugSet(Drugs drugs, Domain domain) {
@@ -1313,7 +1313,7 @@ public class JAXBConvertor {
 		for(org.drugis.addis.entities.data.Drug d : drugs.getDrug()) {
 			out.add(JAXBConvertor.findNamedItem(domain.getDrugs(), d.getName()));
 		}
-		return new DrugSet(out);
+		return DrugSet.createTrivial(out);
 	}
 	
 	public static org.drugis.addis.entities.data.Allocation allocationWithNotes(Allocation nested) {

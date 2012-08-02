@@ -37,13 +37,21 @@ import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.util.EntityUtil;
 
 public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
+	public static DrugSet createTrivial(Collection<Drug> contents) {
+		return new DrugSet(contents);
+	}
+
+	public static DrugSet createTrivial(Drug drug) {
+		return new DrugSet(drug);
+	}
+
 	private SortedSet<Drug> d_contents;
 
-	public DrugSet(Collection<Drug> contents) {
+	private DrugSet(Collection<Drug> contents) {
 		d_contents = new TreeSet<Drug>(contents);
 	}
 	
-	public DrugSet(Drug drug) {
+	private DrugSet(Drug drug) {
 		this(Collections.singleton(drug));
 	}
 	

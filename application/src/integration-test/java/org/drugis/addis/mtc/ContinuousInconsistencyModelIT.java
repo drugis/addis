@@ -60,9 +60,9 @@ public class ContinuousInconsistencyModelIT {
     	
     	assertEquals(1, d_nma.getInconsistencyModel().getInconsistencyFactors().size());
     	assertNotNull(d_wrapper.getQuantileSummary(d_wrapper.getInconsistencyFactors().get(0)));
-    	DrugSet a = new DrugSet(ExampleData.buildDrugFluoxetine());
-    	DrugSet b = new DrugSet(ExampleData.buildDrugParoxetine());
-    	DrugSet c = new DrugSet(ExampleData.buildDrugSertraline());
+    	DrugSet a = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+    	DrugSet b = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+    	DrugSet c = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
     	assertNotNull(d_wrapper.getRelativeEffect(a, b));
     	assertNotNull(d_wrapper.getRelativeEffect(b, a));
     	assertNotNull(d_wrapper.getRelativeEffect(a, c));
@@ -75,9 +75,9 @@ public class ContinuousInconsistencyModelIT {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyAdditionalThreeArm()});
 		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()), 
-				new DrugSet(ExampleData.buildDrugSertraline())});
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()), 
+				DrugSet.createTrivial(ExampleData.buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),

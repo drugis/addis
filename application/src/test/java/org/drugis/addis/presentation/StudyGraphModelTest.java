@@ -71,9 +71,9 @@ public class StudyGraphModelTest {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_drugs = new ArrayList<DrugSet>();
-		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
-		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
+		d_drugs.add(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		d_drugs.add(DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
+		d_drugs.add(DrugSet.createTrivial(ExampleData.buildDrugSertraline()));
 		d_outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
@@ -95,13 +95,13 @@ public class StudyGraphModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
-		assertAllAndOnly(studies, d_pm.getStudies(new DrugSet(ExampleData.buildDrugFluoxetine())));
+		assertAllAndOnly(studies, d_pm.getStudies(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())));
 		
 		studies.remove(ExampleData.buildStudyBennie());
-		assertAllAndOnly(studies, d_pm.getStudies(new DrugSet(ExampleData.buildDrugParoxetine())));
+		assertAllAndOnly(studies, d_pm.getStudies(DrugSet.createTrivial(ExampleData.buildDrugParoxetine())));
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
-				d_pm.getStudies(new DrugSet(ExampleData.buildDrugSertraline())));
+				d_pm.getStudies(DrugSet.createTrivial(ExampleData.buildDrugSertraline())));
 	}
 	
 	@Test
@@ -112,14 +112,14 @@ public class StudyGraphModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
-		assertAllAndOnly(studies, d_pm.getStudies(new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine())));
+		assertAllAndOnly(studies, d_pm.getStudies(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()), DrugSet.createTrivial(ExampleData.buildDrugParoxetine())));
 		
 		studies.remove(ExampleData.buildStudyBennie());
 		assertAllAndOnly(Collections.emptyList(), 
-				d_pm.getStudies(new DrugSet(ExampleData.buildDrugParoxetine()), new DrugSet(ExampleData.buildDrugSertraline())));
+				d_pm.getStudies(DrugSet.createTrivial(ExampleData.buildDrugParoxetine()), DrugSet.createTrivial(ExampleData.buildDrugSertraline())));
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
-				d_pm.getStudies(new DrugSet(ExampleData.buildDrugSertraline()), new DrugSet(ExampleData.buildDrugFluoxetine())));
+				d_pm.getStudies(DrugSet.createTrivial(ExampleData.buildDrugSertraline()), DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())));
 	}
 	
 	@Test
@@ -139,27 +139,27 @@ public class StudyGraphModelTest {
 		assertEquals(2, edgeSet.size());
 		
 		Edge edge1 = d_pm.getEdge(
-				getVertex(new DrugSet(ExampleData.buildDrugFluoxetine())),
-				getVertex(new DrugSet(ExampleData.buildDrugParoxetine())));
+				getVertex(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())),
+				getVertex(DrugSet.createTrivial(ExampleData.buildDrugParoxetine())));
 		assertNotNull(edge1);
 		assertEquals(3, edge1.getStudyCount());
 		
 		Edge edge2 = d_pm.getEdge(
-				getVertex(new DrugSet(ExampleData.buildDrugFluoxetine())),
-				getVertex(new DrugSet(ExampleData.buildDrugSertraline())));
+				getVertex(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())),
+				getVertex(DrugSet.createTrivial(ExampleData.buildDrugSertraline())));
 		assertNotNull(edge2);
 		assertEquals(1, edge2.getStudyCount());
 		
 		Edge edge3 = d_pm.getEdge(
-				getVertex(new DrugSet(ExampleData.buildDrugSertraline())),
-				getVertex(new DrugSet(ExampleData.buildDrugFluoxetine())));
+				getVertex(DrugSet.createTrivial(ExampleData.buildDrugSertraline())),
+				getVertex(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())));
 		assertEquals(edge2, edge3);
 	}
 	
 	@Test
 	public void testFindVertex() {
-		assertEquals(new DrugSet(ExampleData.buildDrugFluoxetine()),
-				d_pm.findVertex(new DrugSet(ExampleData.buildDrugFluoxetine())).getDrug());
+		assertEquals(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				d_pm.findVertex(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())).getDrug());
 	}
 	
 	@Test

@@ -176,7 +176,7 @@ public class DomainImpl extends Domain {
 	}
 	
 	public ObservableList<Study> getStudies(Drug d) {
-		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(new DrugSet(d)));
+		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(DrugSet.createTrivial(d)));
 	}
 	
 	public ObservableList<Study> getStudies(Indication i) {

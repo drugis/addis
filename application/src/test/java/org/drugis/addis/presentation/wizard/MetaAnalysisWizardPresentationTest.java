@@ -84,11 +84,11 @@ public class MetaAnalysisWizardPresentationTest {
 		ExampleData.initDefaultData(d_domain);
 		d_wizard = new MetaAnalysisWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
 		
-		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
-		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
-		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
-		d_escitSet = new DrugSet(ExampleData.buildDrugEscitalopram());
-		d_citalSet = new DrugSet(ExampleData.buildDrugCitalopram());
+		d_fluoxSet = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+		d_paroxSet = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		d_sertrSet = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
+		d_escitSet = DrugSet.createTrivial(ExampleData.buildDrugEscitalopram());
+		d_citalSet = DrugSet.createTrivial(ExampleData.buildDrugCitalopram());
 	}
 	
 	@Test
@@ -599,7 +599,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getSelectedArmModel(burke, d_escitSet);
 
-		DrugSet placeSet = new DrugSet(ExampleData.buildPlacebo());
+		DrugSet placeSet = DrugSet.createTrivial(ExampleData.buildPlacebo());
 		d_wizard.getSecondDrugModel().setValue(placeSet);
 
 		d_wizard.getSelectedArmModel(burke, placeSet);

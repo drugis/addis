@@ -128,9 +128,9 @@ public class NetworkTableModelTest {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
 		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()), 
-				new DrugSet(ExampleData.buildDrugSertraline())});
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()), 
+				DrugSet.createTrivial(ExampleData.buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),
@@ -143,9 +143,9 @@ public class NetworkTableModelTest {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyDeWilde(), ExampleData.buildStudyFava2002()});
 		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()), 
-				new DrugSet(ExampleData.buildDrugSertraline())});
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()), 
+				DrugSet.createTrivial(ExampleData.buildDrugSertraline())});
 		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointHamd(),
 				studies, drugs, ExampleData.buildMap(studies, drugs));

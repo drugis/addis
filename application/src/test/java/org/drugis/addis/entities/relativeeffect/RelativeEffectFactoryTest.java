@@ -53,8 +53,8 @@ public class RelativeEffectFactoryTest {
 		d_s = ExampleData.buildStudyChouinard();
 		d_eCont = ExampleData.buildEndpointCgi();
 		d_eRate = ExampleData.buildEndpointHamd();
-		d_parox = new DrugSet(ExampleData.buildDrugParoxetine());
-		d_fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
+		d_parox = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		d_fluox = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
 		d_pBase = d_s.getArms().get(0);
 		d_pSubj = d_s.getArms().get(1);
 	}

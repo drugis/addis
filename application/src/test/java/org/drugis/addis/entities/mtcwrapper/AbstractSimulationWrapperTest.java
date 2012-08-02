@@ -52,7 +52,7 @@ public class AbstractSimulationWrapperTest {
 
 	@Before
 	public void setUp() {
-		d_treatments = Arrays.asList(new DrugSet(new Drug("A", "")), new DrugSet(new Drug("B", "")), new DrugSet(new Drug("C", "")));
+		d_treatments = Arrays.asList(DrugSet.createTrivial(new Drug("A", "")), DrugSet.createTrivial(new Drug("B", "")), DrugSet.createTrivial(new Drug("C", "")));
 		NetworkBuilder<DrugSet> builder = NetworkBuilderFactory.createBuilderStub(d_treatments);
 		ArrayList<Treatment> treatmentList = new ArrayList<Treatment>();
 		for(DrugSet s : d_treatments) { 

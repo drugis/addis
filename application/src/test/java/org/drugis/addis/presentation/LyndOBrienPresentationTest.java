@@ -59,9 +59,9 @@ public class LyndOBrienPresentationTest {
 		metaAnalysisList.add(ExampleData.buildMetaAnalysisConv());
 		
 		Drug parox = ExampleData.buildDrugParoxetine();
-		List<DrugSet> fluoxList = Collections.singletonList(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		List<DrugSet> fluoxList = Collections.singletonList(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
 		
 		return new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, metaAnalysisList, new DrugSet(parox), fluoxList, AnalysisType.LyndOBrien);										
+										indication, metaAnalysisList, DrugSet.createTrivial(parox), fluoxList, AnalysisType.LyndOBrien);										
 	}
 }

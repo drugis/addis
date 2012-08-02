@@ -117,7 +117,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(new Study("iiidddd", ExampleData.buildIndicationDepression()));
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+				studies, DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()), DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_domain.getMetaAnalyses().add(ma);
 	}
 	
@@ -206,7 +206,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+				studies, DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()), DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		return ma;
 	}
 	
@@ -218,7 +218,7 @@ public class DomainTest {
 		study2.setIndication(ExampleData.buildIndicationChronicHeartFailure());
 		studies.add(study2);
 		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+				studies, DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()), DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_domain.getMetaAnalyses().add(ma);
 	}
 	
@@ -496,7 +496,7 @@ public class DomainTest {
 		s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, new DrugSet(fluox), new DrugSet(parox)); 
+		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, DrugSet.createTrivial(fluox), DrugSet.createTrivial(parox)); 
 		d_domain.getMetaAnalyses().add(ma);
 		d_domain.deleteEntity(s1);
 	}

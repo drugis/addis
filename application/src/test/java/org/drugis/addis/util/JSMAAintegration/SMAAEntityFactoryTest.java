@@ -69,10 +69,10 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateMeanVector() {
-		DrugSet a1 = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet a2 = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet a3 = new DrugSet(ExampleData.buildDrugEscitalopram());
-		DrugSet a4 = new DrugSet(ExampleData.buildDrugSertraline());
+		DrugSet a1 = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+		DrugSet a2 = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		DrugSet a3 = DrugSet.createTrivial(ExampleData.buildDrugEscitalopram());
+		DrugSet a4 = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
 		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[] = new double [] {1.2, 0.3, -8.4};
 		assertArrayEquals(new double[] {0.0, m[0], m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a1, m), 0.0);
@@ -82,10 +82,10 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCovarianceMatrix() {
-		DrugSet a1 = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet a2 = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet a3 = new DrugSet(ExampleData.buildDrugEscitalopram());
-		DrugSet a4 = new DrugSet(ExampleData.buildDrugSertraline());
+		DrugSet a1 = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+		DrugSet a2 = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		DrugSet a3 = DrugSet.createTrivial(ExampleData.buildDrugEscitalopram());
+		DrugSet a4 = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
 		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[][] = new double [][] {{1.2, 0.3, -8.4}, {1.8, -1.4, 0.5}, {1.0, 0.3, 0.4}};
 		

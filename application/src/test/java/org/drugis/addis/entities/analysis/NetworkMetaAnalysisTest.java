@@ -67,9 +67,9 @@ public class NetworkMetaAnalysisTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testRelativeEffectsList() {
-		DrugSet fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
+		DrugSet fluox = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+		DrugSet parox = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		DrugSet sertr = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
 		List<Pair<DrugSet>> expected = Arrays.asList(
 				new Pair<DrugSet>(fluox, parox),
 				new Pair<DrugSet>(fluox, sertr)

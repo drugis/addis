@@ -51,8 +51,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointHamd(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -65,8 +65,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -79,8 +79,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -96,8 +96,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
 				ExampleData.buildEndpointCgi(),
 				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);

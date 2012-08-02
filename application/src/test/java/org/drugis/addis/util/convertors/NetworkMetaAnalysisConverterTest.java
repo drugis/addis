@@ -86,11 +86,11 @@ public class NetworkMetaAnalysisConverterTest {
 			studies.add(studyEnt);
 		}
 
-		DrugSet combi = new DrugSet(Arrays.asList(
+		DrugSet combi = DrugSet.createTrivial(Arrays.asList(
 				ExampleData.buildDrugFluoxetine(),
 				ExampleData.buildDrugSertraline()));
-		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
+		DrugSet parox = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		DrugSet sertr = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
 		SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
 		drugs.add(combi);
 		drugs.add(parox);

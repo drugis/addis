@@ -73,9 +73,9 @@ public class BenefitRiskWizardPMTest {
 		d_indication = ExampleData.buildIndicationDepression();
 		d_study = ExampleData.buildStudyChouinard().clone();
 		
-		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
-		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
-		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
+		d_fluoxSet = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+		d_paroxSet = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		d_sertrSet = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
 		
 		d_domain.getStudies().remove(ExampleData.buildStudyChouinard());
 		d_domain.getStudies().add(d_study);
@@ -204,7 +204,7 @@ public class BenefitRiskWizardPMTest {
 	public void testGetAlternativeSelectedModel() {
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointCgi()).setValue(true);
-		DrugSet d = new DrugSet(ExampleData.buildDrugParoxetine());
+		DrugSet d = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
 		ValueHolder<Boolean> actual = pm.getAlternativeSelectedModel(d);
 		assertEquals(false, actual.getValue());
 		actual.setValue(true);
@@ -336,9 +336,9 @@ public class BenefitRiskWizardPMTest {
 		MetaCriteriaAndAlternativesPresentation pm = d_pm.getMetaBRPresentation();
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.LyndOBrien); 
 		pm.getCriterionSelectedModel(ExampleData.buildEndpointHamd()).setValue(true);
-		pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine()));
-		pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline()));
+		pm.getAlternativeSelectedModel(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		pm.getAlternativeSelectedModel(DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
+		pm.getAlternativeSelectedModel(DrugSet.createTrivial(ExampleData.buildDrugSertraline()));
 		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildNetworkMetaAnalysisHamD());
 		
 		d_pm.getAnalysisTypeHolder().setValue(AnalysisType.SMAA);
@@ -423,12 +423,12 @@ public class BenefitRiskWizardPMTest {
 		pm.getMetaAnalysesSelectedModel(ExampleData.buildEndpointHamd()).setValue(ExampleData.buildMetaAnalysisHamd());
 		
 		// The non-included alternative should be deselected and disabled.
-		assertTrue(pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
-		assertTrue(pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
-		assertFalse(pm.getAlternativeEnabledModel(new DrugSet(ExampleData.buildDrugSertraline())).getValue());
-		assertTrue(pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugFluoxetine())).getValue());
-		assertTrue(pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugParoxetine())).getValue());
-		assertFalse(pm.getAlternativeSelectedModel(new DrugSet(ExampleData.buildDrugSertraline())).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())).getValue());
+		assertTrue(pm.getAlternativeEnabledModel(DrugSet.createTrivial(ExampleData.buildDrugParoxetine())).getValue());
+		assertFalse(pm.getAlternativeEnabledModel(DrugSet.createTrivial(ExampleData.buildDrugSertraline())).getValue());
+		assertTrue(pm.getAlternativeSelectedModel(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine())).getValue());
+		assertTrue(pm.getAlternativeSelectedModel(DrugSet.createTrivial(ExampleData.buildDrugParoxetine())).getValue());
+		assertFalse(pm.getAlternativeSelectedModel(DrugSet.createTrivial(ExampleData.buildDrugSertraline())).getValue());
 	}
 	
 	@Test

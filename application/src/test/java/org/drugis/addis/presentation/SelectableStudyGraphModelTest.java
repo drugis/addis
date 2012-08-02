@@ -66,9 +66,9 @@ public class SelectableStudyGraphModelTest {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_drugs = new ArrayList<DrugSet>();
-		d_drugs.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		d_drugs.add(new DrugSet(ExampleData.buildDrugParoxetine()));
-		d_drugs.add(new DrugSet(ExampleData.buildDrugSertraline()));
+		d_drugs.add(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		d_drugs.add(DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
+		d_drugs.add(DrugSet.createTrivial(ExampleData.buildDrugSertraline()));
 		d_drugListHolder = new ArrayListModel<DrugSet>(d_drugs);
 		ValueHolder<OutcomeMeasure> outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
@@ -80,7 +80,7 @@ public class SelectableStudyGraphModelTest {
 	@Test
 	public void testGetSelectedDrugsModel() {
 		ObservableList<DrugSet> selDrugs = d_pm.getSelectedDrugsModel();
-		List<DrugSet> list = Collections.singletonList(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		List<DrugSet> list = Collections.singletonList(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
 		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(selDrugs, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
@@ -98,7 +98,7 @@ public class SelectableStudyGraphModelTest {
 	public void testIsSelectionConnected() {
 		assertTrue(d_pm.isSelectionConnected());
 
-		d_drugs.remove(new DrugSet(ExampleData.buildDrugFluoxetine()));
+		d_drugs.remove(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
 		d_pm.getSelectedDrugsModel().clear();
 		d_pm.getSelectedDrugsModel().addAll(d_drugs);
 		

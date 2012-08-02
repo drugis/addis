@@ -110,8 +110,8 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s1);
 		studies.add(d_s2);
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("null", d_endpoint, studies,
-				new DrugSet(d_baseline), new DrugSet(d_subject));
-		d_pm = new ForestPlotPresentation(studies, d_endpoint, new DrugSet(d_baseline), new DrugSet(d_subject), BasicMeanDifference.class, 
+				DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject));
+		d_pm = new ForestPlotPresentation(studies, d_endpoint, DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject), BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()), analysis);
 	}
 	
@@ -187,9 +187,9 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s2);
 		
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("null", d_endpoint, studies,
-				new DrugSet(d_baseline), new DrugSet(d_subject));
+				DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject));
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
-				new DrugSet(d_baseline), new DrugSet(d_subject),
+				DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject),
 				BasicMeanDifference.class, new PresentationModelFactory(new DomainImpl()), analysis);
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));

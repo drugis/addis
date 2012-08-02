@@ -728,7 +728,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		for(final DrugTreatment ta : activity.getTreatments()) {
 			drugs.add(ta.getDrug());
 		}
-		return new DrugSet(drugs);
+		return DrugSet.createTrivial(drugs);
 	}
 
 	@Override

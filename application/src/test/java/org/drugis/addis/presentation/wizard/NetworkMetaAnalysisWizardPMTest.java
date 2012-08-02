@@ -78,9 +78,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
-		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
-		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
-		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
+		d_paroxSet = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
+		d_fluoxSet = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
+		d_sertrSet = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
 	}
 	
 	@Test
@@ -249,7 +249,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		
 		DrugSet[] expected = new DrugSet[] {
-				new DrugSet(ExampleData.buildDrugCitalopram()),
+				DrugSet.createTrivial(ExampleData.buildDrugCitalopram()),
 				d_fluoxSet,
 				d_paroxSet
 			};

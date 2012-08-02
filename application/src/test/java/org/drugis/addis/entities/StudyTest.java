@@ -96,8 +96,8 @@ public class StudyTest {
 	public void testGetDrugs() {
 		Study s = ExampleData.buildStudyDeWilde();
 		Set<DrugSet> expected = new HashSet<DrugSet>();
-		expected.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		expected.add(new DrugSet(ExampleData.buildDrugParoxetine()));
+		expected.add(DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		expected.add(DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
 		assertEquals(expected, s.getDrugs());
 	}
 	

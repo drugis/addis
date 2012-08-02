@@ -42,7 +42,7 @@ public class CorrectedBasicRiskDifferenceTest extends RelativeEffectTestBase {
 	@Before
 	public void setUp() {
 		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
-		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskDifference.class, true);
+		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicRiskDifference.class, true);
 	}
 
 	@Test

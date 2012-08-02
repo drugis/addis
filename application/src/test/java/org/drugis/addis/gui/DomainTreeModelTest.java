@@ -105,7 +105,7 @@ public class DomainTreeModelTest {
 		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
 		
 		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
-				Collections.singletonList((Study)d_firstStudy), new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
+				Collections.singletonList((Study)d_firstStudy), DrugSet.createTrivial(d_firstDrug), DrugSet.createTrivial(d_firstDrug));
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
@@ -321,7 +321,7 @@ public class DomainTreeModelTest {
 	@Test
 	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
 		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
-				new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
+				DrugSet.createTrivial(d_firstDrug), DrugSet.createTrivial(d_firstDrug));
 		d_domain.getMetaAnalyses().add(study);
 		assertTrue(d_treeModel.isLeaf(study));
 		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));

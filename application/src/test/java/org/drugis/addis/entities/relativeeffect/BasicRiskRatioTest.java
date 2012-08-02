@@ -57,11 +57,11 @@ public class BasicRiskRatioTest extends RelativeEffectTestBase {
 		d_newhouse = createRateStudy("Newhouse 2000", 84,119, 85,117);
 		d_sechter = createRateStudy("Sechter 1999", 76,120, 86,118);
 				
-		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskRatio.class);
-		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskRatio.class);
-		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskRatio.class);
-		d_ratioNewhouse = RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskRatio.class);
-		d_ratioSechter = RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskRatio.class);		
+		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicRiskRatio.class);
+		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicRiskRatio.class);
+		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicRiskRatio.class);
+		d_ratioNewhouse = RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicRiskRatio.class);
+		d_ratioSechter = RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, DrugSet.createTrivial(d_fluox), DrugSet.createTrivial(d_sertr), BasicRiskRatio.class);		
 	}
 	
 
