@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
@@ -14,38 +15,58 @@ import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.entities.analysis.NetworkBuilderFactory.NameTranformer;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NetworkBuilderFactoryTest {
-	private NameTranformer d_transformer;
+	private Transformer<TreatmentCategorySet, String> d_transformer;
 	
 	@Before
 	public void setUp() {
-		d_transformer = new NetworkBuilderFactory.NameTranformer();
+		d_transformer = new NetworkBuilderFactory.NameTransformer();
 	}
 
 	@Test
 	public void testTransformCombinationTreatment() {
-		DrugSet treatment = new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
+		TreatmentCategorySet treatment = TreatmentCategorySet.createTrivial(
+				Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
 		assertEquals("Candesartan_Fluoxetine", d_transformer.transform(treatment));
 	}
 	
 	@Test
 	public void testTransformTreatmentWithIllegalCharacters() {
-		DrugSet treatment = new DrugSet(Arrays.asList(new Drug("My Drug!", "3"), ExampleData.buildDrugFluoxetine()));
+		TreatmentCategorySet treatment = TreatmentCategorySet.createTrivial(Arrays.asList(new Drug("My Drug!", "3"), ExampleData.buildDrugFluoxetine()));
 		assertEquals("Fluoxetine_MyDrug", d_transformer.transform(treatment));
 	}
 	
 	@Test
 	public void testTransformTreatmentDuplicateCleanName() {
-		DrugSet treatment1 = new DrugSet(new Drug("My Drug!", "3"));
-		DrugSet treatment2 = new DrugSet(new Drug("My!Drug", "4"));
+		TreatmentCategorySet treatment1 = TreatmentCategorySet.createTrivial(new Drug("My Drug!", "3"));
+		TreatmentCategorySet treatment2 = TreatmentCategorySet.createTrivial(new Drug("My!Drug", "4"));
 		assertEquals("MyDrug", d_transformer.transform(treatment1));
 		assertEquals("MyDrug2", d_transformer.transform(treatment2));
 	}
+	
+	@Test 
+	public void testTransformWithCategory() { 
+		Category cat = Category.createTrivial(new Drug("My Drug!", "3"));
+		cat.setName("AA");
+		TreatmentCategorySet treatment1 = new TreatmentCategorySet(cat);
+		assertEquals("MyDrugAA", d_transformer.transform(treatment1));
+	}
 
+	@Test 
+	public void testTransformWithCategories() { 
+		Category cat1 = Category.createTrivial(new Drug("My Drug!", "1"));
+		Category cat2 = Category.createTrivial(new Drug("My Poison!", "2"));
+		cat1.setName("SomeCat!!!");
+		cat2.setName("Garfield Poison");
+		TreatmentCategorySet treatment1 = new TreatmentCategorySet(Arrays.asList(cat1, cat2));
+		assertEquals("MyDrugSomeCat_MyPoisonGarfieldPoison", d_transformer.transform(treatment1));
+	}
+	
 	@Test
 	public void testBuilderUsesTransform() {
 		Study study = ExampleData.buildStudyMcMurray().clone();

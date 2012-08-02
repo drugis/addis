@@ -38,11 +38,12 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.NetworkBuilder;
@@ -50,40 +51,53 @@ import org.drugis.mtc.data.DataType;
 import org.drugis.mtc.model.Treatment;
 
 public class NetworkBuilderFactory {
-	static final class DescriptionTransformer implements Transformer<DrugSet, String> {
+	static final class TransformerTransformer implements Transformer<DrugSet, String> {
+		private Transformer<TreatmentCategorySet, String> d_nested;
+
+		public TransformerTransformer(Transformer<TreatmentCategorySet, String> nested) {
+			d_nested = nested;
+		}
+		
 		@Override
-		public String transform(DrugSet input) {
+		public String transform(DrugSet drugs) {
+			return d_nested.transform(TreatmentCategorySet.createTrivial(drugs.getContents()));
+		}
+	}
+	
+	static final class DescriptionTransformer implements Transformer<TreatmentCategorySet, String> {
+		@Override
+		public String transform(TreatmentCategorySet input) {
 			return input.getLabel();
 		}
 	}
 
-	static final class NameTranformer implements Transformer<DrugSet, String> {
-		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();
+	static final class NameTransformer implements Transformer<TreatmentCategorySet, String> {
+		private final BidiMap<Category, String> nameLookup = new TreeBidiMap<Category, String>();
 
 		@Override
-		public String transform(DrugSet input) {
+		public String transform(TreatmentCategorySet input) {
 			List<String> names = new ArrayList<String>();
-			for (Drug drug : input.getContents()) {
-				names.add(getCleanName(drug));
+			for (Category category : input.getContents()) {
+				names.add(getCleanName(category));
 			}
 			return StringUtils.join(names, "_");
 		}
 
-		private String getCleanName(Drug drug) {
-			if (!nameLookup.containsKey(drug)) {
-				insertUniqueName(drug);
+		private String getCleanName(Category category) {
+			if (!nameLookup.containsKey(category)) {
+				insertUniqueName(category);
 			}
-			return nameLookup.get(drug);
+			return nameLookup.get(category);
 		}
 
-		private void insertUniqueName(Drug drug) {
-			String sanitized = sanitize(drug.getName());
+		private void insertUniqueName(Category category) {
+			String sanitized = sanitize(category.getLabel());
 			String name = sanitized;
 			int i = 1;
 			while (nameLookup.containsValue(name)) {
 				name = sanitized + ++i;
 			}
-			nameLookup.put(drug, name);
+			nameLookup.put(category, name);
 		}
 
 		private String sanitize(String dirtyString) {
@@ -91,8 +105,8 @@ public class NetworkBuilderFactory {
 		}
 	}
 	
-	private static final Transformer<DrugSet, String> s_descTransform = new DescriptionTransformer();
-	private static final Transformer<DrugSet, String> s_transform = new NameTranformer();
+	private static final Transformer<DrugSet, String> s_descTransform = new TransformerTransformer(new DescriptionTransformer());
+	private static final Transformer<DrugSet, String> s_transform = new TransformerTransformer(new NameTransformer());
 
 	final static class NetworkBuilderStub extends NetworkBuilder<DrugSet> {
 		NetworkBuilderStub() {
