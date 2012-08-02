@@ -30,8 +30,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.common.Interval;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +48,11 @@ public class BasicOddsRatioTest extends RelativeEffectTestBase {
 		d_sechter = createRateStudy("Sechter 1999", 76,120, 86,118);
 				
 		
-		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
-		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
-		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
-		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
-		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class);
+		d_ratioBennie = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicOddsRatio.class);
+		d_ratioBoyer = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicOddsRatio.class);
+		d_ratioFava = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicOddsRatio.class);
+		d_ratioNewhouse = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_newhouse, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicOddsRatio.class);
+		d_ratioSechter = (BasicOddsRatio) RelativeEffectFactory.buildRelativeEffect(d_sechter, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicOddsRatio.class);
 	}
 	
 	@Test

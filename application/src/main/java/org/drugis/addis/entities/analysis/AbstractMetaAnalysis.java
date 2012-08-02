@@ -38,24 +38,25 @@ import java.util.TreeSet;
 
 import org.drugis.addis.entities.AbstractNamedEntity;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
 public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnalysis> implements MetaAnalysis {
 	
-	private static class ArmMap extends HashMap<Study, Map<DrugSet, Arm>> {
+	private static class ArmMap extends HashMap<Study, Map<TreatmentCategorySet, Arm>> {
 		private static final long serialVersionUID = -8579169115557701584L;
 
 		public ArmMap() {
 			super();
 		}
 		
-		public ArmMap(Map<Study, Map<DrugSet, Arm>> other) {
+		public ArmMap(Map<Study, Map<TreatmentCategorySet, Arm>> other) {
 			super(other);
 		}
 	}
@@ -63,7 +64,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	protected OutcomeMeasure d_outcome;
 	protected Indication d_indication;
 	protected List<Study> d_studies;
-	protected List<DrugSet> d_drugs;
+	protected List<TreatmentCategorySet> d_alternatives;
 	protected String d_name = "";
 	protected int d_totalSampleSize;
 	protected ArmMap d_armMap;
@@ -75,15 +76,16 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		d_armMap = new ArmMap();
 	}
 	
-	public AbstractMetaAnalysis(String type, 
-			String name, Indication indication,
-			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) 
+	public AbstractMetaAnalysis(String type, String name,
+			Indication indication, OutcomeMeasure om,
+			List<Study> studies, List<TreatmentCategorySet> drugs,
+			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) 
 	throws IllegalArgumentException {
 		super(name);
 		checkDataConsistency(studies, indication, om);
 		d_type = type;
 
-		d_drugs = drugs;
+		d_alternatives = drugs;
 		d_studies = studies;
 		d_indication = indication;
 		d_outcome = om;
@@ -95,7 +97,9 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		}
 	}
 	
-	public AbstractMetaAnalysis(String type, String name, Indication indication, OutcomeMeasure om, Map<Study, Map<DrugSet, Arm>> armMap) { 
+	public AbstractMetaAnalysis(String type, String name,
+			Indication indication, OutcomeMeasure om,
+			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) { 
 		this(type, name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
 	}
 
@@ -152,7 +156,10 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	@Override
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
-		deps.addAll(EntityUtil.flatten(getIncludedDrugs()));
+		HashSet<Category> categories = EntityUtil.flatten(getAlternatives());
+		for (Category category : categories) { 
+			deps.addAll(category.getDependencies());
+		}
 		deps.add(getIndication());
 		deps.add(getOutcomeMeasure());
 		deps.addAll(getIncludedStudies());
@@ -172,33 +179,33 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		return false;
 	}
 	
-	public List<DrugSet> getIncludedDrugs() {
-		return Collections.unmodifiableList(new ArrayList<DrugSet>(d_drugs));
+	public List<TreatmentCategorySet> getAlternatives() {
+		return Collections.unmodifiableList(new ArrayList<TreatmentCategorySet>(d_alternatives));
 	}
 	
-	public Arm getArm(Study s, DrugSet d) {
+	public Arm getArm(Study s, TreatmentCategorySet d) {
 		return d_armMap.get(s).get(d);
 	}
 	
 	public List<Arm> getArmList(){
 		List <Arm>armList = new ArrayList<Arm>();
 		for(Study s : d_armMap.keySet()){
-			for(DrugSet d : d_armMap.get(s).keySet()){
+			for(TreatmentCategorySet d : d_armMap.get(s).keySet()){
 				armList.add(d_armMap.get(s).get(d));
 			}
 		}
 		return armList;
 	}
 
-	private static List<DrugSet> calculateDrugs(Map<Study, Map<DrugSet, Arm>> armMap) {
-		SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
-		for (Map<DrugSet, Arm> entry : armMap.values()) {
+	private static List<TreatmentCategorySet> calculateDrugs(Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
+		SortedSet<TreatmentCategorySet> drugs = new TreeSet<TreatmentCategorySet>();
+		for (Map<TreatmentCategorySet, Arm> entry : armMap.values()) {
 			drugs.addAll(entry.keySet());
 		}
-		return new ArrayList<DrugSet>(drugs);
+		return new ArrayList<TreatmentCategorySet>(drugs);
 	}
 
-	private static List<Study> calculateStudies(Map<Study, Map<DrugSet, Arm>> armMap) {
+	private static List<Study> calculateStudies(Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
 		ArrayList<Study> studies = new ArrayList<Study>(armMap.keySet());
 		Collections.sort(studies);
 		return studies;
@@ -213,7 +220,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		return 
 			EqualsUtil.equal(getType(), o.getType()) &&
 			EntityUtil.deepEqual(getIncludedStudies(), o.getIncludedStudies()) &&
-			EntityUtil.deepEqual(getIncludedDrugs(), o.getIncludedDrugs()) &&
+			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
 			EqualsUtil.equal(getSampleSize(), o.getSampleSize()) &&
 			EntityUtil.deepEqual(getOutcomeMeasure(), o.getOutcomeMeasure()) &&
 			EntityUtil.deepEqual(getIndication(), o.getIndication());

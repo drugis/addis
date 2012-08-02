@@ -36,7 +36,6 @@ import java.util.TreeSet;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -44,6 +43,7 @@ import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.beans.AbstractObservable;
@@ -60,7 +60,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<DrugSet> {
+public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<TreatmentCategorySet> {
 	private final class AutoSelectMetaAnalysisListener implements ListDataListener {
 		public void intervalRemoved(ListDataEvent e) { }
 
@@ -261,9 +261,9 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	public BenefitRiskAnalysis<DrugSet> createAnalysis(String id, DecisionContext context) {
-		DrugSet baseline = d_baselineModel.getValue();
-		List<DrugSet> alternatives = new ArrayList<DrugSet>(getSelectedAlternatives());
+	public BenefitRiskAnalysis<TreatmentCategorySet> createAnalysis(String id, DecisionContext context) {
+		TreatmentCategorySet baseline = d_baselineModel.getValue();
+		List<TreatmentCategorySet> alternatives = new ArrayList<TreatmentCategorySet>(getSelectedAlternatives());
 		alternatives.remove(baseline);
 		return new MetaBenefitRiskAnalysis(
 				id,
@@ -316,11 +316,11 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		return metaAnalyses.size() == 1 ? metaAnalyses.get(0) : null;
 	}
 
-	private Set<DrugSet> getAlternatives() {
-		Set<DrugSet> alternatives = new TreeSet<DrugSet>();
+	private Set<TreatmentCategorySet> getAlternatives() {
+		Set<TreatmentCategorySet> alternatives = new TreeSet<TreatmentCategorySet>();
 		for(MetaAnalysis ma : d_metaAnalyses) {
 			if(ma.getIndication() == d_indicationModel.getValue())
-				alternatives.addAll(ma.getIncludedDrugs());
+				alternatives.addAll(ma.getAlternatives());
 		}
 		return alternatives;
 	}
@@ -344,20 +344,20 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	protected boolean getAlternativeShouldBeEnabled(DrugSet alternative) {
+	protected boolean getAlternativeShouldBeEnabled(TreatmentCategorySet alternative) {
 		if (!super.getAlternativeShouldBeEnabled(alternative)) {
 			return false;
 		}
-		return getAlternativeIncludedInAllSelectedAnalyses((DrugSet) alternative);
+		return getAlternativeIncludedInAllSelectedAnalyses((TreatmentCategorySet) alternative);
 	}
 
-	private boolean getAlternativeIncludedInAllSelectedAnalyses(DrugSet alternative) {
+	private boolean getAlternativeIncludedInAllSelectedAnalyses(TreatmentCategorySet alternative) {
 		boolean noAnalysesSelected = true;
 		List<OutcomeMeasure> selectedCriteria = getSelectedCriteria();
 		for (CriterionAnalysisPair pair : d_selectedMetaAnalysesPairs) {
 			if (selectedCriteria.contains(pair.getCriterion()) && pair.getAnalysis() != null) {
 				noAnalysesSelected = false;
-				if (!pair.getAnalysis().getIncludedDrugs().contains(alternative)) {
+				if (!pair.getAnalysis().getAlternatives().contains(alternative)) {
 					return false;
 				}
 			}

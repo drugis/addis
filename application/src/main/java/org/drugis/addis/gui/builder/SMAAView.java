@@ -39,9 +39,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
@@ -173,7 +173,7 @@ public class SMAAView implements ViewBuilder  {
 	public JComponent buildPreferenceInformationView(PreferencePresentationModel preferencePresentationModel, AbstractBenefitRiskPresentation<?,?> pm) {
 		if (d_BRpm instanceof MetaBenefitRiskPresentation) {
 			return new PreferenceInformationView(d_pm.getPreferencePresentationModel(),
-					new ClinicalScaleRenderer((AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis>) d_BRpm, (SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>>) d_pm)).buildPanel();
+					new ClinicalScaleRenderer((AbstractBenefitRiskPresentation<TreatmentCategorySet, MetaBenefitRiskAnalysis>) d_BRpm, (SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>>) d_pm)).buildPanel();
 		} else {
 			return new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
 		}

@@ -48,9 +48,9 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.util.JAXBConvertor;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.JAXBConvertorTest;
@@ -86,25 +86,25 @@ public class NetworkMetaAnalysisConverterTest {
 			studies.add(studyEnt);
 		}
 
-		DrugSet combi = new DrugSet(Arrays.asList(
+		TreatmentCategorySet combi = TreatmentCategorySet.createTrivial(Arrays.asList(
 				ExampleData.buildDrugFluoxetine(),
 				ExampleData.buildDrugSertraline()));
-		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
-		SortedSet<DrugSet> drugs = new TreeSet<DrugSet>();
+		TreatmentCategorySet parox = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentCategorySet sertr = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
+		SortedSet<TreatmentCategorySet> drugs = new TreeSet<TreatmentCategorySet>();
 		drugs.add(combi);
 		drugs.add(parox);
 		drugs.add(sertr);
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
-		Map<DrugSet, Arm> study1map = new HashMap<DrugSet, Arm>();
+		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
+		Map<TreatmentCategorySet, Arm> study1map = new HashMap<TreatmentCategorySet, Arm>();
 		study1map.put(combi, studies.get(0).getArms().get(0));
 		study1map.put(sertr, studies.get(0).getArms().get(1));
 		armMap.put(studies.get(0), study1map);
-		Map<DrugSet, Arm> study2map = new HashMap<DrugSet, Arm>();
+		Map<TreatmentCategorySet, Arm> study2map = new HashMap<TreatmentCategorySet, Arm>();
 		study2map.put(parox, studies.get(1).getArms().get(0));
 		study2map.put(sertr, studies.get(1).getArms().get(1));
 		armMap.put(studies.get(1), study2map);
-		Map<DrugSet, Arm> study3map = new HashMap<DrugSet, Arm>();
+		Map<TreatmentCategorySet, Arm> study3map = new HashMap<TreatmentCategorySet, Arm>();
 		study3map.put(sertr, studies.get(2).getArms().get(0));
 		study3map.put(parox, studies.get(2).getArms().get(1));
 		study3map.put(combi, studies.get(2).getArms().get(2));

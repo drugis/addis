@@ -28,11 +28,11 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 
 @SuppressWarnings("serial")
 public class BRRelativeMeasurementTableModel extends AbstractTableModel {	
@@ -81,7 +81,7 @@ public class BRRelativeMeasurementTableModel extends AbstractTableModel {
 		OutcomeMeasure om = d_br.getCriteria().get(rowIndex);
 		if (columnIndex == 0) return om.toString();
 
-		DrugSet a = d_br.getNonBaselineAlternatives().get(columnIndex - 1);
+		TreatmentCategorySet a = d_br.getNonBaselineAlternatives().get(columnIndex - 1);
 		return d_br.getRelativeEffectDistribution(om, a);
 	}
 }

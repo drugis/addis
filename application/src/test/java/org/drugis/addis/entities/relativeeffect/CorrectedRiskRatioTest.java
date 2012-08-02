@@ -31,8 +31,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.BasicRateMeasurement;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class CorrectedRiskRatioTest extends RelativeEffectTestBase {
 	@Before
 	public void setUp() {
 		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
-		d_riskRatioBennie = (BasicRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicRiskRatio.class, true);
+		d_riskRatioBennie = (BasicRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicRiskRatio.class, true);
 	}
 
 	@Test

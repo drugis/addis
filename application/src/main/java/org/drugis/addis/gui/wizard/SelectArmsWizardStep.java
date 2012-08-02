@@ -36,10 +36,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -83,7 +83,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (DrugSet drug: d_pm.getSelectedDrugsModel()) {
+			for (TreatmentCategorySet drug: d_pm.getSelectedDrugsModel()) {
 				if (!d_pm.getArmsPerStudyPerDrug(curStudy, drug).isEmpty()) {
 					row = createArmSelect(row, curStudy, drug, cc);
 				}
@@ -97,7 +97,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		setComplete(true);
 	}
 
-	private int createArmSelect(int row, final Study curStudy, DrugSet drug, CellConstraints cc) {
+	private int createArmSelect(int row, final Study curStudy, TreatmentCategorySet drug, CellConstraints cc) {
 		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
 		
 		ListModel arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);

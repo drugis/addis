@@ -31,6 +31,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 
+import java.util.Collections;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -102,5 +104,13 @@ public class DoseUnitTest {
 		
 		DoseUnit gHour = new DoseUnit(new Unit("gram", "g"), ScaleModifier.UNIT, EntityUtil.createDuration("PT1H"));
 		assertEquals(240000, DoseUnit.convert(10, gHour, DoseUnit.MILLIGRAMS_A_DAY), Precision.EPSILON);
+	}
+	
+	@Test
+	public void testDependencies() {
+		assertEquals(Collections.singleton(d_gram), d_mgDay.getDependencies());
+		assertEquals(Collections.singleton(d_gram), d_kgHr.getDependencies());
+		d_mgDay.setUnit(d_meter);
+		assertEquals(Collections.singleton(d_meter), d_mgDay.getDependencies());
 	}
 }

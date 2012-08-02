@@ -28,7 +28,7 @@ package org.drugis.addis.gui;
 
 import java.awt.Color;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.GraphConstants;
@@ -39,10 +39,10 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 
-	private ObservableList<DrugSet> d_selectedDrugs;
+	private ObservableList<TreatmentCategorySet> d_selectedDrugs;
 
 	@SuppressWarnings("rawtypes")
-	public SelectableCellViewFactory(JGraphModelAdapter model, ObservableList<DrugSet> observableList) {
+	public SelectableCellViewFactory(JGraphModelAdapter model, ObservableList<TreatmentCategorySet> observableList) {
 		super(model);
 		
 		d_selectedDrugs = observableList;

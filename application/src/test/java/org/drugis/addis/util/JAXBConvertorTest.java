@@ -80,7 +80,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -150,6 +149,7 @@ import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Treatment;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
@@ -1445,12 +1445,17 @@ public class JAXBConvertorTest {
 		// -----------------------------------
 		Study study = JAXBConvertor.convertStudy(ma.d_studies.get(0), domain);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(study, study.getArms().get(0), study
-				.getArms().get(1)));
+		Arm base = study.getArms().get(0);
+		Arm subject = study.getArms().get(1);
+		armsList.add(new StudyArmsEntry(study, base, subject));
 		domain.getStudies().add(study);
 
-		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(name,
-				ExampleData.buildEndpointHamd(), armsList);
+		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(
+				name, 
+				ExampleData.buildEndpointHamd(), 
+				study.getDrugs(base),
+				study.getDrugs(subject),
+				armsList, false);
 
 		assertEntityEquals(pwma,
 				JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));
@@ -1828,9 +1833,9 @@ public class JAXBConvertorTest {
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
 
-		List<DrugSet> drugsEnt = new ArrayList<DrugSet>(
-				ma1ent.getIncludedDrugs());
-		DrugSet baseline = drugsEnt.get(0);
+		List<TreatmentCategorySet> drugsEnt = new ArrayList<TreatmentCategorySet>(
+				ma1ent.getAlternatives());
+		TreatmentCategorySet baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name,
 				ma1ent.getIndication(), metaList, baseline, drugsEnt,

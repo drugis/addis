@@ -55,7 +55,7 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
-		return Collections.emptySet();
+		return Collections.singleton(d_unit);
 	}
 
 	public Unit getUnit() {

@@ -26,7 +26,7 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.MCMCModel;
 import org.drugis.mtc.MCMCSettings;
 import org.drugis.mtc.Parameter;
@@ -84,7 +84,7 @@ public interface MCMCModelWrapper extends Observable {
 	/**
 	 * Get a quantile summary for the given parameter.
 	 * The parameter must occur in the list returned by {@link #getParameters()}, 
-	 * or be a relative effect from {@link #getRelativeEffect(DrugSet, DrugSet)}.
+	 * or be a relative effect from {@link #getRelativeEffect(TreatmentCategorySet, TreatmentCategorySet)}.
 	 */
 	public abstract QuantileSummary getQuantileSummary(Parameter ip);
 

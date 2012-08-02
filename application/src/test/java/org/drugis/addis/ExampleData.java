@@ -45,7 +45,6 @@ import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
@@ -66,6 +65,7 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.mocks.MockMetaBenefitRiskAnalysis;
 import org.drugis.addis.mocks.MockStudyBenefitRiskAnalysis;
 import org.drugis.addis.util.EntityUtil;
@@ -874,10 +874,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisHamD() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()), 
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentCategorySet> drugs = Arrays.asList(new TreatmentCategorySet[] {
+				TreatmentCategorySet.createTrivial(buildDrugFluoxetine()), 
+				TreatmentCategorySet.createTrivial(buildDrugParoxetine()), 
+				TreatmentCategorySet.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
@@ -889,10 +889,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisConvulsion() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()),
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentCategorySet> drugs = Arrays.asList(new TreatmentCategorySet[] {
+				TreatmentCategorySet.createTrivial(buildDrugFluoxetine()),
+				TreatmentCategorySet.createTrivial(buildDrugParoxetine()), 
+				TreatmentCategorySet.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network2", 
 				buildIndicationDepression(), buildAdverseEventConvulsion(),
@@ -904,10 +904,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisCgi() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()),
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentCategorySet> drugs = Arrays.asList(new TreatmentCategorySet[] {
+				TreatmentCategorySet.createTrivial(buildDrugFluoxetine()),
+				TreatmentCategorySet.createTrivial(buildDrugParoxetine()), 
+				TreatmentCategorySet.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("CGI network", 
 				buildIndicationDepression(), buildEndpointCgi(),
@@ -917,12 +917,12 @@ public class ExampleData {
 	}
 	
 	
-	public static Map<Study, Map<DrugSet, Arm>> buildMap(List<Study> studies,
-			List<DrugSet> drugs) {
-		Map<Study, Map<DrugSet, Arm>> map = new HashMap<Study, Map<DrugSet, Arm>>();
+	public static Map<Study, Map<TreatmentCategorySet, Arm>> buildMap(List<Study> studies,
+			List<TreatmentCategorySet> drugs) {
+		Map<Study, Map<TreatmentCategorySet, Arm>> map = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
 		for (Study s : studies) {
-			Map<DrugSet, Arm> drugMap = new HashMap<DrugSet, Arm>();
-			for (DrugSet d : drugs) {
+			Map<TreatmentCategorySet, Arm> drugMap = new HashMap<TreatmentCategorySet, Arm>();
+			for (TreatmentCategorySet d : drugs) {
 				if (s.getDrugs().contains(d)) {
 					drugMap.put(d, RelativeEffectFactory.findFirstArm(s, d));
 				}
@@ -952,10 +952,10 @@ public class ExampleData {
 		metaAnalysisList.add(buildMetaAnalysisConv());
 		
 		Drug parox = buildDrugParoxetine();
-		List<DrugSet> fluoxList = Collections.singletonList(new DrugSet(buildDrugFluoxetine()));
+		List<TreatmentCategorySet> fluoxList = Collections.singletonList(TreatmentCategorySet.createTrivial(buildDrugFluoxetine()));
 		
 		return new MockMetaBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, metaAnalysisList, new DrugSet(parox), fluoxList);										
+										indication, metaAnalysisList, TreatmentCategorySet.createTrivial(parox), fluoxList);										
 	}
 
 	public static StudyBenefitRiskAnalysis buildStudyBenefitRiskAnalysis() {
@@ -990,23 +990,37 @@ public class ExampleData {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Convulsion test analysis",
+				buildAdverseEventConvulsion(),
+				s1.getDrugs(base),
+				s1.getDrugs(subject),
+				studyArms, false);
 	}
 
 	public static MetaAnalysis buildMetaAnalysisHamd() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Hamd test analysis",
+				buildEndpointHamd(),
+				s1.getDrugs(base),
+				s1.getDrugs(subject),
+				studyArms, false);
 	}
 
 	public static MetaBenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
@@ -1014,11 +1028,11 @@ public class ExampleData {
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
-		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), new DrugSet(fluox), new DrugSet(parox));
+		MetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), TreatmentCategorySet.createTrivial(fluox), TreatmentCategorySet.createTrivial(parox));
 		MetaBenefitRiskAnalysis br = new MockMetaBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(ma), 
-				new DrugSet(fluox), 
-				Collections.singletonList(new DrugSet(parox)));
+				TreatmentCategorySet.createTrivial(fluox), 
+				Collections.singletonList(TreatmentCategorySet.createTrivial(parox)));
 		return br;
 	}
 	
@@ -1054,4 +1068,30 @@ public class ExampleData {
         
         return study;
     }
+
+	public static RandomEffectsMetaAnalysis createRandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
+			List<Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
+		if (studies.size() == 0) {
+			throw new IllegalArgumentException("No studies in MetaAnalysis");
+		}
+		for (Study s : studies) {
+			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2))) {
+				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
+			}
+		}
+		return new RandomEffectsMetaAnalysis(name, om, drug1, drug2, ExampleData.createStudyArmEntries(studies, drug1, drug2), false);
+	}
+
+	public static List<StudyArmsEntry> createStudyArmEntries(
+			List<? extends Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+	
+		for (Study s : studies) {
+			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
+			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
+			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
+		}
+		
+		return studyArms;
+	}
 }

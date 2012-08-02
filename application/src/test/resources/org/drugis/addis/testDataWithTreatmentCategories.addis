@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-6.xsd">
+    <units>
+        <unit name="gram" symbol="g"/>
+        <unit name="liter" symbol="l"/>
+    </units>
+    <indications/>
+    <endpoints/>
+    <adverseEvents/>
+    <drugs>
+        <drug name="Fluoxetine" atcCode="N06AB03"/>
+        <drug name="Paroxetine" atcCode="N06AB05"/>
+    </drugs>
+    <treatmentCategorizations>
+        <treatmentCategorization name="HD/LD">
+            <drug name="Fluoxetine"/>
+            <unit scaleModifier="MICRO" perTime="P7D">
+                <unit name="gram"/>
+            </unit>
+            <category name="LD"/>
+            <category name="HD"/>
+            <decisionTree>
+                <rootNode propertyName="class">
+                    <edge xsi:type="TypeEdge" beanClass="FixedDose">
+                        <node xsi:type="ChoiceNode" beanClass="FixedDose" propertyName="quantity">
+                            <edge xsi:type="RangeEdge" rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+<node xsi:type="LeafNode">
+    <category name="LD"/>
+</node>
+                            </edge>
+                            <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<node xsi:type="LeafNode">
+    <category name="HD"/>
+</node>
+                            </edge>
+                        </node>
+                    </edge>
+                    <edge xsi:type="TypeEdge" beanClass="FlexibleDose">
+                        <node xsi:type="ChoiceNode" beanClass="FlexibleDose" propertyName="minDose">
+                            <edge xsi:type="RangeEdge" rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+<node xsi:type="ChoiceNode" beanClass="FlexibleDose" propertyName="maxDose">
+    <edge xsi:type="RangeEdge" rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+        <node xsi:type="LeafNode">
+            <category name="LD"/>
+        </node>
+    </edge>
+    <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <node xsi:type="LeafNode"/>
+    </edge>
+</node>
+                            </edge>
+                            <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<node xsi:type="ChoiceNode" beanClass="FlexibleDose" propertyName="maxDose">
+    <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <node xsi:type="LeafNode">
+            <category name="HD"/>
+        </node>
+    </edge>
+</node>
+                            </edge>
+                        </node>
+                    </edge>
+                    <edge xsi:type="TypeEdge" beanClass="UnknownDose">
+                        <node xsi:type="LeafNode"/>
+                    </edge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+        <treatmentCategorization name="Exclude">
+            <drug name="Fluoxetine"/>
+            <unit scaleModifier="MICRO" perTime="P7D">
+                <unit name="gram"/>
+            </unit>
+            <category name="Some dose"/>
+            <decisionTree>
+                <rootNode propertyName="class">
+                    <edge xsi:type="TypeEdge" beanClass="FixedDose">
+                        <node xsi:type="LeafNode">
+                            <category name="Some dose"/>
+                        </node>
+                    </edge>
+                    <edge xsi:type="TypeEdge" beanClass="FlexibleDose">
+                        <node xsi:type="LeafNode">
+                            <category name="Some dose"/>
+                        </node>
+                    </edge>
+                    <edge xsi:type="TypeEdge" beanClass="UnknownDose">
+                        <node xsi:type="LeafNode"/>
+                    </edge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+        <treatmentCategorization name="Dose">
+            <drug name="Paroxetine"/>
+            <unit scaleModifier="MICRO" perTime="P7D">
+                <unit name="gram"/>
+            </unit>
+            <category name="Dose"/>
+            <decisionTree>
+                <rootNode propertyName="class">
+                    <edge xsi:type="TypeEdge" beanClass="FixedDose">
+                        <node xsi:type="LeafNode"/>
+                    </edge>
+                    <edge xsi:type="TypeEdge" beanClass="FlexibleDose">
+                        <node xsi:type="LeafNode"/>
+                    </edge>
+                    <edge xsi:type="TypeEdge" beanClass="UnknownDose">
+                        <node xsi:type="LeafNode">
+                            <category name="Dose"/>
+                        </node>
+                    </edge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+    </treatmentCategorizations>
+    <populationCharacteristics/>
+    <studies/>
+    <metaAnalyses/>
+    <benefitRiskAnalyses/>
+</addis-data>

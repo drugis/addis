@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities;
+package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,26 +37,27 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Drug;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DrugSetTest {
-	private DrugSet d_empty;
-	private DrugSet d_single;
-	private DrugSet d_multi;
-	private List<Drug> d_multiList;
-	private Drug d_singleDrug;
+public class TreatmentCategorySetTest {
+	private TreatmentCategorySet d_empty;
+	private TreatmentCategorySet d_single;
+	private TreatmentCategorySet d_multi;
+	private List<Category> d_multiCategory;
+	private Category d_singleCategory;
 	
 	@Before
 	public void setUp() {
-		d_empty = new DrugSet();
-		d_singleDrug = ExampleData.buildDrugEscitalopram();
-		d_single = new DrugSet(d_singleDrug);
-		d_multiList = Arrays.asList(
-				ExampleData.buildDrugCandesartan(),
-				ExampleData.buildDrugViagra(),
-				ExampleData.buildDrugViagra());
-		d_multi = new DrugSet(d_multiList);
+		d_empty = new TreatmentCategorySet();
+		d_singleCategory = Category.createTrivial(ExampleData.buildDrugEscitalopram());
+		d_single = new TreatmentCategorySet(d_singleCategory);
+		d_multiCategory = Arrays.asList(
+				Category.createTrivial(ExampleData.buildDrugCandesartan()),
+				Category.createTrivial(ExampleData.buildDrugViagra()),
+				Category.createTrivial(ExampleData.buildDrugViagra()));
+		d_multi = new TreatmentCategorySet(d_multiCategory);
 	}
 
 	@Test
@@ -66,18 +67,18 @@ public class DrugSetTest {
 	
 	@Test
 	public void testDrugConstruction() {
-		assertEquals(Collections.singleton(d_singleDrug), d_single.getContents());
+		assertEquals(Collections.singleton(d_singleCategory), d_single.getContents());
 	}
 	
 	@Test
 	public void testCollectionConstruction() {
-		assertEquals(new HashSet<Drug>(d_multiList), d_multi.getContents());
+		assertEquals(new HashSet<Category>(d_multiCategory), d_multi.getContents());
 	}
 	
 	@Test
 	public void testGetName() {
 		assertEquals("", d_empty.getLabel());
-		assertEquals(d_singleDrug.getName(), d_single.getLabel());
+		assertEquals(d_singleCategory.getLabel(), d_single.getLabel());
 		assertEquals("Candesartan + Viagra", d_multi.getLabel());
 		
 		// test alphabetic
@@ -87,17 +88,17 @@ public class DrugSetTest {
 			ExampleData.buildDrugFluoxetine(),
 			ExampleData.buildDrugViagra()
 		});
-		assertEquals("Fluoxetine + Paroxetine + Sertraline + Viagra", new DrugSet(more).getLabel());
+		assertEquals("Fluoxetine + Paroxetine + Sertraline + Viagra", TreatmentCategorySet.createTrivial(more).getLabel());
 	}
 	
 	@Test
 	public void testEquals() {
-		assertEquals(new DrugSet(), d_empty);
-		assertEquals(new DrugSet().hashCode(), d_empty.hashCode());
-		assertEquals(new DrugSet(d_singleDrug), d_single);
-		assertEquals(new DrugSet(d_singleDrug).hashCode(), d_single.hashCode());
-		assertEquals(new DrugSet(d_multiList), d_multi);
-		assertEquals(new DrugSet(d_multiList).hashCode(), d_multi.hashCode());
+		assertEquals(new TreatmentCategorySet(), d_empty);
+		assertEquals(new TreatmentCategorySet().hashCode(), d_empty.hashCode());
+		assertEquals(new TreatmentCategorySet(d_singleCategory), d_single);
+		assertEquals(new TreatmentCategorySet(d_singleCategory).hashCode(), d_single.hashCode());
+		assertEquals(new TreatmentCategorySet(d_multiCategory), d_multi);
+		assertEquals(new TreatmentCategorySet(d_multiCategory).hashCode(), d_multi.hashCode());
 		
 		assertNotEquals(d_empty, d_single);
 		assertNotEquals(d_empty, d_multi);
@@ -112,34 +113,36 @@ public class DrugSetTest {
 		// consistency with equals
 		assertFalse(d_empty.deepEquals(d_single));
 		assertFalse(d_empty.deepEquals(null));
-		assertFalse(d_empty.deepEquals(d_singleDrug));
+		assertFalse(d_empty.deepEquals(d_singleCategory));
 		
 		// identical contents
-		assertTrue(d_empty.deepEquals(new DrugSet()));
-		assertTrue(d_single.deepEquals(new DrugSet(d_singleDrug)));
-		assertTrue(d_multi.deepEquals(new DrugSet(d_multiList)));
+		assertTrue(d_empty.deepEquals(new TreatmentCategorySet()));
+		assertTrue(d_single.deepEquals(new TreatmentCategorySet(d_singleCategory)));
+		assertTrue(d_multi.deepEquals(new TreatmentCategorySet(d_multiCategory)));
 
 		// nearly identical contents
-		Drug drug = new Drug(d_singleDrug.getName(), "ATCFORYOUMYFRIEND");
-		assertFalse(d_single.deepEquals(new DrugSet(drug)));
+		Drug drug = new Drug(d_singleCategory.getCategorization().getDrug().getName(), "ATCFORYOUMYFRIEND");
+		TreatmentCategorySet cat = TreatmentCategorySet.createTrivial(drug);
+		assertEquals(d_single, cat);
+		assertFalse(d_single.deepEquals(cat));
 	}
 	
 	@Test
 	public void testCompareTo() {
 		assertEquals(0, d_empty.compareTo(d_empty));
-		assertEquals(0, d_empty.compareTo(new DrugSet()));
-		assertEquals(0, d_single.compareTo(new DrugSet(d_singleDrug)));
-		assertEquals(0, d_multi.compareTo(new DrugSet(d_multiList)));
+		assertEquals(0, d_empty.compareTo(new TreatmentCategorySet()));
+		assertEquals(0, d_single.compareTo(new TreatmentCategorySet(d_singleCategory)));
+		assertEquals(0, d_multi.compareTo(new TreatmentCategorySet(d_multiCategory)));
 		
 		assertTrue(d_empty.compareTo(d_single) < 0); // {} < {Escitalopram}
-		assertTrue(d_single.compareTo(new DrugSet(ExampleData.buildDrugCitalopram())) > 0); // {Escitalopram} > {Citalopram} 
+		assertTrue(d_single.compareTo(TreatmentCategorySet.createTrivial(ExampleData.buildDrugCitalopram())) > 0); // {Escitalopram} > {Citalopram} 
 		assertEquals(d_empty.compareTo(d_single), -d_single.compareTo(d_empty));
-		DrugSet two1 = new DrugSet(Arrays.asList(new Drug[] {
-				d_singleDrug, ExampleData.buildDrugCitalopram()
+		TreatmentCategorySet two1 = new TreatmentCategorySet(Arrays.asList(new Category[] {
+				d_singleCategory, Category.createTrivial(ExampleData.buildDrugCitalopram())
 		}));
 		assertTrue(d_single.compareTo(two1) > 0); // {Escitalopram} > {Citalopram, Escitalopram}
-		DrugSet two2 = new DrugSet(Arrays.asList(new Drug[] {
-				d_singleDrug, ExampleData.buildDrugFluoxetine()
+		TreatmentCategorySet two2 = new TreatmentCategorySet(Arrays.asList(new Category[] {
+				d_singleCategory, Category.createTrivial(ExampleData.buildDrugFluoxetine())
 		}));
 		assertTrue(d_single.compareTo(two2) < 0); // {Escitalopram} < {Escitalopram, Fluoxetine}
 	}

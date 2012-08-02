@@ -28,7 +28,6 @@ package org.drugis.addis.mocks;
 
 import java.util.List;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
@@ -37,12 +36,13 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 
 public class MockMetaBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 
 	public MockMetaBenefitRiskAnalysis(String id, Indication indication,
 			List<MetaAnalysis> metaAnalysisList,
-			DrugSet baseline, List<DrugSet> drugList) {
+			TreatmentCategorySet baseline, List<TreatmentCategorySet> drugList) {
 		super(id,indication,metaAnalysisList,baseline,drugList, AnalysisType.SMAA);
 	}
 

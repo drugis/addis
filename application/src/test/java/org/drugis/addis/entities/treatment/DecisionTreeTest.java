@@ -33,6 +33,9 @@ import org.drugis.addis.entities.FixedDose;
 import org.junit.Test;
 
 public class DecisionTreeTest {
+	
+	private final TreatmentCategorization d_tc = TreatmentCategorization.createDefault();
+	
 	@Test
 	public void testTrivialDecision() {
 		final DecisionTreeNode root = new LeafNode();
@@ -44,8 +47,8 @@ public class DecisionTreeTest {
 	public void testSimpleDecision() {
 		final DecisionTreeNode root = new ChoiceNode(Object.class, "class");
 		final DecisionTree tree = new DecisionTree(root);
-		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category("str")));
-		tree.addEdge(new TypeEdge(Integer.class), root, new LeafNode(new Category("int")));
+		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
+		tree.addEdge(new TypeEdge(Integer.class), root, new LeafNode(new Category(d_tc, "int")));
 		assertEquals("str", tree.getCategory("Tomato").getName());
 		assertEquals("int", tree.getCategory(42).getName());
 	}
@@ -54,8 +57,8 @@ public class DecisionTreeTest {
 	public void testUnclassifiable() {
 		final DecisionTreeNode root = new ChoiceNode(Object.class, "class");
 		final DecisionTree tree = new DecisionTree(root);
-		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category("str")));
-		tree.addEdge(new TypeEdge(Integer.class), root, new LeafNode(new Category("int")));
+		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
+		tree.addEdge(new TypeEdge(Integer.class), root, new LeafNode(new Category(d_tc, "int")));
 		tree.getCategory(3.0);
 	}
 
@@ -65,11 +68,11 @@ public class DecisionTreeTest {
 
 		final DecisionTreeNode root = new ChoiceNode(Object.class, "class");
 		final DecisionTree tree = new DecisionTree(root);
-		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category("str")));
+		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
 		final ChoiceNode quantityChoice = new ChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY);
 		tree.addEdge(new TypeEdge(FixedDose.class), root, quantityChoice);
-		tree.addEdge(new RangeEdge(0.0, false, 20.0, false), quantityChoice, new LeafNode(new Category("low")));
-		tree.addEdge(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), quantityChoice, new LeafNode(new Category("high")));
+		tree.addEdge(new RangeEdge(0.0, false, 20.0, false), quantityChoice, new LeafNode(new Category(d_tc, "low")));
+		tree.addEdge(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), quantityChoice, new LeafNode(new Category(d_tc, "high")));
 		assertEquals("str", tree.getCategory("Tomato").getName());
 		assertEquals("low", tree.getCategory(new FixedDose(20.0, unit)).getName());
 		assertEquals("high", tree.getCategory(new FixedDose(42.0, unit)).getName());
@@ -82,9 +85,9 @@ public class DecisionTreeTest {
 		final RangeEdge lowEdge = new RangeEdge(0.0, false, 20.0, false);
 		final RangeEdge medEdge = new RangeEdge(20.0, true, 80.0, false);
 		final RangeEdge higEdge = new RangeEdge(80.0, true, Double.POSITIVE_INFINITY, false);
-		tree.addEdge(lowEdge, root, new LeafNode(new Category("low")));
-		tree.addEdge(medEdge, root, new LeafNode(new Category("medium")));
-		tree.addEdge(higEdge, root, new LeafNode(new Category("high")));
+		tree.addEdge(lowEdge, root, new LeafNode(new Category(d_tc, "low")));
+		tree.addEdge(medEdge, root, new LeafNode(new Category(d_tc, "medium")));
+		tree.addEdge(higEdge, root, new LeafNode(new Category(d_tc, "high")));
 
 		assertEquals(lowEdge, tree.findMatchingEdge(root, 5.0));
 		assertEquals(medEdge, tree.findMatchingEdge(root, 25.0));
@@ -96,11 +99,11 @@ public class DecisionTreeTest {
 		final DecisionTreeNode root = new ChoiceNode(Object.class, "class");
 		final DecisionTree tree = new DecisionTree(root);
 		final TypeEdge edge = new TypeEdge(Integer.class);
-		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category("str")));
-		tree.addEdge(edge, root, new LeafNode(new Category("double")));
+		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
+		tree.addEdge(edge, root, new LeafNode(new Category(d_tc, "double")));
 		assertEquals("double", tree.getCategory(42).getName());
 
-		tree.replaceChild(edge, new LeafNode(new Category("int")));
+		tree.replaceChild(edge, new LeafNode(new Category(d_tc, "int")));
 		assertEquals("int", tree.getCategory(42).getName());
 	}
 }

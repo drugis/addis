@@ -26,7 +26,7 @@
 
 package org.drugis.addis.entities.mtcwrapper;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.Parameter;
 
@@ -34,7 +34,7 @@ public interface MTCModelWrapper extends MCMCModelWrapper {
 	/**
 	 * @see org.drugis.mtc.MixedTreatmentComparison#getRelativeEffect(org.drugis.mtc.model.Treatment, org.drugis.mtc.model.Treatment)
 	 */
-	public Parameter getRelativeEffect(DrugSet a, DrugSet b);
+	public Parameter getRelativeEffect(TreatmentCategorySet a, TreatmentCategorySet b);
 	
 	/**
 	 * @see org.drugis.mtc.MixedTreatmentComparison#getRandomEffectsVariance()

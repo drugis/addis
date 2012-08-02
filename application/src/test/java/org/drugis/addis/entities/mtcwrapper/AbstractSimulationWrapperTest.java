@@ -35,9 +35,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.NetworkBuilderFactory;
 import org.drugis.addis.entities.mtcwrapper.AbstractSimulationWrapper;
+import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.addis.mocks.MockConsistencyModel;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.NetworkBuilder;
@@ -48,14 +48,14 @@ import org.junit.Test;
 
 public class AbstractSimulationWrapperTest {
 	private AbstractSimulationWrapper<ConsistencyModel> d_model;
-	private List<DrugSet> d_treatments;
+	private List<TreatmentCategorySet> d_treatments;
 
 	@Before
 	public void setUp() {
-		d_treatments = Arrays.asList(new DrugSet(new Drug("A", "")), new DrugSet(new Drug("B", "")), new DrugSet(new Drug("C", "")));
-		NetworkBuilder<DrugSet> builder = NetworkBuilderFactory.createBuilderStub(d_treatments);
+		d_treatments = Arrays.asList(TreatmentCategorySet.createTrivial(new Drug("A", "")), TreatmentCategorySet.createTrivial(new Drug("B", "")), TreatmentCategorySet.createTrivial(new Drug("C", "")));
+		NetworkBuilder<TreatmentCategorySet> builder = NetworkBuilderFactory.createBuilderStub(d_treatments);
 		ArrayList<Treatment> treatmentList = new ArrayList<Treatment>();
-		for(DrugSet s : d_treatments) { 
+		for(TreatmentCategorySet s : d_treatments) { 
 			treatmentList.add(builder.getTreatmentMap().get(s));
 		}
 		ConsistencyModel mtc = MockConsistencyModel.buildMockSimulationConsistencyModel(treatmentList);
