@@ -35,7 +35,7 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -77,7 +77,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	public ObservableList<DrugSet> getSelectedDrugsModel() {
+	public ObservableList<TreatmentCategorySet> getSelectedDrugsModel() {
 		return d_studyGraphPresentationModel.getSelectedDrugsModel();
 	}
 	
@@ -154,17 +154,17 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<Study> studies = getSelectedStudiesModel();
-		List<DrugSet> drugs = getSelectedDrugsModel();
-		Map<Study, Map<DrugSet, Arm>> armMap = getArmMap();
+		List<TreatmentCategorySet> drugs = getSelectedDrugsModel();
+		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = getArmMap();
 		
 		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);
 	}
 
-	private Map<Study, Map<DrugSet, Arm>> getArmMap() {
-		Map<Study, Map<DrugSet, Arm>> map = new HashMap<Study, Map<DrugSet,Arm>>();
+	private Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap() {
+		Map<Study, Map<TreatmentCategorySet, Arm>> map = new HashMap<Study, Map<TreatmentCategorySet,Arm>>();
 		for (Study s : d_selectedArms.keySet()) {
-			map.put(s, new HashMap<DrugSet, Arm>());
-			for (DrugSet d : d_selectedArms.get(s).keySet()) {
+			map.put(s, new HashMap<TreatmentCategorySet, Arm>());
+			for (TreatmentCategorySet d : d_selectedArms.get(s).keySet()) {
 				map.get(s).put(d, d_selectedArms.get(s).get(d).getValue());
 			}
 		}

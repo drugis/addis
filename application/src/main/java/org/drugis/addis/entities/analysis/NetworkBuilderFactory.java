@@ -38,12 +38,11 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.NetworkBuilder;
@@ -51,19 +50,6 @@ import org.drugis.mtc.data.DataType;
 import org.drugis.mtc.model.Treatment;
 
 public class NetworkBuilderFactory {
-	static final class TransformerTransformer implements Transformer<DrugSet, String> {
-		private Transformer<TreatmentCategorySet, String> d_nested;
-
-		public TransformerTransformer(Transformer<TreatmentCategorySet, String> nested) {
-			d_nested = nested;
-		}
-		
-		@Override
-		public String transform(DrugSet drugs) {
-			return d_nested.transform(TreatmentCategorySet.createTrivial(drugs.getContents()));
-		}
-	}
-	
 	static final class DescriptionTransformer implements Transformer<TreatmentCategorySet, String> {
 		@Override
 		public String transform(TreatmentCategorySet input) {
@@ -105,28 +91,28 @@ public class NetworkBuilderFactory {
 		}
 	}
 	
-	private static final Transformer<DrugSet, String> s_descTransform = new TransformerTransformer(new DescriptionTransformer());
-	private static final Transformer<DrugSet, String> s_transform = new TransformerTransformer(new NameTransformer());
+	private static final Transformer<TreatmentCategorySet, String> s_descTransform = new DescriptionTransformer();
+	private static final Transformer<TreatmentCategorySet, String> s_transform = new NameTransformer();
 
-	final static class NetworkBuilderStub extends NetworkBuilder<DrugSet> {
+	final static class NetworkBuilderStub extends NetworkBuilder<TreatmentCategorySet> {
 		NetworkBuilderStub() {
 			super(s_transform, s_descTransform, DataType.NONE);
 		}
 
-		public Treatment addTreatment(DrugSet t) {
+		public Treatment addTreatment(TreatmentCategorySet t) {
 			return makeTreatment(t);
 		}
 	}
 	
-	public static NetworkBuilder<DrugSet> createBuilderStub(List<DrugSet> drugs) {
+	public static NetworkBuilder<TreatmentCategorySet> createBuilderStub(List<TreatmentCategorySet> drugs) {
 		NetworkBuilderStub builder = new NetworkBuilderStub();
-		for(DrugSet s : drugs) { 
+		for(TreatmentCategorySet s : drugs) { 
 			builder.addTreatment(s);
 		}
 		return builder;
 	}
 
-	public static NetworkBuilder<DrugSet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+	public static NetworkBuilder<TreatmentCategorySet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentCategorySet> drugs, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
 		if (isContinuous(outcomeMeasure)) {
 			return createContinuousBuilder(outcomeMeasure, studies, drugs, armMap);
 		} else {
@@ -134,10 +120,10 @@ public class NetworkBuilderFactory {
 		}
 	}
 	
-	private static NetworkBuilder<DrugSet> createContinuousBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
+	private static NetworkBuilder<TreatmentCategorySet> createContinuousBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentCategorySet> drugs, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
+		ContinuousNetworkBuilder<TreatmentCategorySet> builder = new ContinuousNetworkBuilder<TreatmentCategorySet>(s_transform, s_descTransform);
 		for(Study s : studies){
-			for (DrugSet d : drugs) {
+			for (TreatmentCategorySet d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicContinuousMeasurement cm = (BasicContinuousMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
 					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), cm.getMean(), cm.getStdDev(), cm.getSampleSize());
@@ -147,10 +133,10 @@ public class NetworkBuilderFactory {
 		return builder;
 	}
 
-	private static NetworkBuilder<DrugSet> createRateBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
+	private static NetworkBuilder<TreatmentCategorySet> createRateBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentCategorySet> drugs, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
+		DichotomousNetworkBuilder<TreatmentCategorySet> builder = new DichotomousNetworkBuilder<TreatmentCategorySet>(s_transform, s_descTransform);
 		for(Study s : studies){
-			for (DrugSet d : drugs) {
+			for (TreatmentCategorySet d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicRateMeasurement brm = (BasicRateMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
 					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), brm.getRate(), brm.getSampleSize());

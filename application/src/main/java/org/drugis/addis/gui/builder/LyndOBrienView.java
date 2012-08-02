@@ -41,7 +41,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -108,8 +108,8 @@ public class LyndOBrienView implements ViewBuilder {
 			baselineName = s.getTreatment(baseArm).getLabel();
 			alternativeName = s.getTreatment(altArm).getLabel();
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
-			baselineName = ((DrugSet)baseline).getLabel();
-			alternativeName = ((DrugSet)alternative).getLabel();
+			baselineName = ((TreatmentCategorySet)baseline).getLabel();
+			alternativeName = ((TreatmentCategorySet)alternative).getLabel();
 		}
 		
 		builder.add(AuxComponentFactory.createHtmlField("Results of Monte Carlo simulations based on the difference-distributions of" +

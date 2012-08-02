@@ -38,6 +38,7 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 

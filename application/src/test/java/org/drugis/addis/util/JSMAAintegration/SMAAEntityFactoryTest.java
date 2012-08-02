@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
@@ -69,11 +69,11 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateMeanVector() {
-		DrugSet a1 = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
-		DrugSet a2 = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
-		DrugSet a3 = DrugSet.createTrivial(ExampleData.buildDrugEscitalopram());
-		DrugSet a4 = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
-		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
+		TreatmentCategorySet a1 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentCategorySet a2 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentCategorySet a3 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugEscitalopram());
+		TreatmentCategorySet a4 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
+		List<TreatmentCategorySet> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[] = new double [] {1.2, 0.3, -8.4};
 		assertArrayEquals(new double[] {0.0, m[0], m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a1, m), 0.0);
 		assertArrayEquals(new double[] {m[0], 0.0, m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a2, m), 0.0);
@@ -82,11 +82,11 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCovarianceMatrix() {
-		DrugSet a1 = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
-		DrugSet a2 = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
-		DrugSet a3 = DrugSet.createTrivial(ExampleData.buildDrugEscitalopram());
-		DrugSet a4 = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
-		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
+		TreatmentCategorySet a1 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentCategorySet a2 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentCategorySet a3 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugEscitalopram());
+		TreatmentCategorySet a4 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
+		List<TreatmentCategorySet> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[][] = new double [][] {{1.2, 0.3, -8.4}, {1.8, -1.4, 0.5}, {1.0, 0.3, 0.4}};
 		
 		double m1[][] = new double[][] {{0.0, 0.0, 0.0, 0.0}, {0.0, 1.2, 0.3, -8.4}, {0.0, 1.8, -1.4, 0.5}, {0.0, 1.0, 0.3, 0.4}};
@@ -97,7 +97,7 @@ public class SMAAEntityFactoryTest {
 //	
 //	@Test
 //	public void testCreateCardinalMeasurementRate() {
-//		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new DrugSet(ExampleData.buildDrugFluoxetine()));
+//		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new TreatmentCategorySet(ExampleData.buildDrugFluoxetine()));
 //		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
 //		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 //		assertTrue(actual instanceof LogNormalMeasurement);
@@ -110,7 +110,7 @@ public class SMAAEntityFactoryTest {
 //	public void testCreateSmaaModel() {
 //		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
 //		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
-//			for(DrugSet d : d_brAnalysis.getDrugs()){
+//			for(TreatmentCategorySet d : d_brAnalysis.getDrugs()){
 //				if (d.equals(d_brAnalysis.getBaseline()))
 //					continue;
 //				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getImpactMatrix().getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));

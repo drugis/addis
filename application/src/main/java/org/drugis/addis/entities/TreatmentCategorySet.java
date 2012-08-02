@@ -26,37 +26,45 @@
 
 package org.drugis.addis.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.util.EntityUtil;
 
-public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
-	public static DrugSet createTrivial(Collection<Drug> contents) {
-		return new DrugSet(contents);
+public class TreatmentCategorySet extends AbstractEntity implements Comparable<TreatmentCategorySet> {
+	public static TreatmentCategorySet createTrivial(Collection<Drug> drugs) {
+		Set<Category> categories = new HashSet<Category>();
+		for (Drug d : drugs) {
+			categories.add(Category.createTrivial(d));
+		}
+		return new TreatmentCategorySet(categories);
 	}
 
-	public static DrugSet createTrivial(Drug drug) {
-		return new DrugSet(drug);
+	public static TreatmentCategorySet createTrivial(Drug drug) {
+		return createTrivial(Collections.singleton(drug));
 	}
 
-	private SortedSet<Drug> d_contents;
-
-	private DrugSet(Collection<Drug> contents) {
-		d_contents = new TreeSet<Drug>(contents);
+	private SortedSet<Category> d_contents;
+	
+	public TreatmentCategorySet(Category category) {
+		this(Collections.singleton(category));
 	}
 	
-	private DrugSet(Drug drug) {
-		this(Collections.singleton(drug));
+	public TreatmentCategorySet(Collection<Category> contents) {
+		d_contents = new TreeSet<Category>(contents);
 	}
 	
-	public DrugSet() {
-		this(Collections.<Drug>emptySet());
+	public TreatmentCategorySet() {
+		this(Collections.<Category>emptySet());
 	}
 
 	@Override
@@ -64,20 +72,24 @@ public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
 		return getContents();
 	}
 
-	public SortedSet<Drug> getContents() {
+	public SortedSet<Category> getContents() {
 		return d_contents;
 	}
 	
 	public String getLabel() {
-		return StringUtils.join(d_contents, " + ");
+		List<String> labels = new ArrayList<String>();
+		for (Category cat : d_contents) {
+			labels.add(cat.getLabel());
+		}
+		return StringUtils.join(labels, " + ");
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof DrugSet)) {
+		if (o == null || !(o instanceof TreatmentCategorySet)) {
 			return false;
 		}
-		DrugSet other = (DrugSet) o;
+		TreatmentCategorySet other = (TreatmentCategorySet) o;
 		return other.getContents().equals(getContents());
 	}
 	
@@ -86,7 +98,7 @@ public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
 		if(!equals(other)) {
 			return false;
 		}
-		DrugSet ds = (DrugSet) other;
+		TreatmentCategorySet ds = (TreatmentCategorySet) other;
 		return EntityUtil.deepEqual(getContents(), ds.getContents());
 	}
 	
@@ -96,9 +108,9 @@ public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
 	}
 
 	@Override
-	public int compareTo(DrugSet o) {
-		Iterator<Drug> i1 = getContents().iterator();
-		Iterator<Drug> i2 = o.getContents().iterator();
+	public int compareTo(TreatmentCategorySet o) {
+		Iterator<Category> i1 = getContents().iterator();
+		Iterator<Category> i2 = o.getContents().iterator();
 		while (i1.hasNext() && i2.hasNext()) {
 			int compVal = i1.next().compareTo(i2.next());
 			if (compVal != 0) {
@@ -116,6 +128,6 @@ public class DrugSet extends AbstractEntity implements Comparable<DrugSet> {
 	
 	@Override
 	public String toString() {
-		return "DrugSet" + d_contents;
+		return "TreatmentCategorySet" + d_contents;
 	}
 }

@@ -176,7 +176,7 @@ public class DomainImpl extends Domain {
 	}
 	
 	public ObservableList<Study> getStudies(Drug d) {
-		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(DrugSet.createTrivial(d)));
+		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(TreatmentCategorySet.createTrivial(d)));
 	}
 	
 	public ObservableList<Study> getStudies(Indication i) {
@@ -429,9 +429,9 @@ public class DomainImpl extends Domain {
 		}
 	}
 	public class DrugFilter implements Filter<Study> {
-		private final DrugSet d_drugSet;
+		private final TreatmentCategorySet d_drugSet;
 		
-		public DrugFilter(DrugSet ds) {
+		public DrugFilter(TreatmentCategorySet ds) {
 			d_drugSet = ds;
 		}
 		

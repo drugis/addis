@@ -80,7 +80,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -1828,9 +1828,9 @@ public class JAXBConvertorTest {
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
 
-		List<DrugSet> drugsEnt = new ArrayList<DrugSet>(
+		List<TreatmentCategorySet> drugsEnt = new ArrayList<TreatmentCategorySet>(
 				ma1ent.getIncludedDrugs());
-		DrugSet baseline = drugsEnt.get(0);
+		TreatmentCategorySet baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name,
 				ma1ent.getIndication(), metaList, baseline, drugsEnt,

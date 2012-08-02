@@ -43,6 +43,11 @@ public class CategoryTest {
 		Set<Entity> expected = new HashSet<Entity>(d_catz1.getDependencies());
 		expected.add(d_catz1);
 		assertEquals(expected, cat.getDependencies());
+		
+		// Trivial categories should not have their owner as a dependency. The
+		// owner does *not* need to be explicitly in the domain.
+		Category trivial = Category.createTrivial(ExampleData.buildDrugCitalopram());
+		assertEquals(trivial.getCategorization().getDependencies(), trivial.getDependencies());
 	}
 	
 	@Test

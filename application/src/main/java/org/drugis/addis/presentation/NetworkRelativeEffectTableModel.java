@@ -32,7 +32,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.mtc.summary.QuantileSummary;
 
@@ -52,9 +52,9 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		};
 		
 		// Listen to summaries
-		List<DrugSet> drugs = d_pm.getIncludedDrugs();
-		for(DrugSet d1 : drugs) {
-			for (DrugSet d2 : drugs) {
+		List<TreatmentCategorySet> drugs = d_pm.getIncludedDrugs();
+		for(TreatmentCategorySet d1 : drugs) {
+			for (TreatmentCategorySet d2 : drugs) {
 				if (!d1.equals(d2)) {
 					attachListener(networkModel, d1, d2);
 				}
@@ -62,7 +62,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MTCModelWrapper networkModel, DrugSet d1, DrugSet d2) {
+	private void attachListener(MTCModelWrapper networkModel, TreatmentCategorySet d1, TreatmentCategorySet d2) {
 		QuantileSummary quantileSummary = getSummary(d1, d2);
 		if(quantileSummary != null) {
 			quantileSummary.addPropertyChangeListener(d_listener);
@@ -84,7 +84,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		return "\"" + getDrugAt(col).getLabel() + "\" relative to \"" + getDrugAt(row).getLabel() + "\"";
 	}
 
-	private DrugSet getDrugAt(int idx) {
+	private TreatmentCategorySet getDrugAt(int idx) {
 		return d_pm.getIncludedDrugs().get(idx);
 	}
 	
@@ -95,7 +95,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		return getSummary(getDrugAt(row), getDrugAt(col));
 	}
 	
-	private QuantileSummary getSummary(final DrugSet d1, final DrugSet d2) {
+	private QuantileSummary getSummary(final TreatmentCategorySet d1, final TreatmentCategorySet d2) {
 		return d_networkModel.getQuantileSummary(d_networkModel.getRelativeEffect(d1, d2));
 	}
 }

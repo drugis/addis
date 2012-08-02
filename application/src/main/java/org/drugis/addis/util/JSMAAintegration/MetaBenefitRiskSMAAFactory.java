@@ -32,7 +32,7 @@ import java.util.List;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -48,7 +48,7 @@ import fi.smaa.jsmaa.model.RelativeGaussianCriterionMeasurement;
 import fi.smaa.jsmaa.model.RelativeLogitGaussianCriterionMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
-public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<DrugSet> {
+public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<TreatmentCategorySet> {
 	private final MetaBenefitRiskAnalysis d_brAnalysis;
 
 	public MetaBenefitRiskSMAAFactory(MetaBenefitRiskAnalysis brAnalysis) {
@@ -95,7 +95,7 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 	 * @param covarianceMatrix A covariance matrix for all alternatives except the baseline.
 	 * @return A covariance matrix for all alternatives including the baseline.
 	 */
-	static double[][] createCovarianceMatrix(List<DrugSet> alternatives, DrugSet baseline, double[][] covarianceMatrix) {
+	static double[][] createCovarianceMatrix(List<TreatmentCategorySet> alternatives, TreatmentCategorySet baseline, double[][] covarianceMatrix) {
 		final int n = alternatives.size();
 		final int b = alternatives.indexOf(baseline);
 
@@ -119,7 +119,7 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 	 * @param covarianceMatrix A mean vector for all alternatives except the baseline.
 	 * @return A mean vector for all alternatives including the baseline.
 	 */
-	static double[] createMeanVector(List<DrugSet> alternatives, DrugSet baseline, double[] meanVector) {
+	static double[] createMeanVector(List<TreatmentCategorySet> alternatives, TreatmentCategorySet baseline, double[] meanVector) {
 		final int n = alternatives.size();
 		final int b = alternatives.indexOf(baseline);
 
@@ -135,7 +135,7 @@ public class MetaBenefitRiskSMAAFactory extends AbstractBenefitRiskSMAAFactory<D
 	}
 
 	@Override
-	protected Alternative createAlternative(DrugSet a) {
+	protected Alternative createAlternative(TreatmentCategorySet a) {
 		return new Alternative(a.getLabel());
 	}
 

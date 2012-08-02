@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
@@ -67,12 +67,12 @@ public class NetworkMetaAnalysisTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testRelativeEffectsList() {
-		DrugSet fluox = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
-		DrugSet parox = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
-		DrugSet sertr = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
-		List<Pair<DrugSet>> expected = Arrays.asList(
-				new Pair<DrugSet>(fluox, parox),
-				new Pair<DrugSet>(fluox, sertr)
+		TreatmentCategorySet fluox = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentCategorySet parox = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentCategorySet sertr = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
+		List<Pair<TreatmentCategorySet>> expected = Arrays.asList(
+				new Pair<TreatmentCategorySet>(fluox, parox),
+				new Pair<TreatmentCategorySet>(fluox, sertr)
 		);
 		assertEquals(expected, d_analysis.getConsistencyModel().getRelativeEffectsList());
 	}

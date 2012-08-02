@@ -36,7 +36,7 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -54,10 +54,10 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphModel> {				
-	private ModifiableHolder<DrugSet> d_firstDrugHolder;
-	private ModifiableHolder<DrugSet> d_secondDrugHolder;
+	private ModifiableHolder<TreatmentCategorySet> d_firstDrugHolder;
+	private ModifiableHolder<TreatmentCategorySet> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-	private ObservableList<DrugSet> d_selectedDrugs;
+	private ObservableList<TreatmentCategorySet> d_selectedDrugs;
 	private PairWiseMetaAnalysisPresentation d_pm;
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
@@ -68,8 +68,8 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 
 	@Override
 	protected void buildDrugHolders() {
-		d_firstDrugHolder = new ModifiableHolder<DrugSet>();		
-		d_secondDrugHolder = new ModifiableHolder<DrugSet>();
+		d_firstDrugHolder = new ModifiableHolder<TreatmentCategorySet>();		
+		d_secondDrugHolder = new ModifiableHolder<TreatmentCategorySet>();
 
 		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -103,12 +103,12 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		});
 	}
 	
-	private static class SelectedDrugsHolder extends AbstractObservableList<DrugSet> {
-		ObservableList<DrugSet> d_list = new ArrayListModel<DrugSet>();
-		private ModifiableHolder<DrugSet> d_firstDrugHolder;
-		private ModifiableHolder<DrugSet> d_secondDrugHolder;
+	private static class SelectedDrugsHolder extends AbstractObservableList<TreatmentCategorySet> {
+		ObservableList<TreatmentCategorySet> d_list = new ArrayListModel<TreatmentCategorySet>();
+		private ModifiableHolder<TreatmentCategorySet> d_firstDrugHolder;
+		private ModifiableHolder<TreatmentCategorySet> d_secondDrugHolder;
 
-		public SelectedDrugsHolder(ModifiableHolder<DrugSet> firstDrugHolder, ModifiableHolder<DrugSet> secondDrugHolder) {
+		public SelectedDrugsHolder(ModifiableHolder<TreatmentCategorySet> firstDrugHolder, ModifiableHolder<TreatmentCategorySet> secondDrugHolder) {
 			d_list.addListDataListener(new ListDataEventProxy(d_manager));
 			
 			d_firstDrugHolder = firstDrugHolder;
@@ -117,13 +117,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 				public void propertyChange(PropertyChangeEvent evt) {
 					if (evt.getOldValue() == null) {
 						if (evt.getNewValue() != null) {
-							d_list.add(0, (DrugSet)evt.getNewValue());
+							d_list.add(0, (TreatmentCategorySet)evt.getNewValue());
 						}
 					} else {
 						if (evt.getNewValue() == null) {
 							d_list.remove(0);
 						} else {
-							d_list.set(0, (DrugSet) evt.getNewValue());
+							d_list.set(0, (TreatmentCategorySet) evt.getNewValue());
 						}
 					}
 				}
@@ -132,13 +132,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getOldValue() == null) {
 						if (evt.getNewValue() != null) {
-							d_list.add(d_list.size(),(DrugSet)evt.getNewValue());
+							d_list.add(d_list.size(),(TreatmentCategorySet)evt.getNewValue());
 						}
 					} else {
 						if (evt.getNewValue() == null) {
 							d_list.remove(d_list.size() - 1);
 						} else {
-							d_list.set(d_list.size() - 1, (DrugSet) evt.getNewValue());
+							d_list.set(d_list.size() - 1, (TreatmentCategorySet) evt.getNewValue());
 						}
 					}
 				}
@@ -146,7 +146,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}
 
 		@Override
-		public DrugSet get(int index) {
+		public TreatmentCategorySet get(int index) {
 			return d_list.get(index);
 		}
 
@@ -156,24 +156,24 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}
 	}
 		
-	public ModifiableHolder<DrugSet> getFirstDrugModel() {
+	public ModifiableHolder<TreatmentCategorySet> getFirstDrugModel() {
 		return d_firstDrugHolder;
 	}
 	
-	public ModifiableHolder<DrugSet> getSecondDrugModel() {
+	public ModifiableHolder<TreatmentCategorySet> getSecondDrugModel() {
 		return d_secondDrugHolder;
 	}
 	
-	private DrugSet getFirstDrug() {
+	private TreatmentCategorySet getFirstDrug() {
 		return d_firstDrugHolder.getValue();
 	}
 
-	private DrugSet getSecondDrug() {
+	private TreatmentCategorySet getSecondDrug() {
 		return d_secondDrugHolder.getValue();
 	}
 	
 	@Override
-	public ObservableList<DrugSet> getSelectedDrugsModel() {
+	public ObservableList<TreatmentCategorySet> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}
 

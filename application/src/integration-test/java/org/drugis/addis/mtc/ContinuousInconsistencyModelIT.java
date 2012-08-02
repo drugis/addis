@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
@@ -60,9 +60,9 @@ public class ContinuousInconsistencyModelIT {
     	
     	assertEquals(1, d_nma.getInconsistencyModel().getInconsistencyFactors().size());
     	assertNotNull(d_wrapper.getQuantileSummary(d_wrapper.getInconsistencyFactors().get(0)));
-    	DrugSet a = DrugSet.createTrivial(ExampleData.buildDrugFluoxetine());
-    	DrugSet b = DrugSet.createTrivial(ExampleData.buildDrugParoxetine());
-    	DrugSet c = DrugSet.createTrivial(ExampleData.buildDrugSertraline());
+    	TreatmentCategorySet a = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
+    	TreatmentCategorySet b = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
+    	TreatmentCategorySet c = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
     	assertNotNull(d_wrapper.getRelativeEffect(a, b));
     	assertNotNull(d_wrapper.getRelativeEffect(b, a));
     	assertNotNull(d_wrapper.getRelativeEffect(a, c));
@@ -74,10 +74,10 @@ public class ContinuousInconsistencyModelIT {
     private NetworkMetaAnalysis buildContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyAdditionalThreeArm()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()),
-				DrugSet.createTrivial(ExampleData.buildDrugParoxetine()), 
-				DrugSet.createTrivial(ExampleData.buildDrugSertraline())});
+		List<TreatmentCategorySet> drugs = Arrays.asList(new TreatmentCategorySet[] {
+				TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),

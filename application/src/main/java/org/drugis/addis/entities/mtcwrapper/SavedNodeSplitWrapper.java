@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
@@ -45,7 +45,7 @@ public class SavedNodeSplitWrapper extends AbstractSavedWrapper implements NodeS
 	private final NodeSplitPValueSummary d_nodeSplitPValueSummary;
 	private final BasicParameter d_splitNode;
 
-	public SavedNodeSplitWrapper(NetworkBuilder<DrugSet> builder,
+	public SavedNodeSplitWrapper(NetworkBuilder<TreatmentCategorySet> builder,
 			MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries,
 			Map<Parameter, ConvergenceSummary> convergenceSummaries,

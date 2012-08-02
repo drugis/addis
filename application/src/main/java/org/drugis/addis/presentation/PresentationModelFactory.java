@@ -33,7 +33,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
@@ -122,8 +122,8 @@ public class PresentationModelFactory {
 		if (obj instanceof Drug) {
 			return new DrugPresentation((Drug) obj, d_domain);
 		}
-		if (obj instanceof DrugSet) {
-			return new DrugSetPresentation((DrugSet) obj, d_domain);
+		if (obj instanceof TreatmentCategorySet) {
+			return new TreatmentCategorySetPresentation((TreatmentCategorySet) obj, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
 			return new PairWiseMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);

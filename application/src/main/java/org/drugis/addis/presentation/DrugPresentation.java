@@ -30,6 +30,7 @@ import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.FilteredObservableList;
 
@@ -48,7 +49,7 @@ public class DrugPresentation extends PresentationModel<Drug> implements StudyLi
 		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
 			@Override
 			public boolean accept(Study s) {
-				return EntityUtil.flatten(s.getDrugs()).contains(drug);
+				return EntityUtil.flatten(s.getDrugs()).contains(Category.createTrivial(drug));
 			}
 		});		
 	}

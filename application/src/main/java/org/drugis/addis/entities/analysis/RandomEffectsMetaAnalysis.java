@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -66,7 +66,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	 * if the list of studies is empty
 	 */
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<Study> studies,
-			DrugSet drug1, DrugSet drug2) 
+			TreatmentCategorySet drug1, TreatmentCategorySet drug2) 
 	throws IllegalArgumentException {
 		super(ANALYSIS_TYPE,
 				name, studies.get(0).getIndication(), om, studies, 
@@ -74,7 +74,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		checkREDataConsistency(studies, drug1, drug2);
 	}
 
-	private void checkREDataConsistency(List<? extends Study> studies, DrugSet drug1, DrugSet drug2) {
+	private void checkREDataConsistency(List<? extends Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
 		if (studies.size() == 0)
 			throw new IllegalArgumentException("No studies in MetaAnalysis");
 		for (Study s : studies)
@@ -102,8 +102,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		this(name, om, studyArms, false);
 	}
 	
-	private static Map<Study, Map<DrugSet, Arm>> getArmMap(
-			List<? extends Study> studies, DrugSet drug1, DrugSet drug2) {
+	private static Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap(
+			List<? extends Study> studies, TreatmentCategorySet drug1, TreatmentCategorySet drug2) {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 
 		for (Study s : studies) {
@@ -115,10 +115,10 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		return getArmMap(studyArms);
 	}
 	
-	private static Map<Study, Map<DrugSet, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
+	private static Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
+		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
 		for (StudyArmsEntry sae : studyArms) {
-			Map<DrugSet, Arm> drugMap = new HashMap<DrugSet, Arm>();
+			Map<TreatmentCategorySet, Arm> drugMap = new HashMap<TreatmentCategorySet, Arm>();
 			drugMap.put(sae.getStudy().getDrugs(sae.getBase()), sae.getBase());
 			drugMap.put(sae.getStudy().getDrugs(sae.getSubject()), sae.getSubject());
 			armMap.put(sae.getStudy(), drugMap);
@@ -126,25 +126,25 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		return armMap;
 	}
 
-	private static List<DrugSet> getDrugs(List<StudyArmsEntry> studyArms) {
-		DrugSet d1 = getFirstDrug(studyArms);
-		DrugSet d2 = getSecondDrug(studyArms);
+	private static List<TreatmentCategorySet> getDrugs(List<StudyArmsEntry> studyArms) {
+		TreatmentCategorySet d1 = getFirstDrug(studyArms);
+		TreatmentCategorySet d2 = getSecondDrug(studyArms);
 		return drugSetList(d1, d2);
 	}
 
-	private static List<DrugSet> drugSetList(DrugSet d1, DrugSet d2) {
-		List<DrugSet> list = new ArrayList<DrugSet>();
+	private static List<TreatmentCategorySet> drugSetList(TreatmentCategorySet d1, TreatmentCategorySet d2) {
+		List<TreatmentCategorySet> list = new ArrayList<TreatmentCategorySet>();
 		list.add(d1);
 		list.add(d2);
 		return list;
 	}
 
-	private static DrugSet getSecondDrug(List<StudyArmsEntry> studyArms) {
+	private static TreatmentCategorySet getSecondDrug(List<StudyArmsEntry> studyArms) {
 		StudyArmsEntry studyArmsEntry = studyArms.get(0);
 		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject());
 	}
 
-	private static DrugSet getFirstDrug(List<StudyArmsEntry> studyArms) {
+	private static TreatmentCategorySet getFirstDrug(List<StudyArmsEntry> studyArms) {
 		StudyArmsEntry studyArmsEntry = studyArms.get(0);
 		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase());
 	}
@@ -162,12 +162,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	}	
 	
 	@Override
-	public DrugSet getFirstDrug() {
+	public TreatmentCategorySet getFirstDrug() {
 		return d_drugs.get(0);
 	}
 	
 	@Override
-	public DrugSet getSecondDrug() {
+	public TreatmentCategorySet getSecondDrug() {
 		return d_drugs.get(1);
 	}
 	

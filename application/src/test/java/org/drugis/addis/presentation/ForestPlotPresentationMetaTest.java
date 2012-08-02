@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
@@ -49,7 +49,7 @@ public class ForestPlotPresentationMetaTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("TestMetaAnalysis",ExampleData.buildEndpointHamd(),
-				studies, DrugSet.createTrivial(ExampleData.buildDrugFluoxetine()), DrugSet.createTrivial(ExampleData.buildDrugParoxetine()));
+				studies, TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_pm = new ForestPlotPresentation(analysis, BasicOddsRatio.class, new PresentationModelFactory(new DomainImpl()));
 	}
 	

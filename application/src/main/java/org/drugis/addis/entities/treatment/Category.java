@@ -70,7 +70,9 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		Set<Entity> dependencies = new HashSet<Entity>(d_owner.getDependencies());
-		dependencies.add(d_owner);
+		if (!d_owner.isTrivial()) { 
+			dependencies.add(d_owner);
+		}
 		return dependencies;
 	}
 	
@@ -118,5 +120,9 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 
 	public boolean isTrivial() {
 		return d_owner.isTrivial();
+	}
+
+	public Drug getDrug() {
+		return d_owner.getDrug();
 	}
 }

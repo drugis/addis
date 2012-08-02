@@ -34,7 +34,7 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
@@ -76,13 +76,13 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public DrugSet getDrugSet(Treatment t) { 
+	public TreatmentCategorySet getTreatmentCategorySet(Treatment t) { 
 		return getBean().getBuilder().getTreatmentMap().getKey(t);
 	}
 	
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
-				new ArrayListModel<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
+				new ArrayListModel<TreatmentCategorySet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
@@ -127,7 +127,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getInconsistencyModel();
 	}
 
-	public List<DrugSet> getIncludedDrugs() {
+	public List<TreatmentCategorySet> getIncludedDrugs() {
 		return getBean().getIncludedDrugs();
 	}
 

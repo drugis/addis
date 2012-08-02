@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
@@ -55,8 +55,8 @@ public class ForestPlotPresentation {
 	private List<Study> d_studies;
 	private List<BasicRelativeEffect<?>> d_relEffects;
 	private OutcomeMeasure d_outMeas;
-	private DrugSet d_baseline;
-	private DrugSet d_subject;
+	private TreatmentCategorySet d_baseline;
+	private TreatmentCategorySet d_subject;
 	private Class<? extends RelativeEffect<?>> d_type;
 	private BinnedScale d_scale;
 	private double d_max = 0.0;
@@ -64,7 +64,7 @@ public class ForestPlotPresentation {
 	private RandomEffectsMetaAnalysis d_analysis;
 	private PresentationModelFactory d_pmf;
 	
-	public ForestPlotPresentation(List<Study> studies, OutcomeMeasure om, DrugSet baseline, DrugSet subject,
+	public ForestPlotPresentation(List<Study> studies, OutcomeMeasure om, TreatmentCategorySet baseline, TreatmentCategorySet subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf, RandomEffectsMetaAnalysis analysis) {
 		d_studies = new ArrayList<Study>();
 		d_outMeas = om;
@@ -95,7 +95,7 @@ public class ForestPlotPresentation {
 		this(analysis.getIncludedStudies(), analysis.getOutcomeMeasure(), analysis.getFirstDrug(), analysis.getSecondDrug(), type, pmf, analysis);
 	}
 		
-	public ForestPlotPresentation(Study s, OutcomeMeasure om, DrugSet baseline, DrugSet subject,
+	public ForestPlotPresentation(Study s, OutcomeMeasure om, TreatmentCategorySet baseline, TreatmentCategorySet subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		this(Collections.singletonList((Study)s), om, baseline, subject, type, pmf, new
 				RandomEffectsMetaAnalysis("", om, Collections.singletonList((Study)s), baseline, subject));
@@ -189,11 +189,11 @@ public class ForestPlotPresentation {
 		return interval;
 	}
 	
-	public DrugSet getLowValueFavorsDrug() {
+	public TreatmentCategorySet getLowValueFavorsDrug() {
 		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_baseline : d_subject;
 	}
 	
-	public DrugSet getHighValueFavorsDrug() {
+	public TreatmentCategorySet getHighValueFavorsDrug() {
 		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_subject : d_baseline;
 	}
 	

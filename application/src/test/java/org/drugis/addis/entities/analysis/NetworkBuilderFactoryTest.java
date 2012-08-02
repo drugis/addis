@@ -10,13 +10,12 @@ import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,15 +75,15 @@ public class NetworkBuilderFactoryTest {
 		study.getStudyActivities().add(activity);
 		study.setStudyActivityAt(study.getArms().get(0), study.findTreatmentEpoch(), activity);
 		
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
-		Map<DrugSet, Arm> drugArmMap = new HashMap<DrugSet, Arm>();
+		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
+		Map<TreatmentCategorySet, Arm> drugArmMap = new HashMap<TreatmentCategorySet, Arm>();
 		for (Arm a : study.getArms()) {
 			drugArmMap.put(study.getDrugs(a), a);
 		}
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		DrugSet treatment = DrugSet.createTrivial(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
+		TreatmentCategorySet treatment = TreatmentCategorySet.createTrivial(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
 		assertEquals("Candesartan_Fluoxetine", nma.getBuilder().getTreatmentMap().get(treatment).getId());
 		assertEquals("Candesartan + Fluoxetine", nma.getBuilder().getTreatmentMap().get(treatment).getDescription());
 	}

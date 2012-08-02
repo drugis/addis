@@ -39,7 +39,7 @@ import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
@@ -110,8 +110,8 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s1);
 		studies.add(d_s2);
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("null", d_endpoint, studies,
-				DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject));
-		d_pm = new ForestPlotPresentation(studies, d_endpoint, DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject), BasicMeanDifference.class, 
+				TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject));
+		d_pm = new ForestPlotPresentation(studies, d_endpoint, TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject), BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()), analysis);
 	}
 	
@@ -187,9 +187,9 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s2);
 		
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("null", d_endpoint, studies,
-				DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject));
+				TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject));
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
-				DrugSet.createTrivial(d_baseline), DrugSet.createTrivial(d_subject),
+				TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject),
 				BasicMeanDifference.class, new PresentationModelFactory(new DomainImpl()), analysis);
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));

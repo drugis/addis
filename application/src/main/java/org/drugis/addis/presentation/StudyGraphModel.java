@@ -38,7 +38,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.collections15.CollectionUtils;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.TreatmentCategorySet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.jgrapht.graph.ListenableUndirectedGraph;
@@ -48,15 +48,15 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> {
 	public static class Vertex {
-		private DrugSet d_drug;
+		private TreatmentCategorySet d_drug;
 		private int d_sampleSize;
 		
-		public Vertex(DrugSet drug, int size) {
+		public Vertex(TreatmentCategorySet drug, int size) {
 			d_drug = drug;
 			d_sampleSize = size;
 		}
 		
-		public DrugSet getDrug() {
+		public TreatmentCategorySet getDrug() {
 			return d_drug;
 		}
 		
@@ -91,14 +91,14 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 	
-	protected ObservableList<DrugSet> d_drugs;
+	protected ObservableList<TreatmentCategorySet> d_drugs;
 	private ObservableList<Study> d_studies;
 	protected boolean d_rebuildNeeded;
 	private final ValueHolder<OutcomeMeasure> d_om;
-	private Map<DrugSet, Set<Study>> d_studiesMeasuringDrug;
+	private Map<TreatmentCategorySet, Set<Study>> d_studiesMeasuringDrug;
 
 	
-	public StudyGraphModel(ObservableList<Study> studies, ObservableList<DrugSet> drugs, ValueHolder<OutcomeMeasure> om) {
+	public StudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentCategorySet> drugs, ValueHolder<OutcomeMeasure> om) {
 		super(Edge.class);
 		
 		d_drugs = drugs;
@@ -134,7 +134,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		// Add vertices
 		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
 		removeAllVertices(verts);		
-		for (DrugSet d : d_drugs) {
+		for (TreatmentCategorySet d : d_drugs) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
 		
@@ -154,14 +154,14 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	}
 
 	private void initStudiesMeasuringDrug() {
-		d_studiesMeasuringDrug = new HashMap<DrugSet, Set<Study>>(); 
+		d_studiesMeasuringDrug = new HashMap<TreatmentCategorySet, Set<Study>>(); 
 
-		for (DrugSet d : d_drugs) {
+		for (TreatmentCategorySet d : d_drugs) {
 			d_studiesMeasuringDrug.put(d, new HashSet<Study>());
 		}
 		
 		for (Study s : d_studies) {
-			for (DrugSet d : s.getMeasuredDrugs(d_om.getValue())) {
+			for (TreatmentCategorySet d : s.getMeasuredDrugs(d_om.getValue())) {
 				if (d_drugs.contains(d)) {
 					d_studiesMeasuringDrug.get(d).add(s);
 				}
@@ -169,7 +169,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 
-	public Vertex findVertex(DrugSet drug) {
+	public Vertex findVertex(TreatmentCategorySet drug) {
 		for (Vertex v : vertexSet()) {
 			if (v.getDrug().equals(drug)) {
 				return v;
@@ -178,7 +178,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		return null;
 	}
 
-	private int calculateSampleSize(DrugSet d) {
+	private int calculateSampleSize(TreatmentCategorySet d) {
 		int n = 0;
 		for (Study s : getStudies(d)) {
 			n += s.getSampleSize();
@@ -190,21 +190,21 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 * Return the list of drugs that are included in at least one of the studies having the correct indication
 	 * and outcome.
 	 */
-	public List<DrugSet> getDrugs() {
+	public List<TreatmentCategorySet> getDrugs() {
 		return d_drugs;
 	}
 	
 	/**
 	 * Return the studies with the correct indication and outcome that compare the given drugs.
 	 */
-	public Collection<Study> getStudies(DrugSet a, DrugSet b) {
+	public Collection<Study> getStudies(TreatmentCategorySet a, TreatmentCategorySet b) {
 		return CollectionUtils.intersection(getStudies(a), getStudies(b));
 	}
 	
 	/**
 	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
-	public Collection<Study> getStudies(DrugSet d) {
+	public Collection<Study> getStudies(TreatmentCategorySet d) {
 		return d_studiesMeasuringDrug.get(d);
 	}
 }
