@@ -1445,12 +1445,17 @@ public class JAXBConvertorTest {
 		// -----------------------------------
 		Study study = JAXBConvertor.convertStudy(ma.d_studies.get(0), domain);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(study, study.getArms().get(0), study
-				.getArms().get(1)));
+		Arm base = study.getArms().get(0);
+		Arm subject = study.getArms().get(1);
+		armsList.add(new StudyArmsEntry(study, base, subject));
 		domain.getStudies().add(study);
 
-		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(name,
-				ExampleData.buildEndpointHamd(), armsList);
+		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(
+				name, 
+				ExampleData.buildEndpointHamd(), 
+				study.getDrugs(base),
+				study.getDrugs(subject),
+				armsList, false);
 
 		assertEntityEquals(pwma,
 				JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));

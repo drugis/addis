@@ -37,6 +37,7 @@ import java.util.List;
 
 import org.drugis.addis.ADDISTestUtil;
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -112,10 +113,12 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(newStudy,newStudy.getArms().get(0),newStudy.getArms().get(1)));
-		armsList.add(new StudyArmsEntry(newStudy,newStudy.getArms().get(1),newStudy.getArms().get(0)));
+		Arm subject = newStudy.getArms().get(1);
+		Arm base = newStudy.getArms().get(0);
+		armsList.add(new StudyArmsEntry(newStudy, base, subject));
+		armsList.add(new StudyArmsEntry(newStudy, subject, base));
 		
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, armsList);
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, newStudy.getDrugs(base), newStudy.getDrugs(subject), armsList, false);
 	}	
 	
 	

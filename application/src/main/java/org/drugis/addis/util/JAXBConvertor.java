@@ -1028,6 +1028,8 @@ public class JAXBConvertor {
 		if (baseArms.size() != subjArms.size()) {
 			throw new ConversionException("Alternative lists must have equal length. Offending MA: " + pwma);
 		}
+		TreatmentCategorySet baseCat = null;
+		TreatmentCategorySet subjCat = null;
 		for (int i = 0; i < baseArms.size(); ++i) {
 			if (!baseArms.get(i).getStudy().equals(subjArms.get(i).getStudy())) {
 				throw new ConversionException("Matching arms must be from the same study. Offending arms: " + 
@@ -1037,11 +1039,15 @@ public class JAXBConvertor {
 			Arm base = findArm(baseArms.get(i).getName(), study.getArms());
 			Arm subj = findArm(subjArms.get(i).getName(), study.getArms());
 			studyArms.add(new StudyArmsEntry(study, base, subj));
+			if (i == 0) {
+				baseCat = study.getDrugs(base);
+				subjCat = study.getDrugs(subj);
+			}
 		}
 		
 		Collections.sort(studyArms);
 		
-		return new RandomEffectsMetaAnalysis(pwma.getName(), om, studyArms);
+		return new RandomEffectsMetaAnalysis(pwma.getName(), om, baseCat, subjCat, studyArms, false);
 	}
 	
 	public static PairwiseMetaAnalysis convertPairWiseMetaAnalysis(RandomEffectsMetaAnalysis reMa) throws ConversionException {

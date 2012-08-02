@@ -990,23 +990,37 @@ public class ExampleData {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Convulsion test analysis",
+				buildAdverseEventConvulsion(),
+				s1.getDrugs(base),
+				s1.getDrugs(subject),
+				studyArms, false);
 	}
 
 	public static MetaAnalysis buildMetaAnalysisHamd() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Hamd test analysis",
+				buildEndpointHamd(),
+				s1.getDrugs(base),
+				s1.getDrugs(subject),
+				studyArms, false);
 	}
 
 	public static MetaBenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
@@ -1065,7 +1079,7 @@ public class ExampleData {
 				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
 			}
 		}
-		return new RandomEffectsMetaAnalysis(name, om, ExampleData.createStudyArmEntries(studies, drug1, drug2));
+		return new RandomEffectsMetaAnalysis(name, om, drug1, drug2, ExampleData.createStudyArmEntries(studies, drug1, drug2), false);
 	}
 
 	public static List<StudyArmsEntry> createStudyArmEntries(

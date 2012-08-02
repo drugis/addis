@@ -179,13 +179,15 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
-		
+		TreatmentCategorySet base = d_firstDrugHolder.getValue();
+		TreatmentCategorySet subj = d_secondDrugHolder.getValue();
 		for (Study s : getStudyListModel().getSelectedStudiesModel()) {
-			Arm left = d_selectedArms.get(s).get(d_firstDrugHolder.getValue()).getValue();
-			Arm right = d_selectedArms.get(s).get(d_secondDrugHolder.getValue()).getValue();
+			Arm left = d_selectedArms.get(s).get(base).getValue();
+			Arm right = d_selectedArms.get(s).get(subj).getValue();
 			studyArms.add(new StudyArmsEntry(s, left, right));
 		}
-		return new RandomEffectsMetaAnalysis("", (OutcomeMeasure) getOutcomeMeasureModel().getValue(), studyArms);
+		OutcomeMeasure om = (OutcomeMeasure) getOutcomeMeasureModel().getValue();
+		return new RandomEffectsMetaAnalysis("", om, base, subj, studyArms, false);
 	}
 	
 	public ValueModel getMetaAnalysisCompleteModel() {

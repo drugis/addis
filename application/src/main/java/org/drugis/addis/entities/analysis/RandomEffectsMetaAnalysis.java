@@ -29,6 +29,7 @@ package org.drugis.addis.entities.analysis;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,10 +62,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public static final String PROPERTY_CORRECTED = "isCorrected";
 	private boolean d_isCorrected = false;
 
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms, boolean corr)
-	throws IllegalArgumentException {
-		super(ANALYSIS_TYPE,
-				name, getIndication(studyArms), om, getStudies(studyArms), getAlternatives(studyArms), getArmMap(studyArms));
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
+			TreatmentCategorySet baseline, TreatmentCategorySet subject,
+			List<StudyArmsEntry> studyArms, boolean corr) {
+		super(ANALYSIS_TYPE, name, getIndication(studyArms), om,
+				getStudies(studyArms), Arrays.asList(baseline, subject),
+				getArmMap(studyArms));
 		
 		for (StudyArmsEntry sae : studyArms){ // FIXME: drug tests should use category matching.
 			if(!sae.getStudy().getDrugs(sae.getBase()).equals(getFirstAlternative())){
@@ -77,10 +80,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		d_isCorrected = corr;
 	}
 	
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) {
-		this(name, om, studyArms, false);
-	}
-	
 	private static Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
 		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
 		for (StudyArmsEntry sae : studyArms) {
@@ -90,29 +89,6 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 			armMap.put(sae.getStudy(), alternativeMap);
 		}
 		return armMap;
-	}
-
-	private static List<TreatmentCategorySet> getAlternatives(List<StudyArmsEntry> studyArms) {
-		TreatmentCategorySet d1 = getFirstDrug(studyArms);
-		TreatmentCategorySet d2 = getSecondDrug(studyArms);
-		return drugSetList(d1, d2);
-	}
-
-	private static List<TreatmentCategorySet> drugSetList(TreatmentCategorySet d1, TreatmentCategorySet d2) {
-		List<TreatmentCategorySet> list = new ArrayList<TreatmentCategorySet>();
-		list.add(d1);
-		list.add(d2);
-		return list;
-	}
-
-	private static TreatmentCategorySet getSecondDrug(List<StudyArmsEntry> studyArms) {
-		StudyArmsEntry studyArmsEntry = studyArms.get(0);
-		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject());
-	}
-
-	private static TreatmentCategorySet getFirstDrug(List<StudyArmsEntry> studyArms) {
-		StudyArmsEntry studyArmsEntry = studyArms.get(0);
-		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase());
 	}
 
 	private static List<Study> getStudies(List<StudyArmsEntry> studyArms) {

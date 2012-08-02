@@ -102,7 +102,7 @@ public class ForestPlotPresentation {
 		TreatmentCategorySet catSet1 = s.getDrugs(arm1);
 		TreatmentCategorySet catSet2 = s.getDrugs(arm2);
 		StudyArmsEntry entry = new StudyArmsEntry(s, arm1, arm2);
-		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("", om, Collections.singletonList(entry));
+		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("", om, catSet1, catSet2, Collections.singletonList(entry), false);
 		return new ForestPlotPresentation(studyList, om, catSet1, catSet2, type, pmf, analysis);
 	}
 		
