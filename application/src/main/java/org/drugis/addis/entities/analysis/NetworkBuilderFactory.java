@@ -50,6 +50,50 @@ import org.drugis.mtc.data.DataType;
 import org.drugis.mtc.model.Treatment;
 
 public class NetworkBuilderFactory {
+	static final class DescriptionTransformer implements Transformer<DrugSet, String> {
+		@Override
+		public String transform(DrugSet input) {
+			return input.getLabel();
+		}
+	}
+
+	static final class NameTranformer implements Transformer<DrugSet, String> {
+		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();
+
+		@Override
+		public String transform(DrugSet input) {
+			List<String> names = new ArrayList<String>();
+			for (Drug drug : input.getContents()) {
+				names.add(getCleanName(drug));
+			}
+			return StringUtils.join(names, "_");
+		}
+
+		private String getCleanName(Drug drug) {
+			if (!nameLookup.containsKey(drug)) {
+				insertUniqueName(drug);
+			}
+			return nameLookup.get(drug);
+		}
+
+		private void insertUniqueName(Drug drug) {
+			String sanitized = sanitize(drug.getName());
+			String name = sanitized;
+			int i = 1;
+			while (nameLookup.containsValue(name)) {
+				name = sanitized + ++i;
+			}
+			nameLookup.put(drug, name);
+		}
+
+		private String sanitize(String dirtyString) {
+			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
+		}
+	}
+	
+	private static final Transformer<DrugSet, String> s_descTransform = new DescriptionTransformer();
+	private static final Transformer<DrugSet, String> s_transform = new NameTranformer();
+
 	final static class NetworkBuilderStub extends NetworkBuilder<DrugSet> {
 		NetworkBuilderStub() {
 			super(s_transform, s_descTransform, DataType.NONE);
@@ -111,44 +155,4 @@ public class NetworkBuilderFactory {
 			throw new IllegalStateException("Unexpected VariableType: " + outcome.getVariableType());
 		}
 	}
-	
-	private static final Transformer<DrugSet, String> s_descTransform = new Transformer<DrugSet, String>() {
-		@Override
-		public String transform(DrugSet input) {
-			return input.getLabel();
-		}
-	};
-	
-	private static final Transformer<DrugSet, String> s_transform = new Transformer<DrugSet, String>() {
-		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();  
-		@Override
-		public String transform(DrugSet input) {
-			List<String> names = new ArrayList<String>();
-			for (Drug drug : input.getContents()) {
-				names.add(getCleanName(drug));
-			}
-			return StringUtils.join(names, "_");
-		}
-
-		private String getCleanName(Drug drug) {
-			if (!nameLookup.containsKey(drug)) {
-				insertUniqueName(drug);
-			}
-			return nameLookup.get(drug);
-		}
-
-		private void insertUniqueName(Drug drug) {
-			String sanitized = sanitize(drug.getName());
-			String name = sanitized;
-			int i = 1;
-			while (nameLookup.containsValue(name)) {
-				name = sanitized + ++i;
-			}
-			nameLookup.put(drug, name);
-		}
-		
-		private String sanitize(String dirtyString) {
-			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
-		}
-	};
 }
