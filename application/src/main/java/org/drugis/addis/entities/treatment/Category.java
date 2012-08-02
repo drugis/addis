@@ -30,12 +30,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
 
 public class Category extends AbstractEntity implements TypeWithName, Comparable<Category> {
 	private TreatmentCategorization d_owner;
 	private String d_name;
+
+	public static Category createTrivial(Drug d) {
+		return TreatmentCategorization.createTrivial(d).getCategories().get(0);
+	}
 
 	public Category(TreatmentCategorization owner) {
 		this(owner, "");
@@ -55,6 +60,11 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 		String oldVal = d_name;
 		d_name = name;
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
+	}
+	
+	@Override
+	public String getLabel() {
+		return getCategorization().getDrug().getLabel() + (!getName().isEmpty() ? " " + getName() : "");
 	}
 
 	@Override

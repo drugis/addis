@@ -2,6 +2,7 @@ package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
@@ -73,5 +74,22 @@ public class CategoryTest {
 		assertFalse(new Category(d_catz1).isTrivial());
 		TreatmentCategorization trivial = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
 		assertTrue(trivial.getCategories().get(0).isTrivial());
+		
+		Category cat = Category.createTrivial(ExampleData.buildDrugCandesartan());
+		assertTrue(cat.isTrivial());
+		assertSame(cat, cat.getCategorization().getCategories().get(0));
+		assertEquals(ExampleData.buildDrugCandesartan(), cat.getCategorization().getDrug());
 	}
+	
+	@Test
+	public void testGetLabel() { 
+		Category trivial = Category.createTrivial(ExampleData.buildDrugFluoxetine());
+		assertEquals(trivial.getCategorization().getDrug().getLabel(), trivial.getLabel());
+		
+		Category catA = new Category(d_catz1, "A");
+		String expected = catA.getCategorization().getDrug().getLabel() + " " + catA.getName();
+		assertEquals(expected, catA.getLabel());
+
+	}
+	
 }
