@@ -21,8 +21,8 @@ public class CategoryTest {
 	
 	@Before
 	public void setUp() {
-		d_catz1 = new TreatmentCategorization("The best", ExampleData.buildDrugEscitalopram(), DoseUnit.MILLIGRAMS_A_DAY);
-		d_catz2 = new TreatmentCategorization("The worst", ExampleData.buildDrugEscitalopram(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_catz1 = TreatmentCategorization.createDefault("The best", ExampleData.buildDrugEscitalopram(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_catz2 = TreatmentCategorization.createDefault("The worst", ExampleData.buildDrugEscitalopram(), DoseUnit.MILLIGRAMS_A_DAY);
 	}
 	
 	@Test
@@ -66,5 +66,12 @@ public class CategoryTest {
 		assertTrue(catA.compareTo(catA2) < 0);
 		assertTrue(catA2.compareTo(catA) > 0);
 		assertTrue(catB.compareTo(catA2) < 0);
+	}
+	
+	@Test
+	public void testTrivialCategorization() {
+		assertFalse(new Category(d_catz1).isTrivial());
+		TreatmentCategorization trivial = TreatmentCategorization.createTrivial(ExampleData.buildDrugFluoxetine());
+		assertTrue(trivial.getCategories().get(0).isTrivial());
 	}
 }

@@ -55,7 +55,7 @@ public class TreatmentCategorizationPresentationTest {
 
 	@Before
 	public void setUp() {
-		d_tc = new TreatmentCategorization("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_tc = TreatmentCategorization.createDefault("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new TreatmentCategorizationPresentation(d_tc, d_domain);

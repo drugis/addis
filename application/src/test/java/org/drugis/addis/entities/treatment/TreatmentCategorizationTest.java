@@ -27,6 +27,7 @@
 package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -54,7 +55,7 @@ public class TreatmentCategorizationTest {
 
 	@Before
 	public void setUp() {
-		d_treatment = new TreatmentCategorization("", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_treatment = TreatmentCategorization.createDefault("", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
 	}
 
 	@Test
@@ -63,6 +64,7 @@ public class TreatmentCategorizationTest {
 		assertEquals(ExampleData.buildDrugCandesartan(), d_treatment.getDrug());
 		assertEquals(DoseUnit.MILLIGRAMS_A_DAY, d_treatment.getDoseUnit());
 		assertDefaultTree(tree);
+		assertFalse(d_treatment.isTrivial());
 	}
 
 	@Test
@@ -139,6 +141,20 @@ public class TreatmentCategorizationTest {
 		assertEquals(someCatNode, d_treatment.getCategory(new FixedDose()));
 		assertEquals(excludeNode, d_treatment.getCategory(new FlexibleDose()));
 		assertEquals(unknownNode, d_treatment.getCategory(new UnknownDose()));
+	}
+	
+	@Test
+	public void testTrivialCategorization() {
+		TreatmentCategorization trivial = TreatmentCategorization.createTrivial(ExampleData.buildDrugSertraline());
+		assertTrue(trivial.getRootNode() instanceof LeafNode);
+		LeafNode root = (LeafNode) trivial.getRootNode();
+		assertNotNull(root.getCategory());
+		assertNotNull(trivial.getCategory(new UnknownDose()));
+		assertNotNull(trivial.getCategory(new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertNotNull(trivial.getCategory(new FlexibleDose(new Interval<Double>(10.0, 1234.0), DoseUnit.MILLIGRAMS_A_DAY)));
+		assertTrue(trivial.isTrivial());
+		
+		assertEquals(root.getCategory(), trivial.getCategories().get(0));
 	}
 
 	public static void assertDefaultTree(final DecisionTree tree) {

@@ -33,7 +33,7 @@ import org.junit.Test;
 public class LeafNodeTest {
 	@Test
 	public void testWithCategory() {
-		final Category category = new Category(new TreatmentCategorization(), "Potato");
+		final Category category = new Category(TreatmentCategorization.createDefault(), "Potato");
 		LeafNode node = new LeafNode(category);
 		assertEquals(category, node.getCategory());
 		assertEquals(category.getName(), node.getName());

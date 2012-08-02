@@ -81,7 +81,7 @@ public class DecisionTreeOutEdgesModelTest {
 		EasyMock.replay(mockListener);
 
 		model1.addListDataListener(mockListener);
-		final LeafNode cat1 = new LeafNode(new Category(new TreatmentCategorization(), "foo"));
+		final LeafNode cat1 = new LeafNode(new Category(TreatmentCategorization.createDefault(), "foo"));
 		d_tree.replaceChild(d_edge, cat1);
 
 		JUnitUtil.assertAllAndOnly(d_tree.getOutEdges(d_root), model1);

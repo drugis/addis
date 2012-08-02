@@ -66,7 +66,7 @@ public class TreatmentCategorizationWizardPresentationTest {
 
 	@Before
 	public void setUp() {
-		d_bean = new TreatmentCategorization("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_bean = TreatmentCategorization.createDefault("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
 		d_pm = new TreatmentCategorizationWizardPresentation(d_bean, null);
 	}
 

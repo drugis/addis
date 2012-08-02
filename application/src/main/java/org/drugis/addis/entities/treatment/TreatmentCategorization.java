@@ -45,41 +45,68 @@ import com.jgoodies.binding.list.ObservableList;
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCategorization> {
-	private static final ChoiceNode ROOT_NODE = new ChoiceNode(AbstractDose.class, "class");
+	public static final ChoiceNode ROOT_NODE = new ChoiceNode(AbstractDose.class, "class");
 	public static final String PROPERTY_DOSE_UNIT = "doseUnit";
 	public static final String PROPERTY_DRUG = "drug";
 	public static final String PROPERTY_CATEGORIES = "categories";
 
 	private final ObservableList<Category> d_categories = new ArrayListModel<Category>();
 	private Drug d_drug;
-	private final DecisionTree d_decisionTree;
+	private DecisionTree d_decisionTree;
 
 	private final DoseUnit d_doseUnit;
 
-	public TreatmentCategorization() {
-		this("", null, DoseUnit.MILLIGRAMS_A_DAY);
-	}
-	
-	public TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit) {
-		this(name, drug, unit, true);
+	/**
+	 * Create a TreatmentCategorization with a decision tree consisting solely of {@link TreatmentCategorization#ROOT_NODE}.
+	 * @param name Name for the categorization.
+	 * @param drug Drug to categorize.
+	 * @param unit Unit to perform dose comparisons in.
+	 * @return A new TreatmentCategorization.
+	 */
+	public static TreatmentCategorization createBare(String name, Drug drug, DoseUnit unit) {
+		return new TreatmentCategorization(name, drug, unit, false);
 	}
 
-	public TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit, boolean withDefault) {
+	/**
+	 * Create a TreatmentCategorization with a default decision tree, having branches for UnknownDose, FixedDose and FlexibleDose.
+	 * @param name Name for the categorization.
+	 * @param drug Drug to categorize.
+	 * @param unit Unit to perform dose comparisons in.
+	 * @return A new TreatmentCategorization.
+	 */
+	public static TreatmentCategorization createDefault(String name, Drug drug, DoseUnit unit) {
+		return new TreatmentCategorization(name, drug, unit, true);
+	}
+	
+	/**
+	 * Create a TreatmentCategorization with a default decision tree, having branches for UnknownDose, FixedDose and FlexibleDose.
+	 * @return A new TreatmentCategorization.
+	 */
+	public static TreatmentCategorization createDefault() {
+		return createDefault("", null, DoseUnit.MILLIGRAMS_A_DAY);
+	}
+	
+	/**
+	 * Create a trivial TreatmentCategorization that will accept any dose of the given drug.
+	 * @param drug Drug to accept.
+	 * @return A new TreatmentCategorization.
+	 */
+	public static TreatmentCategorization createTrivial(Drug drug) {
+		TreatmentCategorization categorization = new TreatmentCategorization("", drug, DoseUnit.MILLIGRAMS_A_DAY, false);
+		Category category = new Category(categorization);
+		categorization.addCategory(category);
+		categorization.d_decisionTree = new DecisionTree(new LeafNode(category));
+		return categorization;
+	}
+	
+	private TreatmentCategorization(final String name, final Drug drug, final DoseUnit unit, boolean withDefault) {
 		super(name);
 		d_drug = drug;
 		d_doseUnit = unit;
-		if(withDefault) { 
-			d_decisionTree = createDefaultTree();
-		} else { 
-			d_decisionTree = new DecisionTree(ROOT_NODE);
+		d_decisionTree = new DecisionTree(ROOT_NODE);
+		if (withDefault) { 
+			addDefaultEdges(d_decisionTree);
 		}
-	}
-
-	private static DecisionTree createDefaultTree() {
-		final ChoiceNode root = ROOT_NODE;
-		final DecisionTree tree = new DecisionTree(root);
-		addDefaultEdges(tree);
-		return tree;
 	}
 
 	private static void addDefaultEdges(final DecisionTree tree) {
@@ -87,6 +114,10 @@ public class TreatmentCategorization extends AbstractNamedEntity<TreatmentCatego
 		tree.addEdge(new TypeEdge(UnknownDose.class), root, new LeafNode());
 		tree.addEdge(new TypeEdge(FixedDose.class), root, new LeafNode());
 		tree.addEdge(new TypeEdge(FlexibleDose.class), root, new LeafNode());
+	}
+
+	public boolean isTrivial() {
+		return getRootNode() instanceof LeafNode;
 	}
 
 	public void setName(final String name) {

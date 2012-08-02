@@ -34,7 +34,7 @@ import org.junit.Test;
 
 public class DecisionTreeTest {
 	
-	private final TreatmentCategorization d_tc = new TreatmentCategorization();
+	private final TreatmentCategorization d_tc = TreatmentCategorization.createDefault();
 	
 	@Test
 	public void testTrivialDecision() {

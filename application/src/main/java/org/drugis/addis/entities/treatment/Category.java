@@ -90,4 +90,8 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	public TreatmentCategorization getCategorization() {
 		return d_owner;
 	}
+
+	public boolean isTrivial() {
+		return d_owner.isTrivial();
+	}
 }

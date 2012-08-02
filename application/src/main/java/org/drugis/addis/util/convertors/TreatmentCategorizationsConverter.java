@@ -47,7 +47,7 @@ public class TreatmentCategorizationsConverter {
 		Drug drug = JAXBConvertor.findNamedItem(domain.getDrugs(), t.getDrug().getName());
 		DoseUnit unit = JAXBConvertor.convertDoseUnit(t.getUnit(), domain);
 		
-		TreatmentCategorization tc = new TreatmentCategorization(name, drug, unit, false);
+		TreatmentCategorization tc = TreatmentCategorization.createBare(name, drug, unit);
 		
 		for (org.drugis.addis.entities.data.Category category : t.getCategory()) {
 			tc.addCategory(new Category(tc, category.getName()));
