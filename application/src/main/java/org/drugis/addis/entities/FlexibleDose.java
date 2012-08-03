@@ -49,6 +49,10 @@ public class FlexibleDose extends AbstractDose {
 		d_unit = doseUnit;
 	}
 	
+	public FlexibleDose(double min, double max, DoseUnit doseUnit) { 
+		this(new Interval<Double>(min, max), doseUnit);
+	}
+	
 	public Interval<Double> getFlexibleDose() {
 		return d_flexDose;
 	}
