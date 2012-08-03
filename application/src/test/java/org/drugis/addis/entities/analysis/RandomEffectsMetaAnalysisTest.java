@@ -59,7 +59,6 @@ import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
@@ -128,7 +127,6 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	}
 	
 	@Test
-	@Ignore
 	public void testCategoryMatching() {
 		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.MILLIGRAMS_A_DAY);
 		Category fluoxCat = new Category(catz, "Include");

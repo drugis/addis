@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -82,7 +83,8 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 			Map<Study, Map<TreatmentDefinition, Arm>> armMap) 
 	throws IllegalArgumentException {
 		super(name);
-		checkDataConsistency(studies, indication, om);
+		checkStudiesAppropriate(studies, indication, om);
+		checkArmsMatchTreatmentDefinitions(armMap);
 		d_type = type;
 
 		d_alternatives = drugs;
@@ -97,6 +99,20 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		}
 	}
 	
+	private void checkArmsMatchTreatmentDefinitions(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+		for (Study study : armMap.keySet()) {
+			for (Entry<TreatmentDefinition, Arm> entry : armMap.get(study).entrySet()) {
+				Arm arm = entry.getValue();
+				TreatmentDefinition def = entry.getKey();
+				if (!def.match(study, arm)) {
+					throw new IllegalArgumentException("TreatmentActivity in Arm " + arm.getName() +
+							" of Study " + study.getName() +
+							" does not match the TreatmentDefinition " + def.getLabel());
+				}
+			}
+		}
+	}
+
 	public AbstractMetaAnalysis(String type, String name,
 			Indication indication, OutcomeMeasure om,
 			Map<Study, Map<TreatmentDefinition, Arm>> armMap) { 
@@ -114,7 +130,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		firePropertyChange(PROPERTY_NAME, oldName, d_name);
 	}
 
-	protected void checkDataConsistency(List<? extends Study> studies, Indication indication, OutcomeMeasure om)
+	protected void checkStudiesAppropriate(List<? extends Study> studies, Indication indication, OutcomeMeasure om)
 	throws IllegalArgumentException {
 		if (studies.isEmpty())
 			throw new IllegalArgumentException("studylist empty");

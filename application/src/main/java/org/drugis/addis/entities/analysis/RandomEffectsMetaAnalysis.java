@@ -67,25 +67,18 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 			List<StudyArmsEntry> studyArms, boolean corr) {
 		super(ANALYSIS_TYPE, name, getIndication(studyArms), om,
 				getStudies(studyArms), Arrays.asList(baseline, subject),
-				getArmMap(studyArms));
-		
-		for (StudyArmsEntry sae : studyArms){ // FIXME: drug tests should use category matching.
-			if(!sae.getStudy().getDrugs(sae.getBase()).equals(getFirstAlternative())){
-				throw new IllegalArgumentException("Left drug not consistent over all studies");
-			}
-			if(!sae.getStudy().getDrugs(sae.getSubject()).equals(getSecondAlternative())){
-				throw new IllegalArgumentException("Right drug not consistent over all studies");
-			}
-		}
+				getArmMap(baseline, subject, studyArms));
 		d_isCorrected = corr;
 	}
 	
-	private static Map<Study, Map<TreatmentDefinition, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
+	private static Map<Study, Map<TreatmentDefinition, Arm>> getArmMap(
+			TreatmentDefinition baseline, TreatmentDefinition subject,
+			List<StudyArmsEntry> studyArms) {
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (StudyArmsEntry sae : studyArms) {
 			Map<TreatmentDefinition, Arm> alternativeMap = new HashMap<TreatmentDefinition, Arm>();
-			alternativeMap.put(sae.getStudy().getDrugs(sae.getBase()), sae.getBase());
-			alternativeMap.put(sae.getStudy().getDrugs(sae.getSubject()), sae.getSubject());
+			alternativeMap.put(baseline, sae.getBase());
+			alternativeMap.put(subject, sae.getSubject());
 			armMap.put(sae.getStudy(), alternativeMap);
 		}
 		return armMap;
