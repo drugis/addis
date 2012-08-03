@@ -146,8 +146,8 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 		final List<TreatmentDefinition> rowAlternatives = getNonBaselineAlternatives();
 		final List<TreatmentDefinition> columnAlternatives = new ArrayList<TreatmentDefinition>(ma.getAlternatives());
 
-		final TreatmentDefinition rowBaseline = d_baseline;
-		final TreatmentDefinition columnBaseline = columnAlternatives.remove(0); // first drugSet in metaAnalysis is baseline by definition
+		final TreatmentDefinition rowBaseline = d_baseline; // the desired baseline
+		final TreatmentDefinition columnBaseline = columnAlternatives.remove(0); // the meta-analysis baseline (first alternative by definition)
 		
 		final int nRows = rowAlternatives.size();
 		final int nCols = columnAlternatives.size();
@@ -324,13 +324,13 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	@SuppressWarnings("unchecked")
 	private <M extends Measurement> List<M> getBaselineMeasurements(OutcomeMeasure om, Class<M> cls) {
 		List<M> result = new ArrayList<M>(); 
-		for (MetaAnalysis ma : getMetaAnalyses())
-			if (ma.getOutcomeMeasure().equals(om))
-				for (Study s : ma.getIncludedStudies())
-					for (Arm a : s.getArms())
-						if (s.getDrugs(a).equals(getBaseline()))
-							result.add((M)s.getMeasurement(om, a));
-		
+		MetaAnalysis ma = findMetaAnalysis(om);
+		for (Study s : ma.getIncludedStudies()) {
+			Arm a = s.findMatchingArm(getBaseline());
+			if (a != null) {
+				result.add((M)s.getMeasurement(om, a));
+			}
+		}
 		return result;
 	}
 	

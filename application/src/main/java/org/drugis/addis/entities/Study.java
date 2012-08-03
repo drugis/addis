@@ -919,4 +919,14 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 		return null;
 	}
+
+	public Arm findMatchingArm(TreatmentDefinition def) {
+		for (Arm a : getArms()) {
+			TreatmentActivity treatment = getTreatment(a);
+			if (treatment != null && def.match(treatment)) {
+				return a;
+			}
+		}
+		return null;
+	}
 }
