@@ -2,11 +2,9 @@ package org.drugis.addis.util.convertors;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.collections15.bidimap.DualHashBidiMap;
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
@@ -14,7 +12,6 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.data.Edge;
-import org.drugis.addis.entities.data.Node;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTree;
@@ -33,13 +30,17 @@ import org.drugis.common.EqualsUtil;
 
 public class TreatmentCategorizationsConverter {
 	
-	static final DualHashBidiMap<String, Class<?>> s_beanClasses;
-	static { 
-		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
-		map.put(FlexibleDose.class.getSimpleName(), FlexibleDose.class);
-		map.put(FixedDose.class.getSimpleName(), FixedDose.class);
-		map.put(UnknownDose.class.getSimpleName(), UnknownDose.class);
-		s_beanClasses = new DualHashBidiMap<String, Class<?>>(Collections.unmodifiableMap(map));
+	public static Class<? extends AbstractDose> getDoseClass(org.drugis.addis.entities.data.DoseType type) {
+		switch (type) {
+		case FIXED_DOSE:
+			return FixedDose.class;
+		case FLEXIBLE_DOSE:
+			return FlexibleDose.class;
+		case UNKNOWN_DOSE:
+			return UnknownDose.class;
+		default:
+			throw new IllegalStateException("Unknown ENUM value " + type);
+		}
 	}
 
 	public static TreatmentCategorization load(org.drugis.addis.entities.data.TreatmentCategorization t, Domain domain) throws ConversionException {
@@ -68,34 +69,49 @@ public class TreatmentCategorizationsConverter {
 
 	private static void convertSubtree(DecisionTree dest,
 			TreatmentCategorization destTc,
-			org.drugis.addis.entities.data.Node srcParent,
+			org.drugis.addis.entities.data.TypeNode srcParent,
 			DecisionTreeNode destParent)
 			throws ConversionException {
-		for (Edge e : srcParent.getEdge()) {
+		convertSubTree(dest, destTc, destParent, srcParent.getTypeEdge());
+	}
+	
+	private static void convertSubtree(DecisionTree dest,
+			TreatmentCategorization destTc,
+			org.drugis.addis.entities.data.ChoiceNode srcParent,
+			DecisionTreeNode destParent)
+			throws ConversionException {
+		convertSubTree(dest, destTc, destParent, srcParent.getRangeEdge());
+	}
+
+	private static void convertSubTree(DecisionTree dest, TreatmentCategorization destTc, DecisionTreeNode destParent,
+			List<? extends org.drugis.addis.entities.data.Edge> edges) throws ConversionException {
+		for (org.drugis.addis.entities.data.Edge e : edges) {
 			DecisionTreeEdge edge = convertEdge(e);
-			DecisionTreeNode child = convertNode(e.getNode(), destTc);
-			dest.addChild(edge, destParent, child);
-			convertSubtree(dest, destTc, e.getNode(), child);
+			DecisionTreeNode child;
+			if (e.getChoiceNode() != null) {
+				child = convertChoiceNode(e.getChoiceNode(), destTc);
+				dest.addChild(edge, destParent, child);
+				convertSubtree(dest, destTc, e.getChoiceNode(), child);
+			} else {
+				child = convertLeafNode(e.getLeafNode(), destTc);
+				dest.addChild(edge, destParent, child);
+			}
 		}
 	}
 
-	private static DecisionTreeNode convertNode(
-			Node node, 
-			TreatmentCategorization destTc) throws ConversionException {
-		if (node instanceof org.drugis.addis.entities.data.ChoiceNode) {
-			org.drugis.addis.entities.data.ChoiceNode choiceNode = (org.drugis.addis.entities.data.ChoiceNode) node;
-			return new DoseQuantityChoiceNode(s_beanClasses.get(choiceNode.getBeanClass()), choiceNode.getPropertyName(), destTc.getDoseUnit());
-		} else if (node instanceof org.drugis.addis.entities.data.LeafNode) {
-			org.drugis.addis.entities.data.LeafNode leafNode = (org.drugis.addis.entities.data.LeafNode) node;
-			Category destCat = null; 
-			for(Category cat : destTc.getCategories()) { 
-				 if(leafNode.getCategory() != null && EqualsUtil.equal(cat.getName(), leafNode.getCategory().getName())) { 
-					 destCat = cat;
-				 }
-			}
-			return new LeafNode(destCat); // if destCat is null, the LeafNode equals to an ExcludeNode
+	private static DecisionTreeNode convertLeafNode(org.drugis.addis.entities.data.LeafNode leafNode, TreatmentCategorization destTc) {
+		Category destCat = null; 
+		for(Category cat : destTc.getCategories()) { 
+			 if(leafNode.getCategory() != null && EqualsUtil.equal(cat.getName(), leafNode.getCategory().getName())) { 
+				 destCat = cat;
+			 }
 		}
-		throw new ConversionException("Illegal node type (" + node.getClass() + ")");
+		return new LeafNode(destCat); // if destCat is null, the LeafNode equals to an ExcludeNode
+	}
+
+	private static DecisionTreeNode convertChoiceNode(org.drugis.addis.entities.data.ChoiceNode choiceNode,
+			TreatmentCategorization destTc) {
+		return new DoseQuantityChoiceNode(getDoseClass(choiceNode.getObjectType()), choiceNode.getProperty(), destTc.getDoseUnit());
 	}
 
 	private static DecisionTreeEdge convertEdge(Edge e) throws ConversionException {
@@ -108,7 +124,7 @@ public class TreatmentCategorizationsConverter {
 					rangeEdge.isIsRangeUpperBoundOpen());
 		} else if (e instanceof org.drugis.addis.entities.data.TypeEdge) {
 			org.drugis.addis.entities.data.TypeEdge typeEdge = (org.drugis.addis.entities.data.TypeEdge) e;
-			return new TypeEdge(s_beanClasses.get(typeEdge.getBeanClass()));
+			return new TypeEdge(getDoseClass(typeEdge.getMatchType()));
 		}
 		throw new ConversionException("Illegal edge type (" + e.getClass() + ")");
 	}
@@ -133,55 +149,72 @@ public class TreatmentCategorizationsConverter {
 
 	private static org.drugis.addis.entities.data.DecisionTree convertDecisionTree(DecisionTree tree) {
 		org.drugis.addis.entities.data.DecisionTree t = new org.drugis.addis.entities.data.DecisionTree();
-		t.setRootNode((org.drugis.addis.entities.data.ChoiceNode)convertNodes(tree.getRoot(), tree));
+		t.setRootNode((org.drugis.addis.entities.data.TypeNode)convertTypeNodeRecursive(tree.getRoot(), tree));
 		return t;
 	}
 
-	private static org.drugis.addis.entities.data.Node convertNodes(DecisionTreeNode parent, DecisionTree tree) {
-		org.drugis.addis.entities.data.Node node = convertNode(parent);
+	private static org.drugis.addis.entities.data.TypeNode convertTypeNodeRecursive(DecisionTreeNode parent, DecisionTree tree) {
+		org.drugis.addis.entities.data.TypeNode node = new org.drugis.addis.entities.data.TypeNode();
+		List<org.drugis.addis.entities.data.TypeEdge> edges = node.getTypeEdge();
 		List<DecisionTreeEdge> outEdges = new ArrayList<DecisionTreeEdge>(tree.getOutEdges(parent));
 		Collections.sort(outEdges, new DecisionTreeEdgeComparator());
 		for(DecisionTreeEdge e : outEdges) { 
-			node.getEdge().add(convertEdge(tree, e));
+			edges.add(convertTypeEdge(tree, e));
 		}
 		return node;
 	}
 
-	private static org.drugis.addis.entities.data.Edge convertEdge(DecisionTree tree, DecisionTreeEdge edge) {
-		if(edge instanceof RangeEdge) { 
-			RangeEdge rangeEdge = (RangeEdge) edge;
-			org.drugis.addis.entities.data.RangeEdge e = new org.drugis.addis.entities.data.RangeEdge();
-			e.setRangeLowerBound(rangeEdge.getLowerBound());
-			e.setIsRangeLowerBoundOpen(rangeEdge.isLowerBoundOpen());
-			e.setRangeUpperBound(rangeEdge.getUpperBound());
-			e.setIsRangeUpperBoundOpen(rangeEdge.isUpperBoundOpen());
-			e.setNode(convertNodes(tree.getEdgeTarget(edge), tree));
-			return e; 
-		} else if (edge instanceof TypeEdge) { 
-			TypeEdge typeEdge = (TypeEdge) edge;
-			org.drugis.addis.entities.data.TypeEdge e = new org.drugis.addis.entities.data.TypeEdge();
-			e.setBeanClass(s_beanClasses.getKey(typeEdge.getType()));
-			e.setNode(convertNodes(tree.getEdgeTarget(edge), tree));
-			return e;
-		}
-		throw new IllegalArgumentException("Cannot convert " + edge + " to XML, its type " + edge.getClass() + " is incompatible");
+	private static org.drugis.addis.entities.data.TypeEdge convertTypeEdge(DecisionTree tree, DecisionTreeEdge edge) {
+		TypeEdge typeEdge = (TypeEdge) edge;
+		org.drugis.addis.entities.data.TypeEdge e = new org.drugis.addis.entities.data.TypeEdge();
+		e.setMatchType(org.drugis.addis.entities.data.DoseType.fromValue(typeEdge.getType().getSimpleName()));
+		convertEdgeTarget(tree, edge, e);
+		return e;
 	}
 
-	private static org.drugis.addis.entities.data.Node convertNode(DecisionTreeNode node) {
-		if(node instanceof ChoiceNode) {
-			ChoiceNode choiceNode = (ChoiceNode) node; 
-			org.drugis.addis.entities.data.ChoiceNode n = new org.drugis.addis.entities.data.ChoiceNode();
-			n.setBeanClass(s_beanClasses.getKey(choiceNode.getBeanClass()));
-			n.setPropertyName(choiceNode.getPropertyName());
-			return n; 
-		} else if (node instanceof LeafNode) {
-			LeafNode leafNode = (LeafNode) node; 
-			org.drugis.addis.entities.data.LeafNode n = new org.drugis.addis.entities.data.LeafNode();
-			if(leafNode.getCategory() != null) { 
-				n.setCategory(JAXBConvertor.nameReference(leafNode.getName()));
-			}
-			return n;
+	private static org.drugis.addis.entities.data.ChoiceNode convertChoiceNodeRecursive(ChoiceNode parent, DecisionTree tree) {
+		org.drugis.addis.entities.data.ChoiceNode node = convertChoiceNode(parent);
+		List<org.drugis.addis.entities.data.RangeEdge> edges = node.getRangeEdge();
+		List<DecisionTreeEdge> outEdges = new ArrayList<DecisionTreeEdge>(tree.getOutEdges(parent));
+		Collections.sort(outEdges, new DecisionTreeEdgeComparator());
+		for(DecisionTreeEdge e : outEdges) { 
+			edges.add(convertRangeEdge(tree, e));
 		}
-		throw new IllegalArgumentException("Cannot convert " + node + " to XML, its type " + node.getClass() + " is incompatible");
+		return node;
+	}
+
+	private static org.drugis.addis.entities.data.RangeEdge convertRangeEdge(DecisionTree tree, DecisionTreeEdge edge) {
+		RangeEdge rangeEdge = (RangeEdge) edge;
+		org.drugis.addis.entities.data.RangeEdge e = new org.drugis.addis.entities.data.RangeEdge();
+		e.setRangeLowerBound(rangeEdge.getLowerBound());
+		e.setIsRangeLowerBoundOpen(rangeEdge.isLowerBoundOpen());
+		e.setRangeUpperBound(rangeEdge.getUpperBound());
+		e.setIsRangeUpperBoundOpen(rangeEdge.isUpperBoundOpen());
+		convertEdgeTarget(tree, edge, e);
+		return e; 
+	}
+
+	private static void convertEdgeTarget(DecisionTree tree, DecisionTreeEdge edge,
+			org.drugis.addis.entities.data.Edge e) {
+		if (tree.getEdgeTarget(edge) instanceof LeafNode) {
+			e.setLeafNode(convertLeafNode((LeafNode) tree.getEdgeTarget(edge)));
+		} else {
+			e.setChoiceNode(convertChoiceNodeRecursive((ChoiceNode) tree.getEdgeTarget(edge), tree));
+		}
+	}
+
+	private static org.drugis.addis.entities.data.LeafNode convertLeafNode(LeafNode leafNode) {
+		org.drugis.addis.entities.data.LeafNode n = new org.drugis.addis.entities.data.LeafNode();
+		if(leafNode.getCategory() != null) { 
+			n.setCategory(JAXBConvertor.nameReference(leafNode.getName()));
+		}
+		return n;
+	}
+
+	private static org.drugis.addis.entities.data.ChoiceNode convertChoiceNode(ChoiceNode choiceNode) {
+		org.drugis.addis.entities.data.ChoiceNode n = new org.drugis.addis.entities.data.ChoiceNode();
+		n.setObjectType(org.drugis.addis.entities.data.DoseType.fromValue(choiceNode.getBeanClass().getSimpleName()));
+		n.setProperty(choiceNode.getPropertyName());
+		return n;
 	}
 }

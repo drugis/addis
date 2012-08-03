@@ -641,7 +641,7 @@
 	
 	<xs:complexType name="DecisionTree">
 		<xs:sequence maxOccurs="1" minOccurs="1">
-			<xs:element type="ChoiceNode" name="rootNode"></xs:element>
+			<xs:element type="TypeNode" name="rootNode"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -650,16 +650,16 @@
 	</xs:complexType>
 	
 	<xs:complexType name="Edge" abstract="true">
-		<xs:sequence minOccurs="1" maxOccurs="1">
-			<xs:element name="node" type="Node"></xs:element>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"></xs:attribute>
+		<xs:choice>
+			<xs:element name="choiceNode" type="ChoiceNode"></xs:element>
+			<xs:element name="leafNode" type="LeafNode"></xs:element>
+		</xs:choice>
 	</xs:complexType>
 	
 	<xs:complexType name="TypeEdge">
 		<xs:complexContent>
 			<xs:extension base="Edge">
-				<xs:attribute name="beanClass" type="xs:string"></xs:attribute>
+				<xs:attribute name="matchType" type="DoseType"></xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -675,29 +675,32 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="Node" abstract="true">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="edge" type="Edge"/>
+	<xs:complexType name="TypeNode">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="typeEdge" type="TypeEdge"/>
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="ChoiceNode">
-		<xs:complexContent >
-			<xs:extension base="Node">
-				<xs:attribute name="beanClass" type="xs:string" use="required"/>
-				<xs:attribute name="propertyName" type="xs:string" use="required"/>
-			</xs:extension>
-		</xs:complexContent>
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="rangeEdge" type="RangeEdge"/>
+		</xs:sequence>
+		<xs:attribute name="objectType" type="DoseType" use="required"/>
+		<xs:attribute name="property" type="xs:string" use="required"/>
 	</xs:complexType>
 	
+	<xs:simpleType name="DoseType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UnknownDose"/>
+			<xs:enumeration value="FixedDose"/>
+			<xs:enumeration value="FlexibleDose"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:complexType name="LeafNode">
-		<xs:complexContent>
-			<xs:extension base="Node">
-				<xs:sequence minOccurs="0" maxOccurs="1">
-					<xs:element name="category" type="NameReference"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
+		<xs:sequence minOccurs="0" maxOccurs="1">
+			<xs:element name="category" type="NameReference"/>
+		</xs:sequence>
 	</xs:complexType>
 	
 	
