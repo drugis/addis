@@ -49,7 +49,6 @@ import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentT;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -166,17 +165,8 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof StudyBenefitRiskAnalysis)) {
-			return false;
-		}
-		StudyBenefitRiskAnalysis o = (StudyBenefitRiskAnalysis) other;
-		return EqualsUtil.equal(getName(), o.getName());
-	}
-	
-	@Override
 	public boolean deepEquals(Entity other) {
-		if (!equals(other)) {
+		if (!equals(other) || !(other instanceof StudyBenefitRiskAnalysis)) {
 			return false;
 		}
 		StudyBenefitRiskAnalysis o = (StudyBenefitRiskAnalysis) other;

@@ -51,7 +51,7 @@ public class BRRelativeMeasurementTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_brAnalysis.getDrugs().size(), d_pm.getColumnCount());
+		assertEquals(d_brAnalysis.getAlternatives().size(), d_pm.getColumnCount());
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class BRRelativeMeasurementTableModelTest {
 	}
 
 	private List<TreatmentDefinition> getNonBaselines() {
-		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_brAnalysis.getDrugs());
+		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_brAnalysis.getAlternatives());
 		drugs.remove(d_brAnalysis.getBaseline());
 		return drugs;
 	}

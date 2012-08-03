@@ -99,7 +99,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 
 	private Indication d_indication;
 	private List<MetaAnalysis> d_metaAnalyses;
-	private ObservableList<TreatmentDefinition> d_drugs;
+	private ObservableList<TreatmentDefinition> d_alternatives;
 	private TreatmentDefinition d_baseline;
 	private Map<OutcomeMeasure, MCMCModelWrapper> d_baselineModelMap;
 	private AnalysisType d_analysisType;
@@ -107,28 +107,28 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	private Map<MetaAnalysis, TransformedMultivariateNormalSummary> d_relativeEffects =
 		new HashMap<MetaAnalysis, TransformedMultivariateNormalSummary>();
 	
-	public static String PROPERTY_DRUGS = "drugs";
+	public static String PROPERTY_ALTERNATIVES = "alternatives";
 	public static String PROPERTY_BASELINE = "baseline";
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 
 	
 	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
-			TreatmentDefinition baseline, List<TreatmentDefinition> drugs, AnalysisType analysisType) {
-		this(name, indication, metaAnalysis, baseline, drugs, analysisType, null); 
+			TreatmentDefinition baseline, List<TreatmentDefinition> alternatives, AnalysisType analysisType) {
+		this(name, indication, metaAnalysis, baseline, alternatives, analysisType, null); 
 	}
 
 	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
-			TreatmentDefinition baseline, List<TreatmentDefinition> drugs, AnalysisType analysisType, DecisionContext context) {
+			TreatmentDefinition baseline, List<TreatmentDefinition> alternatives, AnalysisType analysisType, DecisionContext context) {
 		super(name);
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
-		d_drugs = new SortedSetModel<TreatmentDefinition>(drugs);
+		d_alternatives = new SortedSetModel<TreatmentDefinition>(alternatives);
 		d_baseline = baseline;
-		d_drugs.add(baseline);
+		d_alternatives.add(baseline);
 
 		d_baselineModelMap = new HashMap<OutcomeMeasure, MCMCModelWrapper>();
 		d_analysisType = analysisType;
-		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_drugs.size() != 2) ) {
+		if(d_analysisType == AnalysisType.LyndOBrien && (d_metaAnalyses.size() != 2 || d_alternatives.size() != 2) ) {
 			throw new IllegalArgumentException("Attempt to create Lynd & O'Brien analysis with not exactly 2 criteria and 2 alternatives");
 		}
 		d_decisionContext = context;
@@ -204,48 +204,30 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	}
 	
 	public ObservableList<TreatmentDefinition> getAlternatives() {
-		return getDrugs();
-	}
-
-	public ObservableList<TreatmentDefinition> getDrugs() {
-		return d_drugs;
+		return d_alternatives;
 	}
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		HashSet<Entity> dependencies = new HashSet<Entity>();
 		dependencies.add(d_indication);
-		for (Category category : EntityUtil.flatten(d_drugs)) {
+		for (Category category : EntityUtil.flatten(d_alternatives)) {
 			dependencies.addAll(category.getDependencies());
 		}
 		EntityUtil.addRecursiveDependencies(dependencies, d_metaAnalyses);
 		return dependencies;
 	}
-
-	@Deprecated
-	void setName(String name) {
-		d_name = name;
-	}
-
-	@Override
-	public boolean equals(Object other){
-		if (other == null)
-			return false;
-		if (!(other instanceof MetaBenefitRiskAnalysis))
-			return false;
-		return this.getName().equals( ((BenefitRiskAnalysis<?>)other).getName() );
-	}
 	
 	@Override
 	public boolean deepEquals(Entity other) {
-		if (!equals(other)) {
+		if (!equals(other) || !(other instanceof MetaBenefitRiskAnalysis)) {
 			return false;
 		}
 		MetaBenefitRiskAnalysis o = (MetaBenefitRiskAnalysis) other;
 		return EntityUtil.deepEqual(getBaseline(), o.getBaseline()) &&
 			EntityUtil.deepEqual(getIndication(), o.getIndication()) &&
 			EntityUtil.deepEqual(getMetaAnalyses(), o.getMetaAnalyses()) &&
-			EntityUtil.deepEqual(getDrugs(), o.getDrugs()) &&
+			EntityUtil.deepEqual(getAlternatives(), o.getAlternatives()) &&
 			EntityUtil.deepEqual(getDecisionContext(), o.getDecisionContext());
 	}
 
@@ -393,7 +375,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	}
 
 	public List<TreatmentDefinition> getNonBaselineAlternatives() {
-		List<TreatmentDefinition> alternatives = new ArrayList<TreatmentDefinition>(getDrugs());
+		List<TreatmentDefinition> alternatives = new ArrayList<TreatmentDefinition>(getAlternatives());
 		alternatives.remove(getBaseline());
 		return alternatives;
 	}

@@ -1239,7 +1239,7 @@ public class JAXBConvertor {
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
 		AlternativeDrugSets alternatives = new AlternativeDrugSets();
-		for(TreatmentDefinition d : br.getDrugs()) {
+		for(TreatmentDefinition d : br.getAlternatives()) {
 			alternatives.getAlternative().add(convertAnalysisTreatmentCategorySet(d));
 		}
 		newBr.setAlternatives(alternatives);

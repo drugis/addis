@@ -72,4 +72,13 @@ public abstract class BenefitRiskAnalysis<Alternative> extends AbstractNamedEnti
 	public abstract MeasurementSource<Alternative> getMeasurementSource();
 	
 	public abstract DecisionContext getDecisionContext();
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof BenefitRiskAnalysis) {
+			BenefitRiskAnalysis<?> other = (BenefitRiskAnalysis<?>) obj;
+			return getName().equals(other.getName());
+		}
+		return false;
+	}
 }
