@@ -146,4 +146,5 @@ public class TreatmentDefinitionTest {
 		}));
 		assertTrue(d_single.compareTo(two2) < 0); // {Escitalopram} < {Escitalopram, Fluoxetine}
 	}
+	
 }

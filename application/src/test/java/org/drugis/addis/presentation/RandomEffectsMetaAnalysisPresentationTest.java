@@ -48,7 +48,7 @@ import org.junit.Test;
 public class RandomEffectsMetaAnalysisPresentationTest {
 	@Test
 	public void testGetAnalysisTypeRate() {
-		RandomEffectsMetaAnalysis meta = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -58,7 +58,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	
 	@Test
 	public void testGetAnalysisTypeContinuous() {
-		RandomEffectsMetaAnalysis meta = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -68,7 +68,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	
 	@Test
 	public void testGetIncludedStudies() {
-		RandomEffectsMetaAnalysis meta = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -81,7 +81,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	
 	@Test
 	public void testGetForestPlotPresentation() {
-		RandomEffectsMetaAnalysis meta = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);

@@ -77,7 +77,7 @@ public class DomainImplTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine())); 
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine())); 
 		d_domain.getMetaAnalyses().add(ma);
 		
 		Set<Entity> deps = d_domain.getDependents(ExampleData.buildDrugFluoxetine());

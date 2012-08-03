@@ -109,7 +109,7 @@ public class ForestPlotPresentationTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(d_s1);
 		studies.add(d_s2);
-		RandomEffectsMetaAnalysis analysis = ExampleData.createRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
+		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
 		d_pm = new ForestPlotPresentation(studies, d_endpoint, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject), BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()), analysis);
 	}
@@ -185,7 +185,7 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s1);
 		studies.add(d_s2);
 		
-		RandomEffectsMetaAnalysis analysis = ExampleData.createRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
+		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
 				TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject),
 				BasicMeanDifference.class, new PresentationModelFactory(new DomainImpl()), analysis);

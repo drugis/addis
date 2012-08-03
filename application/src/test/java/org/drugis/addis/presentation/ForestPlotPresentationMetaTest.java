@@ -48,7 +48,7 @@ public class ForestPlotPresentationMetaTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		RandomEffectsMetaAnalysis analysis = ExampleData.createRandomEffectsMetaAnalysis("TestMetaAnalysis", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("TestMetaAnalysis", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_pm = new ForestPlotPresentation(analysis, BasicOddsRatio.class, new PresentationModelFactory(new DomainImpl()));
 	}
 	

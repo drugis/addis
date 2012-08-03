@@ -11,8 +11,12 @@ import java.util.Set;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.entities.UnknownDose;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,4 +123,41 @@ public class CategoryTest {
 
 	}
 	
+	@Test 
+	public void testMatch() {
+		UnknownDose unknownDose = new UnknownDose();
+		FixedDose fixedDose20 = new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose fixedDose25 = new FixedDose(25.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FlexibleDose flexDose20 = new FlexibleDose(0.0, 20.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FlexibleDose flexDose25 = new FlexibleDose(0.0, 25.0, DoseUnit.MILLIGRAMS_A_DAY);
+		
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug sertr = ExampleData.buildDrugSertraline();
+		
+		TreatmentCategorization catz1 = ExampleData.buildCategorizationFixedDose(fluox);
+		Category fixedCat = catz1.getCategories().get(0);
+		assertTrue(fixedCat.match(fixedDose20));
+		assertFalse(fixedCat.match(unknownDose));
+		assertFalse(fixedCat.match(flexDose20));
+		
+		TreatmentCategorization catz2 = ExampleData.buildCategorizationKnownDose(fluox);
+		Category knownCat = catz2.getCategories().get(0);
+		assertTrue(knownCat.match(fixedDose20));
+		assertFalse(knownCat.match(unknownDose));
+		assertTrue(knownCat.match(flexDose20));
+		
+		TreatmentCategorization catz3 = ExampleData.buildCategorizationUpto20mg(fluox);
+		Category upto20 = catz3.getCategories().get(0);
+		assertTrue(upto20.match(fixedDose20));
+		assertFalse(upto20.match(fixedDose25));
+		assertFalse(upto20.match(unknownDose));
+		assertTrue(upto20.match(flexDose20));
+		assertFalse(upto20.match(flexDose25));
+		
+		assertTrue(fixedCat.match(new DrugTreatment(fluox, fixedDose20)));
+		assertFalse(fixedCat.match(new DrugTreatment(fluox, flexDose20)));
+		assertTrue(upto20.match(new DrugTreatment(fluox, flexDose20)));
+		assertFalse(upto20.match(new DrugTreatment(fluox, fixedDose25)));
+		assertFalse(fixedCat.match(new DrugTreatment(sertr, fixedDose20)));
+	}
 }

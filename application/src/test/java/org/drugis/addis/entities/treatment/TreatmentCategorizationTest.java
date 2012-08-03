@@ -115,17 +115,17 @@ public class TreatmentCategorizationTest {
 		tree.addChild(new RangeEdge(0.0, false, Double.POSITIVE_INFINITY, false), choice, child);
 		d_treatment.splitRange(choice, 20.0, false);
 
-		assertNull(tree.getCategory(new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
-		assertEquals(child, tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
-		assertEquals(child, tree.getCategory(new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertNull(tree.decide(new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
+		assertEquals(child, tree.decide(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertEquals(child, tree.decide(new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY)));
 
 		d_treatment.splitRange(choice, 10.0, false);
-		assertEquals(child, tree.getCategory(new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY)));
-		assertNull(tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
+		assertEquals(child, tree.decide(new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertNull(tree.decide(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
 
 		final DecisionTreeNode medium = new LeafNode(new Category(d_treatment, "Med Dose"));
 		tree.replaceChild(tree.findMatchingEdge(choice, 18.0), medium);
-		assertEquals(medium, tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertEquals(medium, tree.decide(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
 	}
 
 	@Test

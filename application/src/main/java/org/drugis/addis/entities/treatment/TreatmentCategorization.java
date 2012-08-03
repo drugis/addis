@@ -157,8 +157,8 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 		return d_categories;
 	}
 
-	public DecisionTreeNode getCategory(final AbstractDose dose) {
-		return d_decisionTree.getCategory(dose);
+	public Category getCategory(final AbstractDose dose) {
+		return d_decisionTree.decide(dose).getCategory();
 	}
 
 	@Override

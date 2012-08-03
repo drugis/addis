@@ -87,7 +87,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		d_studyList.add(d_fava);
 		d_studyList.add(d_newhouse);
 		d_studyList.add(d_sechter);
-		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		d_studyList.add(newStudy);
-		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -136,7 +136,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		DecisionTree tree = catz.getDecisionTree();
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(fluoxCat));
 		Category sertrCat = Category.createTrivial(d_sertr);
-		List<StudyArmsEntry> entries = ExampleData.createStudyArmEntries(d_studyList,  TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		List<StudyArmsEntry> entries = ExampleData.buildStudyArmEntries(d_studyList,  TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		
 		// The following should *not* throw an IllegalArgumentException
 		new RandomEffectsMetaAnalysis("meta", d_rateEndpoint,
@@ -222,7 +222,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		studies.add(s1);
 		studies.add(s2);
 		
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", d_contEndpoint, studies, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_contEndpoint, studies, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(BasicMeanDifference.class);
 		assertEquals(2.5, relativeEffect.getConfidenceInterval().getPointEstimate(), 0.01);
 	}
@@ -245,7 +245,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118);
 		d_studyList.add(zeroRate);
-		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicOddsRatio.class, false).isDefined());
 		ADDISTestUtil.assertRelativeEffectListEquals(expected, actual);
