@@ -15,11 +15,50 @@
 	 
 	<xsl:template match="addis-data">
 		<xsl:copy>
-			<xsl:apply-templates />
-			<xsl:if test="not(treatmentCategorizations)">
-				<xsl:element name="treatmentCategorizations" />
-			</xsl:if>
+			<xsl:apply-templates select="units|indications|drugs"/>
+			<xsl:element name="treatmentCategorizations" />
+			<xsl:apply-templates select="endpoints|adverseEvents|populationCharacteristics|studies|metaAnalyses|benefitRiskAnalyses"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="metaAnalyses/*/alternative">
+		<xsl:copy>
+			<treatmentDefinition>
+				<xsl:for-each select="drugs/*">
+					<trivialCategory>
+						<xsl:attribute name="drug">
+							<xsl:value-of select="@name"></xsl:value-of>
+						</xsl:attribute>
+					</trivialCategory>
+				</xsl:for-each>
+			</treatmentDefinition>
+			<xsl:apply-templates select="arms"/>
 		</xsl:copy>
 	</xsl:template>
 
+	<xsl:template match="consistencyResults//alternative|inconsistencyResults//alternative|nodeSplitResults//alternative|metaBenefitRiskAnalysis/alternatives/alternative">
+		<treatmentDefinition>
+			<xsl:for-each select="*">
+				<trivialCategory>
+					<xsl:attribute name="drug">
+						<xsl:value-of select="@name"></xsl:value-of>
+					</xsl:attribute>
+				</trivialCategory>
+			</xsl:for-each>
+		</treatmentDefinition>
+	</xsl:template>
+	
+	<xsl:template match="metaBenefitRiskAnalysis/baseline">
+		<xsl:copy>
+			<treatmentDefinition>
+				<xsl:for-each select="*">
+					<trivialCategory>
+						<xsl:attribute name="drug">
+							<xsl:value-of select="@name"></xsl:value-of>
+						</xsl:attribute>
+					</trivialCategory>
+				</xsl:for-each>
+			</treatmentDefinition>
+		</xsl:copy>
+	</xsl:template>
 </xsl:stylesheet>
