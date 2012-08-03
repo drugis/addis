@@ -26,10 +26,10 @@
 
 package org.drugis.addis.entities.treatment;
 
+import static org.drugis.common.JUnitUtil.assertNotEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.drugis.common.JUnitUtil.assertNotEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +37,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -147,4 +151,44 @@ public class TreatmentDefinitionTest {
 		assertTrue(d_single.compareTo(two2) < 0); // {Escitalopram} < {Escitalopram, Fluoxetine}
 	}
 	
+	@Test
+	public void testMatch() { 
+		TreatmentActivity act1 = new TreatmentActivity();
+		act1.addTreatment(ExampleData.buildDrugEscitalopram(), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		
+		TreatmentActivity act2 = new TreatmentActivity();
+		act2.addTreatment(ExampleData.buildDrugViagra(), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		assertTrue(d_single.match(act1));
+		assertFalse(d_single.match(act2));
+		
+		TreatmentActivity act3 = new TreatmentActivity();		
+		act3.addTreatment(ExampleData.buildDrugViagra(), new FlexibleDose(3.0, 7.0, DoseUnit.MILLIGRAMS_A_DAY));
+		FixedDose fixed1 = new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY);
+		act3.addTreatment(ExampleData.buildDrugCandesartan(), fixed1);
+		
+		TreatmentActivity act4 = new TreatmentActivity();
+		act4.addTreatment(ExampleData.buildDrugCitalopram(), new FlexibleDose(1.0, 12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		act4.addTreatment(ExampleData.buildDrugEscitalopram(), new FlexibleDose(3.0, 7.0, DoseUnit.MILLIGRAMS_A_DAY));
+		
+		assertFalse(d_multi.match(act1));
+		assertFalse(d_multi.match(act2));	
+		assertTrue(d_multi.match(act3));
+		assertFalse(d_multi.match(act4));	
+		assertFalse(d_single.match(act4));	
+
+		TreatmentCategorization fixedCats = ExampleData.buildCategorizationFixedDose(ExampleData.buildDrugCitalopram());
+		d_single.getContents().add(fixedCats.getCategories().get(0));
+		assertFalse(d_single.match(act4));	
+		
+		d_multi.getContents().clear();
+		TreatmentCategorization candUpto20mg = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugCandesartan());
+		TreatmentCategorization fluoxto20mg = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugViagra());
+
+		d_multi.getContents().add(candUpto20mg.getCategories().get(0));
+		d_multi.getContents().add(fluoxto20mg.getCategories().get(0));
+		
+		assertTrue(d_multi.match(act3));
+		fixed1.setQuantity(26.0);
+		assertFalse(d_multi.match(act3));
+	}
 }

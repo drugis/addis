@@ -29,17 +29,23 @@ package org.drugis.addis.entities.treatment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AbstractEntity;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.util.EntityUtil;
 
 public class TreatmentDefinition extends AbstractEntity implements Comparable<TreatmentDefinition> {
@@ -131,5 +137,36 @@ public class TreatmentDefinition extends AbstractEntity implements Comparable<Tr
 	@Override
 	public String toString() {
 		return "TreatmentCategorySet" + d_contents;
+	}
+
+	/**
+	 * Determine whether the given TreatmentActivity matches this TreatmentDefinition.
+	 * The {@link TreatmentActivity} must contain exactly the set of drugs for which we have categories.
+	 * Moreover, each {@link DrugTreatment} must be accepted by the corresponding {@link Category}.
+	 */
+	public boolean match(TreatmentActivity act) {
+		Map<Drug, Category> toMatch = new HashMap<Drug, Category>();
+		for (Category cat : getContents()) {
+			toMatch.put(cat.getDrug(), cat);
+		}
+		
+		for (DrugTreatment t : act.getTreatments()) {
+			Category cat = toMatch.get(t.getDrug());
+			if (cat == null || !cat.match(t)) {
+				return false;
+			}
+			toMatch.remove(t.getDrug());
+		}
+		
+		return toMatch.isEmpty();
+	}
+	
+	/**
+	 * Determine whether the {@link TreatmentActivity} in the default epoch of
+	 * the given ({@link Study}, {@link Arm}) match this TreatmentDefinition.
+	 * @see {@link #match(TreatmentActivity)}
+	 */
+	public boolean match(Study study, Arm arm) {
+		return match(study.getTreatment(arm));
 	}
 }
