@@ -15,12 +15,12 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NetworkBuilderFactoryTest {
-	private Transformer<TreatmentCategorySet, String> d_transformer;
+	private Transformer<TreatmentDefinition, String> d_transformer;
 	
 	@Before
 	public void setUp() {
@@ -29,21 +29,21 @@ public class NetworkBuilderFactoryTest {
 
 	@Test
 	public void testTransformCombinationTreatment() {
-		TreatmentCategorySet treatment = TreatmentCategorySet.createTrivial(
+		TreatmentDefinition treatment = TreatmentDefinition.createTrivial(
 				Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
 		assertEquals("Candesartan_Fluoxetine", d_transformer.transform(treatment));
 	}
 	
 	@Test
 	public void testTransformTreatmentWithIllegalCharacters() {
-		TreatmentCategorySet treatment = TreatmentCategorySet.createTrivial(Arrays.asList(new Drug("My Drug!", "3"), ExampleData.buildDrugFluoxetine()));
+		TreatmentDefinition treatment = TreatmentDefinition.createTrivial(Arrays.asList(new Drug("My Drug!", "3"), ExampleData.buildDrugFluoxetine()));
 		assertEquals("Fluoxetine_MyDrug", d_transformer.transform(treatment));
 	}
 	
 	@Test
 	public void testTransformTreatmentDuplicateCleanName() {
-		TreatmentCategorySet treatment1 = TreatmentCategorySet.createTrivial(new Drug("My Drug!", "3"));
-		TreatmentCategorySet treatment2 = TreatmentCategorySet.createTrivial(new Drug("My!Drug", "4"));
+		TreatmentDefinition treatment1 = TreatmentDefinition.createTrivial(new Drug("My Drug!", "3"));
+		TreatmentDefinition treatment2 = TreatmentDefinition.createTrivial(new Drug("My!Drug", "4"));
 		assertEquals("MyDrug", d_transformer.transform(treatment1));
 		assertEquals("MyDrug2", d_transformer.transform(treatment2));
 	}
@@ -52,7 +52,7 @@ public class NetworkBuilderFactoryTest {
 	public void testTransformWithCategory() { 
 		Category cat = Category.createTrivial(new Drug("My Drug!", "3"));
 		cat.setName("AA");
-		TreatmentCategorySet treatment1 = new TreatmentCategorySet(cat);
+		TreatmentDefinition treatment1 = new TreatmentDefinition(cat);
 		assertEquals("MyDrugAA", d_transformer.transform(treatment1));
 	}
 
@@ -62,7 +62,7 @@ public class NetworkBuilderFactoryTest {
 		Category cat2 = Category.createTrivial(new Drug("My Poison!", "2"));
 		cat1.setName("SomeCat!!!");
 		cat2.setName("Garfield Poison");
-		TreatmentCategorySet treatment1 = new TreatmentCategorySet(Arrays.asList(cat1, cat2));
+		TreatmentDefinition treatment1 = new TreatmentDefinition(Arrays.asList(cat1, cat2));
 		assertEquals("MyDrugSomeCat_MyPoisonGarfieldPoison", d_transformer.transform(treatment1));
 	}
 	
@@ -75,15 +75,15 @@ public class NetworkBuilderFactoryTest {
 		study.getStudyActivities().add(activity);
 		study.setStudyActivityAt(study.getArms().get(0), study.findTreatmentEpoch(), activity);
 		
-		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
-		Map<TreatmentCategorySet, Arm> drugArmMap = new HashMap<TreatmentCategorySet, Arm>();
+		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
+		Map<TreatmentDefinition, Arm> drugArmMap = new HashMap<TreatmentDefinition, Arm>();
 		for (Arm a : study.getArms()) {
 			drugArmMap.put(study.getDrugs(a), a);
 		}
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
 		
-		TreatmentCategorySet treatment = TreatmentCategorySet.createTrivial(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
+		TreatmentDefinition treatment = TreatmentDefinition.createTrivial(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()));
 		assertEquals("Candesartan_Fluoxetine", nma.getBuilder().getTreatmentMap().get(treatment).getId());
 		assertEquals("Candesartan + Fluoxetine", nma.getBuilder().getTreatmentMap().get(treatment).getDescription());
 	}

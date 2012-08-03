@@ -36,13 +36,13 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 
 public class MockMetaBenefitRiskAnalysis extends MetaBenefitRiskAnalysis {
 
 	public MockMetaBenefitRiskAnalysis(String id, Indication indication,
 			List<MetaAnalysis> metaAnalysisList,
-			TreatmentCategorySet baseline, List<TreatmentCategorySet> drugList) {
+			TreatmentDefinition baseline, List<TreatmentDefinition> drugList) {
 		super(id,indication,metaAnalysisList,baseline,drugList, AnalysisType.SMAA);
 	}
 

@@ -149,7 +149,7 @@ import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Treatment;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
@@ -1833,9 +1833,9 @@ public class JAXBConvertorTest {
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
 
-		List<TreatmentCategorySet> drugsEnt = new ArrayList<TreatmentCategorySet>(
+		List<TreatmentDefinition> drugsEnt = new ArrayList<TreatmentDefinition>(
 				ma1ent.getAlternatives());
-		TreatmentCategorySet baseline = drugsEnt.get(0);
+		TreatmentDefinition baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name,
 				ma1ent.getIndication(), metaList, baseline, drugsEnt,

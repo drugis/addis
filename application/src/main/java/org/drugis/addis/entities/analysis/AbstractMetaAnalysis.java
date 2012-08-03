@@ -43,20 +43,20 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
 
 public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnalysis> implements MetaAnalysis {
 	
-	private static class ArmMap extends HashMap<Study, Map<TreatmentCategorySet, Arm>> {
+	private static class ArmMap extends HashMap<Study, Map<TreatmentDefinition, Arm>> {
 		private static final long serialVersionUID = -8579169115557701584L;
 
 		public ArmMap() {
 			super();
 		}
 		
-		public ArmMap(Map<Study, Map<TreatmentCategorySet, Arm>> other) {
+		public ArmMap(Map<Study, Map<TreatmentDefinition, Arm>> other) {
 			super(other);
 		}
 	}
@@ -64,7 +64,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	protected OutcomeMeasure d_outcome;
 	protected Indication d_indication;
 	protected List<Study> d_studies;
-	protected List<TreatmentCategorySet> d_alternatives;
+	protected List<TreatmentDefinition> d_alternatives;
 	protected String d_name = "";
 	protected int d_totalSampleSize;
 	protected ArmMap d_armMap;
@@ -78,8 +78,8 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	
 	public AbstractMetaAnalysis(String type, String name,
 			Indication indication, OutcomeMeasure om,
-			List<Study> studies, List<TreatmentCategorySet> drugs,
-			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) 
+			List<Study> studies, List<TreatmentDefinition> drugs,
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) 
 	throws IllegalArgumentException {
 		super(name);
 		checkDataConsistency(studies, indication, om);
@@ -99,7 +99,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	
 	public AbstractMetaAnalysis(String type, String name,
 			Indication indication, OutcomeMeasure om,
-			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) { 
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) { 
 		this(type, name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
 	}
 
@@ -179,33 +179,33 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		return false;
 	}
 	
-	public List<TreatmentCategorySet> getAlternatives() {
-		return Collections.unmodifiableList(new ArrayList<TreatmentCategorySet>(d_alternatives));
+	public List<TreatmentDefinition> getAlternatives() {
+		return Collections.unmodifiableList(new ArrayList<TreatmentDefinition>(d_alternatives));
 	}
 	
-	public Arm getArm(Study s, TreatmentCategorySet d) {
+	public Arm getArm(Study s, TreatmentDefinition d) {
 		return d_armMap.get(s).get(d);
 	}
 	
 	public List<Arm> getArmList(){
 		List <Arm>armList = new ArrayList<Arm>();
 		for(Study s : d_armMap.keySet()){
-			for(TreatmentCategorySet d : d_armMap.get(s).keySet()){
+			for(TreatmentDefinition d : d_armMap.get(s).keySet()){
 				armList.add(d_armMap.get(s).get(d));
 			}
 		}
 		return armList;
 	}
 
-	private static List<TreatmentCategorySet> calculateDrugs(Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
-		SortedSet<TreatmentCategorySet> drugs = new TreeSet<TreatmentCategorySet>();
-		for (Map<TreatmentCategorySet, Arm> entry : armMap.values()) {
+	private static List<TreatmentDefinition> calculateDrugs(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+		SortedSet<TreatmentDefinition> drugs = new TreeSet<TreatmentDefinition>();
+		for (Map<TreatmentDefinition, Arm> entry : armMap.values()) {
 			drugs.addAll(entry.keySet());
 		}
-		return new ArrayList<TreatmentCategorySet>(drugs);
+		return new ArrayList<TreatmentDefinition>(drugs);
 	}
 
-	private static List<Study> calculateStudies(Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
+	private static List<Study> calculateStudies(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		ArrayList<Study> studies = new ArrayList<Study>(armMap.keySet());
 		Collections.sort(studies);
 		return studies;

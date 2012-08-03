@@ -42,30 +42,30 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.util.EntityUtil;
 
-public class TreatmentCategorySet extends AbstractEntity implements Comparable<TreatmentCategorySet> {
-	public static TreatmentCategorySet createTrivial(Collection<Drug> drugs) {
+public class TreatmentDefinition extends AbstractEntity implements Comparable<TreatmentDefinition> {
+	public static TreatmentDefinition createTrivial(Collection<Drug> drugs) {
 		Set<Category> categories = new HashSet<Category>();
 		for (Drug d : drugs) {
 			categories.add(Category.createTrivial(d));
 		}
-		return new TreatmentCategorySet(categories);
+		return new TreatmentDefinition(categories);
 	}
 
-	public static TreatmentCategorySet createTrivial(Drug drug) {
+	public static TreatmentDefinition createTrivial(Drug drug) {
 		return createTrivial(Collections.singleton(drug));
 	}
 
 	private SortedSet<Category> d_contents;
 	
-	public TreatmentCategorySet(Category category) {
+	public TreatmentDefinition(Category category) {
 		this(Collections.singleton(category));
 	}
 	
-	public TreatmentCategorySet(Collection<Category> contents) {
+	public TreatmentDefinition(Collection<Category> contents) {
 		d_contents = new TreeSet<Category>(contents);
 	}
 	
-	public TreatmentCategorySet() {
+	public TreatmentDefinition() {
 		this(Collections.<Category>emptySet());
 	}
 
@@ -88,10 +88,10 @@ public class TreatmentCategorySet extends AbstractEntity implements Comparable<T
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof TreatmentCategorySet)) {
+		if (o == null || !(o instanceof TreatmentDefinition)) {
 			return false;
 		}
-		TreatmentCategorySet other = (TreatmentCategorySet) o;
+		TreatmentDefinition other = (TreatmentDefinition) o;
 		return other.getContents().equals(getContents());
 	}
 	
@@ -100,7 +100,7 @@ public class TreatmentCategorySet extends AbstractEntity implements Comparable<T
 		if(!equals(other)) {
 			return false;
 		}
-		TreatmentCategorySet ds = (TreatmentCategorySet) other;
+		TreatmentDefinition ds = (TreatmentDefinition) other;
 		return EntityUtil.deepEqual(getContents(), ds.getContents());
 	}
 	
@@ -110,7 +110,7 @@ public class TreatmentCategorySet extends AbstractEntity implements Comparable<T
 	}
 
 	@Override
-	public int compareTo(TreatmentCategorySet o) {
+	public int compareTo(TreatmentDefinition o) {
 		Iterator<Category> i1 = getContents().iterator();
 		Iterator<Category> i2 = o.getContents().iterator();
 		while (i1.hasNext() && i2.hasNext()) {

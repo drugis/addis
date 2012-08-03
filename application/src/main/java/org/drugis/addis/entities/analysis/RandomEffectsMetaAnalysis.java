@@ -50,7 +50,7 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelative
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.SimpleMultivariateNormalSummary;
@@ -63,7 +63,7 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	private boolean d_isCorrected = false;
 
 	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
-			TreatmentCategorySet baseline, TreatmentCategorySet subject,
+			TreatmentDefinition baseline, TreatmentDefinition subject,
 			List<StudyArmsEntry> studyArms, boolean corr) {
 		super(ANALYSIS_TYPE, name, getIndication(studyArms), om,
 				getStudies(studyArms), Arrays.asList(baseline, subject),
@@ -80,10 +80,10 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		d_isCorrected = corr;
 	}
 	
-	private static Map<Study, Map<TreatmentCategorySet, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
-		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
+	private static Map<Study, Map<TreatmentDefinition, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
+		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (StudyArmsEntry sae : studyArms) {
-			Map<TreatmentCategorySet, Arm> alternativeMap = new HashMap<TreatmentCategorySet, Arm>();
+			Map<TreatmentDefinition, Arm> alternativeMap = new HashMap<TreatmentDefinition, Arm>();
 			alternativeMap.put(sae.getStudy().getDrugs(sae.getBase()), sae.getBase());
 			alternativeMap.put(sae.getStudy().getDrugs(sae.getSubject()), sae.getSubject());
 			armMap.put(sae.getStudy(), alternativeMap);
@@ -104,12 +104,12 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	}	
 	
 	@Override
-	public TreatmentCategorySet getFirstAlternative() {
+	public TreatmentDefinition getFirstAlternative() {
 		return d_alternatives.get(0);
 	}
 	
 	@Override
-	public TreatmentCategorySet getSecondAlternative() {
+	public TreatmentDefinition getSecondAlternative() {
 		return d_alternatives.get(1);
 	}
 	

@@ -56,7 +56,7 @@ import org.drugis.addis.entities.relativeeffect.GaussianBase;
 import org.drugis.addis.entities.relativeeffect.LogGaussian;
 import org.drugis.addis.entities.relativeeffect.LogitGaussian;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.addis.mcmcmodel.BaselineMeanDifferenceModel;
 import org.drugis.addis.mcmcmodel.BaselineOddsModel;
@@ -73,8 +73,8 @@ import org.drugis.mtc.summary.TransformedMultivariateNormalSummary;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCategorySet> {
-	private final class MetaMeasurementSource extends AbstractMeasurementSource<TreatmentCategorySet> {
+public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefinition> {
+	private final class MetaMeasurementSource extends AbstractMeasurementSource<TreatmentDefinition> {
 		public MetaMeasurementSource() {
 			PropertyChangeListener l = new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -99,8 +99,8 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 
 	private Indication d_indication;
 	private List<MetaAnalysis> d_metaAnalyses;
-	private ObservableList<TreatmentCategorySet> d_drugs;
-	private TreatmentCategorySet d_baseline;
+	private ObservableList<TreatmentDefinition> d_drugs;
+	private TreatmentDefinition d_baseline;
 	private Map<OutcomeMeasure, MCMCModelWrapper> d_baselineModelMap;
 	private AnalysisType d_analysisType;
 	private DecisionContext d_decisionContext;
@@ -113,16 +113,16 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 
 	
 	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
-			TreatmentCategorySet baseline, List<TreatmentCategorySet> drugs, AnalysisType analysisType) {
+			TreatmentDefinition baseline, List<TreatmentDefinition> drugs, AnalysisType analysisType) {
 		this(name, indication, metaAnalysis, baseline, drugs, analysisType, null); 
 	}
 
 	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
-			TreatmentCategorySet baseline, List<TreatmentCategorySet> drugs, AnalysisType analysisType, DecisionContext context) {
+			TreatmentDefinition baseline, List<TreatmentDefinition> drugs, AnalysisType analysisType, DecisionContext context) {
 		super(name);
 		d_indication = indication;
 		d_metaAnalyses = metaAnalysis;
-		d_drugs = new SortedSetModel<TreatmentCategorySet>(drugs);
+		d_drugs = new SortedSetModel<TreatmentDefinition>(drugs);
 		d_baseline = baseline;
 		d_drugs.add(baseline);
 
@@ -143,11 +143,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 	 * For the algorithm see docs/transform.pdf in the repository.
 	 */
 	private double[][] createTransform(MetaAnalysis ma) {
-		final List<TreatmentCategorySet> rowAlternatives = getNonBaselineAlternatives();
-		final List<TreatmentCategorySet> columnAlternatives = new ArrayList<TreatmentCategorySet>(ma.getAlternatives());
+		final List<TreatmentDefinition> rowAlternatives = getNonBaselineAlternatives();
+		final List<TreatmentDefinition> columnAlternatives = new ArrayList<TreatmentDefinition>(ma.getAlternatives());
 
-		final TreatmentCategorySet rowBaseline = d_baseline;
-		final TreatmentCategorySet columnBaseline = columnAlternatives.remove(0); // first drugSet in metaAnalysis is baseline by definition
+		final TreatmentDefinition rowBaseline = d_baseline;
+		final TreatmentDefinition columnBaseline = columnAlternatives.remove(0); // first drugSet in metaAnalysis is baseline by definition
 		
 		final int nRows = rowAlternatives.size();
 		final int nCols = columnAlternatives.size();
@@ -203,11 +203,11 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 		d_metaAnalyses = metaAnalysis;
 	}
 	
-	public ObservableList<TreatmentCategorySet> getAlternatives() {
+	public ObservableList<TreatmentDefinition> getAlternatives() {
 		return getDrugs();
 	}
 
-	public ObservableList<TreatmentCategorySet> getDrugs() {
+	public ObservableList<TreatmentDefinition> getDrugs() {
 		return d_drugs;
 	}
 
@@ -254,7 +254,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 		return getName();
 	}
 
-	public TreatmentCategorySet getBaseline() {
+	public TreatmentDefinition getBaseline() {
 		return d_baseline;
 	}
 
@@ -267,7 +267,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 		return null;
 	}
 	
-	public GaussianBase getRelativeEffectDistribution(OutcomeMeasure om, TreatmentCategorySet subject) {
+	public GaussianBase getRelativeEffectDistribution(OutcomeMeasure om, TreatmentDefinition subject) {
 		if (subject.equals(d_baseline)) {
 			return createDistribution(om, 0.0, 0.0); 
 		}
@@ -302,7 +302,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 	/**
 	 * Get the measurement to be used in the BenefitRisk simulation.
 	 */
-	public Distribution getMeasurement(OutcomeMeasure om, TreatmentCategorySet d) {
+	public Distribution getMeasurement(OutcomeMeasure om, TreatmentDefinition d) {
 		if (om.getVariableType() instanceof RateVariableType) {
 			GaussianBase logOdds = getAbsoluteEffectDistribution(d, om);
 			return logOdds == null ? null : new LogitGaussian(logOdds.getMu(), logOdds.getSigma());
@@ -355,7 +355,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 	/**
 	 * The absolute effect of d on om given the assumed odds of the baseline treatment. 
 	 */
-	private GaussianBase getAbsoluteEffectDistribution(TreatmentCategorySet d, OutcomeMeasure om) {
+	private GaussianBase getAbsoluteEffectDistribution(TreatmentDefinition d, OutcomeMeasure om) {
 		GaussianBase baseline = getBaselineDistribution(om);
 		GaussianBase relative = getRelativeEffectDistribution(om, d);
 		if (baseline == null || relative == null) return null;
@@ -392,13 +392,13 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentCatego
 		return summaryList;
 	}
 
-	public List<TreatmentCategorySet> getNonBaselineAlternatives() {
-		List<TreatmentCategorySet> alternatives = new ArrayList<TreatmentCategorySet>(getDrugs());
+	public List<TreatmentDefinition> getNonBaselineAlternatives() {
+		List<TreatmentDefinition> alternatives = new ArrayList<TreatmentDefinition>(getDrugs());
 		alternatives.remove(getBaseline());
 		return alternatives;
 	}
 
-	public MeasurementSource<TreatmentCategorySet> getMeasurementSource() {
+	public MeasurementSource<TreatmentDefinition> getMeasurementSource() {
 		return new MetaMeasurementSource();
 	}
 

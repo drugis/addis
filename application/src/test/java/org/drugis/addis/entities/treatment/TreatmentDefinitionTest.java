@@ -41,23 +41,23 @@ import org.drugis.addis.entities.Drug;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TreatmentCategorySetTest {
-	private TreatmentCategorySet d_empty;
-	private TreatmentCategorySet d_single;
-	private TreatmentCategorySet d_multi;
+public class TreatmentDefinitionTest {
+	private TreatmentDefinition d_empty;
+	private TreatmentDefinition d_single;
+	private TreatmentDefinition d_multi;
 	private List<Category> d_multiCategory;
 	private Category d_singleCategory;
 	
 	@Before
 	public void setUp() {
-		d_empty = new TreatmentCategorySet();
+		d_empty = new TreatmentDefinition();
 		d_singleCategory = Category.createTrivial(ExampleData.buildDrugEscitalopram());
-		d_single = new TreatmentCategorySet(d_singleCategory);
+		d_single = new TreatmentDefinition(d_singleCategory);
 		d_multiCategory = Arrays.asList(
 				Category.createTrivial(ExampleData.buildDrugCandesartan()),
 				Category.createTrivial(ExampleData.buildDrugViagra()),
 				Category.createTrivial(ExampleData.buildDrugViagra()));
-		d_multi = new TreatmentCategorySet(d_multiCategory);
+		d_multi = new TreatmentDefinition(d_multiCategory);
 	}
 
 	@Test
@@ -88,17 +88,17 @@ public class TreatmentCategorySetTest {
 			ExampleData.buildDrugFluoxetine(),
 			ExampleData.buildDrugViagra()
 		});
-		assertEquals("Fluoxetine + Paroxetine + Sertraline + Viagra", TreatmentCategorySet.createTrivial(more).getLabel());
+		assertEquals("Fluoxetine + Paroxetine + Sertraline + Viagra", TreatmentDefinition.createTrivial(more).getLabel());
 	}
 	
 	@Test
 	public void testEquals() {
-		assertEquals(new TreatmentCategorySet(), d_empty);
-		assertEquals(new TreatmentCategorySet().hashCode(), d_empty.hashCode());
-		assertEquals(new TreatmentCategorySet(d_singleCategory), d_single);
-		assertEquals(new TreatmentCategorySet(d_singleCategory).hashCode(), d_single.hashCode());
-		assertEquals(new TreatmentCategorySet(d_multiCategory), d_multi);
-		assertEquals(new TreatmentCategorySet(d_multiCategory).hashCode(), d_multi.hashCode());
+		assertEquals(new TreatmentDefinition(), d_empty);
+		assertEquals(new TreatmentDefinition().hashCode(), d_empty.hashCode());
+		assertEquals(new TreatmentDefinition(d_singleCategory), d_single);
+		assertEquals(new TreatmentDefinition(d_singleCategory).hashCode(), d_single.hashCode());
+		assertEquals(new TreatmentDefinition(d_multiCategory), d_multi);
+		assertEquals(new TreatmentDefinition(d_multiCategory).hashCode(), d_multi.hashCode());
 		
 		assertNotEquals(d_empty, d_single);
 		assertNotEquals(d_empty, d_multi);
@@ -116,13 +116,13 @@ public class TreatmentCategorySetTest {
 		assertFalse(d_empty.deepEquals(d_singleCategory));
 		
 		// identical contents
-		assertTrue(d_empty.deepEquals(new TreatmentCategorySet()));
-		assertTrue(d_single.deepEquals(new TreatmentCategorySet(d_singleCategory)));
-		assertTrue(d_multi.deepEquals(new TreatmentCategorySet(d_multiCategory)));
+		assertTrue(d_empty.deepEquals(new TreatmentDefinition()));
+		assertTrue(d_single.deepEquals(new TreatmentDefinition(d_singleCategory)));
+		assertTrue(d_multi.deepEquals(new TreatmentDefinition(d_multiCategory)));
 
 		// nearly identical contents
 		Drug drug = new Drug(d_singleCategory.getCategorization().getDrug().getName(), "ATCFORYOUMYFRIEND");
-		TreatmentCategorySet cat = TreatmentCategorySet.createTrivial(drug);
+		TreatmentDefinition cat = TreatmentDefinition.createTrivial(drug);
 		assertEquals(d_single, cat);
 		assertFalse(d_single.deepEquals(cat));
 	}
@@ -130,18 +130,18 @@ public class TreatmentCategorySetTest {
 	@Test
 	public void testCompareTo() {
 		assertEquals(0, d_empty.compareTo(d_empty));
-		assertEquals(0, d_empty.compareTo(new TreatmentCategorySet()));
-		assertEquals(0, d_single.compareTo(new TreatmentCategorySet(d_singleCategory)));
-		assertEquals(0, d_multi.compareTo(new TreatmentCategorySet(d_multiCategory)));
+		assertEquals(0, d_empty.compareTo(new TreatmentDefinition()));
+		assertEquals(0, d_single.compareTo(new TreatmentDefinition(d_singleCategory)));
+		assertEquals(0, d_multi.compareTo(new TreatmentDefinition(d_multiCategory)));
 		
 		assertTrue(d_empty.compareTo(d_single) < 0); // {} < {Escitalopram}
-		assertTrue(d_single.compareTo(TreatmentCategorySet.createTrivial(ExampleData.buildDrugCitalopram())) > 0); // {Escitalopram} > {Citalopram} 
+		assertTrue(d_single.compareTo(TreatmentDefinition.createTrivial(ExampleData.buildDrugCitalopram())) > 0); // {Escitalopram} > {Citalopram} 
 		assertEquals(d_empty.compareTo(d_single), -d_single.compareTo(d_empty));
-		TreatmentCategorySet two1 = new TreatmentCategorySet(Arrays.asList(new Category[] {
+		TreatmentDefinition two1 = new TreatmentDefinition(Arrays.asList(new Category[] {
 				d_singleCategory, Category.createTrivial(ExampleData.buildDrugCitalopram())
 		}));
 		assertTrue(d_single.compareTo(two1) > 0); // {Escitalopram} > {Citalopram, Escitalopram}
-		TreatmentCategorySet two2 = new TreatmentCategorySet(Arrays.asList(new Category[] {
+		TreatmentDefinition two2 = new TreatmentDefinition(Arrays.asList(new Category[] {
 				d_singleCategory, Category.createTrivial(ExampleData.buildDrugFluoxetine())
 		}));
 		assertTrue(d_single.compareTo(two2) < 0); // {Escitalopram} < {Escitalopram, Fluoxetine}

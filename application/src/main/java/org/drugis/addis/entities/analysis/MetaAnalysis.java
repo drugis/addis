@@ -33,7 +33,7 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TypeWithName;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 
 public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis>, TypeWithName {
@@ -50,7 +50,7 @@ public interface MetaAnalysis extends Entity, Comparable<MetaAnalysis>, TypeWith
 	public int getSampleSize();
 
 	public static final String PROPERTY_ALTERNATIVES = "alternatives";
-	public List<TreatmentCategorySet> getAlternatives();
+	public List<TreatmentDefinition> getAlternatives();
 	
 	public static final String PROPERTY_INCLUDED_STUDIES = "includedStudies";
 	public List<Study> getIncludedStudies();

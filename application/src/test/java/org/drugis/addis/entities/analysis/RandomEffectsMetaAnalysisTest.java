@@ -56,7 +56,7 @@ import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -87,7 +87,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		d_studyList.add(d_fava);
 		d_studyList.add(d_newhouse);
 		d_studyList.add(d_sechter);
-		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr));
+		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 	}
 	
 	@Test
@@ -97,8 +97,8 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		for (int i = 0; i < d_studyList.size(); ++i) {
 			StudyArmsEntry studyArmsEntry = entries.get(i);
 			assertEquals(d_studyList.get(i), studyArmsEntry.getStudy());
-			assertEquals(TreatmentCategorySet.createTrivial(d_fluox), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase()));
-			assertEquals(TreatmentCategorySet.createTrivial(d_sertr), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject()));
+			assertEquals(TreatmentDefinition.createTrivial(d_fluox), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase()));
+			assertEquals(TreatmentDefinition.createTrivial(d_sertr), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getBase()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getSubject()));
 		}
@@ -110,7 +110,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		d_studyList.add(newStudy);
-		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr));
+		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -136,12 +136,12 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		DecisionTree tree = catz.getDecisionTree();
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(fluoxCat));
 		Category sertrCat = Category.createTrivial(d_sertr);
-		List<StudyArmsEntry> entries = ExampleData.createStudyArmEntries(d_studyList,  TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr));
+		List<StudyArmsEntry> entries = ExampleData.createStudyArmEntries(d_studyList,  TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		
 		// The following should *not* throw an IllegalArgumentException
 		new RandomEffectsMetaAnalysis("meta", d_rateEndpoint,
-				new TreatmentCategorySet(fluoxCat),
-				new TreatmentCategorySet(sertrCat),
+				new TreatmentDefinition(fluoxCat),
+				new TreatmentDefinition(sertrCat),
 				entries, false);
 	}
 	
@@ -158,17 +158,17 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testGetFirstDrug() {
-		assertEquals(TreatmentCategorySet.createTrivial(d_fluox), d_rema.getFirstAlternative());
+		assertEquals(TreatmentDefinition.createTrivial(d_fluox), d_rema.getFirstAlternative());
 	}
 	
 	@Test
 	public void testGetSecondDrug() {
-		assertEquals(TreatmentCategorySet.createTrivial(d_sertr), d_rema.getSecondAlternative());
+		assertEquals(TreatmentDefinition.createTrivial(d_sertr), d_rema.getSecondAlternative());
 	}
 	
 	@Test
 	public void testIncludedDrugs() {
-		assertEquals(Arrays.asList(new TreatmentCategorySet [] {TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr)}), d_rema.getAlternatives());
+		assertEquals(Arrays.asList(new TreatmentDefinition [] {TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr)}), d_rema.getAlternatives());
 	}
 	
 	@Test
@@ -222,7 +222,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		studies.add(s1);
 		studies.add(s2);
 		
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", d_contEndpoint, studies, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr));
+		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", d_contEndpoint, studies, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(BasicMeanDifference.class);
 		assertEquals(2.5, relativeEffect.getConfidenceInterval().getPointEstimate(), 0.01);
 	}
@@ -245,9 +245,9 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118);
 		d_studyList.add(zeroRate);
-		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr));
+		d_rema = ExampleData.createRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
-		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicOddsRatio.class, false).isDefined());
+		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicOddsRatio.class, false).isDefined());
 		ADDISTestUtil.assertRelativeEffectListEquals(expected, actual);
 	}
 }

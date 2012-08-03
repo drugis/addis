@@ -47,7 +47,7 @@ import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.BinnedScale;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.LinearScale;
@@ -242,7 +242,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			return sba.getRelativeEffectDistribution(om, (Arm) getSubject());
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			return mba.getRelativeEffectDistribution(om, (TreatmentCategorySet) getSubject());
+			return mba.getRelativeEffectDistribution(om, (TreatmentDefinition) getSubject());
 		}
 		return null;
 	}
@@ -253,7 +253,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			return sba.getMeasurement(sba.getCriteria().get(rowIndex), (Arm) a);
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis && rowIndex < d_analysis.getCriteria().size()) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			return mba.getMeasurement(mba.getCriteria().get(rowIndex), (TreatmentCategorySet) a);
+			return mba.getMeasurement(mba.getCriteria().get(rowIndex), (TreatmentDefinition) a);
 		}
 		throw new IllegalStateException("Unknown analysis type " + d_analysis.getClass().getSimpleName());
 	}

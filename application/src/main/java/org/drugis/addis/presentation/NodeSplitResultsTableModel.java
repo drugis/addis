@@ -37,7 +37,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.collections15.BidiMap;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
@@ -142,7 +142,7 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 	}
 	
 	private String getDescription(BasicParameter p) { 
-		BidiMap<TreatmentCategorySet, Treatment> treatmentMap = d_pm.getBean().getBuilder().getTreatmentMap();
+		BidiMap<TreatmentDefinition, Treatment> treatmentMap = d_pm.getBean().getBuilder().getTreatmentMap();
 		return treatmentMap.getKey(p.getBaseline()).getLabel() + ", " + treatmentMap.getKey(p.getSubject()).getLabel();
 	}
 	

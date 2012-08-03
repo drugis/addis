@@ -149,7 +149,7 @@ import org.drugis.addis.entities.data.TreatmentCategorizations;
 import org.drugis.addis.entities.data.Units;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.JAXBHandler.XmlFormatType;
 import org.drugis.addis.util.convertors.NetworkMetaAnalysisConverter;
 import org.drugis.addis.util.convertors.TreatmentCategorizationsConverter;
@@ -1028,8 +1028,8 @@ public class JAXBConvertor {
 		if (baseArms.size() != subjArms.size()) {
 			throw new ConversionException("Alternative lists must have equal length. Offending MA: " + pwma);
 		}
-		TreatmentCategorySet baseCat = null;
-		TreatmentCategorySet subjCat = null;
+		TreatmentDefinition baseCat = null;
+		TreatmentDefinition subjCat = null;
 		for (int i = 0; i < baseArms.size(); ++i) {
 			if (!baseArms.get(i).getStudy().equals(subjArms.get(i).getStudy())) {
 				throw new ConversionException("Matching arms must be from the same study. Offending arms: " + 
@@ -1061,7 +1061,7 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + reMa.getOutcomeMeasure());
 		}
-		for(TreatmentCategorySet d : reMa.getAlternatives()) {
+		for(TreatmentDefinition d : reMa.getAlternatives()) {
 			Alternative alt = new Alternative();
 			alt.setDrugs(convertAnalysisTreatmentCategorySet(d));
 			AnalysisArms arms = new AnalysisArms();
@@ -1080,7 +1080,7 @@ public class JAXBConvertor {
 		return pwma ;
 	}
 
-	public static AnalysisDrugs convertAnalysisTreatmentCategorySet(TreatmentCategorySet d) {
+	public static AnalysisDrugs convertAnalysisTreatmentCategorySet(TreatmentDefinition d) {
 		AnalysisDrugs drugs = new AnalysisDrugs();
 		for (Category category : d.getContents()) {
 			drugs.getDrug().add(nameReference(category.getDrug().getName()));				
@@ -1217,8 +1217,8 @@ public class JAXBConvertor {
 
 	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
 		Indication indication = findNamedItem(domain.getIndications(), br.getIndication().getName());
-		TreatmentCategorySet baseline = convertTreatmentCategorySet(br.getBaseline(), domain);
-		List<TreatmentCategorySet> drugs = new SortedSetModel<TreatmentCategorySet>();
+		TreatmentDefinition baseline = convertTreatmentCategorySet(br.getBaseline(), domain);
+		List<TreatmentDefinition> drugs = new SortedSetModel<TreatmentDefinition>();
 		for (AnalysisDrugs set : br.getAlternatives().getAlternative()) {
 			drugs.add(convertTreatmentCategorySet(set, domain));
 		}
@@ -1239,7 +1239,7 @@ public class JAXBConvertor {
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
 		AlternativeDrugSets alternatives = new AlternativeDrugSets();
-		for(TreatmentCategorySet d : br.getDrugs()) {
+		for(TreatmentDefinition d : br.getDrugs()) {
 			alternatives.getAlternative().add(convertAnalysisTreatmentCategorySet(d));
 		}
 		newBr.setAlternatives(alternatives);
@@ -1299,7 +1299,7 @@ public class JAXBConvertor {
 		return ref;
 	}
 	
-	public static Drugs convertTreatmentCategorySet(TreatmentCategorySet d) { 
+	public static Drugs convertTreatmentCategorySet(TreatmentDefinition d) { 
 		Drugs drugs = new Drugs();
 		for (Category category : d.getContents()) {
 			drugs.getDrug().add(JAXBConvertor.convertDrug(category.getDrug()));
@@ -1307,20 +1307,20 @@ public class JAXBConvertor {
 		return drugs;
 	}
 	
-	public static TreatmentCategorySet convertTreatmentCategorySet(AnalysisDrugs drugs, Domain domain) {
+	public static TreatmentDefinition convertTreatmentCategorySet(AnalysisDrugs drugs, Domain domain) {
 		List<Drug> out = new ArrayList<Drug>();
 		for(NameReference d : drugs.getDrug()) {
 			out.add(JAXBConvertor.findNamedItem(domain.getDrugs(), d.getName()));
 		}
-		return TreatmentCategorySet.createTrivial(out);
+		return TreatmentDefinition.createTrivial(out);
 	}
 	
-	public static TreatmentCategorySet convertTreatmentCategorySet(Drugs drugs, Domain domain) {
+	public static TreatmentDefinition convertTreatmentCategorySet(Drugs drugs, Domain domain) {
 		List<Drug> out = new ArrayList<Drug>();
 		for(org.drugis.addis.entities.data.Drug d : drugs.getDrug()) {
 			out.add(JAXBConvertor.findNamedItem(domain.getDrugs(), d.getName()));
 		}
-		return TreatmentCategorySet.createTrivial(out);
+		return TreatmentDefinition.createTrivial(out);
 	}
 	
 	public static org.drugis.addis.entities.data.Allocation allocationWithNotes(Allocation nested) {

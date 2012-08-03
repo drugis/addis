@@ -38,7 +38,7 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.analysis.AbstractMetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AnalysisComponentFactory;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -58,7 +58,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class MetaBenefitRiskView extends AbstractBenefitRiskView<TreatmentCategorySet, MetaBenefitRiskPresentation> {
+public class MetaBenefitRiskView extends AbstractBenefitRiskView<TreatmentDefinition, MetaBenefitRiskPresentation> {
 	
 
 

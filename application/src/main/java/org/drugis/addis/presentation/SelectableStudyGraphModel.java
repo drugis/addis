@@ -34,7 +34,7 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.UndirectedSubgraph;
@@ -45,10 +45,10 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectableStudyGraphModel extends StudyGraphModel {
 	
-	private ObservableList<TreatmentCategorySet> d_selectedDrugs = new ArrayListModel<TreatmentCategorySet>(d_drugs);
+	private ObservableList<TreatmentDefinition> d_selectedDrugs = new ArrayListModel<TreatmentDefinition>(d_drugs);
 	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
 
-	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentCategorySet> drugs, ValueHolder<OutcomeMeasure> outcome) {
+	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> drugs, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, drugs, outcome);
 		d_selectedDrugs.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
@@ -85,7 +85,7 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		return d_complete;
 	}
 
-	public ObservableList<TreatmentCategorySet> getSelectedDrugsModel() {
+	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
 		return d_selectedDrugs;
 	}
 	
@@ -94,7 +94,7 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		
 		ConnectivityInspector<Vertex, Edge> inspectorGadget = new ConnectivityInspector<Vertex, Edge>(g);
 		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDrugs.get(0)));
-		for (TreatmentCategorySet d : d_selectedDrugs) {
+		for (TreatmentDefinition d : d_selectedDrugs) {
 			if (!connectedDrugs.contains(this.findVertex(d))) {
 				return false;
 			}

@@ -36,7 +36,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
@@ -116,7 +116,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		if(col == 0) {
 			Set<String> descriptions = new TreeSet<String>();
 			for(Treatment t : ip.getCycle()) { 
-				TreatmentCategorySet key = d_pm.getBean().getBuilder().getTreatmentMap().getKey(t);
+				TreatmentDefinition key = d_pm.getBean().getBuilder().getTreatmentMap().getKey(t);
 				descriptions.add(key.getLabel());
 			}
 			return StringUtils.join(descriptions, ", ");

@@ -29,21 +29,21 @@ package org.drugis.addis.entities.mtcwrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 
 public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentComparison> extends MCMCSimulationWrapper<MTCType> implements MTCModelWrapper {
-	protected final NetworkBuilder<TreatmentCategorySet> d_builder;
-	protected AbstractSimulationWrapper(NetworkBuilder<TreatmentCategorySet> builder, MTCType mtc, String description) {
+	protected final NetworkBuilder<TreatmentDefinition> d_builder;
+	protected AbstractSimulationWrapper(NetworkBuilder<TreatmentDefinition> builder, MTCType mtc, String description) {
 		super(mtc, description);
 		d_builder = builder;
 	}
 	
 	@Override
-	public Parameter getRelativeEffect(TreatmentCategorySet a, TreatmentCategorySet b) {
+	public Parameter getRelativeEffect(TreatmentDefinition a, TreatmentDefinition b) {
 		return d_nested.getRelativeEffect(getTreatment(a), getTreatment(b));
 	}
 
@@ -52,15 +52,15 @@ public abstract class AbstractSimulationWrapper<MTCType extends MixedTreatmentCo
 		return d_nested.getRandomEffectsVariance();
 	}
 	
-	protected List<Treatment> getTreatments(List<TreatmentCategorySet> drugs) {
+	protected List<Treatment> getTreatments(List<TreatmentDefinition> drugs) {
 		List<Treatment> treatments = new ArrayList<Treatment>();
-		for (TreatmentCategorySet d : drugs) {
+		for (TreatmentDefinition d : drugs) {
 			treatments.add(getTreatment(d));
 		}
 		return treatments;
 	}
 
-	protected Treatment getTreatment(TreatmentCategorySet d) {
+	protected Treatment getTreatment(TreatmentDefinition d) {
 		return d_builder.getTreatmentMap().get(d);
 	}
 }

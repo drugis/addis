@@ -35,11 +35,11 @@ import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, OutcomeMeasure om, TreatmentCategorySet baseDrug, TreatmentCategorySet subjDrug, Class<T> type, boolean isCorrected) {
+			Study s, OutcomeMeasure om, TreatmentDefinition baseDrug, TreatmentDefinition subjDrug, Class<T> type, boolean isCorrected) {
 		
 		Arm base = findFirstArm(s, baseDrug);
 		Arm subj = findFirstArm(s, subjDrug);
@@ -64,11 +64,11 @@ public class RelativeEffectFactory {
 	}
 	
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, OutcomeMeasure om, TreatmentCategorySet baseDrug, TreatmentCategorySet subjDrug, Class<T> type) {
+			Study s, OutcomeMeasure om, TreatmentDefinition baseDrug, TreatmentDefinition subjDrug, Class<T> type) {
 		return buildRelativeEffect(s, om, baseDrug, subjDrug, type, false);
 	}
 
-	public static Arm findFirstArm(Study s, TreatmentCategorySet d) {
+	public static Arm findFirstArm(Study s, TreatmentDefinition d) {
 		for (Arm a : s.getArms()) {
 			if (s.getDrugs(a).equals(d))
 				return a;

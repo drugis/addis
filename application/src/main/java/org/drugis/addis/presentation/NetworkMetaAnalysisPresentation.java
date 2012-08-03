@@ -42,7 +42,7 @@ import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.mcmc.MCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
@@ -76,13 +76,13 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TreatmentCategorySet getTreatmentCategorySet(Treatment t) { 
+	public TreatmentDefinition getTreatmentCategorySet(Treatment t) { 
 		return getBean().getBuilder().getTreatmentMap().getKey(t);
 	}
 	
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
-				new ArrayListModel<TreatmentCategorySet>(getBean().getAlternatives()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
+				new ArrayListModel<TreatmentDefinition>(getBean().getAlternatives()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
@@ -127,7 +127,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getInconsistencyModel();
 	}
 
-	public List<TreatmentCategorySet> getIncludedDrugs() {
+	public List<TreatmentDefinition> getIncludedDrugs() {
 		return getBean().getAlternatives();
 	}
 

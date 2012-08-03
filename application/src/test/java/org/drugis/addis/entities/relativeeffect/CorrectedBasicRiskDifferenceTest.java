@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.RateMeasurement;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class CorrectedBasicRiskDifferenceTest extends RelativeEffectTestBase {
 	@Before
 	public void setUp() {
 		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
-		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentCategorySet.createTrivial(d_fluox), TreatmentCategorySet.createTrivial(d_sertr), BasicRiskDifference.class, true);
+		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskDifference.class, true);
 	}
 
 	@Test

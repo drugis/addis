@@ -65,7 +65,7 @@ import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
 import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.JAXBConvertor;
 import org.drugis.addis.util.JAXBConvertor.ConversionException;
 import org.drugis.mtc.MCMCSettingsCache;
@@ -91,16 +91,16 @@ public class NetworkMetaAnalysisConverter {
 		Indication indication = JAXBConvertor.findNamedItem(domain.getIndications(), nma.getIndication().getName());
 		org.drugis.addis.entities.OutcomeMeasure om = JAXBConvertor.findOutcomeMeasure(domain, nma);
 		List<Study> studies = new ArrayList<Study>();		
-		List<TreatmentCategorySet> drugs = new ArrayList<TreatmentCategorySet>();
-		Map<Study, Map<TreatmentCategorySet, Arm>> armMap = new HashMap<Study, Map<TreatmentCategorySet, Arm>>();
+		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>();
+		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (org.drugis.addis.entities.data.Alternative a : nma.getAlternative()) {
-			TreatmentCategorySet drugSet = JAXBConvertor.convertTreatmentCategorySet(a.getDrugs(), domain);
+			TreatmentDefinition drugSet = JAXBConvertor.convertTreatmentCategorySet(a.getDrugs(), domain);
 			drugs.add(drugSet);
 			for (ArmReference armRef : a.getArms().getArm()) {
 				Study study = JAXBConvertor.findNamedItem(domain.getStudies(), armRef.getStudy());
 				if (!studies.contains(study)) {
 					studies.add(study);
-					armMap.put(study, new HashMap<TreatmentCategorySet, Arm>());
+					armMap.put(study, new HashMap<TreatmentDefinition, Arm>());
 				}
 				Arm arm = JAXBConvertor.findArm(armRef.getName(), study.getArms());
 				armMap.get(study).put(drugSet, arm);
@@ -188,7 +188,7 @@ public class NetworkMetaAnalysisConverter {
 		
 		// TreatmentCategorySets are always sorted in their natural order
 		List<Treatment> treatments = new ArrayList<Treatment>();
-		for(TreatmentCategorySet d : networkMetaAnalysis.getAlternatives()) {
+		for(TreatmentDefinition d : networkMetaAnalysis.getAlternatives()) {
 			treatments.add(networkMetaAnalysis.getTreatment(d));
 		}		
 		double[][] rankProbabilityMatrix = new double[treatments.size()][treatments.size()];
@@ -263,10 +263,10 @@ public class NetworkMetaAnalysisConverter {
 			NetworkMetaAnalysis networkMetaAnalysis, ParameterSummary ps) {
 		Parameter p = null;
 		if(ps.getInconsistency() != null) {
-			ArrayList<TreatmentCategorySet> alternatives = new ArrayList<TreatmentCategorySet>();
+			ArrayList<TreatmentDefinition> alternatives = new ArrayList<TreatmentDefinition>();
 			ArrayList<Treatment> alternativeTreatments = new ArrayList<Treatment>();
 			for(Drugs drugs : ps.getInconsistency().getAlternative()) {
-				TreatmentCategorySet drugSet = JAXBConvertor.convertTreatmentCategorySet(drugs, domain);
+				TreatmentDefinition drugSet = JAXBConvertor.convertTreatmentCategorySet(drugs, domain);
 				alternatives.add(drugSet);
 				alternativeTreatments.add(networkMetaAnalysis.getTreatment(drugSet));
 			}
@@ -315,7 +315,7 @@ public class NetworkMetaAnalysisConverter {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + ma.getOutcomeMeasure());
 		}
-		for(TreatmentCategorySet d : ma.getAlternatives()) {
+		for(TreatmentDefinition d : ma.getAlternatives()) {
 			Alternative alt = new Alternative();
 			alt.setDrugs(JAXBConvertor.convertAnalysisTreatmentCategorySet(d));
 			AnalysisArms arms = new AnalysisArms();
@@ -437,15 +437,15 @@ public class NetworkMetaAnalysisConverter {
 			value.setName(VarianceParameterType.VAR_D);
 			ps.setVariance(value);
 		} else if (p instanceof org.drugis.mtc.parameterization.BasicParameter) {
-			TreatmentCategorySet base = nma.getTreatmentCategorySet(((org.drugis.mtc.parameterization.BasicParameter) p).getBaseline());
-			TreatmentCategorySet subj = nma.getTreatmentCategorySet(((org.drugis.mtc.parameterization.BasicParameter) p).getSubject());
-			Pair<TreatmentCategorySet> relEffect = new Pair<TreatmentCategorySet>(base, subj);
+			TreatmentDefinition base = nma.getTreatmentCategorySet(((org.drugis.mtc.parameterization.BasicParameter) p).getBaseline());
+			TreatmentDefinition subj = nma.getTreatmentCategorySet(((org.drugis.mtc.parameterization.BasicParameter) p).getSubject());
+			Pair<TreatmentDefinition> relEffect = new Pair<TreatmentDefinition>(base, subj);
 			ps.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
 		} else if (p instanceof org.drugis.mtc.parameterization.SplitParameter) {
 			org.drugis.mtc.parameterization.SplitParameter np = (org.drugis.mtc.parameterization.SplitParameter) p;
-			TreatmentCategorySet base = nma.getTreatmentCategorySet(np.getBaseline());
-			TreatmentCategorySet subj = nma.getTreatmentCategorySet(np.getSubject());
-			Pair<TreatmentCategorySet> relEffect = new Pair<TreatmentCategorySet>(base, subj);
+			TreatmentDefinition base = nma.getTreatmentCategorySet(np.getBaseline());
+			TreatmentDefinition subj = nma.getTreatmentCategorySet(np.getSubject());
+			Pair<TreatmentDefinition> relEffect = new Pair<TreatmentDefinition>(base, subj);
 			ps.setRelativeEffect(convertNodeSplitParameter(relEffect, np.isDirect()));
 		}
 		return ps;
@@ -463,12 +463,12 @@ public class NetworkMetaAnalysisConverter {
 	}
 
 	private static List<RelativeEffectQuantileSummary> convertRelativeEffectParameters(NetworkMetaAnalysis ma, MTCModelWrapper mtc) {
-		List<TreatmentCategorySet> includedDrugs = ma.getAlternatives();
+		List<TreatmentDefinition> includedDrugs = ma.getAlternatives();
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
 		for (int i = 0; i < includedDrugs.size(); ++i) {
 			for (int j = 0; j < includedDrugs.size(); ++j) {
 				if(j != i) { 
-					Pair<TreatmentCategorySet> relEffect = new Pair<TreatmentCategorySet>(includedDrugs.get(i), includedDrugs.get(j));
+					Pair<TreatmentDefinition> relEffect = new Pair<TreatmentDefinition>(includedDrugs.get(i), includedDrugs.get(j));
 					RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
 					qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
 					qs.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(mtc.getRelativeEffect(includedDrugs.get(i), includedDrugs.get(j)))));
@@ -479,16 +479,16 @@ public class NetworkMetaAnalysisConverter {
 		return reqs; 
 	}
 	
-	private static RelativeEffectParameter convertNodeSplitParameter(Pair<TreatmentCategorySet> pair, boolean direct) {
+	private static RelativeEffectParameter convertNodeSplitParameter(Pair<TreatmentDefinition> pair, boolean direct) {
 		return convertRelativeEffectParameter(pair, direct ? EvidenceTypeEnum.DIRECT : EvidenceTypeEnum.INDIRECT);
 	}
 	
-	private static RelativeEffectParameter convertRelativeEffectsParameter(Pair<TreatmentCategorySet> pair) {
+	private static RelativeEffectParameter convertRelativeEffectsParameter(Pair<TreatmentDefinition> pair) {
 		return convertRelativeEffectParameter(pair, EvidenceTypeEnum.ALL);
 	}
 
 	private static RelativeEffectParameter convertRelativeEffectParameter(
-			Pair<TreatmentCategorySet> pair, EvidenceTypeEnum evidenceType) {
+			Pair<TreatmentDefinition> pair, EvidenceTypeEnum evidenceType) {
 		RelativeEffectParameter rel = new RelativeEffectParameter();
 		rel.setWhichEvidence(evidenceType); 
 		Drugs first = JAXBConvertor.convertTreatmentCategorySet(pair.getFirst());

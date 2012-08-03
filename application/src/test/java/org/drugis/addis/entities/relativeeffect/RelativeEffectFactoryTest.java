@@ -34,7 +34,7 @@ import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,8 +42,8 @@ public class RelativeEffectFactoryTest {
 	
 	private Study d_s;
 	private Endpoint d_eCont;
-	private TreatmentCategorySet d_fluox;
-	private TreatmentCategorySet d_parox;
+	private TreatmentDefinition d_fluox;
+	private TreatmentDefinition d_parox;
 	private Arm d_pBase;
 	private Arm d_pSubj;
 	private Endpoint d_eRate;
@@ -53,8 +53,8 @@ public class RelativeEffectFactoryTest {
 		d_s = ExampleData.buildStudyChouinard();
 		d_eCont = ExampleData.buildEndpointCgi();
 		d_eRate = ExampleData.buildEndpointHamd();
-		d_parox = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
-		d_fluox = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
+		d_parox = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		d_fluox = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
 		d_pBase = d_s.getArms().get(0);
 		d_pSubj = d_s.getArms().get(1);
 	}

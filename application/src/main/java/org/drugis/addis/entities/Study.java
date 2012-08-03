@@ -41,7 +41,7 @@ import javax.swing.event.ListDataListener;
 import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
@@ -356,8 +356,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public Set<TreatmentCategorySet> getDrugs() {
-		final Set<TreatmentCategorySet> drugs = new HashSet<TreatmentCategorySet>();
+	public Set<TreatmentDefinition> getDrugs() {
+		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
 			drugs.add(getDrugs(a));
 		}
@@ -716,20 +716,20 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return true;
 	}
 
-	public TreatmentCategorySet getDrugs(final Arm a) {
+	public TreatmentDefinition getDrugs(final Arm a) {
 		final Activity activity = getActivity(a);
 		if (activity instanceof TreatmentActivity) {
 			return getTreatmentCategorySet((TreatmentActivity) activity);
 		}
-		return new TreatmentCategorySet();
+		return new TreatmentDefinition();
 	}
 
-	private TreatmentCategorySet getTreatmentCategorySet(final TreatmentActivity activity) {
+	private TreatmentDefinition getTreatmentCategorySet(final TreatmentActivity activity) {
 		final List<Drug> drugs = new ArrayList<Drug>();
 		for(final DrugTreatment ta : activity.getTreatments()) {
 			drugs.add(ta.getDrug());
 		}
-		return TreatmentCategorySet.createTrivial(drugs);
+		return TreatmentDefinition.createTrivial(drugs);
 	}
 
 	@Override
@@ -808,9 +808,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 * @return The Drugs that have at least one Arm with a complete measurement
 	 *         for the Variable v.
 	 */
-	public Set<TreatmentCategorySet> getMeasuredDrugs(final Variable v, final WhenTaken wt) {
-		final Set<TreatmentCategorySet> drugs = new HashSet<TreatmentCategorySet>();
-		for (final TreatmentCategorySet d : getDrugs()) {
+	public Set<TreatmentDefinition> getMeasuredDrugs(final Variable v, final WhenTaken wt) {
+		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
+		for (final TreatmentDefinition d : getDrugs()) {
 			if (wt != null && isMeasured(v, d, wt)) {
 				drugs.add(d);
 			}
@@ -818,19 +818,19 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return drugs;
 	}
 
-	public Set<TreatmentCategorySet> getMeasuredDrugs(final Variable v) {
+	public Set<TreatmentDefinition> getMeasuredDrugs(final Variable v) {
 		return getMeasuredDrugs(v, defaultMeasurementMoment());
 	}
 
-	public ObservableList<Arm> getMeasuredArms(final Variable v, final TreatmentCategorySet d) {
+	public ObservableList<Arm> getMeasuredArms(final Variable v, final TreatmentDefinition d) {
 		return getMeasuredArms(v, d, defaultMeasurementMoment());
 	}
 
-	public ObservableList<Arm> getMeasuredArms(final Variable v, final TreatmentCategorySet d, final WhenTaken wt) {
+	public ObservableList<Arm> getMeasuredArms(final Variable v, final TreatmentDefinition d, final WhenTaken wt) {
 		return new FilteredObservableList<Arm>(getArms(d), new IsMeasuredFilter(v, wt));
 	}
 
-	private boolean isMeasured(final Variable v, final TreatmentCategorySet d, final WhenTaken wt) {
+	private boolean isMeasured(final Variable v, final TreatmentDefinition d, final WhenTaken wt) {
 		for (final Arm a : getArms(d)) {
 			if (isMeasured(v, a, wt)) {
 				return true;
@@ -848,7 +848,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return getMeasurement(v, a) != null	&& getMeasurement(v, a).isComplete();
 	}
 
-	private ObservableList<Arm> getArms(final TreatmentCategorySet d) {
+	private ObservableList<Arm> getArms(final TreatmentDefinition d) {
 		return new FilteredObservableList<Arm>(d_arms, new DrugArmFilter(d));
 	}
 
@@ -888,9 +888,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public class DrugArmFilter implements Filter<Arm> {
-		private final TreatmentCategorySet d_d;
+		private final TreatmentDefinition d_d;
 
-		public DrugArmFilter(final TreatmentCategorySet d) {
+		public DrugArmFilter(final TreatmentDefinition d) {
 			d_d = d;
 		}
 
