@@ -102,7 +102,7 @@ public class TreatmentCategorizationTest {
 		final FlexibleDose highDose = new FlexibleDose(new Interval<Double>(20.0, 30.0), DoseUnit.MILLIGRAMS_A_DAY);
 
 		assertEquals("Flexible Dose", d_treatment.getCategory(lowDose).getName());
-		assertEquals(LeafNode.NAME_EXCLUDE, d_treatment.getCategory(highDose).getName());
+		assertNull(d_treatment.getCategory(highDose));
 	}
 
 	@Test
@@ -139,9 +139,9 @@ public class TreatmentCategorizationTest {
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), excludeNode);
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), UnknownDose.class), unknownNode);
 
-		assertEquals(someCatNode, d_treatment.getCategory(new FixedDose()));
-		assertEquals(excludeNode, d_treatment.getCategory(new FlexibleDose()));
-		assertEquals(unknownNode, d_treatment.getCategory(new UnknownDose()));
+		assertEquals(someCatNode.getCategory(), d_treatment.getCategory(new FixedDose()));
+		assertEquals(excludeNode.getCategory(), d_treatment.getCategory(new FlexibleDose()));
+		assertEquals(unknownNode.getCategory(), d_treatment.getCategory(new UnknownDose()));
 	}
 	
 	@Test
