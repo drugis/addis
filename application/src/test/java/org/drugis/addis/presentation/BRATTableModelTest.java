@@ -55,7 +55,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.LinearScale;
 import org.drugis.addis.forestplot.LogScale;
 import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
@@ -68,7 +68,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class BRATTableModelTest {
 
-	private BRATTableModel<TreatmentCategorySet, MetaBenefitRiskAnalysis> d_btmMeta;
+	private BRATTableModel<TreatmentDefinition, MetaBenefitRiskAnalysis> d_btmMeta;
 	private BRATTableModel<Arm, StudyBenefitRiskAnalysis> d_btmMockStudy;
 	private BRATTableModel<Arm, StudyBenefitRiskAnalysis> d_btmStudy;
 	private StudyBenefitRiskAnalysis d_sba;
@@ -79,7 +79,7 @@ public class BRATTableModelTest {
 	@Before
 	public void setUp() {
 		d_mba = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_btmMeta = new BRATTableModel<TreatmentCategorySet, MetaBenefitRiskAnalysis>(d_mba, TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		d_btmMeta = new BRATTableModel<TreatmentDefinition, MetaBenefitRiskAnalysis>(d_mba, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		StudyBenefitRiskAnalysis sba = ExampleData.buildStudyBenefitRiskAnalysis();
 		d_btmMockStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(sba, sba.getAlternatives().get(1));
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
@@ -172,13 +172,13 @@ public class BRATTableModelTest {
 		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(1), d_subject),
 				((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
 		
-		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())),
+		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())),
 				((BRATDifference)d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	}
 
 	@Test
 	public void testForestConfidenceIntervals() {
-		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		assertEquals((Double)relEff.getQuantile(0.025), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getLowerBound());
 		assertEquals((Double)relEff.getQuantile(0.5), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getPointEstimate());
 		assertEquals((Double)relEff.getQuantile(0.975), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getUpperBound());

@@ -51,7 +51,7 @@ import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.common.Interval;
 import org.junit.Before;
@@ -109,8 +109,8 @@ public class ForestPlotPresentationTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(d_s1);
 		studies.add(d_s2);
-		RandomEffectsMetaAnalysis analysis = ExampleData.createRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject));
-		d_pm = new ForestPlotPresentation(studies, d_endpoint, TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject), BasicMeanDifference.class, 
+		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
+		d_pm = new ForestPlotPresentation(studies, d_endpoint, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject), BasicMeanDifference.class, 
 				new PresentationModelFactory(new DomainImpl()), analysis);
 	}
 	
@@ -185,9 +185,9 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s1);
 		studies.add(d_s2);
 		
-		RandomEffectsMetaAnalysis analysis = ExampleData.createRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject));
+		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
 		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
-				TreatmentCategorySet.createTrivial(d_baseline), TreatmentCategorySet.createTrivial(d_subject),
+				TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject),
 				BasicMeanDifference.class, new PresentationModelFactory(new DomainImpl()), analysis);
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));

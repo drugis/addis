@@ -39,7 +39,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.addis.presentation.mcmc.MCMCPresentation;
@@ -90,7 +90,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 			TaskUtil.run(model.getModel().getActivityTask());
 		}
 		// Build SMAA model
-		SMAAPresentation<TreatmentCategorySet, MetaBenefitRiskAnalysis> smaapm = d_brpm.getSMAAPresentation();
+		SMAAPresentation<TreatmentDefinition, MetaBenefitRiskAnalysis> smaapm = d_brpm.getSMAAPresentation();
 		d_model = smaapm.getSMAAFactory().createSMAAModel();
 	}
 	

@@ -44,7 +44,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;
@@ -108,8 +108,8 @@ public class LyndOBrienView implements ViewBuilder {
 			baselineName = s.getTreatment(baseArm).getLabel();
 			alternativeName = s.getTreatment(altArm).getLabel();
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
-			baselineName = ((TreatmentCategorySet)baseline).getLabel();
-			alternativeName = ((TreatmentCategorySet)alternative).getLabel();
+			baselineName = ((TreatmentDefinition)baseline).getLabel();
+			alternativeName = ((TreatmentDefinition)alternative).getLabel();
 		}
 		
 		builder.add(AuxComponentFactory.createHtmlField("Results of Monte Carlo simulations based on the difference-distributions of" +

@@ -42,7 +42,7 @@ import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.BinnedScale;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.IdentityScale;
@@ -56,8 +56,8 @@ public class ForestPlotPresentation {
 	private List<Study> d_studies;
 	private List<BasicRelativeEffect<?>> d_relEffects;
 	private OutcomeMeasure d_outMeas;
-	private TreatmentCategorySet d_baseline;
-	private TreatmentCategorySet d_subject;
+	private TreatmentDefinition d_baseline;
+	private TreatmentDefinition d_subject;
 	private Class<? extends RelativeEffect<?>> d_type;
 	private BinnedScale d_scale;
 	private double d_max = 0.0;
@@ -65,7 +65,7 @@ public class ForestPlotPresentation {
 	private RandomEffectsMetaAnalysis d_analysis;
 	private PresentationModelFactory d_pmf;
 	
-	public ForestPlotPresentation(List<Study> studies, OutcomeMeasure om, TreatmentCategorySet baseline, TreatmentCategorySet subject,
+	public ForestPlotPresentation(List<Study> studies, OutcomeMeasure om, TreatmentDefinition baseline, TreatmentDefinition subject,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf, RandomEffectsMetaAnalysis analysis) {
 		d_studies = new ArrayList<Study>();
 		d_outMeas = om;
@@ -99,8 +99,8 @@ public class ForestPlotPresentation {
 	public static ForestPlotPresentation createStudyForestPlot(Study s, OutcomeMeasure om, Arm arm1, Arm arm2,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		List<Study> studyList = Collections.singletonList((Study)s);
-		TreatmentCategorySet catSet1 = s.getDrugs(arm1);
-		TreatmentCategorySet catSet2 = s.getDrugs(arm2);
+		TreatmentDefinition catSet1 = s.getDrugs(arm1);
+		TreatmentDefinition catSet2 = s.getDrugs(arm2);
 		StudyArmsEntry entry = new StudyArmsEntry(s, arm1, arm2);
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("", om, catSet1, catSet2, Collections.singletonList(entry), false);
 		return new ForestPlotPresentation(studyList, om, catSet1, catSet2, type, pmf, analysis);
@@ -194,11 +194,11 @@ public class ForestPlotPresentation {
 		return interval;
 	}
 	
-	public TreatmentCategorySet getLowValueFavorsDrug() {
+	public TreatmentDefinition getLowValueFavorsDrug() {
 		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_baseline : d_subject;
 	}
 	
-	public TreatmentCategorySet getHighValueFavorsDrug() {
+	public TreatmentDefinition getHighValueFavorsDrug() {
 		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_subject : d_baseline;
 	}
 	

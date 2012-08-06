@@ -40,7 +40,7 @@ import javax.xml.datatype.Duration;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {
@@ -86,9 +86,9 @@ public class EntityUtil {
 		return null;
 	}
 
-	public static HashSet<Category> flatten(Collection<TreatmentCategorySet> set) {
+	public static HashSet<Category> flatten(Collection<TreatmentDefinition> set) {
 		HashSet<Category> flat = new HashSet<Category>();
-		for (TreatmentCategorySet nested : set) {
+		for (TreatmentDefinition nested : set) {
 			flat.addAll(nested.getContents());
 		}
 		return flat;

@@ -40,7 +40,7 @@ import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.NetworkBuilder;
@@ -53,8 +53,8 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	private ConsistencyWrapper d_mockConsistencyModel;
 
 	public MockNetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<Study> studies, List<TreatmentCategorySet> drugs,
-			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, List<Study> studies, List<TreatmentDefinition> drugs,
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 		
 		d_builder = NetworkBuilderFactory.createBuilderStub(drugs);
@@ -64,9 +64,9 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 
 	}
 
-	private List<Treatment> toTreatments(List<TreatmentCategorySet> drugs) {
+	private List<Treatment> toTreatments(List<TreatmentDefinition> drugs) {
 		List<Treatment> ts = new ArrayList<Treatment>();
-		for (TreatmentCategorySet d : drugs) {
+		for (TreatmentDefinition d : drugs) {
 			ts.add(new Treatment(d.getLabel(), d.getLabel()));
 		}
 		return ts;
@@ -98,7 +98,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	}
 	
 	@Override
-	public NetworkBuilder<TreatmentCategorySet> getBuilder() {
+	public NetworkBuilder<TreatmentDefinition> getBuilder() {
 		return d_builder;
 	}
 }

@@ -48,7 +48,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.drugis.common.event.ListDataEventMatcher;
@@ -61,24 +61,24 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class StudyGraphModelTest {
 	private StudyGraphModel d_pm;
-	private List<TreatmentCategorySet> d_drugs;
+	private List<TreatmentDefinition> d_drugs;
 	private Domain d_domain;
-	private ObservableList<TreatmentCategorySet> d_drugListHolder;
+	private ObservableList<TreatmentDefinition> d_drugListHolder;
 	private ValueHolder<OutcomeMeasure> d_outcome;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_drugs = new ArrayList<TreatmentCategorySet>();
-		d_drugs.add(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()));
-		d_drugs.add(TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()));
-		d_drugs.add(TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline()));
+		d_drugs = new ArrayList<TreatmentDefinition>();
+		d_drugs.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
+		d_drugs.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
+		d_drugs.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline()));
 		d_outcome = new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd());
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
-		d_drugListHolder = new ArrayListModel<TreatmentCategorySet>(d_drugs);
+		d_drugListHolder = new ArrayListModel<TreatmentDefinition>(d_drugs);
 		d_pm = new StudyGraphModel(studies, d_drugListHolder, d_outcome);
 	}
 	
@@ -95,13 +95,13 @@ public class StudyGraphModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
-		assertAllAndOnly(studies, d_pm.getStudies(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())));
+		assertAllAndOnly(studies, d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())));
 		
 		studies.remove(ExampleData.buildStudyBennie());
-		assertAllAndOnly(studies, d_pm.getStudies(TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine())));
+		assertAllAndOnly(studies, d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine())));
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
-				d_pm.getStudies(TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())));
+				d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())));
 	}
 	
 	@Test
@@ -112,14 +112,14 @@ public class StudyGraphModelTest {
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(ExampleData.buildStudyMultipleArmsperDrug());
 		
-		assertAllAndOnly(studies, d_pm.getStudies(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine())));
+		assertAllAndOnly(studies, d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine())));
 		
 		studies.remove(ExampleData.buildStudyBennie());
 		assertAllAndOnly(Collections.emptyList(), 
-				d_pm.getStudies(TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())));
+				d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())));
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
-				d_pm.getStudies(TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())));
+				d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())));
 	}
 	
 	@Test
@@ -139,32 +139,32 @@ public class StudyGraphModelTest {
 		assertEquals(2, edgeSet.size());
 		
 		Edge edge1 = d_pm.getEdge(
-				getVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())),
-				getVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine())));
+				getVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())),
+				getVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine())));
 		assertNotNull(edge1);
 		assertEquals(3, edge1.getStudyCount());
 		
 		Edge edge2 = d_pm.getEdge(
-				getVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())),
-				getVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())));
+				getVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())),
+				getVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())));
 		assertNotNull(edge2);
 		assertEquals(1, edge2.getStudyCount());
 		
 		Edge edge3 = d_pm.getEdge(
-				getVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())),
-				getVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())));
+				getVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())),
+				getVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())));
 		assertEquals(edge2, edge3);
 	}
 	
 	@Test
 	public void testFindVertex() {
-		assertEquals(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()),
-				d_pm.findVertex(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine())).getDrug());
+		assertEquals(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getDrug());
 	}
 	
 	@Test
 	public void testNullEndpoint() {
-		d_pm = new StudyGraphModel(new ArrayListModel<Study>(), new ArrayListModel<TreatmentCategorySet>(Collections.<TreatmentCategorySet>emptyList()), 
+		d_pm = new StudyGraphModel(new ArrayListModel<Study>(), new ArrayListModel<TreatmentDefinition>(Collections.<TreatmentDefinition>emptyList()), 
 				new UnmodifiableHolder<OutcomeMeasure>(null));
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
@@ -188,7 +188,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testChangeStudyList() {
-		ObservableList<TreatmentCategorySet> drugListHolder = new ArrayListModel<TreatmentCategorySet>(d_drugs);
+		ObservableList<TreatmentDefinition> drugListHolder = new ArrayListModel<TreatmentDefinition>(d_drugs);
 		ObservableList<Study> studyListHolder = new ArrayListModel<Study>();
 		
 		d_pm = new StudyGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
@@ -202,11 +202,11 @@ public class StudyGraphModelTest {
 		assertEquals(2, d_pm.edgeSet().size());
 	}
 
-	private Vertex getVertex(TreatmentCategorySet drug) {
+	private Vertex getVertex(TreatmentDefinition drug) {
 		return d_pm.findVertex(drug);
 	}
 
-	private int calcSampleSize(TreatmentCategorySet drug) {
+	private int calcSampleSize(TreatmentDefinition drug) {
 		int n = 0;
 		for (Study s : d_pm.getStudies(drug)) {
 			n += s.getSampleSize();

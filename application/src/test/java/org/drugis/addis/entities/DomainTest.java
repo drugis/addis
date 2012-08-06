@@ -45,7 +45,7 @@ import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -117,7 +117,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(new Study("iiidddd", ExampleData.buildIndicationDepression()));
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_domain.getMetaAnalyses().add(ma);
 	}
 	
@@ -205,7 +205,7 @@ public class DomainTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		return ma;
 	}
 	
@@ -216,7 +216,7 @@ public class DomainTest {
 		Study study2 = ExampleData.buildStudyDeWilde();
 		study2.setIndication(ExampleData.buildIndicationChronicHeartFailure());
 		studies.add(study2);
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_domain.getMetaAnalyses().add(ma);
 	}
 	
@@ -494,7 +494,7 @@ public class DomainTest {
 		s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
-		RandomEffectsMetaAnalysis ma = ExampleData.createRandomEffectsMetaAnalysis("meta", e, studies, TreatmentCategorySet.createTrivial(fluox), TreatmentCategorySet.createTrivial(parox)); 
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", e, studies, TreatmentDefinition.createTrivial(fluox), TreatmentDefinition.createTrivial(parox)); 
 		d_domain.getMetaAnalyses().add(ma);
 		d_domain.deleteEntity(s1);
 	}

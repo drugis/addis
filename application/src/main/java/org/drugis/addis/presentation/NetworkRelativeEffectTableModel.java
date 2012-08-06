@@ -33,7 +33,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
@@ -52,9 +52,9 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		};
 		
 		// Listen to summaries
-		List<TreatmentCategorySet> drugs = d_pm.getIncludedDrugs();
-		for(TreatmentCategorySet d1 : drugs) {
-			for (TreatmentCategorySet d2 : drugs) {
+		List<TreatmentDefinition> drugs = d_pm.getIncludedDrugs();
+		for(TreatmentDefinition d1 : drugs) {
+			for (TreatmentDefinition d2 : drugs) {
 				if (!d1.equals(d2)) {
 					attachListener(networkModel, d1, d2);
 				}
@@ -62,7 +62,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MTCModelWrapper networkModel, TreatmentCategorySet d1, TreatmentCategorySet d2) {
+	private void attachListener(MTCModelWrapper networkModel, TreatmentDefinition d1, TreatmentDefinition d2) {
 		QuantileSummary quantileSummary = getSummary(d1, d2);
 		if(quantileSummary != null) {
 			quantileSummary.addPropertyChangeListener(d_listener);
@@ -84,7 +84,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		return "\"" + getDrugAt(col).getLabel() + "\" relative to \"" + getDrugAt(row).getLabel() + "\"";
 	}
 
-	private TreatmentCategorySet getDrugAt(int idx) {
+	private TreatmentDefinition getDrugAt(int idx) {
 		return d_pm.getIncludedDrugs().get(idx);
 	}
 	
@@ -95,7 +95,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		return getSummary(getDrugAt(row), getDrugAt(col));
 	}
 	
-	private QuantileSummary getSummary(final TreatmentCategorySet d1, final TreatmentCategorySet d2) {
+	private QuantileSummary getSummary(final TreatmentDefinition d1, final TreatmentDefinition d2) {
 		return d_networkModel.getQuantileSummary(d_networkModel.getRelativeEffect(d1, d2));
 	}
 }

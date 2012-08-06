@@ -41,7 +41,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.SortedSetModel;
@@ -177,7 +177,7 @@ public class DomainImpl extends Domain {
 	}
 	
 	public ObservableList<Study> getStudies(Drug d) {
-		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(TreatmentCategorySet.createTrivial(d)));
+		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(TreatmentDefinition.createTrivial(d)));
 	}
 	
 	public ObservableList<Study> getStudies(Indication i) {
@@ -430,9 +430,9 @@ public class DomainImpl extends Domain {
 		}
 	}
 	public class DrugFilter implements Filter<Study> {
-		private final TreatmentCategorySet d_drugSet;
+		private final TreatmentDefinition d_drugSet;
 		
-		public DrugFilter(TreatmentCategorySet ds) {
+		public DrugFilter(TreatmentDefinition ds) {
 			d_drugSet = ds;
 		}
 		

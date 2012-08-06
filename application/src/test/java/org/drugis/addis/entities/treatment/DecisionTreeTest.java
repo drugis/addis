@@ -40,7 +40,7 @@ public class DecisionTreeTest {
 	public void testTrivialDecision() {
 		final DecisionTreeNode root = new LeafNode();
 		final DecisionTree tree = new DecisionTree(root);
-		assertEquals(root, tree.getCategory("Tomato"));
+		assertEquals(root, tree.decide("Tomato"));
 	}
 
 	@Test
@@ -49,8 +49,8 @@ public class DecisionTreeTest {
 		final DecisionTree tree = new DecisionTree(root);
 		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
 		tree.addEdge(new TypeEdge(Integer.class), root, new LeafNode(new Category(d_tc, "int")));
-		assertEquals("str", tree.getCategory("Tomato").getName());
-		assertEquals("int", tree.getCategory(42).getName());
+		assertEquals("str", tree.decide("Tomato").getName());
+		assertEquals("int", tree.decide(42).getName());
 	}
 
 	@Test(expected=IllegalStateException.class)
@@ -59,7 +59,7 @@ public class DecisionTreeTest {
 		final DecisionTree tree = new DecisionTree(root);
 		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
 		tree.addEdge(new TypeEdge(Integer.class), root, new LeafNode(new Category(d_tc, "int")));
-		tree.getCategory(3.0);
+		tree.decide(3.0);
 	}
 
 	@Test
@@ -73,9 +73,9 @@ public class DecisionTreeTest {
 		tree.addEdge(new TypeEdge(FixedDose.class), root, quantityChoice);
 		tree.addEdge(new RangeEdge(0.0, false, 20.0, false), quantityChoice, new LeafNode(new Category(d_tc, "low")));
 		tree.addEdge(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), quantityChoice, new LeafNode(new Category(d_tc, "high")));
-		assertEquals("str", tree.getCategory("Tomato").getName());
-		assertEquals("low", tree.getCategory(new FixedDose(20.0, unit)).getName());
-		assertEquals("high", tree.getCategory(new FixedDose(42.0, unit)).getName());
+		assertEquals("str", tree.decide("Tomato").getName());
+		assertEquals("low", tree.decide(new FixedDose(20.0, unit)).getName());
+		assertEquals("high", tree.decide(new FixedDose(42.0, unit)).getName());
 	}
 
 	@Test
@@ -101,9 +101,9 @@ public class DecisionTreeTest {
 		final TypeEdge edge = new TypeEdge(Integer.class);
 		tree.addEdge(new TypeEdge(String.class), root, new LeafNode(new Category(d_tc, "str")));
 		tree.addEdge(edge, root, new LeafNode(new Category(d_tc, "double")));
-		assertEquals("double", tree.getCategory(42).getName());
+		assertEquals("double", tree.decide(42).getName());
 
 		tree.replaceChild(edge, new LeafNode(new Category(d_tc, "int")));
-		assertEquals("int", tree.getCategory(42).getName());
+		assertEquals("int", tree.decide(42).getName());
 	}
 }

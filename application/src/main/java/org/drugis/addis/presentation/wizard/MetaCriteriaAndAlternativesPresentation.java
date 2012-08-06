@@ -43,7 +43,7 @@ import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.beans.AbstractObservable;
@@ -60,7 +60,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<TreatmentCategorySet> {
+public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<TreatmentDefinition> {
 	private final class AutoSelectMetaAnalysisListener implements ListDataListener {
 		public void intervalRemoved(ListDataEvent e) { }
 
@@ -261,9 +261,9 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	public BenefitRiskAnalysis<TreatmentCategorySet> createAnalysis(String id, DecisionContext context) {
-		TreatmentCategorySet baseline = d_baselineModel.getValue();
-		List<TreatmentCategorySet> alternatives = new ArrayList<TreatmentCategorySet>(getSelectedAlternatives());
+	public BenefitRiskAnalysis<TreatmentDefinition> createAnalysis(String id, DecisionContext context) {
+		TreatmentDefinition baseline = d_baselineModel.getValue();
+		List<TreatmentDefinition> alternatives = new ArrayList<TreatmentDefinition>(getSelectedAlternatives());
 		alternatives.remove(baseline);
 		return new MetaBenefitRiskAnalysis(
 				id,
@@ -316,8 +316,8 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		return metaAnalyses.size() == 1 ? metaAnalyses.get(0) : null;
 	}
 
-	private Set<TreatmentCategorySet> getAlternatives() {
-		Set<TreatmentCategorySet> alternatives = new TreeSet<TreatmentCategorySet>();
+	private Set<TreatmentDefinition> getAlternatives() {
+		Set<TreatmentDefinition> alternatives = new TreeSet<TreatmentDefinition>();
 		for(MetaAnalysis ma : d_metaAnalyses) {
 			if(ma.getIndication() == d_indicationModel.getValue())
 				alternatives.addAll(ma.getAlternatives());
@@ -344,14 +344,14 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	protected boolean getAlternativeShouldBeEnabled(TreatmentCategorySet alternative) {
+	protected boolean getAlternativeShouldBeEnabled(TreatmentDefinition alternative) {
 		if (!super.getAlternativeShouldBeEnabled(alternative)) {
 			return false;
 		}
-		return getAlternativeIncludedInAllSelectedAnalyses((TreatmentCategorySet) alternative);
+		return getAlternativeIncludedInAllSelectedAnalyses((TreatmentDefinition) alternative);
 	}
 
-	private boolean getAlternativeIncludedInAllSelectedAnalyses(TreatmentCategorySet alternative) {
+	private boolean getAlternativeIncludedInAllSelectedAnalyses(TreatmentDefinition alternative) {
 		boolean noAnalysesSelected = true;
 		List<OutcomeMeasure> selectedCriteria = getSelectedCriteria();
 		for (CriterionAnalysisPair pair : d_selectedMetaAnalysesPairs) {

@@ -42,7 +42,7 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
@@ -110,8 +110,8 @@ public class NetworkTableModelTest {
 	public void testUpdateFiresTableDataChangedEvent() throws InterruptedException {
 		ConsistencyWrapper model =  d_analysis.getConsistencyModel();
 		TaskUtil.run(model.getModel().getActivityTask());
-		TreatmentCategorySet d1 = d_analysis.getAlternatives().get(0);
-		TreatmentCategorySet d2 = d_analysis.getAlternatives().get(1);
+		TreatmentDefinition d1 = d_analysis.getAlternatives().get(0);
+		TreatmentDefinition d2 = d_analysis.getAlternatives().get(1);
 		QuantileSummary quantileSummary = model.getQuantileSummary(model.getRelativeEffect(d1, d2));
 		
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(d_tableModel));
@@ -127,10 +127,10 @@ public class NetworkTableModelTest {
 	public static NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
-		List<TreatmentCategorySet> drugs = Arrays.asList(new TreatmentCategorySet[] {
-				TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()),
-				TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()), 
-				TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),
@@ -142,10 +142,10 @@ public class NetworkTableModelTest {
 	public static NetworkMetaAnalysis buildMockNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyDeWilde(), ExampleData.buildStudyFava2002()});
-		List<TreatmentCategorySet> drugs = Arrays.asList(new TreatmentCategorySet[] {
-				TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()),
-				TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine()), 
-				TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
 		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointHamd(),
 				studies, drugs, ExampleData.buildMap(studies, drugs));

@@ -52,7 +52,7 @@ import org.drugis.addis.entities.mtcwrapper.SavedNodeSplitWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationConsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.addis.entities.mtcwrapper.SimulationNodeSplitWrapper;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.status.TaskTerminatedModel;
@@ -84,28 +84,28 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	private static final String ANALYSIS_TYPE = "Markov Chain Monte Carlo Network Meta-Analysis";
 	private InconsistencyWrapper d_inconsistencyModel;
 	private ConsistencyWrapper d_consistencyModel;
-	protected NetworkBuilder<TreatmentCategorySet> d_builder;
+	protected NetworkBuilder<TreatmentDefinition> d_builder;
 	protected Map<Parameter, NodeSplitPValueSummary> d_nodeSplitPValueSummaries = 
 		new HashMap<Parameter, NodeSplitPValueSummary>();
 	
 	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new TreeMap<BasicParameter, NodeSplitWrapper>(new ParameterComparator());
-	private ProxyMultivariateNormalSummary d_relativeEffectsSummary =  new ProxyMultivariateNormalSummary();
+	private ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<Study> studies, Collection<TreatmentCategorySet> alternatives,
-			Map<Study, Map<TreatmentCategorySet, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, List<Study> studies, Collection<TreatmentDefinition> alternatives,
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) throws IllegalArgumentException {
 		super(ANALYSIS_TYPE, name, indication, om, studies, sortAlternatives(alternatives), armMap);
 	}
 	
 	public NetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, Map<Study, Map<TreatmentDefinition, Arm>> armMap) throws IllegalArgumentException {
 		super(ANALYSIS_TYPE, name, indication, om, armMap);
 	}
 
 
-	private static List<TreatmentCategorySet> sortAlternatives(Collection<TreatmentCategorySet> alternatives) {
-		ArrayList<TreatmentCategorySet> list = new ArrayList<TreatmentCategorySet>(alternatives);
+	private static List<TreatmentDefinition> sortAlternatives(Collection<TreatmentDefinition> alternatives) {
+		ArrayList<TreatmentDefinition> list = new ArrayList<TreatmentDefinition>(alternatives);
 		Collections.sort(list);
 		return list;
 	}
@@ -132,7 +132,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return new SimulationNodeSplitWrapper(getBuilder(), nodeSplitModel);
 	}
 	
-	private NetworkBuilder<TreatmentCategorySet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentCategorySet> alternatives, Map<Study, Map<TreatmentCategorySet, Arm>> armMap) {
+	private NetworkBuilder<TreatmentDefinition> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> alternatives, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		return NetworkBuilderFactory.createBuilder(outcomeMeasure, studies, alternatives, armMap);
 	}
 	
@@ -205,7 +205,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		}
 	}
 	
-	public NetworkBuilder<TreatmentCategorySet> getBuilder() {
+	public NetworkBuilder<TreatmentDefinition> getBuilder() {
 		if (d_builder == null) {
 			d_builder = createBuilder(d_outcome, d_studies, getAlternatives(), d_armMap);
 		}
@@ -225,11 +225,11 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return NetworkBuilderFactory.isContinuous(d_outcome);
 	}
 	
-	public Treatment getTreatment(TreatmentCategorySet d) {
+	public Treatment getTreatment(TreatmentDefinition d) {
 		return getBuilder().getTreatmentMap().get(d);
 	}
 	
-	public TreatmentCategorySet getTreatmentCategorySet(Treatment t) {
+	public TreatmentDefinition getTreatmentDefinition(Treatment t) {
 		return getBuilder().getTreatmentMap().getKey(t);
 	}
 	
@@ -247,7 +247,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 			return false;
 		}
 		NetworkMetaAnalysis o = (NetworkMetaAnalysis) other;
-		for (TreatmentCategorySet d : o.getAlternatives()) {
+		for (TreatmentDefinition d : o.getAlternatives()) {
 			for (Study s : o.getIncludedStudies()) {
 				if (!EntityUtil.deepEqual(getArm(s, d), o.getArm(s, d))) {
 					return false;

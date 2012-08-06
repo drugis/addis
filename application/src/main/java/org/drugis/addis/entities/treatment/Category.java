@@ -29,8 +29,10 @@ package org.drugis.addis.entities.treatment;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.AbstractEntity;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
 
@@ -124,5 +126,19 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 
 	public Drug getDrug() {
 		return d_owner.getDrug();
+	}
+	
+	/**
+	 * @return true iff the given DrugTreatment falls within this Category.
+	 */
+	public boolean match(DrugTreatment t) {
+		return getDrug().equals(t.getDrug()) && match(t.getDose());
+	}
+	
+	/**
+	 * @return true iff the given Dose falls within this Category.
+	 */
+	public boolean match(AbstractDose dose) {
+		return this.equals(d_owner.getCategory(dose));
 	}
 }

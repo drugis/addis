@@ -29,7 +29,7 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.FilteredObservableList;
 
@@ -38,7 +38,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class TreatmentCategorySetPresentation extends PresentationModel<TreatmentCategorySet> implements StudyListPresentation, LabeledPresentation {
+public class TreatmentCategorySetPresentation extends PresentationModel<TreatmentDefinition> implements StudyListPresentation, LabeledPresentation {
 	
 	public class LabelModel extends DefaultLabelModel {
 		
@@ -55,7 +55,7 @@ public class TreatmentCategorySetPresentation extends PresentationModel<Treatmen
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
 	private FilteredObservableList<Study> d_studies;
 
-	public TreatmentCategorySetPresentation(final TreatmentCategorySet drugs, Domain domain) {
+	public TreatmentCategorySetPresentation(final TreatmentDefinition drugs, Domain domain) {
 		super(drugs);
 		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
 			@Override

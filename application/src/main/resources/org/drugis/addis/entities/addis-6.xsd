@@ -5,10 +5,10 @@
 			<xs:sequence>
 				<xs:element name="units" type="Units"/>
 				<xs:element name="indications" type="Indications"/>
-				<xs:element name="endpoints" type="Endpoints"/>
-				<xs:element name="adverseEvents" type="AdverseEvents"/>
 				<xs:element name="drugs" type="Drugs"/>
 				<xs:element name="treatmentCategorizations" type="TreatmentCategorizations"/>
+				<xs:element name="endpoints" type="Endpoints"/>
+				<xs:element name="adverseEvents" type="AdverseEvents"/>
 				<xs:element name="populationCharacteristics" type="PopulationCharacteristics"/>
 				<xs:element name="studies" type="Studies"/>
 				<xs:element name="metaAnalyses" type="MetaAnalyses"/>
@@ -24,21 +24,9 @@
 			<xs:selector xpath="studies/study/arms/arm/drug"/>
 			<xs:field xpath="@name"/>
 		</xs:keyref>
-		<xs:keyref name="metaBenefitRiskAnalysisBaselineKeyRef" refer="drugNameKey">
-			<xs:selector xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/baseline"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
-		<xs:keyref name="metaBenefitRiskAnalysisdrugKeyRef" refer="drugNameKey">
-			<xs:selector xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/drugs/drug"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
-		<xs:keyref name="metaAnalysesDrugNameKeyRef" refer="drugNameKey">
-			<xs:selector xpath="metaAnalyses/*/alternative/drug"/>
-			<xs:field xpath="@name"/>
-		</xs:keyref>
 		<xs:keyref name="TreatmentCategorizationDrugNameKeyRef" refer="drugNameKey">
-			<xs:selector xpath="treatmentCategorization/drug"/>
-			<xs:field xpath="@name"/>
+			<xs:selector xpath="treatmentCategorizations/treatmentCategorization"/>
+			<xs:field xpath="@drug"/>
 		</xs:keyref>
 		<xs:key name="indicationNameKey">
 			<xs:selector xpath="indications/indication"/>
@@ -124,6 +112,22 @@
 			<xs:selector
 				xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/metaAnalyses/metaAnalysis"/>
 			<xs:field xpath="@name"/>
+		</xs:keyref>
+		<xs:keyref refer="drugNameKey" name="DrugTreatmentDrugKeyRef">
+			<xs:selector xpath="studies/study/activities/studyActivity/activity/treatment/drugTreatment/drug"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		<xs:keyref name="metaAnalysisTreatmentDefinitionDrugKeyRef" refer="drugNameKey">
+			<xs:selector xpath="metaAnalyses/*/alternative/treatmentDefinition/*"/>
+			<xs:field xpath="@drug"/>
+		</xs:keyref>
+		<xs:keyref name="metaBRAnalysisBaselineTreatmentDefinitionDrugKeyRef" refer="drugNameKey">
+			<xs:selector xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/baseline/treatmentDefinition/*"/>
+			<xs:field xpath="@drug"/>
+		</xs:keyref>
+		<xs:keyref name="metaBRAnalysisAlternativeTreatmentDefinitionDrugKeyRef" refer="drugNameKey">
+			<xs:selector xpath="benefitRiskAnalyses/metaBenefitRiskAnalysis/alternatives/treatmentDefinition/*"/>
+			<xs:field xpath="@drug"/>
 		</xs:keyref>
 	</xs:element>
 
@@ -217,13 +221,13 @@
 	</xs:complexType>
 	<xs:complexType name="TreatmentCategorization">
 		<xs:sequence minOccurs="1" maxOccurs="1">
-			<xs:element name="drug" type="NameReference"/>
 			<xs:element name="unit" type="DoseUnit"/>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="category" type="Category"/>
 			</xs:sequence>
 			<xs:element name="decisionTree" type="DecisionTree"/>
 		</xs:sequence>
+		<xs:attribute name="drug" type="xs:string"/>
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="OutcomeMeasure">
@@ -268,7 +272,7 @@
 		<xs:complexContent>
 			<xs:extension base="MetaAnalysis">
 				<xs:sequence maxOccurs="2" minOccurs="2">
-					<xs:element name="alternative" type="Alternative"/>
+					<xs:element name="alternative" type="MetaAnalysisAlternative"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -278,7 +282,7 @@
 			<xs:extension base="MetaAnalysis">
 				<xs:sequence>
 					<xs:element maxOccurs="unbounded" minOccurs="2" name="alternative"
-						type="Alternative"/>
+						type="MetaAnalysisAlternative"/>
 					<xs:element minOccurs="0" name="consistencyResults" type="ConsistencyResults"/>
 					<xs:element minOccurs="0" name="inconsistencyResults"
 						type="InconsistencyResults"/>
@@ -291,8 +295,20 @@
 	<xs:complexType name="MetaBenefitRiskAnalysis">
 		<xs:sequence>
 			<xs:element name="indication" type="NameReference"/>
-			<xs:element name="baseline" type="AnalysisDrugs"/>
-			<xs:element name="alternatives" type="AlternativeDrugSets"/>
+			<xs:element name="baseline">
+				<xs:complexType>
+					<xs:sequence minOccurs="1" maxOccurs="1">
+						<xs:element name="treatmentDefinition" type="TreatmentDefinition"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="alternatives">
+				<xs:complexType>
+					<xs:sequence minOccurs="2" maxOccurs="unbounded">
+						<xs:element name="treatmentDefinition" type="TreatmentDefinition"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="metaAnalyses" type="MetaAnalysisReferences"/>
 			<xs:element name="decisionContext" type="DecisionContext" minOccurs="0"/>
 		</xs:sequence>
@@ -525,20 +541,10 @@
 
 	<!-- Helpers for Meta-analyses -->
 
-	<xs:complexType name="Alternative">
+	<xs:complexType name="MetaAnalysisAlternative">
 		<xs:sequence>
-			<xs:element name="drugs" type="AnalysisDrugs"/>
+			<xs:element name="treatmentDefinition" type="TreatmentDefinition"/>
 			<xs:element name="arms" type="AnalysisArms"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="AlternativeDrugSets">
-		<xs:sequence minOccurs="2" maxOccurs="unbounded">
-			<xs:element name="alternative" type="AnalysisDrugs"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="AnalysisDrugs">
-		<xs:sequence maxOccurs="unbounded">
-			<xs:element name="drug" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="AnalysisArms">
@@ -572,7 +578,7 @@
 	<xs:complexType name="NodeSplitResults">
 		<xs:sequence>
 			<xs:element name="mcmcSettings" type="MCMCSettings"/>
-			<xs:element name="splitNode" type="AlternativePair"/>
+			<xs:element name="splitNode" type="TreatmentDefinitionPair"/>
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="summary" type="ParameterSummary"/>
 		</xs:sequence>
 		<xs:attribute name="pValue" type="xs:double"/>
@@ -616,21 +622,21 @@
 		</xs:sequence>
 		<xs:attribute name="psrf" use="optional" type="xs:double"/>
 	</xs:complexType>
-	<xs:complexType name="AlternativePair">
+	<xs:complexType name="TreatmentDefinitionPair">
 		<xs:sequence>
-			<xs:element minOccurs="2" maxOccurs="2" name="alternative" type="Drugs"/>
+			<xs:element minOccurs="2" maxOccurs="2" name="treatmentDefinition" type="TreatmentDefinition"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="RelativeEffectParameter">
 		<xs:complexContent>
-			<xs:extension base="AlternativePair">
+			<xs:extension base="TreatmentDefinitionPair">
 				<xs:attribute name="whichEvidence" type="EvidenceTypeEnum" default="ALL"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="InconsistencyParameter">
 		<xs:sequence>
-			<xs:element minOccurs="3" maxOccurs="unbounded" name="alternative" type="Drugs"/>
+			<xs:element minOccurs="3" maxOccurs="unbounded" name="treatmentDefinition" type="TreatmentDefinition"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="VarianceParameter">
@@ -639,67 +645,95 @@
 
 	<!-- Elements for use within treatment categorizations -->
 	
+	<xs:complexType name="Category">
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	
 	<xs:complexType name="DecisionTree">
 		<xs:sequence maxOccurs="1" minOccurs="1">
-			<xs:element type="ChoiceNode" name="rootNode"></xs:element>
+			<xs:element type="TypeNode" name="rootNode"/>
 		</xs:sequence>
 	</xs:complexType>
-	
-	<xs:complexType name="Category">
-		<xs:attribute name="name" type="xs:string"></xs:attribute>
-	</xs:complexType>
-	
+
 	<xs:complexType name="Edge" abstract="true">
-		<xs:sequence minOccurs="1" maxOccurs="1">
-			<xs:element name="node" type="Node"></xs:element>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"></xs:attribute>
+		<xs:choice>
+			<xs:element name="choiceNode" type="ChoiceNode"/>
+			<xs:element name="leafNode" type="LeafNode"/>
+		</xs:choice>
 	</xs:complexType>
-	
+
 	<xs:complexType name="TypeEdge">
 		<xs:complexContent>
 			<xs:extension base="Edge">
-				<xs:attribute name="beanClass" type="xs:string"></xs:attribute>
+				<xs:attribute name="matchType" type="DoseType"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="RangeEdge">
 		<xs:complexContent>
 			<xs:extension base="Edge">
-				<xs:attribute type="xs:double" name="rangeLowerBound"></xs:attribute>
-				<xs:attribute type="xs:boolean" name="isRangeLowerBoundOpen"></xs:attribute>
-				<xs:attribute type="xs:double" name="rangeUpperBound"></xs:attribute>
-				<xs:attribute type="xs:boolean" name="isRangeUpperBoundOpen"></xs:attribute>
+				<xs:attribute type="xs:double" name="rangeLowerBound"/>
+				<xs:attribute type="xs:boolean" name="isRangeLowerBoundOpen"/>
+				<xs:attribute type="xs:double" name="rangeUpperBound"/>
+				<xs:attribute type="xs:boolean" name="isRangeUpperBoundOpen"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
-	<xs:complexType name="Node" abstract="true">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="edge" type="Edge"/>
+
+	<xs:complexType name="TypeNode">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="typeEdge" type="TypeEdge"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ChoiceNode">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="rangeEdge" type="RangeEdge"/>
+		</xs:sequence>
+		<xs:attribute name="objectType" type="DoseType" use="required"/>
+		<xs:attribute name="property" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:simpleType name="DoseType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UnknownDose"/>
+			<xs:enumeration value="FixedDose"/>
+			<xs:enumeration value="FlexibleDose"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="LeafNode">
+		<xs:sequence minOccurs="0" maxOccurs="1">
+			<xs:element name="category" type="NameReference"/>
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="ChoiceNode">
-		<xs:complexContent >
-			<xs:extension base="Node">
-				<xs:attribute name="beanClass" type="xs:string" use="required"/>
-				<xs:attribute name="propertyName" type="xs:string" use="required"/>
-			</xs:extension>
-		</xs:complexContent>
+	<xs:complexType name="TreatmentCategorizationRef">
+		<xs:attribute name="drug" type="xs:string"/>
+		<xs:attribute name="name" type="xs:string"/>		
 	</xs:complexType>
 	
-	<xs:complexType name="LeafNode">
+	<xs:complexType name="TreatmentCategoryRef">
 		<xs:complexContent>
-			<xs:extension base="Node">
-				<xs:sequence minOccurs="0" maxOccurs="1">
-					<xs:element name="category" type="NameReference"/>
-				</xs:sequence>
+			<xs:extension base="TreatmentCategorizationRef">
+				<xs:attribute name="categoryName" type="xs:string"></xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:complexType name="TrivialCategory">
+		<xs:attribute name="drug" type="xs:string"></xs:attribute>	
+	</xs:complexType>
 	
+	<xs:complexType name="TreatmentDefinition">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element type="TreatmentCategoryRef" name="richCategory"></xs:element>
+				<xs:element type="TrivialCategory" name="trivialCategory"></xs:element>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
 	
 	<!-- Enums and other simple utility types (doses, alphanumeric and such) -->
 

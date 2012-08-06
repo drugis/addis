@@ -67,7 +67,7 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.event.TreeModelEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,7 +104,7 @@ public class DomainTreeModelTest {
 		d_firstStudy.setMeasurement(d_firstEndpoint, pg, d_firstEndpoint.buildMeasurement(pg));
 		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
 		
-		d_firstMetaAnalysis = ExampleData.createRandomEffectsMetaAnalysis("meta", d_firstEndpoint, Collections.singletonList((Study)d_firstStudy), TreatmentCategorySet.createTrivial(d_firstDrug), TreatmentCategorySet.createTrivial(d_firstDrug));
+		d_firstMetaAnalysis = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_firstEndpoint, Collections.singletonList((Study)d_firstStudy), TreatmentDefinition.createTrivial(d_firstDrug), TreatmentDefinition.createTrivial(d_firstDrug));
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
@@ -319,7 +319,7 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		RandomEffectsMetaAnalysis study = ExampleData.createRandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)), TreatmentCategorySet.createTrivial(d_firstDrug), TreatmentCategorySet.createTrivial(d_firstDrug));
+		RandomEffectsMetaAnalysis study = ExampleData.buildRandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)), TreatmentDefinition.createTrivial(d_firstDrug), TreatmentDefinition.createTrivial(d_firstDrug));
 		d_domain.getMetaAnalyses().add(study);
 		assertTrue(d_treeModel.isLeaf(study));
 		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));

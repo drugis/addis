@@ -37,14 +37,14 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Test;
 
 public class LyndOBrienPresentationTest {
 	@Test
 	public void testCreateBeforeMeasurementsReady() {
 		MetaBenefitRiskAnalysis br = buildAnalysis();
-		new LyndOBrienPresentation<TreatmentCategorySet, MetaBenefitRiskAnalysis>(br);
+		new LyndOBrienPresentation<TreatmentDefinition, MetaBenefitRiskAnalysis>(br);
 	}
 	
 	public static MetaBenefitRiskAnalysis buildAnalysis() {
@@ -59,9 +59,9 @@ public class LyndOBrienPresentationTest {
 		metaAnalysisList.add(ExampleData.buildMetaAnalysisConv());
 		
 		Drug parox = ExampleData.buildDrugParoxetine();
-		List<TreatmentCategorySet> fluoxList = Collections.singletonList(TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine()));
+		List<TreatmentDefinition> fluoxList = Collections.singletonList(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		
 		return new MetaBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, metaAnalysisList, TreatmentCategorySet.createTrivial(parox), fluoxList, AnalysisType.LyndOBrien);										
+										indication, metaAnalysisList, TreatmentDefinition.createTrivial(parox), fluoxList, AnalysisType.LyndOBrien);										
 	}
 }

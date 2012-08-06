@@ -34,7 +34,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
 
 public class NetworkRelativeEffectTableCellRenderer extends SummaryCellRenderer implements TableCellRenderer {
@@ -49,8 +49,8 @@ public class NetworkRelativeEffectTableCellRenderer extends SummaryCellRenderer 
 		Component component =  super.getTableCellRendererComponent(
 				table, cellContents, isSelected, hasFocus, row, column);
 
-		if (cellContents instanceof TreatmentCategorySet) {
-			String text = ((TreatmentCategorySet) cellContents).getLabel();
+		if (cellContents instanceof TreatmentDefinition) {
+			String text = ((TreatmentDefinition) cellContents).getLabel();
 			component = (new DefaultTableCellRenderer()).getTableCellRendererComponent(
 					table, text, isSelected, hasFocus, row, column);
 			component.setBackground(Color.LIGHT_GRAY);

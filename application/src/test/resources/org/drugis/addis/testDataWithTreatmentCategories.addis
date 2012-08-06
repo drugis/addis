@@ -5,114 +5,141 @@
         <unit name="liter" symbol="l"/>
     </units>
     <indications/>
-    <endpoints/>
-    <adverseEvents/>
     <drugs>
         <drug name="Fluoxetine" atcCode="N06AB03"/>
         <drug name="Paroxetine" atcCode="N06AB05"/>
     </drugs>
     <treatmentCategorizations>
-        <treatmentCategorization name="HD/LD">
-            <drug name="Fluoxetine"/>
-            <unit scaleModifier="MICRO" perTime="P7D">
-                <unit name="gram"/>
+        <treatmentCategorization drug="Fluoxetine" name="HD/LD">
+            <unit scaleModifier="MILLI" perTime="P1M">
+                <unit name="liter"/>
             </unit>
-            <category name="LD"/>
             <category name="HD"/>
+            <category name="LD"/>
             <decisionTree>
-                <rootNode propertyName="class">
-                    <edge xsi:type="TypeEdge" beanClass="FixedDose">
-                        <node xsi:type="ChoiceNode" beanClass="FixedDose" propertyName="quantity">
-                            <edge xsi:type="RangeEdge" rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
-<node xsi:type="LeafNode">
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <choiceNode objectType="FixedDose" property="quantity">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+<leafNode>
     <category name="LD"/>
-</node>
-                            </edge>
-                            <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-<node xsi:type="LeafNode">
+</leafNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode>
     <category name="HD"/>
-</node>
-                            </edge>
-                        </node>
-                    </edge>
-                    <edge xsi:type="TypeEdge" beanClass="FlexibleDose">
-                        <node xsi:type="ChoiceNode" beanClass="FlexibleDose" propertyName="minDose">
-                            <edge xsi:type="RangeEdge" rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
-<node xsi:type="ChoiceNode" beanClass="FlexibleDose" propertyName="maxDose">
-    <edge xsi:type="RangeEdge" rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
-        <node xsi:type="LeafNode">
+</leafNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <choiceNode objectType="FlexibleDose" property="minDose">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+        <leafNode>
             <category name="LD"/>
-        </node>
-    </edge>
-    <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <node xsi:type="LeafNode"/>
-    </edge>
-</node>
-                            </edge>
-                            <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-<node xsi:type="ChoiceNode" beanClass="FlexibleDose" propertyName="maxDose">
-    <edge xsi:type="RangeEdge" rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <node xsi:type="LeafNode">
+        </leafNode>
+    </rangeEdge>
+    <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode/>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode>
             <category name="HD"/>
-        </node>
-    </edge>
-</node>
-                            </edge>
-                        </node>
-                    </edge>
-                    <edge xsi:type="TypeEdge" beanClass="UnknownDose">
-                        <node xsi:type="LeafNode"/>
-                    </edge>
+        </leafNode>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode/>
+                    </typeEdge>
                 </rootNode>
             </decisionTree>
         </treatmentCategorization>
-        <treatmentCategorization name="Exclude">
-            <drug name="Fluoxetine"/>
-            <unit scaleModifier="MICRO" perTime="P7D">
-                <unit name="gram"/>
+        <treatmentCategorization drug="Paroxetine" name="HD/LD">
+            <unit scaleModifier="MILLI" perTime="P1M">
+                <unit name="liter"/>
             </unit>
-            <category name="Some dose"/>
+            <category name="LD"/>
+            <category name="HD"/>
             <decisionTree>
-                <rootNode propertyName="class">
-                    <edge xsi:type="TypeEdge" beanClass="FixedDose">
-                        <node xsi:type="LeafNode">
-                            <category name="Some dose"/>
-                        </node>
-                    </edge>
-                    <edge xsi:type="TypeEdge" beanClass="FlexibleDose">
-                        <node xsi:type="LeafNode">
-                            <category name="Some dose"/>
-                        </node>
-                    </edge>
-                    <edge xsi:type="TypeEdge" beanClass="UnknownDose">
-                        <node xsi:type="LeafNode"/>
-                    </edge>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <choiceNode objectType="FixedDose" property="quantity">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="10.0" isRangeUpperBoundOpen="true">
+<leafNode>
+    <category name="LD"/>
+</leafNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode>
+    <category name="HD"/>
+</leafNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <choiceNode objectType="FlexibleDose" property="minDose">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="10.0" isRangeUpperBoundOpen="true">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="10.0" isRangeUpperBoundOpen="true">
+        <leafNode>
+            <category name="LD"/>
+        </leafNode>
+    </rangeEdge>
+    <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode/>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode>
+            <category name="HD"/>
+        </leafNode>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode/>
+                    </typeEdge>
                 </rootNode>
             </decisionTree>
         </treatmentCategorization>
-        <treatmentCategorization name="Dose">
-            <drug name="Paroxetine"/>
-            <unit scaleModifier="MICRO" perTime="P7D">
-                <unit name="gram"/>
+        <treatmentCategorization drug="Fluoxetine" name="Unknown">
+            <unit scaleModifier="MILLI" perTime="P1M">
+                <unit name="liter"/>
             </unit>
-            <category name="Dose"/>
+            <category name="Unknown"/>
             <decisionTree>
-                <rootNode propertyName="class">
-                    <edge xsi:type="TypeEdge" beanClass="FixedDose">
-                        <node xsi:type="LeafNode"/>
-                    </edge>
-                    <edge xsi:type="TypeEdge" beanClass="FlexibleDose">
-                        <node xsi:type="LeafNode"/>
-                    </edge>
-                    <edge xsi:type="TypeEdge" beanClass="UnknownDose">
-                        <node xsi:type="LeafNode">
-                            <category name="Dose"/>
-                        </node>
-                    </edge>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <leafNode/>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <leafNode/>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode>
+                            <category name="Unknown"/>
+                        </leafNode>
+                    </typeEdge>
                 </rootNode>
             </decisionTree>
         </treatmentCategorization>
     </treatmentCategorizations>
+    <endpoints/>
+    <adverseEvents/>
     <populationCharacteristics/>
     <studies/>
     <metaAnalyses/>

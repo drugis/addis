@@ -13,3 +13,4 @@ version
 target
 *.log
 /application/transformedDefaultData.xml
+/application/src/main/resources/org/drugis/addis/entities/instance1.xml

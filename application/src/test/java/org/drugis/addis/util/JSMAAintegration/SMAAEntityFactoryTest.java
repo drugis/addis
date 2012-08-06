@@ -41,7 +41,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
-import org.drugis.addis.entities.treatment.TreatmentCategorySet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.JSMAAintegration.MetaBenefitRiskSMAAFactory;
 import org.drugis.addis.util.JSMAAintegration.StudyBenefitRiskSMAAFactory;
 import org.junit.Before;
@@ -69,11 +69,11 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateMeanVector() {
-		TreatmentCategorySet a1 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
-		TreatmentCategorySet a2 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
-		TreatmentCategorySet a3 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugEscitalopram());
-		TreatmentCategorySet a4 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
-		List<TreatmentCategorySet> alts = Arrays.asList(a1, a2, a3, a4);
+		TreatmentDefinition a1 = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition a2 = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentDefinition a3 = TreatmentDefinition.createTrivial(ExampleData.buildDrugEscitalopram());
+		TreatmentDefinition a4 = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		List<TreatmentDefinition> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[] = new double [] {1.2, 0.3, -8.4};
 		assertArrayEquals(new double[] {0.0, m[0], m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a1, m), 0.0);
 		assertArrayEquals(new double[] {m[0], 0.0, m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a2, m), 0.0);
@@ -82,11 +82,11 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCovarianceMatrix() {
-		TreatmentCategorySet a1 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugFluoxetine());
-		TreatmentCategorySet a2 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugParoxetine());
-		TreatmentCategorySet a3 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugEscitalopram());
-		TreatmentCategorySet a4 = TreatmentCategorySet.createTrivial(ExampleData.buildDrugSertraline());
-		List<TreatmentCategorySet> alts = Arrays.asList(a1, a2, a3, a4);
+		TreatmentDefinition a1 = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition a2 = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentDefinition a3 = TreatmentDefinition.createTrivial(ExampleData.buildDrugEscitalopram());
+		TreatmentDefinition a4 = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		List<TreatmentDefinition> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[][] = new double [][] {{1.2, 0.3, -8.4}, {1.8, -1.4, 0.5}, {1.0, 0.3, 0.4}};
 		
 		double m1[][] = new double[][] {{0.0, 0.0, 0.0, 0.0}, {0.0, 1.2, 0.3, -8.4}, {0.0, 1.8, -1.4, 0.5}, {0.0, 1.0, 0.3, 0.4}};

@@ -102,7 +102,7 @@ public class TreatmentCategorizationTest {
 		final FlexibleDose highDose = new FlexibleDose(new Interval<Double>(20.0, 30.0), DoseUnit.MILLIGRAMS_A_DAY);
 
 		assertEquals("Flexible Dose", d_treatment.getCategory(lowDose).getName());
-		assertEquals(LeafNode.NAME_EXCLUDE, d_treatment.getCategory(highDose).getName());
+		assertNull(d_treatment.getCategory(highDose));
 	}
 
 	@Test
@@ -115,17 +115,17 @@ public class TreatmentCategorizationTest {
 		tree.addChild(new RangeEdge(0.0, false, Double.POSITIVE_INFINITY, false), choice, child);
 		d_treatment.splitRange(choice, 20.0, false);
 
-		assertNull(tree.getCategory(new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
-		assertEquals(child, tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
-		assertEquals(child, tree.getCategory(new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertNull(tree.decide(new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
+		assertEquals(child, tree.decide(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertEquals(child, tree.decide(new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY)));
 
 		d_treatment.splitRange(choice, 10.0, false);
-		assertEquals(child, tree.getCategory(new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY)));
-		assertNull(tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
+		assertEquals(child, tree.decide(new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertNull(tree.decide(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)).getCategory());
 
 		final DecisionTreeNode medium = new LeafNode(new Category(d_treatment, "Med Dose"));
 		tree.replaceChild(tree.findMatchingEdge(choice, 18.0), medium);
-		assertEquals(medium, tree.getCategory(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		assertEquals(medium, tree.decide(new FixedDose(18.0, DoseUnit.MILLIGRAMS_A_DAY)));
 	}
 
 	@Test
@@ -139,9 +139,9 @@ public class TreatmentCategorizationTest {
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), excludeNode);
 		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), UnknownDose.class), unknownNode);
 
-		assertEquals(someCatNode, d_treatment.getCategory(new FixedDose()));
-		assertEquals(excludeNode, d_treatment.getCategory(new FlexibleDose()));
-		assertEquals(unknownNode, d_treatment.getCategory(new UnknownDose()));
+		assertEquals(someCatNode.getCategory(), d_treatment.getCategory(new FixedDose()));
+		assertEquals(excludeNode.getCategory(), d_treatment.getCategory(new FlexibleDose()));
+		assertEquals(unknownNode.getCategory(), d_treatment.getCategory(new UnknownDose()));
 	}
 	
 	@Test
