@@ -62,7 +62,6 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.collections15.CollectionUtils;
 import org.custommonkey.xmlunit.Diff;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Activity;

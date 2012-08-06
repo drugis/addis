@@ -89,7 +89,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		new HashMap<Parameter, NodeSplitPValueSummary>();
 	
 	private Map<BasicParameter, NodeSplitWrapper> d_nodeSplitModels = new TreeMap<BasicParameter, NodeSplitWrapper>(new ParameterComparator());
-	private ProxyMultivariateNormalSummary d_relativeEffectsSummary =  new ProxyMultivariateNormalSummary();
+	private ProxyMultivariateNormalSummary d_relativeEffectsSummary = new ProxyMultivariateNormalSummary();
 	
 
 	public NetworkMetaAnalysis(String name, Indication indication,
