@@ -61,7 +61,11 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		return (ObservableGraph<DecisionTreeNode, DecisionTreeEdge>) delegate;
 	}
 
-	public LeafNode getCategory(final Object obj) {
+	/**
+	 * Classify the given object.
+	 * @throws IllegalStateException If the tree is incomplete, or the obj is of an incompatible type.
+	 */
+	public LeafNode decide(final Object obj) {
 		return decide(obj, getRoot());
 	}
 

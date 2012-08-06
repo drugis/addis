@@ -24,10 +24,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util;
+package org.drugis.addis.util.jaxb;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
-import static org.drugis.addis.util.JAXBConvertor.nameReference;
+import static org.drugis.addis.util.jaxb.JAXBConvertor.nameReference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -45,11 +45,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -61,6 +62,7 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.collections15.CollectionUtils;
 import org.custommonkey.xmlunit.Diff;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Activity;
@@ -80,7 +82,6 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -118,10 +119,7 @@ import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
-import org.drugis.addis.entities.data.Alternative;
-import org.drugis.addis.entities.data.AlternativeDrugSets;
 import org.drugis.addis.entities.data.AnalysisArms;
-import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.Arms;
@@ -137,12 +135,16 @@ import org.drugis.addis.entities.data.DateWithNotes;
 import org.drugis.addis.entities.data.Epochs;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
+import org.drugis.addis.entities.data.MetaAnalysisAlternative;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
-import org.drugis.addis.entities.data.NameReference;
+import org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Alternatives;
+import org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Baseline;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
+import org.drugis.addis.entities.data.NetworkMetaAnalysis;
 import org.drugis.addis.entities.data.Notes;
 import org.drugis.addis.entities.data.OutcomeMeasure;
 import org.drugis.addis.entities.data.OutcomeMeasuresReferences;
+import org.drugis.addis.entities.data.PairwiseMetaAnalysis;
 import org.drugis.addis.entities.data.RateMeasurement;
 import org.drugis.addis.entities.data.RateVariable;
 import org.drugis.addis.entities.data.References;
@@ -150,10 +152,13 @@ import org.drugis.addis.entities.data.RelativeTime;
 import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.Treatment;
+import org.drugis.addis.entities.data.TreatmentCategoryRef;
+import org.drugis.addis.entities.data.TrivialCategory;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.imports.PubMedDataBankRetriever;
-import org.drugis.addis.util.JAXBConvertor.ConversionException;
-import org.drugis.addis.util.JAXBHandler.XmlFormatType;
-import org.drugis.addis.util.convertors.NetworkMetaAnalysisConverter;
+import org.drugis.addis.util.EntityUtil;
+import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
+import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -164,9 +169,10 @@ import org.xml.sax.SAXException;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
-	private static final String TEST_DATA_A_0 = "../testDataA-0.xml";
-	private static final String TEST_DATA_3 = "../testData-3.addis";
-	private static final String TEST_DATA_A_1 = "../testDataA-1.addis";
+	public static final String TEST_DATA_PATH = "../../";
+	private static final String TEST_DATA_A_0 = TEST_DATA_PATH + "testDataA-0.xml";
+	private static final String TEST_DATA_3 = TEST_DATA_PATH + "testData-3.addis";
+	private static final String TEST_DATA_A_1 = TEST_DATA_PATH + "testDataA-1.addis";
 	private static final Duration ZERO_DAYS = EntityUtil.createDuration("P0D");
 
 	private JAXBContext d_jaxb;
@@ -1413,6 +1419,33 @@ public class JAXBConvertorTest {
 		assertEquals(studyData, JAXBConvertor.convertStudy(studyEntity));
 	}
 
+	final class MetaAnalysisAlternativeComparator implements Comparator<MetaAnalysisAlternative> {
+		public int compare(MetaAnalysisAlternative o1, MetaAnalysisAlternative o2) {
+			SortedSet<String> drugs1 = getDrugs(o1);
+			SortedSet<String> drugs2 = getDrugs(o2);
+			drugs1.removeAll(drugs2);
+			drugs2.removeAll(drugs1);
+			if (drugs1.size() == 0 && drugs2.size() == 0) {
+				return 0;
+			}
+			if (drugs1.size() == 0) {
+				return -1;
+			}
+			if (drugs2.size() == 0) {
+				return 1;
+			}
+			return drugs1.iterator().next().compareTo(drugs2.iterator().next());
+		}
+
+		private SortedSet<String> getDrugs(MetaAnalysisAlternative o1) {
+			SortedSet<String> set = new TreeSet<String>();
+			for (Object a : o1.getTreatmentDefinition().getRichCategoryOrTrivialCategory()) {
+				set.add(getDrugFromTrivialOrRichCategory(a));
+			}
+			return set;
+		}
+	}
+
 	public class MetaAnalysisWithStudies {
 		public org.drugis.addis.entities.data.PairwiseMetaAnalysis d_pwma;
 		public org.drugis.addis.entities.data.NetworkMetaAnalysis d_nwma;
@@ -1445,12 +1478,17 @@ public class JAXBConvertorTest {
 		// -----------------------------------
 		Study study = JAXBConvertor.convertStudy(ma.d_studies.get(0), domain);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(study, study.getArms().get(0), study
-				.getArms().get(1)));
+		Arm base = study.getArms().get(0);
+		Arm subject = study.getArms().get(1);
+		armsList.add(new StudyArmsEntry(study, base, subject));
 		domain.getStudies().add(study);
 
-		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(name,
-				ExampleData.buildEndpointHamd(), armsList);
+		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(
+				name, 
+				ExampleData.buildEndpointHamd(), 
+				study.getDrugs(base),
+				study.getDrugs(subject),
+				armsList, false);
 
 		assertEntityEquals(pwma,
 				JAXBConvertor.convertPairWiseMetaAnalysis(ma.d_pwma, domain));
@@ -1470,17 +1508,10 @@ public class JAXBConvertorTest {
 		pwma.setEndpoint(nameReference(ExampleData.buildEndpointHamd()
 				.getName()));
 		// Base
-		Alternative combi = new Alternative();
-		if (combi.getDrugs() == null) {
-			combi.setDrugs(new AnalysisDrugs());
+		MetaAnalysisAlternative combi = new MetaAnalysisAlternative();
+		if (combi.getTreatmentDefinition() == null) {
+			combi.setTreatmentDefinition(createTrivialTreatmentDefinition(new String[] {ExampleData.buildDrugFluoxetine().getName(), ExampleData.buildDrugSertraline().getName() }));
 		}
-		combi.getDrugs().getDrug().clear();
-		combi.getDrugs()
-				.getDrug()
-				.add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
-		combi.getDrugs()
-				.getDrug()
-				.add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms combiArms = new AnalysisArms();
 		combiArms.getArm().add(
 				JAXBConvertor.armReference(study_name, study.getArms().getArm()
@@ -1488,14 +1519,11 @@ public class JAXBConvertorTest {
 		combi.setArms(combiArms);
 		pwma.getAlternative().add(combi);
 		// Subject
-		Alternative parox = new Alternative();
-		if (parox.getDrugs() == null) {
-			parox.setDrugs(new AnalysisDrugs());
+		MetaAnalysisAlternative parox = new MetaAnalysisAlternative();
+		if (parox.getTreatmentDefinition() == null) {
+			parox.setTreatmentDefinition(createTrivialTreatmentDefinition(new String[] {ExampleData.buildDrugParoxetine().getName()} ));
 		}
-		parox.getDrugs().getDrug().clear();
-		parox.getDrugs()
-				.getDrug()
-				.add(nameReference(ExampleData.buildDrugParoxetine().getName()));
+
 		AnalysisArms paroxArms = new AnalysisArms();
 		paroxArms.getArm().add(
 				JAXBConvertor.armReference(study_name, study.getArms().getArm()
@@ -1573,37 +1601,30 @@ public class JAXBConvertorTest {
 
 		
 		// Fluoxetine
-		Alternative combi = new Alternative();
-		if (combi.getDrugs() == null) {
-			combi.setDrugs(new AnalysisDrugs());
+		MetaAnalysisAlternative combi = new MetaAnalysisAlternative();
+		if (combi.getTreatmentDefinition() == null) {
+			combi.setTreatmentDefinition(createTrivialTreatmentDefinition(new String[] {ExampleData.buildDrugFluoxetine().getName(), ExampleData.buildDrugSertraline().getName() }));
 		}
-		combi.getDrugs().getDrug().clear();
-		combi.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugFluoxetine().getName()));
-		combi.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms combiArms = new AnalysisArms();
 		combiArms.getArm().add(JAXBConvertor.armReference(study1Name, arms1.getArm().get(0).getName())); // study 1
 		combiArms.getArm().add(JAXBConvertor.armReference(study3Name, arms3.getArm().get(2).getName())); // study 3
 		combi.setArms(combiArms);
 		nma.getAlternative().add(combi);
 		// Paroxetine		
-		Alternative parox = new Alternative();
-		if (parox.getDrugs() == null) {
-			parox.setDrugs(new AnalysisDrugs());
+		MetaAnalysisAlternative parox = new MetaAnalysisAlternative();
+		if (parox.getTreatmentDefinition() == null) {
+			parox.setTreatmentDefinition(createTrivialTreatmentDefinition(new String[] {ExampleData.buildDrugParoxetine().getName() }));
 		}
-		parox.getDrugs().getDrug().clear();
-		parox.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugParoxetine().getName()));
 		AnalysisArms paroxArms = new AnalysisArms();
 		paroxArms.getArm().add(JAXBConvertor.armReference(study2Name, arms2.getArm().get(0).getName())); // study 2
 		paroxArms.getArm().add(JAXBConvertor.armReference(study3Name, arms3.getArm().get(1).getName())); // study 3
 		parox.setArms(paroxArms);
 		nma.getAlternative().add(parox);
 		// Sertraline
-		Alternative setr = new Alternative();
-		if (setr.getDrugs() == null) {
-			setr.setDrugs(new AnalysisDrugs());
+		MetaAnalysisAlternative setr = new MetaAnalysisAlternative();
+		if (setr.getTreatmentDefinition() == null) {
+			setr.setTreatmentDefinition(createTrivialTreatmentDefinition(new String[] {ExampleData.buildDrugSertraline().getName() }));
 		}
-		setr.getDrugs().getDrug().clear();
-		setr.getDrugs().getDrug().add(nameReference(ExampleData.buildDrugSertraline().getName()));
 		AnalysisArms sertrArms  = new AnalysisArms();
 		sertrArms.getArm().add(JAXBConvertor.armReference(study1Name, arms1.getArm().get(1).getName())); // study 1
 		sertrArms.getArm().add(JAXBConvertor.armReference(study2Name, arms2.getArm().get(1).getName())); // study 2
@@ -1643,7 +1664,7 @@ public class JAXBConvertorTest {
 		List<MetaAnalysis> expected = new ArrayList<MetaAnalysis>();
 		expected.add(JAXBConvertor.convertPairWiseMetaAnalysis(ma1.d_pwma,
 				domain));
-		expected.add(NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(ma2.d_nwma,
+		expected.add(NetworkMetaAnalysisConverter.load(ma2.d_nwma,
 				domain));
 
 		assertEntityEquals(expected,
@@ -1811,7 +1832,7 @@ public class JAXBConvertorTest {
 		RandomEffectsMetaAnalysis ma1ent = JAXBConvertor
 				.convertPairWiseMetaAnalysis(ma1.d_pwma, domain);
 		domain.getMetaAnalyses().add(ma1ent);
-		MetaAnalysis ma2ent = NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(
+		MetaAnalysis ma2ent = NetworkMetaAnalysisConverter.load(
 				ma2.d_nwma, domain);
 		domain.getMetaAnalyses().add(ma2ent);
 
@@ -1828,9 +1849,9 @@ public class JAXBConvertorTest {
 		metaList.add(ma1ent);
 		metaList.add(ma2ent);
 
-		List<DrugSet> drugsEnt = new ArrayList<DrugSet>(
-				ma1ent.getIncludedDrugs());
-		DrugSet baseline = drugsEnt.get(0);
+		List<TreatmentDefinition> drugsEnt = new ArrayList<TreatmentDefinition>(
+				ma1ent.getAlternatives());
+		TreatmentDefinition baseline = drugsEnt.get(0);
 		drugsEnt.remove(baseline);
 		MetaBenefitRiskAnalysis expected = new MetaBenefitRiskAnalysis(name,
 				ma1ent.getIndication(), metaList, baseline, drugsEnt,
@@ -1847,11 +1868,11 @@ public class JAXBConvertorTest {
 		br.setName(name);
 		br.setAnalysisType(AnalysisType.SMAA);
 		br.setIndication(nameReference(indication));
-		br.setBaseline(createAnalysisDrugs(drugs[0]));
-		AlternativeDrugSets dRef = new AlternativeDrugSets();
-		dRef.getAlternative().add(createAnalysisDrugs(drugs[0]));
-		dRef.getAlternative().add(createAnalysisDrugs(drugs[1]));
-		br.setAlternatives(dRef);
+		Baseline baseline = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Baseline();
+		org.drugis.addis.entities.data.TreatmentDefinition tc = createTrivialTreatmentDefinition(drugs[0]);
+		baseline.setTreatmentDefinition(tc);
+		br.setBaseline(baseline);
+		br.setAlternatives(createAnalysisAlternative(drugs[0], drugs[1]));
 		MetaAnalysisReferences mRefs = new MetaAnalysisReferences();
 		for (String mName : meta) {
 			mRefs.getMetaAnalysis().add(nameReference(mName));
@@ -1862,13 +1883,30 @@ public class JAXBConvertorTest {
 		return br;
 	}
 
-	private AnalysisDrugs createAnalysisDrugs(String[] drugs) {
-		AnalysisDrugs drugs1 = new AnalysisDrugs();
-		for (String name : drugs) {
-			drugs1.getDrug().add(nameReference(name));
+	private org.drugis.addis.entities.data.TreatmentDefinition createTrivialTreatmentDefinition(String[] drugs) {
+		org.drugis.addis.entities.data.TreatmentDefinition tc = new org.drugis.addis.entities.data.TreatmentDefinition();
+		for(String drug : drugs) { 
+			TrivialCategory trivialCategory = new TrivialCategory();
+			trivialCategory.setDrug(drug);
+			tc.getRichCategoryOrTrivialCategory().add(trivialCategory);
 		}
-		return drugs1;
+		return tc;
 	}
+
+	private org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Alternatives createAnalysisAlternative(String[] ... drugs) {
+		Alternatives alternatives = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Alternatives();
+		for(String[] drugPair : drugs) {
+			org.drugis.addis.entities.data.TreatmentDefinition tc = new org.drugis.addis.entities.data.TreatmentDefinition();
+			for(String drug : drugPair) {
+				TrivialCategory trivial = new TrivialCategory();
+				trivial.setDrug(drug);
+				tc.getRichCategoryOrTrivialCategory().add(trivial);
+			}
+			alternatives.getTreatmentDefinition().add(tc);
+		}
+		return alternatives;
+	}
+	
 
 	@Test
 	public void testConvertBenefitRiskAnalyses() throws ConversionException,
@@ -1923,7 +1961,7 @@ public class JAXBConvertorTest {
 						pairWiseMetaAnalysis.d_pwma, domain));
 		addStudies(domain, networkMetaAnalysis);
 		domain.getMetaAnalyses().add(
-				NetworkMetaAnalysisConverter.convertNetworkMetaAnalysis(
+				NetworkMetaAnalysisConverter.load(
 						networkMetaAnalysis.d_nwma, domain));
 
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis metaBR = buildMetaBR(
@@ -1986,11 +2024,25 @@ public class JAXBConvertorTest {
 		sortAnalysisArms(data);
 		sortBenefitRiskOutcomes(data);
 		sortCategoricalMeasurementCategories(data);
-		sortMetaBenefitRiskAnalysisAlternatives(data);
+		sortMetaAnalysisAlternatives(data);
 		Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
 		sortUsedBys(data);
 		AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
 		assertXMLSimilar(data, roundTrip);
+	}
+
+	private void sortMetaAnalysisAlternatives(AddisData data) {
+		for (org.drugis.addis.entities.data.MetaAnalysis ma : data.getMetaAnalyses().getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
+			List<MetaAnalysisAlternative> alternatives;
+			if (ma instanceof NetworkMetaAnalysis) {
+				NetworkMetaAnalysis nma = (NetworkMetaAnalysis) ma;
+				alternatives = nma.getAlternative();
+			} else {
+				PairwiseMetaAnalysis nma = (PairwiseMetaAnalysis) ma;
+				alternatives = nma.getAlternative();
+			}
+			Collections.sort(alternatives, new MetaAnalysisAlternativeComparator());
+		}
 	}
 
 	private static void assertXMLSimilar(AddisData expected, AddisData actual)
@@ -2004,39 +2056,6 @@ public class JAXBConvertorTest {
 	    assertTrue("XML similar " + myDiff.toString(), myDiff.similar());
 	}
 	
-	
-
-	private static void sortMetaBenefitRiskAnalysisAlternatives(AddisData data) {
-		for (Object bra : data.getBenefitRiskAnalyses()
-				.getStudyBenefitRiskAnalysisOrMetaBenefitRiskAnalysis()) {
-			if (bra instanceof org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) {
-				org.drugis.addis.entities.data.MetaBenefitRiskAnalysis mbra = (org.drugis.addis.entities.data.MetaBenefitRiskAnalysis) bra;
-				List<AnalysisDrugs> alternatives = mbra.getAlternatives()
-						.getAlternative();
-				Collections.sort(alternatives, new Comparator<AnalysisDrugs>() {
-					@Override
-					public int compare(AnalysisDrugs ad1, AnalysisDrugs ad2) {
-						Iterator<NameReference> i1 = ad1.getDrug().iterator();
-						Iterator<NameReference> i2 = ad2.getDrug().iterator();
-						while (i1.hasNext() && i2.hasNext()) {
-							int compVal = i1.next().getName()
-									.compareTo(i2.next().getName());
-							if (compVal != 0) {
-								return compVal;
-							}
-						}
-						if (i1.hasNext()) {
-							return 1;
-						}
-						if (i2.hasNext()) {
-							return -1;
-						}
-						return 0;
-					}
-				});
-			}
-		}
-	}
 
 	private void sortUsedBys(AddisData data) {
 		for (org.drugis.addis.entities.data.Study s : data.getStudies()
@@ -2109,7 +2128,7 @@ public class JAXBConvertorTest {
 		for (org.drugis.addis.entities.data.MetaAnalysis ma : data
 				.getMetaAnalyses()
 				.getPairwiseMetaAnalysisOrNetworkMetaAnalysis()) {
-			List<Alternative> alternatives = null;
+			List<MetaAnalysisAlternative> alternatives = null;
 			if (ma instanceof org.drugis.addis.entities.data.PairwiseMetaAnalysis) {
 				org.drugis.addis.entities.data.PairwiseMetaAnalysis pwma = (org.drugis.addis.entities.data.PairwiseMetaAnalysis) ma;
 				alternatives = pwma.getAlternative();
@@ -2117,14 +2136,14 @@ public class JAXBConvertorTest {
 			if (ma instanceof org.drugis.addis.entities.data.NetworkMetaAnalysis) {
 				org.drugis.addis.entities.data.NetworkMetaAnalysis nwma = (org.drugis.addis.entities.data.NetworkMetaAnalysis) ma;
 				alternatives = nwma.getAlternative();
-				Collections.sort(alternatives, new AlternativeComparator());
 			}
-			for (Alternative a : alternatives) {
+			for (MetaAnalysisAlternative a : alternatives) {
 				Collections.sort(a.getArms().getArm(), new ArmComparator());
+				Collections.sort(a.getTreatmentDefinition().getRichCategoryOrTrivialCategory(), new CategoryComparator());
 			}
 		}
 	}
-
+	
 	private static void sortMeasurements(AddisData data) {
 		for (org.drugis.addis.entities.data.Study s : data.getStudies()
 				.getStudy()) {
@@ -2154,25 +2173,28 @@ public class JAXBConvertorTest {
 			return o1.getName().compareTo(o2.getName());
 		}
 	}
-
-	public static class AlternativeComparator implements
-			Comparator<org.drugis.addis.entities.data.Alternative> {
-		public int compare(org.drugis.addis.entities.data.Alternative o1,
-				org.drugis.addis.entities.data.Alternative o2) {
-			return (o1.getDrugs() != null ? o1.getDrugs().getDrug().get(0)
-					: null).getName().compareTo(
-					(o2.getDrugs() != null ? o2.getDrugs().getDrug().get(0)
-							: null).getName());
-		}
-	}
-
+	
 	public static class ArmComparator implements
 			Comparator<org.drugis.addis.entities.data.ArmReference> {
 		public int compare(ArmReference o1, ArmReference o2) {
 			return o1.getStudy().compareTo(o2.getStudy());
 		}
 	}
-
+	
+	public static class CategoryComparator implements Comparator<Object> {
+		public int compare(Object o1, Object o2) {
+			return getDrugFromTrivialOrRichCategory(o1).compareTo(getDrugFromTrivialOrRichCategory(o2));
+		}
+	}
+	
+	public static String getDrugFromTrivialOrRichCategory(Object o1) {
+		if (o1 instanceof TrivialCategory) {
+			return ((TrivialCategory) o1).getDrug();
+		} else {
+			return ((TreatmentCategoryRef)o1).getDrug();
+		}
+	}
+	
 	public static class MeasurementComparator implements
 			Comparator<org.drugis.addis.entities.data.Measurement> {
 		private org.drugis.addis.entities.data.Study d_study;
@@ -2278,7 +2300,7 @@ public class JAXBConvertorTest {
 
 	private static InputStream getTransformedDefaultData()
 			throws TransformerException, IOException {
-		return getTestData("../defaultData.addis");
+		return getTestData(TEST_DATA_PATH +  "defaultData.addis");
 	}
 
 	private static InputStream getTransformedTestData()

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-6.xsd">
+    <units>
+        <unit name="gram" symbol="g"/>
+        <unit name="liter" symbol="l"/>
+    </units>
+    <indications/>
+    <drugs>
+        <drug name="Fluoxetine" atcCode="N06AB03"/>
+        <drug name="Paroxetine" atcCode="N06AB05"/>
+    </drugs>
+    <treatmentCategorizations>
+        <treatmentCategorization drug="Fluoxetine" name="HD/LD">
+            <unit scaleModifier="MILLI" perTime="P1M">
+                <unit name="liter"/>
+            </unit>
+            <category name="HD"/>
+            <category name="LD"/>
+            <decisionTree>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <choiceNode objectType="FixedDose" property="quantity">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+<leafNode>
+    <category name="LD"/>
+</leafNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode>
+    <category name="HD"/>
+</leafNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <choiceNode objectType="FlexibleDose" property="minDose">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="120.0" isRangeUpperBoundOpen="false">
+        <leafNode>
+            <category name="LD"/>
+        </leafNode>
+    </rangeEdge>
+    <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode/>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="120.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode>
+            <category name="HD"/>
+        </leafNode>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode/>
+                    </typeEdge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+        <treatmentCategorization drug="Paroxetine" name="HD/LD">
+            <unit scaleModifier="MILLI" perTime="P1M">
+                <unit name="liter"/>
+            </unit>
+            <category name="LD"/>
+            <category name="HD"/>
+            <decisionTree>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <choiceNode objectType="FixedDose" property="quantity">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="10.0" isRangeUpperBoundOpen="true">
+<leafNode>
+    <category name="LD"/>
+</leafNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode>
+    <category name="HD"/>
+</leafNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <choiceNode objectType="FlexibleDose" property="minDose">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="10.0" isRangeUpperBoundOpen="true">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="10.0" isRangeUpperBoundOpen="true">
+        <leafNode>
+            <category name="LD"/>
+        </leafNode>
+    </rangeEdge>
+    <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode/>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<choiceNode objectType="FlexibleDose" property="maxDose">
+    <rangeEdge rangeLowerBound="10.0" isRangeLowerBoundOpen="false" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+        <leafNode>
+            <category name="HD"/>
+        </leafNode>
+    </rangeEdge>
+</choiceNode>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode/>
+                    </typeEdge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+        <treatmentCategorization drug="Fluoxetine" name="Unknown">
+            <unit scaleModifier="MILLI" perTime="P1M">
+                <unit name="liter"/>
+            </unit>
+            <category name="Unknown"/>
+            <decisionTree>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <leafNode/>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <leafNode/>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode>
+                            <category name="Unknown"/>
+                        </leafNode>
+                    </typeEdge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+    </treatmentCategorizations>
+    <endpoints/>
+    <adverseEvents/>
+    <populationCharacteristics/>
+    <studies/>
+    <metaAnalyses/>
+    <benefitRiskAnalyses/>
+</addis-data>

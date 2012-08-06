@@ -29,12 +29,12 @@ package org.drugis.addis.entities.analysis;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
@@ -50,6 +50,7 @@ import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelative
 import org.drugis.addis.entities.relativeeffect.RandomEffectsRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.SimpleMultivariateNormalSummary;
@@ -60,93 +61,27 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	public static final String PROPERTY_INCLUDED_STUDIES_COUNT = "studiesIncluded";
 	public static final String PROPERTY_CORRECTED = "isCorrected";
 	private boolean d_isCorrected = false;
-	
-	/**
-	 * @throws IllegalArgumentException if all studies don't measure the same indication OR
-	 * if the list of studies is empty
-	 */
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<Study> studies,
-			DrugSet drug1, DrugSet drug2) 
-	throws IllegalArgumentException {
-		super(ANALYSIS_TYPE,
-				name, studies.get(0).getIndication(), om, studies, 
-				drugSetList(drug1, drug2), getArmMap(studies, drug1, drug2));
-		checkREDataConsistency(studies, drug1, drug2);
-	}
 
-	private void checkREDataConsistency(List<? extends Study> studies, DrugSet drug1, DrugSet drug2) {
-		if (studies.size() == 0)
-			throw new IllegalArgumentException("No studies in MetaAnalysis");
-		for (Study s : studies)
-			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2)))
-				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
-	}
-
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms, Boolean corr)
-	throws IllegalArgumentException {
-		super(ANALYSIS_TYPE,
-				name, getIndication(studyArms), om, getStudies(studyArms), getDrugs(studyArms), getArmMap(studyArms));
-		
-		for (StudyArmsEntry sae : studyArms){
-			if(!sae.getStudy().getDrugs(sae.getBase()).equals(getFirstDrug())){
-				throw new IllegalArgumentException("Left drug not consistent over all studies");
-			}
-			if(!sae.getStudy().getDrugs(sae.getSubject()).equals(getSecondDrug())){
-				throw new IllegalArgumentException("Right drug not consistent over all studies");
-			}
-		}
+	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
+			TreatmentDefinition baseline, TreatmentDefinition subject,
+			List<StudyArmsEntry> studyArms, boolean corr) {
+		super(ANALYSIS_TYPE, name, getIndication(studyArms), om,
+				getStudies(studyArms), Arrays.asList(baseline, subject),
+				getArmMap(baseline, subject, studyArms));
 		d_isCorrected = corr;
 	}
 	
-	public RandomEffectsMetaAnalysis(String name, OutcomeMeasure om, List<StudyArmsEntry> studyArms) {
-		this(name, om, studyArms, false);
-	}
-	
-	private static Map<Study, Map<DrugSet, Arm>> getArmMap(
-			List<? extends Study> studies, DrugSet drug1, DrugSet drug2) {
-		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
-
-		for (Study s : studies) {
-			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
-			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
-			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
-		}
-		
-		return getArmMap(studyArms);
-	}
-	
-	private static Map<Study, Map<DrugSet, Arm>> getArmMap(List<StudyArmsEntry> studyArms) {
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
+	private static Map<Study, Map<TreatmentDefinition, Arm>> getArmMap(
+			TreatmentDefinition baseline, TreatmentDefinition subject,
+			List<StudyArmsEntry> studyArms) {
+		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (StudyArmsEntry sae : studyArms) {
-			Map<DrugSet, Arm> drugMap = new HashMap<DrugSet, Arm>();
-			drugMap.put(sae.getStudy().getDrugs(sae.getBase()), sae.getBase());
-			drugMap.put(sae.getStudy().getDrugs(sae.getSubject()), sae.getSubject());
-			armMap.put(sae.getStudy(), drugMap);
+			Map<TreatmentDefinition, Arm> alternativeMap = new HashMap<TreatmentDefinition, Arm>();
+			alternativeMap.put(baseline, sae.getBase());
+			alternativeMap.put(subject, sae.getSubject());
+			armMap.put(sae.getStudy(), alternativeMap);
 		}
 		return armMap;
-	}
-
-	private static List<DrugSet> getDrugs(List<StudyArmsEntry> studyArms) {
-		DrugSet d1 = getFirstDrug(studyArms);
-		DrugSet d2 = getSecondDrug(studyArms);
-		return drugSetList(d1, d2);
-	}
-
-	private static List<DrugSet> drugSetList(DrugSet d1, DrugSet d2) {
-		List<DrugSet> list = new ArrayList<DrugSet>();
-		list.add(d1);
-		list.add(d2);
-		return list;
-	}
-
-	private static DrugSet getSecondDrug(List<StudyArmsEntry> studyArms) {
-		StudyArmsEntry studyArmsEntry = studyArms.get(0);
-		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject());
-	}
-
-	private static DrugSet getFirstDrug(List<StudyArmsEntry> studyArms) {
-		StudyArmsEntry studyArmsEntry = studyArms.get(0);
-		return studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase());
 	}
 
 	private static List<Study> getStudies(List<StudyArmsEntry> studyArms) {
@@ -162,19 +97,19 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 	}	
 	
 	@Override
-	public DrugSet getFirstDrug() {
-		return d_drugs.get(0);
+	public TreatmentDefinition getFirstAlternative() {
+		return d_alternatives.get(0);
 	}
 	
 	@Override
-	public DrugSet getSecondDrug() {
-		return d_drugs.get(1);
+	public TreatmentDefinition getSecondAlternative() {
+		return d_alternatives.get(1);
 	}
 	
 	public List<StudyArmsEntry> getStudyArms() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		for (Study s : getIncludedStudies()) {
-			studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstDrug()), getArm(s, getSecondDrug())));
+			studyArms.add(new StudyArmsEntry(s, getArm(s, getFirstAlternative()), getArm(s, getSecondAlternative())));
 		}
 		return studyArms;
 	}
@@ -211,8 +146,8 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		}
 		RandomEffectsMetaAnalysis o = (RandomEffectsMetaAnalysis) other;
 		for (StudyArmsEntry s : o.getStudyArms()) {
-			if ( !EntityUtil.deepEqual(s.getBase(), getArm(s.getStudy(), o.getFirstDrug())) ||
-				 !EntityUtil.deepEqual(s.getSubject(), getArm(s.getStudy(), o.getSecondDrug()))) {
+			if ( !EntityUtil.deepEqual(s.getBase(), getArm(s.getStudy(), o.getFirstAlternative())) ||
+				 !EntityUtil.deepEqual(s.getSubject(), getArm(s.getStudy(), o.getSecondAlternative()))) {
 				return false;
 			}
 		}

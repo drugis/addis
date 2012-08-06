@@ -37,7 +37,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
-import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.common.beans.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
@@ -51,7 +50,7 @@ public class TreatmentCategorizationPresentation extends PresentationModel<Treat
 	private final Map<Category, StudyListPresentation> d_studyListPresentations = new HashMap<Category, StudyListPresentation>();
 	private final Domain d_domain;
 
-	private class StudyCategoryFilter implements FilteredObservableList.Filter<Study> {
+	private static class StudyCategoryFilter implements FilteredObservableList.Filter<Study> {
 		private final Category d_category;
 
 		public StudyCategoryFilter(final Category category) {
@@ -63,8 +62,7 @@ public class TreatmentCategorizationPresentation extends PresentationModel<Treat
 			for (final Arm arm : s.getArms()) {
 				final TreatmentActivity treatment = s.getTreatment(arm);
 				for (final DrugTreatment drugTreatment : treatment.getTreatments()) {
-					final Category category = ((LeafNode)getBean().getCategory(drugTreatment.getDose())).getCategory();
-					if (drugTreatment.getDrug().equals(getBean().getDrug()) && d_category.equals(category)) {
+					if (d_category.match(drugTreatment)) {
 						return true;
 					}
 				}

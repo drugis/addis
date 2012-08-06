@@ -39,11 +39,11 @@ implements StudyListPresentation {
 	}
 	
 	public LabeledPresentation getFirstDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getFirstDrug());
+		return d_mgr.getLabeledModel(getBean().getFirstAlternative());
 	}
 	
 	public LabeledPresentation getSecondDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
+		return d_mgr.getLabeledModel(getBean().getSecondAlternative());		
 	}
 
 	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {

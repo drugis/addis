@@ -37,22 +37,18 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.JUnitUtil;
 import org.junit.Test;
 
 public class RandomEffectsMetaAnalysisPresentationTest {
 	@Test
 	public void testGetAnalysisTypeRate() {
-		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
-				ExampleData.buildEndpointHamd(),
-				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -62,11 +58,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	
 	@Test
 	public void testGetAnalysisTypeContinuous() {
-		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
-				ExampleData.buildEndpointCgi(),
-				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -76,11 +68,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	
 	@Test
 	public void testGetIncludedStudies() {
-		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
-				ExampleData.buildEndpointCgi(),
-				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
@@ -93,11 +81,7 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 	
 	@Test
 	public void testGetForestPlotPresentation() {
-		RandomEffectsMetaAnalysis meta = new RandomEffectsMetaAnalysis("meta",
-				ExampleData.buildEndpointCgi(),
-				Collections.singletonList(ExampleData.buildStudyChouinard()),
-				new DrugSet(ExampleData.buildDrugFluoxetine()),
-				new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis meta = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointCgi(), Collections.singletonList(ExampleData.buildStudyChouinard()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		Domain domain = new DomainImpl();
 		ExampleData.initDefaultData(domain );
 		PresentationModelFactory fact = new PresentationModelFactory(domain);

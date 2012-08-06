@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.MCMCSettingsCache;
 import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.Parameter;
@@ -43,7 +43,7 @@ public class SavedInconsistencyWrapper extends AbstractSavedWrapper implements I
 
 	private List<Parameter> d_inconsistencyFactors;
 
-	public SavedInconsistencyWrapper(NetworkBuilder<DrugSet> builder, MCMCSettingsCache settings,
+	public SavedInconsistencyWrapper(NetworkBuilder<TreatmentDefinition> builder, MCMCSettingsCache settings,
 			Map<Parameter, QuantileSummary> quantileSummaries, Map<Parameter, ConvergenceSummary> convergenceSummaries) {
 		super(builder, settings, quantileSummaries, convergenceSummaries);
 		d_inconsistencyFactors = new ArrayList<Parameter>();

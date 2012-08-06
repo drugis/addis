@@ -33,11 +33,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.AbstractBenefitRiskPresentation;
 import org.drugis.addis.presentation.OddsRatioScalePresentation;
 import org.drugis.addis.presentation.RiskScalePresentation;
@@ -54,7 +54,7 @@ import fi.smaa.jsmaa.model.ScaleCriterion;
 public class ClinicalScaleRenderer implements ScaleRenderer {
 	private SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> d_smaapm;
 
-	public ClinicalScaleRenderer(AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> pm, SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> smaapm) {
+	public ClinicalScaleRenderer(AbstractBenefitRiskPresentation<TreatmentDefinition, MetaBenefitRiskAnalysis> pm, SMAAPresentation<Drug, BenefitRiskAnalysis<Drug>> smaapm) {
 		d_smaapm = smaapm;
 	}
 

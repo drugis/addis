@@ -45,12 +45,13 @@ import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.ScaleModifier;
@@ -58,14 +59,21 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.DecisionTree;
+import org.drugis.addis.entities.treatment.DecisionTreeEdge;
+import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
+import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.RangeEdge;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mocks.MockMetaBenefitRiskAnalysis;
 import org.drugis.addis.mocks.MockStudyBenefitRiskAnalysis;
 import org.drugis.addis.util.EntityUtil;
@@ -100,7 +108,7 @@ public class ExampleData {
 	private static PopulationCharacteristic s_age;
 	private static Endpoint s_endpointMadrs;
 	private static Study s_studyBurke;
-	
+		
 	public static DoseUnit KILOGRAMS_PER_HOUR = new DoseUnit(Domain.GRAM, ScaleModifier.KILO, EntityUtil.createDuration("PT1H"));
 
 	public static void initDefaultData(Domain domain) {
@@ -874,10 +882,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisHamD() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()), 
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(buildDrugFluoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
@@ -889,10 +897,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisConvulsion() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()),
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network2", 
 				buildIndicationDepression(), buildAdverseEventConvulsion(),
@@ -904,10 +912,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisCgi() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()),
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("CGI network", 
 				buildIndicationDepression(), buildEndpointCgi(),
@@ -917,12 +925,12 @@ public class ExampleData {
 	}
 	
 	
-	public static Map<Study, Map<DrugSet, Arm>> buildMap(List<Study> studies,
-			List<DrugSet> drugs) {
-		Map<Study, Map<DrugSet, Arm>> map = new HashMap<Study, Map<DrugSet, Arm>>();
+	public static Map<Study, Map<TreatmentDefinition, Arm>> buildMap(List<Study> studies,
+			List<TreatmentDefinition> drugs) {
+		Map<Study, Map<TreatmentDefinition, Arm>> map = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (Study s : studies) {
-			Map<DrugSet, Arm> drugMap = new HashMap<DrugSet, Arm>();
-			for (DrugSet d : drugs) {
+			Map<TreatmentDefinition, Arm> drugMap = new HashMap<TreatmentDefinition, Arm>();
+			for (TreatmentDefinition d : drugs) {
 				if (s.getDrugs().contains(d)) {
 					drugMap.put(d, RelativeEffectFactory.findFirstArm(s, d));
 				}
@@ -952,10 +960,10 @@ public class ExampleData {
 		metaAnalysisList.add(buildMetaAnalysisConv());
 		
 		Drug parox = buildDrugParoxetine();
-		List<DrugSet> fluoxList = Collections.singletonList(new DrugSet(buildDrugFluoxetine()));
+		List<TreatmentDefinition> fluoxList = Collections.singletonList(TreatmentDefinition.createTrivial(buildDrugFluoxetine()));
 		
 		return new MockMetaBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, metaAnalysisList, new DrugSet(parox), fluoxList);										
+										indication, metaAnalysisList, TreatmentDefinition.createTrivial(parox), fluoxList);										
 	}
 
 	public static StudyBenefitRiskAnalysis buildStudyBenefitRiskAnalysis() {
@@ -990,23 +998,37 @@ public class ExampleData {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Convulsion test analysis",
+				buildAdverseEventConvulsion(),
+				s1.getDrugs(base),
+				s1.getDrugs(subject),
+				studyArms, false);
 	}
 
 	public static MetaAnalysis buildMetaAnalysisHamd() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Hamd test analysis",
+				buildEndpointHamd(),
+				s1.getDrugs(base),
+				s1.getDrugs(subject),
+				studyArms, false);
 	}
 
 	public static MetaBenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
@@ -1014,11 +1036,11 @@ public class ExampleData {
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
-		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), new DrugSet(fluox), new DrugSet(parox));
+		MetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), TreatmentDefinition.createTrivial(fluox), TreatmentDefinition.createTrivial(parox));
 		MetaBenefitRiskAnalysis br = new MockMetaBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(ma), 
-				new DrugSet(fluox), 
-				Collections.singletonList(new DrugSet(parox)));
+				TreatmentDefinition.createTrivial(fluox), 
+				Collections.singletonList(TreatmentDefinition.createTrivial(parox)));
 		return br;
 	}
 	
@@ -1054,4 +1076,71 @@ public class ExampleData {
         
         return study;
     }
+
+	public static RandomEffectsMetaAnalysis buildRandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
+			List<Study> studies, TreatmentDefinition drug1, TreatmentDefinition drug2) {
+		if (studies.size() == 0) {
+			throw new IllegalArgumentException("No studies in MetaAnalysis");
+		}
+		for (Study s : studies) {
+			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2))) {
+				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
+			}
+		}
+		return new RandomEffectsMetaAnalysis(name, om, drug1, drug2, ExampleData.buildStudyArmEntries(studies, drug1, drug2), false);
+	}
+
+	public static List<StudyArmsEntry> buildStudyArmEntries(
+			List<? extends Study> studies, TreatmentDefinition drug1, TreatmentDefinition drug2) {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+	
+		for (Study s : studies) {
+			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
+			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
+			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
+		}
+		
+		return studyArms;
+	}
+	
+	public static TreatmentCategorization buildCategorizationFixedDose(Drug d) { 
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, DoseUnit.MILLIGRAMS_A_DAY);
+		Category include = new Category(catz, "Include");
+		catz.addCategory(include);
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(include));
+		return catz;
+	}
+	
+	public static TreatmentCategorization buildCategorizationKnownDose(Drug d) { 
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, DoseUnit.MILLIGRAMS_A_DAY);
+		Category include = new Category(catz, "Include");
+		catz.addCategory(include);
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(include));
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), new LeafNode(include));
+		return catz;
+	}
+	
+	public static TreatmentCategorization buildCategorizationUpto20mg(Drug d) { 
+		DoseUnit doseUnit = DoseUnit.MILLIGRAMS_A_DAY;
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, doseUnit);
+		Category include = new Category(catz, "Include");
+		catz.addCategory(include);
+		DecisionTree tree = catz.getDecisionTree();
+		
+		DecisionTreeEdge fixedEdge = tree.findMatchingEdge(tree.getRoot(), FixedDose.class);
+		DoseQuantityChoiceNode fixedQuantity = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, doseUnit);
+		tree.replaceChild(fixedEdge, fixedQuantity);
+		tree.addChild(new RangeEdge(0.0, false, 20.0, false), fixedQuantity, new LeafNode(include));
+		tree.addChild(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), fixedQuantity, new LeafNode());
+
+		DecisionTreeEdge flexibleEdge = tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class);
+		DoseQuantityChoiceNode flexibleMax = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, doseUnit);
+		tree.replaceChild(flexibleEdge, flexibleMax);
+		tree.addChild(new RangeEdge(0.0, false, 20.0, false), flexibleMax, new LeafNode(include));
+		tree.addChild(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), flexibleMax, new LeafNode());
+		
+		return catz;
+	}
 }

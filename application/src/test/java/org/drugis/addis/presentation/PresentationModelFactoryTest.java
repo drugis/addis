@@ -39,11 +39,11 @@ import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,8 +67,7 @@ public class PresentationModelFactoryTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		RandomEffectsMetaAnalysis anal = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis anal = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		
 		PresentationModel m = d_manager.getModel(anal);
 		assertEquals(anal, m.getBean());
