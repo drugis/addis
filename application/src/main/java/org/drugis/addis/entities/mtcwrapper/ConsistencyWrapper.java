@@ -28,7 +28,7 @@ package org.drugis.addis.entities.mtcwrapper;
 
 import java.util.List;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 
@@ -51,6 +51,6 @@ public interface ConsistencyWrapper extends MTCModelWrapper {
 	/**
 	 * @return A list of all <baseline, subject> pairs, where the subjects are given in their natural order  
 	 */	
-	public List<Pair<DrugSet>> getRelativeEffectsList();
+	public List<Pair<TreatmentDefinition>> getRelativeEffectsList();
 
 }

@@ -87,7 +87,7 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 		
 		builder.addLabel("Included drugs:", cc.xy(1, 9));
 		
-		ListPanel drugList = new ListPanel(d_pm.getBean(), MetaAnalysis.PROPERTY_INCLUDED_DRUGS, Drug.class);
+		ListPanel drugList = new ListPanel(d_pm.getBean(), MetaAnalysis.PROPERTY_ALTERNATIVES, Drug.class);
 		builder.add(drugList, cc.xy(3, 9));
 
 		if(d_pm.getBean() instanceof NetworkMetaAnalysis){

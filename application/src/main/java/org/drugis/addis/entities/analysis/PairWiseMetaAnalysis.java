@@ -26,7 +26,7 @@
 
 package org.drugis.addis.entities.analysis;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 
 
 public interface PairWiseMetaAnalysis extends MetaAnalysis {
@@ -34,8 +34,8 @@ public interface PairWiseMetaAnalysis extends MetaAnalysis {
 	public static final String PROPERTY_FIRST_DRUG = "firstDrug";
 	public static final String PROPERTY_SECOND_DRUG = "secondDrug";
 
-	public DrugSet getFirstDrug();
+	public TreatmentDefinition getFirstAlternative();
 
-	public DrugSet getSecondDrug();
+	public TreatmentDefinition getSecondAlternative();
 	
 }

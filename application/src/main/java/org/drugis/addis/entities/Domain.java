@@ -65,7 +65,7 @@ public abstract class Domain {
 	
 	public abstract SortedSetModel<Drug> getDrugs();
 
-	public abstract ObservableList<TreatmentCategorization> getTreatments();
+	public abstract ObservableList<TreatmentCategorization> getTreatmentCategorizations();
 	
 	public abstract SortedSetModel<Indication> getIndications();
 

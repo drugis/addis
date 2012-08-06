@@ -42,6 +42,8 @@ public class DecisionTreeEdgeComparator implements Comparator<DecisionTreeEdge> 
 		final int i2 = s_types.indexOf(o2.getClass());
 		if (i1 == i2 && o1 instanceof RangeEdge) {
 			return ((RangeEdge)o1).compareTo((RangeEdge)o2);
+		} else if (i1 == i2 && o1 instanceof TypeEdge) { 
+			return ((TypeEdge)o1).getType().toString().compareTo(((TypeEdge)o2).getType().toString());
 		}
 		return i2 - i1;
 	}

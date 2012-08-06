@@ -34,9 +34,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.entities.data.AddisData;
-import org.drugis.addis.util.JAXBConvertor;
-import org.drugis.addis.util.JAXBHandler;
-import org.drugis.addis.util.JAXBConvertor.ConversionException;
+import org.drugis.addis.util.jaxb.JAXBConvertor;
+import org.drugis.addis.util.jaxb.JAXBHandler;
+import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 
 
 

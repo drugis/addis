@@ -31,7 +31,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgraph.JGraph;
@@ -41,11 +41,11 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class SelectedDrugsGraphListener extends MouseAdapter {
 	
-	private ObservableList<DrugSet> d_drugList;
+	private ObservableList<TreatmentDefinition> d_drugList;
 	private JGraph d_jgraph;
 	private SelectableStudyGraph d_studyGraph;
 
-	public SelectedDrugsGraphListener(SelectableStudyGraph selectableStudyGraph, JGraph graph, ObservableList<DrugSet> selectedDrugs) {
+	public SelectedDrugsGraphListener(SelectableStudyGraph selectableStudyGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDrugs) {
 		d_drugList = selectedDrugs;
 		d_studyGraph = selectableStudyGraph;
 		d_jgraph = graph;
@@ -64,8 +64,8 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 		}
 	}	
 
-	private void selectUnselectDrug(DrugSet drug) {
-		List<DrugSet> drugs = new ArrayList<DrugSet>(d_drugList);
+	private void selectUnselectDrug(TreatmentDefinition drug) {
+		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_drugList);
 		if (drugs.contains(drug)) {
 			drugs.remove(drug);
 		} else {

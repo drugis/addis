@@ -28,12 +28,14 @@ package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.*;
 
+import org.drugis.addis.ExampleData;
 import org.junit.Test;
 
 public class LeafNodeTest {
 	@Test
 	public void testWithCategory() {
-		final Category category = new Category("Potato");
+		final Category category = new Category(TreatmentCategorization.createDefault(), "Potato");
+		category.getCategorization().setDrug(ExampleData.buildDrugFluoxetine());
 		LeafNode node = new LeafNode(category);
 		assertEquals(category, node.getCategory());
 		assertEquals(category.getName(), node.getName());

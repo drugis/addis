@@ -195,11 +195,11 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 	 * @return The DosedDrugTreatment that was added.
 	 */
 	public TreatmentCategorization commit() {
-		if (d_domain.getTreatments().contains(getBean())) {
+		if (d_domain.getTreatmentCategorizations().contains(getBean())) {
 			throw new IllegalStateException("Treatment already exists in domain");
 		}
 
-		d_domain.getTreatments().add(getBean());
+		d_domain.getTreatmentCategorizations().add(getBean());
 		return getBean();
 	}
 

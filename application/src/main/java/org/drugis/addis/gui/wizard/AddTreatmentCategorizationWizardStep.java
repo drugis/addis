@@ -203,7 +203,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				model.getCategories().add(new Category());
+				model.getCategories().add(new Category(d_pm.getBean()));
 			}
 		});
 		return btn;

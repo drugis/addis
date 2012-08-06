@@ -53,7 +53,7 @@ public class TreatmentCategorizationKnowledge extends CategoryKnowledgeBase {
 
 	@Override
 	public JDialog getAddDialog(final AddisWindow mainWindow, final Domain domain, final ValueModel selectionModel) {
-		final TreatmentCategorization treatment = new TreatmentCategorization();
+		final TreatmentCategorization treatment = TreatmentCategorization.createDefault();
 
 		final TreatmentCategorizationWizardPresentation pm = new TreatmentCategorizationWizardPresentation(treatment, domain);
 		return buildDosedDrugTreatmentWizardDialog(mainWindow, domain, "Add Treatment", pm);

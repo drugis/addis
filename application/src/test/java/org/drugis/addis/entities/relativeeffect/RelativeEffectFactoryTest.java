@@ -31,10 +31,10 @@ import static org.junit.Assert.assertEquals;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,8 +42,8 @@ public class RelativeEffectFactoryTest {
 	
 	private Study d_s;
 	private Endpoint d_eCont;
-	private DrugSet d_fluox;
-	private DrugSet d_parox;
+	private TreatmentDefinition d_fluox;
+	private TreatmentDefinition d_parox;
 	private Arm d_pBase;
 	private Arm d_pSubj;
 	private Endpoint d_eRate;
@@ -53,8 +53,8 @@ public class RelativeEffectFactoryTest {
 		d_s = ExampleData.buildStudyChouinard();
 		d_eCont = ExampleData.buildEndpointCgi();
 		d_eRate = ExampleData.buildEndpointHamd();
-		d_parox = new DrugSet(ExampleData.buildDrugParoxetine());
-		d_fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
+		d_parox = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		d_fluox = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
 		d_pBase = d_s.getArms().get(0);
 		d_pSubj = d_s.getArms().get(1);
 	}

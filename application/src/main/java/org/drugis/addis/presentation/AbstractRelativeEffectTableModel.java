@@ -98,7 +98,6 @@ implements RelativeEffectTableModel {
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
 		Arm rowArm = d_study.getArms().get(row);
 		Arm colArm = d_study.getArms().get(column);
-		return new ForestPlotPresentation((Study)d_study, d_outMeas, d_study.getDrugs(rowArm),
-				d_study.getDrugs(colArm), getRelativeEffectType(), d_pmf);
+		return ForestPlotPresentation.createStudyForestPlot((Study)d_study, d_outMeas, rowArm, colArm, getRelativeEffectType(), d_pmf);
 	}
 }
