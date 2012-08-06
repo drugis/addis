@@ -229,7 +229,7 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 		return getBuilder().getTreatmentMap().get(d);
 	}
 	
-	public TreatmentDefinition getTreatmentCategorySet(Treatment t) {
+	public TreatmentDefinition getTreatmentDefinition(Treatment t) {
 		return getBuilder().getTreatmentMap().getKey(t);
 	}
 	

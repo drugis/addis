@@ -1,4 +1,4 @@
-package org.drugis.addis.util.convertors;
+package org.drugis.addis.util.jaxb;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +23,7 @@ import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TypeEdge;
-import org.drugis.addis.util.JAXBConvertor;
-import org.drugis.addis.util.JAXBConvertor.ConversionException;
+import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 import org.drugis.common.EqualsUtil;
 
 
@@ -45,7 +44,7 @@ public class TreatmentCategorizationsConverter {
 
 	public static TreatmentCategorization load(org.drugis.addis.entities.data.TreatmentCategorization t, Domain domain) throws ConversionException {
 		String name = t.getName();
-		Drug drug = JAXBConvertor.findNamedItem(domain.getDrugs(), t.getDrug().getName());
+		Drug drug = JAXBConvertor.findNamedItem(domain.getDrugs(), t.getDrug());
 		DoseUnit unit = JAXBConvertor.convertDoseUnit(t.getUnit(), domain);
 		
 		TreatmentCategorization tc = TreatmentCategorization.createBare(name, drug, unit);
@@ -132,7 +131,7 @@ public class TreatmentCategorizationsConverter {
 	public static org.drugis.addis.entities.data.TreatmentCategorization save(TreatmentCategorization t) {
 		org.drugis.addis.entities.data.TreatmentCategorization tc = new org.drugis.addis.entities.data.TreatmentCategorization();
 		tc.setName(t.getName());
-		tc.setDrug(JAXBConvertor.nameReference(t.getDrug().getName()));
+		tc.setDrug(t.getDrug().getName());
 		tc.setUnit(JAXBConvertor.convertDoseUnit(t.getDoseUnit()));
 		for (Category category : t.getCategories()) {
 			tc.getCategory().add(convertCategory(category));

@@ -1,4 +1,4 @@
-package org.drugis.addis.util.convertors;
+package org.drugis.addis.util.jaxb;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,8 +6,7 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
-import org.drugis.addis.util.JAXBConvertor.ConversionException;
-import org.drugis.addis.util.JAXBConvertorTest;
+import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -15,7 +14,7 @@ import org.xml.sax.SAXException;
 public class TreatmentCategorizationsConverterTest {
 
 	private JAXBConvertorTest d_jaxbConverterTest;
-	private static final String TEST_DATA = "../testDataWithTreatmentCategories.addis";
+	private static final String TEST_DATA = JAXBConvertorTest.TEST_DATA_PATH + "testDataWithTreatmentCategories.addis";
 
 	@Before 
 	public void setUp() throws JAXBException { 

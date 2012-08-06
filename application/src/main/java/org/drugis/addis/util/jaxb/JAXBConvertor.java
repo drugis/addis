@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util;
+package org.drugis.addis.util.jaxb;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -107,10 +107,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.data.ActivityUsedBy;
 import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.entities.data.AdverseEvents;
-import org.drugis.addis.entities.data.Alternative;
-import org.drugis.addis.entities.data.AlternativeDrugSets;
 import org.drugis.addis.entities.data.AnalysisArms;
-import org.drugis.addis.entities.data.AnalysisDrugs;
 import org.drugis.addis.entities.data.ArmReference;
 import org.drugis.addis.entities.data.ArmReferences;
 import org.drugis.addis.entities.data.BaselineArmReference;
@@ -129,7 +126,9 @@ import org.drugis.addis.entities.data.Indications;
 import org.drugis.addis.entities.data.IntegerWithNotes;
 import org.drugis.addis.entities.data.Measurements;
 import org.drugis.addis.entities.data.MetaAnalyses;
+import org.drugis.addis.entities.data.MetaAnalysisAlternative;
 import org.drugis.addis.entities.data.MetaAnalysisReferences;
+import org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Baseline;
 import org.drugis.addis.entities.data.NameReference;
 import org.drugis.addis.entities.data.NameReferenceWithNotes;
 import org.drugis.addis.entities.data.Notes;
@@ -147,12 +146,9 @@ import org.drugis.addis.entities.data.StudyActivities;
 import org.drugis.addis.entities.data.StudyOutcomeMeasures;
 import org.drugis.addis.entities.data.TreatmentCategorizations;
 import org.drugis.addis.entities.data.Units;
-import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.util.JAXBHandler.XmlFormatType;
-import org.drugis.addis.util.convertors.NetworkMetaAnalysisConverter;
-import org.drugis.addis.util.convertors.TreatmentCategorizationsConverter;
+import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
 
@@ -1061,13 +1057,13 @@ public class JAXBConvertor {
 		} else {
 			throw new ConversionException("Outcome Measure type not supported: " + reMa.getOutcomeMeasure());
 		}
-		for(TreatmentDefinition d : reMa.getAlternatives()) {
-			Alternative alt = new Alternative();
-			alt.setDrugs(convertAnalysisTreatmentCategorySet(d));
+		for(TreatmentDefinition t : reMa.getAlternatives()) {
+			MetaAnalysisAlternative alt = new MetaAnalysisAlternative();
+			alt.setTreatmentDefinition(TreatmentDefinitionConverter.save(t));
 			AnalysisArms arms = new AnalysisArms();
 			for(StudyArmsEntry item : reMa.getStudyArms()) {
 				Arm arm = null;
-				if (reMa.getFirstAlternative().equals(d)) {
+				if (reMa.getFirstAlternative().equals(t)) {
 					arm = item.getBase();
 				} else {
 					arm = item.getSubject();
@@ -1077,19 +1073,9 @@ public class JAXBConvertor {
 			alt.setArms(arms);
 			pwma.getAlternative().add(alt);
 		}
-		return pwma ;
+		return pwma;
 	}
 
-	public static AnalysisDrugs convertAnalysisTreatmentCategorySet(TreatmentDefinition d) {
-		AnalysisDrugs drugs = new AnalysisDrugs();
-		for (Category category : d.getContents()) {
-			drugs.getDrug().add(nameReference(category.getDrug().getName()));				
-		}
-		return drugs;
-	}
-	
-
-	
 	static Epoch findEpoch(String name, Study study) throws ConversionException {
 		for (Epoch epoch : study.getEpochs()) {
 			if (epoch.getName().equals(name)) {
@@ -1217,17 +1203,17 @@ public class JAXBConvertor {
 
 	public static MetaBenefitRiskAnalysis convertMetaBenefitRiskAnalysis(org.drugis.addis.entities.data.MetaBenefitRiskAnalysis br, Domain domain) {
 		Indication indication = findNamedItem(domain.getIndications(), br.getIndication().getName());
-		TreatmentDefinition baseline = convertTreatmentCategorySet(br.getBaseline(), domain);
-		List<TreatmentDefinition> drugs = new SortedSetModel<TreatmentDefinition>();
-		for (AnalysisDrugs set : br.getAlternatives().getAlternative()) {
-			drugs.add(convertTreatmentCategorySet(set, domain));
+		TreatmentDefinition baseline = TreatmentDefinitionConverter.load(br.getBaseline().getTreatmentDefinition(), domain);
+		List<TreatmentDefinition> treatmentAlternative = new SortedSetModel<TreatmentDefinition>();
+		for (org.drugis.addis.entities.data.TreatmentDefinition set : br.getAlternatives().getTreatmentDefinition()) {
+			treatmentAlternative.add(TreatmentDefinitionConverter.load(set, domain));
 		}
 		List<MetaAnalysis> metaAnalysis = new ArrayList<MetaAnalysis>();
 		for (NameReference ref : br.getMetaAnalyses().getMetaAnalysis()) {
 			metaAnalysis.add(findMetaAnalysis(domain, ref.getName()));
 		}
-		drugs.remove(baseline);
-		return new MetaBenefitRiskAnalysis(br.getName(), indication, metaAnalysis, baseline, drugs, br.getAnalysisType(), convertDecisionContext(br.getDecisionContext()));
+		treatmentAlternative.remove(baseline);
+		return new MetaBenefitRiskAnalysis(br.getName(), indication, metaAnalysis, baseline, treatmentAlternative, br.getAnalysisType(), convertDecisionContext(br.getDecisionContext()));
 	}
 	
 
@@ -1235,12 +1221,14 @@ public class JAXBConvertor {
 		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis newBr = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis();
 		newBr.setName(br.getName());
 		newBr.setAnalysisType(br.getAnalysisType());
-		newBr.setBaseline(convertAnalysisTreatmentCategorySet(br.getBaseline()));
+		Baseline baseline = new Baseline();
+		baseline.setTreatmentDefinition(TreatmentDefinitionConverter.save((br.getBaseline())));
+		newBr.setBaseline(baseline);
 		newBr.setIndication(nameReference(br.getIndication().getName()));
 		
-		AlternativeDrugSets alternatives = new AlternativeDrugSets();
-		for(TreatmentDefinition d : br.getAlternatives()) {
-			alternatives.getAlternative().add(convertAnalysisTreatmentCategorySet(d));
+		org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Alternatives alternatives = new org.drugis.addis.entities.data.MetaBenefitRiskAnalysis.Alternatives();
+		for(TreatmentDefinition t : br.getAlternatives()) {
+			alternatives.getTreatmentDefinition().add(TreatmentDefinitionConverter.save(t));
 		}
 		newBr.setAlternatives(alternatives);
 		
@@ -1297,30 +1285,6 @@ public class JAXBConvertor {
 		NameReference ref = new NameReference();
 		ref.setName(name);
 		return ref;
-	}
-	
-	public static Drugs convertTreatmentCategorySet(TreatmentDefinition d) { 
-		Drugs drugs = new Drugs();
-		for (Category category : d.getContents()) {
-			drugs.getDrug().add(JAXBConvertor.convertDrug(category.getDrug()));
-		}
-		return drugs;
-	}
-	
-	public static TreatmentDefinition convertTreatmentCategorySet(AnalysisDrugs drugs, Domain domain) {
-		List<Drug> out = new ArrayList<Drug>();
-		for(NameReference d : drugs.getDrug()) {
-			out.add(JAXBConvertor.findNamedItem(domain.getDrugs(), d.getName()));
-		}
-		return TreatmentDefinition.createTrivial(out);
-	}
-	
-	public static TreatmentDefinition convertTreatmentCategorySet(Drugs drugs, Domain domain) {
-		List<Drug> out = new ArrayList<Drug>();
-		for(org.drugis.addis.entities.data.Drug d : drugs.getDrug()) {
-			out.add(JAXBConvertor.findNamedItem(domain.getDrugs(), d.getName()));
-		}
-		return TreatmentDefinition.createTrivial(out);
 	}
 	
 	public static org.drugis.addis.entities.data.Allocation allocationWithNotes(Allocation nested) {
@@ -1456,6 +1420,7 @@ public class JAXBConvertor {
 	    
 	    javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
 	    trans.transform(xmlSource, result);
+	    
 	    os.close();
 	
 	    return new ByteArrayInputStream(os.toByteArray());
@@ -1492,13 +1457,14 @@ public class JAXBConvertor {
 		for (int v = sourceVersion; v < targetVersion; ++v) {
 			InputStream xsltFile = JAXBConvertor.class.getResourceAsStream("transform-" + v + "-" + (v + 1) + ".xslt");
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-
+			
 			javax.xml.transform.Source xmlSource = new javax.xml.transform.stream.StreamSource(xml);
 			javax.xml.transform.Source xsltSource = new javax.xml.transform.stream.StreamSource(xsltFile);
 			javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(os);
-
+			
 			javax.xml.transform.Transformer trans = tFactory.newTransformer(xsltSource);
 			trans.transform(xmlSource, result);
+
 			os.close();
 
 			xml = new ByteArrayInputStream(os.toByteArray()); // next version XML

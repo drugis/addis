@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util;
+package org.drugis.addis.util.jaxb;
 
 import java.io.BufferedReader;
 import java.io.IOException;

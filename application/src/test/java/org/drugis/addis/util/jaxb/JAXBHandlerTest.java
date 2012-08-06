@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util;
+package org.drugis.addis.util.jaxb;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,7 +40,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.entities.data.AddisData;
-import org.drugis.addis.util.JAXBHandler.XmlFormatType;
+import org.drugis.addis.util.jaxb.JAXBConvertor;
+import org.drugis.addis.util.jaxb.JAXBHandler;
+import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

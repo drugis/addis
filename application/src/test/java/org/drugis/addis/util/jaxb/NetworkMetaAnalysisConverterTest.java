@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.util.convertors;
+package org.drugis.addis.util.jaxb;
 
 import static org.drugis.addis.entities.AssertEntityEquals.assertEntityEquals;
 import static org.junit.Assert.assertEquals;
@@ -51,10 +51,10 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.util.JAXBConvertor;
-import org.drugis.addis.util.JAXBConvertor.ConversionException;
-import org.drugis.addis.util.JAXBConvertorTest;
-import org.drugis.addis.util.JAXBConvertorTest.MetaAnalysisWithStudies;
+import org.drugis.addis.util.jaxb.JAXBConvertor;
+import org.drugis.addis.util.jaxb.NetworkMetaAnalysisConverter;
+import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
+import org.drugis.addis.util.jaxb.JAXBConvertorTest.MetaAnalysisWithStudies;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -62,7 +62,7 @@ import org.xml.sax.SAXException;
 public class NetworkMetaAnalysisConverterTest {
 
 	private JAXBConvertorTest d_jaxbConverterTest;
-	private static final String TEST_DATA_WITH_RESULTS = "../testDataSavedResults.addis"; // note: saved results in Dizziness MA
+	private static final String TEST_DATA_WITH_RESULTS = JAXBConvertorTest.TEST_DATA_PATH + "testDataSavedResults.addis"; // note: saved results in Dizziness MA
 
 	@Before 
 	public void setUp() throws JAXBException { 
@@ -91,10 +91,10 @@ public class NetworkMetaAnalysisConverterTest {
 				ExampleData.buildDrugSertraline()));
 		TreatmentDefinition parox = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
 		TreatmentDefinition sertr = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
-		SortedSet<TreatmentDefinition> drugs = new TreeSet<TreatmentDefinition>();
-		drugs.add(combi);
-		drugs.add(parox);
-		drugs.add(sertr);
+		SortedSet<TreatmentDefinition> alternatives = new TreeSet<TreatmentDefinition>();
+		alternatives.add(combi);
+		alternatives.add(parox);
+		alternatives.add(sertr);
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		Map<TreatmentDefinition, Arm> study1map = new HashMap<TreatmentDefinition, Arm>();
 		study1map.put(combi, studies.get(0).getArms().get(0));
@@ -113,7 +113,7 @@ public class NetworkMetaAnalysisConverterTest {
 		Collections.sort(studies); // So the reading *by definition* puts the studies in their natural order
 		NetworkMetaAnalysis expected = new NetworkMetaAnalysis(name,
 				ExampleData.buildIndicationDepression(),
-				ExampleData.buildEndpointCgi(), studies, drugs, armMap);
+				ExampleData.buildEndpointCgi(), studies, alternatives, armMap);
 		
 		assertEntityEquals(expected,
 				NetworkMetaAnalysisConverter.load(ma.d_nwma, domain));
