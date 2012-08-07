@@ -335,7 +335,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
 		assertEquals(arm, ma.getArm(multiple, d_paroxSet));
 		for (Study s : ma.getIncludedStudies()) {
-			for (TreatmentDefinition d : s.getDrugs()) {
+			for (TreatmentDefinition d : s.getTreatmentDefinition()) {
 				assertNotNull(ma.getArm(s, d));
 			}
 		}

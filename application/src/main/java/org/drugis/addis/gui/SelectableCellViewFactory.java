@@ -52,7 +52,7 @@ public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 	@Override
 	protected void addVertexAttributes(AttributeMap map, Vertex v) {
 		Color col = null;
-		if (d_selectedDrugs.contains(v.getDrug())) {
+		if (d_selectedDrugs.contains(v.getTreatmentDefinition())) {
 			col = Color.green;
 		} else {
 			col = Color.lightGray;

@@ -49,7 +49,7 @@ public class DrugPresentation extends PresentationModel<Drug> implements StudyLi
 		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
 			@Override
 			public boolean accept(Study s) {
-				return EntityUtil.flatten(s.getDrugs()).contains(Category.createTrivial(drug));
+				return EntityUtil.flatten(s.getTreatmentDefinition()).contains(Category.createTrivial(drug));
 			}
 		});		
 	}

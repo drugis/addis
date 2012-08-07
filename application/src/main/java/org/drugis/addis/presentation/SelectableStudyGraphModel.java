@@ -107,7 +107,7 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 				new HashSet<Vertex>(this.vertexSet()), new HashSet<Edge>(this.edgeSet()));
 		Set<Vertex> vertices = new HashSet<Vertex>(newGraph.vertexSet());
 		for (Vertex v : vertices) {
-			if (!d_selectedDrugs.contains(v.getDrug())) {
+			if (!d_selectedDrugs.contains(v.getTreatmentDefinition())) {
 				newGraph.removeVertex(v);
 			}
 		}

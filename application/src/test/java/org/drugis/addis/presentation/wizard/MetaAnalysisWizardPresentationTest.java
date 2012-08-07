@@ -381,7 +381,7 @@ public class MetaAnalysisWizardPresentationTest {
 		drugs.add(d_paroxSet);
 		drugs.add(d_sertrSet);		
 		
-		assertEquals(drugs, model.getDrugs());
+		assertEquals(drugs, model.getTreatmentDefinitions());
 	}
 	
 	@Test

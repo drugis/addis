@@ -931,7 +931,7 @@ public class ExampleData {
 		for (Study s : studies) {
 			Map<TreatmentDefinition, Arm> drugMap = new HashMap<TreatmentDefinition, Arm>();
 			for (TreatmentDefinition d : drugs) {
-				if (s.getDrugs().contains(d)) {
+				if (s.getTreatmentDefinition().contains(d)) {
 					drugMap.put(d, RelativeEffectFactory.findFirstArm(s, d));
 				}
 			}
@@ -1083,7 +1083,7 @@ public class ExampleData {
 			throw new IllegalArgumentException("No studies in MetaAnalysis");
 		}
 		for (Study s : studies) {
-			if (!(s.getDrugs().contains(drug1) && s.getDrugs().contains(drug2))) {
+			if (!(s.getTreatmentDefinition().contains(drug1) && s.getTreatmentDefinition().contains(drug2))) {
 				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
 			}
 		}

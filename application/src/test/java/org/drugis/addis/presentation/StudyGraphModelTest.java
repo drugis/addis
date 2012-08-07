@@ -84,7 +84,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testGetDrugs() {
-		assertAllAndOnly(d_drugs, d_pm.getDrugs());
+		assertAllAndOnly(d_drugs, d_pm.getTreatmentDefinitions());
 	}
 	
 	@Test
@@ -128,8 +128,8 @@ public class StudyGraphModelTest {
 		assertEquals(3, vertexSet.size());
 		
 		for (Vertex vertex : vertexSet) {
-			assertTrue(d_drugs.contains(vertex.getDrug()));
-			assertEquals(calcSampleSize(vertex.getDrug()), vertex.getSampleSize());
+			assertTrue(d_drugs.contains(vertex.getTreatmentDefinition()));
+			assertEquals(calcSampleSize(vertex.getTreatmentDefinition()), vertex.getSampleSize());
 		}
 	}
 	
@@ -159,7 +159,7 @@ public class StudyGraphModelTest {
 	@Test
 	public void testFindVertex() {
 		assertEquals(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
-				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getDrug());
+				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getTreatmentDefinition());
 	}
 	
 	@Test

@@ -99,7 +99,7 @@ public class StudyTest {
 		Set<TreatmentDefinition> expected = new HashSet<TreatmentDefinition>();
 		expected.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		expected.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
-		assertEquals(expected, s.getDrugs());
+		assertEquals(expected, s.getTreatmentDefinition());
 	}
 	
 	@Test
@@ -353,7 +353,7 @@ public class StudyTest {
 	public void testGetDependencies() {
 		Study s = ExampleData.buildStudyDeWilde();
 		assertFalse(s.getOutcomeMeasures().isEmpty());
-		assertFalse(s.getDrugs().isEmpty());
+		assertFalse(s.getTreatmentDefinition().isEmpty());
 		
 		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
 		dep.add(ExampleData.buildDrugFluoxetine());
@@ -611,23 +611,23 @@ public class StudyTest {
 	
 	@Test
 	public void testMeasuredDrugs() {
-		assertEquals(d_clone.getDrugs(), d_clone.getMeasuredDrugs(ExampleData.buildEndpointHamd()));
-		assertEquals(Collections.emptySet(), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
+		assertEquals(d_clone.getTreatmentDefinition(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildEndpointHamd()));
+		assertEquals(Collections.emptySet(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion()));
 		
 		// Add an incomplete measurement for the default measurement moment, to see that it is excluded
 		BasicRateMeasurement m = new BasicRateMeasurement(null, 100);
 		d_clone.setMeasurement(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(0), m);
-		assertEquals(Collections.emptySet(), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
+		assertEquals(Collections.emptySet(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion()));
 
 		// Complete the measurement, to see that it is included
 		m.setRate(20);
 		TreatmentDefinition d = d_clone.getDrugs(d_clone.getArms().get(0));
-		assertEquals(Collections.singleton(d), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
+		assertEquals(Collections.singleton(d), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion()));
 
 		// Add a complete measurement for a different measurement moment, to see that it is excluded
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, d_clone.findTreatmentEpoch());
 		d_clone.setMeasurement(new MeasurementKey(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(1), wt), new BasicRateMeasurement(3, 100));
-		assertEquals(Collections.singleton(d_clone.getDrugs(d_clone.getArms().get(1))), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion(), wt));
+		assertEquals(Collections.singleton(d_clone.getDrugs(d_clone.getArms().get(1))), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion(), wt));
 	}
 	
 	@Test
@@ -737,7 +737,7 @@ public class StudyTest {
 			activity.setUsedBy(Collections.<UsedBy> emptySet());
 		}
 		assertNull(d_clone.defaultMeasurementMoment());
-		assertEquals(Collections.<TreatmentDefinition> emptySet(), d_clone.getMeasuredDrugs(d_clone.getEndpoints().get(0).getValue()));
+		assertEquals(Collections.<TreatmentDefinition> emptySet(), d_clone.getMeasuredTreatmentDefinitions(d_clone.getEndpoints().get(0).getValue()));
 	}
 	
 	private void removeTreatmentActivities() {

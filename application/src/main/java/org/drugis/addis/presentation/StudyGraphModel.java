@@ -48,16 +48,16 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> {
 	public static class Vertex {
-		private TreatmentDefinition d_drug;
+		private TreatmentDefinition d_definition;
 		private int d_sampleSize;
 		
 		public Vertex(TreatmentDefinition drug, int size) {
-			d_drug = drug;
+			d_definition = drug;
 			d_sampleSize = size;
 		}
 		
-		public TreatmentDefinition getDrug() {
-			return d_drug;
+		public TreatmentDefinition getTreatmentDefinition() {
+			return d_definition;
 		}
 		
 		public int getSampleSize() {
@@ -66,7 +66,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 				
 		@Override
 		public String toString() {
-			return d_drug.getLabel();
+			return d_definition.getLabel();
 		}
 	}
 	
@@ -91,17 +91,17 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 	
-	protected ObservableList<TreatmentDefinition> d_drugs;
+	protected ObservableList<TreatmentDefinition> d_definitions;
 	private ObservableList<Study> d_studies;
 	protected boolean d_rebuildNeeded;
 	private final ValueHolder<OutcomeMeasure> d_om;
-	private Map<TreatmentDefinition, Set<Study>> d_studiesMeasuringDrug;
+	private Map<TreatmentDefinition, Set<Study>> d_studiesMeasuringDefinition;
 
 	
 	public StudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> drugs, ValueHolder<OutcomeMeasure> om) {
 		super(Edge.class);
 		
-		d_drugs = drugs;
+		d_definitions = drugs;
 		d_studies = studies;
 		d_om = om;
 		
@@ -119,7 +119,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		
 		d_rebuildNeeded = true;
 		d_studies.addListDataListener(rebuildNeededListener);
-		d_drugs.addListDataListener(rebuildNeededListener);
+		d_definitions.addListDataListener(rebuildNeededListener);
 		
 		rebuildGraph();
 	}
@@ -129,23 +129,23 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 			return;
 		}
 
-		initStudiesMeasuringDrug();
+		initStudiesMeasuringDefinition();
 		
 		// Add vertices
 		ArrayList<Vertex> verts = new ArrayList<Vertex>(vertexSet());
 		removeAllVertices(verts);		
-		for (TreatmentDefinition d : d_drugs) {
+		for (TreatmentDefinition d : d_definitions) {
 			addVertex(new Vertex(d, calculateSampleSize(d)));
 		}
 		
 		// Add edges
 		ArrayList<Edge> edges = new ArrayList<Edge>(edgeSet());
 		removeAllEdges(edges);
-		for (int i = 0; i < (d_drugs.size() - 1); ++i) {
-			for (int j = i + 1; j < d_drugs.size(); ++j) {
-				Collection<Study> studies = getStudies(d_drugs.get(i), d_drugs.get(j));
+		for (int i = 0; i < (d_definitions.size() - 1); ++i) {
+			for (int j = i + 1; j < d_definitions.size(); ++j) {
+				Collection<Study> studies = getStudies(d_definitions.get(i), d_definitions.get(j));
 				if (studies.size() > 0) {
-					addEdge(findVertex(d_drugs.get(i)), findVertex(d_drugs.get(j)), new Edge(studies.size()));
+					addEdge(findVertex(d_definitions.get(i)), findVertex(d_definitions.get(j)), new Edge(studies.size()));
 				}
 			}
 		}
@@ -153,17 +153,17 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		d_rebuildNeeded = false;
 	}
 
-	private void initStudiesMeasuringDrug() {
-		d_studiesMeasuringDrug = new HashMap<TreatmentDefinition, Set<Study>>(); 
+	private void initStudiesMeasuringDefinition() {
+		d_studiesMeasuringDefinition = new HashMap<TreatmentDefinition, Set<Study>>(); 
 
-		for (TreatmentDefinition d : d_drugs) {
-			d_studiesMeasuringDrug.put(d, new HashSet<Study>());
+		for (TreatmentDefinition d : d_definitions) {
+			d_studiesMeasuringDefinition.put(d, new HashSet<Study>());
 		}
 		
 		for (Study s : d_studies) {
-			for (TreatmentDefinition d : s.getMeasuredDrugs(d_om.getValue())) {
-				if (d_drugs.contains(d)) {
-					d_studiesMeasuringDrug.get(d).add(s);
+			for (TreatmentDefinition d : s.getMeasuredTreatmentDefinitions(d_om.getValue())) {
+				if (d_definitions.contains(d)) {
+					d_studiesMeasuringDefinition.get(d).add(s);
 				}
 			}
 		}
@@ -171,7 +171,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 
 	public Vertex findVertex(TreatmentDefinition drug) {
 		for (Vertex v : vertexSet()) {
-			if (v.getDrug().equals(drug)) {
+			if (v.getTreatmentDefinition().equals(drug)) {
 				return v;
 			}
 		}
@@ -190,8 +190,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 * Return the list of drugs that are included in at least one of the studies having the correct indication
 	 * and outcome.
 	 */
-	public List<TreatmentDefinition> getDrugs() {
-		return d_drugs;
+	public List<TreatmentDefinition> getTreatmentDefinitions() {
+		return d_definitions;
 	}
 	
 	/**
@@ -205,6 +205,6 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	 * Return the studies with the correct indication and outcome that include the given drug.
 	 */
 	public Collection<Study> getStudies(TreatmentDefinition d) {
-		return d_studiesMeasuringDrug.get(d);
+		return d_studiesMeasuringDefinition.get(d);
 	}
 }

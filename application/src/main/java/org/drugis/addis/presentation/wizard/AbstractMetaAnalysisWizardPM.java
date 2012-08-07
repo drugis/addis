@@ -98,7 +98,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 				if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
 					List<Study> studies = getStudiesEndpointAndIndication();
 					for (Study s : studies) {
-						drugs.addAll(s.getMeasuredDrugs(d_outcomeHolder.getValue()));
+						drugs.addAll(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
 					}			
 				}
 				d_drugListHolder.clear();
@@ -221,7 +221,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		for(Study s : getStudyListModel().getSelectedStudiesModel()) {
 			d_selectedArms.put(s, new HashMap<TreatmentDefinition, ModifiableHolder<Arm>>());
 			for(TreatmentDefinition d : getSelectedDrugsModel()){
-				if(s.getMeasuredDrugs(d_outcomeHolder.getValue()).contains(d)) {
+				if(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).contains(d)) {
 					d_selectedArms.get(s).put(d, new ModifiableHolder<Arm>(getDefaultArm(s, d)));
 				}
 			}
@@ -284,7 +284,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		public boolean accept(Study s) {
 			return s.getIndication().equals(d_indicationHolder.getValue()) && 
 			s.getOutcomeMeasures().contains(d_outcomeHolder.getValue()) && 
-			s.getMeasuredDrugs(d_outcomeHolder.getValue()).size() >= 2;
+			s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).size() >= 2;
 		}
 	}
 	
@@ -293,7 +293,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			if(d_outcomeHolder.getValue() == null) {
 				return false;
 			}
-			Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>(s.getMeasuredDrugs(d_outcomeHolder.getValue()));
+			Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
 			List<TreatmentDefinition> value = getSelectedDrugsModel();
 			drugs.retainAll(value);
 			return drugs.size() >= 2;

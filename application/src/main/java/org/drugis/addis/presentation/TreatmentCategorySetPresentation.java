@@ -60,7 +60,7 @@ public class TreatmentCategorySetPresentation extends PresentationModel<Treatmen
 		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
 			@Override
 			public boolean accept(Study s) {
-				return EntityUtil.flatten(s.getDrugs()).equals(drugs);
+				return EntityUtil.flatten(s.getTreatmentDefinition()).equals(drugs);
 			}
 		});		
 	}
