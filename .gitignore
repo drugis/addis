@@ -12,5 +12,5 @@ application/src/main/generated-entities/
 version
 target
 *.log
-/application/transformedDefaultData.xml
-/application/src/main/resources/org/drugis/addis/entities/instance1.xml
+*/tags
+tags
