@@ -48,14 +48,14 @@ import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.presentation.ConsistencyWrapper;
+import org.drugis.mtc.presentation.results.NetworkRelativeEffectTableModel;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NetworkTableModelTest {
-	private PresentationModelFactory d_pmf;
-	private NetworkRelativeEffectTableModel d_tableModel;
+	private NetworkRelativeEffectTableModel<TreatmentDefinition> d_tableModel;
 	private NetworkMetaAnalysis d_analysis;
 
 	@Before
@@ -64,8 +64,7 @@ public class NetworkTableModelTest {
 		ExampleData.initDefaultData(domain);
 		
 		d_analysis = buildMockNetworkMetaAnalysis();
-		d_pmf = new PresentationModelFactory(domain);
-		d_tableModel = new NetworkRelativeEffectTableModel((NetworkMetaAnalysisPresentation)d_pmf.getModel(d_analysis), d_analysis.getConsistencyModel());
+		d_tableModel = new NetworkRelativeEffectTableModel<TreatmentDefinition>(d_analysis.getAlternatives(), d_analysis.getConsistencyModel());
 	}
 	
 	@Test

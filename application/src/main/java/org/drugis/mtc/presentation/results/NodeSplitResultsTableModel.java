@@ -24,23 +24,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.mtc.presentation.results;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.apache.commons.collections15.BidiMap;
-import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.Parameter;
-import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.MTCModelWrapper;
+import org.drugis.mtc.presentation.NodeSplitWrapper;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
@@ -54,15 +52,17 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 	private static final int COL_INDIRECT_EFFECT = 2;
 	private static final int COL_OVERALL = 3;
 	private static final int COL_P_VALUE = 4;
-	private NetworkMetaAnalysisPresentation d_pm;
+	private static final int N_COLS = 5;
 	private Map<Parameter, Summary> d_quantileSummaries = new HashMap<Parameter, Summary>();
 	private Map<Parameter, Summary> d_pValueSummaries = new HashMap<Parameter, Summary>();
 	private PropertyChangeListener d_listener;
-	private int d_rowcount;
-	private List<BasicParameter> d_parameters;
+	private final ConsistencyWrapper<?> d_consistencyModel;
+	private final List<NodeSplitWrapper<?>> d_nodeSplitModels;
 	
-	public NodeSplitResultsTableModel(NetworkMetaAnalysisPresentation pm) {
-		d_pm = pm;
+	public NodeSplitResultsTableModel(ConsistencyWrapper<?> consistencyModel, 
+			List<NodeSplitWrapper<?>> nodeSplitModels) {
+		d_consistencyModel = consistencyModel;
+		d_nodeSplitModels = nodeSplitModels;
 		
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -70,27 +70,24 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 			}
 		};
 		
-		if(d_pm.getSplitParameters().size() > 0) {
+		if(d_nodeSplitModels.size() > 0) {
 			initializeTable();
 		}
 	}
 
 	private void initializeTable() {
-		d_rowcount = d_pm.getSplitParameters().size();
-		d_parameters = new ArrayList<BasicParameter>();
-		for (BasicParameter p : d_pm.getSplitParameters()) {
-			d_parameters.add(p);
-			attachQuantileSummary(d_pm.getConsistencyModel(), p);
-			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getDirectEffect());
-			attachQuantileSummary(d_pm.getNodeSplitModel(p), d_pm.getNodeSplitModel(p).getIndirectEffect());
+		for (NodeSplitWrapper<?> m : d_nodeSplitModels) {
+			attachQuantileSummary(d_consistencyModel, m.getSplitNode());
+			attachQuantileSummary(m, m.getDirectEffect());
+			attachQuantileSummary(m, m.getIndirectEffect());
 			
-			NodeSplitPValueSummary valuePvalue = d_pm.getNodeSplitModel(p).getNodeSplitPValueSummary();
+			NodeSplitPValueSummary valuePvalue = m.getNodeSplitPValueSummary();
 			valuePvalue.addPropertyChangeListener(d_listener);
-			d_pValueSummaries.put(p, valuePvalue);
+			d_pValueSummaries.put(m.getSplitNode(), valuePvalue);
 		}
 	}
 
-	private void attachQuantileSummary(MTCModelWrapper<TreatmentDefinition> model, Parameter param) {
+	private void attachQuantileSummary(MTCModelWrapper<?> model, Parameter param) {
 		QuantileSummary summary = model.getQuantileSummary(param);
 		if(summary != null) { 
 			summary.addPropertyChangeListener(d_listener); 
@@ -111,16 +108,16 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 	}
 	
 	public int getColumnCount() {
-		return 5;
+		return N_COLS;
 	}
 
 	public int getRowCount() {
-		return d_rowcount;
+		return d_nodeSplitModels.size();
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex == COL_NAME) {
-			return getDescription(getParameter(rowIndex));
+			return getDescription((BasicParameter)d_nodeSplitModels.get(rowIndex).getSplitNode());
 		} else if (columnIndex >= COL_DIRECT_EFFECT && columnIndex <= COL_P_VALUE) {
 			return getSummary(rowIndex, columnIndex);
 		} 
@@ -129,21 +126,16 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 
 	private Object getSummary(int rowIndex, int columnIndex) {
 		switch(columnIndex) {
-			case COL_DIRECT_EFFECT : return d_quantileSummaries.get(d_pm.getNodeSplitModel(getParameter(rowIndex)).getDirectEffect());
-			case COL_INDIRECT_EFFECT : return d_quantileSummaries.get(d_pm.getNodeSplitModel(getParameter(rowIndex)).getIndirectEffect());
-			case COL_OVERALL : return d_quantileSummaries.get(getParameter(rowIndex));
-			case COL_P_VALUE : return d_pValueSummaries.get(getParameter(rowIndex)); 
+			case COL_DIRECT_EFFECT : return d_quantileSummaries.get(d_nodeSplitModels.get(rowIndex).getDirectEffect());
+			case COL_INDIRECT_EFFECT : return d_quantileSummaries.get(d_nodeSplitModels.get(rowIndex).getIndirectEffect());
+			case COL_OVERALL : return d_quantileSummaries.get(d_nodeSplitModels.get(rowIndex).getSplitNode());
+			case COL_P_VALUE : return d_pValueSummaries.get(d_nodeSplitModels.get(rowIndex).getSplitNode()); 
 			default : return NA;
 		}
 	}
 
-	private BasicParameter getParameter(int rowIndex) {
-		return d_parameters.get(rowIndex);
-	}
-	
 	private String getDescription(BasicParameter p) { 
-		BidiMap<TreatmentDefinition, Treatment> treatmentMap = d_pm.getBean().getBuilder().getTreatmentMap();
-		return treatmentMap.getKey(p.getBaseline()).getLabel() + ", " + treatmentMap.getKey(p.getSubject()).getLabel();
+		return p.getBaseline().getDescription() + ", " + p.getSubject().getDescription();
 	}
 	
 	@Override

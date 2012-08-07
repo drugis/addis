@@ -42,6 +42,8 @@ import javax.swing.event.TableModelListener;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.presentation.results.RankProbabilityDataset;
+import org.drugis.mtc.presentation.results.RankProbabilityTableModel;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.drugis.mtc.test.FileResults;
 import org.junit.Before;

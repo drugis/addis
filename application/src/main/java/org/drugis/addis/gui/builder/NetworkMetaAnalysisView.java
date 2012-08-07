@@ -66,11 +66,7 @@ import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.NetworkRelativeEffectTableCellRenderer;
 import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 import org.drugis.addis.gui.util.TableCopyHandler;
-import org.drugis.addis.presentation.NetworkInconsistencyFactorsTableModel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
-import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
-import org.drugis.addis.presentation.NetworkVarianceTableModel;
-import org.drugis.addis.presentation.NodeSplitResultsTableModel;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
 import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
@@ -96,6 +92,10 @@ import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.presentation.NodeSplitWrapper;
 import org.drugis.mtc.presentation.SimulationConsistencyWrapper;
 import org.drugis.mtc.presentation.SimulationNodeSplitWrapper;
+import org.drugis.mtc.presentation.results.NetworkInconsistencyFactorsTableModel;
+import org.drugis.mtc.presentation.results.NetworkRelativeEffectTableModel;
+import org.drugis.mtc.presentation.results.NetworkVarianceTableModel;
+import org.drugis.mtc.presentation.results.NodeSplitResultsTableModel;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
@@ -296,7 +296,7 @@ implements ViewBuilder {
 		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 
-		final NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm);
+		final NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm.getInconsistencyModel(), d_pm.getWrappedModel(d_pm.getInconsistencyModel()).isModelConstructed());
 		final EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
 		table.setDefaultRenderer(Summary.class, new SummaryCellRenderer(false));
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
@@ -483,7 +483,7 @@ implements ViewBuilder {
 	}
 
 	private JComponent buildNodeSplitResultsTable() {
-		final NodeSplitResultsTableModel tableModel = new NodeSplitResultsTableModel(d_pm);
+		final NodeSplitResultsTableModel tableModel = d_pm.createNodeSplitResultsTableModel();
 
 		final EnhancedTable table = EnhancedTable.createWithSorter(tableModel);
 		table.setDefaultRenderer(QuantileSummary.class, new SummaryCellRenderer());
@@ -631,7 +631,7 @@ implements ViewBuilder {
 	 * @return A TablePanel
 	 */
 	private TablePanel createNetworkTablePanel(final MTCModelWrapper<TreatmentDefinition> mtc) {
-		final JTable table = new JTable(new NetworkRelativeEffectTableModel(d_pm, mtc));
+		final JTable table = new JTable(new NetworkRelativeEffectTableModel<TreatmentDefinition>(d_pm.getIncludedDrugs(), mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);

@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.mtc.presentation.results;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -35,7 +35,6 @@ import java.util.TreeSet;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.lang.StringUtils;
-import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
@@ -43,28 +42,28 @@ import org.drugis.mtc.presentation.InconsistencyWrapper;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
 
-@SuppressWarnings("serial")
-public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
-	private static final String NA = "N/A";
-	private NetworkMetaAnalysisPresentation d_pm;
-	private PropertyChangeListener d_listener;
-	private boolean d_listenersAttached;
-	private ValueHolder<Boolean> d_modelConstructed;
+import com.jgoodies.binding.value.ValueModel;
 
-	public NetworkInconsistencyFactorsTableModel(NetworkMetaAnalysisPresentation pm) {
-		d_pm = pm;
-		
+@SuppressWarnings("serial")
+public class NetworkInconsistencyFactorsTableModel extends AbstractTableModel {
+	private static final String NA = "N/A";
+	private PropertyChangeListener d_listener;
+	private final InconsistencyWrapper<?> d_model;
+	private boolean d_listenersAttached;
+	private ValueModel d_modelConstructed;
+
+	public NetworkInconsistencyFactorsTableModel(InconsistencyWrapper<?> networkModel, ValueModel modelConstructed) {
+		d_model = networkModel;
+		d_modelConstructed = modelConstructed;
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				fireTableDataChanged();
 			}
 		};
 		
-		d_modelConstructed = d_pm.getWrappedModel(d_pm.getInconsistencyModel()).isModelConstructed();
 		if (d_modelConstructed.getValue().equals(true)) {
 			attachListeners();
 		}
-		
 		d_modelConstructed.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (evt.getNewValue().equals(true)) {
@@ -78,9 +77,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	private void attachListeners() {
 		if (d_listenersAttached) return;
 		
-		List<Parameter> parameterList = d_pm.getInconsistencyModel().getInconsistencyFactors();
+		List<Parameter> parameterList = d_model.getInconsistencyFactors();
 		for(Parameter p : parameterList ) {
-			QuantileSummary summary = d_pm.getInconsistencyModel().getQuantileSummary(p);
+			QuantileSummary summary = d_model.getQuantileSummary(p);
 			summary.addPropertyChangeListener(d_listener);
 		}
 		d_listenersAttached = true;
@@ -102,8 +101,9 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		if(d_modelConstructed.getValue().equals(true))
-			return d_pm.getInconsistencyModel().getInconsistencyFactors().size();
+		if(d_modelConstructed.getValue().equals(true)) {
+			return d_model.getInconsistencyFactors().size();
+		}
 		return 0;
 	}
 	
@@ -111,17 +111,15 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 		if (d_modelConstructed.getValue().equals(false)){
 			return NA;
 		}
-		InconsistencyWrapper<TreatmentDefinition> model = d_pm.getInconsistencyModel();
-		InconsistencyParameter ip = (InconsistencyParameter)model.getInconsistencyFactors().get(row);
+		InconsistencyParameter ip = (InconsistencyParameter)d_model.getInconsistencyFactors().get(row);
 		if(col == 0) {
 			Set<String> descriptions = new TreeSet<String>();
 			for(Treatment t : ip.getCycle()) { 
-				TreatmentDefinition key = d_pm.getBean().getBuilder().getTreatmentMap().getKey(t);
-				descriptions.add(key.getLabel());
+				descriptions.add(t.getDescription());
 			}
 			return StringUtils.join(descriptions, ", ");
 		} else {
-			return model.getQuantileSummary(ip);
+			return d_model.getQuantileSummary(ip);
 		}
 	}
 }

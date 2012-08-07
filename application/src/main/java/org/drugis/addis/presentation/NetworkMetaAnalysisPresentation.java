@@ -28,6 +28,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +39,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
+import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
@@ -48,6 +49,9 @@ import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
 import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.presentation.NodeSplitWrapper;
+import org.drugis.mtc.presentation.results.NodeSplitResultsTableModel;
+import org.drugis.mtc.presentation.results.RankProbabilityDataset;
+import org.drugis.mtc.presentation.results.RankProbabilityTableModel;
 import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.binding.list.ArrayListModel;
@@ -86,11 +90,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
-		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities(), this);
+		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities(), this.getConsistencyModel());
 	}
 	
 	public TableModel getRankProbabilityTableModel() {
-		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities(), this);
+		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities(), this.getConsistencyModel());
 	}
 
 	public String getRankProbabilityRankChartNote() {
@@ -144,5 +148,14 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getDescription());
 		}
 		return d_models.get(m);
+	}
+
+	public NodeSplitResultsTableModel createNodeSplitResultsTableModel() {
+		List<NodeSplitWrapper<?>> list = new ArrayList<NodeSplitWrapper<?>>();
+		for (BasicParameter p : this.getSplitParameters()) {
+			list.add(this.getNodeSplitModel(p));
+		}
+		final List<NodeSplitWrapper<?>> nodeSplitModels = list;
+		return new NodeSplitResultsTableModel(this.getConsistencyModel(), nodeSplitModels);
 	}	
 }

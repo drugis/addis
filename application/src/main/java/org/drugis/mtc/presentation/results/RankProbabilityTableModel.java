@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.mtc.presentation.results;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,20 +32,21 @@ import java.beans.PropertyChangeListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 
 public class RankProbabilityTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 6045183840617200792L;
 	private final RankProbabilitySummary d_summary;
-	private final NetworkMetaAnalysisPresentation d_pm;
+	private final MTCModelWrapper<?> d_model;
 
 	public RankProbabilityTableModel(RankProbabilitySummary summary) { 
 		this(summary, null);
 	}
 	
-	public RankProbabilityTableModel(RankProbabilitySummary summary, NetworkMetaAnalysisPresentation pm) {
+	public RankProbabilityTableModel(RankProbabilitySummary summary, MTCModelWrapper<?> model) {
 		d_summary = summary;
-		d_pm = pm;
+		d_model = model;
 		d_summary.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				fireTableDataChanged();
@@ -82,8 +83,8 @@ public class RankProbabilityTableModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Treatment treatment = d_summary.getTreatments().get(rowIndex);
 		if (columnIndex == 0) {
-			if(d_pm != null) { 
-				return d_pm.getTreatmentCategorySet(treatment).getLabel();
+			if(d_model != null) { 
+				return treatment.getDescription();
 			}
 			return treatment.getId();
 		} else {

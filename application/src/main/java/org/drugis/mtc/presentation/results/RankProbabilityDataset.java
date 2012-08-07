@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.mtc.presentation.results;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,21 +32,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.mtc.model.Treatment;
+import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.summary.RankProbabilitySummary;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 @SuppressWarnings("serial")
 public class RankProbabilityDataset extends DefaultCategoryDataset {
 	private RankProbabilitySummary d_summary;
-	private final NetworkMetaAnalysisPresentation d_pm;
+	private final MTCModelWrapper<?> d_model;
 
 	public RankProbabilityDataset(RankProbabilitySummary rankProbabilitySummary) {
 		this(rankProbabilitySummary, null);
 	}
 	
-	public RankProbabilityDataset(RankProbabilitySummary rankProbabilitySummary, NetworkMetaAnalysisPresentation pm) {
+	public RankProbabilityDataset(RankProbabilitySummary rankProbabilitySummary, MTCModelWrapper<?> model) {
 		d_summary = rankProbabilitySummary;
-		d_pm = pm;
+		d_model = model;
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				fireDatasetChanged();
@@ -93,8 +94,8 @@ public class RankProbabilityDataset extends DefaultCategoryDataset {
 	
 	@Override
 	public String getColumnKey(int column) {
-		if(d_pm != null) { 
-			return d_pm.getTreatmentCategorySet(d_summary.getTreatments().get(column)).getLabel(); 
+		if(d_model != null) { 
+			return d_summary.getTreatments().get(column).getDescription(); 
 		}
 		return d_summary.getTreatments().get(column).getId(); 
 	}

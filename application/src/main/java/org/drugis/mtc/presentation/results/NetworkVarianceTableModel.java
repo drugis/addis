@@ -24,14 +24,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.mtc.presentation.results;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
 import org.drugis.mtc.presentation.MTCModelWrapper;
@@ -39,12 +38,11 @@ import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
 public class NetworkVarianceTableModel extends AbstractTableModel {
-
 	private static final int RANDOM_EFFECTS = 0;
-	private final MTCModelWrapper<org.drugis.addis.entities.treatment.TreatmentDefinition> d_mtc;
+	private final MTCModelWrapper<?> d_mtc;
 	private final PropertyChangeListener d_listener;
 
-	public NetworkVarianceTableModel(final MTCModelWrapper<TreatmentDefinition> mtc) {
+	public NetworkVarianceTableModel(final MTCModelWrapper<?> mtc) {
 		d_mtc = mtc;
 
 		d_listener = new PropertyChangeListener() {
@@ -55,7 +53,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 		};
 
 		if (isInconsistency()) {
-			attachListener(((InconsistencyWrapper<TreatmentDefinition>) d_mtc).getInconsistencyVariance());
+			attachListener(((InconsistencyWrapper<?>) d_mtc).getInconsistencyVariance());
 		}
 		attachListener(mtc.getRandomEffectsVariance());
 	}
@@ -105,7 +103,7 @@ public class NetworkVarianceTableModel extends AbstractTableModel {
 
 	private QuantileSummary getInconsistencySummary() {
 		if (isInconsistency()) {
-			final Parameter p = ((InconsistencyWrapper<TreatmentDefinition>) d_mtc).getInconsistencyVariance();
+			final Parameter p = ((InconsistencyWrapper<?>) d_mtc).getInconsistencyVariance();
 			return d_mtc.getQuantileSummary(p);
 		}
 		return null;

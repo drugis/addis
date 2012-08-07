@@ -38,6 +38,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
+import org.drugis.mtc.presentation.results.NetworkInconsistencyFactorsTableModel;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -57,7 +58,8 @@ public class NetworkInconsistencyTableModelTest {
 		d_pmf = new PresentationModelFactory(domain);
 		
 		NetworkMetaAnalysisPresentation pm = (NetworkMetaAnalysisPresentation) d_pmf.getModel(d_analysis);
-		d_tableModel = new NetworkInconsistencyFactorsTableModel((NetworkMetaAnalysisPresentation) pm);
+		NetworkMetaAnalysisPresentation pm1 = (NetworkMetaAnalysisPresentation) pm;
+		d_tableModel = new NetworkInconsistencyFactorsTableModel(pm1.getInconsistencyModel(), pm1.getWrappedModel(pm1.getInconsistencyModel()).isModelConstructed());
 	}
 	
 	@Test

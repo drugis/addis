@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.mtc.presentation.results;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,18 +32,18 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.presentation.MTCModelWrapper;
-import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.summary.QuantileSummary;
 
 @SuppressWarnings("serial")
-public class NetworkRelativeEffectTableModel extends AbstractTableModel {
-	private NetworkMetaAnalysisPresentation d_pm;
-	MTCModelWrapper<TreatmentDefinition> d_networkModel;
+public class NetworkRelativeEffectTableModel<TreatmentType> extends AbstractTableModel {
+	private final List<TreatmentType> d_treatments;
+	MTCModelWrapper<TreatmentType> d_networkModel;
 	private final PropertyChangeListener d_listener;
 	
-	public NetworkRelativeEffectTableModel(NetworkMetaAnalysisPresentation pm, MTCModelWrapper<TreatmentDefinition> networkModel) {
-		d_pm = pm;
+	public NetworkRelativeEffectTableModel(List<TreatmentType> treatments, MTCModelWrapper<TreatmentType> networkModel) {
+		d_treatments = treatments;
 		d_networkModel = networkModel;
 		d_listener = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -52,9 +52,8 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		};
 		
 		// Listen to summaries
-		List<TreatmentDefinition> drugs = d_pm.getIncludedDrugs();
-		for(TreatmentDefinition d1 : drugs) {
-			for (TreatmentDefinition d2 : drugs) {
+		for(TreatmentType d1 : d_treatments) {
+			for (TreatmentType d2 : d_treatments) {
 				if (!d1.equals(d2)) {
 					attachListener(networkModel, d1, d2);
 				}
@@ -62,7 +61,7 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachListener(MTCModelWrapper<TreatmentDefinition> networkModel, TreatmentDefinition d1, TreatmentDefinition d2) {
+	private void attachListener(MTCModelWrapper<TreatmentType> networkModel, TreatmentType d1, TreatmentType d2) {
 		QuantileSummary quantileSummary = getSummary(d1, d2);
 		if(quantileSummary != null) {
 			quantileSummary.addPropertyChangeListener(d_listener);
@@ -70,32 +69,31 @@ public class NetworkRelativeEffectTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return d_pm.getIncludedDrugs().size();
+		return d_treatments.size();
 	}
 
 	public int getRowCount() {
-		return d_pm.getIncludedDrugs().size();
+		return d_treatments.size();
 	}
 	
 	public String getDescriptionAt(int row, int col) {
 		if (row == col) {
 			return null;
 		}
-		return "\"" + getDrugAt(col).getLabel() + "\" relative to \"" + getDrugAt(row).getLabel() + "\"";
+		Treatment t1 = d_networkModel.forwardMap(d_treatments.get(col));
+		Treatment t2 = d_networkModel.forwardMap(d_treatments.get(row));
+
+		return "\"" + t1.getDescription() + "\" relative to \"" + t2.getDescription() + "\"";
 	}
 
-	private TreatmentDefinition getDrugAt(int idx) {
-		return d_pm.getIncludedDrugs().get(idx);
-	}
-	
 	public Object getValueAt(int row, int col) {
 		if (row == col) {
-			return getDrugAt(row);
+			return d_treatments.get(row);
 		}
-		return getSummary(getDrugAt(row), getDrugAt(col));
+		return getSummary(d_treatments.get(row), d_treatments.get(col));
 	}
 	
-	private QuantileSummary getSummary(final TreatmentDefinition d1, final TreatmentDefinition d2) {
+	private QuantileSummary getSummary(final TreatmentType d1, final TreatmentType d2) {
 		return d_networkModel.getQuantileSummary(d_networkModel.getRelativeEffect(d1, d2));
 	}
 }
