@@ -67,7 +67,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected void buildDrugHolders() {
+	protected void buildDefinitionHolders() {
 		d_firstDrugHolder = new ModifiableHolder<TreatmentDefinition>();		
 		d_secondDrugHolder = new ModifiableHolder<TreatmentDefinition>();
 
@@ -173,7 +173,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 	
 	@Override
-	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
+	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel() {
 		return d_selectedDrugs;
 	}
 
@@ -227,7 +227,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 
 	@Override
 	protected StudyGraphModel buildStudyGraphPresentation() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder,  d_outcomeHolder);				
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_treatmentDefinitionHolder,  d_outcomeHolder);				
 	}
 
 	@Override

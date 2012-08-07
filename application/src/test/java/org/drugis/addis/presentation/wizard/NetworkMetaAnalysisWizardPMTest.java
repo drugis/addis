@@ -94,20 +94,20 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		ArrayList<TreatmentDefinition> newList = new ArrayList<TreatmentDefinition>();
 		newList.add(d_sertrSet);
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(newList);
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<TreatmentDefinition>(newList);
 		newList.add(d_paroxSet);
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(newList);
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<TreatmentDefinition>(newList);		
 		newList.add(d_fluoxSet);
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(newList);
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(newList);
 		assertTrue((Boolean)completeModel.getValue());		
 	}
 	
@@ -132,8 +132,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		replay(mock);
 		
 		listModel.getAvailableStudies().addListDataListener(mock);
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(selectionList);
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(selectionList);
 		verify(mock);
 	}
 	
@@ -149,8 +149,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
 		
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(new ArrayList<TreatmentDefinition>(selectionList));
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(new ArrayList<TreatmentDefinition>(selectionList));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
 		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getAvailableStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
@@ -158,8 +158,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		listModel.getAvailableStudies().addListDataListener(mock);
 		selectionList.add(d_fluoxSet);	
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(selectionList);		
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(selectionList);		
 		verify(mock);
 	}
 	
@@ -178,8 +178,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		ArrayList<TreatmentDefinition> selectionList = new ArrayList<TreatmentDefinition>();
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(selectionList);
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(selectionList);
 		
 		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(2, graphModel.vertexSet().size());
@@ -254,7 +254,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_paroxSet
 			};
 		
-		assertEquals(Arrays.asList(expected), d_pm.getDrugListModel());
+		assertEquals(Arrays.asList(expected), d_pm.getTreatmentDefinitionListModel());
 	}
 	
 	@Test
@@ -313,8 +313,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testCreateMetaAnalysis() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(Arrays.asList(new TreatmentDefinition[] {
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(Arrays.asList(new TreatmentDefinition[] {
 				d_fluoxSet,
 				d_paroxSet,
 				d_sertrSet}));
@@ -328,7 +328,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		NetworkMetaAnalysis ma = d_pm.createAnalysis("name");
 		
-		assertEquals(d_pm.getSelectedDrugsModel(), ma.getAlternatives());
+		assertEquals(d_pm.getSelectedTreatmentDefinitionModel(), ma.getAlternatives());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
 				d_pm.getStudyListModel().getSelectedStudiesModel());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());
@@ -353,8 +353,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(Arrays.asList(new TreatmentDefinition[] {
+		d_pm.getSelectedTreatmentDefinitionModel().clear();
+		d_pm.getSelectedTreatmentDefinitionModel().addAll(Arrays.asList(new TreatmentDefinition[] {
 				d_fluoxSet,
 				d_paroxSet,
 				d_sertrSet}));
@@ -364,8 +364,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
 		assertNull(d_pm.getSelectedArmModel(study, d_sertrSet));
 		
-		assertEquals(Collections.singletonList(study.getArms().get(1)), d_pm.getArmsPerStudyPerDrug(study, d_paroxSet));
-		assertEquals(Collections.singletonList(study.getArms().get(2)), d_pm.getArmsPerStudyPerDrug(study, d_fluoxSet));
-		assertEquals(Collections.emptyList(), d_pm.getArmsPerStudyPerDrug(study, d_sertrSet));
+		assertEquals(Collections.singletonList(study.getArms().get(1)), d_pm.getArmsPerStudyPerDefinition(study, d_paroxSet));
+		assertEquals(Collections.singletonList(study.getArms().get(2)), d_pm.getArmsPerStudyPerDefinition(study, d_fluoxSet));
+		assertEquals(Collections.emptyList(), d_pm.getArmsPerStudyPerDefinition(study, d_sertrSet));
 	}
 }

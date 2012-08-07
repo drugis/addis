@@ -250,7 +250,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
-		assertEquals(expected, d_wizard.getDrugListModel());
+		assertEquals(expected, d_wizard.getTreatmentDefinitionListModel());
 	}
 	
 	@Test
@@ -259,9 +259,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
-		assertNotNull(d_wizard.getDrugListModel());
+		assertNotNull(d_wizard.getTreatmentDefinitionListModel());
 		
-		assertTrue(d_wizard.getDrugListModel().isEmpty());
+		assertTrue(d_wizard.getTreatmentDefinitionListModel().isEmpty());
 	}
 	
 	@Test
@@ -322,29 +322,29 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testSelectedDrugList() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		assertEquals(Collections.<Drug>emptyList(), d_wizard.getSelectedDrugsModel());
+		assertEquals(Collections.<Drug>emptyList(), d_wizard.getSelectedTreatmentDefinitionModel());
 		
 		ListDataListener mock = createMock(ListDataListener.class);
 
-		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_ADDED,
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.INTERVAL_ADDED,
 				0, 0)));
-		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_ADDED,
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.INTERVAL_ADDED,
 				1, 1)));
-		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_REMOVED,
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.INTERVAL_REMOVED,
 				0, 0)));
 		
-		d_wizard.getSelectedDrugsModel().addListDataListener(mock);
+		d_wizard.getSelectedTreatmentDefinitionModel().addListDataListener(mock);
 		replay(mock);
 		
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
-		assertEquals(Collections.<TreatmentDefinition>singletonList(d_fluoxSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Collections.<TreatmentDefinition>singletonList(d_fluoxSet), d_wizard.getSelectedTreatmentDefinitionModel());
 		
 		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
-		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedTreatmentDefinitionModel());
 		
 		d_wizard.getFirstDrugModel().setValue(null);
 		assertEquals(Collections.<TreatmentDefinition>singletonList(d_sertrSet),
-				d_wizard.getSelectedDrugsModel());
+				d_wizard.getSelectedTreatmentDefinitionModel());
 		verify(mock);
 	}
 	
@@ -355,16 +355,16 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
 		
-		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel()); // just a sanity check
+		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedTreatmentDefinitionModel()); // just a sanity check
 		
 		ListDataListener mock = createMock(ListDataListener.class);
-		mock.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.CONTENTS_CHANGED,
+		mock.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.CONTENTS_CHANGED,
 				1, 1)));
-		d_wizard.getSelectedDrugsModel().addListDataListener(mock);
+		d_wizard.getSelectedTreatmentDefinitionModel().addListDataListener(mock);
 		replay(mock);
 
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
-		assertEquals(Arrays.asList(d_fluoxSet, d_paroxSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Arrays.asList(d_fluoxSet, d_paroxSet), d_wizard.getSelectedTreatmentDefinitionModel());
 
 		verify(mock);
 	}
@@ -411,8 +411,8 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<TreatmentDefinition> expected = d_wizard.getDrugListModel();
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getDrugListModel();
+		List<TreatmentDefinition> expected = d_wizard.getTreatmentDefinitionListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getTreatmentDefinitionListModel();
 		assertEquals(expected, drugList);
 	}
 	
@@ -420,7 +420,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getDrugListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getTreatmentDefinitionListModel();
 		
 		ListDataListener l = createMock(ListDataListener.class);
 		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
@@ -563,7 +563,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyChouinard()).setValue(false);
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyDeWilde()).setValue(false);
 		
-		assertEquals(expected, d_wizard.getArmsPerStudyPerDrug(multipleArmsPerStudyPerDrug, d_paroxSet));
+		assertEquals(expected, d_wizard.getArmsPerStudyPerDefinition(multipleArmsPerStudyPerDrug, d_paroxSet));
 	}
 	
 	@Test

@@ -45,12 +45,12 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectableStudyGraphModel extends StudyGraphModel {
 	
-	private ObservableList<TreatmentDefinition> d_selectedDrugs = new ArrayListModel<TreatmentDefinition>(d_drugs);
+	private ObservableList<TreatmentDefinition> d_selectedDefinitions = new ArrayListModel<TreatmentDefinition>(d_definitions);
 	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
 
-	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> drugs, ValueHolder<OutcomeMeasure> outcome) {
-		super(studies, drugs, outcome);
-		d_selectedDrugs.addListDataListener(new ListDataListener() {
+	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
+		super(studies, definitions, outcome);
+		d_selectedDefinitions.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				updateComplete();
 			}
@@ -71,30 +71,30 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		}
 		super.rebuildGraph();
 		
-		if (d_selectedDrugs != null) {
-			d_selectedDrugs.clear();
-			d_selectedDrugs.addAll(d_drugs);
+		if (d_selectedDefinitions != null) {
+			d_selectedDefinitions.clear();
+			d_selectedDefinitions.addAll(d_definitions);
 		}
 	}
 	
 	private void updateComplete() {
-		d_complete.setValue(getSelectedDrugsModel().size() > 1 && isSelectionConnected());
+		d_complete.setValue(getSelectedDefinitionsModel().size() > 1 && isSelectionConnected());
 	}
 	
 	public ValueHolder<Boolean> getSelectionCompleteModel() {
 		return d_complete;
 	}
 
-	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
-		return d_selectedDrugs;
+	public ObservableList<TreatmentDefinition> getSelectedDefinitionsModel() {
+		return d_selectedDefinitions;
 	}
 	
 	public boolean isSelectionConnected() {
-		UndirectedGraph<Vertex, Edge> g = getSelectedDrugsGraph();
+		UndirectedGraph<Vertex, Edge> g = getSelectedDefinitionsGraph();
 		
 		ConnectivityInspector<Vertex, Edge> inspectorGadget = new ConnectivityInspector<Vertex, Edge>(g);
-		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDrugs.get(0)));
-		for (TreatmentDefinition d : d_selectedDrugs) {
+		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDefinitions.get(0)));
+		for (TreatmentDefinition d : d_selectedDefinitions) {
 			if (!connectedDrugs.contains(this.findVertex(d))) {
 				return false;
 			}
@@ -102,12 +102,12 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 		return true;
 	}	
 
-	public UndirectedGraph<Vertex, Edge> getSelectedDrugsGraph() {
+	public UndirectedGraph<Vertex, Edge> getSelectedDefinitionsGraph() {
 		UndirectedGraph<Vertex, Edge> newGraph = new UndirectedSubgraph<Vertex, Edge>(this,
 				new HashSet<Vertex>(this.vertexSet()), new HashSet<Edge>(this.edgeSet()));
 		Set<Vertex> vertices = new HashSet<Vertex>(newGraph.vertexSet());
 		for (Vertex v : vertices) {
-			if (!d_selectedDrugs.contains(v.getTreatmentDefinition())) {
+			if (!d_selectedDefinitions.contains(v.getTreatmentDefinition())) {
 				newGraph.removeVertex(v);
 			}
 		}

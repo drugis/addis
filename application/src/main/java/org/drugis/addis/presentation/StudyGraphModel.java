@@ -51,8 +51,8 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		private TreatmentDefinition d_definition;
 		private int d_sampleSize;
 		
-		public Vertex(TreatmentDefinition drug, int size) {
-			d_definition = drug;
+		public Vertex(TreatmentDefinition def, int size) {
+			d_definition = def;
 			d_sampleSize = size;
 		}
 		

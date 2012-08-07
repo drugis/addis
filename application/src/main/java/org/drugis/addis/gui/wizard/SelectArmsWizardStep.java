@@ -83,8 +83,8 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (TreatmentDefinition drug: d_pm.getSelectedDrugsModel()) {
-				if (!d_pm.getArmsPerStudyPerDrug(curStudy, drug).isEmpty()) {
+			for (TreatmentDefinition drug: d_pm.getSelectedTreatmentDefinitionModel()) {
+				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, drug).isEmpty()) {
 					row = createArmSelect(row, curStudy, drug, cc);
 				}
 			}
@@ -100,7 +100,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	private int createArmSelect(int row, final Study curStudy, TreatmentDefinition drug, CellConstraints cc) {
 		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
 		
-		ListModel arms = d_pm.getArmsPerStudyPerDrug(curStudy, drug);
+		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, drug);
 
 		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug), true);
 		if (arms.getSize() == 1)

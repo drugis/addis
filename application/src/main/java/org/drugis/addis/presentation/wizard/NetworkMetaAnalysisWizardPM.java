@@ -61,8 +61,8 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
-		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), getSelectedDrugsModel(), getOutcomeMeasureModel());
-		getSelectedDrugsModel().addListDataListener(new ListDataListener() {
+		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), getSelectedTreatmentDefinitionModel(), getOutcomeMeasureModel());
+		getSelectedTreatmentDefinitionModel().addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				updateArmHolders();
 			}
@@ -77,8 +77,8 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
-		return d_studyGraphPresentationModel.getSelectedDrugsModel();
+	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel() {
+		return d_studyGraphPresentationModel.getSelectedDefinitionsModel();
 	}
 	
 	public StudyGraphModel getSelectedStudyGraphModel(){
@@ -87,7 +87,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 
 	@Override
 	protected SelectableStudyGraphModel buildStudyGraphPresentation() {
-		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder, d_outcomeHolder);
+		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_treatmentDefinitionHolder, d_outcomeHolder);
 	}
 	
 	public ValueModel getConnectedDrugsSelectedModel() {
@@ -154,10 +154,10 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<Study> studies = getSelectedStudiesModel();
-		List<TreatmentDefinition> drugs = getSelectedDrugsModel();
+		List<TreatmentDefinition> definitions = getSelectedTreatmentDefinitionModel();
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = getArmMap();
 		
-		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);
+		return new NetworkMetaAnalysis(name, indication, om, studies, definitions, armMap);
 	}
 
 	private Map<Study, Map<TreatmentDefinition, Arm>> getArmMap() {
@@ -180,5 +180,5 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	protected void buildDrugHolders() {	}
+	protected void buildDefinitionHolders() {	}
 }
