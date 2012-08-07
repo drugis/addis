@@ -430,14 +430,14 @@ public class DomainImpl extends Domain {
 		}
 	}
 	public class DrugFilter implements Filter<Study> {
-		private final TreatmentDefinition d_drugSet;
+		private final TreatmentDefinition d_TreatmentDefinition;
 		
 		public DrugFilter(TreatmentDefinition ds) {
-			d_drugSet = ds;
+			d_TreatmentDefinition = ds;
 		}
 		
 		public boolean accept(Study s) {
-			return s.getDrugs().contains(d_drugSet);
+			return s.getDrugs().contains(d_TreatmentDefinition);
 		}
 	}
 }

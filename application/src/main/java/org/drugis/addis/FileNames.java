@@ -61,13 +61,6 @@ public class FileNames {
 	public static final String ICON_SEARCH = "search.gif";
 	public static final String IMAGE_HEADER = "header.png";
 	public static final String IMAGE_FOOTER = "footer.png";
-	public static final String ICON_RUN = "run.gif";
-	public static final String ICON_TICK = "tick.png";
-	public static final String ICON_CURVE_CHART = "chart_curve.png";
-	public static final String ICON_CURVE_ORGANIZATION = "chart_organisation.png";
-	public static final String ICON_REDO = "arrow_redo.png";
-	public static final String ICON_RESTART = "restart_task.gif";
-	public static final String ICON_EXTEND_CHART = "chart_curve_add.png";
 	public static final String ICON_NOTE = "note.gif";
 	public static final String ICON_NOTE_NEW = "note_new.gif";
 	public static final String ICON_ADDIS_APP = "addis.png";

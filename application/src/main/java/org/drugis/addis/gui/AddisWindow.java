@@ -698,4 +698,12 @@ public class AddisWindow extends JFrame {
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmf;
 	}
+
+	public Runnable getReloadRightPanelAction(final String activeTab) {
+		return new Runnable() {
+			public void run() {
+				reloadRightPanel(activeTab);
+			}
+		};
+	}
 }

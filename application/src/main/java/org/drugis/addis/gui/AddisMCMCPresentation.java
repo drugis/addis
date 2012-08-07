@@ -24,42 +24,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.entities.mtcwrapper;
+package org.drugis.addis.gui;
 
-import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.mtc.NetworkBuilder;
-import org.drugis.mtc.NodeSplitModel;
-import org.drugis.mtc.Parameter;
-import org.drugis.mtc.parameterization.BasicParameter;
-import org.drugis.mtc.summary.NodeSplitPValueSummary;
+import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.ValueModelWrapper;
+import org.drugis.mtc.presentation.MCMCModelWrapper;
+import org.drugis.mtc.presentation.MCMCPresentation;
+import org.drugis.mtc.presentation.MTCModelWrapper;
 
-public class SimulationNodeSplitWrapper extends AbstractSimulationWrapper<NodeSplitModel> implements NodeSplitWrapper {
-	private NodeSplitPValueSummary d_pValueSummary;
-
-	public SimulationNodeSplitWrapper(NetworkBuilder<TreatmentDefinition> builder, NodeSplitModel model) {
-		super(builder, model, "Node Split on " + model.getSplitNode().getName());
+public class AddisMCMCPresentation extends MCMCPresentation implements Comparable<AddisMCMCPresentation> {
+	protected final OutcomeMeasure d_om;
+	
+	public AddisMCMCPresentation(final MCMCModelWrapper wrapper, final OutcomeMeasure om, final String name) {
+		super(wrapper, name);
+		d_om = om;
+	}
+	
+	@Override
+	public ValueHolder<Boolean> isModelConstructed() {
+		return new ValueModelWrapper<Boolean>(super.isModelConstructed());
 	}
 
 	@Override
-	public Parameter getDirectEffect() {
-		return d_nested.getDirectEffect();
+	public int compareTo(AddisMCMCPresentation o) {
+		int omCompare = d_om.compareTo(o.getOutcomeMeasure());
+		int modelComp = (o.getWrapper() instanceof MTCModelWrapper) ? 1 : -1;
+		return (omCompare == 0) ? modelComp : omCompare;
 	}
 
-	@Override
-	public Parameter getIndirectEffect() {
-		return d_nested.getIndirectEffect();
-	}
-
-	@Override
-	public BasicParameter getSplitNode() {
-		return d_nested.getSplitNode();
-	}
-
-	@Override
-	public NodeSplitPValueSummary getNodeSplitPValueSummary() {
-		if(d_pValueSummary == null) {
-			d_pValueSummary = new NodeSplitPValueSummary(d_nested.getResults(), getDirectEffect(), getIndirectEffect());
-		}
-		return d_pValueSummary;
+	public OutcomeMeasure getOutcomeMeasure() {
+		return d_om;
 	}
 }

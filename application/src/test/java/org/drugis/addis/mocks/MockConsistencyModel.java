@@ -45,6 +45,7 @@ import org.drugis.mtc.yadas.YadasResults;
 
 public class MockConsistencyModel extends YadasConsistencyModel implements ConsistencyModel {
 
+	@Deprecated
 	public static ConsistencyModel buildMockSimulationConsistencyModel(List<Treatment> ts) {
 		return new MockConsistencyModel(ts);
 	}

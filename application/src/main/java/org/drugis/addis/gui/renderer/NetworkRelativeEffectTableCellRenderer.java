@@ -35,7 +35,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.NetworkRelativeEffectTableModel;
+import org.drugis.mtc.presentation.results.NetworkRelativeEffectTableModel;
 
 public class NetworkRelativeEffectTableCellRenderer extends SummaryCellRenderer implements TableCellRenderer {
 	public NetworkRelativeEffectTableCellRenderer(boolean applyExpTransform) {
@@ -56,7 +56,9 @@ public class NetworkRelativeEffectTableCellRenderer extends SummaryCellRenderer 
 			component.setBackground(Color.LIGHT_GRAY);
 		}
 		
-		NetworkRelativeEffectTableModel networkTableModel = (NetworkRelativeEffectTableModel)table.getModel();
+		@SuppressWarnings("unchecked")
+		NetworkRelativeEffectTableModel<TreatmentDefinition> networkTableModel = 
+			(NetworkRelativeEffectTableModel<TreatmentDefinition>)table.getModel();
 		((JComponent) component).setToolTipText(networkTableModel.getDescriptionAt(row, column));
 		return component;
 	}
