@@ -309,7 +309,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		}
 		public boolean accept(Arm a) {
 			BasicMeasurement measurement = d_study.getMeasurement(d_outcomeHolder.getValue(), a);
-			return d_study.getDrugs(a).equals(d_drugs) && measurement != null && measurement.isComplete();
+			return d_study.getTreatmentDefinition(a).equals(d_drugs) && measurement != null && measurement.isComplete();
 		}
 
 	}

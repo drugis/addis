@@ -1008,8 +1008,8 @@ public class ExampleData {
 		return new RandomEffectsMetaAnalysis(
 				"Convulsion test analysis",
 				buildAdverseEventConvulsion(),
-				s1.getDrugs(base),
-				s1.getDrugs(subject),
+				s1.getTreatmentDefinition(base),
+				s1.getTreatmentDefinition(subject),
 				studyArms, false);
 	}
 
@@ -1026,8 +1026,8 @@ public class ExampleData {
 		return new RandomEffectsMetaAnalysis(
 				"Hamd test analysis",
 				buildEndpointHamd(),
-				s1.getDrugs(base),
-				s1.getDrugs(subject),
+				s1.getTreatmentDefinition(base),
+				s1.getTreatmentDefinition(subject),
 				studyArms, false);
 	}
 

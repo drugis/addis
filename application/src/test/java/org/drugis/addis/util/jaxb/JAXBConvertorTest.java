@@ -1485,8 +1485,8 @@ public class JAXBConvertorTest {
 		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(
 				name, 
 				ExampleData.buildEndpointHamd(), 
-				study.getDrugs(base),
-				study.getDrugs(subject),
+				study.getTreatmentDefinition(base),
+				study.getTreatmentDefinition(subject),
 				armsList, false);
 
 		assertEntityEquals(pwma,

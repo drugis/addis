@@ -98,10 +98,10 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	private Map<TreatmentDefinition, Set<Study>> d_studiesMeasuringDefinition;
 
 	
-	public StudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> drugs, ValueHolder<OutcomeMeasure> om) {
+	public StudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> om) {
 		super(Edge.class);
 		
-		d_definitions = drugs;
+		d_definitions = definitions;
 		d_studies = studies;
 		d_om = om;
 		
@@ -169,9 +169,9 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 		}
 	}
 
-	public Vertex findVertex(TreatmentDefinition drug) {
+	public Vertex findVertex(TreatmentDefinition definition) {
 		for (Vertex v : vertexSet()) {
-			if (v.getTreatmentDefinition().equals(drug)) {
+			if (v.getTreatmentDefinition().equals(definition)) {
 				return v;
 			}
 		}

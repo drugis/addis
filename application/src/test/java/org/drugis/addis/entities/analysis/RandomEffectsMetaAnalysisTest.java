@@ -96,8 +96,8 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		for (int i = 0; i < d_studyList.size(); ++i) {
 			StudyArmsEntry studyArmsEntry = entries.get(i);
 			assertEquals(d_studyList.get(i), studyArmsEntry.getStudy());
-			assertEquals(TreatmentDefinition.createTrivial(d_fluox), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase()));
-			assertEquals(TreatmentDefinition.createTrivial(d_sertr), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject()));
+			assertEquals(TreatmentDefinition.createTrivial(d_fluox), studyArmsEntry.getStudy().getTreatmentDefinition(studyArmsEntry.getBase()));
+			assertEquals(TreatmentDefinition.createTrivial(d_sertr), studyArmsEntry.getStudy().getTreatmentDefinition(studyArmsEntry.getSubject()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getBase()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getSubject()));
 		}
@@ -123,7 +123,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		armsList.add(new StudyArmsEntry(newStudy, base, subject));
 		armsList.add(new StudyArmsEntry(newStudy, subject, base));
 		
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, newStudy.getDrugs(base), newStudy.getDrugs(subject), armsList, false);
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, newStudy.getTreatmentDefinition(base), newStudy.getTreatmentDefinition(subject), armsList, false);
 	}
 	
 	@Test

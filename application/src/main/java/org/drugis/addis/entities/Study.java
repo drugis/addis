@@ -359,7 +359,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public Set<TreatmentDefinition> getTreatmentDefinition() {
 		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
-			drugs.add(getDrugs(a));
+			drugs.add(getTreatmentDefinition(a));
 		}
 		return drugs;
 	}
@@ -716,15 +716,15 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return true;
 	}
 
-	public TreatmentDefinition getDrugs(final Arm a) {
+	public TreatmentDefinition getTreatmentDefinition(final Arm a) {
 		final Activity activity = getActivity(a);
 		if (activity instanceof TreatmentActivity) {
-			return getTreatmentCategorySet((TreatmentActivity) activity);
+			return getTreatmentDefinition((TreatmentActivity) activity);
 		}
 		return new TreatmentDefinition();
 	}
 
-	private TreatmentDefinition getTreatmentCategorySet(final TreatmentActivity activity) {
+	private TreatmentDefinition getTreatmentDefinition(final TreatmentActivity activity) {
 		final List<Drug> drugs = new ArrayList<Drug>();
 		for(final DrugTreatment ta : activity.getTreatments()) {
 			drugs.add(ta.getDrug());
@@ -896,7 +896,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		@Override
 		public boolean accept(final Arm a) {
-			return getDrugs(a).equals(d_d);
+			return getTreatmentDefinition(a).equals(d_d);
 		}
 	}
 

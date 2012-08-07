@@ -621,22 +621,22 @@ public class StudyTest {
 
 		// Complete the measurement, to see that it is included
 		m.setRate(20);
-		TreatmentDefinition d = d_clone.getDrugs(d_clone.getArms().get(0));
+		TreatmentDefinition d = d_clone.getTreatmentDefinition(d_clone.getArms().get(0));
 		assertEquals(Collections.singleton(d), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion()));
 
 		// Add a complete measurement for a different measurement moment, to see that it is excluded
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, d_clone.findTreatmentEpoch());
 		d_clone.setMeasurement(new MeasurementKey(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(1), wt), new BasicRateMeasurement(3, 100));
-		assertEquals(Collections.singleton(d_clone.getDrugs(d_clone.getArms().get(1))), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion(), wt));
+		assertEquals(Collections.singleton(d_clone.getTreatmentDefinition(d_clone.getArms().get(1))), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion(), wt));
 	}
 	
 	@Test
 	public void testMeasuredArms() {
 		Arm a1 = d_clone.getArms().get(0);
-		TreatmentDefinition d1 = d_clone.getDrugs(a1);
+		TreatmentDefinition d1 = d_clone.getTreatmentDefinition(a1);
 		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 		Arm a2 = d_clone.getArms().get(1);
-		TreatmentDefinition d2 = d_clone.getDrugs(a2);
+		TreatmentDefinition d2 = d_clone.getTreatmentDefinition(a2);
 		assertEquals(Collections.singletonList(a2), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d2));
 	
 		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), d1));
@@ -672,7 +672,7 @@ public class StudyTest {
 		assertSame(newArm, d_clone.getArms().get(0));
 		
 		// Check if StudyActivity references are updated
-		assertEquals(d_orig.getDrugs(oldArm), d_clone.getDrugs(newArm));
+		assertEquals(d_orig.getTreatmentDefinition(oldArm), d_clone.getTreatmentDefinition(newArm));
 		assertEquals(d_orig.getActivity(oldArm), d_clone.getActivity(newArm));
 		Epoch epoch = d_orig.getEpochs().get(0);
 		assertEquals(d_orig.getStudyActivityAt(oldArm, epoch), d_clone.getStudyActivityAt(newArm, epoch));
