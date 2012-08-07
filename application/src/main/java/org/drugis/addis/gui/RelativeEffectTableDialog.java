@@ -89,9 +89,6 @@ public class RelativeEffectTableDialog extends JDialog {
 			} else {
 				LabeledPresentation labeled = (LabeledPresentation)val;
 				AbstractValueModel labelModel = labeled.getLabelModel();
-				if(labelModel.getValue() == null) {
-					System.out.println("FOO");
-				}
 				label = BasicComponentFactory.createLabel(labelModel);
 				label.setBackground(Color.white);
 			}

@@ -94,7 +94,7 @@ public class NetworkInconsistencyFactorsTableModel  extends AbstractTableModel {
 	
 	@Override
 	public String getColumnName(int column) {
-		return column == 0 ? "Cycle" : "Confidence Interval";
+		return column == 0 ? "Cycle" : "Median (95% CrI)";
 	}
 
 	public int getColumnCount() {

@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ import com.jgoodies.binding.value.ValueModel;
 public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
 	private ValueHolder<Boolean> d_measurementsReadyModel;
 	private HashMap<MCMCModelWrapper, AddisMCMCPresentation> d_models;
-	
-	public MetaBenefitRiskPresentation(MetaBenefitRiskAnalysis bean, PresentationModelFactory pmf) {
+
+	public MetaBenefitRiskPresentation(final MetaBenefitRiskAnalysis bean, final PresentationModelFactory pmf) {
 		super(bean, pmf);
-		
+
 		d_pmf = pmf;
 	}
-	
+
 	@Override
 	protected void initSimulations() {
 		d_models = new HashMap<MCMCModelWrapper, AddisMCMCPresentation>();
@@ -72,12 +72,13 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 
 	@Override
 	protected void startSMAA() {
-		if ((Boolean)getMeasurementsReadyModel().getValue()) {
+		if (getMeasurementsReadyModel().getValue()) {
 			getSMAAPresentation().startSMAA();
 		}
-		
+
 		getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
 				getSMAAPresentation().startSMAA();
 			}
 		});
@@ -88,66 +89,68 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		if (getMeasurementsReadyModel().getValue()) {
 			getLyndOBrienPresentation().startLyndOBrien();
 		}
-		
+
 		getMeasurementsReadyModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
 				getLyndOBrienPresentation().startLyndOBrien();
 			}
 		});
 	}
-	
+
 	public ObservableList<MetaAnalysis> getAnalysesModel() {
 		return new ArrayListModel<MetaAnalysis>(getBean().getMetaAnalyses());
 	}
 
-	
+
 	@Override
 	public ValueHolder<Boolean> getMeasurementsReadyModel() {
 		if (d_measurementsReadyModel != null) {
 			return d_measurementsReadyModel;
 		}
-		
-		List<ValueModel> models = new ArrayList<ValueModel>();
-		for (MCMCModelWrapper wrapper : d_models.keySet()) {
+
+		final List<ValueModel> models = new ArrayList<ValueModel>();
+		for (final MCMCModelWrapper wrapper : d_models.keySet()) {
 			if (!wrapper.isSaved()) {
 				models.add(new TaskTerminatedModel(wrapper.getModel().getActivityTask()));
 			}
 		}
 		d_measurementsReadyModel = new ValueModelWrapper<Boolean>(new BooleanAndModel(models));
-		
+
 		return d_measurementsReadyModel;
 	}
-	
+
 	public List<Task> getMeasurementTasks() {
-		List<Task> tasks = getBaselineTasks();
+		final List<Task> tasks = getBaselineTasks();
 		tasks.addAll(getBean().getNetworkTasks());
 		return tasks;
 	}
 
 
 	private List<Task> getBaselineTasks() {
-		List<Task> tasks = new ArrayList<Task>();
-		for (AddisMCMCPresentation model : d_models.values()) {
+		final List<Task> tasks = new ArrayList<Task>();
+		for (final AddisMCMCPresentation model : d_models.values()) {
 			if(model.getModel() instanceof AbstractBaselineModel) {
 				tasks.add(model.getModel().getActivityTask());
 			}
 		}
 		return tasks;
 	}
-	
+
 	private void initAllBaselineModels() {
-		for (OutcomeMeasure om : getBean().getCriteria()) {
+		for (final OutcomeMeasure om : getBean().getCriteria()) {
 			addBaselineModel(om);
 		}
 	}
 
 	private void addBaselineModel(final OutcomeMeasure om) {
-		MCMCModelWrapper baselineModel = getBean().getBaselineModel(om);
+		final MCMCModelWrapper baselineModel = getBean().getBaselineModel(om);
 		d_models.put(baselineModel, new AddisMCMCPresentation(baselineModel, om, om.getName() + " \u2014 " + baselineModel.getDescription()));
-		baselineModel.addPropertyChangeListener(new PropertyChangeListener() {		
-			public void propertyChange(PropertyChangeEvent evt) {
+		baselineModel.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals(MCMCModelWrapper.PROPERTY_DESTROYED)) {
-					MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
+					final MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
 					source.removePropertyChangeListener(this);
 					d_models.remove(source);
 					addBaselineModel(om);
@@ -155,9 +158,9 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 			}
 		});
 	}
-	
+
 	private void initNetworkMetaAnalysisModels() {
-		for (MetaAnalysis ma : getBean().getMetaAnalyses()) {
+		for (final MetaAnalysis ma : getBean().getMetaAnalyses()) {
 			if (ma instanceof NetworkMetaAnalysis) {
 				final NetworkMetaAnalysis nma = (NetworkMetaAnalysis)ma;
 				addConsistencyModel(nma);
@@ -166,14 +169,15 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	}
 
 	private void addConsistencyModel(final NetworkMetaAnalysis nma) {
-		d_models.put(nma.getConsistencyModel(), 
-				new AddisMCMCPresentation(nma.getConsistencyModel(), 
+		d_models.put(nma.getConsistencyModel(),
+				new AddisMCMCPresentation(nma.getConsistencyModel(),
 				nma.getOutcomeMeasure(),
 				nma.getName() + " \u2014 " + nma.getConsistencyModel().getDescription()));
 		nma.getConsistencyModel().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) {
-					MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
+					final MCMCModelWrapper source = (MCMCModelWrapper) evt.getSource();
 					source.removePropertyChangeListener(this);
 					d_models.remove(source);
 					addConsistencyModel(nma);
@@ -181,7 +185,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 			}
 		});
 	}
-	
+
 	public BRBaselineMeasurementTableModel getBaselineMeasurementTableModel() {
 		return new BRBaselineMeasurementTableModel(getBean());
 
@@ -190,7 +194,7 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 	public BRRelativeMeasurementTableModel getRelativeMeasurementTableModel() {
 		return new BRRelativeMeasurementTableModel(getBean());
 	}
-	
+
 	public BenefitRiskMeasurementTableModel<DrugSet> getMeasurementTableModel() {
 		return new BenefitRiskMeasurementTableModel<DrugSet>(getBean());
 	}

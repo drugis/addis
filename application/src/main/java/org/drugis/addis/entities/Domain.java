@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -64,6 +65,8 @@ public abstract class Domain {
 	
 	public abstract SortedSetModel<Drug> getDrugs();
 
+	public abstract ObservableList<TreatmentCategorization> getTreatments();
+	
 	public abstract SortedSetModel<Indication> getIndications();
 
 	public abstract SortedSetModel<Endpoint> getEndpoints();

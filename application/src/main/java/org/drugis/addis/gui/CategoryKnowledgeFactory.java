@@ -41,8 +41,10 @@ import org.drugis.addis.entities.Unit;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.knowledge.AdverseEventsKnowledge;
 import org.drugis.addis.gui.knowledge.BenefitRiskAnalysesKnowledge;
+import org.drugis.addis.gui.knowledge.TreatmentCategorizationKnowledge;
 import org.drugis.addis.gui.knowledge.DrugsKnowledge;
 import org.drugis.addis.gui.knowledge.EndpointsKnowledge;
 import org.drugis.addis.gui.knowledge.IndicationsKnowledge;
@@ -59,6 +61,7 @@ public class CategoryKnowledgeFactory {
 		s_knowledge.put(Unit.class, new UnitsKnowledge());
 		s_knowledge.put(Indication.class, new IndicationsKnowledge());
 		s_knowledge.put(Drug.class, new DrugsKnowledge());
+		s_knowledge.put(TreatmentCategorization.class, new TreatmentCategorizationKnowledge());
 		s_knowledge.put(Endpoint.class, new EndpointsKnowledge());
 		s_knowledge.put(AdverseEvent.class, new AdverseEventsKnowledge());
 		s_knowledge.put(Study.class, new StudiesKnowledge());
