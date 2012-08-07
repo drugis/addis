@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.collections15.BidiMap;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
@@ -90,7 +90,7 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 		}
 	}
 
-	private void attachQuantileSummary(MTCModelWrapper<DrugSet> model, Parameter param) {
+	private void attachQuantileSummary(MTCModelWrapper<TreatmentDefinition> model, Parameter param) {
 		QuantileSummary summary = model.getQuantileSummary(param);
 		if(summary != null) { 
 			summary.addPropertyChangeListener(d_listener); 
@@ -142,7 +142,7 @@ public class NodeSplitResultsTableModel extends AbstractTableModel {
 	}
 	
 	private String getDescription(BasicParameter p) { 
-		BidiMap<DrugSet, Treatment> treatmentMap = d_pm.getBean().getBuilder().getTreatmentMap();
+		BidiMap<TreatmentDefinition, Treatment> treatmentMap = d_pm.getBean().getBuilder().getTreatmentMap();
 		return treatmentMap.getKey(p.getBaseline()).getLabel() + ", " + treatmentMap.getKey(p.getSubject()).getLabel();
 	}
 	

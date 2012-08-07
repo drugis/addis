@@ -34,12 +34,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.AddisMCMCPresentation;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mcmcmodel.AbstractBaselineModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
@@ -53,7 +53,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<DrugSet, MetaBenefitRiskAnalysis> {
+public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation<TreatmentDefinition, MetaBenefitRiskAnalysis> {
 	private ValueHolder<Boolean> d_measurementsReadyModel;
 	private HashMap<MCMCModelWrapper, AddisMCMCPresentation> d_models;
 
@@ -195,11 +195,11 @@ public class MetaBenefitRiskPresentation extends AbstractBenefitRiskPresentation
 		return new BRRelativeMeasurementTableModel(getBean());
 	}
 
-	public BenefitRiskMeasurementTableModel<DrugSet> getMeasurementTableModel() {
-		return new BenefitRiskMeasurementTableModel<DrugSet>(getBean());
+	public BenefitRiskMeasurementTableModel<TreatmentDefinition> getMeasurementTableModel() {
+		return new BenefitRiskMeasurementTableModel<TreatmentDefinition>(getBean());
 	}
 
-	public DrugSet getBaseline() {
+	public TreatmentDefinition getBaseline() {
 		return getBean().getBaseline();
 	}
 

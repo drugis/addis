@@ -48,6 +48,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -95,9 +96,9 @@ public class StudyTest {
 	@Test
 	public void testGetDrugs() {
 		Study s = ExampleData.buildStudyDeWilde();
-		Set<DrugSet> expected = new HashSet<DrugSet>();
-		expected.add(new DrugSet(ExampleData.buildDrugFluoxetine()));
-		expected.add(new DrugSet(ExampleData.buildDrugParoxetine()));
+		Set<TreatmentDefinition> expected = new HashSet<TreatmentDefinition>();
+		expected.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
+		expected.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		assertEquals(expected, s.getDrugs());
 	}
 	
@@ -620,7 +621,7 @@ public class StudyTest {
 
 		// Complete the measurement, to see that it is included
 		m.setRate(20);
-		DrugSet d = d_clone.getDrugs(d_clone.getArms().get(0));
+		TreatmentDefinition d = d_clone.getDrugs(d_clone.getArms().get(0));
 		assertEquals(Collections.singleton(d), d_clone.getMeasuredDrugs(ExampleData.buildAdverseEventConvulsion()));
 
 		// Add a complete measurement for a different measurement moment, to see that it is excluded
@@ -632,16 +633,16 @@ public class StudyTest {
 	@Test
 	public void testMeasuredArms() {
 		Arm a1 = d_clone.getArms().get(0);
-		DrugSet d1 = d_clone.getDrugs(a1);
+		TreatmentDefinition d1 = d_clone.getDrugs(a1);
 		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 		Arm a2 = d_clone.getArms().get(1);
-		DrugSet d2 = d_clone.getDrugs(a2);
+		TreatmentDefinition d2 = d_clone.getDrugs(a2);
 		assertEquals(Collections.singletonList(a2), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d2));
 	
 		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), d1));
 		
 		assertEquals(1, d1.getContents().size()); 		// Sanity check
-		d_clone.createAndAddArm("Bla", 100, d1.getContents().first(), new FixedDose());
+		d_clone.createAndAddArm("Bla", 100, d1.getContents().first().getDrug(), new FixedDose());
 		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 
 	}
@@ -736,7 +737,7 @@ public class StudyTest {
 			activity.setUsedBy(Collections.<UsedBy> emptySet());
 		}
 		assertNull(d_clone.defaultMeasurementMoment());
-		assertEquals(Collections.<DrugSet> emptySet(), d_clone.getMeasuredDrugs(d_clone.getEndpoints().get(0).getValue()));
+		assertEquals(Collections.<TreatmentDefinition> emptySet(), d_clone.getMeasuredDrugs(d_clone.getEndpoints().get(0).getValue()));
 	}
 	
 	private void removeTreatmentActivities() {

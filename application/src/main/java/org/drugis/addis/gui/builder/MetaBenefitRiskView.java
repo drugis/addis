@@ -34,10 +34,11 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.analysis.AbstractMetaAnalysis;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -57,9 +58,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBenefitRiskPresentation> {
-
-
+public class MetaBenefitRiskView extends AbstractBenefitRiskView<TreatmentDefinition, MetaBenefitRiskPresentation> {
 
 	public MetaBenefitRiskView(final MetaBenefitRiskPresentation pm, final AddisWindow mainWindow) {
 		super(pm, mainWindow);
@@ -132,8 +131,16 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<DrugSet, MetaBe
 		});
 		return button;
 	}
+
 	protected JComponent buildAnalysesPart() {
-		final String[] formatter = {"name","type","indication","outcomeMeasure","includedDrugs","includedStudies","sampleSize"};
+		final String[] formatter = {
+				MetaAnalysis.PROPERTY_NAME,
+				MetaAnalysis.PROPERTY_TYPE,
+				MetaAnalysis.PROPERTY_INDICATION,
+				MetaAnalysis.PROPERTY_OUTCOME_MEASURE,
+				MetaAnalysis.PROPERTY_ALTERNATIVES,
+				MetaAnalysis.PROPERTY_INCLUDED_STUDIES,
+				MetaAnalysis.PROPERTY_SAMPLE_SIZE};
 		return new EntityTablePanel(AbstractMetaAnalysis.class, d_pm.getAnalysesModel(), Arrays.asList(formatter), d_mainWindow, d_pm.getFactory());
 	}
 

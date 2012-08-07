@@ -35,11 +35,11 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -77,7 +77,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	public ObservableList<DrugSet> getSelectedDrugsModel() {
+	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
 		return d_studyGraphPresentationModel.getSelectedDrugsModel();
 	}
 	
@@ -154,17 +154,17 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<Study> studies = getSelectedStudiesModel();
-		List<DrugSet> drugs = getSelectedDrugsModel();
-		Map<Study, Map<DrugSet, Arm>> armMap = getArmMap();
+		List<TreatmentDefinition> drugs = getSelectedDrugsModel();
+		Map<Study, Map<TreatmentDefinition, Arm>> armMap = getArmMap();
 		
 		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);
 	}
 
-	private Map<Study, Map<DrugSet, Arm>> getArmMap() {
-		Map<Study, Map<DrugSet, Arm>> map = new HashMap<Study, Map<DrugSet,Arm>>();
+	private Map<Study, Map<TreatmentDefinition, Arm>> getArmMap() {
+		Map<Study, Map<TreatmentDefinition, Arm>> map = new HashMap<Study, Map<TreatmentDefinition,Arm>>();
 		for (Study s : d_selectedArms.keySet()) {
-			map.put(s, new HashMap<DrugSet, Arm>());
-			for (DrugSet d : d_selectedArms.get(s).keySet()) {
+			map.put(s, new HashMap<TreatmentDefinition, Arm>());
+			for (TreatmentDefinition d : d_selectedArms.get(s).keySet()) {
 				map.get(s).put(d, d_selectedArms.get(s).get(d).getValue());
 			}
 		}

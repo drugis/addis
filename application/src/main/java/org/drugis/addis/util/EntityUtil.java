@@ -37,9 +37,10 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {
@@ -85,12 +86,24 @@ public class EntityUtil {
 		return null;
 	}
 
-	public static HashSet<Entity> flatten(Collection<DrugSet> set) {
-		HashSet<Entity> flat = new HashSet<Entity>();
-		for (DrugSet nested : set) {
+	public static HashSet<Category> flatten(Collection<TreatmentDefinition> set) {
+		HashSet<Category> flat = new HashSet<Category>();
+		for (TreatmentDefinition nested : set) {
 			flat.addAll(nested.getContents());
 		}
 		return flat;
+	}
+	
+	/**
+	 * Add a collection of entities and their dependencies to the set of dependencies.
+	 * @param dependencies Dependencies to add to.
+	 * @param entities Entities to add recursively.
+	 */
+	public static void addRecursiveDependencies(Set<Entity> dependencies, Collection<? extends Entity> entities) {
+		dependencies.addAll(entities);
+		for (Entity e : entities) {
+			dependencies.addAll(e.getDependencies());
+		}
 	}
 
 	public static Duration createDuration(String durationStr) {

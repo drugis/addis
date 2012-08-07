@@ -34,12 +34,12 @@ import java.util.Map;
 
 import javax.swing.table.TableModel;
 
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.gui.AddisMCMCPresentation;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
@@ -54,17 +54,17 @@ import com.jgoodies.binding.list.ArrayListModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
-	private Map<MTCModelWrapper<DrugSet>, AddisMCMCPresentation> d_models;
+	private Map<MTCModelWrapper<TreatmentDefinition>, AddisMCMCPresentation> d_models;
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_models = new HashMap<MTCModelWrapper<DrugSet>, AddisMCMCPresentation>();
+		d_models = new HashMap<MTCModelWrapper<TreatmentDefinition>, AddisMCMCPresentation>();
 		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getDescription());
 		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getDescription());
 		for (BasicParameter p : getBean().getSplitParameters()) {
-			NodeSplitWrapper<DrugSet> m = getBean().getNodeSplitModel(p);
+			NodeSplitWrapper<TreatmentDefinition> m = getBean().getNodeSplitModel(p);
 			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getDescription());
 		}
-		for(MTCModelWrapper<DrugSet> model : d_models.keySet()) { 
+		for(MTCModelWrapper<TreatmentDefinition> model : d_models.keySet()) { 
 			model.addPropertyChangeListener(new PropertyChangeListener() {		
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -76,13 +76,13 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public DrugSet getDrugSet(Treatment t) { 
+	public TreatmentDefinition getTreatmentCategorySet(Treatment t) { 
 		return getBean().getBuilder().getTreatmentMap().getKey(t);
 	}
 	
 	public StudyGraphModel getStudyGraphModel() {
 		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
-				new ArrayListModel<DrugSet>(getBean().getIncludedDrugs()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
+				new ArrayListModel<TreatmentDefinition>(getBean().getAlternatives()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
@@ -103,11 +103,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TaskProgressModel getProgressModel(MTCModelWrapper<DrugSet> mtc) {
+	public TaskProgressModel getProgressModel(MTCModelWrapper<TreatmentDefinition> mtc) {
 		return d_models.get(mtc).getProgressModel();
 	}
 	
-	private void addModel(MTCModelWrapper<DrugSet> mtc, OutcomeMeasure om, String name) {
+	private void addModel(MTCModelWrapper<TreatmentDefinition> mtc, OutcomeMeasure om, String name) {
 		d_models.put(mtc, new AddisMCMCPresentation(mtc, om, name));
 	}
 
@@ -115,20 +115,20 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getSplitParameters();
 	}
 
-	public NodeSplitWrapper<DrugSet> getNodeSplitModel(BasicParameter p) {
+	public NodeSplitWrapper<TreatmentDefinition> getNodeSplitModel(BasicParameter p) {
 		return getBean().getNodeSplitModel(p);
 	}
 
-	public ConsistencyWrapper<DrugSet> getConsistencyModel() {
+	public ConsistencyWrapper<TreatmentDefinition> getConsistencyModel() {
 		return getBean().getConsistencyModel();
 	}
 	
-	public InconsistencyWrapper<DrugSet> getInconsistencyModel() {
+	public InconsistencyWrapper<TreatmentDefinition> getInconsistencyModel() {
 		return getBean().getInconsistencyModel();
 	}
 
-	public List<DrugSet> getIncludedDrugs() {
-		return getBean().getIncludedDrugs();
+	public List<TreatmentDefinition> getIncludedDrugs() {
+		return getBean().getAlternatives();
 	}
 
 	public boolean isContinuous() {
@@ -139,7 +139,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNetwork();
 	}
 	
-	public AddisMCMCPresentation getWrappedModel(MTCModelWrapper<DrugSet> m) {
+	public AddisMCMCPresentation getWrappedModel(MTCModelWrapper<TreatmentDefinition> m) {
 		if(d_models.get(m) == null) {
 			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getDescription());
 		}

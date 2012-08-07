@@ -37,10 +37,10 @@ import java.util.List;
 import org.apache.commons.math3.linear.RealVector;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.gui.AddisMCMCPresentation;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.addis.presentation.SMAAPresentation;
 import org.drugis.addis.util.EntityUtil;
@@ -90,7 +90,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 			TaskUtil.run(model.getModel().getActivityTask());
 		}
 		// Build SMAA model
-		final SMAAPresentation<DrugSet, MetaBenefitRiskAnalysis> smaapm = d_brpm.getSMAAPresentation();
+		SMAAPresentation<TreatmentDefinition, MetaBenefitRiskAnalysis> smaapm = d_brpm.getSMAAPresentation();
 		d_model = smaapm.getSMAAFactory().createSMAAModel();
 	}
 

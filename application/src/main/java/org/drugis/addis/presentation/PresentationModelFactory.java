@@ -33,7 +33,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
@@ -48,6 +47,7 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -122,8 +122,8 @@ public class PresentationModelFactory {
 		if (obj instanceof Drug) {
 			return new DrugPresentation((Drug) obj, d_domain);
 		}
-		if (obj instanceof DrugSet) {
-			return new DrugSetPresentation((DrugSet) obj, d_domain);
+		if (obj instanceof TreatmentDefinition) {
+			return new TreatmentCategorySetPresentation((TreatmentDefinition) obj, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
 			return new PairWiseMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);

@@ -31,12 +31,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkBuilderFactory;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.NetworkBuilder;
@@ -49,36 +49,36 @@ import org.drugis.mtc.presentation.SimulationInconsistencyWrapper;
 
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	
-	private InconsistencyWrapper<DrugSet> d_mockInconsistencyModel;
-	private ConsistencyWrapper<DrugSet> d_mockConsistencyModel;
+	private InconsistencyWrapper<TreatmentDefinition> d_mockInconsistencyModel;
+	private ConsistencyWrapper<TreatmentDefinition> d_mockConsistencyModel;
 
 	public MockNetworkMetaAnalysis(String name, Indication indication,
-			OutcomeMeasure om, List<Study> studies, List<DrugSet> drugs,
-			Map<Study, Map<DrugSet, Arm>> armMap) throws IllegalArgumentException {
+			OutcomeMeasure om, List<Study> studies, List<TreatmentDefinition> drugs,
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
 		
 		d_builder = NetworkBuilderFactory.createBuilderStub(drugs);
 		
-		d_mockInconsistencyModel = new SimulationInconsistencyWrapper<DrugSet>(MockInconsistencyModel.buildMockSimulationInconsistencyModel(toTreatments(drugs)), d_builder.getTreatmentMap());
-		d_mockConsistencyModel = new SimulationConsistencyWrapper<DrugSet>(MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs, d_builder.getTreatmentMap());
+		d_mockInconsistencyModel = new SimulationInconsistencyWrapper<TreatmentDefinition>(MockInconsistencyModel.buildMockSimulationInconsistencyModel(toTreatments(drugs)), d_builder.getTreatmentMap());
+		d_mockConsistencyModel = new SimulationConsistencyWrapper<TreatmentDefinition>(MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs, d_builder.getTreatmentMap());
 
 	}
 
-	private List<Treatment> toTreatments(List<DrugSet> drugs) {
+	private List<Treatment> toTreatments(List<TreatmentDefinition> drugs) {
 		List<Treatment> ts = new ArrayList<Treatment>();
-		for (DrugSet d : drugs) {
+		for (TreatmentDefinition d : drugs) {
 			ts.add(new Treatment(d.getLabel(), d.getLabel()));
 		}
 		return ts;
 	}
 	
 	@Override
-	public InconsistencyWrapper<DrugSet> getInconsistencyModel() {
+	public InconsistencyWrapper<TreatmentDefinition> getInconsistencyModel() {
 		return d_mockInconsistencyModel;
 	}
 	
 	@Override
-	public ConsistencyWrapper<DrugSet> getConsistencyModel() {
+	public ConsistencyWrapper<TreatmentDefinition> getConsistencyModel() {
 		return d_mockConsistencyModel;
 	}
 	
@@ -98,7 +98,7 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 	}
 	
 	@Override
-	public NetworkBuilder<DrugSet> getBuilder() {
+	public NetworkBuilder<TreatmentDefinition> getBuilder() {
 		return d_builder;
 	}
 }

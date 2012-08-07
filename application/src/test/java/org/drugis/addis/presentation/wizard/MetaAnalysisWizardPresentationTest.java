@@ -51,12 +51,12 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.common.JUnitUtil;
@@ -72,11 +72,11 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	private Domain d_domain;
 	private MetaAnalysisWizardPresentation d_wizard;
-	private DrugSet d_fluoxSet;
-	private DrugSet d_paroxSet;
-	private DrugSet d_sertrSet;
-	private DrugSet d_escitSet;
-	private DrugSet d_citalSet;
+	private TreatmentDefinition d_fluoxSet;
+	private TreatmentDefinition d_paroxSet;
+	private TreatmentDefinition d_sertrSet;
+	private TreatmentDefinition d_escitSet;
+	private TreatmentDefinition d_citalSet;
 	
 	@Before
 	public void setUp() {
@@ -84,11 +84,11 @@ public class MetaAnalysisWizardPresentationTest {
 		ExampleData.initDefaultData(d_domain);
 		d_wizard = new MetaAnalysisWizardPresentation(d_domain, new PresentationModelFactory(d_domain));
 		
-		d_fluoxSet = new DrugSet(ExampleData.buildDrugFluoxetine());
-		d_paroxSet = new DrugSet(ExampleData.buildDrugParoxetine());
-		d_sertrSet = new DrugSet(ExampleData.buildDrugSertraline());
-		d_escitSet = new DrugSet(ExampleData.buildDrugEscitalopram());
-		d_citalSet = new DrugSet(ExampleData.buildDrugCitalopram());
+		d_fluoxSet = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		d_paroxSet = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		d_sertrSet = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		d_escitSet = TreatmentDefinition.createTrivial(ExampleData.buildDrugEscitalopram());
+		d_citalSet = TreatmentDefinition.createTrivial(ExampleData.buildDrugCitalopram());
 	}
 	
 	@Test
@@ -238,11 +238,11 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 
 	@Test
-	public void testGetDrugSet() {
+	public void testGetTreatmentCategorySet() {
 		Indication ind = ExampleData.buildIndicationDepression();
 		OutcomeMeasure ep = ExampleData.buildEndpointHamd();
 		
-		List<DrugSet> expected = new ArrayList<DrugSet>();
+		List<TreatmentDefinition> expected = new ArrayList<TreatmentDefinition>();
 		expected.add(d_fluoxSet);
 		expected.add(d_paroxSet);
 		expected.add(d_sertrSet);
@@ -254,7 +254,7 @@ public class MetaAnalysisWizardPresentationTest {
 	}
 	
 	@Test
-	public void testGetDrugSetNoEndpoint() {
+	public void testGetTreatmentCategorySetNoEndpoint() {
 		Indication ind = ExampleData.buildIndicationDepression();
 		
 		d_wizard.getIndicationModel().setValue(ind);
@@ -337,13 +337,13 @@ public class MetaAnalysisWizardPresentationTest {
 		replay(mock);
 		
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
-		assertEquals(Collections.<DrugSet>singletonList(d_fluoxSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Collections.<TreatmentDefinition>singletonList(d_fluoxSet), d_wizard.getSelectedDrugsModel());
 		
 		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
 		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel());
 		
 		d_wizard.getFirstDrugModel().setValue(null);
-		assertEquals(Collections.<DrugSet>singletonList(d_sertrSet),
+		assertEquals(Collections.<TreatmentDefinition>singletonList(d_sertrSet),
 				d_wizard.getSelectedDrugsModel());
 		verify(mock);
 	}
@@ -376,7 +376,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		
-		List<DrugSet> drugs = new ArrayList<DrugSet>();
+		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>();
 		drugs.add(d_fluoxSet);
 		drugs.add(d_paroxSet);
 		drugs.add(d_sertrSet);		
@@ -411,8 +411,8 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<DrugSet> expected = d_wizard.getDrugListModel();
-		ObservableList<DrugSet> drugList = d_wizard.getDrugListModel();
+		List<TreatmentDefinition> expected = d_wizard.getDrugListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getDrugListModel();
 		assertEquals(expected, drugList);
 	}
 	
@@ -420,7 +420,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ObservableList<DrugSet> drugList = d_wizard.getDrugListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getDrugListModel();
 		
 		ListDataListener l = createMock(ListDataListener.class);
 		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
@@ -523,8 +523,8 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
 		RandomEffectsMetaAnalysis ma = d_wizard.createAnalysis("name");
-		assertEquals(ma.getFirstDrug(), d_wizard.getFirstDrugModel().getValue());
-		assertEquals(ma.getSecondDrug(), d_wizard.getSecondDrugModel().getValue());
+		assertEquals(ma.getFirstAlternative(), d_wizard.getFirstDrugModel().getValue());
+		assertEquals(ma.getSecondAlternative(), d_wizard.getSecondDrugModel().getValue());
 		JUnitUtil.assertAllAndOnly((Collection<?>) d_wizard.getStudyListModel().getSelectedStudiesModel(), (Collection<?>) ma.getIncludedStudies());
 		assertEquals(ma.getOutcomeMeasure(), d_wizard.getOutcomeMeasureModel().getValue());
 		assertEquals(ma.getIndication(), d_wizard.getIndicationModel().getValue());
@@ -599,7 +599,7 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getSelectedArmModel(burke, d_escitSet);
 
-		DrugSet placeSet = new DrugSet(ExampleData.buildPlacebo());
+		TreatmentDefinition placeSet = TreatmentDefinition.createTrivial(ExampleData.buildPlacebo());
 		d_wizard.getSecondDrugModel().setValue(placeSet);
 
 		d_wizard.getSelectedArmModel(burke, placeSet);

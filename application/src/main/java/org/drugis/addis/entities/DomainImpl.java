@@ -41,9 +41,10 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.FilteredObservableList.Filter;
+import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.beans.BeanUtils;
 import com.jgoodies.binding.list.ArrayListModel;
@@ -57,8 +58,8 @@ public class DomainImpl extends Domain {
 		new EntityCategory("indications", Indication.class);
 	private static final EntityCategory CATEGORY_DRUGS =
 		new EntityCategory("drugs", Drug.class);
-	private static final EntityCategory CATEGORY_TREATMENTS =
-			new EntityCategory("treatments", TreatmentCategorization.class);
+	private static final EntityCategory CATEGORY_TREATMENTCATEGORIZATIONS =
+			new EntityCategory("treatmentCategorizations", TreatmentCategorization.class);
 	private static final EntityCategory CATEGORY_ENDPOINTS =
 		new EntityCategory("endpoints", Endpoint.class);
 	private static final EntityCategory CATEGORY_ADVERSE_EVENTS =
@@ -80,7 +81,7 @@ public class DomainImpl extends Domain {
 			CATEGORY_UNITS,
 			CATEGORY_INDICATIONS,
 			CATEGORY_DRUGS,
-			CATEGORY_TREATMENTS,
+			CATEGORY_TREATMENTCATEGORIZATIONS,
 			CATEGORY_ENDPOINTS,
 			CATEGORY_ADVERSE_EVENTS,
 			CATEGORY_POPULATION_CHARACTERISTICS,
@@ -176,7 +177,7 @@ public class DomainImpl extends Domain {
 	}
 	
 	public ObservableList<Study> getStudies(Drug d) {
-		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(new DrugSet(d)));
+		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(TreatmentDefinition.createTrivial(d)));
 	}
 	
 	public ObservableList<Study> getStudies(Indication i) {
@@ -190,7 +191,7 @@ public class DomainImpl extends Domain {
 			return (
 				getEndpoints().equals(other.getEndpoints()) &&
 				getDrugs().equals(other.getDrugs()) &&
-				getTreatments().equals(other.getTreatments()) &&
+				getTreatmentCategorizations().equals(other.getTreatmentCategorizations()) &&
 				getIndications().equals(other.getIndications()) &&
 				getAdverseEvents().equals(other.getAdverseEvents()) &&
 				getPopulationCharacteristics().equals(other.getPopulationCharacteristics()) &&
@@ -235,7 +236,7 @@ public class DomainImpl extends Domain {
 		if (entity instanceof Drug) {
 			getDrugs().remove(((Drug) entity));
 		} else if (entity instanceof TreatmentCategorization) {
-			getTreatments().remove(((TreatmentCategorization) entity));
+			getTreatmentCategorizations().remove(((TreatmentCategorization) entity));
 		} else if (entity instanceof Endpoint) {
 			getEndpoints().remove(((Endpoint) entity));
 		} else if (entity instanceof AdverseEvent) {
@@ -330,7 +331,7 @@ public class DomainImpl extends Domain {
 	}
 	
 	@Override
-	public ObservableList<TreatmentCategorization> getTreatments() {
+	public ObservableList<TreatmentCategorization> getTreatmentCategorizations() {
 		return d_treatments;
 	}
 
@@ -429,14 +430,14 @@ public class DomainImpl extends Domain {
 		}
 	}
 	public class DrugFilter implements Filter<Study> {
-		private final DrugSet d_drugSet;
+		private final TreatmentDefinition d_TreatmentDefinition;
 		
-		public DrugFilter(DrugSet ds) {
-			d_drugSet = ds;
+		public DrugFilter(TreatmentDefinition ds) {
+			d_TreatmentDefinition = ds;
 		}
 		
 		public boolean accept(Study s) {
-			return s.getDrugs().contains(d_drugSet);
+			return s.getDrugs().contains(d_TreatmentDefinition);
 		}
 	}
 }
