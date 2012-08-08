@@ -56,6 +56,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -250,7 +252,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
-		assertEquals(expected, d_wizard.getTreatmentDefinitionListModel());
+		assertEquals(expected, d_wizard.getRawTreatmentDefinitionListModel());
 	}
 	
 	@Test
@@ -259,9 +261,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
-		assertNotNull(d_wizard.getTreatmentDefinitionListModel());
+		assertNotNull(d_wizard.getRawTreatmentDefinitionListModel());
 		
-		assertTrue(d_wizard.getTreatmentDefinitionListModel().isEmpty());
+		assertTrue(d_wizard.getRawTreatmentDefinitionListModel().isEmpty());
 	}
 	
 	@Test
@@ -371,7 +373,7 @@ public class MetaAnalysisWizardPresentationTest {
 	
 	@Test
 	public void testStudyGraphPresentationModel() {
-		StudyGraphModel model = d_wizard.getStudyGraphModel();
+		StudyGraphModel model = d_wizard.getRawStudyGraphModel();
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
@@ -411,8 +413,8 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<TreatmentDefinition> expected = d_wizard.getTreatmentDefinitionListModel();
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getTreatmentDefinitionListModel();
+		List<TreatmentDefinition> expected = d_wizard.getRawTreatmentDefinitionListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getRawTreatmentDefinitionListModel();
 		assertEquals(expected, drugList);
 	}
 	
@@ -420,7 +422,7 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getTreatmentDefinitionListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getRawTreatmentDefinitionListModel();
 		
 		ListDataListener l = createMock(ListDataListener.class);
 		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
@@ -603,5 +605,32 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getSecondDrugModel().setValue(placeSet);
 
 		d_wizard.getSelectedArmModel(burke, placeSet);
+	}
+	
+	@Test
+	public void testCategorizableDrugs() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Drug sertra = ExampleData.buildDrugSertraline();
+
+		Collection<Drug> both = Arrays.asList(fluox, parox, sertra);
+		TreatmentDefinition def1 = TreatmentDefinition.createTrivial(fluox);
+		TreatmentDefinition def2 = TreatmentDefinition.createTrivial(both);
+		TreatmentDefinition def3 = TreatmentDefinition.createTrivial(sertra);
+
+		TreatmentCategorization categorization = TreatmentCategorization.createDefault();
+		categorization.addCategory(def1.getContents().first());
+		categorization.addCategory(def2.getContents().first());
+		categorization.addCategory(def3.getContents().first());
+
+		categorization.addCategory((Category) def2.getContents().toArray()[1]);
+
+		d_domain.getTreatmentCategorizations().add(categorization);
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		
+		JUnitUtil.assertAllAndOnly(both, d_wizard.getCategorizableDrugs());
+
 	}
 }

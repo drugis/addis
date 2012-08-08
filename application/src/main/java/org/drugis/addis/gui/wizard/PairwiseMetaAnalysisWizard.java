@@ -152,14 +152,14 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		}
 		
 		private Component buildStudiesGraph() {
-			StudyGraphModel pm = d_pm.getStudyGraphModel();
+			StudyGraphModel pm = d_pm.getRawStudyGraphModel();
 			d_studyGraph = new StudyGraph(pm);
 			return d_studyGraph;
 		}
 		
 		@Override
 		public void prepare() {
-			d_pm.updateStudyGraphModel();
+			d_pm.updateRawStudyGraphModel();
 			d_studyGraph.layoutGraph();
 		}
 
@@ -176,8 +176,8 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 			builder.addLabel("First Drug",cc.xy(1, 1));
 			builder.addLabel("Second Drug",cc.xy(5, 1));
 						
-			JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getTreatmentDefinitionListModel(), d_pm.getFirstDrugModel(), true);
-			JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getTreatmentDefinitionListModel(), d_pm.getSecondDrugModel(), true);
+			JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getRawTreatmentDefinitionListModel(), d_pm.getFirstDrugModel(), true);
+			JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getRawTreatmentDefinitionListModel(), d_pm.getSecondDrugModel(), true);
 			
 			builder.add(firstDrugBox,cc.xy(1, 3));
 			builder.add(secondDrugBox,cc.xy(5, 3));

@@ -226,8 +226,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected StudyGraphModel buildStudyGraphPresentation() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_treatmentDefinitionHolder,  d_outcomeHolder);				
+	protected StudyGraphModel buildRawStudyGraphPresentation() {
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitionHolder,  d_outcomeHolder);				
+	}
+	
+	@Override
+	protected StudyGraphModel buildRefinedStudyGraphPresentation() {
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitionHolder,  d_outcomeHolder);				
 	}
 
 	@Override

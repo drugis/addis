@@ -424,7 +424,22 @@ public class DomainTest {
 		assertTrue(studies.contains(s1));
 		assertTrue(studies.contains(s2));
 	}
+	
+	@Test
+	public void testGetCategorization() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		TreatmentCategorization cats1 = TreatmentCategorization.createDefault("cats1", fluox, DoseUnit.MILLIGRAMS_A_DAY);
+		Drug parox = ExampleData.buildDrugParoxetine();
+		TreatmentCategorization cats2 = TreatmentCategorization.createDefault("cats2", parox, DoseUnit.MILLIGRAMS_A_DAY);
 		
+		ObservableList<TreatmentCategorization> cats = d_domain.getTreatmentCategorizations();
+		cats.add(cats1);
+		cats.add(cats2);
+		
+		JUnitUtil.assertAllAndOnly(Collections.singleton(cats1), d_domain.getCategorizations(fluox));
+		JUnitUtil.assertAllAndOnly(Collections.singleton(cats2), d_domain.getCategorizations(parox));
+	}
+	
 	@Test
 	public void testEquals() {
 		Domain d1 = new DomainImpl();

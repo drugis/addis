@@ -8,7 +8,6 @@ import javax.swing.Icon;
 import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
-import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
 
 public class AbstractSelectTreatmentWizardStep extends PanelWizardStep {
@@ -29,15 +28,8 @@ public class AbstractSelectTreatmentWizardStep extends PanelWizardStep {
 		super(name, summary, icon);
 	}
 
-	protected Component buildStudiesGraph(NetworkMetaAnalysisWizardPM pm) {
+	protected Component buildStudiesGraph(AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel> pm) {
 		d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return d_studyGraph;
 	}
-
-	@Override
-	public void prepare() {
-		d_pm.updateStudyGraphModel();
-		d_studyGraph.layoutGraph();
-	}
-
 }

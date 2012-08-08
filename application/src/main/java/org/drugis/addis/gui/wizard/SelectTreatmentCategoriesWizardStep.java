@@ -17,7 +17,7 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 
 	public SelectTreatmentCategoriesWizardStep(NetworkMetaAnalysisWizardPM pm) {
 		super("Select Treatment Categories","Select the categories to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two categories must be selected, and (2) all selected categories must be connected.");
-		d_studyGraph = new SelectableStudyGraph(pm.getStudyGraphModel());
+		d_studyGraph = new SelectableStudyGraph(pm.getRefinedStudyGraphModel());
 		d_pm = pm;
 
 		setLayout(new BorderLayout());
@@ -38,4 +38,11 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 		
 		Bindings.bind(this, "complete", pm.getConnectedDrugsSelectedModel());
 	}
+	
+	@Override
+	public void prepare() {
+		d_pm.updateRefinedStudyGraphModel();
+		d_studyGraph.layoutGraph();
+	}
+	
 }

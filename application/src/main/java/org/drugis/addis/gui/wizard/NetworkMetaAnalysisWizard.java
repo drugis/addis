@@ -31,14 +31,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
+import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
-import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
@@ -74,36 +73,11 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		return wizardModel;
 	}
 	
-	
-	public static class RefineDrugSelectionWizardStep extends PanelWizardStep {
-		private NetworkMetaAnalysisWizardPM d_pm;
-		private AddisWindow d_mainWindow;
 
-		public RefineDrugSelectionWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) { 
-			super("Refine Drugs","Optionally select Treatment Categorizations to use for the selected drugs");
-			d_pm = pm;
-			d_mainWindow = main;
-			
-			setLayout(new BorderLayout());
-			FormLayout layout = new FormLayout(
-					"center:pref:grow",
-					"p"
-					);	
-			
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc = new CellConstraints();
-			
-			builder.add(new JLabel("It's awesommmme!"), cc.xy(1, 1));
-			
-			add(builder.getPanel());
-			setComplete(true);
-		}
-	}
-	
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableStudyGraphModel> {
 		private StudyGraph d_studyGraph;
 
-		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
+		public OverviewWizardStep(AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel> pm, AddisWindow main) {
 			super(pm, main);
 
 			setLayout(new BorderLayout());

@@ -26,6 +26,8 @@
 
 package org.drugis.addis.presentation.wizard;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +41,14 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.StudyGraphModel;
-import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.addis.presentation.ValueHolder;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
@@ -56,9 +59,8 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel>{
-	private StudyGraphModel d_selectedStudyGraph;
-	private ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
-
+	private final StudyGraphModel d_selectedStudyGraph;
+	private final ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
 		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), getSelectedTreatmentDefinitionModel(), getOutcomeMeasureModel());
@@ -74,11 +76,37 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 			}
 		});
 		d_selectedStudyGraphConnectedModel = new StudySelectionCompleteListener();
+		
+		getSelectedTreatmentDefinitionModel().addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				refineTreatmentDefinitionHolder();
+			}
+			@SuppressWarnings("unchecked")
+			public void intervalAdded(ListDataEvent e) {
+				refineTreatmentDefinitionHolder();
+				for (int i = e.getIndex0(); i <= e.getIndex1(); ++i) {
+					TreatmentDefinition t = ((ObservableList<TreatmentDefinition>)e.getSource()).get(i);
+					for(Category category : t.getContents()) { 
+						ValueModel model = getCategorizationModel(category.getDrug());
+						model.addValueChangeListener(new PropertyChangeListener() {
+							public void propertyChange(PropertyChangeEvent evt) {
+								refineTreatmentDefinitionHolder();
+							}
+						});
+					}
+				}
+			}	
+			public void contentsChanged(ListDataEvent e) {
+				refineTreatmentDefinitionHolder();
+			}
+		});
+		
+		
 	}
 
 	@Override
 	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel() {
-		return d_studyGraphPresentationModel.getSelectedDefinitionsModel();
+		return d_rawStudyGraphPresentationModel.getSelectedDefinitionsModel();
 	}
 	
 	public StudyGraphModel getSelectedStudyGraphModel(){
@@ -86,12 +114,17 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 
 	@Override
-	protected SelectableStudyGraphModel buildStudyGraphPresentation() {
-		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_treatmentDefinitionHolder, d_outcomeHolder);
+	protected SelectableStudyGraphModel buildRawStudyGraphPresentation() {
+		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitionHolder, d_outcomeHolder);
+	}
+	
+	@Override
+	protected SelectableStudyGraphModel buildRefinedStudyGraphPresentation() {
+		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitionHolder, d_outcomeHolder);
 	}
 	
 	public ValueModel getConnectedDrugsSelectedModel() {
-		return getStudyGraphModel().getSelectionCompleteModel();
+		return getRawStudyGraphModel().getSelectionCompleteModel();
 	}
 	
 	public ValueHolder<Boolean> getSelectedStudyGraphConnectedModel() {

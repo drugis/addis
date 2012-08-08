@@ -89,7 +89,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 		assertTrue((Boolean)completeModel.getValue());
 		
 		ArrayList<TreatmentDefinition> newList = new ArrayList<TreatmentDefinition>();
@@ -117,7 +117,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 		
 		ArrayList<Study> newList = new ArrayList<Study>();
 		newList.addAll(d_pm.getStudiesEndpointAndIndication());
@@ -169,7 +169,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 		
 		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(3, graphModel.vertexSet().size());
@@ -196,7 +196,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 		
 		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(2, graphModel.vertexSet().size());
@@ -207,7 +207,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 		
 		d_pm.updateSelectedStudyGraphModel();
 		assertEquals(3, graphModel.vertexSet().size());
@@ -254,7 +254,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_paroxSet
 			};
 		
-		assertEquals(Arrays.asList(expected), d_pm.getTreatmentDefinitionListModel());
+		assertEquals(Arrays.asList(expected), d_pm.getRawTreatmentDefinitionListModel());
 	}
 	
 	@Test
@@ -263,7 +263,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 
 		// Remove Parox studies
 		ArrayList<Study> studyList = new ArrayList<Study>();
@@ -284,7 +284,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testSelectedStudyGraphConnectedModel() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.updateStudyGraphModel();
+		d_pm.updateRawStudyGraphModel();
 		
 		d_pm.updateSelectedStudyGraphModel();
 		ValueHolder<Boolean> completeModel = d_pm.getSelectedStudyGraphConnectedModel();

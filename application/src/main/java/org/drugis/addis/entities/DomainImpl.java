@@ -34,6 +34,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.list.TreeList;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -186,6 +189,14 @@ public class DomainImpl extends Domain {
 	
 	public ObservableList<Study> getStudies(Indication i) {
 		return new FilteredObservableList<Study>(getStudies(), new IndicationFilter(i));
+	}
+	
+	public List<TreatmentCategorization> getCategorizations(final Drug drug) {
+		return new TreeList<TreatmentCategorization>(CollectionUtils.select(getTreatmentCategorizations(), new Predicate<TreatmentCategorization>() {
+			public boolean evaluate(TreatmentCategorization object) {
+				return object.getDrug().equals(drug);
+			}
+		}));
 	}
 	
 	@Override

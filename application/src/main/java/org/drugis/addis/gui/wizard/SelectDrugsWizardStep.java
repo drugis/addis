@@ -19,7 +19,7 @@ public class SelectDrugsWizardStep extends AbstractSelectTreatmentWizardStep {
 	public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm) {
 		super("Select Drugs","Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
 		d_pm = pm;
-		d_studyGraph = new SelectableStudyGraph(pm.getStudyGraphModel());
+		d_studyGraph = new SelectableStudyGraph(pm.getRawStudyGraphModel());
 
 		setLayout(new BorderLayout());
 		    
@@ -38,5 +38,12 @@ public class SelectDrugsWizardStep extends AbstractSelectTreatmentWizardStep {
 		sp.getVerticalScrollBar().setUnitIncrement(16);
 		
 		Bindings.bind(this, "complete", pm.getConnectedDrugsSelectedModel());
+	}
+	
+	
+	@Override
+	public void prepare() {
+		d_pm.updateRawStudyGraphModel();
+		d_studyGraph.layoutGraph();
 	}
 }
