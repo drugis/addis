@@ -252,7 +252,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
-		assertEquals(expected, d_wizard.getRawTreatmentDefinitionListModel());
+		assertEquals(expected, d_wizard.getTreatmentDefinitionListModel());
 	}
 	
 	@Test
@@ -261,9 +261,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
-		assertNotNull(d_wizard.getRawTreatmentDefinitionListModel());
+		assertNotNull(d_wizard.getTreatmentDefinitionListModel());
 		
-		assertTrue(d_wizard.getRawTreatmentDefinitionListModel().isEmpty());
+		assertTrue(d_wizard.getTreatmentDefinitionListModel().isEmpty());
 	}
 	
 	@Test
@@ -413,8 +413,8 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<TreatmentDefinition> expected = d_wizard.getRawTreatmentDefinitionListModel();
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getRawTreatmentDefinitionListModel();
+		List<TreatmentDefinition> expected = d_wizard.getTreatmentDefinitionListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getTreatmentDefinitionListModel();
 		assertEquals(expected, drugList);
 	}
 	
@@ -422,14 +422,14 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getRawTreatmentDefinitionListModel();
+		ObservableList<TreatmentDefinition> definitionList = d_wizard.getTreatmentDefinitionListModel();
 		
 		ListDataListener l = createMock(ListDataListener.class);
-		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
-		l.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_ADDED, 0, 2)));
-		replay(l);
+		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(definitionList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
+		l.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(definitionList, ListDataEvent.INTERVAL_ADDED, 0, 2)));
 
-		drugList.addListDataListener(l);
+		replay(l);
+		definitionList.addListDataListener(l);
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		verify(l);
 	}

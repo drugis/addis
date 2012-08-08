@@ -37,13 +37,13 @@ public class SelectDrugsWizardStep extends AbstractSelectTreatmentWizardStep {
 		add(sp);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
 		
-		Bindings.bind(this, "complete", pm.getConnectedDrugsSelectedModel());
+		Bindings.bind(this, "complete", pm.getRawConnectedDrugsSelectedModel());
 	}
 	
 	
 	@Override
 	public void prepare() {
-		d_pm.updateRawStudyGraphModel();
+		d_pm.updateStudyGraphModels();
 		d_studyGraph.layoutGraph();
 	}
 }

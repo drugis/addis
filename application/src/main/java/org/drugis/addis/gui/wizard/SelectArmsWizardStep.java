@@ -83,9 +83,9 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (TreatmentDefinition drug: d_pm.getSelectedTreatmentDefinitionModel()) {
-				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, drug).isEmpty()) {
-					row = createArmSelect(row, curStudy, drug, cc);
+			for (TreatmentDefinition def: d_pm.getSelectedTreatmentDefinitionModel()) {
+				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
+					row = createArmSelect(row, curStudy, def, cc);
 				}
 			}
 		}

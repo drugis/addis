@@ -38,7 +38,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class TreatmentCategorySetPresentation extends PresentationModel<TreatmentDefinition> implements StudyListPresentation, LabeledPresentation {
+public class TreatmentDefinitionPresentation extends PresentationModel<TreatmentDefinition> implements StudyListPresentation, LabeledPresentation {
 	
 	public class LabelModel extends DefaultLabelModel {
 		
@@ -55,7 +55,7 @@ public class TreatmentCategorySetPresentation extends PresentationModel<Treatmen
 	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
 	private FilteredObservableList<Study> d_studies;
 
-	public TreatmentCategorySetPresentation(final TreatmentDefinition drugs, Domain domain) {
+	public TreatmentDefinitionPresentation(final TreatmentDefinition drugs, Domain domain) {
 		super(drugs);
 		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
 			@Override

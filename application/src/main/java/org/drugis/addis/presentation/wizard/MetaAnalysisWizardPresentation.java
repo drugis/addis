@@ -171,11 +171,11 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private TreatmentDefinition getSecondDrug() {
 		return d_secondDrugHolder.getValue();
 	}
-	
+
 	@Override
 	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel() {
 		return d_selectedDrugs;
-	}
+	}	
 
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
@@ -245,5 +245,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}
 		ma.setName(name);
 		return ma;
-	}	
+	}
+
+
 }
