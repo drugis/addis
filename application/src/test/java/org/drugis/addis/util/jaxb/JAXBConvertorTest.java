@@ -165,8 +165,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-
 public class JAXBConvertorTest {
 	public static final String TEST_DATA_PATH = "../../";
 	private static final String TEST_DATA_A_0 = TEST_DATA_PATH + "testDataA-0.xml";
@@ -2266,11 +2264,10 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testDateWithNotes() {
-		final String date = "2010-11-12";
 		final Date oldXmlDate = new GregorianCalendar(2010, 11 - 1, 12).getTime();
 		final DateWithNotes dwn = JAXBConvertor.dateWithNotes(oldXmlDate);
 
-		final XMLGregorianCalendar cal = XMLGregorianCalendarImpl.parse(date);
+		final XMLGregorianCalendar cal = JAXBConvertor.dateToXml(oldXmlDate);
 		final DateWithNotes dwn2 = new DateWithNotes();
 		dwn2.setNotes(new Notes());
 		dwn2.setValue(cal);
