@@ -28,7 +28,9 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
@@ -54,6 +57,7 @@ import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
 import org.jgrapht.event.GraphVertexChangeEvent;
 
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -180,6 +184,19 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		return inspectorGadget.isGraphConnected();
 	}
 
+	
+	public ObservableList<Drug> getCategorizableDrugs() {
+		List<Drug> drugs = new LinkedList<Drug>();
+		for(TreatmentDefinition definition : d_rawStudyGraphPresentationModel.getSelectedDefinitionsModel()) { 
+			for(Category category : definition.getContents()) {
+				if(!drugs.contains(category.getDrug())) {
+					drugs.add(category.getDrug());
+				}
+			}
+		}
+		return new ArrayListModel<Drug>(Collections.unmodifiableList(drugs));
+	}
+	
 	@Override
 	public NetworkMetaAnalysis createAnalysis(String name) {
 		Indication indication = getIndicationModel().getValue();

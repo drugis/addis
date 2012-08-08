@@ -28,7 +28,6 @@ package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -304,19 +303,9 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	protected ObservableList<Study> getSelectableStudies() {
 		return d_selectableStudies;
 	}
-	
-	public ObservableList<Drug> getCategorizableDrugs() {
-		List<Drug> drugs = new LinkedList<Drug>();
-		for(TreatmentDefinition definition : d_rawTreatmentDefinitionHolder) { 
-			for(Category category : definition.getContents()) {
-				if(!drugs.contains(category.getDrug())) {
-					drugs.add(category.getDrug());
-				}
-			}
-		}
-		return new ArrayListModel<Drug>(Collections.unmodifiableList(drugs));
-	}
 
+	public abstract ObservableList<Drug> getCategorizableDrugs();
+	
 	public ValueModel getCategorizationModel(Drug drug) {
 		if(d_selectedCatgorization.get(drug) == null) { 
 			d_selectedCatgorization.put(drug, new ModifiableHolder<TreatmentCategorization>(TreatmentCategorization.createTrivial(drug)));
