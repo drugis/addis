@@ -40,6 +40,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
@@ -56,8 +57,6 @@ import javax.swing.table.TableColumn;
 import javax.xml.bind.DatatypeConverter;
 
 import org.drugis.addis.gui.renderer.BRATForestCellRenderer;
-
-import sun.awt.datatransfer.DataTransferer;
 
 public class TableCopyHandler implements Transferable, ClipboardOwner {
 	private static final int IDX_HTML = 0;
@@ -95,9 +94,9 @@ public class TableCopyHandler implements Transferable, ClipboardOwner {
 	public DataFlavor[] getTransferDataFlavors() {
 		try {
 			DataFlavor htmlFlavor = new DataFlavor("text/html;class=java.lang.String;charset=" + 
-					DataTransferer.getInstance().getDefaultUnicodeEncoding());
+					Charset.defaultCharset());
 			DataFlavor textFlavor = new DataFlavor("text/plain;class=java.lang.String;charset=" + 
-					DataTransferer.getInstance().getDefaultUnicodeEncoding());
+					Charset.defaultCharset());
 			return new DataFlavor[] {
 					htmlFlavor, textFlavor
 			};
