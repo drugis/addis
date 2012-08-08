@@ -34,6 +34,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.NetworkMetaAnalysisTest;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
@@ -86,7 +87,7 @@ public class DomainChangedModelTest {
 		// Add some results
 		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
 		d_domain.getStudies().add(ExampleData.buildStudyFava2002());
-		MockNetworkMetaAnalysis mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		MockNetworkMetaAnalysis mockAnalysis = (MockNetworkMetaAnalysis) NetworkMetaAnalysisTest.buildMockNetworkMetaAnalysis();
 		d_domain.getMetaAnalyses().add(mockAnalysis);
 		assertTrue(d_model.getValue());
 		d_model.setValue(false);

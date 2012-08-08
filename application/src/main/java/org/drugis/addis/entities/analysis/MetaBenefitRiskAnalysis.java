@@ -47,9 +47,6 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.MCMCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.MCMCSimulationWrapper;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.Gaussian;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
@@ -66,6 +63,9 @@ import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.mtc.MCMCModel;
+import org.drugis.mtc.presentation.ConsistencyWrapper;
+import org.drugis.mtc.presentation.MCMCModelWrapper;
+import org.drugis.mtc.presentation.MCMCSimulationWrapper;
 import org.drugis.mtc.summary.MultivariateNormalSummary;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.summary.Summary;
@@ -164,7 +164,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 			}
 		}
 		
-		// +1 where row- and column-drugsets match
+		// +1 where row- and column-TreatmentDefinitions match
 		for (int i = 0; i < nRows; ++i) {
 			int oneColumn = columnAlternatives.indexOf(rowAlternatives.get(i));
 			if (oneColumn >= 0) {
@@ -353,7 +353,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 		List<Task> tasks = new ArrayList<Task>();
 		for (MetaAnalysis ma : getMetaAnalyses() ){
 			if (ma instanceof NetworkMetaAnalysis) {
-				ConsistencyWrapper wrapper = ((NetworkMetaAnalysis) ma).getConsistencyModel();
+				ConsistencyWrapper<TreatmentDefinition> wrapper = ((NetworkMetaAnalysis) ma).getConsistencyModel();
 				if (!wrapper.isSaved()) {
 					tasks.add((Task) wrapper.getModel().getActivityTask());
 				}

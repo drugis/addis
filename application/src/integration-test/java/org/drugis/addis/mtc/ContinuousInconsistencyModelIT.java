@@ -35,22 +35,22 @@ import java.util.List;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.mtcwrapper.SimulationInconsistencyWrapper;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
+import org.drugis.mtc.presentation.SimulationInconsistencyWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ContinuousInconsistencyModelIT {
 	private NetworkMetaAnalysis d_nma;
-	private SimulationInconsistencyWrapper d_wrapper;
+	private SimulationInconsistencyWrapper<TreatmentDefinition> d_wrapper;
 
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
        
-		d_wrapper = (SimulationInconsistencyWrapper) d_nma.getInconsistencyModel();
+		d_wrapper = (SimulationInconsistencyWrapper<TreatmentDefinition>) d_nma.getInconsistencyModel();
     }
     
     @Test
