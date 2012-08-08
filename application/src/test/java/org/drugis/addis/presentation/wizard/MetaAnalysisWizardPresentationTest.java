@@ -56,6 +56,8 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
@@ -250,7 +252,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getIndicationModel().setValue(ind);
 		d_wizard.getOutcomeMeasureModel().setValue(ep);
 		
-		assertEquals(expected, d_wizard.getDrugListModel());
+		assertEquals(expected, d_wizard.getTreatmentDefinitionListModel());
 	}
 	
 	@Test
@@ -259,9 +261,9 @@ public class MetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ind);
 		assertNull(d_wizard.getOutcomeMeasureModel().getValue());
-		assertNotNull(d_wizard.getDrugListModel());
+		assertNotNull(d_wizard.getTreatmentDefinitionListModel());
 		
-		assertTrue(d_wizard.getDrugListModel().isEmpty());
+		assertTrue(d_wizard.getTreatmentDefinitionListModel().isEmpty());
 	}
 	
 	@Test
@@ -322,29 +324,29 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testSelectedDrugList() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		assertEquals(Collections.<Drug>emptyList(), d_wizard.getSelectedDrugsModel());
+		assertEquals(Collections.<Drug>emptyList(), d_wizard.getSelectedTreatmentDefinitionModel());
 		
 		ListDataListener mock = createMock(ListDataListener.class);
 
-		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_ADDED,
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.INTERVAL_ADDED,
 				0, 0)));
-		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_ADDED,
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.INTERVAL_ADDED,
 				1, 1)));
-		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.INTERVAL_REMOVED,
+		mock.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.INTERVAL_REMOVED,
 				0, 0)));
 		
-		d_wizard.getSelectedDrugsModel().addListDataListener(mock);
+		d_wizard.getSelectedTreatmentDefinitionModel().addListDataListener(mock);
 		replay(mock);
 		
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
-		assertEquals(Collections.<TreatmentDefinition>singletonList(d_fluoxSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Collections.<TreatmentDefinition>singletonList(d_fluoxSet), d_wizard.getSelectedTreatmentDefinitionModel());
 		
 		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
-		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedTreatmentDefinitionModel());
 		
 		d_wizard.getFirstDrugModel().setValue(null);
 		assertEquals(Collections.<TreatmentDefinition>singletonList(d_sertrSet),
-				d_wizard.getSelectedDrugsModel());
+				d_wizard.getSelectedTreatmentDefinitionModel());
 		verify(mock);
 	}
 	
@@ -355,23 +357,23 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getFirstDrugModel().setValue(d_fluoxSet);
 		d_wizard.getSecondDrugModel().setValue(d_sertrSet);
 		
-		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedDrugsModel()); // just a sanity check
+		assertEquals(Arrays.asList(d_fluoxSet, d_sertrSet), d_wizard.getSelectedTreatmentDefinitionModel()); // just a sanity check
 		
 		ListDataListener mock = createMock(ListDataListener.class);
-		mock.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedDrugsModel(), ListDataEvent.CONTENTS_CHANGED,
+		mock.contentsChanged(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(d_wizard.getSelectedTreatmentDefinitionModel(), ListDataEvent.CONTENTS_CHANGED,
 				1, 1)));
-		d_wizard.getSelectedDrugsModel().addListDataListener(mock);
+		d_wizard.getSelectedTreatmentDefinitionModel().addListDataListener(mock);
 		replay(mock);
 
 		d_wizard.getSecondDrugModel().setValue(d_paroxSet);
-		assertEquals(Arrays.asList(d_fluoxSet, d_paroxSet), d_wizard.getSelectedDrugsModel());
+		assertEquals(Arrays.asList(d_fluoxSet, d_paroxSet), d_wizard.getSelectedTreatmentDefinitionModel());
 
 		verify(mock);
 	}
 	
 	@Test
 	public void testStudyGraphPresentationModel() {
-		StudyGraphModel model = d_wizard.getStudyGraphModel();
+		StudyGraphModel model = d_wizard.getRawStudyGraphModel();
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
@@ -381,7 +383,7 @@ public class MetaAnalysisWizardPresentationTest {
 		drugs.add(d_paroxSet);
 		drugs.add(d_sertrSet);		
 		
-		assertEquals(drugs, model.getDrugs());
+		assertEquals(drugs, model.getTreatmentDefinitions());
 	}
 	
 	@Test
@@ -411,8 +413,8 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testGetDrugListModel() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		List<TreatmentDefinition> expected = d_wizard.getDrugListModel();
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getDrugListModel();
+		List<TreatmentDefinition> expected = d_wizard.getTreatmentDefinitionListModel();
+		ObservableList<TreatmentDefinition> drugList = d_wizard.getTreatmentDefinitionListModel();
 		assertEquals(expected, drugList);
 	}
 	
@@ -420,14 +422,14 @@ public class MetaAnalysisWizardPresentationTest {
 	public void testDrugListModelEventOnEndpointChange() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		ObservableList<TreatmentDefinition> drugList = d_wizard.getDrugListModel();
+		ObservableList<TreatmentDefinition> definitionList = d_wizard.getTreatmentDefinitionListModel();
 		
 		ListDataListener l = createMock(ListDataListener.class);
-		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
-		l.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(drugList, ListDataEvent.INTERVAL_ADDED, 0, 2)));
-		replay(l);
+		l.intervalRemoved(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(definitionList, ListDataEvent.INTERVAL_REMOVED, 0, 2)));
+		l.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(definitionList, ListDataEvent.INTERVAL_ADDED, 0, 2)));
 
-		drugList.addListDataListener(l);
+		replay(l);
+		definitionList.addListDataListener(l);
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
 		verify(l);
 	}
@@ -563,7 +565,7 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyChouinard()).setValue(false);
 		d_wizard.getStudyListModel().getSelectedStudyBooleanModel(ExampleData.buildStudyDeWilde()).setValue(false);
 		
-		assertEquals(expected, d_wizard.getArmsPerStudyPerDrug(multipleArmsPerStudyPerDrug, d_paroxSet));
+		assertEquals(expected, d_wizard.getArmsPerStudyPerDefinition(multipleArmsPerStudyPerDrug, d_paroxSet));
 	}
 	
 	@Test
@@ -603,5 +605,32 @@ public class MetaAnalysisWizardPresentationTest {
 		d_wizard.getSecondDrugModel().setValue(placeSet);
 
 		d_wizard.getSelectedArmModel(burke, placeSet);
+	}
+	
+	@Test
+	public void testCategorizableDrugs() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Drug sertra = ExampleData.buildDrugSertraline();
+
+		Collection<Drug> both = Arrays.asList(fluox, parox, sertra);
+		TreatmentDefinition def1 = TreatmentDefinition.createTrivial(fluox);
+		TreatmentDefinition def2 = TreatmentDefinition.createTrivial(both);
+		TreatmentDefinition def3 = TreatmentDefinition.createTrivial(sertra);
+
+		TreatmentCategorization categorization = TreatmentCategorization.createDefault();
+		categorization.addCategory(def1.getContents().first());
+		categorization.addCategory(def2.getContents().first());
+		categorization.addCategory(def3.getContents().first());
+
+		categorization.addCategory((Category) def2.getContents().toArray()[1]);
+
+		d_domain.getTreatmentCategorizations().add(categorization);
+		
+		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		
+		JUnitUtil.assertAllAndOnly(both, d_wizard.getCategorizableDrugs());
+
 	}
 }

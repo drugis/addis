@@ -34,11 +34,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.SelectableStudyGraphModel;
+import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
-import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
@@ -61,7 +60,9 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, main));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SelectDrugsWizardStep(pm, main));
+		wizardModel.add(new SelectDrugsWizardStep(pm));
+		wizardModel.add(new RefineDrugSelectionWizardStep(pm, main));
+		wizardModel.add(new SelectTreatmentCategoriesWizardStep(pm));
 		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, main);
 		selectStudiesStep.setComplete(true);
 		wizardModel.add(selectStudiesStep);
@@ -72,10 +73,11 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		return wizardModel;
 	}
 	
+
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableStudyGraphModel> {
 		private StudyGraph d_studyGraph;
 
-		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
+		public OverviewWizardStep(AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel> pm, AddisWindow main) {
 			super(pm, main);
 
 			setLayout(new BorderLayout());
@@ -106,46 +108,6 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		@Override
 		public void prepare() {
 			((NetworkMetaAnalysisWizardPM) d_pm).updateSelectedStudyGraphModel();
-			d_studyGraph.layoutGraph();
-		}
-	}
-	
-	public static class SelectDrugsWizardStep extends PanelWizardStep {
-
-		private SelectableStudyGraph d_studyGraph;
-		private final NetworkMetaAnalysisWizardPM d_pm;
-
-		public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
-			super("Select Drugs","Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
-			d_pm = pm;
-					
-			setLayout(new BorderLayout());
-			    
-			FormLayout layout = new FormLayout(
-					"center:pref:grow",
-					"p"
-					);	
-			
-			PanelBuilder builder = new PanelBuilder(layout);
-			CellConstraints cc = new CellConstraints();
-			
-			builder.add(buildStudiesGraph(pm), cc.xy(1, 1));
-			
-			JScrollPane sp = new JScrollPane(builder.getPanel());
-			add(sp);
-			sp.getVerticalScrollBar().setUnitIncrement(16);
-			
-			Bindings.bind(this, "complete", pm.getConnectedDrugsSelectedModel());
-		}
-		
-		private Component buildStudiesGraph(NetworkMetaAnalysisWizardPM pm) {
-			d_studyGraph = new SelectableStudyGraph(pm.getStudyGraphModel());
-			d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			return d_studyGraph;
-		}
-		
-		@Override public void prepare() {
-			d_pm.updateStudyGraphModel();
 			d_studyGraph.layoutGraph();
 		}
 	}

@@ -86,7 +86,7 @@ public class DrugVertexView extends VertexView {
 		@Override
 		public Component getRendererComponent(JGraph graph, CellView view,
 				boolean sel, boolean focus, boolean preview) {
-			return new EllipseLabel(d_vertex.getDrug().getLabel());
+			return new EllipseLabel(d_vertex.getTreatmentDefinition().getLabel());
 		}
 	}
 

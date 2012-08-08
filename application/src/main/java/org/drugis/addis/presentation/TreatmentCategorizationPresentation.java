@@ -77,7 +77,7 @@ public class TreatmentCategorizationPresentation extends PresentationModel<Treat
 
 		public CategorizedStudyListPresentation(final Category category) {
 			final StudyCategoryFilter filter = new StudyCategoryFilter(category);
-			d_studies = new FilteredObservableList<Study>(d_domain.getStudies(getBean().getDrug()), filter);
+			d_studies = new FilteredObservableList<Study>(d_domain.getTreatmentDefinition(getBean().getDrug()), filter);
 			d_characteristicVisibleMap = new CharacteristicVisibleMap();
 		}
 

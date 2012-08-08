@@ -98,8 +98,8 @@ public class RelativeEffectFactoryTest {
 	@Test
 	public void testGetStandardizedMeanDifference() {
 		// Sanity check
-		assertEquals(d_parox, d_s.getDrugs(d_pBase));
-		assertEquals(d_fluox, d_s.getDrugs(d_pSubj));
+		assertEquals(d_parox, d_s.getTreatmentDefinition(d_pBase));
+		assertEquals(d_fluox, d_s.getTreatmentDefinition(d_pSubj));
 		
 		RelativeEffect<?> expected = new BasicStandardisedMeanDifference(
 				(ContinuousMeasurement)d_s.getMeasurement(d_eCont, d_pBase),

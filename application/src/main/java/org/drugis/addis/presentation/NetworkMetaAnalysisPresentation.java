@@ -28,6 +28,7 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,33 +39,36 @@ import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
-import org.drugis.addis.entities.mtcwrapper.ConsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.InconsistencyWrapper;
-import org.drugis.addis.entities.mtcwrapper.MTCModelWrapper;
-import org.drugis.addis.entities.mtcwrapper.NodeSplitWrapper;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.mcmc.MCMCPresentation;
+import org.drugis.addis.gui.AddisMCMCPresentation;
 import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
+import org.drugis.mtc.presentation.ConsistencyWrapper;
+import org.drugis.mtc.presentation.InconsistencyWrapper;
+import org.drugis.mtc.presentation.MTCModelWrapper;
+import org.drugis.mtc.presentation.NodeSplitWrapper;
+import org.drugis.mtc.presentation.results.NodeSplitResultsTableModel;
+import org.drugis.mtc.presentation.results.RankProbabilityDataset;
+import org.drugis.mtc.presentation.results.RankProbabilityTableModel;
 import org.jfree.data.category.CategoryDataset;
 
 import com.jgoodies.binding.list.ArrayListModel;
 
 @SuppressWarnings("serial")
 public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<NetworkMetaAnalysis> {
-	private Map<MTCModelWrapper, MCMCPresentation> d_models;
+	private Map<MTCModelWrapper<TreatmentDefinition>, AddisMCMCPresentation> d_models;
 	public NetworkMetaAnalysisPresentation(NetworkMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
-		d_models = new HashMap<MTCModelWrapper, MCMCPresentation>();
+		d_models = new HashMap<MTCModelWrapper<TreatmentDefinition>, AddisMCMCPresentation>();
 		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getDescription());
 		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getDescription());
 		for (BasicParameter p : getBean().getSplitParameters()) {
-			NodeSplitWrapper m = getBean().getNodeSplitModel(p);
+			NodeSplitWrapper<TreatmentDefinition> m = getBean().getNodeSplitModel(p);
 			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getDescription());
 		}
-		for(MTCModelWrapper model : d_models.keySet()) { 
+		for(MTCModelWrapper<TreatmentDefinition> model : d_models.keySet()) { 
 			model.addPropertyChangeListener(new PropertyChangeListener() {		
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
@@ -86,11 +90,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
-		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities(), this);
+		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities(), this.getConsistencyModel());
 	}
 	
 	public TableModel getRankProbabilityTableModel() {
-		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities(), this);
+		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities(), this.getConsistencyModel());
 	}
 
 	public String getRankProbabilityRankChartNote() {
@@ -103,27 +107,27 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TaskProgressModel getProgressModel(MTCModelWrapper mtc) {
+	public TaskProgressModel getProgressModel(MTCModelWrapper<TreatmentDefinition> mtc) {
 		return d_models.get(mtc).getProgressModel();
 	}
 	
-	private void addModel(MTCModelWrapper mtc, OutcomeMeasure om, String name) {
-		d_models.put(mtc, new MCMCPresentation(mtc, om, name));
+	private void addModel(MTCModelWrapper<TreatmentDefinition> mtc, OutcomeMeasure om, String name) {
+		d_models.put(mtc, new AddisMCMCPresentation(mtc, om, name));
 	}
 
 	public List<BasicParameter> getSplitParameters() {
 		return getBean().getSplitParameters();
 	}
 
-	public NodeSplitWrapper getNodeSplitModel(BasicParameter p) {
+	public NodeSplitWrapper<TreatmentDefinition> getNodeSplitModel(BasicParameter p) {
 		return getBean().getNodeSplitModel(p);
 	}
 
-	public ConsistencyWrapper getConsistencyModel() {
+	public ConsistencyWrapper<TreatmentDefinition> getConsistencyModel() {
 		return getBean().getConsistencyModel();
 	}
 	
-	public InconsistencyWrapper getInconsistencyModel() {
+	public InconsistencyWrapper<TreatmentDefinition> getInconsistencyModel() {
 		return getBean().getInconsistencyModel();
 	}
 
@@ -139,10 +143,19 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getNetwork();
 	}
 	
-	public MCMCPresentation getWrappedModel(MTCModelWrapper m) {
+	public AddisMCMCPresentation getWrappedModel(MTCModelWrapper<TreatmentDefinition> m) {
 		if(d_models.get(m) == null) {
 			addModel(m, getBean().getOutcomeMeasure(),  getBean().getName() + " \u2014 " + m.getDescription());
 		}
 		return d_models.get(m);
+	}
+
+	public NodeSplitResultsTableModel createNodeSplitResultsTableModel() {
+		List<NodeSplitWrapper<?>> list = new ArrayList<NodeSplitWrapper<?>>();
+		for (BasicParameter p : this.getSplitParameters()) {
+			list.add(this.getNodeSplitModel(p));
+		}
+		final List<NodeSplitWrapper<?>> nodeSplitModels = list;
+		return new NodeSplitResultsTableModel(this.getConsistencyModel(), nodeSplitModels);
 	}	
 }

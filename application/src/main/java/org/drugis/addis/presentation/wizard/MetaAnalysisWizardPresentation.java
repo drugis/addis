@@ -29,6 +29,7 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -36,14 +37,16 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
+import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.common.beans.AbstractObservableList;
 import org.drugis.common.event.ListDataEventProxy;
@@ -67,7 +70,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected void buildDrugHolders() {
+	protected void buildDefinitionHolders() {
 		d_firstDrugHolder = new ModifiableHolder<TreatmentDefinition>();		
 		d_secondDrugHolder = new ModifiableHolder<TreatmentDefinition>();
 
@@ -171,11 +174,23 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private TreatmentDefinition getSecondDrug() {
 		return d_secondDrugHolder.getValue();
 	}
+
+	@Override
+	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel() {
+		return d_selectedDrugs;
+	}	
 	
 	@Override
-	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
-		return d_selectedDrugs;
+	public ObservableList<Drug> getCategorizableDrugs() {
+		ObservableList<Drug> drugs = new ArrayListModel<Drug>();
+		for(TreatmentDefinition treatment : d_selectedDrugs) { 
+			for(Category category : treatment.getContents()) { 
+				drugs.add(category.getDrug());
+			}
+		}
+		return new ArrayListModel<Drug>(Collections.unmodifiableList(drugs));
 	}
+
 
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
@@ -226,8 +241,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected StudyGraphModel buildStudyGraphPresentation() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder,  d_outcomeHolder);				
+	protected StudyGraphModel buildRawStudyGraphPresentation() {
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitionHolder,  d_outcomeHolder);				
+	}
+	
+	@Override
+	protected StudyGraphModel buildRefinedStudyGraphPresentation() {
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitionHolder,  d_outcomeHolder);				
 	}
 
 	@Override
@@ -240,5 +260,5 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}
 		ma.setName(name);
 		return ma;
-	}	
+	}
 }
