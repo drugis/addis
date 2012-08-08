@@ -38,6 +38,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.collections15.CollectionUtils;
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
@@ -155,15 +156,13 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 
 	private void initStudiesMeasuringDefinition() {
 		d_studiesMeasuringDefinition = new HashMap<TreatmentDefinition, Set<Study>>(); 
-
-		for (TreatmentDefinition d : d_definitions) {
+		for(TreatmentDefinition d : d_definitions) { 
 			d_studiesMeasuringDefinition.put(d, new HashSet<Study>());
-		}
-		
-		for (Study s : d_studies) {
-			for (TreatmentDefinition d : s.getMeasuredTreatmentDefinitions(d_om.getValue())) {
-				if (d_definitions.contains(d)) {
-					d_studiesMeasuringDefinition.get(d).add(s);
+			for(Study s : d_studies) { 
+				for(Arm arm : s.getArms()) { 
+					if(d.match(s, arm) && s.getOutcomeMeasures().contains(d_om.getValue())) {
+						d_studiesMeasuringDefinition.get(d).add(s);
+					}
 				}
 			}
 		}

@@ -48,6 +48,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
@@ -120,6 +121,21 @@ public class StudyGraphModelTest {
 		
 		assertAllAndOnly(Collections.<Study>singletonList(ExampleData.buildStudyBennie()),
 				d_pm.getStudies(TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline()), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())));
+	}
+	
+	@Test
+	public void testGetStudiesWithNonTrivial() {
+		TreatmentCategorization upto20mg = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition def = new TreatmentDefinition(upto20mg.getCategories());
+		ArrayListModel<TreatmentDefinition> defs = new ArrayListModel<TreatmentDefinition>();
+		defs.add(def);
+
+		ObservableList<Study> studies = new ArrayListModel<Study>();
+		studies.add(ExampleData.buildStudyChouinard());
+		Study bennie = ExampleData.buildStudyBennie();
+		studies.add(bennie);
+		StudyGraphModel pm = new StudyGraphModel(studies, defs,  new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
+		assertAllAndOnly(Collections.singleton(bennie), pm.getStudies(def));
 	}
 	
 	@Test
