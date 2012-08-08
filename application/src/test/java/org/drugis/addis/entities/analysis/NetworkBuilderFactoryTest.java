@@ -78,7 +78,7 @@ public class NetworkBuilderFactoryTest {
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		Map<TreatmentDefinition, Arm> drugArmMap = new HashMap<TreatmentDefinition, Arm>();
 		for (Arm a : study.getArms()) {
-			drugArmMap.put(study.getDrugs(a), a);
+			drugArmMap.put(study.getTreatmentDefinition(a), a);
 		}
 		armMap.put(study, drugArmMap);
 		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);

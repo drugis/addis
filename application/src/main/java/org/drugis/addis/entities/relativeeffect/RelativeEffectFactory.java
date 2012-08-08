@@ -70,7 +70,7 @@ public class RelativeEffectFactory {
 
 	public static Arm findFirstArm(Study s, TreatmentDefinition d) {
 		for (Arm a : s.getArms()) {
-			if (s.getDrugs(a).equals(d))
+			if (s.getTreatmentDefinition(a).equals(d))
 				return a;
 		}
 		throw new IllegalArgumentException("Drug " + d.toString() + " not used in study " + s.toString());

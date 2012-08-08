@@ -43,12 +43,12 @@ import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class SelectableStudyGraphModel extends StudyGraphModel {
+public class SelectableCategoryGraphModel extends StudyGraphModel {
 	
 	private ObservableList<TreatmentDefinition> d_selectedDefinitions = new ArrayListModel<TreatmentDefinition>(d_definitions);
 	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
 
-	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
+	public SelectableCategoryGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, definitions, outcome);
 		d_selectedDefinitions.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {

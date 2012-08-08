@@ -1036,8 +1036,8 @@ public class JAXBConvertor {
 			Arm subj = findArm(subjArms.get(i).getName(), study.getArms());
 			studyArms.add(new StudyArmsEntry(study, base, subj));
 			if (i == 0) {
-				baseCat = study.getDrugs(base);
-				subjCat = study.getDrugs(subj);
+				baseCat = study.getTreatmentDefinition(base);
+				subjCat = study.getTreatmentDefinition(subj);
 			}
 		}
 		

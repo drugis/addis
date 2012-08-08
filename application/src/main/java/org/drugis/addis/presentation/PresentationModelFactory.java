@@ -123,7 +123,7 @@ public class PresentationModelFactory {
 			return new DrugPresentation((Drug) obj, d_domain);
 		}
 		if (obj instanceof TreatmentDefinition) {
-			return new TreatmentCategorySetPresentation((TreatmentDefinition) obj, d_domain);
+			return new TreatmentDefinitionPresentation((TreatmentDefinition) obj, d_domain);
 		}
 		if (obj instanceof RandomEffectsMetaAnalysis) {
 			return new PairWiseMetaAnalysisPresentation((RandomEffectsMetaAnalysis) obj, this);

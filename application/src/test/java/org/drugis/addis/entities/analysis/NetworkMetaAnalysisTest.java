@@ -34,9 +34,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
-import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class NetworkMetaAnalysisTest {
 	@Before
 	public void setup() throws InterruptedException{
 		d_analysis = ExampleData.buildNetworkMetaAnalysisHamD();
-		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkMetaAnalysisTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
 	}
 	
@@ -79,8 +79,37 @@ public class NetworkMetaAnalysisTest {
 	
 	@Test
 	public void testIsContinuous() {
-		assertFalse(NetworkTableModelTest.buildMockNetworkMetaAnalysis().isContinuous());
-		assertTrue(NetworkTableModelTest.buildMockContinuousNetworkMetaAnalysis().isContinuous());
+		assertFalse(NetworkMetaAnalysisTest.buildMockNetworkMetaAnalysis().isContinuous());
+		assertTrue(NetworkMetaAnalysisTest.buildMockContinuousNetworkMetaAnalysis().isContinuous());
+	}
+
+	public static NetworkMetaAnalysis buildMockNetworkMetaAnalysis() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyDeWilde(), ExampleData.buildStudyFava2002()});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
+		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
+				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointHamd(),
+				studies, drugs, ExampleData.buildMap(studies, drugs));
+		
+		return analysis;
+	}
+
+	public static NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
+		
+		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
+				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),
+				studies, drugs, ExampleData.buildMap(studies, drugs));
+		
+		return analysis;
 	}
 	
 }

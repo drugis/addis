@@ -59,7 +59,7 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 			DefaultGraphCell realcell = (DefaultGraphCell) cell;
 			Object obj = realcell.getUserObject();
 			if (obj instanceof Vertex) {
-				selectUnselectDrug(((Vertex) obj).getDrug());
+				selectUnselectDrug(((Vertex) obj).getTreatmentDefinition());
 			}
 		}
 	}	

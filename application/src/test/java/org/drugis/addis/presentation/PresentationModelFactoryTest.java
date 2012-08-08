@@ -112,9 +112,9 @@ public class PresentationModelFactoryTest {
 		
 		assertEquals(d, m.getBean());
 		assertEquals(DrugPresentation.class, m.getClass());
-		assertEquals(d_domain.getStudies(d).size(),
+		assertEquals(d_domain.getTreatmentDefinition(d).size(),
 				((DrugPresentation) m).getIncludedStudies().size());
-		assertTrue(d_domain.getStudies(d).containsAll(
+		assertTrue(d_domain.getTreatmentDefinition(d).containsAll(
 				((DrugPresentation) m).getIncludedStudies()));		
 	}
 	

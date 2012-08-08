@@ -48,6 +48,7 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.StudyGraphModel.Edge;
 import org.drugis.addis.presentation.StudyGraphModel.Vertex;
@@ -84,7 +85,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testGetDrugs() {
-		assertAllAndOnly(d_drugs, d_pm.getDrugs());
+		assertAllAndOnly(d_drugs, d_pm.getTreatmentDefinitions());
 	}
 	
 	@Test
@@ -123,13 +124,28 @@ public class StudyGraphModelTest {
 	}
 	
 	@Test
+	public void testGetStudiesWithNonTrivial() {
+		TreatmentCategorization upto20mg = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition def = new TreatmentDefinition(upto20mg.getCategories());
+		ArrayListModel<TreatmentDefinition> defs = new ArrayListModel<TreatmentDefinition>();
+		defs.add(def);
+
+		ObservableList<Study> studies = new ArrayListModel<Study>();
+		studies.add(ExampleData.buildStudyChouinard());
+		Study bennie = ExampleData.buildStudyBennie();
+		studies.add(bennie);
+		StudyGraphModel pm = new StudyGraphModel(studies, defs,  new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
+		assertAllAndOnly(Collections.singleton(bennie), pm.getStudies(def));
+	}
+	
+	@Test
 	public void testVertexSet() {
 		Set<Vertex> vertexSet = d_pm.vertexSet();
 		assertEquals(3, vertexSet.size());
 		
 		for (Vertex vertex : vertexSet) {
-			assertTrue(d_drugs.contains(vertex.getDrug()));
-			assertEquals(calcSampleSize(vertex.getDrug()), vertex.getSampleSize());
+			assertTrue(d_drugs.contains(vertex.getTreatmentDefinition()));
+			assertEquals(calcSampleSize(vertex.getTreatmentDefinition()), vertex.getSampleSize());
 		}
 	}
 	
@@ -159,7 +175,7 @@ public class StudyGraphModelTest {
 	@Test
 	public void testFindVertex() {
 		assertEquals(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
-				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getDrug());
+				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getTreatmentDefinition());
 	}
 	
 	@Test
