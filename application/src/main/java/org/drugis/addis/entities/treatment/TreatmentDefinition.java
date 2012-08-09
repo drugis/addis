@@ -136,7 +136,7 @@ public class TreatmentDefinition extends AbstractEntity implements Comparable<Tr
 	
 	@Override
 	public String toString() {
-		return "TreatmentCategorySet" + d_contents;
+		return "TreatmentDefinition " + d_contents;
 	}
 
 	/**

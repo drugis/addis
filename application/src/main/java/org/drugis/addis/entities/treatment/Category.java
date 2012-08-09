@@ -141,4 +141,8 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	public boolean match(AbstractDose dose) {
 		return this.equals(d_owner.getCategory(dose));
 	}
+	
+	public String toString() {
+		return getLabel();
+	}
 }

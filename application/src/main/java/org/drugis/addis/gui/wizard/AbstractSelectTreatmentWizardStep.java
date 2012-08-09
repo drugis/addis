@@ -28,7 +28,8 @@ public class AbstractSelectTreatmentWizardStep extends PanelWizardStep {
 		super(name, summary, icon);
 	}
 
-	protected Component buildStudiesGraph(AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel> pm) {
+	protected Component buildStudiesGraph(SelectableStudyGraphModel selectableStudyGraphModel) {
+		d_studyGraph = new SelectableStudyGraph(selectableStudyGraphModel);
 		d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return d_studyGraph;
 	}

@@ -152,14 +152,15 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		}
 		
 		private Component buildStudiesGraph() {
-			StudyGraphModel pm = d_pm.getRawStudyGraphModel();
+			StudyGraphModel pm = d_pm.getRawStudyGraph();
 			d_studyGraph = new StudyGraph(pm);
 			return d_studyGraph;
 		}
 		
 		@Override
 		public void prepare() {
-			d_pm.updateStudyGraphModels();
+			d_pm.rebuildRawStudyGraph();
+			d_pm.rebuildRefinedStudyGraph();
 			d_studyGraph.layoutGraph();
 		}
 

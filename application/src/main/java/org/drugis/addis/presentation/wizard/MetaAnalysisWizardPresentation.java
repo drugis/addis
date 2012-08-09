@@ -60,13 +60,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
 	private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-	private ObservableList<TreatmentDefinition> d_selectedDrugs;
+	private ObservableList<TreatmentDefinition> d_selectedTreatmentDefinitions;
 	private PairWiseMetaAnalysisPresentation d_pm;
 	public MetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
-		d_studyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
+		d_selectableStudyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		
 		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
 		
-		d_selectedDrugs = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
-		d_selectedDrugs.addListDataListener(new ListDataListener() {
+		d_selectedTreatmentDefinitions = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
+		d_selectedTreatmentDefinitions.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				updateArmHolders();
 			}
@@ -176,14 +176,14 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel() {
-		return d_selectedDrugs;
+	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitions() {
+		return d_selectedTreatmentDefinitions;
 	}	
 	
 	@Override
-	public ObservableList<Drug> getCategorizableDrugs() {
+	public List<Drug> getSelectedDrugs() {
 		ObservableList<Drug> drugs = new ArrayListModel<Drug>();
-		for(TreatmentDefinition treatment : d_selectedDrugs) { 
+		for(TreatmentDefinition treatment : d_selectedTreatmentDefinitions) { 
 			for(Category category : treatment.getContents()) { 
 				drugs.add(category.getDrug());
 			}
@@ -196,7 +196,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		TreatmentDefinition base = d_firstDrugHolder.getValue();
 		TreatmentDefinition subj = d_secondDrugHolder.getValue();
-		for (Study s : getStudyListModel().getSelectedStudiesModel()) {
+		for (Study s : getSelectableStudyListPm().getSelectedStudiesModel()) {
 			Arm left = d_selectedArms.get(s).get(base).getValue();
 			Arm right = d_selectedArms.get(s).get(subj).getValue();
 			studyArms.add(new StudyArmsEntry(s, left, right));
@@ -217,7 +217,7 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 		}
 
 		public Object getValue() {
-			return new Boolean(!d_studyListPm.getSelectedStudiesModel().isEmpty());
+			return new Boolean(!d_selectableStudyListPm.getSelectedStudiesModel().isEmpty());
 		}
 
 		public void setValue(Object newValue) {			
@@ -241,13 +241,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected StudyGraphModel buildRawStudyGraphPresentation() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitionHolder,  d_outcomeHolder);				
+	protected StudyGraphModel buildRawSelectableStudyGraph() {
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions,  d_outcomeHolder);				
 	}
 	
 	@Override
-	protected StudyGraphModel buildRefinedStudyGraphPresentation() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitionHolder,  d_outcomeHolder);				
+	protected StudyGraphModel buildRefinedSelectableStudyGraph() {
+		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions,  d_outcomeHolder);				
 	}
 
 	@Override

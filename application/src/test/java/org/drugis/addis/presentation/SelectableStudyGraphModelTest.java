@@ -79,7 +79,7 @@ public class SelectableStudyGraphModelTest {
 	
 	@Test
 	public void testGetSelectedDrugsModel() {
-		ObservableList<TreatmentDefinition> selDrugs = d_pm.getSelectedDefinitionsModel();
+		ObservableList<TreatmentDefinition> selDrugs = d_pm.getSelectedDefinitions();
 		List<TreatmentDefinition> list = Collections.singletonList(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
@@ -99,18 +99,18 @@ public class SelectableStudyGraphModelTest {
 		assertTrue(d_pm.isSelectionConnected());
 
 		d_drugs.remove(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
-		d_pm.getSelectedDefinitionsModel().clear();
-		d_pm.getSelectedDefinitionsModel().addAll(d_drugs);
+		d_pm.getSelectedDefinitions().clear();
+		d_pm.getSelectedDefinitions().addAll(d_drugs);
 		
 		assertFalse(d_pm.isSelectionConnected());
 	}
 	
 	@Test
 	public void testDontResetSelectedDrugsWhenNoChanges() {
-		d_pm.getSelectedDefinitionsModel().remove(0);
-		List<TreatmentDefinition> expected = new ArrayList<TreatmentDefinition>(d_pm.getSelectedDefinitionsModel());
+		d_pm.getSelectedDefinitions().remove(0);
+		List<TreatmentDefinition> expected = new ArrayList<TreatmentDefinition>(d_pm.getSelectedDefinitions());
 		d_pm.rebuildGraph();
-		assertEquals(expected, d_pm.getSelectedDefinitionsModel());
+		assertEquals(expected, d_pm.getSelectedDefinitions());
 	}
 	
 }
