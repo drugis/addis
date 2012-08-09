@@ -84,7 +84,7 @@ import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
-import org.drugis.mtc.gui.SimulationComponentFactory;
+import org.drugis.mtc.gui.results.SimulationComponentFactory;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;

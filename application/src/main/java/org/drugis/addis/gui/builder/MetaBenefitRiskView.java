@@ -52,7 +52,7 @@ import org.drugis.addis.presentation.MetaBenefitRiskPresentation;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.mtc.gui.MainWindow;
-import org.drugis.mtc.gui.SimulationComponentFactory;
+import org.drugis.mtc.gui.results.SimulationComponentFactory;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
