@@ -100,14 +100,14 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		}
 
 		protected Component buildStudiesGraph() {
-			d_studyGraph = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getSelectedStudyGraphModel());
+			d_studyGraph = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getSelectedStudyGraph());
 			d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			return d_studyGraph;
 		}
 		
 		@Override
 		public void prepare() {
-			((NetworkMetaAnalysisWizardPM) d_pm).updateSelectedStudyGraphModel();
+			((NetworkMetaAnalysisWizardPM) d_pm).rebuildSelectedStudyGraph();
 			d_studyGraph.layoutGraph();
 		}
 	}

@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.gui.SelectableStudyGraph;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 
 import com.jgoodies.binding.adapter.Bindings;
@@ -17,7 +16,6 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 
 	public SelectTreatmentCategoriesWizardStep(NetworkMetaAnalysisWizardPM pm) {
 		super("Select Treatment Categories","Select the categories to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two categories must be selected, and (2) all selected categories must be connected.");
-		d_studyGraph = new SelectableStudyGraph(pm.getRefinedStudyGraphModel());
 		d_pm = pm;
 
 		setLayout(new BorderLayout());
@@ -30,7 +28,7 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.add(buildStudiesGraph(pm), cc.xy(1, 1));
+		builder.add(buildStudiesGraph(pm.getRefinedStudyGraph()), cc.xy(1, 1));
 		
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp);
@@ -41,7 +39,7 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 	
 	@Override
 	public void prepare() {
-		d_pm.updateStudyGraphModels();
+		d_pm.rebuildRefinedStudyGraph();
 		d_studyGraph.layoutGraph();
 	}
 	

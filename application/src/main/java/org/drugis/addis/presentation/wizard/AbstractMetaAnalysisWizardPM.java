@@ -72,27 +72,26 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	private ObservableList<OutcomeMeasure> d_outcomes = new ArrayListModel<OutcomeMeasure>();	
 	
 	/** First graph containing only Trivial Categorizations (previously DrugSets) **/
-	protected ObservableList<TreatmentDefinition> d_rawTreatmentDefinitionHolder;
-	protected G d_rawStudyGraphPresentationModel;	
+	protected ObservableList<TreatmentDefinition> d_rawTreatmentDefinitions;
+	protected G d_rawStudyGraph;	
 	
 	/** Second graph containing definitions transformed by the selection of TreatmentCategorizations **/
-	protected ObservableList<TreatmentDefinition> d_refinedTreatmentDefinitionHolder;
-	protected G d_refinedStudyGraphPresentationModel;	
+	protected ObservableList<TreatmentDefinition> d_refinedTreatmentDefinitions;
+	protected G d_refinedStudyGraph;	
 	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
 	protected Map<Study, Map<TreatmentDefinition, ModifiableHolder<Arm>>> d_selectedArms;
-	protected DefaultSelectableStudyListPresentation d_studyListPm;
+	protected DefaultSelectableStudyListPresentation d_selectableStudyListPm;
 	private ObservableList<Study> d_studiesEndpointIndication;
-	private ObservableList<Study> d_selectableStudies;
-	private final Map<Drug, ValueHolder<TreatmentCategorization>> d_selectedCatgorization = new HashMap<Drug, ValueHolder<TreatmentCategorization>>();
+	private final Map<Drug, ValueHolder<TreatmentCategorization>> d_selectedCategorizations = new HashMap<Drug, ValueHolder<TreatmentCategorization>>();
 	
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, d.getMetaAnalyses());
 		d_pmf = pmf;
 	
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
+		
 		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
-	
 		updateOutcomes();
 		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -102,26 +101,39 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		
 		d_studiesEndpointIndication = createStudiesIndicationOutcome();
 		
-		d_rawTreatmentDefinitionHolder = new ArrayListModel<TreatmentDefinition>();
+		d_rawTreatmentDefinitions = new ArrayListModel<TreatmentDefinition>();
 		d_outcomeHolder.addValueChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				SortedSet<TreatmentDefinition> definitions = new TreeSet<TreatmentDefinition>();
 				if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
-					List<Study> studies = getStudiesEndpointAndIndication();
-					for (Study s : studies) {
+					for (Study s : getStudiesEndpointAndIndication()) {
 						definitions.addAll(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
 					}			
 				}
-				d_rawTreatmentDefinitionHolder.clear();
-				d_rawTreatmentDefinitionHolder.addAll(definitions);
+				d_rawTreatmentDefinitions.clear();
+				d_rawTreatmentDefinitions.addAll(definitions);
 			}
 		});
 		
-		d_refinedTreatmentDefinitionHolder = new ArrayListModel<TreatmentDefinition>();
+		d_refinedTreatmentDefinitions = new ArrayListModel<TreatmentDefinition>();
+		d_rawTreatmentDefinitions.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				updateRefinedTreatmentDefinitions();
+			}
+			
+			public void intervalAdded(ListDataEvent e) {
+				updateRefinedTreatmentDefinitions();
+			}
+			
+			public void contentsChanged(ListDataEvent e) {
+				updateRefinedTreatmentDefinitions();
+			}
+		});
+		updateRefinedTreatmentDefinitions();
 		
-		d_rawStudyGraphPresentationModel = buildRawStudyGraphPresentation();
-		d_refinedStudyGraphPresentationModel = buildRefinedStudyGraphPresentation();
+		d_rawStudyGraph = buildRawSelectableStudyGraph();
+		d_refinedStudyGraph = buildRefinedSelectableStudyGraph();
 
 		buildDefinitionHolders();
 
@@ -129,43 +141,29 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		
 		d_selectedArms = new HashMap<Study, Map<TreatmentDefinition, ModifiableHolder<Arm>>>();
 		
-		ListDataListener listener = new ListDataListener() {
-			public void contentsChanged(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalRemoved(ListDataEvent e) {
-				updateArmHolders();
-			}
-		};
-		d_selectableStudies = createSelectableStudies();
-		d_studyListPm = new DefaultSelectableStudyListPresentation(new DefaultStudyListPresentation(d_selectableStudies));
-		d_studyListPm.getSelectedStudiesModel().addListDataListener(listener);
-		d_rawTreatmentDefinitionHolder.addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				refineTreatmentDefinitionHolder();
-				
-			}
-			
-			public void intervalAdded(ListDataEvent e) {
-				refineTreatmentDefinitionHolder();
-				
-			}
-			
-			public void contentsChanged(ListDataEvent e) {
-				refineTreatmentDefinitionHolder();
-			}
-		});
-		refineTreatmentDefinitionHolder();
-
+		d_selectableStudyListPm = createSelectableStudyListPm();
 	}
 
-	protected void refineTreatmentDefinitionHolder() {
-		d_refinedTreatmentDefinitionHolder.clear();
+	private DefaultSelectableStudyListPresentation createSelectableStudyListPm() {
+		DefaultSelectableStudyListPresentation studyList = new DefaultSelectableStudyListPresentation(new DefaultStudyListPresentation(createSelectableStudies()));
+		studyList.getSelectedStudiesModel().addListDataListener(new ListDataListener() {
+			public void contentsChanged(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void intervalAdded(ListDataEvent e) {
+				updateArmHolders();
+			}
+			public void intervalRemoved(ListDataEvent e) {
+				updateArmHolders();
+			}
+		});
+		return studyList;
+	}
+
+	protected void updateRefinedTreatmentDefinitions() {
+		d_refinedTreatmentDefinitions.clear();
 		List<TreatmentDefinition> refinedList = new LinkedList<TreatmentDefinition>();
-		for (TreatmentDefinition raw : d_rawTreatmentDefinitionHolder) {
+		for (TreatmentDefinition raw : d_rawTreatmentDefinitions) {
 			TreatmentDefinition refined = new TreatmentDefinition();
 			for (Category cat : raw.getContents()) {
 				TreatmentCategorization refinedCategorization = (TreatmentCategorization) getCategorizationModel(cat.getDrug()).getValue();
@@ -173,7 +171,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 			}
 			refinedList.add(refined);
 		}
-		d_refinedTreatmentDefinitionHolder.addAll(refinedList);
+		d_refinedTreatmentDefinitions.addAll(refinedList);
 	}
 	
 	private void updateOutcomes() {
@@ -190,7 +188,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	
 	private ObservableList<Study> createSelectableStudies() {
 		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(getStudiesEndpointAndIndication(), new SelectedDrugsFilter());
-		getSelectedTreatmentDefinitionModel().addListDataListener(new ListDataListener() {
+		getSelectedTreatmentDefinitions().addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
 			}
@@ -226,9 +224,9 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 
 	protected abstract void buildDefinitionHolders();
 	
-	abstract protected G buildRawStudyGraphPresentation();
+	abstract protected G buildRawSelectableStudyGraph();
 	
-	abstract protected G buildRefinedStudyGraphPresentation();
+	abstract protected G buildRefinedSelectableStudyGraph();
 	
 	/**
 	 * Return all studies that measure the selected endpoint on the selected indication for at least two drugs.
@@ -247,36 +245,37 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	}
 
 	public ObservableList<TreatmentDefinition> getTreatmentDefinitionListModel() {
-		return d_refinedTreatmentDefinitionHolder;
+		return d_refinedTreatmentDefinitions;
 	}
 
 	public ObservableList<OutcomeMeasure> getOutcomeMeasureListModel() {
 		return d_outcomes;
 	}
 	
-	public abstract ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitionModel();
+	public abstract ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitions();
 
-	
-	public void updateStudyGraphModels() {
-		d_rawStudyGraphPresentationModel.rebuildGraph();
-		d_refinedStudyGraphPresentationModel.rebuildGraph();
+	public void rebuildRawStudyGraph() {
+		d_rawStudyGraph.rebuildGraph();
 	}
 	
+	public void rebuildRefinedStudyGraph() {
+		d_refinedStudyGraph.rebuildGraph();
+	}
 
-	public G getRawStudyGraphModel() {
-		return d_rawStudyGraphPresentationModel;
+	public G getRawStudyGraph() {
+		return d_rawStudyGraph;
 	}
 	
-	public G getRefinedStudyGraphModel() {
-		return d_refinedStudyGraphPresentationModel;
+	public G getRefinedStudyGraph() {
+		return d_refinedStudyGraph;
 	}
 
 	protected void updateArmHolders() {
 		d_selectedArms.clear();
 		
-		for(Study s : getStudyListModel().getSelectedStudiesModel()) {
+		for(Study s : getSelectableStudyListPm().getSelectedStudiesModel()) {
 			d_selectedArms.put(s, new HashMap<TreatmentDefinition, ModifiableHolder<Arm>>());
-			for(TreatmentDefinition d : getSelectedTreatmentDefinitionModel()){
+			for(TreatmentDefinition d : getSelectedTreatmentDefinitions()){
 				if(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).contains(d)) {
 					d_selectedArms.get(s).put(d, new ModifiableHolder<Arm>(getDefaultArm(s, d)));
 				}
@@ -296,21 +295,17 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 		return d_selectedArms.get(study).get(definition);
 	}
 
-	public SelectableStudyListPresentation getStudyListModel() {
-		return d_studyListPm;
+	public SelectableStudyListPresentation getSelectableStudyListPm() {
+		return d_selectableStudyListPm;
 	}
 
-	protected ObservableList<Study> getSelectableStudies() {
-		return d_selectableStudies;
-	}
-
-	public abstract ObservableList<Drug> getCategorizableDrugs();
+	public abstract List<Drug> getSelectedDrugs();
 	
 	public ValueModel getCategorizationModel(Drug drug) {
-		if(d_selectedCatgorization.get(drug) == null) { 
-			d_selectedCatgorization.put(drug, new ModifiableHolder<TreatmentCategorization>(TreatmentCategorization.createTrivial(drug)));
+		if(d_selectedCategorizations.get(drug) == null) { 
+			d_selectedCategorizations.put(drug, new ModifiableHolder<TreatmentCategorization>(TreatmentCategorization.createTrivial(drug)));
 		}
-		return d_selectedCatgorization.get(drug);
+		return d_selectedCategorizations.get(drug);
 	}
 
 	@SuppressWarnings("serial")
@@ -348,8 +343,8 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 	private final class IndicationOutcomeFilter implements Filter<Study> {
 		public boolean accept(Study s) {
 			return s.getIndication().equals(d_indicationHolder.getValue()) && 
-			s.getOutcomeMeasures().contains(d_outcomeHolder.getValue()) && 
-			s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).size() >= 2;
+					s.getOutcomeMeasures().contains(d_outcomeHolder.getValue()) && 
+					s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).size() >= 2;
 		}
 	}
 	
@@ -359,7 +354,7 @@ public abstract class AbstractMetaAnalysisWizardPM<G extends StudyGraphModel> ex
 				return false;
 			}
 			Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
-			List<TreatmentDefinition> value = getSelectedTreatmentDefinitionModel();
+			List<TreatmentDefinition> value = getSelectedTreatmentDefinitions();
 			drugs.retainAll(value);
 			return drugs.size() >= 2;
 		}

@@ -43,7 +43,7 @@ public class RefineDrugSelectionWizardStep extends PanelWizardStep {
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		int rows = 1;
-		for (final Drug drug : d_pm.getCategorizableDrugs()) { 
+		for (final Drug drug : d_pm.getSelectedDrugs()) { 
 			rows = LayoutUtil.addRow(layout, rows);
 			builder.add(new JLabel(drug.getLabel()), cc.xy(1, rows));
 			

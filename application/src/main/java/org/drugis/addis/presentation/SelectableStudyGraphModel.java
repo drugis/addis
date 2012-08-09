@@ -78,14 +78,14 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 	}
 	
 	private void updateComplete() {
-		d_complete.setValue(getSelectedDefinitionsModel().size() > 1 && isSelectionConnected());
+		d_complete.setValue(getSelectedDefinitions().size() > 1 && isSelectionConnected());
 	}
 	
 	public ValueHolder<Boolean> getSelectionCompleteModel() {
 		return d_complete;
 	}
 
-	public ObservableList<TreatmentDefinition> getSelectedDefinitionsModel() {
+	public ObservableList<TreatmentDefinition> getSelectedDefinitions() {
 		return d_selectedDefinitions;
 	}
 	

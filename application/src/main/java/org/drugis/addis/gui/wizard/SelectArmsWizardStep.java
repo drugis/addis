@@ -79,11 +79,11 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		d_builder.setDefaultDialogBorder();
 		
 		int row = 1;
-		for (Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel()) {
+		for (Study curStudy : d_pm.getSelectableStudyListPm().getSelectedStudiesModel()) {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (TreatmentDefinition def: d_pm.getSelectedTreatmentDefinitionModel()) {
+			for (TreatmentDefinition def: d_pm.getSelectedTreatmentDefinitions()) {
 				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
 					row = createArmSelect(row, curStudy, def, cc);
 				}

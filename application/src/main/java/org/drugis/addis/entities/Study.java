@@ -484,9 +484,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public void setMeasurement(final OutcomeMeasure e, final Arm a, final BasicMeasurement m) {
-		forceLegalArguments(e, a, m);
-		d_measurements.put(new MeasurementKey(e, a, defaultMeasurementMoment()), m);
+	public void setMeasurement(final OutcomeMeasure om, final Arm a, final BasicMeasurement m) {
+		forceLegalArguments(om, a, m);
+		d_measurements.put(new MeasurementKey(om, a, defaultMeasurementMoment()), m);
 	}
 
 	/**
