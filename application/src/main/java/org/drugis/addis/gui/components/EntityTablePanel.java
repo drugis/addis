@@ -34,8 +34,10 @@ import javax.swing.table.TableModel;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.renderer.EntityCellRenderer;
 import org.drugis.addis.presentation.EntityTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.common.gui.table.EnhancedTable;
 
 import com.jgoodies.binding.list.ObservableList;
 
@@ -47,7 +49,7 @@ public class EntityTablePanel extends TablePanel {
 
 	public static EnhancedTable createTable(final AddisWindow main, final TableModel model) {
 		EnhancedTable table = EnhancedTable.createWithSorter(model);
-		EnhancedTable.insertEntityRenderer(table);
+		EntityCellRenderer.insertEntityRenderer(table);
 		table.autoSizeColumns();
 
 		if (main != null) {

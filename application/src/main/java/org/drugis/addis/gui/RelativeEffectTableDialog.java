@@ -45,11 +45,11 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.presentation.LabeledPresentation;
 import org.drugis.addis.presentation.RelativeEffectPresentation;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
 import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.table.EnhancedTableHeader;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
