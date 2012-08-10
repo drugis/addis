@@ -46,7 +46,7 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.PairWiseMetaAnalysisView;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
@@ -81,7 +81,7 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		return wizardModel;
 	}
 
-	public static class OverviewWizardStep extends AbstractOverviewWizardStep<StudyGraphModel> {
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep<TreatmentDefinitionsGraphModel> {
 		public OverviewWizardStep(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 			super(pm, mainWindow);
 		}
@@ -152,15 +152,14 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		}
 		
 		private Component buildStudiesGraph() {
-			StudyGraphModel pm = d_pm.getRawStudyGraph();
+			TreatmentDefinitionsGraphModel pm = d_pm.getRefinedAlternativesGraph();
 			d_studyGraph = new StudyGraph(pm);
 			return d_studyGraph;
 		}
 		
 		@Override
 		public void prepare() {
-			d_pm.rebuildRawStudyGraph();
-			d_pm.rebuildRefinedStudyGraph();
+			d_pm.rebuildRefinedAlternativesGraph();
 			d_studyGraph.layoutGraph();
 		}
 
@@ -177,8 +176,8 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 			builder.addLabel("First Drug",cc.xy(1, 1));
 			builder.addLabel("Second Drug",cc.xy(5, 1));
 						
-			JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getTreatmentDefinitionListModel(), d_pm.getFirstDrugModel(), true);
-			JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getTreatmentDefinitionListModel(), d_pm.getSecondDrugModel(), true);
+			JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getAvailableRawTreatmentDefinitions(), d_pm.getFirstDrugModel(), true);
+			JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_pm.getAvailableRawTreatmentDefinitions(), d_pm.getSecondDrugModel(), true);
 			
 			builder.add(firstDrugBox,cc.xy(1, 3));
 			builder.add(secondDrugBox,cc.xy(5, 3));

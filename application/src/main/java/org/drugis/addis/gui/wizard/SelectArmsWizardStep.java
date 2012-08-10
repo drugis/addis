@@ -42,7 +42,7 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
@@ -56,9 +56,9 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	
 	private PanelBuilder d_builder;
 	private FormLayout d_layout;
-	private final AbstractMetaAnalysisWizardPM<? extends StudyGraphModel> d_pm;
+	private final AbstractMetaAnalysisWizardPM<? extends TreatmentDefinitionsGraphModel> d_pm;
 
-	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM<? extends StudyGraphModel> pm) {
+	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM<? extends TreatmentDefinitionsGraphModel> pm) {
 		super ("Select Arms","Select the specific arms to be used for the meta-analysis");
 		setLayout(new BorderLayout());
 		d_pm = pm;
@@ -79,11 +79,11 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		d_builder.setDefaultDialogBorder();
 		
 		int row = 1;
-		for (Study curStudy : d_pm.getSelectableStudyListPm().getSelectedStudiesModel()) {
+		for (Study curStudy : d_pm.getSelectableStudyListPM().getSelectedStudiesModel()) {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (TreatmentDefinition def: d_pm.getSelectedTreatmentDefinitions()) {
+			for (TreatmentDefinition def: d_pm.getSelectedRawTreatmentDefinitions()) {
 				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
 					row = createArmSelect(row, curStudy, def, cc);
 				}

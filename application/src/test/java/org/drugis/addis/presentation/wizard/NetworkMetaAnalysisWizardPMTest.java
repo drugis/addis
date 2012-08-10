@@ -34,6 +34,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -55,10 +56,11 @@ import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyListPresentation;
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.event.ListDataEventMatcher;
@@ -85,41 +87,193 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_sertrSet = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
 	}
 	
+	/*
+	 * After the initial selection of X = (Indication, OutcomeMeasure) the set of available studies
+	 * (getStudiesEndpointAndIndication) should contain exactly those studies that include X and
+	 * have at least two arms with valid measurements.
+	 */
 	@Test
-	public void testDrugsSelectedCompleteListener() {
-		ValueModel completeModel = d_pm.getRefinedConnectedDrugsSelectedModel();
+	public void testOnlyIncludeStudiesWithAtLeastTwoMeasuredDrugs() {
+		makeMissing();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+	
+		assertEquals(Collections.singletonList(ExampleData.buildStudyChouinard()), d_pm.getStudiesEndpointAndIndication());
+	}
+
+	/*
+	 * After the initial selection of X = (Indication, OutcomeMeasure) the set of available alternatives
+	 * (getAvailableRawTreatmentDefinitions) should contain exactly those alternatives measured in the
+	 * available studies (getStudiesEndpointAndIndication).
+	 * These should be trivial TreatmentDefinitions.
+	 */
+	@Test
+	public void testAvailableRawIncludesOnlyAlternativesMeasuredInSomeStudy() {
+		makeMissing();
+		addCitalopram();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		
+		TreatmentDefinition[] expected = new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugCitalopram()),
+				d_fluoxSet,
+				d_paroxSet
+			};
+		
+		assertEquals(Arrays.asList(expected), d_pm.getAvailableRawTreatmentDefinitions());
+	}
+
+	/*
+	 * The raw selection (selection of trivial TreatmentDefinitions) should be considered
+	 * complete if they form a connected subgraph of the getRawAlternativesGraph and they
+	 * contain at least one TreatmentDefinition.
+	 * 
+	 * FIXME: this test probably tests for *at least two*, should be fixed.
+	 */
+	@Test
+	public void testRawSelectionCompleteModel() {
+		ValueModel completeModel = d_pm.getRawSelectionCompleteModel();
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
 		assertTrue((Boolean)completeModel.getValue());
 		
 		ArrayList<TreatmentDefinition> newList = new ArrayList<TreatmentDefinition>();
 		newList.add(d_sertrSet);
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(newList);
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<TreatmentDefinition>(newList);
 		newList.add(d_paroxSet);
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(newList);
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
 		
 		newList = new ArrayList<TreatmentDefinition>(newList);		
 		newList.add(d_fluoxSet);
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(newList);
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(newList);
 		assertTrue((Boolean)completeModel.getValue());		
 	}
 	
+	/*
+	 * The selected drugs are those drugs occurring in at least one of the getSelectedRawTreatmentDefinitions.
+	 */
 	@Test
-	public void testStudyListModel() {
-		SelectableStudyListPresentation listModel = d_pm.getSelectableStudyListPm();
+	public void testSelectedDrugs() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Drug sertra = ExampleData.buildDrugSertraline();
+		Collection<Drug> allDrugs = Arrays.asList(fluox, parox, sertra);
+		
+		d_domain.getStudies().add(ExampleData.realBuildStudyCombinationTreatment());
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
+		JUnitUtil.assertAllAndOnly(allDrugs, d_pm.getSelectedDrugs());
+		
+		d_pm.getRawAlternativesGraph().getSelectedDefinitions().remove(TreatmentDefinition.createTrivial(fluox));
+		JUnitUtil.assertAllAndOnly(allDrugs, d_pm.getSelectedDrugs());
+		
+		d_pm.getRawAlternativesGraph().getSelectedDefinitions().remove(TreatmentDefinition.createTrivial(Arrays.asList(fluox, parox)));
+		JUnitUtil.assertAllAndOnly(Arrays.asList(parox, sertra), d_pm.getSelectedDrugs());
+		
+		d_pm.getRawAlternativesGraph().getSelectedDefinitions().remove(TreatmentDefinition.createTrivial(parox));
+		JUnitUtil.assertAllAndOnly(Arrays.asList(sertra), d_pm.getSelectedDrugs());
+		
+		d_pm.getRawAlternativesGraph().getSelectedDefinitions().add(TreatmentDefinition.createTrivial(Arrays.asList(fluox, parox)));
+		JUnitUtil.assertAllAndOnly(allDrugs, d_pm.getSelectedDrugs());
+	}
+	
+	/*
+	 * A categorization should be chosen for each of the getSelectedDrugs.
+	 */
+	@Test
+	public void testCategorizationModel() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		
+		d_domain.getStudies().add(ExampleData.realBuildStudyCombinationTreatment());
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.rebuildRawAlternativesGraph();
+		
+		TreatmentCategorization fluoxCatz = TreatmentCategorization.createTrivial(fluox);
+		TreatmentCategorization paroxCatz = TreatmentCategorization.createTrivial(parox);
+		
+		assertEquals(fluoxCatz, d_pm.getCategorizationModel(fluox).getValue());
+		assertEquals(paroxCatz, d_pm.getCategorizationModel(parox).getValue());
+		
+		assertEquals(Arrays.asList(fluoxCatz), d_pm.getAvailableCategorizations(fluox));
+		assertEquals(Arrays.asList(paroxCatz), d_pm.getAvailableCategorizations(parox));
+		
+		TreatmentCategorization fixedCatz = ExampleData.buildCategorizationFixedDose(fluox);
+		d_domain.getTreatmentCategorizations().add(fixedCatz);
+		assertEquals(Arrays.asList(fluoxCatz, fixedCatz), d_pm.getAvailableCategorizations(fluox));
+	}
+
+	/*
+	 * Based on the getSelectedRawTreatmentDefinitions and the getCategorizationModel for each drug,
+	 * the available refined categorizations should be all permutations of categories of the drugs
+	 * in each raw TreatmentDefintion.
+	 * 
+	 * Example: if we have {Fluoxetine + Paroxetine, Setraline} and we have selected "Fluoxetine LD/HD" for
+	 * Fluoxetine and trivial categorizations for the other two drugs, we get:
+	 * {Fluoxetine LD + Paroxetine, Fluoxetine HD + Paroxetine, Setraline}.
+	 * 
+	 * This list should further be filtered for measured-ness but it is worth testing the above behaviour
+	 * separately first. Also, the filtering of studies/definitions also happens for the "raw" selection
+	 * so could be extracted to be tested only once.
+	 */
+	@Test
+	public void testPermuteTreatmentDefinitions() {
+		fail("Not implemented");
+	}
+	
+	//// Beyond here we should have REFINED TreatmentDefinitions.
+	
+	
+	@Test
+	public void testUnmeasuredDefinitionsIgnoredInArmSelection() {
+		Study study = ExampleData.buildStudyMultipleArmsperDrug().clone();
+		study.createAndAddArm("Sertraline-0", 54, ExampleData.buildDrugSertraline(), null);
+		Arm parox0 = study.getArms().get(0);
+		assertEquals("Paroxetine-0", parox0.getName()); // Assumption check
+		study.getMeasurement(ExampleData.buildEndpointHamd(), parox0).setSampleSize(null);
+		d_domain.getStudies().remove(ExampleData.buildStudyMultipleArmsperDrug());
+		d_domain.getStudies().add(study);
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(Arrays.asList(new TreatmentDefinition[] {
+				d_fluoxSet,
+				d_paroxSet,
+				d_sertrSet}));
+	
+		assertTrue(d_pm.getSelectedStudiesModel().contains(study));
+		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
+		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
+		assertNull(d_pm.getSelectedArmModel(study, d_sertrSet));
+		
+		assertEquals(Collections.singletonList(study.getArms().get(1)), d_pm.getArmsPerStudyPerDefinition(study, d_paroxSet));
+		assertEquals(Collections.singletonList(study.getArms().get(2)), d_pm.getArmsPerStudyPerDefinition(study, d_fluoxSet));
+		assertEquals(Collections.emptyList(), d_pm.getArmsPerStudyPerDefinition(study, d_sertrSet));
+	}
+
+	@Test
+	public void testSelectableStudyListPM() {
+		SelectableStudyListPresentation listModel = d_pm.getSelectableStudyListPM();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.rebuildRawAlternativesGraph();
 
 		ArrayList<Study> newList = new ArrayList<Study>();
 		newList.addAll(d_pm.getStudiesEndpointAndIndication());
@@ -134,14 +288,14 @@ public class NetworkMetaAnalysisWizardPMTest {
 		replay(mock);
 		
 		listModel.getAvailableStudies().addListDataListener(mock);
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(selectionList);
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(selectionList);
 		verify(mock);
 	}
 	
 	@Test
-	public void testStudyListModelAdds() {
-		SelectableStudyListPresentation listModel = d_pm.getSelectableStudyListPm();
+	public void testSelectableStudiesObservesSelectedAlternatives() {
+		SelectableStudyListPresentation selectableStudiesPM = d_pm.getSelectableStudyListPM();
 		
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
@@ -151,38 +305,38 @@ public class NetworkMetaAnalysisWizardPMTest {
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
 		
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(new ArrayList<TreatmentDefinition>(selectionList));
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(new ArrayList<TreatmentDefinition>(selectionList));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
-		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(listModel.getAvailableStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
+		mock.intervalAdded(ListDataEventMatcher.eqListDataEvent(new ListDataEvent(selectableStudiesPM.getAvailableStudies(), ListDataEvent.INTERVAL_ADDED, 0, allStudiesList.size() - 1)));
 		replay(mock);
 
-		listModel.getAvailableStudies().addListDataListener(mock);
+		selectableStudiesPM.getAvailableStudies().addListDataListener(mock);
 		selectionList.add(d_fluoxSet);	
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(selectionList);		
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(selectionList);		
 		verify(mock);
 	}
 	
 	@Test
-	public void testGetSelectedStudyGraphUpdateDrugs() {
-		StudyGraphModel graphModel = d_pm.getSelectedStudyGraph();
+	public void testOverviewGraphObservesSelectedAlternatives() {
+		TreatmentDefinitionsGraphModel graphModel = d_pm.getOverviewGraph();
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
 		
-		d_pm.rebuildSelectedStudyGraph();
+		d_pm.rebuildOverviewGraph();
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(2, graphModel.edgeSet().size());
 		
 		ArrayList<TreatmentDefinition> selectionList = new ArrayList<TreatmentDefinition>();
 		selectionList.add(d_sertrSet);
 		selectionList.add(d_paroxSet);
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(selectionList);
-		d_pm.rebuildSelectedStudyGraph();
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(selectionList);
+		d_pm.rebuildOverviewGraph();
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(0, graphModel.edgeSet().size());
 	}
@@ -193,24 +347,24 @@ public class NetworkMetaAnalysisWizardPMTest {
 	 */
 	public void testHandleStudyWithMissingMeasurements() {
 		makeMissing();
-		StudyGraphModel graphModel = d_pm.getSelectedStudyGraph();
+		TreatmentDefinitionsGraphModel graphModel = d_pm.getOverviewGraph();
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
 		
-		d_pm.rebuildSelectedStudyGraph();
+		d_pm.rebuildOverviewGraph();
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(1, graphModel.edgeSet().size());
 		
 		addCitalopram();
-		graphModel = d_pm.getSelectedStudyGraph();
+		graphModel = d_pm.getOverviewGraph();
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
 		
-		d_pm.rebuildSelectedStudyGraph();
+		d_pm.rebuildOverviewGraph();
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(2, graphModel.edgeSet().size());
 	}
@@ -232,63 +386,34 @@ public class NetworkMetaAnalysisWizardPMTest {
 	}
 	
 	@Test
-	public void testOnlyIncludeStudiesWithAtLeastTwoMeasuredDrugs() {
-		makeMissing();
-		
-		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-
-		assertEquals(Collections.singletonList(ExampleData.buildStudyChouinard()), d_pm.getStudiesEndpointAndIndication());
-	}
-	
-	@Test
-	public void testIncludeOnlyDrugsMeasuredInSomeStudy() {
-		makeMissing();
-		addCitalopram();
-		
-		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		
-		TreatmentDefinition[] expected = new TreatmentDefinition[] {
-				TreatmentDefinition.createTrivial(ExampleData.buildDrugCitalopram()),
-				d_fluoxSet,
-				d_paroxSet
-			};
-		
-		assertEquals(Arrays.asList(expected), d_pm.getTreatmentDefinitionListModel());
-	}
-	
-	@Test
-	public void testGetSelectedStudyGraphUpdateStudies() {
-		StudyGraphModel graphModel = d_pm.getSelectedStudyGraph();
+	public void testOverviewGraphOnlySelectedStudies() {
+		TreatmentDefinitionsGraphModel graphModel = d_pm.getOverviewGraph();
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
 
 		// Remove Parox studies
-		ArrayList<Study> studyList = new ArrayList<Study>();
-		studyList.add(ExampleData.buildStudyBennie());
-		d_pm.getSelectableStudyListPm().getSelectedStudyBooleanModel(
+		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyMultipleArmsperDrug()).setValue(false);
-		d_pm.getSelectableStudyListPm().getSelectedStudyBooleanModel(
+		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyDeWilde()).setValue(false);
-		d_pm.getSelectableStudyListPm().getSelectedStudyBooleanModel(
+		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyChouinard()).setValue(false);
 		
-		d_pm.rebuildSelectedStudyGraph();
+		d_pm.rebuildOverviewGraph();
 		assertEquals(3, graphModel.vertexSet().size());
 		assertEquals(1, graphModel.edgeSet().size());
 	}
 	
 	@Test
-	public void testSelectedStudyGraphConnectedModel() {
+	public void testOverviewGraphConnectedModel() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRefinedStudyGraph();
+		d_pm.rebuildRawAlternativesGraph();
 		
-		d_pm.rebuildSelectedStudyGraph();
-		ValueHolder<Boolean> completeModel = d_pm.getSelectedStudyGraphConnectedModel();
+		d_pm.rebuildOverviewGraph();
+		ValueHolder<Boolean> completeModel = d_pm.getOverviewGraphConnectedModel();
 		assertTrue(completeModel.getValue());
 		
 		PropertyChangeListener mock = JUnitUtil.mockAnyTimesListener(completeModel, "value", true, false);
@@ -297,14 +422,14 @@ public class NetworkMetaAnalysisWizardPMTest {
 		// Remove Parox studies
 		ArrayList<Study> studyList = new ArrayList<Study>();
 		studyList.add(ExampleData.buildStudyBennie());
-		d_pm.getSelectableStudyListPm().getSelectedStudyBooleanModel(
+		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyMultipleArmsperDrug()).setValue(false);
-		d_pm.getSelectableStudyListPm().getSelectedStudyBooleanModel(
+		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyDeWilde()).setValue(false);
-		d_pm.getSelectableStudyListPm().getSelectedStudyBooleanModel(
+		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
 				ExampleData.buildStudyChouinard()).setValue(false);
 		
-		d_pm.rebuildSelectedStudyGraph();
+		d_pm.rebuildOverviewGraph();
 		verify(mock);
 		assertFalse(completeModel.getValue());
 	}
@@ -314,8 +439,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testCreateMetaAnalysis() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(Arrays.asList(new TreatmentDefinition[] {
+		d_pm.getSelectedRawTreatmentDefinitions().clear();
+		d_pm.getSelectedRawTreatmentDefinitions().addAll(Arrays.asList(new TreatmentDefinition[] {
 				d_fluoxSet,
 				d_paroxSet,
 				d_sertrSet}));
@@ -329,9 +454,9 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		NetworkMetaAnalysis ma = d_pm.createAnalysis("name");
 		
-		assertEquals(d_pm.getSelectedTreatmentDefinitions(), ma.getAlternatives());
+		assertEquals(d_pm.getSelectedRawTreatmentDefinitions(), ma.getAlternatives());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
-				d_pm.getSelectableStudyListPm().getSelectedStudiesModel());
+				d_pm.getSelectableStudyListPM().getSelectedStudiesModel());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
 		assertEquals(arm, ma.getArm(multiple, d_paroxSet));
@@ -340,64 +465,5 @@ public class NetworkMetaAnalysisWizardPMTest {
 				assertNotNull(ma.getArm(s, d));
 			}
 		}
-	}
-	
-	@Test
-	public void testArmAndTreatmentCategorySetExclusions() {
-		Study study = ExampleData.buildStudyMultipleArmsperDrug().clone();
-		study.createAndAddArm("Sertraline-0", 54, ExampleData.buildDrugSertraline(), null);
-		Arm parox0 = study.getArms().get(0);
-		assertEquals("Paroxetine-0", parox0.getName()); // Assumption check
-		study.getMeasurement(ExampleData.buildEndpointHamd(), parox0).setSampleSize(null);
-		d_domain.getStudies().remove(ExampleData.buildStudyMultipleArmsperDrug());
-		d_domain.getStudies().add(study);
-		
-		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.getSelectedTreatmentDefinitions().clear();
-		d_pm.getSelectedTreatmentDefinitions().addAll(Arrays.asList(new TreatmentDefinition[] {
-				d_fluoxSet,
-				d_paroxSet,
-				d_sertrSet}));
-
-		assertTrue(d_pm.getSelectedStudiesModel().contains(study));
-		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
-		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
-		assertNull(d_pm.getSelectedArmModel(study, d_sertrSet));
-		
-		assertEquals(Collections.singletonList(study.getArms().get(1)), d_pm.getArmsPerStudyPerDefinition(study, d_paroxSet));
-		assertEquals(Collections.singletonList(study.getArms().get(2)), d_pm.getArmsPerStudyPerDefinition(study, d_fluoxSet));
-		assertEquals(Collections.emptyList(), d_pm.getArmsPerStudyPerDefinition(study, d_sertrSet));
-	}
-	
-	@Test
-	public void testSelectedDrugs() {
-		Drug fluox = ExampleData.buildDrugFluoxetine();
-		Drug parox = ExampleData.buildDrugParoxetine();
-		Drug sertra = ExampleData.buildDrugSertraline();
-		Collection<Drug> allDrugs = Arrays.asList(fluox, parox, sertra);
-		
-		d_domain.getStudies().add(ExampleData.realBuildStudyCombinationTreatment());
-		
-		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
-		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRawStudyGraph();
-		JUnitUtil.assertAllAndOnly(allDrugs, d_pm.getSelectedDrugs());
-		
-		d_pm.getRawStudyGraph().getSelectedDefinitions().remove(TreatmentDefinition.createTrivial(fluox));
-		d_pm.rebuildRawStudyGraph();
-		JUnitUtil.assertAllAndOnly(allDrugs, d_pm.getSelectedDrugs());
-		
-		d_pm.getRawStudyGraph().getSelectedDefinitions().remove(TreatmentDefinition.createTrivial(Arrays.asList(fluox, parox)));
-		d_pm.rebuildRawStudyGraph();
-		JUnitUtil.assertAllAndOnly(Arrays.asList(parox, sertra), d_pm.getSelectedDrugs());
-		
-		d_pm.getRawStudyGraph().getSelectedDefinitions().remove(TreatmentDefinition.createTrivial(parox));
-		d_pm.rebuildRawStudyGraph();
-		JUnitUtil.assertAllAndOnly(Arrays.asList(sertra), d_pm.getSelectedDrugs());
-		
-		d_pm.getRawStudyGraph().getSelectedDefinitions().add(TreatmentDefinition.createTrivial(Arrays.asList(fluox, parox)));
-		d_pm.rebuildRawStudyGraph();
-		JUnitUtil.assertAllAndOnly(allDrugs, d_pm.getSelectedDrugs());
 	}
 }

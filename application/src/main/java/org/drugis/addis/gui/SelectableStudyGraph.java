@@ -27,7 +27,7 @@
 package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.SelectableStudyGraphModel;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;
 import org.jgraph.JGraph;
 import org.jgraph.graph.GraphLayoutCache;
@@ -37,14 +37,14 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectableStudyGraph extends StudyGraph {
 
-	public SelectableStudyGraph(SelectableStudyGraphModel pm) {
+	public SelectableStudyGraph(SelectableTreatmentDefinitionsGraphModel pm) {
 		super(pm);
 	}
 	
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
-		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableStudyGraphModel)d_pm).getSelectedDefinitions();
+		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
 		SelectedDrugsGraphListener listener =
 			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
 		graph.addMouseListener(listener);
@@ -53,7 +53,7 @@ public class SelectableStudyGraph extends StudyGraph {
 	
 	@Override
 	protected MyDefaultCellViewFactory getCellFactory() {
-		return new SelectableCellViewFactory(d_model, ((SelectableStudyGraphModel)d_pm).getSelectedDefinitions());
+		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions());
 	}	
 
 }

@@ -16,7 +16,9 @@ public class SelectDrugsWizardStep extends AbstractSelectTreatmentWizardStep {
 	private static final long serialVersionUID = 5310567692551793030L;
 
 	public SelectDrugsWizardStep(NetworkMetaAnalysisWizardPM pm) {
-		super("Select Drugs","Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.");
+		super("Select Drugs",
+				"Select the drugs to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two drugs must be selected, and (2) all selected drugs must be connected.",
+				pm.getRawAlternativesGraph());
 		d_pm = pm;
 		setLayout(new BorderLayout());
 		    
@@ -28,19 +30,19 @@ public class SelectDrugsWizardStep extends AbstractSelectTreatmentWizardStep {
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.add(buildStudiesGraph(pm.getRawStudyGraph()), cc.xy(1, 1));
+		builder.add(d_studyGraph, cc.xy(1, 1));
 		
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
 		
-		Bindings.bind(this, "complete", pm.getRawConnectedDrugsSelectedModel());
+		Bindings.bind(this, "complete", pm.getRawSelectionCompleteModel());
 	}
 	
 	
 	@Override
 	public void prepare() {
-		d_pm.rebuildRawStudyGraph();
+		((NetworkMetaAnalysisWizardPM) d_pm).rebuildRawAlternativesGraph();
 		d_studyGraph.layoutGraph();
 	}
 }

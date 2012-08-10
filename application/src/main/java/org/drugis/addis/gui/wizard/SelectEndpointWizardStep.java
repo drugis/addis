@@ -43,7 +43,7 @@ public class SelectEndpointWizardStep extends PanelWizardStep {
 		super("Select Outcome","Select an outcome measure (endpoint or adverse event) that you want to use for this meta analysis.");
 		add(new JLabel("Outcome measure : "));
 
-		ListModel outcomeListModel = pm.getOutcomeMeasureListModel();
+		ListModel outcomeListModel = pm.getAvailableOutcomeMeasures();
 		
 		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(outcomeListModel, pm.getOutcomeMeasureModel(), true);
 		add(endPointBox);

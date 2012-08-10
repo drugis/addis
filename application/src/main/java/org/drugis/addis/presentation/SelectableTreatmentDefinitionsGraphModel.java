@@ -43,12 +43,12 @@ import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class SelectableStudyGraphModel extends StudyGraphModel {
+public class SelectableTreatmentDefinitionsGraphModel extends TreatmentDefinitionsGraphModel {
 	
 	private ObservableList<TreatmentDefinition> d_selectedDefinitions = new ArrayListModel<TreatmentDefinition>(d_definitions);
 	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
 
-	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
+	public SelectableTreatmentDefinitionsGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, definitions, outcome);
 		d_selectedDefinitions.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
@@ -92,8 +92,8 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 	public boolean isSelectionConnected() {
 		UndirectedGraph<Vertex, Edge> g = getSelectedDefinitionsGraph();
 		
-		ConnectivityInspector<Vertex, Edge> inspectorGadget = new ConnectivityInspector<Vertex, Edge>(g);
-		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDefinitions.get(0)));
+		ConnectivityInspector<Vertex, Edge> inspector = new ConnectivityInspector<Vertex, Edge>(g);
+		Set<Vertex> connectedDrugs = inspector.connectedSetOf(this.findVertex(d_selectedDefinitions.get(0)));
 		for (TreatmentDefinition d : d_selectedDefinitions) {
 			if (!connectedDrugs.contains(this.findVertex(d))) {
 				return false;

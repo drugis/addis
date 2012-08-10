@@ -47,7 +47,7 @@ import org.jgrapht.graph.ListenableUndirectedGraph;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.Vertex, StudyGraphModel.Edge> {
+public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<TreatmentDefinitionsGraphModel.Vertex, TreatmentDefinitionsGraphModel.Edge> {
 	public static class Vertex {
 		private TreatmentDefinition d_definition;
 		private int d_sampleSize;
@@ -99,7 +99,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	private Map<TreatmentDefinition, Set<Study>> d_studiesMeasuringDefinition;
 
 	
-	public StudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> om) {
+	public TreatmentDefinitionsGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> om) {
 		super(Edge.class);
 		
 		d_definitions = definitions;
@@ -127,6 +127,7 @@ public class StudyGraphModel extends ListenableUndirectedGraph<StudyGraphModel.V
 	
 	public void rebuildGraph() {
 		if (!d_rebuildNeeded) {
+			System.out.println("Rebuild not needed");
 			return;
 		}
 

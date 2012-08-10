@@ -29,7 +29,6 @@ package org.drugis.addis.presentation.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -37,17 +36,15 @@ import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
-import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.common.beans.AbstractObservableList;
 import org.drugis.common.event.ListDataEventProxy;
 
@@ -56,7 +53,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<StudyGraphModel> {				
+public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<TreatmentDefinitionsGraphModel> {				
 	private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
 	private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
@@ -176,27 +173,20 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	public ObservableList<TreatmentDefinition> getSelectedTreatmentDefinitions() {
-		return d_selectedTreatmentDefinitions;
-	}	
-	
-	@Override
-	public List<Drug> getSelectedDrugs() {
-		ObservableList<Drug> drugs = new ArrayListModel<Drug>();
-		for(TreatmentDefinition treatment : d_selectedTreatmentDefinitions) { 
-			for(Category category : treatment.getContents()) { 
-				drugs.add(category.getDrug());
-			}
-		}
-		return new ArrayListModel<Drug>(Collections.unmodifiableList(drugs));
+	public ObservableList<TreatmentDefinition> getSelectedRawTreatmentDefinitions() {
+		return d_selectedTreatmentDefinitions; // FIXME
 	}
 
-
+	@Override
+	public ObservableList<TreatmentDefinition> getSelectedRefinedTreatmentDefinitions() {
+		return d_selectedTreatmentDefinitions; // FIXME
+	}
+	
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
 		TreatmentDefinition base = d_firstDrugHolder.getValue();
 		TreatmentDefinition subj = d_secondDrugHolder.getValue();
-		for (Study s : getSelectableStudyListPm().getSelectedStudiesModel()) {
+		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
 			Arm left = d_selectedArms.get(s).get(base).getValue();
 			Arm right = d_selectedArms.get(s).get(subj).getValue();
 			studyArms.add(new StudyArmsEntry(s, left, right));
@@ -241,13 +231,13 @@ public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM
 	}
 
 	@Override
-	protected StudyGraphModel buildRawSelectableStudyGraph() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions,  d_outcomeHolder);				
+	protected TreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
+		return new TreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions,  d_outcomeHolder);
 	}
-	
+
 	@Override
-	protected StudyGraphModel buildRefinedSelectableStudyGraph() {
-		return new StudyGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions,  d_outcomeHolder);				
+	protected TreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
+		return new TreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions,  d_outcomeHolder);				
 	}
 
 	@Override
