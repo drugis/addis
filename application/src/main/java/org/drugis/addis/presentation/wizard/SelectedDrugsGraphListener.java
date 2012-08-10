@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.SelectableStudyGraph;
-import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultGraphCell;
 

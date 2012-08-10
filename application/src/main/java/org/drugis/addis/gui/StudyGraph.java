@@ -38,9 +38,9 @@ import javax.swing.ToolTipManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.gui.util.JGraphUtil;
-import org.drugis.addis.presentation.StudyGraphModel;
-import org.drugis.addis.presentation.StudyGraphModel.Edge;
-import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Edge;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultGraphCell;
@@ -54,14 +54,14 @@ import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
 
 @SuppressWarnings("serial")
 public class StudyGraph extends JPanel {
-	protected StudyGraphModel d_pm;
+	protected TreatmentDefinitionsGraphModel d_pm;
 	
 	protected JGraphModelAdapter<Vertex, Edge> d_model;
 	private AttributeMap d_vertexAttributes;
 
 	private JGraph d_jgraph;
 	
-	public StudyGraph(StudyGraphModel pm) {
+	public StudyGraph(TreatmentDefinitionsGraphModel pm) {
 		super(new BorderLayout());
 		d_pm = pm;
 

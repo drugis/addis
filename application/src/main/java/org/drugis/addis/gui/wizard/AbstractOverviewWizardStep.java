@@ -27,12 +27,12 @@
 package org.drugis.addis.gui.wizard;
 
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
 
 @SuppressWarnings("serial")
-public abstract class AbstractOverviewWizardStep<G extends StudyGraphModel> extends PanelWizardStep {
+public abstract class AbstractOverviewWizardStep<G extends TreatmentDefinitionsGraphModel> extends PanelWizardStep {
 	protected final AbstractMetaAnalysisWizardPM<G> d_pm;
 	protected final AddisWindow d_mainWindow;
 

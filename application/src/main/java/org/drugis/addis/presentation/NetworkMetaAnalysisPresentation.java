@@ -84,8 +84,8 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getBuilder().getTreatmentMap().getKey(t);
 	}
 	
-	public StudyGraphModel getStudyGraphModel() {
-		return new StudyGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
+	public TreatmentDefinitionsGraphModel getStudyGraphModel() {
+		return new TreatmentDefinitionsGraphModel(new ArrayListModel<Study>(getBean().getIncludedStudies()),
 				new ArrayListModel<TreatmentDefinition>(getBean().getAlternatives()), new UnmodifiableHolder<OutcomeMeasure>(getBean().getOutcomeMeasure()));
 	}
 

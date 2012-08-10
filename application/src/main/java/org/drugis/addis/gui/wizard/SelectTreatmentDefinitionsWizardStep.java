@@ -11,11 +11,13 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatmentWizardStep {
+public class SelectTreatmentDefinitionsWizardStep extends AbstractSelectTreatmentWizardStep {
 	private static final long serialVersionUID = 2928649302800999758L;
 
-	public SelectTreatmentCategoriesWizardStep(NetworkMetaAnalysisWizardPM pm) {
-		super("Select Treatment Categories","Select the categories to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two categories must be selected, and (2) all selected categories must be connected.");
+	public SelectTreatmentDefinitionsWizardStep(NetworkMetaAnalysisWizardPM pm) {
+		super("Select defintions",
+				"Select the treatment to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two definitions must be selected, and (2) all selected definitions must be connected.",
+				pm.getRefinedAlternativesGraph());
 		d_pm = pm;
 
 		setLayout(new BorderLayout());
@@ -28,7 +30,7 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.add(buildStudiesGraph(pm.getRefinedStudyGraph()), cc.xy(1, 1));
+		builder.add(d_studyGraph, cc.xy(1, 1));
 		
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp);
@@ -39,8 +41,8 @@ public class SelectTreatmentCategoriesWizardStep extends AbstractSelectTreatment
 	
 	@Override
 	public void prepare() {
-		d_pm.rebuildRefinedStudyGraph();
+		System.out.println("Requesting rebuild");
+		d_pm.rebuildRefinedAlternativesGraph();
 		d_studyGraph.layoutGraph();
 	}
-	
 }

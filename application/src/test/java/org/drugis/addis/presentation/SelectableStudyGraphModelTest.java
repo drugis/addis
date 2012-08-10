@@ -58,7 +58,7 @@ public class SelectableStudyGraphModelTest {
 
 	private Domain d_domain;
 	private ArrayList<TreatmentDefinition> d_drugs;
-	private SelectableStudyGraphModel d_pm;
+	private SelectableTreatmentDefinitionsGraphModel d_pm;
 	private ObservableList<TreatmentDefinition> d_drugListHolder;
 
 	@Before
@@ -74,7 +74,7 @@ public class SelectableStudyGraphModelTest {
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
-		d_pm = new SelectableStudyGraphModel(studies, d_drugListHolder, outcome);
+		d_pm = new SelectableTreatmentDefinitionsGraphModel(studies, d_drugListHolder, outcome);
 	}
 	
 	@Test

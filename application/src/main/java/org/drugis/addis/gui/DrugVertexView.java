@@ -37,7 +37,7 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.jgraph.JGraph;
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.CellViewRenderer;
@@ -90,9 +90,9 @@ public class DrugVertexView extends VertexView {
 		}
 	}
 
-	private StudyGraphModel.Vertex d_vertex;
+	private TreatmentDefinitionsGraphModel.Vertex d_vertex;
 
-	public DrugVertexView(StudyGraphModel.Vertex v, DefaultGraphCell cell) {
+	public DrugVertexView(TreatmentDefinitionsGraphModel.Vertex v, DefaultGraphCell cell) {
 		super(cell);
 		d_vertex = v;
 	}

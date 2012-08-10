@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.15.1</version>
+		<version>1.15.2-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -264,9 +264,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
                 <echo file="${schemaVersionFile}">${addis.schemaVersion}</echo>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
