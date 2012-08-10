@@ -52,7 +52,6 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.ValueTreeGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
-import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.BRATDifferenceRenderer;
@@ -66,6 +65,7 @@ import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.gui.table.EnhancedTable;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;

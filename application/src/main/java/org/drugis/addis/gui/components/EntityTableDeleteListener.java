@@ -30,6 +30,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.common.gui.table.EnhancedTable;
 
 public class EntityTableDeleteListener extends KeyAdapter {
 	

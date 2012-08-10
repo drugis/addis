@@ -32,9 +32,10 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.gui.components.EnhancedTable;
+import org.drugis.addis.gui.renderer.EntityCellRenderer;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.common.gui.table.EnhancedTable;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -46,7 +47,7 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
 
 		final EnhancedTable table = EnhancedTable.createWithSorter(new SelectableStudyCharTableModel(pm.getSelectableStudyListPm(), mainWindow.getPresentationModelFactory()));
-		EnhancedTable.insertEntityRenderer(table);
+		EntityCellRenderer.insertEntityRenderer(table);
 		table.autoSizeColumns();
 		setLayout(new BorderLayout(0, 5));
 		JLabel label = BasicComponentFactory.createLabel(pm.getStudiesMeasuringLabelModel());

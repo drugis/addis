@@ -34,12 +34,12 @@ import javax.swing.table.TableModel;
 import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.TreatmentActivity;
-import org.drugis.addis.gui.components.EnhancedTable;
-import org.drugis.addis.gui.components.EnhancedTableHeader;
 import org.drugis.addis.gui.renderer.StudyActivityRenderer;
 import org.drugis.addis.presentation.StudyActivitiesTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.gui.table.EnhancedTable;
+import org.drugis.common.gui.table.EnhancedTableHeader;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
