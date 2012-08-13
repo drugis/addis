@@ -48,6 +48,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
@@ -642,9 +643,13 @@ public class StudyTest {
 		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), d1));
 		
 		assertEquals(1, d1.getContents().size()); 		// Sanity check
-		d_clone.createAndAddArm("Bla", 100, d1.getContents().first().getDrug(), new FixedDose());
+		d_clone.createAndAddArm("Bla", 100, d1.getContents().first().getDrug(), new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY));
 		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
-
+		
+		TreatmentCategorization catz = ExampleData.buildCategorizationFixedFlexible(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition d3 = new TreatmentDefinition(catz.getCategory(new FixedDose()));
+		Study study2 = ExampleData.buildStudyChouinard();
+		assertEquals(Collections.singletonList(study2.getArms().get(1)), study2.getMeasuredArms(ExampleData.buildEndpointHamd(), d3));
 	}
 	
 	@Test

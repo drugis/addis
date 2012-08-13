@@ -896,7 +896,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		@Override
 		public boolean accept(final Arm a) {
-			return getTreatmentDefinition(a).equals(d_d);
+			return d_d.match(Study.this, a);
 		}
 	}
 

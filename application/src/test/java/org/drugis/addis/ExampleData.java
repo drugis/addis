@@ -1066,7 +1066,7 @@ public class ExampleData {
 		
 		// Fluoxetine + Paroxetine data
 		dose = new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY);
-		Arm fluoxAndParox = study.createAndAddArm("Fluoxetine-1", 92, fluoxetine, dose);
+		Arm fluoxAndParox = study.createAndAddArm("Fluoxetine-Paroxetine-1", 92, fluoxetine, dose);
 		Activity activity = study.getActivity(fluoxAndParox);
 		dose = new FixedDose(15.0, DoseUnit.MILLIGRAMS_A_DAY);
 		((TreatmentActivity)activity).getTreatments().add(new DrugTreatment(paroxetine, dose));
@@ -1116,7 +1116,7 @@ public class ExampleData {
 	}
 	
 	public static TreatmentCategorization buildCategorizationKnownDose(Drug d) { 
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, DoseUnit.MILLIGRAMS_A_DAY);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Known Doses", d, DoseUnit.MILLIGRAMS_A_DAY);
 		Category include = new Category(catz, "Include");
 		catz.addCategory(include);
 		DecisionTree tree = catz.getDecisionTree();
@@ -1127,7 +1127,7 @@ public class ExampleData {
 	
 	public static TreatmentCategorization buildCategorizationUpto20mg(Drug d) { 
 		DoseUnit doseUnit = DoseUnit.MILLIGRAMS_A_DAY;
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, doseUnit);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include up to 20mg", d, doseUnit);
 		Category include = new Category(catz, "Include");
 		catz.addCategory(include);
 		DecisionTree tree = catz.getDecisionTree();
@@ -1146,4 +1146,20 @@ public class ExampleData {
 		
 		return catz;
 	}
+	
+	
+	public static TreatmentCategorization buildCategorizationFixedFlexible(Drug d) { 
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Categorize Fixed, Flexible", d, DoseUnit.MILLIGRAMS_A_DAY);
+		Category fixed = new Category(catz, "Fixed");
+		Category flexible = new Category(catz, "Flexible");
+
+		catz.addCategory(fixed);
+		catz.addCategory(flexible);
+
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(fixed));
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), new LeafNode(flexible));
+		return catz;
+	}
+	
 }
