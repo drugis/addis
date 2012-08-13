@@ -35,9 +35,9 @@ import org.jgraph.graph.GraphLayoutCache;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class SelectableStudyGraph extends StudyGraph {
+public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 
-	public SelectableStudyGraph(SelectableTreatmentDefinitionsGraphModel pm) {
+	public SelectableTreatmentDefinitionsGraph(SelectableTreatmentDefinitionsGraphModel pm) {
 		super(pm);
 	}
 	

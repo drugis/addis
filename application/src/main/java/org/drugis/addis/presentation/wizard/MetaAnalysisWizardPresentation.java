@@ -53,7 +53,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM<TreatmentDefinitionsGraphModel> {				
+public class MetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM {
 	private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
 	private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;

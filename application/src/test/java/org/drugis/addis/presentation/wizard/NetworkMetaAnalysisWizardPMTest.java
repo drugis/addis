@@ -34,13 +34,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.event.ListDataEvent;
@@ -53,9 +53,11 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -67,6 +69,7 @@ import org.drugis.common.event.ListDataEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysisWizardPMTest {
@@ -121,6 +124,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_fluoxSet,
 				d_paroxSet
 			};
+		
+		d_pm.rebuildRawAlternativesGraph();
 		
 		assertEquals(Arrays.asList(expected), d_pm.getAvailableRawTreatmentDefinitions());
 	}
@@ -233,11 +238,153 @@ public class NetworkMetaAnalysisWizardPMTest {
 	 */
 	@Test
 	public void testPermuteTreatmentDefinitions() {
-		fail("Not implemented");
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Drug sertr = ExampleData.buildDrugSertraline();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.rebuildRawAlternativesGraph();
+		
+		TreatmentCategorization fixedCatz = ExampleData.buildCategorizationFixedDose(fluox);
+		d_domain.getTreatmentCategorizations().add(fixedCatz);
+		
+		TreatmentDefinition tFluox = TreatmentDefinition.createTrivial(fluox);
+		TreatmentDefinition tParox = TreatmentDefinition.createTrivial(parox);
+		TreatmentDefinition tSertr = TreatmentDefinition.createTrivial(sertr);
+
+		assertEquals(new HashSet<TreatmentDefinition>(Arrays.asList(tFluox, tParox, tSertr)), d_pm.permuteTreatmentDefinitions());
+		
+		d_pm.getCategorizationModel(fluox).setValue(fixedCatz);
+		
+		TreatmentDefinition tFixed = new TreatmentDefinition(fixedCatz.getCategories());
+		
+		assertEquals(new HashSet<TreatmentDefinition>(Arrays.asList(tFixed, tParox, tSertr)), d_pm.permuteTreatmentDefinitions());
+		
+		d_domain.getStudies().add(ExampleData.realBuildStudyCombinationTreatment());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi()); // Forces update of the d_rawTreatmentDefinitions
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.rebuildRawAlternativesGraph();
+		
+		TreatmentDefinition tCombination = new TreatmentDefinition(Arrays.asList(fixedCatz.getCategories().get(0), tParox.getContents().first()));
+		assertEquals(new HashSet<TreatmentDefinition>(Arrays.asList(tCombination, tFixed, tParox, tSertr)), d_pm.permuteTreatmentDefinitions());
+		
+		TreatmentCategorization fixedFlexible = ExampleData.buildCategorizationFixedFlexible(parox);
+		d_domain.getTreatmentCategorizations().add(fixedFlexible);
+		d_pm.getCategorizationModel(parox).setValue(fixedFlexible);
+
+		ObservableList<Category> catsFixedFlex = fixedFlexible.getCategories();
+		TreatmentDefinition parox1 = new TreatmentDefinition(catsFixedFlex.get(0));
+		TreatmentDefinition parox2 = new TreatmentDefinition(catsFixedFlex.get(1));
+
+		TreatmentDefinition combi1 = new TreatmentDefinition(Arrays.asList(catsFixedFlex.get(0), fixedCatz.getCategories().get(0)));
+		TreatmentDefinition combi2 = new TreatmentDefinition(Arrays.asList(catsFixedFlex.get(1), fixedCatz.getCategories().get(0)));
+		
+		List<TreatmentDefinition> permuted = Arrays.asList(parox1, parox2, combi1, combi2, tFixed, tSertr);
+		assertEquals(new HashSet<TreatmentDefinition>(permuted), d_pm.permuteTreatmentDefinitions());
+	}
+	
+	/*
+	 * Given a list of Study and a list of TreatmentDefinition, retain only those studies that measure at least two
+	 * of the TreatmentDefinitions.
+	 */
+	@Test
+	public void testFilterStudiesComparing() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Drug sertr = ExampleData.buildDrugSertraline();
+		
+		TreatmentDefinition tFluox = TreatmentDefinition.createTrivial(fluox);
+		TreatmentDefinition tParox = TreatmentDefinition.createTrivial(parox);
+		TreatmentDefinition tSertr = TreatmentDefinition.createTrivial(sertr);
+		TreatmentDefinition tCombination = TreatmentDefinition.createTrivial(Arrays.asList(fluox, parox));
+		
+		Study studyCombi = ExampleData.realBuildStudyCombinationTreatment();
+		Study studyChoui = ExampleData.buildStudyChouinard();
+		Study studyBenni = ExampleData.buildStudyBennie();
+		
+		Endpoint hamd = ExampleData.buildEndpointHamd();
+		Endpoint cgi = ExampleData.buildEndpointCgi();
+		
+		// Test that a study matching both definitions is included
+		assertEquals(Collections.emptyList(), NetworkMetaAnalysisWizardPM.filterStudiesComparing(hamd,
+				Collections.singletonList(studyCombi), Arrays.asList(tFluox, tParox)));
+		
+		// Test that a study matching none of the definitions is excluded
+		assertEquals(Arrays.asList(studyChoui), NetworkMetaAnalysisWizardPM.filterStudiesComparing(hamd,
+				Arrays.asList(studyCombi, studyChoui), Arrays.asList(tFluox, tParox)));
+		
+		// Test that a study matching only one of the definitions is excluded
+		assertEquals(Arrays.asList(studyChoui), NetworkMetaAnalysisWizardPM.filterStudiesComparing(hamd,
+				Arrays.asList(studyCombi, studyChoui, studyBenni), Arrays.asList(tFluox, tParox)));
+		
+		// Test inclusion based on > 2 definitions
+		assertEquals(Arrays.asList(studyChoui), NetworkMetaAnalysisWizardPM.filterStudiesComparing(hamd,
+				Arrays.asList(studyCombi, studyChoui, studyBenni), Arrays.asList(tFluox, tParox, tCombination)));
+		
+		// Test inclusion based on > 2 definitions
+		assertEquals(Arrays.asList(studyCombi, studyChoui, studyBenni), NetworkMetaAnalysisWizardPM.filterStudiesComparing(hamd,
+				Arrays.asList(studyCombi, studyChoui, studyBenni), Arrays.asList(tFluox, tParox, tCombination, tSertr)));
+		
+		// Test exclusion of matches that have no attached measurement 
+		assertEquals(Arrays.asList(studyChoui, studyBenni), NetworkMetaAnalysisWizardPM.filterStudiesComparing(cgi,
+				Arrays.asList(studyCombi, studyChoui, studyBenni), Arrays.asList(tFluox, tParox, tCombination, tSertr)));
+	}
+	
+	/*
+	 * Given a list of Study and a list of TreatmentDefinition, retain only those TreatmentDefinitions that occur in
+	 * at least one study.
+	 */
+	@Test
+	public void testFilterDefinitionsMeasured() {
+		TreatmentDefinition tFluox = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition tParox = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentDefinition tSertr = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		
+		Study studyCombi = ExampleData.realBuildStudyCombinationTreatment();
+		Study studyChoui = ExampleData.buildStudyChouinard();
+		
+		Endpoint hamd = ExampleData.buildEndpointHamd();
+		Endpoint cgi = ExampleData.buildEndpointCgi();
+		
+		// Test that non-included definition is excluded
+		assertEquals(Collections.emptyList(), NetworkMetaAnalysisWizardPM.filterDefinitionsMeasured(hamd,
+				Arrays.asList(tFluox, tParox), Collections.singletonList(studyCombi)));
+		
+		// Test inclusion based on single study
+		assertEquals(Arrays.asList(tSertr), NetworkMetaAnalysisWizardPM.filterDefinitionsMeasured(hamd,
+				Arrays.asList(tFluox, tParox, tSertr), Collections.singletonList(studyCombi)));
+		
+		
+		// Test measured-ness is taken into account
+		assertEquals(Arrays.asList(tFluox, tParox), NetworkMetaAnalysisWizardPM.filterDefinitionsMeasured(cgi,
+				Arrays.asList(tFluox, tParox, tSertr), Arrays.asList(studyCombi, studyChoui)));
+	}
+	
+	@Test
+	public void testInitializeRefinedGraph() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		Drug parox = ExampleData.buildDrugParoxetine();
+		Drug sertr = ExampleData.buildDrugSertraline();
+		
+		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
+		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.rebuildRawAlternativesGraph();
+		
+		TreatmentCategorization fluoxCatz = ExampleData.buildCategorizationFixedFlexible(fluox);
+		d_domain.getTreatmentCategorizations().add(fluoxCatz);
+		d_pm.getCategorizationModel(fluox).setValue(fluoxCatz);
+		d_pm.rebuildRefinedAlternativesGraph();
+		
+		TreatmentDefinition tFluox = new TreatmentDefinition(fluoxCatz.getCategory(new FixedDose()));
+		TreatmentDefinition tParox = TreatmentDefinition.createTrivial(parox);
+		TreatmentDefinition tSertr = TreatmentDefinition.createTrivial(sertr);
+
+		assertEquals(Arrays.asList(tFluox, tParox, tSertr),
+				d_pm.getRefinedAlternativesGraph().getTreatmentDefinitions());
 	}
 	
 	//// Beyond here we should have REFINED TreatmentDefinitions.
-	
 	
 	@Test
 	public void testUnmeasuredDefinitionsIgnoredInArmSelection() {
@@ -439,6 +586,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testCreateMetaAnalysis() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_pm.rebuildRawAlternativesGraph();
 		d_pm.getSelectedRawTreatmentDefinitions().clear();
 		d_pm.getSelectedRawTreatmentDefinitions().addAll(Arrays.asList(new TreatmentDefinition[] {
 				d_fluoxSet,

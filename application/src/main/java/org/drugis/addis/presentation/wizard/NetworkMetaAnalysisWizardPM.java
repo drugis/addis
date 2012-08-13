@@ -52,14 +52,14 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<SelectableTreatmentDefinitionsGraphModel> {
-	private final TreatmentDefinitionsGraphModel d_selectedStudyGraph;
+public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM {
+	private final TreatmentDefinitionsGraphModel d_overviewGraph;
 	private final ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
 	
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
 		
-		d_selectedStudyGraph = new TreatmentDefinitionsGraphModel(getSelectedStudiesModel(), getSelectedRawTreatmentDefinitions(), getOutcomeMeasureModel());
+		d_overviewGraph = new TreatmentDefinitionsGraphModel(getSelectedStudiesModel(), getSelectedRawTreatmentDefinitions(), getOutcomeMeasureModel());
 		
 		d_selectedStudyGraphConnectedModel = new StudySelectionCompleteListener();
 	}
@@ -76,7 +76,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	}
 	
 	public TreatmentDefinitionsGraphModel getOverviewGraph(){
-		return d_selectedStudyGraph;
+		return d_overviewGraph;
 	}
 
 	@Override
@@ -178,12 +178,8 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		return getSelectableStudyListPM().getSelectedStudiesModel();
 	}
 	
-	public void rebuildRawAlternativesGraph() {
-		d_rawAlternativesGraph.rebuildGraph();
-	}
-	
 	public void rebuildOverviewGraph() {
-		d_selectedStudyGraph.rebuildGraph();
+		d_overviewGraph.rebuildGraph();
 	}
 
 	@Override

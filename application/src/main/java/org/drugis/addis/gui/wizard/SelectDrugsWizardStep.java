@@ -42,7 +42,7 @@ public class SelectDrugsWizardStep extends AbstractSelectTreatmentWizardStep {
 	
 	@Override
 	public void prepare() {
-		((NetworkMetaAnalysisWizardPM) d_pm).rebuildRawAlternativesGraph();
+		d_pm.rebuildRawAlternativesGraph();
 		d_studyGraph.layoutGraph();
 	}
 }

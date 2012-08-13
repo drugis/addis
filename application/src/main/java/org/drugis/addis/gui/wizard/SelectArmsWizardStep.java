@@ -42,7 +42,6 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
@@ -56,9 +55,9 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	
 	private PanelBuilder d_builder;
 	private FormLayout d_layout;
-	private final AbstractMetaAnalysisWizardPM<? extends TreatmentDefinitionsGraphModel> d_pm;
+	private final AbstractMetaAnalysisWizardPM d_pm;
 
-	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM<? extends TreatmentDefinitionsGraphModel> pm) {
+	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM pm) {
 		super ("Select Arms","Select the specific arms to be used for the meta-analysis");
 		setLayout(new BorderLayout());
 		d_pm = pm;

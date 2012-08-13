@@ -74,10 +74,10 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	}
 	
 
-	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableTreatmentDefinitionsGraphModel> {
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep {
 		private StudyGraph d_studyGraph;
 
-		public OverviewWizardStep(AbstractMetaAnalysisWizardPM<SelectableTreatmentDefinitionsGraphModel> pm, AddisWindow main) {
+		public OverviewWizardStep(AbstractMetaAnalysisWizardPM pm, AddisWindow main) {
 			super(pm, main);
 
 			setLayout(new BorderLayout());

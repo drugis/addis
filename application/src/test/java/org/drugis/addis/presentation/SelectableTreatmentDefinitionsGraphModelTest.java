@@ -54,7 +54,7 @@ import org.junit.Test;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class SelectableStudyGraphModelTest {
+public class SelectableTreatmentDefinitionsGraphModelTest {
 
 	private Domain d_domain;
 	private ArrayList<TreatmentDefinition> d_drugs;
