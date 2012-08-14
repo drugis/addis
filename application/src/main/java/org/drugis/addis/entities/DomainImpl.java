@@ -34,6 +34,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.list.TreeList;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -68,7 +71,7 @@ public class DomainImpl extends Domain {
 		new EntityCategory("populationCharacteristics", PopulationCharacteristic.class);
 	private static final EntityCategory CATEGORY_STUDIES =
 		new EntityCategory("studies", Study.class);
-	private static final EntityCategory CATEGORY_PAIR_WISE_META_ANALYSES =
+	public static final EntityCategory CATEGORY_PAIR_WISE_META_ANALYSES =
 		new EntityCategory("pairWiseMetaAnalyses", PairWiseMetaAnalysis.class);
 	private static final EntityCategory CATEGORY_NETWORK_META_ANALYSES =
 		new EntityCategory("networkMetaAnalyses", NetworkMetaAnalysis.class);
@@ -176,12 +179,24 @@ public class DomainImpl extends Domain {
 		throw new RuntimeException(e.getClass() + " not supported");
 	}
 	
-	public ObservableList<Study> getStudies(Drug d) {
-		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(TreatmentDefinition.createTrivial(d)));
+	/**
+	 * Creates new trivial TreatmentDefinitions based on drug
+	 * @param the drug to create a list for
+	 */
+	public ObservableList<Study> getTreatmentDefinition(Drug d) {
+		return new FilteredObservableList<Study>(getStudies(), new TreatmentDefinitionFilter(TreatmentDefinition.createTrivial(d)));
 	}
 	
 	public ObservableList<Study> getStudies(Indication i) {
 		return new FilteredObservableList<Study>(getStudies(), new IndicationFilter(i));
+	}
+	
+	public List<TreatmentCategorization> getCategorizations(final Drug drug) {
+		return new TreeList<TreatmentCategorization>(CollectionUtils.select(getTreatmentCategorizations(), new Predicate<TreatmentCategorization>() {
+			public boolean evaluate(TreatmentCategorization object) {
+				return object.getDrug().equals(drug);
+			}
+		}));
 	}
 	
 	@Override
@@ -429,15 +444,15 @@ public class DomainImpl extends Domain {
 			return s.getIndication().equals(d_indication);
 		}
 	}
-	public class DrugFilter implements Filter<Study> {
-		private final TreatmentDefinition d_TreatmentDefinition;
+	public class TreatmentDefinitionFilter implements Filter<Study> {
+		private final TreatmentDefinition d_treatmentDefinition;
 		
-		public DrugFilter(TreatmentDefinition ds) {
-			d_TreatmentDefinition = ds;
+		public TreatmentDefinitionFilter(TreatmentDefinition ds) {
+			d_treatmentDefinition = ds;
 		}
 		
 		public boolean accept(Study s) {
-			return s.getDrugs().contains(d_TreatmentDefinition);
+			return s.getTreatmentDefinitions().contains(d_treatmentDefinition);
 		}
 	}
 }

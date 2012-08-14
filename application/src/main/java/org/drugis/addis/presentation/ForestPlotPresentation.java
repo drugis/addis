@@ -99,8 +99,8 @@ public class ForestPlotPresentation {
 	public static ForestPlotPresentation createStudyForestPlot(Study s, OutcomeMeasure om, Arm arm1, Arm arm2,
 			Class<? extends RelativeEffect<?>> type, PresentationModelFactory pmf) {
 		List<Study> studyList = Collections.singletonList((Study)s);
-		TreatmentDefinition catSet1 = s.getDrugs(arm1);
-		TreatmentDefinition catSet2 = s.getDrugs(arm2);
+		TreatmentDefinition catSet1 = s.getTreatmentDefinition(arm1);
+		TreatmentDefinition catSet2 = s.getTreatmentDefinition(arm2);
 		StudyArmsEntry entry = new StudyArmsEntry(s, arm1, arm2);
 		RandomEffectsMetaAnalysis analysis = new RandomEffectsMetaAnalysis("", om, catSet1, catSet2, Collections.singletonList(entry), false);
 		return new ForestPlotPresentation(studyList, om, catSet1, catSet2, type, pmf, analysis);

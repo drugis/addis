@@ -40,7 +40,7 @@ import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.builder.TitledPanelBuilder;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
-import org.drugis.addis.presentation.DefaultStudyListPresentation;
+import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
@@ -82,7 +82,7 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
-		DefaultStudyListPresentation studyListPM = new DefaultStudyListPresentation(domain.getStudies());
+		StudyListPresentation studyListPM = new StudyListPresentation(domain.getStudies());
 		TitledPanelBuilder view = new TitledPanelBuilder(new StudiesTablePanel(studyListPM, main), "Studies");
 		return view;
 	}

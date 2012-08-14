@@ -28,39 +28,46 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.gui.renderer.EntityCellRenderer;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
-import org.drugis.common.gui.table.EnhancedTable;
-import org.pietschy.wizard.PanelWizardStep;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 
-import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
 
-@SuppressWarnings("serial")
-public class SelectStudiesWizardStep extends PanelWizardStep {
+public class SelectTreatmentDefinitionsWizardStep extends AbstractSelectTreatmentWizardStep {
+	private static final long serialVersionUID = 2928649302800999758L;
 
-	private final AbstractMetaAnalysisWizardPM d_pm;
-	private EnhancedTable d_table;
-
-	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM pm) {
-		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
+	public SelectTreatmentDefinitionsWizardStep(NetworkMetaAnalysisWizardPM pm) {
+		super("Select defintions",
+				"Select the treatment to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two definitions must be selected, and (2) all selected definitions must be connected.",
+				pm.getRefinedAlternativesGraph());
 		d_pm = pm;
+
+		setLayout(new BorderLayout());
+		    
+		FormLayout layout = new FormLayout(
+				"center:pref:grow",
+				"p"
+				);	
+		
+		PanelBuilder builder = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		
+		builder.add(d_studyGraph, cc.xy(1, 1));
+		
+		JScrollPane sp = new JScrollPane(builder.getPanel());
+		add(sp);
+		sp.getVerticalScrollBar().setUnitIncrement(16);
+		
+		Bindings.bind(this, "complete", pm.getRefinedConnectedDrugsSelectedModel());
 	}
 	
 	@Override
 	public void prepare() {
-		removeAll(); // Rebuild the panel
-		d_pm.populateSelectableStudies();
-
-		d_table = EnhancedTable.createWithSorter(d_pm.getSelectableStudyListPM());
-		EntityCellRenderer.insertEntityRenderer(d_table);
-		d_table.autoSizeColumns();
-		setLayout(new BorderLayout(0, 5));
-		JLabel label = BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel());
-		add(label, BorderLayout.NORTH);
-		add(new JScrollPane(d_table), BorderLayout.CENTER);
-		
+		d_pm.rebuildRefinedAlternativesGraph();
+		d_studyGraph.layoutGraph();
 	}
 }

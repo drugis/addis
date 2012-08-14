@@ -24,18 +24,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.gui;
 
-import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
+import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;
+import org.jgraph.JGraph;
+import org.jgraph.graph.GraphLayoutCache;
 
 import com.jgoodies.binding.list.ObservableList;
-import com.jgoodies.binding.value.AbstractValueModel;
 
-public interface SelectableStudyListPresentation {
-	public ObservableList<Study> getAvailableStudies();
-	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s);
-	public ObservableList<Study> getSelectedStudiesModel();
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
-	public StudyListPresentation getSource();
+@SuppressWarnings("serial")
+public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
+
+	public SelectableTreatmentDefinitionsGraph(SelectableTreatmentDefinitionsGraphModel pm) {
+		super(pm);
+	}
+	
+	@Override
+	protected JGraph createGraph(GraphLayoutCache cache) {
+		final JGraph graph = super.createGraph(cache);
+		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
+		SelectedDrugsGraphListener listener =
+			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
+		graph.addMouseListener(listener);
+		return graph;
+	}
+	
+	@Override
+	protected MyDefaultCellViewFactory getCellFactory() {
+		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions());
+	}	
+
 }

@@ -356,10 +356,10 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public Set<TreatmentDefinition> getDrugs() {
+	public Set<TreatmentDefinition> getTreatmentDefinitions() {
 		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
-			drugs.add(getDrugs(a));
+			drugs.add(getTreatmentDefinition(a));
 		}
 		return drugs;
 	}
@@ -484,9 +484,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public void setMeasurement(final OutcomeMeasure e, final Arm a, final BasicMeasurement m) {
-		forceLegalArguments(e, a, m);
-		d_measurements.put(new MeasurementKey(e, a, defaultMeasurementMoment()), m);
+	public void setMeasurement(final OutcomeMeasure om, final Arm a, final BasicMeasurement m) {
+		forceLegalArguments(om, a, m);
+		d_measurements.put(new MeasurementKey(om, a, defaultMeasurementMoment()), m);
 	}
 
 	/**
@@ -716,15 +716,15 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return true;
 	}
 
-	public TreatmentDefinition getDrugs(final Arm a) {
+	public TreatmentDefinition getTreatmentDefinition(final Arm a) {
 		final Activity activity = getActivity(a);
 		if (activity instanceof TreatmentActivity) {
-			return getTreatmentCategorySet((TreatmentActivity) activity);
+			return getTreatmentDefinition((TreatmentActivity) activity);
 		}
 		return new TreatmentDefinition();
 	}
 
-	private TreatmentDefinition getTreatmentCategorySet(final TreatmentActivity activity) {
+	private TreatmentDefinition getTreatmentDefinition(final TreatmentActivity activity) {
 		final List<Drug> drugs = new ArrayList<Drug>();
 		for(final DrugTreatment ta : activity.getTreatments()) {
 			drugs.add(ta.getDrug());
@@ -808,18 +808,18 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 * @return The Drugs that have at least one Arm with a complete measurement
 	 *         for the Variable v.
 	 */
-	public Set<TreatmentDefinition> getMeasuredDrugs(final Variable v, final WhenTaken wt) {
-		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
-		for (final TreatmentDefinition d : getDrugs()) {
+	public Set<TreatmentDefinition> getMeasuredTreatmentDefinitions(final Variable v, final WhenTaken wt) {
+		final Set<TreatmentDefinition> definitions = new HashSet<TreatmentDefinition>();
+		for (final TreatmentDefinition d : getTreatmentDefinitions()) {
 			if (wt != null && isMeasured(v, d, wt)) {
-				drugs.add(d);
+				definitions.add(d);
 			}
 		}
-		return drugs;
+		return definitions;
 	}
 
-	public Set<TreatmentDefinition> getMeasuredDrugs(final Variable v) {
-		return getMeasuredDrugs(v, defaultMeasurementMoment());
+	public Set<TreatmentDefinition> getMeasuredTreatmentDefinitions(final Variable v) {
+		return getMeasuredTreatmentDefinitions(v, defaultMeasurementMoment());
 	}
 
 	public ObservableList<Arm> getMeasuredArms(final Variable v, final TreatmentDefinition d) {
@@ -896,7 +896,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		@Override
 		public boolean accept(final Arm a) {
-			return getDrugs(a).equals(d_d);
+			return d_d.match(Study.this, a);
 		}
 	}
 

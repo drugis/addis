@@ -26,7 +26,7 @@
 
 package org.drugis.addis.gui;
 
-import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultCellViewFactory;
 import org.jgraph.graph.DefaultGraphCell;
