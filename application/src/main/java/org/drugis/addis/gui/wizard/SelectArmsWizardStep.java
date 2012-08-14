@@ -42,7 +42,6 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.presentation.StudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
@@ -56,9 +55,9 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	
 	private PanelBuilder d_builder;
 	private FormLayout d_layout;
-	private final AbstractMetaAnalysisWizardPM<? extends StudyGraphModel> d_pm;
+	private final AbstractMetaAnalysisWizardPM d_pm;
 
-	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM<? extends StudyGraphModel> pm) {
+	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM pm) {
 		super ("Select Arms","Select the specific arms to be used for the meta-analysis");
 		setLayout(new BorderLayout());
 		d_pm = pm;
@@ -79,11 +78,11 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		d_builder.setDefaultDialogBorder();
 		
 		int row = 1;
-		for (Study curStudy : d_pm.getStudyListModel().getSelectedStudiesModel()) {
+		for (Study curStudy : d_pm.getSelectableStudyListPM().getSelectedStudiesModel()) {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (TreatmentDefinition def: d_pm.getSelectedTreatmentDefinitionModel()) {
+			for (TreatmentDefinition def: d_pm.getSelectedRefinedTreatmentDefinitions()) {
 				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
 					row = createArmSelect(row, curStudy, def, cc);
 				}
@@ -97,12 +96,12 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		setComplete(true);
 	}
 
-	private int createArmSelect(int row, final Study curStudy, TreatmentDefinition drug, CellConstraints cc) {
-		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
+	private int createArmSelect(int row, final Study curStudy, TreatmentDefinition def, CellConstraints cc) {
+		d_builder.addLabel(def.getLabel(), cc.xy(2, row));
 		
-		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, drug);
+		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, def);
 
-		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug), true);
+		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, def), true);
 		if (arms.getSize() == 1)
 			drugBox.setEnabled(false);
 		final JPanel drugAndDosePanel = new JPanel(new BorderLayout());

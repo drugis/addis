@@ -98,7 +98,7 @@ public class StudyPresentation extends PresentationModel<Study> {
 		d_drugHolder = new ListeningCharacteristicHolder(s, DerivedStudyCharacteristic.DRUGS) {
 			@Override
 			protected Object getNewValue() {
-				return getBean().getTreatmentDefinition();				
+				return getBean().getTreatmentDefinitions();				
 			}
 		};
 		addToCharMap(d_drugHolder);

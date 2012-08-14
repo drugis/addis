@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -164,8 +164,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertorTest {
 	public static final String TEST_DATA_PATH = "../../";
@@ -2266,11 +2264,10 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testDateWithNotes() {
-		final String date = "2010-11-12";
 		final Date oldXmlDate = new GregorianCalendar(2010, 11 - 1, 12).getTime();
 		final DateWithNotes dwn = JAXBConvertor.dateWithNotes(oldXmlDate);
 
-		final XMLGregorianCalendar cal = XMLGregorianCalendarImpl.parse(date);
+		final XMLGregorianCalendar cal = JAXBConvertor.dateToXml(oldXmlDate);
 		final DateWithNotes dwn2 = new DateWithNotes();
 		dwn2.setNotes(new Notes());
 		dwn2.setValue(cal);

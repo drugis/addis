@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -60,12 +60,8 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
-import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
-import org.drugis.addis.gui.renderer.NetworkRelativeEffectTableCellRenderer;
-import org.drugis.addis.gui.renderer.SummaryCellRenderer;
-import org.drugis.addis.gui.util.TableCopyHandler;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EmpiricalDensityDataset;
@@ -75,6 +71,8 @@ import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.gui.table.EnhancedTable;
+import org.drugis.common.gui.table.TableCopyHandler;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
@@ -84,7 +82,9 @@ import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
-import org.drugis.mtc.gui.SimulationComponentFactory;
+import org.drugis.mtc.gui.results.NetworkRelativeEffectTableCellRenderer;
+import org.drugis.mtc.gui.results.SimulationComponentFactory;
+import org.drugis.mtc.gui.results.SummaryCellRenderer;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
@@ -622,16 +622,13 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-
-
-
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
 	private TablePanel createNetworkTablePanel(final MTCModelWrapper<TreatmentDefinition> mtc) {
-		final JTable table = new JTable(new NetworkRelativeEffectTableModel<TreatmentDefinition>(d_pm.getIncludedDrugs(), mtc));
+		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getAlternatives(), mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);

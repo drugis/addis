@@ -32,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.mtc.gui.results.SummaryCellRenderer;
 
 public class DistributionParameterCellRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1988180153398796561L;

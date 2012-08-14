@@ -356,7 +356,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public Set<TreatmentDefinition> getTreatmentDefinition() {
+	public Set<TreatmentDefinition> getTreatmentDefinitions() {
 		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
 			drugs.add(getTreatmentDefinition(a));
@@ -484,9 +484,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public void setMeasurement(final OutcomeMeasure e, final Arm a, final BasicMeasurement m) {
-		forceLegalArguments(e, a, m);
-		d_measurements.put(new MeasurementKey(e, a, defaultMeasurementMoment()), m);
+	public void setMeasurement(final OutcomeMeasure om, final Arm a, final BasicMeasurement m) {
+		forceLegalArguments(om, a, m);
+		d_measurements.put(new MeasurementKey(om, a, defaultMeasurementMoment()), m);
 	}
 
 	/**
@@ -810,7 +810,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 */
 	public Set<TreatmentDefinition> getMeasuredTreatmentDefinitions(final Variable v, final WhenTaken wt) {
 		final Set<TreatmentDefinition> definitions = new HashSet<TreatmentDefinition>();
-		for (final TreatmentDefinition d : getTreatmentDefinition()) {
+		for (final TreatmentDefinition d : getTreatmentDefinitions()) {
 			if (wt != null && isMeasured(v, d, wt)) {
 				definitions.add(d);
 			}
@@ -896,7 +896,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 		@Override
 		public boolean accept(final Arm a) {
-			return getTreatmentDefinition(a).equals(d_d);
+			return d_d.match(Study.this, a);
 		}
 	}
 

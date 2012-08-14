@@ -47,6 +47,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -151,8 +153,6 @@ import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
 import org.drugis.common.Interval;
 import org.drugis.common.beans.SortedSetModel;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 public class JAXBConvertor {
 	@SuppressWarnings("serial")
@@ -605,10 +605,10 @@ public class JAXBConvertor {
 			map.put(BasicStudyCharacteristic.OBJECTIVE, objectWithNotes(chars1.getObjective().getValue(), chars1.getObjective().getNotes()));
 		}
 		if (chars1.getStudyStart() != null) {
-			map.put(BasicStudyCharacteristic.STUDY_START, objectWithNotes(calToDate(chars1.getStudyStart().getValue()), chars1.getStudyStart().getNotes()));
+			map.put(BasicStudyCharacteristic.STUDY_START, objectWithNotes(xmlToDate(chars1.getStudyStart().getValue()), chars1.getStudyStart().getNotes()));
 		}
 		if (chars1.getStudyEnd() != null) {
-			map.put(BasicStudyCharacteristic.STUDY_END, objectWithNotes(calToDate(chars1.getStudyEnd().getValue()), chars1.getStudyEnd().getNotes()));
+			map.put(BasicStudyCharacteristic.STUDY_END, objectWithNotes(xmlToDate(chars1.getStudyEnd().getValue()), chars1.getStudyEnd().getNotes()));
 		}
 		if (chars1.getInclusion() != null) {
 			map.put(BasicStudyCharacteristic.INCLUSION, objectWithNotes(chars1.getInclusion().getValue(), chars1.getInclusion().getNotes()));
@@ -623,15 +623,26 @@ public class JAXBConvertor {
 			map.put(BasicStudyCharacteristic.SOURCE, objectWithNotes(chars1.getSource().getValue(), chars1.getSource().getNotes()));
 		}
 		if (chars1.getCreationDate() != null) {
-			map.put(BasicStudyCharacteristic.CREATION_DATE, objectWithNotes(calToDate(chars1.getCreationDate().getValue()), chars1.getCreationDate().getNotes()));
+			map.put(BasicStudyCharacteristic.CREATION_DATE, objectWithNotes(xmlToDate(chars1.getCreationDate().getValue()), chars1.getCreationDate().getNotes()));
 		}
 		map.put(BasicStudyCharacteristic.TITLE, objectWithNotes(chars1.getTitle().getValue(), chars1.getTitle().getNotes()));
 		map.put(BasicStudyCharacteristic.PUBMED, new ObjectWithNotes<Object>(getPubMedIds(chars1.getReferences())));
 		return map;
 	}	
 
-	private static Object calToDate(XMLGregorianCalendar value) {
+	private static Date xmlToDate(XMLGregorianCalendar value) {
 		return value == null ? null : value.toGregorianCalendar().getTime();
+	}
+
+	public static XMLGregorianCalendar dateToXml(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String strDate = dateFormat.format(date);
+		try {
+			XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(strDate);
+			return xmlDate;
+		} catch (DatatypeConfigurationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static Characteristics convertStudyCharacteristics(CharacteristicsMap characteristics) {
@@ -1332,9 +1343,7 @@ public class JAXBConvertor {
 	public static DateWithNotes dateWithNotes(Date date) {
 		org.drugis.addis.entities.data.DateWithNotes dateWithNotes = new org.drugis.addis.entities.data.DateWithNotes();
 		if (date != null) {
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String calFormat = dateFormat.format(date);
-			dateWithNotes.setValue(XMLGregorianCalendarImpl.parse(calFormat));
+			dateWithNotes.setValue(dateToXml(date));
 		}
 		dateWithNotes.setNotes(new Notes());
 		return dateWithNotes;

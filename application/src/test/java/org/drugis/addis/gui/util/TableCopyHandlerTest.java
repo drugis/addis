@@ -42,10 +42,11 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 import org.drugis.addis.gui.renderer.BRATForestCellRenderer.ForestPlotTableCell;
 import org.drugis.addis.presentation.BRATTableModel;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
+import org.drugis.common.gui.table.TableCopyHandler;
+import org.drugis.mtc.gui.results.SummaryCellRenderer;
 import org.junit.Before;
 import org.junit.Test;
 

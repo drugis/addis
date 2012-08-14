@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.gui.SelectableStudyGraph;
-import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.addis.gui.SelectableTreatmentDefinitionsGraph;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultGraphCell;
 
@@ -43,11 +43,11 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 	
 	private ObservableList<TreatmentDefinition> d_drugList;
 	private JGraph d_jgraph;
-	private SelectableStudyGraph d_studyGraph;
+	private SelectableTreatmentDefinitionsGraph d_studyGraph;
 
-	public SelectedDrugsGraphListener(SelectableStudyGraph selectableStudyGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDrugs) {
+	public SelectedDrugsGraphListener(SelectableTreatmentDefinitionsGraph selectableTreatmentDefinitionsGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDrugs) {
 		d_drugList = selectedDrugs;
-		d_studyGraph = selectableStudyGraph;
+		d_studyGraph = selectableTreatmentDefinitionsGraph;
 		d_jgraph = graph;
 	}
 	

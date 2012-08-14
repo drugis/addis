@@ -29,7 +29,6 @@ package org.drugis.addis.presentation;
 import java.util.List;
 
 import org.drugis.addis.entities.CategoricalVariableType;
-import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.RateVariableType;
@@ -45,16 +44,14 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 @SuppressWarnings("serial")
-public class VariablePresentation extends PresentationModel<Variable> implements StudyListPresentation, LabeledPresentation {
-	private ObservableList<Study> d_studies;
-	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
+public class VariablePresentation extends PresentationModel<Variable> implements LabeledPresentation {
 	private ContinuousVariableType d_continuousVariableType = new ContinuousVariableType();
 	private RateVariableType d_rateVariableType = new RateVariableType();
 	private CategoricalVariableType d_categoricalVariableType = new CategoricalVariableType();
+	private StudyListPresentation d_studyListPresentation;
 
 	public VariablePresentation(Variable bean, ObservableList<Study> studies, PresentationModelFactory pmf) {
 		super(bean);
-		d_studies = studies;
 		if (bean.getVariableType() instanceof ContinuousVariableType) {
 			d_continuousVariableType = (ContinuousVariableType) bean.getVariableType();
 		}
@@ -64,16 +61,13 @@ public class VariablePresentation extends PresentationModel<Variable> implements
 		if (bean.getVariableType() instanceof RateVariableType) {
 			d_rateVariableType = (RateVariableType) bean.getVariableType();
 		}
-	}
-	
-	public ObservableList<Study> getIncludedStudies() {
-		return d_studies;
-	}
-	
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
-		return d_characteristicVisibleMap.get(c);
+		d_studyListPresentation = new StudyListPresentation(studies);
 	}
 
+	public StudyListPresentation getStudyListPresentation() {
+		return d_studyListPresentation;
+	}
+	
 	public AbstractValueModel getLabelModel() {
 		return new DefaultLabelModel(getBean());
 	}

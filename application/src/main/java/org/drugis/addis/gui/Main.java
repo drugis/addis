@@ -112,6 +112,7 @@ public class Main extends AbstractObservable {
 					Runnable r = new Runnable() {
 						public void run() {
 							Throwable cause = taskEvent.getCause();
+							cause.printStackTrace();
 							ErrorDialog.showDialog(cause, taskEvent.getSource() + " failed");
 						}
 					};

@@ -71,7 +71,7 @@ public class DomainImpl extends Domain {
 		new EntityCategory("populationCharacteristics", PopulationCharacteristic.class);
 	private static final EntityCategory CATEGORY_STUDIES =
 		new EntityCategory("studies", Study.class);
-	private static final EntityCategory CATEGORY_PAIR_WISE_META_ANALYSES =
+	public static final EntityCategory CATEGORY_PAIR_WISE_META_ANALYSES =
 		new EntityCategory("pairWiseMetaAnalyses", PairWiseMetaAnalysis.class);
 	private static final EntityCategory CATEGORY_NETWORK_META_ANALYSES =
 		new EntityCategory("networkMetaAnalyses", NetworkMetaAnalysis.class);
@@ -452,7 +452,7 @@ public class DomainImpl extends Domain {
 		}
 		
 		public boolean accept(Study s) {
-			return s.getTreatmentDefinition().contains(d_treatmentDefinition);
+			return s.getTreatmentDefinitions().contains(d_treatmentDefinition);
 		}
 	}
 }

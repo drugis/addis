@@ -35,7 +35,6 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.StudyGraph;
-import org.drugis.addis.presentation.SelectableStudyGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.Wizard;
@@ -61,23 +60,23 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, main));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SelectDrugsWizardStep(pm));
-		wizardModel.add(new RefineDrugSelectionWizardStep(pm, main));
-		wizardModel.add(new SelectTreatmentCategoriesWizardStep(pm));
-		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, main);
+		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
+		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm));
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm);
 		selectStudiesStep.setComplete(true);
 		wizardModel.add(selectStudiesStep);
 		wizardModel.add(new SelectArmsWizardStep(pm));
 		OverviewWizardStep overviewStep = new OverviewWizardStep(pm, main);
-		Bindings.bind(overviewStep, "complete", pm.getSelectedStudyGraphConnectedModel());
+		Bindings.bind(overviewStep, "complete", pm.getOverviewGraphConnectedModel());
 		wizardModel.add(overviewStep);
 		return wizardModel;
 	}
 	
 
-	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableStudyGraphModel> {
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep {
 		private StudyGraph d_studyGraph;
 
-		public OverviewWizardStep(AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel> pm, AddisWindow main) {
+		public OverviewWizardStep(AbstractMetaAnalysisWizardPM pm, AddisWindow main) {
 			super(pm, main);
 
 			setLayout(new BorderLayout());
@@ -100,14 +99,14 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		}
 
 		protected Component buildStudiesGraph() {
-			d_studyGraph = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getSelectedStudyGraphModel());
+			d_studyGraph = new StudyGraph(((NetworkMetaAnalysisWizardPM)d_pm).getOverviewGraph());
 			d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			return d_studyGraph;
 		}
 		
 		@Override
 		public void prepare() {
-			((NetworkMetaAnalysisWizardPM) d_pm).updateSelectedStudyGraphModel();
+			((NetworkMetaAnalysisWizardPM) d_pm).rebuildOverviewGraph();
 			d_studyGraph.layoutGraph();
 		}
 	}

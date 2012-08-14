@@ -41,10 +41,11 @@ import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.LogScale;
 import org.drugis.addis.forestplot.RelativeEffectBar;
-import org.drugis.addis.presentation.ForestPlotPresentation;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
+import org.drugis.addis.presentation.ForestPlotPresentation;
+import org.drugis.common.gui.table.RenderAsImage;
 
-public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRenderer {
+public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRenderer implements RenderAsImage {
 	public static final class ForestPlotTableCell extends JPanel {
 		private final Color d_fg;
 		private final BRATForest d_forest;

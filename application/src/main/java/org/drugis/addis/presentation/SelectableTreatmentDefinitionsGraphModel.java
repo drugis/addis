@@ -43,12 +43,12 @@ import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class SelectableStudyGraphModel extends StudyGraphModel {
+public class SelectableTreatmentDefinitionsGraphModel extends TreatmentDefinitionsGraphModel {
 	
 	private ObservableList<TreatmentDefinition> d_selectedDefinitions = new ArrayListModel<TreatmentDefinition>(d_definitions);
 	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
 
-	public SelectableStudyGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
+	public SelectableTreatmentDefinitionsGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
 		super(studies, definitions, outcome);
 		d_selectedDefinitions.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
@@ -78,22 +78,22 @@ public class SelectableStudyGraphModel extends StudyGraphModel {
 	}
 	
 	private void updateComplete() {
-		d_complete.setValue(getSelectedDefinitionsModel().size() > 1 && isSelectionConnected());
+		d_complete.setValue(getSelectedDefinitions().size() > 1 && isSelectionConnected());
 	}
 	
 	public ValueHolder<Boolean> getSelectionCompleteModel() {
 		return d_complete;
 	}
 
-	public ObservableList<TreatmentDefinition> getSelectedDefinitionsModel() {
+	public ObservableList<TreatmentDefinition> getSelectedDefinitions() {
 		return d_selectedDefinitions;
 	}
 	
 	public boolean isSelectionConnected() {
 		UndirectedGraph<Vertex, Edge> g = getSelectedDefinitionsGraph();
 		
-		ConnectivityInspector<Vertex, Edge> inspectorGadget = new ConnectivityInspector<Vertex, Edge>(g);
-		Set<Vertex> connectedDrugs = inspectorGadget.connectedSetOf(this.findVertex(d_selectedDefinitions.get(0)));
+		ConnectivityInspector<Vertex, Edge> inspector = new ConnectivityInspector<Vertex, Edge>(g);
+		Set<Vertex> connectedDrugs = inspector.connectedSetOf(this.findVertex(d_selectedDefinitions.get(0)));
 		for (TreatmentDefinition d : d_selectedDefinitions) {
 			if (!connectedDrugs.contains(this.findVertex(d))) {
 				return false;

@@ -1,0 +1,113 @@
+\documentclass[a4paper]{article}
+\usepackage{fullpage}
+
+\usepackage{graphicx}
+
+\title{ADDIS architecture description}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+ADDIS has a layered architecture based on the "Presentation Model" design pattern.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{overview}
+\caption{Architecture overview}
+\end{figure}
+
+Entities: captures the basic structure of the domain, and guards the integrity of data.
+Otherwise, the entities should be relatively simple objects (Java Beans) with few responsibilities.
+The entities can be read/written in the ADDIS XML format.
+The entities are the in-memory representation of the full data set.
+There is no database as such.
+
+Presentation: the presentation layer encapsulates the logic for interacting with the user.
+It includes capabilities for formatting and aggregating over properties of entities.
+It also has the logic for creating and editing entities.
+This serves to make GUI interactions as testable as possible.
+
+GUI: is mainly concerned with the layout and visual presentation of the user interface.
+Should defer to the presentation layer for any logic.
+
+ADDIS also integrates the GeMTC and JSMAA components which have a similar architecture.
+
+ADDIS does quite a bit of statistical calculations.
+We see these as part of the domain logic.
+Therefore if they are reasonably small, such calculations will usually be placed in separate classes in the entities package.
+See for example the "entities.relativeeffect" sub-package.
+These classes are not serialized to XML like other entities so they are not really entities.
+More complex calculations often have their own package, such as lyndobrien and mcmcmodel.
+
+\section{XML serialization}
+
+ADDIS prior to version 0.8, we used Java object serialization to save entities between sessions.
+However, this was very fragile as any minute change to the entities could make loading impossible.
+Worse, those errors were non-recoverable because the format is difficult to parse.
+Therefore, we switched to an XML format using Javalution.
+However, this also had several problems: the XML format was not well-defined (only implicitly in the Java code) and there was no clear way to maintain backward compatibility when making changes to the data structure.
+The first problem amplifies the second: if there is no clear data model, how do you transform from one version to the next?
+With ADDIS v1.6 this was solved by the introduction of Schema-based XML serialization.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{xml}
+\caption{XML serialization and transformation}
+\end{figure}
+
+The XML data structure is normatively defined by the "addis-\$VERSION.xsd" schema.
+A [de]serializer is generated using JAXB.
+JAXB reads/writes the XML and generates java objects to represent the XML structure.
+Unfortunately these objects are of low quality and can not be used to replace the entities.
+Therefore, there is a JAXBConvertor to convert between the JAXB-generated objects and our hand-crafted entities.
+
+To maintain backward compatibility, we simply define an XSLT (XSL Transform) definition from the previous to the current version.
+These can be chained (see Figure X) to read data from any previous version.
+There is also a transform0-1.xslt that was painstakingly constructed to convert the legacy XML to something sensible (and schema-compliant).
+
+\section{Presentation model}
+
+The most complicated entities are created using Wizards.
+These wizards require a lot of logic to properly guide the step-wise creation of the data structure.
+In such cases, there is a separate *WizardPresentation that encapsulates the creation-specific logic.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{presentation}
+\caption{Example presentation model implementation}
+\end{figure}
+
+For example, the NetworkMetaAnalysisWizard has a step where studies can be included or excluded.
+It consists of a table listing all available studies and a few of their characteristics.
+In the table, studies can be included or excluded using checkboxes.
+Steps furtheron in the wizard use the list of included studies.
+
+The table is built using a TableModel that encodes most of the logic and has tests.
+A JTable simply displays this model.
+
+Each checkbox is backed by a ValueModel that holds either true or false.
+The presentation is responsible for appropriately handling changes in the value - the GUI is only concerned with the ValueModel.
+
+The presentation model also provides an ObservableList of selected studies that can be displayed in other wizard steps, or used to build other TableModels, ValueModels, etc.
+
+\section{Computationally intensive tasks}
+
+Some tasks performed by ADDIS are computationally intensive and inherently parallel.
+To support such tasks, the {\tt org.drugis.common.threading} package has a flexible task scheduler that can handle tasks composed of (parallel or sequantial) subtasks.
+It will automatically run as many parallel tasks as there are CPU cores available.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{activitytask}
+\caption{The ActivityTask corresponding to a network meta-analysis with two parallel chains}
+\end{figure}
+
+Such complex tasks are modeled as "ActivityTasks", using the language of UML "activity diagrams".
+An example activity is shown for a network meta-analysis with 2 chains.
+
+Any computation that takes more than a few seconds should be scheduled using this mechanism.
+
+\end{document}
