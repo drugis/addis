@@ -30,8 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
@@ -48,26 +47,59 @@ import org.junit.Test;
 public class SelectableStudyCharTableModelTest {
 
 	private Domain d_domain;
-	private StudyCharTableModel d_model;
+	private SelectableStudyCharTableModel d_model;
 	private Indication d_ind;
-	private SelectableStudyListPresentation d_pm;
+	private StudyListPresentation d_listPresentation;
+	private FilteredObservableList<Study> d_studies;
 	
 	@Before
 	public void setUp() {
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		List<Study> studies = new ArrayList<Study>();
-		studies.add(ExampleData.buildStudyChouinard());
-		studies.add(ExampleData.buildStudyDeWilde());
-		d_ind = d_domain.getIndications().get(0);
-		FilteredObservableList<Study> filteredStudies = new FilteredObservableList<Study>(d_domain.getStudies(), new DomainImpl.IndicationFilter(d_ind));
-		d_pm = new DefaultSelectableStudyListPresentation(
-				new DefaultStudyListPresentation(filteredStudies));
-		d_model = new SelectableStudyCharTableModel(d_pm, new PresentationModelFactory(d_domain));
+		d_ind = ExampleData.buildIndicationDepression();
+		d_studies = new FilteredObservableList<Study>(d_domain.getStudies(), new DomainImpl.IndicationFilter(d_ind));
+		d_listPresentation = new StudyListPresentation(d_studies);
+		d_model = new SelectableStudyCharTableModel(d_listPresentation, new PresentationModelFactory(d_domain));
 		for (Characteristic c : StudyCharacteristics.values()) {
-			d_pm.getCharacteristicVisibleModel(c).setValue(true);
+			d_listPresentation.getCharacteristicVisibleModel(c).setValue(true);
 		}
-	}	
+	}
+	
+	
+	@Test
+	public void testGetSelectedBooleanModel() {
+		assertTrue(d_model.getSelectedStudyBooleanModel(d_studies.get(0)).getValue());
+		assertTrue(d_model.getSelectedStudyBooleanModel(d_studies.get(1)).getValue());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testUnknownStudy() {
+		d_model.getSelectedStudyBooleanModel(new Study("xxxx", d_ind));
+	}
+	
+	@Test
+	public void testGetSelectedModelOnChange() {
+		d_model.getSelectedStudyBooleanModel(d_studies.get(0)).setValue(false);
+		
+		Study newStudy = new Study("new study", d_ind);
+		d_studies.add(newStudy);
+		
+		assertFalse(d_model.getSelectedStudyBooleanModel(d_studies.get(0)).getValue());
+		assertTrue(d_model.getSelectedStudyBooleanModel(d_studies.get(1)).getValue());
+		assertTrue(d_model.getSelectedStudyBooleanModel(newStudy).getValue());
+	}
+	
+	@Test
+	public void testGetSelectedStudiesModel() {
+		assertEquals(d_studies, d_model.getSelectedStudiesModel());
+		for (int i = 0; i < d_studies.size(); ++i) {
+			if (i != 1) {
+				d_model.getSelectedStudyBooleanModel(d_studies.get(i)).setValue(false);
+			}
+		}
+		assertEquals(Collections.singletonList(d_studies.get(1)), d_model.getSelectedStudiesModel());	
+	}
+
 	
 	@Test
 	public void testGetColumnCount() {
@@ -77,7 +109,7 @@ public class SelectableStudyCharTableModelTest {
 	@Test
 	public void testGetValueAt() {
 		int row = 0;
-		for (Study s : d_pm.getAvailableStudies()) {
+		for (Study s : d_model.getAvailableStudies()) {
 			assertTrue((Boolean)d_model.getValueAt(row, 0));			
 			assertEquals(s, d_model.getValueAt(row, 1));
 			int column = 2;

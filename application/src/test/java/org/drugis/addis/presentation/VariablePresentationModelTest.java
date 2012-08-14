@@ -91,7 +91,7 @@ public class VariablePresentationModelTest {
 	@Test
 	public void testGetIncludedStudies() {
 		VariablePresentation pmCardovascular = (VariablePresentation) d_pmf.getModel((Variable) ExampleData.buildEndpointCVdeath());
-		JUnitUtil.assertAllAndOnly(Collections.singleton(ExampleData.buildStudyMcMurray()), pmCardovascular.getIncludedStudies());
+		JUnitUtil.assertAllAndOnly(Collections.singleton(ExampleData.buildStudyMcMurray()), pmCardovascular.getStudyListPresentation().getIncludedStudies());
 	}
 
 }

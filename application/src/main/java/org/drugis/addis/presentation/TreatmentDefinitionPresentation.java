@@ -26,25 +26,54 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.Characteristic;
+import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
+import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.beans.FilteredObservableList;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
-public class DefaultStudyListPresentation implements StudyListPresentation {
-	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
-	private ObservableList<Study> d_list;
+@SuppressWarnings("serial")
+public class TreatmentDefinitionPresentation extends PresentationModel<TreatmentDefinition> implements LabeledPresentation {
 	
-	public DefaultStudyListPresentation(ObservableList<Study> list) {
-		d_list = list;
-	}
-	
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
-		return d_characteristicVisibleMap.get(c);
+	public class LabelModel extends DefaultLabelModel {
+		
+		public LabelModel() {
+			super(getBean());
+		}
+
+		@Override
+		public Object getValue() {			
+			return getBean().getLabel();
+		}
 	}
 
-	public ObservableList<Study> getIncludedStudies() {
-		return d_list;
+	private StudyListPresentation d_studyListPresentation;
+		
+	public TreatmentDefinitionPresentation(final TreatmentDefinition drugs, Domain domain) {
+		super(drugs);
+		ObservableList<Study> studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
+			@Override
+			public boolean accept(Study s) {
+				return EntityUtil.flatten(s.getTreatmentDefinitions()).equals(drugs);
+			}
+		});		
+		d_studyListPresentation = new StudyListPresentation(studies);
+	}
+
+	public StudyListPresentation getStudyListPresentation() {
+		return d_studyListPresentation;
+	}
+
+	public AbstractValueModel getLabelModel() {
+		return new LabelModel();
+	}
+	
+	@Override
+	public String toString() {
+		return (String) getLabelModel().getValue();
 	}
 }

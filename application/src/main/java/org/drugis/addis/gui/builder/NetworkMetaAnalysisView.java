@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -622,16 +622,13 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-
-
-
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
 	private TablePanel createNetworkTablePanel(final MTCModelWrapper<TreatmentDefinition> mtc) {
-		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getIncludedDrugs(), mtc));
+		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getAlternatives(), mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);

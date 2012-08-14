@@ -30,9 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Indication;
@@ -41,11 +38,11 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.SelectableStudyGraphModel;
-import org.drugis.addis.presentation.StudyGraphModel;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Edge;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.presentation.StudyGraphModel.Edge;
-import org.drugis.addis.presentation.StudyGraphModel.Vertex;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.event.GraphEdgeChangeEvent;
 import org.jgrapht.event.GraphListener;
@@ -55,46 +52,52 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<SelectableStudyGraphModel>{
-	private StudyGraphModel d_selectedStudyGraph;
-	private ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
-
+public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM {
+	private final TreatmentDefinitionsGraphModel d_overviewGraph;
+	private final ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
+	
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
-		d_selectedStudyGraph = new StudyGraphModel(getSelectedStudiesModel(), getSelectedDrugsModel(), getOutcomeMeasureModel());
-		getSelectedDrugsModel().addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void contentsChanged(ListDataEvent e) {
-				updateArmHolders();
-			}
-		});
+		
+		d_overviewGraph = new TreatmentDefinitionsGraphModel(getSelectedStudies(), getSelectedRefinedTreatmentDefinitions(), getOutcomeMeasureModel());
+		
 		d_selectedStudyGraphConnectedModel = new StudySelectionCompleteListener();
 	}
 
+	
 	@Override
-	public ObservableList<TreatmentDefinition> getSelectedDrugsModel() {
-		return d_studyGraphPresentationModel.getSelectedDrugsModel();
+	public ObservableList<TreatmentDefinition> getSelectedRawTreatmentDefinitions() {
+		return d_rawAlternativesGraph.getSelectedDefinitions();
 	}
 	
-	public StudyGraphModel getSelectedStudyGraphModel(){
-		return d_selectedStudyGraph;
+	@Override
+	public ObservableList<TreatmentDefinition> getSelectedRefinedTreatmentDefinitions() {
+		return d_refinedAlternativesGraph.getSelectedDefinitions();
+	}
+	
+	public TreatmentDefinitionsGraphModel getOverviewGraph(){
+		return d_overviewGraph;
 	}
 
 	@Override
-	protected SelectableStudyGraphModel buildStudyGraphPresentation() {
-		return new SelectableStudyGraphModel(getStudiesEndpointAndIndication(), d_drugListHolder, d_outcomeHolder);
+	protected SelectableTreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions, d_outcomeHolder);
+	}
+
+	@Override
+	protected SelectableTreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions, d_outcomeHolder);
 	}
 	
-	public ValueModel getConnectedDrugsSelectedModel() {
-		return getStudyGraphModel().getSelectionCompleteModel();
+	public ValueModel getRawSelectionCompleteModel() {
+		return getRawAlternativesGraph().getSelectionCompleteModel();
 	}
 	
-	public ValueHolder<Boolean> getSelectedStudyGraphConnectedModel() {
+	public ValueModel getRefinedConnectedDrugsSelectedModel() {
+		return getRefinedAlternativesGraph().getSelectionCompleteModel();
+	}
+	
+	public ValueHolder<Boolean> getOverviewGraphConnectedModel() {
 		return d_selectedStudyGraphConnectedModel;
 	}
 	
@@ -105,7 +108,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		
 		public StudySelectionCompleteListener() {
 			update();
-			getSelectedStudyGraphModel().addGraphListener(new GraphListener<Vertex, Edge>() {
+			getOverviewGraph().addGraphListener(new GraphListener<Vertex, Edge>() {
 				
 				public void vertexRemoved(GraphVertexChangeEvent<Vertex> e) {
 					update();
@@ -145,7 +148,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	
 	private boolean selectedStudiesConnected() {
 		ConnectivityInspector<Vertex, Edge> inspectorGadget = 
-			new ConnectivityInspector<Vertex, Edge>(getSelectedStudyGraphModel());
+			new ConnectivityInspector<Vertex, Edge>(getOverviewGraph());
 		return inspectorGadget.isGraphConnected();
 	}
 
@@ -153,11 +156,11 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 	public NetworkMetaAnalysis createAnalysis(String name) {
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
-		List<Study> studies = getSelectedStudiesModel();
-		List<TreatmentDefinition> drugs = getSelectedDrugsModel();
+		List<Study> studies = getSelectedStudies();
+		List<TreatmentDefinition> definitions = getSelectedRefinedTreatmentDefinitions();
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = getArmMap();
 		
-		return new NetworkMetaAnalysis(name, indication, om, studies, drugs, armMap);
+		return new NetworkMetaAnalysis(name, indication, om, studies, definitions, armMap);
 	}
 
 	private Map<Study, Map<TreatmentDefinition, Arm>> getArmMap() {
@@ -171,14 +174,14 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM<Se
 		return map;
 	}
 
-	public ObservableList<Study> getSelectedStudiesModel() {
-		return getStudyListModel().getSelectedStudiesModel();
+	public ObservableList<Study> getSelectedStudies() {
+		return getSelectableStudyListPM().getSelectedStudiesModel();
 	}
-
-	public void updateSelectedStudyGraphModel() {
-		d_selectedStudyGraph.rebuildGraph();
+	
+	public void rebuildOverviewGraph() {
+		d_overviewGraph.rebuildGraph();
 	}
 
 	@Override
-	protected void buildDrugHolders() {	}
+	protected void buildDefinitionHolders() {	}
 }

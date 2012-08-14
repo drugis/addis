@@ -26,31 +26,33 @@
 
 package org.drugis.addis.gui.wizard;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.ListModel;
-
-import org.drugis.addis.gui.AuxComponentFactory;
+import org.drugis.addis.gui.SelectableTreatmentDefinitionsGraph;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
 
-@SuppressWarnings("serial")
-public class SelectEndpointWizardStep extends PanelWizardStep {
-	public SelectEndpointWizardStep(AbstractMetaAnalysisWizardPM pm) {
-		super("Select Outcome","Select an outcome measure (endpoint or adverse event) that you want to use for this meta analysis.");
-		add(new JLabel("Outcome measure : "));
+public class AbstractSelectTreatmentWizardStep extends PanelWizardStep {
 
-		ListModel outcomeListModel = pm.getAvailableOutcomeMeasures();
-		
-		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(outcomeListModel, pm.getOutcomeMeasureModel(), true);
-		add(endPointBox);
-		pm.getOutcomeMeasureModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				setComplete(evt.getNewValue() != null);
-			}
-		});
+	private static final long serialVersionUID = 1746696286888281689L;
+	protected SelectableTreatmentDefinitionsGraph d_studyGraph;
+	protected AbstractMetaAnalysisWizardPM d_pm;
+
+	public AbstractSelectTreatmentWizardStep(String name, String summary, SelectableTreatmentDefinitionsGraphModel selectableStudyGraphModel) {
+		super(name, summary);
+		d_studyGraph = buildStudiesGraph(selectableStudyGraphModel);
+	}
+
+	public AbstractSelectTreatmentWizardStep(String name, String summary, Icon icon, SelectableTreatmentDefinitionsGraphModel selectableStudyGraphModel) {
+		super(name, summary, icon);
+		d_studyGraph = buildStudiesGraph(selectableStudyGraphModel);
+	}
+
+	private SelectableTreatmentDefinitionsGraph buildStudiesGraph(SelectableTreatmentDefinitionsGraphModel selectableStudyGraphModel) {
+		SelectableTreatmentDefinitionsGraph studyGraph = new SelectableTreatmentDefinitionsGraph(selectableStudyGraphModel);
+		studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		return studyGraph;
 	}
 }

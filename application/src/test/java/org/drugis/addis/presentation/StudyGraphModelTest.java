@@ -48,9 +48,10 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.StudyGraphModel.Edge;
-import org.drugis.addis.presentation.StudyGraphModel.Vertex;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Edge;
+import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.drugis.common.event.ListDataEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 
 public class StudyGraphModelTest {
-	private StudyGraphModel d_pm;
+	private TreatmentDefinitionsGraphModel d_pm;
 	private List<TreatmentDefinition> d_drugs;
 	private Domain d_domain;
 	private ObservableList<TreatmentDefinition> d_drugListHolder;
@@ -79,12 +80,12 @@ public class StudyGraphModelTest {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
 		d_drugListHolder = new ArrayListModel<TreatmentDefinition>(d_drugs);
-		d_pm = new StudyGraphModel(studies, d_drugListHolder, d_outcome);
+		d_pm = new TreatmentDefinitionsGraphModel(studies, d_drugListHolder, d_outcome);
 	}
 	
 	@Test
 	public void testGetDrugs() {
-		assertAllAndOnly(d_drugs, d_pm.getDrugs());
+		assertAllAndOnly(d_drugs, d_pm.getTreatmentDefinitions());
 	}
 	
 	@Test
@@ -123,13 +124,28 @@ public class StudyGraphModelTest {
 	}
 	
 	@Test
+	public void testGetStudiesWithNonTrivial() {
+		TreatmentCategorization upto20mg = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition def = new TreatmentDefinition(upto20mg.getCategories());
+		ArrayListModel<TreatmentDefinition> defs = new ArrayListModel<TreatmentDefinition>();
+		defs.add(def);
+
+		ObservableList<Study> studies = new ArrayListModel<Study>();
+		studies.add(ExampleData.buildStudyChouinard());
+		Study bennie = ExampleData.buildStudyBennie();
+		studies.add(bennie);
+		TreatmentDefinitionsGraphModel pm = new TreatmentDefinitionsGraphModel(studies, defs,  new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
+		assertAllAndOnly(Collections.singleton(bennie), pm.getStudies(def));
+	}
+	
+	@Test
 	public void testVertexSet() {
 		Set<Vertex> vertexSet = d_pm.vertexSet();
 		assertEquals(3, vertexSet.size());
 		
 		for (Vertex vertex : vertexSet) {
-			assertTrue(d_drugs.contains(vertex.getDrug()));
-			assertEquals(calcSampleSize(vertex.getDrug()), vertex.getSampleSize());
+			assertTrue(d_drugs.contains(vertex.getTreatmentDefinition()));
+			assertEquals(calcSampleSize(vertex.getTreatmentDefinition()), vertex.getSampleSize());
 		}
 	}
 	
@@ -159,12 +175,12 @@ public class StudyGraphModelTest {
 	@Test
 	public void testFindVertex() {
 		assertEquals(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
-				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getDrug());
+				d_pm.findVertex(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())).getTreatmentDefinition());
 	}
 	
 	@Test
 	public void testNullEndpoint() {
-		d_pm = new StudyGraphModel(new ArrayListModel<Study>(), new ArrayListModel<TreatmentDefinition>(Collections.<TreatmentDefinition>emptyList()), 
+		d_pm = new TreatmentDefinitionsGraphModel(new ArrayListModel<Study>(), new ArrayListModel<TreatmentDefinition>(Collections.<TreatmentDefinition>emptyList()), 
 				new UnmodifiableHolder<OutcomeMeasure>(null));
 		assertTrue(d_pm.vertexSet().isEmpty());
 	}
@@ -191,7 +207,7 @@ public class StudyGraphModelTest {
 		ObservableList<TreatmentDefinition> drugListHolder = new ArrayListModel<TreatmentDefinition>(d_drugs);
 		ObservableList<Study> studyListHolder = new ArrayListModel<Study>();
 		
-		d_pm = new StudyGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
+		d_pm = new TreatmentDefinitionsGraphModel(studyListHolder, drugListHolder, new UnmodifiableHolder<OutcomeMeasure>(ExampleData.buildEndpointHamd()));
 		assertEquals(3, d_pm.vertexSet().size());
 		assertTrue(d_pm.edgeSet().isEmpty());
 		

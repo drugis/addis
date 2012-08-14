@@ -54,11 +54,11 @@ import org.junit.Test;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class SelectableStudyGraphModelTest {
+public class SelectableTreatmentDefinitionsGraphModelTest {
 
 	private Domain d_domain;
 	private ArrayList<TreatmentDefinition> d_drugs;
-	private SelectableStudyGraphModel d_pm;
+	private SelectableTreatmentDefinitionsGraphModel d_pm;
 	private ObservableList<TreatmentDefinition> d_drugListHolder;
 
 	@Before
@@ -74,12 +74,12 @@ public class SelectableStudyGraphModelTest {
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
-		d_pm = new SelectableStudyGraphModel(studies, d_drugListHolder, outcome);
+		d_pm = new SelectableTreatmentDefinitionsGraphModel(studies, d_drugListHolder, outcome);
 	}
 	
 	@Test
 	public void testGetSelectedDrugsModel() {
-		ObservableList<TreatmentDefinition> selDrugs = d_pm.getSelectedDrugsModel();
+		ObservableList<TreatmentDefinition> selDrugs = d_pm.getSelectedDefinitions();
 		List<TreatmentDefinition> list = Collections.singletonList(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		
 		ListDataListener mock = createStrictMock(ListDataListener.class);
@@ -99,18 +99,18 @@ public class SelectableStudyGraphModelTest {
 		assertTrue(d_pm.isSelectionConnected());
 
 		d_drugs.remove(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
-		d_pm.getSelectedDrugsModel().clear();
-		d_pm.getSelectedDrugsModel().addAll(d_drugs);
+		d_pm.getSelectedDefinitions().clear();
+		d_pm.getSelectedDefinitions().addAll(d_drugs);
 		
 		assertFalse(d_pm.isSelectionConnected());
 	}
 	
 	@Test
 	public void testDontResetSelectedDrugsWhenNoChanges() {
-		d_pm.getSelectedDrugsModel().remove(0);
-		List<TreatmentDefinition> expected = new ArrayList<TreatmentDefinition>(d_pm.getSelectedDrugsModel());
+		d_pm.getSelectedDefinitions().remove(0);
+		List<TreatmentDefinition> expected = new ArrayList<TreatmentDefinition>(d_pm.getSelectedDefinitions());
 		d_pm.rebuildGraph();
-		assertEquals(expected, d_pm.getSelectedDrugsModel());
+		assertEquals(expected, d_pm.getSelectedDefinitions());
 	}
 	
 }

@@ -136,7 +136,7 @@ public class TreatmentDefinition extends AbstractEntity implements Comparable<Tr
 	
 	@Override
 	public String toString() {
-		return "TreatmentCategorySet" + d_contents;
+		return "TreatmentDefinition " + d_contents;
 	}
 
 	/**
@@ -145,6 +145,9 @@ public class TreatmentDefinition extends AbstractEntity implements Comparable<Tr
 	 * Moreover, each {@link DrugTreatment} must be accepted by the corresponding {@link Category}.
 	 */
 	public boolean match(TreatmentActivity act) {
+		if (act == null) {
+			return false;
+		}
 		Map<Drug, Category> toMatch = new HashMap<Drug, Category>();
 		for (Category cat : getContents()) {
 			toMatch.put(cat.getDrug(), cat);

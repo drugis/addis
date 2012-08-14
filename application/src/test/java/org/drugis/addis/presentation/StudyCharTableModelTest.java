@@ -56,7 +56,7 @@ public class StudyCharTableModelTest {
 	private Domain d_domain;
 	private StudyCharTableModel d_model;
 	private Indication d_ind;
-	private IndicationPresentation d_pm;
+	private StudyListPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	
 	@Before
@@ -67,7 +67,7 @@ public class StudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().get(0);
-		d_pm = new IndicationPresentation(d_ind, d_domain.getStudies());
+		d_pm = new StudyListPresentation(d_domain.getStudies(d_ind));
 		d_pmf = new PresentationModelFactory(d_domain);
 		d_model = new StudyCharTableModel(d_pm, d_pmf);
 		
@@ -162,7 +162,7 @@ public class StudyCharTableModelTest {
 	@Test
 	public void testChangeContentsFiresTableChanged() {
 		ArrayListModel<Study> list = new ArrayListModel<Study>();
-		DefaultStudyListPresentation model = new DefaultStudyListPresentation(list);
+		StudyListPresentation model = new StudyListPresentation(list);
 		TableModel tableModel = new StudyCharTableModel(model, new PresentationModelFactory(d_domain));
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(tableModel ));
 		tableModel.addTableModelListener(mock);
