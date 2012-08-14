@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
@@ -40,13 +39,9 @@ import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.common.beans.FilteredObservableList;
 
 import com.jgoodies.binding.PresentationModel;
-import com.jgoodies.binding.list.ArrayListModel;
-import com.jgoodies.binding.list.ObservableList;
-import com.jgoodies.binding.value.AbstractValueModel;
 
-public class TreatmentCategorizationPresentation extends PresentationModel<TreatmentCategorization> implements StudyListPresentation {
+public class TreatmentCategorizationPresentation extends PresentationModel<TreatmentCategorization> {
 	private static final long serialVersionUID = 134566312654511102L;
-	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
 	private final Map<Category, StudyListPresentation> d_studyListPresentations = new HashMap<Category, StudyListPresentation>();
 	private final Domain d_domain;
 
@@ -71,63 +66,26 @@ public class TreatmentCategorizationPresentation extends PresentationModel<Treat
 		}
 	};
 
-	private class CategorizedStudyListPresentation implements StudyListPresentation {
-		private final FilteredObservableList<Study> d_studies;
-		private final CharacteristicVisibleMap d_characteristicVisibleMap;
-
-		public CategorizedStudyListPresentation(final Category category) {
-			final StudyCategoryFilter filter = new StudyCategoryFilter(category);
-			d_studies = new FilteredObservableList<Study>(d_domain.getTreatmentDefinition(getBean().getDrug()), filter);
-			d_characteristicVisibleMap = new CharacteristicVisibleMap();
-		}
-
-		@Override
-		public ObservableList<Study> getIncludedStudies() {
-			return d_studies;
-		}
-
-		@Override
-		public AbstractValueModel getCharacteristicVisibleModel(final Characteristic c) {
-			return d_characteristicVisibleMap.get(c);
-		}
-	}
-
 	public TreatmentCategorizationPresentation(final TreatmentCategorization bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
 
 		for(final Category category : getBean().getCategories()) {
-			d_studyListPresentations.put(category, new CategorizedStudyListPresentation(category));
+			d_studyListPresentations.put(category, new StudyListPresentation(createCategoryStudyList(category)));
 		}
 	}
 
+	private FilteredObservableList<Study> createCategoryStudyList(final Category category) {
+		return new FilteredObservableList<Study>(
+				d_domain.getTreatmentDefinition(getBean().getDrug()),
+				new StudyCategoryFilter(category));
+	}
+	
 	public StudyListPresentation getCategorizedStudyList(final Category category) {
-		StudyListPresentation result = d_studyListPresentations.get(category);
-		if (result == null) {
-			result = new CategorizedStudyListPresentation(category);
-			d_studyListPresentations.put(category, result);
-		}
-		return result;
+		return d_studyListPresentations.get(category);
 	}
 
 	public DrugPresentation getDrugPresentation() {
 		return new DrugPresentation(getBean().getDrug(), d_domain);
 	}
-
-	@Override
-	public ObservableList<Study> getIncludedStudies() {
-		ObservableList<Study> result = new ArrayListModel<Study>();
-		for (StudyListPresentation slp : d_studyListPresentations.values()) {
-			for (Study study : slp.getIncludedStudies()) {
-				if (!result.contains(study)) {
-					result.add(study);
-				}
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
-		return d_charVisibleMap.get(c);
-	}}
+}

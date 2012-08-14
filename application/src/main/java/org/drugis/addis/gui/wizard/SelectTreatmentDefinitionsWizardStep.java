@@ -41,7 +41,6 @@ public class SelectTreatmentDefinitionsWizardStep extends AbstractSelectTreatmen
 	
 	@Override
 	public void prepare() {
-		System.out.println("Requesting rebuild");
 		d_pm.rebuildRefinedAlternativesGraph();
 		d_studyGraph.layoutGraph();
 	}

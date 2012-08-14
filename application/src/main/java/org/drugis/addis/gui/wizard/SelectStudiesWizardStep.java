@@ -31,9 +31,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.renderer.EntityCellRenderer;
-import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.common.gui.table.EnhancedTable;
 import org.pietschy.wizard.PanelWizardStep;
@@ -43,15 +41,26 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 @SuppressWarnings("serial")
 public class SelectStudiesWizardStep extends PanelWizardStep {
 
-	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM pm, AddisWindow mainWindow) {
-		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
+	private final AbstractMetaAnalysisWizardPM d_pm;
+	private EnhancedTable d_table;
 
-		final EnhancedTable table = EnhancedTable.createWithSorter(new SelectableStudyCharTableModel(pm.getSelectableStudyListPM(), mainWindow.getPresentationModelFactory()));
-		EntityCellRenderer.insertEntityRenderer(table);
-		table.autoSizeColumns();
+	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM pm) {
+		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
+		d_pm = pm;
+	}
+	
+	@Override
+	public void prepare() {
+		removeAll(); // Rebuild the panel
+		d_pm.populateSelectableStudies();
+
+		d_table = EnhancedTable.createWithSorter(d_pm.getSelectableStudyListPM());
+		EntityCellRenderer.insertEntityRenderer(d_table);
+		d_table.autoSizeColumns();
 		setLayout(new BorderLayout(0, 5));
-		JLabel label = BasicComponentFactory.createLabel(pm.getStudiesMeasuringLabelModel());
+		JLabel label = BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel());
 		add(label, BorderLayout.NORTH);
-		add(new JScrollPane(table), BorderLayout.CENTER);
+		add(new JScrollPane(d_table), BorderLayout.CENTER);
+		
 	}
 }

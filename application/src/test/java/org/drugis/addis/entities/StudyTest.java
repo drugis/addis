@@ -100,7 +100,7 @@ public class StudyTest {
 		Set<TreatmentDefinition> expected = new HashSet<TreatmentDefinition>();
 		expected.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		expected.add(TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
-		assertEquals(expected, s.getTreatmentDefinition());
+		assertEquals(expected, s.getTreatmentDefinitions());
 	}
 	
 	@Test
@@ -354,7 +354,7 @@ public class StudyTest {
 	public void testGetDependencies() {
 		Study s = ExampleData.buildStudyDeWilde();
 		assertFalse(s.getOutcomeMeasures().isEmpty());
-		assertFalse(s.getTreatmentDefinition().isEmpty());
+		assertFalse(s.getTreatmentDefinitions().isEmpty());
 		
 		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
 		dep.add(ExampleData.buildDrugFluoxetine());
@@ -612,7 +612,7 @@ public class StudyTest {
 	
 	@Test
 	public void testMeasuredDrugs() {
-		assertEquals(d_clone.getTreatmentDefinition(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildEndpointHamd()));
+		assertEquals(d_clone.getTreatmentDefinitions(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildEndpointHamd()));
 		assertEquals(Collections.emptySet(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion()));
 		
 		// Add an incomplete measurement for the default measurement moment, to see that it is excluded

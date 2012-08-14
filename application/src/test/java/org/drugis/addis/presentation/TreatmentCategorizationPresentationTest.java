@@ -58,7 +58,6 @@ public class TreatmentCategorizationPresentationTest {
 		d_tc = TreatmentCategorization.createDefault("HD/LD", ExampleData.buildDrugFluoxetine(), DoseUnit.MILLIGRAMS_A_DAY);
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
-		d_pm = new TreatmentCategorizationPresentation(d_tc, d_domain);
 		d_wpm = new TreatmentCategorizationWizardPresentation(d_tc, d_domain);
 	}
 
@@ -75,12 +74,16 @@ public class TreatmentCategorizationPresentationTest {
 		d_domain.getAdverseEvents().add(ExampleData.buildAdverseEventSexualDysfunction());
 		d_domain.getStudies().add(studyFava2002);
 
+		d_wpm.getCategories().add(foo);
+		d_wpm.getCategories().add(bar);
+		d_wpm.getCategories().add(baz);
 		d_wpm.getModelForFixedDose().setValue(d_wpm.getFixedRangeNode());
 		d_wpm.addDefaultRangeEdge(d_wpm.getFixedRangeNode());
 		Pair<RangeEdge> splits = d_wpm.splitRange((RangeEdge) d_wpm.getOutEdges(d_wpm.getFixedRangeNode()).get(0), 21.0, false);
 		d_wpm.getModelForEdge(splits.getFirst()).setValue(new LeafNode(foo));
 		d_wpm.getModelForEdge(splits.getSecond()).setValue(new LeafNode(bar));
 
+		d_pm = new TreatmentCategorizationPresentation(d_tc, d_domain);
 		final ObservableList<Study> fooStudies = d_pm.getCategorizedStudyList(foo).getIncludedStudies();
 		final ObservableList<Study> barStudies = d_pm.getCategorizedStudyList(bar).getIncludedStudies();
 		final ObservableList<Study> bazStudies = d_pm.getCategorizedStudyList(baz).getIncludedStudies();

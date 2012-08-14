@@ -58,7 +58,7 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc =  new CellConstraints();
 				
-		builder.add(GUIFactory.buildStudyPanel(d_pm, d_parent), cc.xy(1, 1));
+		builder.add(GUIFactory.buildStudyPanel(d_pm.getStudyListPresentation(), d_parent), cc.xy(1, 1));
 		
 		return builder.getPanel();
 	}

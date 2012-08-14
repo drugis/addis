@@ -452,7 +452,7 @@ public class DomainImpl extends Domain {
 		}
 		
 		public boolean accept(Study s) {
-			return s.getTreatmentDefinition().contains(d_treatmentDefinition);
+			return s.getTreatmentDefinitions().contains(d_treatmentDefinition);
 		}
 	}
 }

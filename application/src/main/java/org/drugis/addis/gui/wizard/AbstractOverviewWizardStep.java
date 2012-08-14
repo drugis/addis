@@ -27,7 +27,6 @@
 package org.drugis.addis.gui.wizard;
 
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
 

@@ -59,7 +59,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM {
 	public NetworkMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, pmf);
 		
-		d_overviewGraph = new TreatmentDefinitionsGraphModel(getSelectedStudiesModel(), getSelectedRawTreatmentDefinitions(), getOutcomeMeasureModel());
+		d_overviewGraph = new TreatmentDefinitionsGraphModel(getSelectedStudiesModel(), getSelectedRefinedTreatmentDefinitions(), getOutcomeMeasureModel());
 		
 		d_selectedStudyGraphConnectedModel = new StudySelectionCompleteListener();
 	}
@@ -157,7 +157,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractMetaAnalysisWizardPM {
 		Indication indication = getIndicationModel().getValue();
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<Study> studies = getSelectedStudiesModel();
-		List<TreatmentDefinition> definitions = d_rawTreatmentDefinitions;
+		List<TreatmentDefinition> definitions = getSelectedRefinedTreatmentDefinitions();
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = getArmMap();
 		
 		return new NetworkMetaAnalysis(name, indication, om, studies, definitions, armMap);

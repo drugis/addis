@@ -47,7 +47,7 @@ import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.builder.PairWiseMetaAnalysisView;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
-import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
+import org.drugis.addis.presentation.wizard.PairWiseMetaAnalysisWizardPresentation;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
@@ -62,18 +62,18 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class PairwiseMetaAnalysisWizard extends Wizard {
 	
-	public PairwiseMetaAnalysisWizard(AddisWindow mainWindow, MetaAnalysisWizardPresentation pm) {
+	public PairwiseMetaAnalysisWizard(AddisWindow mainWindow, PairWiseMetaAnalysisWizardPresentation pm) {
 		super(buildModel(pm, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 	
-	private static WizardModel buildModel(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
+	private static WizardModel buildModel(PairWiseMetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 		StaticModel wizardModel = new StaticModel();
 		SelectIndicationAndNameWizardStep selectIndicationStep = new SelectIndicationAndNameWizardStep(pm, mainWindow);
 		wizardModel.add(selectIndicationStep);
 		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SelectDrugsWizardStep(pm, mainWindow));
-		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, mainWindow);
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm);
 		wizardModel.add(selectStudiesStep);
 		Bindings.bind(selectStudiesStep, "complete", pm.getMetaAnalysisCompleteModel());
 		wizardModel.add(new SelectArmsWizardStep(pm));
@@ -82,7 +82,7 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 	}
 
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep<TreatmentDefinitionsGraphModel> {
-		public OverviewWizardStep(MetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
+		public OverviewWizardStep(PairWiseMetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 			super(pm, mainWindow);
 		}
 		
@@ -92,7 +92,7 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 
 			setLayout(new BorderLayout()); // needed for placement
 			
-			PairWiseMetaAnalysisPresentation pm = ((MetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
+			PairWiseMetaAnalysisPresentation pm = ((PairWiseMetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
 			final PairWiseMetaAnalysisView mav = new PairWiseMetaAnalysisView(
 					(PairWiseMetaAnalysisPresentation)pm, d_mainWindow);
 			final JComponent panel = mav.getPlotsPanel(true);
@@ -119,11 +119,11 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 	}
 
 	public static class SelectDrugsWizardStep extends PanelWizardStep {
-		MetaAnalysisWizardPresentation d_pm;
+		PairWiseMetaAnalysisWizardPresentation d_pm;
 		JFrame d_frame;
 		private StudyGraph d_studyGraph;
 
-		public SelectDrugsWizardStep(MetaAnalysisWizardPresentation pm, JFrame frame) {
+		public SelectDrugsWizardStep(PairWiseMetaAnalysisWizardPresentation pm, JFrame frame) {
 			super("Select Drugs","Select the drugs to be used for meta analysis.");
 			
 			d_pm = pm;

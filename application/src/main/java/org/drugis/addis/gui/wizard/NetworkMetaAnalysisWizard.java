@@ -35,7 +35,6 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.StudyGraph;
-import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.Wizard;
@@ -63,7 +62,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		wizardModel.add(new SelectDrugsWizardStep(pm));
 		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
 		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm));
-		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, main);
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm);
 		selectStudiesStep.setComplete(true);
 		wizardModel.add(selectStudiesStep);
 		wizardModel.add(new SelectArmsWizardStep(pm));

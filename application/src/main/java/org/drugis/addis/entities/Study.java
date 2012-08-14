@@ -356,7 +356,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public Set<TreatmentDefinition> getTreatmentDefinition() {
+	public Set<TreatmentDefinition> getTreatmentDefinitions() {
 		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
 			drugs.add(getTreatmentDefinition(a));
@@ -810,7 +810,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 */
 	public Set<TreatmentDefinition> getMeasuredTreatmentDefinitions(final Variable v, final WhenTaken wt) {
 		final Set<TreatmentDefinition> definitions = new HashSet<TreatmentDefinition>();
-		for (final TreatmentDefinition d : getTreatmentDefinition()) {
+		for (final TreatmentDefinition d : getTreatmentDefinitions()) {
 			if (wt != null && isMeasured(v, d, wt)) {
 				definitions.add(d);
 			}

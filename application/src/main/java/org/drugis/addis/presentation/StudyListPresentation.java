@@ -28,13 +28,34 @@ package org.drugis.addis.presentation;
 
 import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyCharacteristics;
 
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
-public interface StudyListPresentation {
-
-	public ObservableList<Study> getIncludedStudies();
+public class StudyListPresentation {
+	private CharacteristicVisibleMap d_characteristicVisibleMap = new CharacteristicVisibleMap();
+	protected ObservableList<Study> d_list;
 	
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
+	public StudyListPresentation(ObservableList<Study> list) {
+		d_list = list;
+	}
+	
+	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
+		return d_characteristicVisibleMap.get(c);
+	}
+
+	public ObservableList<Study> getIncludedStudies() {
+		return d_list;
+	}
+
+	public int countVisibleCharacteristics() {
+		int visible = 0;
+		for (Characteristic c : StudyCharacteristics.values()) {
+			if (getCharacteristicVisibleModel(c).booleanValue()) {
+				visible++;
+			}
+		}
+		return visible;
+	}
 }

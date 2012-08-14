@@ -55,11 +55,10 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.DefaultSelectableStudyListPresentation;
-import org.drugis.addis.presentation.DefaultStudyListPresentation;
+import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.SelectableStudyListPresentation;
+import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.CollectionUtil;
@@ -120,9 +119,10 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
 	protected Map<Study, Map<TreatmentDefinition, ModifiableHolder<Arm>>> d_selectedArms;
-	protected DefaultSelectableStudyListPresentation d_selectableStudyListPm;
+	protected SelectableStudyCharTableModel d_selectableStudyListPm;
 	private ObservableList<Study> d_studiesEndpointIndication;
 	private final Map<Drug, ValueHolder<TreatmentCategorization>> d_selectedCategorizations = new HashMap<Drug, ValueHolder<TreatmentCategorization>>();
+	private final ObservableList<Study> d_selectableStudies = new ArrayListModel<Study>();
 	
 	public AbstractMetaAnalysisWizardPM(Domain d, PresentationModelFactory pmf) {
 		super(d, d.getMetaAnalyses());
@@ -165,8 +165,15 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 		d_selectableStudyListPm = createSelectableStudyListPm();
 	}
 
-	private DefaultSelectableStudyListPresentation createSelectableStudyListPm() {
-		DefaultSelectableStudyListPresentation studyList = new DefaultSelectableStudyListPresentation(new DefaultStudyListPresentation(createSelectableStudies()));
+	public void populateSelectableStudies() {
+		d_selectableStudies.clear();
+		d_selectableStudies.addAll(filterStudiesComparing(getOutcomeMeasureModel().getValue(), 
+				getStudiesEndpointAndIndication(), getRefinedAlternativesGraph().getSelectedDefinitions()));
+	}
+	
+	private SelectableStudyCharTableModel createSelectableStudyListPm() {
+		SelectableStudyCharTableModel studyList = new SelectableStudyCharTableModel(
+				new StudyListPresentation(d_selectableStudies), d_pmf);
 		studyList.getSelectedStudiesModel().addListDataListener(new ListDataListener() {
 			public void contentsChanged(ListDataEvent e) {
 				updateArmHolders();
@@ -191,22 +198,6 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 		}
 		d_outcomes.clear();
 		d_outcomes.addAll(outcomeSet);
-	}
-	
-	private ObservableList<Study> createSelectableStudies() {
-		final FilteredObservableList<Study> studies = new FilteredObservableList<Study>(getStudiesEndpointAndIndication(), new SelectedDrugsFilter());
-		getSelectedRawTreatmentDefinitions().addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
-			}
-			public void intervalAdded(ListDataEvent e) {
-				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
-			}
-			public void contentsChanged(ListDataEvent e) {
-				studies.setFilter((Filter<Study>) new SelectedDrugsFilter());
-			}
-		});
-		return studies;
 	}
 	
 	private ObservableList<Study> createStudiesIndicationOutcome() {
@@ -326,7 +317,7 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 		return d_selectedArms.get(study).get(definition);
 	}
 
-	public SelectableStudyListPresentation getSelectableStudyListPM() {
+	public SelectableStudyCharTableModel getSelectableStudyListPM() {
 		return d_selectableStudyListPm;
 	}
 	
@@ -423,17 +414,17 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 		}
 	}
 	
-	public class SelectedDrugsFilter implements Filter<Study> {
-		public boolean accept(Study s) {
-			if(d_outcomeHolder.getValue() == null) {
-				return false;
-			}
-			Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
-			List<TreatmentDefinition> value = getSelectedRawTreatmentDefinitions();
-			drugs.retainAll(value);
-			return drugs.size() >= 2;
-		}
-	}
+//	public class SelectedDefinitionsFilter implements Filter<Study> {
+//		public boolean accept(Study s) {
+//			if(d_outcomeHolder.getValue() == null) {
+//				return false;
+//			}
+//			Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
+//			List<TreatmentDefinition> value = getSelectedRefinedTreatmentDefinitions();
+//			drugs.retainAll(value);
+//			return drugs.size() >= 2;
+//		}
+//	}
 
 	public class StudyArmDrugsFilter implements Filter<Arm> {
 		private final TreatmentDefinition d_definitions;
