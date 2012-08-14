@@ -79,7 +79,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	
 	public AbstractMetaAnalysis(String type, String name,
 			Indication indication, OutcomeMeasure om,
-			List<Study> studies, List<TreatmentDefinition> drugs,
+			List<Study> studies, List<TreatmentDefinition> defs,
 			Map<Study, Map<TreatmentDefinition, Arm>> armMap) 
 	throws IllegalArgumentException {
 		super(name);
@@ -87,7 +87,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		checkArmsMatchTreatmentDefinitions(armMap);
 		d_type = type;
 
-		d_alternatives = drugs;
+		d_alternatives = defs;
 		d_studies = studies;
 		d_indication = indication;
 		d_outcome = om;
@@ -116,7 +116,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	public AbstractMetaAnalysis(String type, String name,
 			Indication indication, OutcomeMeasure om,
 			Map<Study, Map<TreatmentDefinition, Arm>> armMap) { 
-		this(type, name, indication, om, calculateStudies(armMap), calculateDrugs(armMap), armMap);
+		this(type, name, indication, om, calculateStudies(armMap), calculateDefinitions(armMap), armMap);
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 		return armList;
 	}
 
-	private static List<TreatmentDefinition> calculateDrugs(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+	private static List<TreatmentDefinition> calculateDefinitions(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		SortedSet<TreatmentDefinition> drugs = new TreeSet<TreatmentDefinition>();
 		for (Map<TreatmentDefinition, Arm> entry : armMap.values()) {
 			drugs.addAll(entry.keySet());

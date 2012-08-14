@@ -70,7 +70,6 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 		for(MTCModelWrapper<TreatmentDefinition> model : d_models.keySet()) { 
 			model.addPropertyChangeListener(new PropertyChangeListener() {		
-				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getPropertyName().equals(MTCModelWrapper.PROPERTY_DESTROYED)) { 
 						d_models.remove(evt.getSource());
@@ -131,7 +130,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		return getBean().getInconsistencyModel();
 	}
 
-	public List<TreatmentDefinition> getIncludedDrugs() {
+	public List<TreatmentDefinition> getAlternatives() {
 		return getBean().getAlternatives();
 	}
 

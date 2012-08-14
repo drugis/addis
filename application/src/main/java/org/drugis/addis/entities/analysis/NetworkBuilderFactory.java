@@ -126,7 +126,7 @@ public class NetworkBuilderFactory {
 			for (TreatmentDefinition d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicContinuousMeasurement cm = (BasicContinuousMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
-					builder.add(s.getName(), s.getTreatmentDefinition(armMap.get(s).get(d)), cm.getMean(), cm.getStdDev(), cm.getSampleSize());
+					builder.add(s.getName(), d, cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 				}
         	}
         }
@@ -139,7 +139,7 @@ public class NetworkBuilderFactory {
 			for (TreatmentDefinition d : drugs) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicRateMeasurement brm = (BasicRateMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
-					builder.add(s.getName(), s.getTreatmentDefinition(armMap.get(s).get(d)), brm.getRate(), brm.getSampleSize());
+					builder.add(s.getName(), d, brm.getRate(), brm.getSampleSize());
 				}
         	}
         }

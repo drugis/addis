@@ -622,16 +622,13 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-
-
-
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
 	private TablePanel createNetworkTablePanel(final MTCModelWrapper<TreatmentDefinition> mtc) {
-		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getIncludedDrugs(), mtc));
+		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getAlternatives(), mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);

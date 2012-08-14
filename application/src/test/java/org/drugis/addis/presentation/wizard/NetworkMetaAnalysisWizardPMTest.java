@@ -385,7 +385,13 @@ public class NetworkMetaAnalysisWizardPMTest {
 	}
 	
 	//// Beyond here we should have REFINED TreatmentDefinitions.
-
+	
+	private void rebuildGraphs() {
+		d_pm.rebuildRawAlternativesGraph();
+		d_pm.rebuildRefinedAlternativesGraph();
+		d_pm.populateSelectableStudies();
+	}
+	
 	@Test
 	public void testSelectableStudyListPM() {
 		SelectableStudyCharTableModel listModel = d_pm.getSelectableStudyListPM();
@@ -499,7 +505,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_sertrSet}));
 		d_pm.populateSelectableStudies();
 
-		assertTrue(d_pm.getSelectedStudiesModel().contains(study));
+		assertTrue(d_pm.getSelectedStudies().contains(study));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
 		assertNull(d_pm.getSelectedArmModel(study, d_sertrSet));
@@ -511,11 +517,11 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getSelectedRefinedTreatmentDefinitions().remove(d_paroxSet);
 		d_pm.populateSelectableStudies();
 
-		assertFalse(d_pm.getSelectedStudiesModel().contains(study));
+		assertFalse(d_pm.getSelectedStudies().contains(study));
 		d_pm.getSelectedRefinedTreatmentDefinitions().add(d_paroxSet);
 		d_pm.populateSelectableStudies();
 
-		assertTrue(d_pm.getSelectedStudiesModel().contains(study));
+		assertTrue(d_pm.getSelectedStudies().contains(study));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
 	}
 
@@ -525,9 +531,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRawAlternativesGraph();
-		d_pm.rebuildRefinedAlternativesGraph();
-		d_pm.populateSelectableStudies();
+		rebuildGraphs();
 
 		d_pm.rebuildOverviewGraph();
 		assertEquals(3, graphModel.vertexSet().size());
@@ -544,6 +548,8 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertEquals(2, graphModel.vertexSet().size());
 		assertEquals(0, graphModel.edgeSet().size());
 	}
+
+
 	
 	@Test
 	/* This test is motivated by bug #337, in which multiple drugs had only missing measurements;
@@ -555,9 +561,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_pm.rebuildRawAlternativesGraph();
-		d_pm.rebuildRefinedAlternativesGraph();
-		d_pm.populateSelectableStudies();
+		rebuildGraphs();
 
 		d_pm.rebuildOverviewGraph();
 		assertEquals(2, graphModel.vertexSet().size());
@@ -568,9 +572,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
-		d_pm.rebuildRawAlternativesGraph();
-		d_pm.rebuildRefinedAlternativesGraph();
-		d_pm.populateSelectableStudies();
+		rebuildGraphs();
 
 		d_pm.rebuildOverviewGraph();
 		assertEquals(3, graphModel.vertexSet().size());
@@ -600,9 +602,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRawAlternativesGraph();
-		d_pm.rebuildRefinedAlternativesGraph();
-		d_pm.populateSelectableStudies();
+		rebuildGraphs();
 
 		// Remove Parox studies
 		d_pm.getSelectableStudyListPM().getSelectedStudyBooleanModel(
@@ -621,9 +621,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 	public void testOverviewGraphConnectedModel() {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
-		d_pm.rebuildRawAlternativesGraph();
-		d_pm.rebuildRefinedAlternativesGraph();
-		d_pm.populateSelectableStudies();
+		rebuildGraphs();
 
 		d_pm.rebuildOverviewGraph();
 		ValueHolder<Boolean> completeModel = d_pm.getOverviewGraphConnectedModel();
@@ -653,36 +651,28 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_pm.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
 		d_pm.rebuildRawAlternativesGraph();
+		TreatmentCategorization fluoxCat = ExampleData.buildCategorizationFixedFlexible(ExampleData.buildDrugFluoxetine());
+		d_pm.getCategorizationModel(ExampleData.buildDrugFluoxetine()).setValue(fluoxCat);
 		d_pm.rebuildRefinedAlternativesGraph();
 
-		d_pm.getSelectedRefinedTreatmentDefinitions().clear();
-		d_pm.getSelectedRefinedTreatmentDefinitions().addAll(Arrays.asList(new TreatmentDefinition[] {
-				d_fluoxSet,
-				d_paroxSet,
-				d_sertrSet}));
 		d_pm.populateSelectableStudies();
-
+		TreatmentDefinition fluoxFixed = new TreatmentDefinition(fluoxCat.getCategory(new FixedDose()));
+		
 		Study multiple = ExampleData.buildStudyMultipleArmsperDrug();
 		List<Arm> arms = new ArrayList<Arm>(multiple.getArms());
 		arms.remove(d_pm.getSelectedArmModel(multiple, d_paroxSet).getValue());
-		arms.remove(d_pm.getSelectedArmModel(multiple, d_fluoxSet).getValue());
+		arms.remove(d_pm.getSelectedArmModel(multiple, fluoxFixed).getValue());
+
 		Arm arm = arms.get(0); // The currently unused arm 
 		d_pm.getSelectedArmModel(multiple, d_paroxSet).setValue(arm);
 		
 		NetworkMetaAnalysis ma = d_pm.createAnalysis("name");
-		
 		assertEquals(d_pm.getSelectedRefinedTreatmentDefinitions(), ma.getAlternatives());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
 				d_pm.getSelectableStudyListPM().getSelectedStudiesModel());
 		assertEquals(d_pm.getOutcomeMeasureModel().getValue(), ma.getOutcomeMeasure());
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
 		assertEquals(arm, ma.getArm(multiple, d_paroxSet));
-		for (Study s : ma.getIncludedStudies()) {
-			for (TreatmentDefinition d : s.getTreatmentDefinitions()) {
-				assertNotNull(ma.getArm(s, d));
-			}
-		}
-		
 		d_pm.getSelectedRefinedTreatmentDefinitions().remove(d_sertrSet);
 		ma = d_pm.createAnalysis("name");
 		assertEquals(d_pm.getSelectedRefinedTreatmentDefinitions(), ma.getAlternatives());

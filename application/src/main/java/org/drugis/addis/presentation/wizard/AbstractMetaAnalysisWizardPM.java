@@ -45,7 +45,6 @@ import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang.ArrayUtils;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -55,11 +54,11 @@ import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.SelectableStudyCharTableModel;
 import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
+import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.CollectionUtil;
 import org.drugis.common.beans.FilteredObservableList;
@@ -295,10 +294,10 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 	protected void updateArmHolders() {
 		d_selectedArms.clear();
 		
-		for(Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
+		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
 			d_selectedArms.put(s, new HashMap<TreatmentDefinition, ModifiableHolder<Arm>>());
-			for(TreatmentDefinition d : getSelectedRawTreatmentDefinitions()){
-				if(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).contains(d)) {
+			for (TreatmentDefinition d : getSelectedRefinedTreatmentDefinitions()) {
+				if (!s.getMeasuredArms(d_outcomeHolder.getValue(), d).isEmpty()) {
 					d_selectedArms.get(s).put(d, new ModifiableHolder<Arm>(getDefaultArm(s, d)));
 				}
 			}
@@ -310,7 +309,7 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 	}
 
 	public ObservableList<Arm> getArmsPerStudyPerDefinition(Study study, TreatmentDefinition definition) {
-		return new FilteredObservableList<Arm>(study.getArms(), new StudyArmDrugsFilter(study, definition));
+		return study.getMeasuredArms(d_outcomeHolder.getValue(), definition);
 	}
 
 	public ModifiableHolder<Arm> getSelectedArmModel(Study study, TreatmentDefinition definition) {
@@ -412,31 +411,5 @@ public abstract class AbstractMetaAnalysisWizardPM extends AbstractAnalysisWizar
 					s.getOutcomeMeasures().contains(d_outcomeHolder.getValue()) && 
 					s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).size() >= 2;
 		}
-	}
-	
-//	public class SelectedDefinitionsFilter implements Filter<Study> {
-//		public boolean accept(Study s) {
-//			if(d_outcomeHolder.getValue() == null) {
-//				return false;
-//			}
-//			Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>(s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()));
-//			List<TreatmentDefinition> value = getSelectedRefinedTreatmentDefinitions();
-//			drugs.retainAll(value);
-//			return drugs.size() >= 2;
-//		}
-//	}
-
-	public class StudyArmDrugsFilter implements Filter<Arm> {
-		private final TreatmentDefinition d_definitions;
-		private final Study d_study;
-		public StudyArmDrugsFilter(Study s, TreatmentDefinition definitions) {
-			d_study = s;
-			d_definitions = definitions;
-		}
-		public boolean accept(Arm a) {
-			BasicMeasurement measurement = d_study.getMeasurement(d_outcomeHolder.getValue(), a);
-			return d_study.getTreatmentDefinition(a).equals(d_definitions) && measurement != null && measurement.isComplete();
-		}
-
 	}
 }

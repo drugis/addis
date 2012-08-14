@@ -82,7 +82,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(d_layout, row);
 			
-			for (TreatmentDefinition def: d_pm.getSelectedRawTreatmentDefinitions()) {
+			for (TreatmentDefinition def: d_pm.getSelectedRefinedTreatmentDefinitions()) {
 				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
 					row = createArmSelect(row, curStudy, def, cc);
 				}
@@ -96,12 +96,12 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		setComplete(true);
 	}
 
-	private int createArmSelect(int row, final Study curStudy, TreatmentDefinition drug, CellConstraints cc) {
-		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
+	private int createArmSelect(int row, final Study curStudy, TreatmentDefinition def, CellConstraints cc) {
+		d_builder.addLabel(def.getLabel(), cc.xy(2, row));
 		
-		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, drug);
+		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, def);
 
-		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug), true);
+		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, def), true);
 		if (arms.getSize() == 1)
 			drugBox.setEnabled(false);
 		final JPanel drugAndDosePanel = new JPanel(new BorderLayout());
