@@ -96,6 +96,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	private ObservableList<Study> d_studiesEndpointIndication;
 	private final Map<Drug, ValueHolder<TreatmentCategorization>> d_selectedCategorizations = new HashMap<Drug, ValueHolder<TreatmentCategorization>>();
 	private final ObservableList<Study> d_selectableStudies = new ArrayListModel<Study>();
+	private boolean d_rebuildRawNeeded = true;
 	
 	
 
@@ -138,7 +139,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	
 		d_outcomeHolder = new ModifiableHolder<OutcomeMeasure>();
 		
-		d_indicationHolder.addPropertyChangeListener(new SetEmptyListener(d_outcomeHolder));
+		d_indicationHolder.addPropertyChangeListener(new ClearValueModelsOnPropertyChangeListener(d_outcomeHolder));
 		updateOutcomes();
 		d_indicationHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -147,6 +148,17 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		});
 		
 		d_studiesEndpointIndication = createStudiesIndicationOutcome();
+		d_studiesEndpointIndication.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {
+				d_rebuildRawNeeded  = true;
+			}
+			public void intervalAdded(ListDataEvent e) {
+				d_rebuildRawNeeded = true;
+			}
+			public void contentsChanged(ListDataEvent e) {
+				d_rebuildRawNeeded = true;
+			}
+		});
 
 		d_rawTreatmentDefinitions = new ArrayListModel<TreatmentDefinition>();
 		d_rawAlternativesGraph = buildRawAlternativesGraph();
@@ -395,7 +407,10 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 
 
-	public void rebuildRawAlternativesGraph() {
+	public boolean rebuildRawAlternativesGraph() {
+		if (!d_rebuildRawNeeded) {
+			return false;
+		}
 		// Determine set of treatment definitions
 		SortedSet<TreatmentDefinition> definitions = new TreeSet<TreatmentDefinition>();
 		if (d_indicationHolder.getValue() != null && d_outcomeHolder.getValue() != null) {
@@ -408,6 +423,9 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		
 		// Rebuild the graph
 		d_rawAlternativesGraph.rebuildGraph();
+		
+		d_rebuildRawNeeded = false;
+		return true;
 	}
 
 

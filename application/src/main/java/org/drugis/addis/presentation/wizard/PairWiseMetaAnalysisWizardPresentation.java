@@ -52,49 +52,44 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisWizardPM {
-	private ModifiableHolder<TreatmentDefinition> d_firstDefinitionHolder;
-	private ModifiableHolder<TreatmentDefinition> d_secondDefinitionHolder;
+	private final ModifiableHolder<TreatmentDefinition> d_firstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	private final ModifiableHolder<TreatmentDefinition> d_secondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private PairWiseMetaAnalysisPresentation d_pm;
+	
 	public PairWiseMetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
 				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_selectableStudyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
-		buildDefinitionHolders();
-	}
-
-	private void buildDefinitionHolders() {
-		d_firstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();		
-		d_secondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
-
-		d_firstDefinitionHolder.addValueChangeListener(new PropertyChangeListener(){
+		d_firstDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 //				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDefinition())) {
 //					d_secondDefinitionHolder.setValue(null);
 //				}
 				updateRawDefinitionsGraph();
-
 			}
 		});
-
-		d_secondDefinitionHolder.addValueChangeListener(new PropertyChangeListener(){
+		
+		d_secondDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 //				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDefinition())) {
 //					d_firstDefinitionHolder.setValue(null);
-//				}					
+//				}
 				updateRawDefinitionsGraph();
 			}			
 		});
-	
-		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDefinitionHolder, d_secondDefinitionHolder}));
-		
+			
+		d_outcomeHolder.addPropertyChangeListener(new ClearValueModelsOnPropertyChangeListener(new ModifiableHolder[]{d_firstDefinitionHolder, d_secondDefinitionHolder}));
 	}
 	
 	@Override
-	public void rebuildRawAlternativesGraph() {
-		super.rebuildRawAlternativesGraph();
-		updateRawDefinitionsGraph();
+	public boolean rebuildRawAlternativesGraph() {
+		if (super.rebuildRawAlternativesGraph()) {
+			updateRawDefinitionsGraph();
+			return true;
+		}
+		return false;
 	}
 	
 	private void updateRawDefinitionsGraph() {

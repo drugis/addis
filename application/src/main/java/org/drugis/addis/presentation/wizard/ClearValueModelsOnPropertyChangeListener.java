@@ -32,23 +32,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drugis.addis.presentation.ModifiableHolder;
+import com.jgoodies.binding.value.ValueModel;
 
-@SuppressWarnings("rawtypes")
-public class SetEmptyListener implements PropertyChangeListener {
-	private List<ModifiableHolder> holders;
+public class ClearValueModelsOnPropertyChangeListener implements PropertyChangeListener {
+	private List<ValueModel> holders;
 	
-	public SetEmptyListener(ModifiableHolder h) {
-		holders = new ArrayList<ModifiableHolder>();
+	public ClearValueModelsOnPropertyChangeListener(ValueModel h) {
+		holders = new ArrayList<ValueModel>();
 		holders.add(h);
 	}
 	
-	public SetEmptyListener(ModifiableHolder[] holders) {
+	public ClearValueModelsOnPropertyChangeListener(ValueModel[] holders) {
 		this.holders = Arrays.asList(holders);
 	}
 	
 	public void propertyChange(PropertyChangeEvent arg0) {
-		for (ModifiableHolder h : holders) {
+		for (ValueModel h : holders) {
 			h.setValue(null);
 		}
 	}
