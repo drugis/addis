@@ -78,14 +78,15 @@ public class SelectableTreatmentDefinitionsGraphModel extends TreatmentDefinitio
 	}
 	
 	private void updateComplete() {
-		d_complete.setValue(getSelectedDefinitions().size() > 1 && isSelectionConnected());
+		d_complete.setValue(getDefinitions().size() > 1 && isSelectionConnected());
 	}
 	
 	public ValueHolder<Boolean> getSelectionCompleteModel() {
 		return d_complete;
 	}
 
-	public ObservableList<TreatmentDefinition> getSelectedDefinitions() {
+	@Override
+	public ObservableList<TreatmentDefinition> getDefinitions() {
 		return d_selectedDefinitions;
 	}
 	

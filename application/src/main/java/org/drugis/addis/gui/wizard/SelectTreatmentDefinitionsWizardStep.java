@@ -41,8 +41,9 @@ public class SelectTreatmentDefinitionsWizardStep extends AbstractSelectTreatmen
 	private static final long serialVersionUID = 2928649302800999758L;
 
 	public SelectTreatmentDefinitionsWizardStep(NetworkMetaAnalysisWizardPM pm) {
-		super("Select defintions",
-				"Select the treatment to be used for the network meta-analysis. Click to select (green) or deselect (gray).  To continue, (1) at least two definitions must be selected, and (2) all selected definitions must be connected.",
+		super("Select Definitions",
+				"Select the treatment to be used for the network meta-analysis. Click to select (green) or deselect (gray).  " +
+				"To continue, (1) at least two definitions must be selected, and (2) all selected definitions must be connected.",
 				pm.getRefinedAlternativesGraph());
 		d_pm = pm;
 

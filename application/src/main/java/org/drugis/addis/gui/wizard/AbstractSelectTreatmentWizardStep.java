@@ -31,14 +31,14 @@ import javax.swing.Icon;
 
 import org.drugis.addis.gui.SelectableTreatmentDefinitionsGraph;
 import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
 
 public class AbstractSelectTreatmentWizardStep extends PanelWizardStep {
 
 	private static final long serialVersionUID = 1746696286888281689L;
 	protected SelectableTreatmentDefinitionsGraph d_studyGraph;
-	protected AbstractMetaAnalysisWizardPM d_pm;
+	protected NetworkMetaAnalysisWizardPM d_pm;
 
 	public AbstractSelectTreatmentWizardStep(String name, String summary, SelectableTreatmentDefinitionsGraphModel selectableStudyGraphModel) {
 		super(name, summary);

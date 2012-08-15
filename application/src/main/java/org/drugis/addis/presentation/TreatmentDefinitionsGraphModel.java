@@ -190,7 +190,7 @@ public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<Tr
 	 * Return the list of drugs that are included in at least one of the studies having the correct indication
 	 * and outcome.
 	 */
-	public List<TreatmentDefinition> getTreatmentDefinitions() {
+	public ObservableList<TreatmentDefinition> getDefinitions() {
 		return d_definitions;
 	}
 	

@@ -32,7 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.renderer.EntityCellRenderer;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.gui.table.EnhancedTable;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -41,10 +41,10 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 @SuppressWarnings("serial")
 public class SelectStudiesWizardStep extends PanelWizardStep {
 
-	private final AbstractMetaAnalysisWizardPM d_pm;
+	private final NetworkMetaAnalysisWizardPM d_pm;
 	private EnhancedTable d_table;
 
-	public SelectStudiesWizardStep(AbstractMetaAnalysisWizardPM pm) {
+	public SelectStudiesWizardStep(NetworkMetaAnalysisWizardPM pm) {
 		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
 		d_pm = pm;
 	}

@@ -34,12 +34,12 @@ import javax.swing.JLabel;
 import javax.swing.ListModel;
 
 import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.PanelWizardStep;
 
 @SuppressWarnings("serial")
 public class SelectEndpointWizardStep extends PanelWizardStep {
-	public SelectEndpointWizardStep(AbstractMetaAnalysisWizardPM pm) {
+	public SelectEndpointWizardStep(NetworkMetaAnalysisWizardPM pm) {
 		super("Select Outcome","Select an outcome measure (endpoint or adverse event) that you want to use for this meta analysis.");
 		add(new JLabel("Outcome measure : "));
 

@@ -81,7 +81,7 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		return wizardModel;
 	}
 
-	public static class OverviewWizardStep extends AbstractOverviewWizardStep<TreatmentDefinitionsGraphModel> {
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep {
 		public OverviewWizardStep(PairWiseMetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 			super(pm, mainWindow);
 		}
@@ -89,7 +89,8 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		@Override
 		public void prepare() {
 			removeAll();
-
+			d_pm.rebuildOverviewGraph();
+			
 			setLayout(new BorderLayout()); // needed for placement
 			
 			PairWiseMetaAnalysisPresentation pm = ((PairWiseMetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
@@ -152,14 +153,14 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		}
 		
 		private Component buildStudiesGraph() {
-			TreatmentDefinitionsGraphModel pm = d_pm.getRefinedAlternativesGraph();
+			TreatmentDefinitionsGraphModel pm = d_pm.getRawAlternativesGraph();
 			d_studyGraph = new StudyGraph(pm);
 			return d_studyGraph;
 		}
 		
 		@Override
 		public void prepare() {
-			d_pm.rebuildRefinedAlternativesGraph();
+			d_pm.rebuildRawAlternativesGraph();
 			d_studyGraph.layoutGraph();
 		}
 

@@ -39,12 +39,12 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.common.beans.AbstractObservableList;
 import org.drugis.common.event.ListDataEventProxy;
 
@@ -53,7 +53,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class PairWiseMetaAnalysisWizardPresentation extends AbstractMetaAnalysisWizardPM {
+public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisWizardPM {
 	private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
 	private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
@@ -64,10 +64,10 @@ public class PairWiseMetaAnalysisWizardPresentation extends AbstractMetaAnalysis
 				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_selectableStudyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
+		buildDefinitionHolders();
 	}
 
-	@Override
-	protected void buildDefinitionHolders() {
+	private void buildDefinitionHolders() {
 		d_firstDrugHolder = new ModifiableHolder<TreatmentDefinition>();		
 		d_secondDrugHolder = new ModifiableHolder<TreatmentDefinition>();
 
@@ -171,16 +171,6 @@ public class PairWiseMetaAnalysisWizardPresentation extends AbstractMetaAnalysis
 	private TreatmentDefinition getSecondDrug() {
 		return d_secondDrugHolder.getValue();
 	}
-
-	@Override
-	public ObservableList<TreatmentDefinition> getSelectedRawTreatmentDefinitions() {
-		return d_selectedTreatmentDefinitions; // FIXME
-	}
-
-	@Override
-	public ObservableList<TreatmentDefinition> getSelectedRefinedTreatmentDefinitions() {
-		return d_selectedTreatmentDefinitions; // FIXME
-	}
 	
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
@@ -230,18 +220,7 @@ public class PairWiseMetaAnalysisWizardPresentation extends AbstractMetaAnalysis
 		return d_pm;
 	}
 
-	@Override
-	protected TreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
-		return new TreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions,  d_outcomeHolder);
-	}
-
-	@Override
-	protected TreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
-		return new TreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions,  d_outcomeHolder);				
-	}
-
-	@Override
-	public RandomEffectsMetaAnalysis createAnalysis(String name) {
+	public MetaAnalysis createAnalysis(String name) {
 		RandomEffectsMetaAnalysis ma = null;
 		if (d_pm == null) {
 			ma = buildMetaAnalysis();

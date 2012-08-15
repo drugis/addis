@@ -44,7 +44,7 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
-		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
+		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getDefinitions();
 		SelectedDrugsGraphListener listener =
 			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
 		graph.addMouseListener(listener);
@@ -53,7 +53,7 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 	
 	@Override
 	protected MyDefaultCellViewFactory getCellFactory() {
-		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions());
+		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getDefinitions());
 	}	
 
 }
