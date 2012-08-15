@@ -54,13 +54,21 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		getTitleComponent().setPreferredSize(new Dimension(550, 100));
 	}
 
-	private static WizardModel buildModel(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
+	private static WizardModel buildModel(final NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, main));
 		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SelectDrugsWizardStep(pm));
+		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm.getRawAlternativesGraph(), new Runnable() {
+			public void run() {
+				pm.rebuildRawAlternativesGraph();
+			}
+		}, "Select Drugs", pm.getRawDescription()));		
 		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
-		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm));
+		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm.getRefinedAlternativesGraph(), new Runnable() {
+			public void run() {
+				pm.rebuildRefinedAlternativesGraph();
+			}
+		}, "Select Definitions", pm.getRefinedDescription()));
 		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm);
 		selectStudiesStep.setComplete(true);
 		wizardModel.add(selectStudiesStep);

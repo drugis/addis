@@ -65,6 +65,7 @@ import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
 import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Edge;
 import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.util.IndifferentListDataListener;
 import org.drugis.common.CollectionUtil;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
@@ -79,17 +80,24 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentation<MetaAnalysis> {
+	private static final String TEMPLATE_DEFINITIONS_DESCRIPTION =
+			"Select the %1$s to be used for the network meta-analysis. Click to select (green) or deselect (gray).  " +
+			"To continue, (1) at least %2$s must be selected, and (2) all selected %1$s must be connected.";
+	
 	private final TreatmentDefinitionsGraphModel d_overviewGraph;
 	private final ValueHolder<Boolean> d_selectedStudyGraphConnectedModel;
 	protected PresentationModelFactory d_pmf;
 	protected ModifiableHolder<OutcomeMeasure> d_outcomeHolder;
 	private ObservableList<OutcomeMeasure> d_outcomes = new ArrayListModel<OutcomeMeasure>();
+	
 	/** First graph containing only Trivial Categorizations (previously DrugSets) **/
 	protected final ObservableList<TreatmentDefinition> d_rawTreatmentDefinitions;
 	protected SelectableTreatmentDefinitionsGraphModel d_rawAlternativesGraph;
+	
 	/** Second graph containing definitions transformed by the selection of TreatmentCategorizations **/
 	protected final ObservableList<TreatmentDefinition> d_refinedTreatmentDefinitions;
 	protected SelectableTreatmentDefinitionsGraphModel d_refinedAlternativesGraph;
+	
 	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
 	protected Map<Study, Map<TreatmentDefinition, ModifiableHolder<Arm>>> d_selectedArms;
 	protected SelectableStudyCharTableModel d_selectableStudyListPm;
@@ -98,8 +106,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	private final ObservableList<Study> d_selectableStudies = new ArrayListModel<Study>();
 	private boolean d_rebuildRawNeeded = true;
 	
-	
-
 	/**
 	 * Create a filtered list of studies that includes only those studies that
 	 * compare at least two of the definitions on the given variable.
@@ -148,15 +154,9 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		});
 		
 		d_studiesEndpointIndication = createStudiesIndicationOutcome();
-		d_studiesEndpointIndication.addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				d_rebuildRawNeeded  = true;
-			}
-			public void intervalAdded(ListDataEvent e) {
-				d_rebuildRawNeeded = true;
-			}
-			public void contentsChanged(ListDataEvent e) {
-				d_rebuildRawNeeded = true;
+		d_studiesEndpointIndication.addListDataListener(new IndifferentListDataListener() {
+			protected void update() {
+				d_rebuildRawNeeded = true;	
 			}
 		});
 
@@ -166,15 +166,9 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		d_refinedTreatmentDefinitions = new ArrayListModel<TreatmentDefinition>();
 		d_refinedAlternativesGraph = buildRefinedAlternativesGraph();
 		
-		getSelectedRefinedTreatmentDefinitions().addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void contentsChanged(ListDataEvent e) {
-				updateArmHolders();
+		getSelectedRefinedTreatmentDefinitions().addListDataListener(new IndifferentListDataListener() {
+			protected void update() {
+				updateArmHolders();	
 			}
 		});
 		
@@ -201,18 +195,18 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 
 	protected SelectableTreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
-		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions, d_outcomeHolder);
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions, d_outcomeHolder, 1, -1);
 	}
 
 	protected SelectableTreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
-		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions, d_outcomeHolder);
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions, d_outcomeHolder, 2, -1);
 	}
 	
 	public ValueModel getRawSelectionCompleteModel() {
 		return getRawAlternativesGraph().getSelectionCompleteModel();
 	}
 	
-	public ValueModel getRefinedConnectedDrugsSelectedModel() {
+	public ValueModel getRefinedSelectionCompleteModel() {
 		return getRefinedAlternativesGraph().getSelectionCompleteModel();
 	}
 	
@@ -395,15 +389,21 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 
 
-	public void rebuildRefinedAlternativesGraph() {
+	public boolean rebuildRefinedAlternativesGraph() {
 		SortedSet<TreatmentDefinition> definitions = new TreeSet<TreatmentDefinition>(permuteTreatmentDefinitions());
 		OutcomeMeasure om = getOutcomeMeasureModel().getValue();
 		List<Study> studies = filterStudiesComparing(om, getStudiesEndpointAndIndication(), definitions);
 		List<TreatmentDefinition> defs = filterDefinitionsMeasured(om, definitions, studies);
+
+		if (d_refinedTreatmentDefinitions.equals(defs)) {
+			return false;
+		}
+		
 		d_refinedTreatmentDefinitions.clear();
 		d_refinedTreatmentDefinitions.addAll(defs);
 		
 		d_refinedAlternativesGraph.rebuildGraph();
+		return true;
 	}
 
 
@@ -451,7 +451,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 			}
 		}
 	}
-
 
 	private Arm getDefaultArm(Study s, TreatmentDefinition d) {
 		return getArmsPerStudyPerDefinition(s, d).get(0);
@@ -520,16 +519,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		categorizations.add(0, TreatmentCategorization.createTrivial(drug));
 		return categorizations;
 	}
-	
-	/** 
-	 * Internal utility for tests. This will reset all the graph states and usage is prohibited in the GUI.
-	 */
-	protected void rebuildAllGraphs() { 
-		rebuildRawAlternativesGraph();
-		permuteTreatmentDefinitions();
-		rebuildRefinedAlternativesGraph();
-		rebuildOverviewGraph();
-	}
 
 	public ValueModel getCategorizationModel(Drug drug) {
 		if(d_selectedCategorizations.get(drug) == null) { 
@@ -579,5 +568,25 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		}		
 	}
 	
+	/** 
+	 * Internal utility for tests. This will reset all the graph states and usage is prohibited in the GUI.
+	 */
+	protected void rebuildAllGraphs() { 
+		rebuildRawAlternativesGraph();
+		permuteTreatmentDefinitions();
+		rebuildRefinedAlternativesGraph();
+		rebuildOverviewGraph();
+	}
+
+	public String getRawDescription() {
+		return String.format(getDescriptionTemplate(), "drugs", "one drug");
+	}
+
+	public String getRefinedDescription() {
+		return String.format(getDescriptionTemplate(), "treatment definitions", "two definitions");
+	}
 	
+	protected String getDescriptionTemplate() {
+		return TEMPLATE_DEFINITIONS_DESCRIPTION;
+	}
 }

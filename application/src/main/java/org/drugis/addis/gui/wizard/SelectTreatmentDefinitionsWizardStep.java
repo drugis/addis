@@ -28,24 +28,30 @@ package org.drugis.addis.gui.wizard;
 
 import java.awt.BorderLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 
-import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
+import org.drugis.addis.gui.SelectableTreatmentDefinitionsGraph;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
+import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class SelectTreatmentDefinitionsWizardStep extends AbstractSelectTreatmentWizardStep {
+public class SelectTreatmentDefinitionsWizardStep extends PanelWizardStep {
 	private static final long serialVersionUID = 2928649302800999758L;
+	private Runnable d_rebuild;
+	private SelectableTreatmentDefinitionsGraph d_studyGraph;
 
-	public SelectTreatmentDefinitionsWizardStep(NetworkMetaAnalysisWizardPM pm) {
-		super("Select Definitions",
-				"Select the treatment to be used for the network meta-analysis. Click to select (green) or deselect (gray).  " +
-				"To continue, (1) at least two definitions must be selected, and (2) all selected definitions must be connected.",
-				pm.getRefinedAlternativesGraph());
-		d_pm = pm;
+	public SelectTreatmentDefinitionsWizardStep(
+			SelectableTreatmentDefinitionsGraphModel graph, 
+			Runnable rebuild, 
+			String title, 
+			String description) {
+		super(title, description);
+		d_rebuild = rebuild;
 
 		setLayout(new BorderLayout());
 		    
@@ -57,18 +63,25 @@ public class SelectTreatmentDefinitionsWizardStep extends AbstractSelectTreatmen
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		
+		d_studyGraph = buildStudiesGraph(graph);
 		builder.add(d_studyGraph, cc.xy(1, 1));
 		
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
 		
-		Bindings.bind(this, "complete", pm.getRefinedConnectedDrugsSelectedModel());
+		Bindings.bind(this, "complete", graph.getSelectionCompleteModel());
+	}
+	
+	private SelectableTreatmentDefinitionsGraph buildStudiesGraph(SelectableTreatmentDefinitionsGraphModel graph) {
+		SelectableTreatmentDefinitionsGraph studyGraph = new SelectableTreatmentDefinitionsGraph(graph);
+		studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		return studyGraph;
 	}
 	
 	@Override
 	public void prepare() {
-		d_pm.rebuildRefinedAlternativesGraph();
+		d_rebuild.run();
 		d_studyGraph.layoutGraph();
 	}
 }

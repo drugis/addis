@@ -74,7 +74,7 @@ public class SelectableTreatmentDefinitionsGraphModelTest {
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
-		d_pm = new SelectableTreatmentDefinitionsGraphModel(studies, d_drugListHolder, outcome);
+		d_pm = new SelectableTreatmentDefinitionsGraphModel(studies, d_drugListHolder, outcome, 2, -1);
 	}
 	
 	@Test

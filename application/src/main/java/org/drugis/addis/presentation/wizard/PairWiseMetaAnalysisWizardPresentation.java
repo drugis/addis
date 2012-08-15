@@ -45,6 +45,7 @@ import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
 import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -52,8 +53,16 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisWizardPM {
-	private final ModifiableHolder<TreatmentDefinition> d_firstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
-	private final ModifiableHolder<TreatmentDefinition> d_secondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	private static final String TEMPLATE_DEFINITIONS_DESCRIPTION =
+			"Select the %1$s to be used for the meta-analysis. " +
+			"To continue, (1) at least %2$s must be selected, and (2) the selected %1$s must be connected.";
+	
+	private final ModifiableHolder<TreatmentDefinition> d_rawFirstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	private final ModifiableHolder<TreatmentDefinition> d_rawSecondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	
+	private final ModifiableHolder<TreatmentDefinition> d_refinedFirstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	private final ModifiableHolder<TreatmentDefinition> d_refinedSecondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
 	private PairWiseMetaAnalysisPresentation d_pm;
 	
@@ -62,49 +71,86 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 				
 		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
 		d_selectableStudyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
-		d_firstDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
+		d_rawFirstDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-//				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDefinition())) {
-//					d_secondDefinitionHolder.setValue(null);
-//				}
-				updateRawDefinitionsGraph();
+				commitRawSelectionToGraph();
 			}
 		});
 		
-		d_secondDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
+		d_rawSecondDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-//				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDefinition())) {
-//					d_firstDefinitionHolder.setValue(null);
-//				}
-				updateRawDefinitionsGraph();
+				commitRawSelectionToGraph();
 			}			
 		});
+		
+		d_refinedFirstDefinitionHolder.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(d_refinedSecondDefinitionHolder.getValue())) {
+					d_refinedSecondDefinitionHolder.setValue(null);
+				}
+				commitRefinedSelectionToGraph();
+			}
+		});
+		
+		d_refinedSecondDefinitionHolder.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(d_refinedFirstDefinitionHolder.getValue())) {
+					d_refinedFirstDefinitionHolder.setValue(null);
+				}
+				commitRefinedSelectionToGraph();
+			}
+		});
 			
-		d_outcomeHolder.addPropertyChangeListener(new ClearValueModelsOnPropertyChangeListener(new ModifiableHolder[]{d_firstDefinitionHolder, d_secondDefinitionHolder}));
+		d_outcomeHolder.addPropertyChangeListener(new ClearValueModelsOnPropertyChangeListener(new ModifiableHolder[]{d_rawFirstDefinitionHolder, d_rawSecondDefinitionHolder}));
 	}
-	
+
 	@Override
 	public boolean rebuildRawAlternativesGraph() {
 		if (super.rebuildRawAlternativesGraph()) {
-			updateRawDefinitionsGraph();
+			commitRawSelectionToGraph();
 			return true;
 		}
 		return false;
 	}
 	
-	private void updateRawDefinitionsGraph() {
-		ObservableList<TreatmentDefinition> list = getSelectedRawTreatmentDefinitions();
-		if (getFirstDefinition() == null && getSecondDefinition() == null) { // both null
+	@Override
+	public boolean rebuildRefinedAlternativesGraph() {
+		if (super.rebuildRefinedAlternativesGraph()) {
+			commitRefinedSelectionToGraph();
+			return true;
+		}
+		return false;
+	}
+	
+	protected void commitRefinedSelectionToGraph() {
+		commitSelection(getSelectedRefinedTreatmentDefinitions(),
+				d_refinedFirstDefinitionHolder.getValue(),
+				d_refinedSecondDefinitionHolder.getValue());
+	}
+	
+	private void commitRawSelectionToGraph() {
+		commitSelection(getSelectedRawTreatmentDefinitions(),
+				d_rawFirstDefinitionHolder.getValue(),
+				d_rawSecondDefinitionHolder.getValue());
+	}
+
+	private void commitSelection(ObservableList<TreatmentDefinition> list,
+			TreatmentDefinition firstDef,
+			TreatmentDefinition secondDef) {
+		if (firstDef == null) { // ensure the first is never null unless both are null
+			firstDef = secondDef;
+			secondDef = null;
+		}
+		
+		if (firstDef == null) { // both null
 			list.clear();
-		} else if (EqualsUtil.equal(getFirstDefinition(), getSecondDefinition())) { // both equal, non-null
-			replaceOrInsert(list, 0, getFirstDefinition());
+		} else if (EqualsUtil.equal(firstDef, secondDef)) { // both equal, non-null
+			replaceOrInsert(list, 0, firstDef);
 			trim(list, 1);
-		} else { // both different, one may be null
-			TreatmentDefinition first = getFirstDefinition() != null ? getFirstDefinition() : getSecondDefinition();
-			TreatmentDefinition second = getFirstDefinition() != null ? getSecondDefinition() : null;
-			replaceOrInsert(list, 0, first); // first is non-null
-			if (second != null) {
-				replaceOrInsert(list, 1, second);
+		} else { // both different, second one may be null
+			replaceOrInsert(list, 0, firstDef); // first is non-null
+			if (secondDef != null) {
+				replaceOrInsert(list, 1, secondDef);
 				trim(list, 2);
 			} else {
 				trim(list, 1);
@@ -128,26 +174,27 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 		}
 	}
 	
-	public ModifiableHolder<TreatmentDefinition> getFirstDefinitionModel() {
-		return d_firstDefinitionHolder;
+	public ModifiableHolder<TreatmentDefinition> getRawFirstDefinitionModel() {
+		return d_rawFirstDefinitionHolder;
 	}
 	
-	public ModifiableHolder<TreatmentDefinition> getSecondDefinitionModel() {
-		return d_secondDefinitionHolder;
+	public ModifiableHolder<TreatmentDefinition> getRawSecondDefinitionModel() {
+		return d_rawSecondDefinitionHolder;
 	}
 	
-	private TreatmentDefinition getFirstDefinition() {
-		return d_firstDefinitionHolder.getValue();
+	public ModifiableHolder<TreatmentDefinition> getRefinedFirstDefinitionModel() {
+		return d_refinedFirstDefinitionHolder;
 	}
-
-	private TreatmentDefinition getSecondDefinition() {
-		return d_secondDefinitionHolder.getValue();
+	
+	public ModifiableHolder<TreatmentDefinition> getRefinedSecondDefinitionModel() {
+		return d_refinedSecondDefinitionHolder;
 	}
+	
 	
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
-		TreatmentDefinition base = d_firstDefinitionHolder.getValue();
-		TreatmentDefinition subj = d_secondDefinitionHolder.getValue();
+		TreatmentDefinition base = d_refinedFirstDefinitionHolder.getValue();
+		TreatmentDefinition subj = d_refinedSecondDefinitionHolder.getValue();
 		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
 			Arm left = d_selectedArms.get(s).get(base).getValue();
 			Arm right = d_selectedArms.get(s).get(subj).getValue();
@@ -185,6 +232,16 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 			fireChange();
 		}		
 	}
+	
+	@Override
+	protected SelectableTreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions, d_outcomeHolder, 1, 2);
+	}
+	
+	@Override
+	protected SelectableTreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions, d_outcomeHolder, 2, 2);
+	}
 
 	public PairWiseMetaAnalysisPresentation getMetaAnalysisModel() {
 		RandomEffectsMetaAnalysis buildMetaAnalysis = buildMetaAnalysis();
@@ -202,5 +259,9 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 		ma.setName(name);
 		return ma;
 	}
-
+	
+	@Override
+	protected String getDescriptionTemplate() {
+		return TEMPLATE_DEFINITIONS_DESCRIPTION;
+	}
 }
