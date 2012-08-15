@@ -24,33 +24,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.wizard;
+package org.drugis.addis.presentation.wizard;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.ListModel;
+import com.jgoodies.binding.value.ValueModel;
 
-import org.drugis.addis.gui.AuxComponentFactory;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
-import org.pietschy.wizard.PanelWizardStep;
-
-@SuppressWarnings("serial")
-public class SelectEndpointWizardStep extends PanelWizardStep {
-	public SelectEndpointWizardStep(AbstractMetaAnalysisWizardPM pm) {
-		super("Select Outcome","Select an outcome measure (endpoint or adverse event) that you want to use for this meta analysis.");
-		add(new JLabel("Outcome measure : "));
-
-		ListModel outcomeListModel = pm.getAvailableOutcomeMeasures();
-		
-		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(outcomeListModel, pm.getOutcomeMeasureModel(), true);
-		add(endPointBox);
-		pm.getOutcomeMeasureModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				setComplete(evt.getNewValue() != null);
-			}
-		});
+public class ClearValueModelsOnPropertyChangeListener implements PropertyChangeListener {
+	private List<ValueModel> holders;
+	
+	public ClearValueModelsOnPropertyChangeListener(ValueModel h) {
+		holders = new ArrayList<ValueModel>();
+		holders.add(h);
+	}
+	
+	public ClearValueModelsOnPropertyChangeListener(ValueModel[] holders) {
+		this.holders = Arrays.asList(holders);
+	}
+	
+	public void propertyChange(PropertyChangeEvent arg0) {
+		for (ValueModel h : holders) {
+			h.setValue(null);
+		}
 	}
 }

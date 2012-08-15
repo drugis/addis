@@ -39,222 +39,241 @@ import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
-import org.drugis.common.beans.AbstractObservableList;
-import org.drugis.common.event.ListDataEventProxy;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
+import org.drugis.common.EqualsUtil;
 
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisWizardPM {
+	private static final String TEMPLATE_DEFINITIONS_DESCRIPTION =
+			"Select the %1$s to be used for the meta-analysis. " +
+			"To continue, (1) at least %2$s must be selected, and (2) the selected %1$s must be connected.";
+	
+	private final ModifiableHolder<TreatmentDefinition> d_rawFirstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	private final ModifiableHolder<TreatmentDefinition> d_rawSecondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	
+	private final ModifiableHolder<TreatmentDefinition> d_refinedFirstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	private final ModifiableHolder<TreatmentDefinition> d_refinedSecondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
+	
+	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
+	private PairWiseMetaAnalysisPresentation d_pm;
+	
+	public PairWiseMetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
+		super(d, pmm);
+				
+		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
+		d_selectableStudyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
+		d_rawFirstDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				commitRawSelectionToGraph();
+			}
+		});
+		
+		d_rawSecondDefinitionHolder.addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				commitRawSelectionToGraph();
+			}			
+		});
+		
+		d_refinedFirstDefinitionHolder.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(d_refinedSecondDefinitionHolder.getValue())) {
+					d_refinedSecondDefinitionHolder.setValue(null);
+				}
+				commitRefinedSelectionToGraph();
+			}
+		});
+		
+		d_refinedSecondDefinitionHolder.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getNewValue() != null && evt.getNewValue().equals(d_refinedFirstDefinitionHolder.getValue())) {
+					d_refinedFirstDefinitionHolder.setValue(null);
+				}
+				commitRefinedSelectionToGraph();
+			}
+		});
+			
+		d_outcomeHolder.addPropertyChangeListener(new ClearValueModelsOnPropertyChangeListener(new ModifiableHolder[]{d_rawFirstDefinitionHolder, d_rawSecondDefinitionHolder}));
+	}
 
-	public PairWiseMetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmf) {
-		super(d, pmf);
-		// TODO Auto-generated constructor stub
+	@Override
+	public boolean rebuildRawAlternativesGraph() {
+		if (super.rebuildRawAlternativesGraph()) {
+			commitRawSelectionToGraph();
+			return true;
+		}
+		return false;
 	}
 	
-//	private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
-//	private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
-//	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-//	private ObservableList<TreatmentDefinition> d_selectedTreatmentDefinitions;
-//	private PairWiseMetaAnalysisPresentation d_pm;
-//	public PairWiseMetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
-//		super(d, pmm);
-//				
-//		d_metaAnalysisCompleteListener = new MetaAnalysisCompleteListener();		
-//		d_selectableStudyListPm.getSelectedStudiesModel().addListDataListener(d_metaAnalysisCompleteListener);
-//	}
+	@Override
+	public boolean rebuildRefinedAlternativesGraph() {
+		if (super.rebuildRefinedAlternativesGraph()) {
+			propagateRawToRefined(getRawFirstDefinitionModel(), getRefinedFirstDefinitionModel());
+			propagateRawToRefined(getRawSecondDefinitionModel(), getRefinedSecondDefinitionModel());
+			commitRefinedSelectionToGraph();
+			return true;
+		}
+		return false;
+	}
 
-//	@Override
-//	protected void buildDefinitionHolders() {
-//		d_firstDrugHolder = new ModifiableHolder<TreatmentDefinition>();		
-//		d_secondDrugHolder = new ModifiableHolder<TreatmentDefinition>();
-//
-//		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
-//			public void propertyChange(PropertyChangeEvent evt) {
-//				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
-//					d_secondDrugHolder.setValue(null);
-//				}
-//			}
-//		});
-//
-//		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
-//			public void propertyChange(PropertyChangeEvent evt) {
-//				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDrug())) {
-//					d_firstDrugHolder.setValue(null);
-//				}									
-//			}			
-//		});
-//		
-//		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
-//		
-//		d_selectedTreatmentDefinitions = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
-//		d_selectedTreatmentDefinitions.addListDataListener(new ListDataListener() {
-//			public void intervalRemoved(ListDataEvent e) {
-//				updateArmHolders();
-//			}
-//			public void intervalAdded(ListDataEvent e) {
-//				updateArmHolders();
-//			}
-//			public void contentsChanged(ListDataEvent e) {
-//				updateArmHolders();
-//			}
-//		});
-//	}
-//	
-//	private static class SelectedDrugsHolder extends AbstractObservableList<TreatmentDefinition> {
-//		ObservableList<TreatmentDefinition> d_list = new ArrayListModel<TreatmentDefinition>();
-//		private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
-//		private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
-//
-//		public SelectedDrugsHolder(ModifiableHolder<TreatmentDefinition> firstDrugHolder, ModifiableHolder<TreatmentDefinition> secondDrugHolder) {
-//			d_list.addListDataListener(new ListDataEventProxy(d_manager));
-//			
-//			d_firstDrugHolder = firstDrugHolder;
-//			d_secondDrugHolder = secondDrugHolder;
-//			d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener() {
-//				public void propertyChange(PropertyChangeEvent evt) {
-//					if (evt.getOldValue() == null) {
-//						if (evt.getNewValue() != null) {
-//							d_list.add(0, (TreatmentDefinition)evt.getNewValue());
-//						}
-//					} else {
-//						if (evt.getNewValue() == null) {
-//							d_list.remove(0);
-//						} else {
-//							d_list.set(0, (TreatmentDefinition) evt.getNewValue());
-//						}
-//					}
-//				}
-//			});
-//			d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener() {
-//				public void propertyChange(PropertyChangeEvent evt) {
-//					if(evt.getOldValue() == null) {
-//						if (evt.getNewValue() != null) {
-//							d_list.add(d_list.size(),(TreatmentDefinition)evt.getNewValue());
-//						}
-//					} else {
-//						if (evt.getNewValue() == null) {
-//							d_list.remove(d_list.size() - 1);
-//						} else {
-//							d_list.set(d_list.size() - 1, (TreatmentDefinition) evt.getNewValue());
-//						}
-//					}
-//				}
-//			});
-//		}
-//
-//		@Override
-//		public TreatmentDefinition get(int index) {
-//			return d_list.get(index);
-//		}
-//
-//		@Override
-//		public int size() {
-//			return d_list.size();
-//		}
-//	}
-//		
-//	public ModifiableHolder<TreatmentDefinition> getFirstDrugModel() {
-//		return d_firstDrugHolder;
-//	}
-//	
-//	public ModifiableHolder<TreatmentDefinition> getSecondDrugModel() {
-//		return d_secondDrugHolder;
-//	}
-//	
-//	private TreatmentDefinition getFirstDrug() {
-//		return d_firstDrugHolder.getValue();
-//	}
-//
-//	private TreatmentDefinition getSecondDrug() {
-//		return d_secondDrugHolder.getValue();
-//	}
-//
-//	@Override
-//	public ObservableList<TreatmentDefinition> getSelectedRawTreatmentDefinitions() {
-//		return d_selectedTreatmentDefinitions; // FIXME
-//	}
-//
-//	@Override
-//	public ObservableList<TreatmentDefinition> getSelectedRefinedTreatmentDefinitions() {
-//		return d_selectedTreatmentDefinitions; // FIXME
-//	}
-//	
-//	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
-//		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
-//		TreatmentDefinition base = d_firstDrugHolder.getValue();
-//		TreatmentDefinition subj = d_secondDrugHolder.getValue();
-//		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
-//			Arm left = d_selectedArms.get(s).get(base).getValue();
-//			Arm right = d_selectedArms.get(s).get(subj).getValue();
-//			studyArms.add(new StudyArmsEntry(s, left, right));
-//		}
-//		OutcomeMeasure om = (OutcomeMeasure) getOutcomeMeasureModel().getValue();
-//		return new RandomEffectsMetaAnalysis("", om, base, subj, studyArms, false);
-//	}
-//	
-//	public ValueModel getMetaAnalysisCompleteModel() {
-//		return d_metaAnalysisCompleteListener;
-//	}
-//	
-//	@SuppressWarnings("serial")
-//	public class MetaAnalysisCompleteListener extends AbstractValueModel implements ListDataListener {
-//
-//		private void fireChange() {
-//			firePropertyChange(PROPERTYNAME_VALUE, null, getValue());
-//		}
-//
-//		public Object getValue() {
-//			return new Boolean(!d_selectableStudyListPm.getSelectedStudiesModel().isEmpty());
-//		}
-//
-//		public void setValue(Object newValue) {			
-//		}
-//
-//		public void contentsChanged(ListDataEvent e) {
-//			fireChange();
-//		}
-//		public void intervalAdded(ListDataEvent e) {
-//			fireChange();
-//		}
-//		public void intervalRemoved(ListDataEvent e) {
-//			fireChange();
-//		}		
-//	}
-//
-//	public PairWiseMetaAnalysisPresentation getMetaAnalysisModel() {
-//		RandomEffectsMetaAnalysis buildMetaAnalysis = buildMetaAnalysis();
-//		d_pm = (PairWiseMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis);
-//		return d_pm;
-//	}
-//
-//	@Override
-//	protected TreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
-//		return new TreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions,  d_outcomeHolder);
-//	}
-//
-//	@Override
-//	protected TreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
-//		return new TreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions,  d_outcomeHolder);				
-//	}
-//
-//	@Override
-//	public RandomEffectsMetaAnalysis createAnalysis(String name) {
-//		RandomEffectsMetaAnalysis ma = null;
-//		if (d_pm == null) {
-//			ma = buildMetaAnalysis();
-//		} else {
-//			ma = d_pm.getBean();
-//		}
-//		ma.setName(name);
-//		return ma;
-//	}
+	private void propagateRawToRefined(
+			ModifiableHolder<TreatmentDefinition> rawModel,
+			ModifiableHolder<TreatmentDefinition> refinedModel) {
+		if (getRefinedAlternativesGraph().getDefinitions().contains(rawModel.getValue())) {
+			refinedModel.setValue(rawModel.getValue());
+		} else {
+			refinedModel.setValue(null);
+		}
+	}
+	
+	protected void commitRefinedSelectionToGraph() {
+		commitSelection(getSelectedRefinedTreatmentDefinitions(),
+				d_refinedFirstDefinitionHolder.getValue(),
+				d_refinedSecondDefinitionHolder.getValue());
+	}
+	
+	private void commitRawSelectionToGraph() {
+		commitSelection(getSelectedRawTreatmentDefinitions(),
+				d_rawFirstDefinitionHolder.getValue(),
+				d_rawSecondDefinitionHolder.getValue());
+	}
+
+	private void commitSelection(ObservableList<TreatmentDefinition> list,
+			TreatmentDefinition firstDef,
+			TreatmentDefinition secondDef) {
+		if (firstDef == null) { // ensure the first is never null unless both are null
+			firstDef = secondDef;
+			secondDef = null;
+		}
+		
+		if (firstDef == null) { // both null
+			list.clear();
+		} else if (EqualsUtil.equal(firstDef, secondDef)) { // both equal, non-null
+			replaceOrInsert(list, 0, firstDef);
+			trim(list, 1);
+		} else { // both different, second one may be null
+			replaceOrInsert(list, 0, firstDef); // first is non-null
+			if (secondDef != null) {
+				replaceOrInsert(list, 1, secondDef);
+				trim(list, 2);
+			} else {
+				trim(list, 1);
+			}
+		}
+	}
+
+	private void trim(List<TreatmentDefinition> list, int size) {
+		while (list.size() > size) {
+			list.remove(size);
+		}
+	}
+
+	private void replaceOrInsert(List<TreatmentDefinition> list, int index, TreatmentDefinition element) {
+		if (list.size() > index) {
+			if (list.get(index) != element) {
+				list.set(index, element);
+			}
+		} else {
+			list.add(index, element);
+		}
+	}
+	
+	public ModifiableHolder<TreatmentDefinition> getRawFirstDefinitionModel() {
+		return d_rawFirstDefinitionHolder;
+	}
+	
+	public ModifiableHolder<TreatmentDefinition> getRawSecondDefinitionModel() {
+		return d_rawSecondDefinitionHolder;
+	}
+	
+	public ModifiableHolder<TreatmentDefinition> getRefinedFirstDefinitionModel() {
+		return d_refinedFirstDefinitionHolder;
+	}
+	
+	public ModifiableHolder<TreatmentDefinition> getRefinedSecondDefinitionModel() {
+		return d_refinedSecondDefinitionHolder;
+	}
+	
+	
+	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
+		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
+		TreatmentDefinition base = d_refinedFirstDefinitionHolder.getValue();
+		TreatmentDefinition subj = d_refinedSecondDefinitionHolder.getValue();
+		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
+			Arm left = d_selectedArms.get(s).get(base).getValue();
+			Arm right = d_selectedArms.get(s).get(subj).getValue();
+			studyArms.add(new StudyArmsEntry(s, left, right));
+		}
+		OutcomeMeasure om = (OutcomeMeasure) getOutcomeMeasureModel().getValue();
+		return new RandomEffectsMetaAnalysis("", om, base, subj, studyArms, false);
+	}
+	
+	public ValueModel getMetaAnalysisCompleteModel() {
+		return d_metaAnalysisCompleteListener;
+	}
+	
+	@SuppressWarnings("serial")
+	public class MetaAnalysisCompleteListener extends AbstractValueModel implements ListDataListener {
+
+		private void fireChange() {
+			firePropertyChange(PROPERTYNAME_VALUE, null, getValue());
+		}
+
+		public Object getValue() {
+			return new Boolean(!d_selectableStudyListPm.getSelectedStudiesModel().isEmpty());
+		}
+
+		public void setValue(Object newValue) {			
+		}
+
+		public void contentsChanged(ListDataEvent e) {
+			fireChange();
+		}
+		public void intervalAdded(ListDataEvent e) {
+			fireChange();
+		}
+		public void intervalRemoved(ListDataEvent e) {
+			fireChange();
+		}		
+	}
+	
+	@Override
+	protected SelectableTreatmentDefinitionsGraphModel buildRawAlternativesGraph() {
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_rawTreatmentDefinitions, d_outcomeHolder, 1, 2);
+	}
+	
+	@Override
+	protected SelectableTreatmentDefinitionsGraphModel buildRefinedAlternativesGraph() {
+		return new SelectableTreatmentDefinitionsGraphModel(getStudiesEndpointAndIndication(), d_refinedTreatmentDefinitions, d_outcomeHolder, 2, 2);
+	}
+
+	public PairWiseMetaAnalysisPresentation getMetaAnalysisModel() {
+		RandomEffectsMetaAnalysis buildMetaAnalysis = buildMetaAnalysis();
+		d_pm = (PairWiseMetaAnalysisPresentation) d_pmf.getModel(buildMetaAnalysis);
+		return d_pm;
+	}
+
+	public MetaAnalysis createAnalysis(String name) {
+		RandomEffectsMetaAnalysis ma = null;
+		if (d_pm == null) {
+			ma = buildMetaAnalysis();
+		} else {
+			ma = d_pm.getBean();
+		}
+		ma.setName(name);
+		return ma;
+	}
+	
+	@Override
+	protected String getDescriptionTemplate() {
+		return TEMPLATE_DEFINITIONS_DESCRIPTION;
+	}
 }
