@@ -38,9 +38,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang.ArrayUtils;
@@ -105,6 +102,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	private final Map<Drug, ValueHolder<TreatmentCategorization>> d_selectedCategorizations = new HashMap<Drug, ValueHolder<TreatmentCategorization>>();
 	private final ObservableList<Study> d_selectableStudies = new ArrayListModel<Study>();
 	private boolean d_rebuildRawNeeded = true;
+	private boolean d_armSelectionRebuildNeeded = true;
 	
 	/**
 	 * Create a filtered list of studies that includes only those studies that
@@ -168,7 +166,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		
 		getSelectedRefinedTreatmentDefinitions().addListDataListener(new IndifferentListDataListener() {
 			protected void update() {
-				updateArmHolders();	
+				d_armSelectionRebuildNeeded = true;	
 			}
 		});
 		
@@ -305,15 +303,9 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	private SelectableStudyCharTableModel createSelectableStudyListPm() {
 		SelectableStudyCharTableModel studyList = new SelectableStudyCharTableModel(
 				new StudyListPresentation(d_selectableStudies), d_pmf);
-		studyList.getSelectedStudiesModel().addListDataListener(new ListDataListener() {
-			public void contentsChanged(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalRemoved(ListDataEvent e) {
-				updateArmHolders();
+		studyList.getSelectedStudiesModel().addListDataListener(new IndifferentListDataListener() {
+			protected void update() {
+				d_armSelectionRebuildNeeded = true;	
 			}
 		});
 		return studyList;
@@ -439,7 +431,10 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 
 
-	protected void updateArmHolders() {
+	public void rebuildArmSelection() {
+		if (!d_armSelectionRebuildNeeded) {
+			return;
+		}
 		d_selectedArms.clear();
 		
 		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
@@ -450,6 +445,8 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 				}
 			}
 		}
+		
+		d_armSelectionRebuildNeeded = false;
 	}
 
 	private Arm getDefaultArm(Study s, TreatmentDefinition d) {
