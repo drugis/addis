@@ -381,7 +381,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		TreatmentDefinition tSertr = TreatmentDefinition.createTrivial(sertr);
 
 		assertEquals(Arrays.asList(tFluox, tParox, tSertr),
-				d_pm.getRefinedAlternativesGraph().getTreatmentDefinitions());
+				d_pm.getRefinedAlternativesGraph().getSelectedDefinitions());
 	}
 	
 	//// Beyond here we should have REFINED TreatmentDefinitions.
@@ -666,7 +666,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		Arm arm = arms.get(0); // The currently unused arm 
 		d_pm.getSelectedArmModel(multiple, d_paroxSet).setValue(arm);
 		
-		NetworkMetaAnalysis ma = d_pm.createAnalysis("name");
+		NetworkMetaAnalysis ma = (NetworkMetaAnalysis) d_pm.createAnalysis("name");
 		assertEquals(d_pm.getSelectedRefinedTreatmentDefinitions(), ma.getAlternatives());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
 				d_pm.getSelectableStudyListPM().getSelectedStudiesModel());
@@ -674,7 +674,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
 		assertEquals(arm, ma.getArm(multiple, d_paroxSet));
 		d_pm.getSelectedRefinedTreatmentDefinitions().remove(d_sertrSet);
-		ma = d_pm.createAnalysis("name");
+		ma = (NetworkMetaAnalysis) d_pm.createAnalysis("name");
 		assertEquals(d_pm.getSelectedRefinedTreatmentDefinitions(), ma.getAlternatives());
 	}
 }

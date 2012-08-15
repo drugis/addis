@@ -99,8 +99,8 @@ public class AuxComponentFactory {
 	}
 	
 	public static <T> JComboBox createBoundComboBox(ListModel list, ValueModel model, boolean isEntity) {
-		SelectionInList<T> typeSelectionInList = new SelectionInList<T>(list, model);
-		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);
+		SelectionInList<T> selectionInList = new SelectionInList<T>(list, model);
+		JComboBox comboBox = BasicComponentFactory.createComboBox(selectionInList);
 		
 		if (isEntity) {
 			final ListCellRenderer renderer = comboBox.getRenderer();
@@ -119,30 +119,6 @@ public class AuxComponentFactory {
 		
 		return comboBox;
 	}	
-	
-	@Deprecated
-	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model, boolean isEntity) {
-		SelectionInList<T> typeSelectionInList =
-			new SelectionInList<T>(listHolder, model);
-		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);
-		
-		if (isEntity) {
-			final ListCellRenderer renderer = comboBox.getRenderer();
-			comboBox.setRenderer(new ListCellRenderer() {
-				@Override
-				public Component getListCellRendererComponent(JList list, Object value,
-						int index, boolean isSelected, boolean cellHasFocus) {
-					return renderer.getListCellRendererComponent(list, getDescription(value), index, isSelected, cellHasFocus);
-				}
-
-				private String getDescription(Object value) {
-					return value == null ? "" : ((Entity)value).getLabel();
-				}
-			});
-		}
-		
-		return comboBox;
-	}
 
 	public static JScrollPane createTextArea(ValueModel model, boolean editable) {
 		JTextArea area = BasicComponentFactory.createTextArea(model);
