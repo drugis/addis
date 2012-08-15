@@ -89,18 +89,19 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	
 	/** First graph containing only Trivial Categorizations (previously DrugSets) **/
 	protected final ObservableList<TreatmentDefinition> d_rawTreatmentDefinitions;
-	protected SelectableTreatmentDefinitionsGraphModel d_rawAlternativesGraph;
+	protected final SelectableTreatmentDefinitionsGraphModel d_rawAlternativesGraph;
 	
 	/** Second graph containing definitions transformed by the selection of TreatmentCategorizations **/
 	protected final ObservableList<TreatmentDefinition> d_refinedTreatmentDefinitions;
-	protected SelectableTreatmentDefinitionsGraphModel d_refinedAlternativesGraph;
+	protected final SelectableTreatmentDefinitionsGraphModel d_refinedAlternativesGraph;
 	
-	private StudiesMeasuringValueModel d_studiesMeasuringValueModel;
-	protected Map<Study, Map<TreatmentDefinition, ModifiableHolder<Arm>>> d_selectedArms;
-	protected SelectableStudyCharTableModel d_selectableStudyListPm;
-	private ObservableList<Study> d_studiesEndpointIndication;
+	private final StudiesMeasuringValueModel d_studiesMeasuringValueModel;
+	protected final Map<Study, Map<TreatmentDefinition, ModifiableHolder<Arm>>> d_selectedArms;
+	protected final SelectableStudyCharTableModel d_selectableStudyListPm;
+	private final ObservableList<Study> d_studiesEndpointIndication;
 	private final Map<Drug, ValueHolder<TreatmentCategorization>> d_selectedCategorizations = new HashMap<Drug, ValueHolder<TreatmentCategorization>>();
 	private final ObservableList<Study> d_selectableStudies = new ArrayListModel<Study>();
+	
 	private boolean d_rebuildRawNeeded = true;
 	private boolean d_armSelectionRebuildNeeded = true;
 	
@@ -299,7 +300,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 				getStudiesEndpointAndIndication(), getRefinedAlternativesGraph().getSelectedDefinitions()));
 	}
 
-
 	private SelectableStudyCharTableModel createSelectableStudyListPm() {
 		SelectableStudyCharTableModel studyList = new SelectableStudyCharTableModel(
 				new StudyListPresentation(d_selectableStudies), d_pmf);
@@ -310,7 +310,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		});
 		return studyList;
 	}
-
 
 	private void updateOutcomes() {
 		SortedSet<OutcomeMeasure> outcomeSet = new TreeSet<OutcomeMeasure>();
@@ -346,7 +345,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		}
 	}
 
-
 	/**
 	 * Return all studies that measure the selected endpoint on the selected indication for at least two drugs.
 	 * @return List of studies
@@ -355,16 +353,13 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 		return d_studiesEndpointIndication;
 	}
 
-
 	public ValueModel getStudiesMeasuringLabelModel() {
 		return d_studiesMeasuringValueModel;
 	}
 
-
 	public ObservableList<OutcomeMeasure> getAvailableOutcomeMeasures() {
 		return d_outcomes;
 	}
-
 
 	public ValueHolder<OutcomeMeasure> getOutcomeMeasureModel() {
 		return d_outcomeHolder;
@@ -379,7 +374,6 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	public ObservableList<TreatmentDefinition> getAvailableRefinedTreatmentDefinitions() {
 		return d_refinedTreatmentDefinitions;
 	}
-
 
 	public boolean rebuildRefinedAlternativesGraph() {
 		SortedSet<TreatmentDefinition> definitions = new TreeSet<TreatmentDefinition>(permuteTreatmentDefinitions());

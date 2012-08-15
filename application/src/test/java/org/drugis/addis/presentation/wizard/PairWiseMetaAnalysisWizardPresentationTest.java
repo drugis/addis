@@ -530,10 +530,14 @@ public class PairWiseMetaAnalysisWizardPresentationTest {
 	public void testCreateMetaAnalysis() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.rebuildRawAlternativesGraph();
+
 		d_wizard.getRawFirstDefinitionModel().setValue(d_fluoxSet);
 		d_wizard.getRawSecondDefinitionModel().setValue(d_paroxSet);
-		d_wizard.rebuildAllGraphs();
+		d_wizard.rebuildRefinedAlternativesGraph();
 		d_wizard.populateSelectableStudies();
+		d_wizard.rebuildArmSelection();
+		
 		RandomEffectsMetaAnalysis ma = (RandomEffectsMetaAnalysis) d_wizard.createAnalysis("name");
 		assertEquals(ma.getFirstAlternative(), d_wizard.getRawFirstDefinitionModel().getValue());
 		assertEquals(ma.getSecondAlternative(), d_wizard.getRawSecondDefinitionModel().getValue());
@@ -588,10 +592,12 @@ public class PairWiseMetaAnalysisWizardPresentationTest {
 	public void testSelectedStudiesPropagate() {
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointHamd());
+		d_wizard.rebuildRawAlternativesGraph();
 		d_wizard.getRawFirstDefinitionModel().setValue(d_fluoxSet);
 		d_wizard.getRawSecondDefinitionModel().setValue(d_paroxSet);
-		d_wizard.rebuildAllGraphs();
+		d_wizard.rebuildRefinedAlternativesGraph();
 		d_wizard.populateSelectableStudies();
+		d_wizard.rebuildArmSelection();
 		List<Study> studies = new ArrayList<Study>(d_wizard.getSelectableStudyListPM().getSelectedStudiesModel());
 		assertAllAndOnly(studies, d_wizard.getMetaAnalysisModel().getStudyListPresentation().getIncludedStudies());
 		
@@ -613,10 +619,13 @@ public class PairWiseMetaAnalysisWizardPresentationTest {
 		
 		d_wizard.getIndicationModel().setValue(ExampleData.buildIndicationDepression());
 		d_wizard.getOutcomeMeasureModel().setValue(ExampleData.buildEndpointCgi());
+		d_wizard.rebuildRawAlternativesGraph();
 		d_wizard.getRawFirstDefinitionModel().setValue(d_citalSet);
 		d_wizard.getRawSecondDefinitionModel().setValue(d_escitSet);
-		d_wizard.rebuildAllGraphs();
+		d_wizard.rebuildRefinedAlternativesGraph();
 		d_wizard.populateSelectableStudies();
+		d_wizard.rebuildArmSelection();
+
 		d_wizard.getSelectedArmModel(burke, d_escitSet);
 
 		TreatmentDefinition placeSet = TreatmentDefinition.createTrivial(ExampleData.buildPlacebo());
