@@ -116,10 +116,22 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 	@Override
 	public boolean rebuildRefinedAlternativesGraph() {
 		if (super.rebuildRefinedAlternativesGraph()) {
+			propagateRawToRefined(getRawFirstDefinitionModel(), getRefinedFirstDefinitionModel());
+			propagateRawToRefined(getRawSecondDefinitionModel(), getRefinedSecondDefinitionModel());
 			commitRefinedSelectionToGraph();
 			return true;
 		}
 		return false;
+	}
+
+	private void propagateRawToRefined(
+			ModifiableHolder<TreatmentDefinition> rawModel,
+			ModifiableHolder<TreatmentDefinition> refinedModel) {
+		if (getRefinedAlternativesGraph().getDefinitions().contains(rawModel.getValue())) {
+			refinedModel.setValue(rawModel.getValue());
+		} else {
+			refinedModel.setValue(null);
+		}
 	}
 	
 	protected void commitRefinedSelectionToGraph() {
