@@ -57,9 +57,7 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 	
 	private static WizardModel buildModel(final PairWiseMetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 		StaticModel wizardModel = new StaticModel();
-		SelectIndicationAndNameWizardStep selectIndicationStep = new SelectIndicationAndNameWizardStep(pm, mainWindow);
-		wizardModel.add(selectIndicationStep);
-		wizardModel.add(new SelectEndpointWizardStep(pm));
+		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, mainWindow));
 		wizardModel.add(new SelectTwoDrugsWizardStep(pm, 
 				pm.getRawAlternativesGraph(), 
 				pm.getRawFirstDefinitionModel(), 
@@ -70,7 +68,6 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 						
 					}
 				}, "Select Drugs", pm.getRawDescription()));
-		
 		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
 		wizardModel.add(new SelectTwoDrugsWizardStep(pm, 
 				pm.getRefinedAlternativesGraph(), 

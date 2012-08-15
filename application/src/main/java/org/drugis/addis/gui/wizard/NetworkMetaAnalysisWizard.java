@@ -57,7 +57,6 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	private static WizardModel buildModel(final NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, main));
-		wizardModel.add(new SelectEndpointWizardStep(pm));
 		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm.getRawAlternativesGraph(), new Runnable() {
 			public void run() {
 				pm.rebuildRawAlternativesGraph();
