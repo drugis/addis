@@ -110,4 +110,56 @@ An example activity is shown for a network meta-analysis with 2 chains.
 
 Any computation that takes more than a few seconds should be scheduled using this mechanism.
 
+\appendix
+
+\section{Future architecture}
+
+In the future, we anticipate that a web-based architecture will be more appropriate.
+We distinguish the following components:
+\begin{itemize}
+\item Web services (based on R) that implement the different analyses
+\item ADDIS, a `business intelligence' system for drug benefit-risk analysis
+\item A portal/database where researchers share structured RCT data (`rctWiki.org')
+\item The TrialMine.org system for literature screening
+\item A user management component underlying all systems
+\end{itemize}
+Note: `rctWiki.org' is a temporary name chosen to evoke a basic idea of what the system should do.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{future}
+\caption{Overview of the possible future architecture. GUI = Graphical User Interface, RCT = Randomized Controlled Trial, WS = Web Service}
+\end{figure}
+
+The latter two are user-facing systems and have a back end that exposes an API, and an HTML + JavaScript GUI that calls that API.
+It is intended that this will enable third parties to create additional `business intelligence' systems based on `rctWiki.org'.
+Moreover, the API can be used to build, test, and use automated systems for the extraction of data.
+While the two user-facing systems have clearly separated concerns, they will be tightly integrated, for example using:
+\begin{itemize}
+\item Single sign-on authentication
+\item Shared user and organization profiles
+\item Consistent visual identity
+\end{itemize}
+
+We also want to support corporate deployments of the ADDIS system. This is possible because `rctWiki.org' exposes a well-defined API. We can then do the following:
+\begin{enumerate}
+\item Deploy an internal system exposing company data through the `rctWiki.org' interface
+\item Deploy an internal version of ADDIS that has access to both `rctWiki.org' and the internal database
+\item (Optional) internal deployment of the analysis web services
+\end{enumerate}
+To better support this scenario there should be clearly separated read-only (to be used by ADDIS) and read-write (to be used by the rctWiki.org GUI) interfaces for `rctWiki.org'.
+
+\paragraph{Implementation strategy}
+The following is a possible transition strategy:
+\begin{enumerate}
+\item Implement the analysis web services based on R
+\item Implement the `rctWiki.org' read-only API based on the current ADDIS XML
+\item Build the ADDIS system (database and user-interfaces for meta-analysis and benefit-risk analysis, on par with the current ADDIS system)
+\item Transition to a RDMS-based system for `rctWiki.org' -- now ADDIS could already be a viable business intelligence system based on data we provide in rctWiki.org
+\item Start building a read/write version of `rctWiki.org'
+\item Integrate with TrialMine.org
+\end{enumerate}
+By focussing on on analysis functionality first, we have the quickest path to a useful system and enable the development of analysis functionality needed for several research proposals.
+In the interim, the desktop version of ADDIS can be used for data entry.
+
 \end{document}
