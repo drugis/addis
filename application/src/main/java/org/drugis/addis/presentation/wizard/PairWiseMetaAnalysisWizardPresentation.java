@@ -45,19 +45,16 @@ import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
 import org.drugis.addis.presentation.PresentationModelFactory;
-import org.drugis.common.beans.AbstractObservableList;
-import org.drugis.common.event.ListDataEventProxy;
+import org.drugis.common.EqualsUtil;
 
-import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisWizardPM {
-	private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
-	private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
+	private ModifiableHolder<TreatmentDefinition> d_firstDefinitionHolder;
+	private ModifiableHolder<TreatmentDefinition> d_secondDefinitionHolder;
 	private MetaAnalysisCompleteListener d_metaAnalysisCompleteListener;
-	private ObservableList<TreatmentDefinition> d_selectedTreatmentDefinitions;
 	private PairWiseMetaAnalysisPresentation d_pm;
 	public PairWiseMetaAnalysisWizardPresentation(Domain d, PresentationModelFactory pmm) {
 		super(d, pmm);
@@ -68,114 +65,94 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 	}
 
 	private void buildDefinitionHolders() {
-		d_firstDrugHolder = new ModifiableHolder<TreatmentDefinition>();		
-		d_secondDrugHolder = new ModifiableHolder<TreatmentDefinition>();
+		d_firstDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();		
+		d_secondDefinitionHolder = new ModifiableHolder<TreatmentDefinition>();
 
-		d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener(){
+		d_firstDefinitionHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDrug())) {
-					d_secondDrugHolder.setValue(null);
-				}
+//				if (evt.getNewValue() != null && evt.getNewValue().equals(getSecondDefinition())) {
+//					d_secondDefinitionHolder.setValue(null);
+//				}
+				updateRawDefinitionsGraph();
+
 			}
 		});
 
-		d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener(){
+		d_secondDefinitionHolder.addValueChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDrug())) {
-					d_firstDrugHolder.setValue(null);
-				}									
+//				if (evt.getNewValue() != null && evt.getNewValue().equals(getFirstDefinition())) {
+//					d_firstDefinitionHolder.setValue(null);
+//				}					
+				updateRawDefinitionsGraph();
 			}			
 		});
+	
+		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDefinitionHolder, d_secondDefinitionHolder}));
 		
-		d_outcomeHolder.addPropertyChangeListener(new SetEmptyListener(new ModifiableHolder[]{d_firstDrugHolder, d_secondDrugHolder}));
-		
-		d_selectedTreatmentDefinitions = new SelectedDrugsHolder(d_firstDrugHolder, d_secondDrugHolder);
-		d_selectedTreatmentDefinitions.addListDataListener(new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void intervalAdded(ListDataEvent e) {
-				updateArmHolders();
-			}
-			public void contentsChanged(ListDataEvent e) {
-				updateArmHolders();
-			}
-		});
 	}
 	
-	private static class SelectedDrugsHolder extends AbstractObservableList<TreatmentDefinition> {
-		ObservableList<TreatmentDefinition> d_list = new ArrayListModel<TreatmentDefinition>();
-		private ModifiableHolder<TreatmentDefinition> d_firstDrugHolder;
-		private ModifiableHolder<TreatmentDefinition> d_secondDrugHolder;
-
-		public SelectedDrugsHolder(ModifiableHolder<TreatmentDefinition> firstDrugHolder, ModifiableHolder<TreatmentDefinition> secondDrugHolder) {
-			d_list.addListDataListener(new ListDataEventProxy(d_manager));
-			
-			d_firstDrugHolder = firstDrugHolder;
-			d_secondDrugHolder = secondDrugHolder;
-			d_firstDrugHolder.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (evt.getOldValue() == null) {
-						if (evt.getNewValue() != null) {
-							d_list.add(0, (TreatmentDefinition)evt.getNewValue());
-						}
-					} else {
-						if (evt.getNewValue() == null) {
-							d_list.remove(0);
-						} else {
-							d_list.set(0, (TreatmentDefinition) evt.getNewValue());
-						}
-					}
-				}
-			});
-			d_secondDrugHolder.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					if(evt.getOldValue() == null) {
-						if (evt.getNewValue() != null) {
-							d_list.add(d_list.size(),(TreatmentDefinition)evt.getNewValue());
-						}
-					} else {
-						if (evt.getNewValue() == null) {
-							d_list.remove(d_list.size() - 1);
-						} else {
-							d_list.set(d_list.size() - 1, (TreatmentDefinition) evt.getNewValue());
-						}
-					}
-				}
-			});
-		}
-
-		@Override
-		public TreatmentDefinition get(int index) {
-			return d_list.get(index);
-		}
-
-		@Override
-		public int size() {
-			return d_list.size();
-		}
-	}
-		
-	public ModifiableHolder<TreatmentDefinition> getFirstDrugModel() {
-		return d_firstDrugHolder;
+	@Override
+	public void rebuildRawAlternativesGraph() {
+		super.rebuildRawAlternativesGraph();
+		updateRawDefinitionsGraph();
 	}
 	
-	public ModifiableHolder<TreatmentDefinition> getSecondDrugModel() {
-		return d_secondDrugHolder;
-	}
-	
-	private TreatmentDefinition getFirstDrug() {
-		return d_firstDrugHolder.getValue();
+	private void updateRawDefinitionsGraph() {
+		ObservableList<TreatmentDefinition> list = getSelectedRawTreatmentDefinitions();
+		if (getFirstDefinition() == null && getSecondDefinition() == null) { // both null
+			list.clear();
+		} else if (EqualsUtil.equal(getFirstDefinition(), getSecondDefinition())) { // both equal, non-null
+			replaceOrInsert(list, 0, getFirstDefinition());
+			trim(list, 1);
+		} else { // both different, one may be null
+			TreatmentDefinition first = getFirstDefinition() != null ? getFirstDefinition() : getSecondDefinition();
+			TreatmentDefinition second = getFirstDefinition() != null ? getSecondDefinition() : null;
+			replaceOrInsert(list, 0, first); // first is non-null
+			if (second != null) {
+				replaceOrInsert(list, 1, second);
+				trim(list, 2);
+			} else {
+				trim(list, 1);
+			}
+		}
 	}
 
-	private TreatmentDefinition getSecondDrug() {
-		return d_secondDrugHolder.getValue();
+	private void trim(List<TreatmentDefinition> list, int size) {
+		while (list.size() > size) {
+			list.remove(size);
+		}
+	}
+
+	private void replaceOrInsert(List<TreatmentDefinition> list, int index, TreatmentDefinition element) {
+		if (list.size() > index) {
+			if (list.get(index) != element) {
+				list.set(index, element);
+			}
+		} else {
+			list.add(index, element);
+		}
+	}
+	
+	public ModifiableHolder<TreatmentDefinition> getFirstDefinitionModel() {
+		return d_firstDefinitionHolder;
+	}
+	
+	public ModifiableHolder<TreatmentDefinition> getSecondDefinitionModel() {
+		return d_secondDefinitionHolder;
+	}
+	
+	private TreatmentDefinition getFirstDefinition() {
+		return d_firstDefinitionHolder.getValue();
+	}
+
+	private TreatmentDefinition getSecondDefinition() {
+		return d_secondDefinitionHolder.getValue();
 	}
 	
 	public RandomEffectsMetaAnalysis buildMetaAnalysis() {
 		List<StudyArmsEntry> studyArms = new ArrayList <StudyArmsEntry>();
-		TreatmentDefinition base = d_firstDrugHolder.getValue();
-		TreatmentDefinition subj = d_secondDrugHolder.getValue();
+		TreatmentDefinition base = d_firstDefinitionHolder.getValue();
+		TreatmentDefinition subj = d_secondDefinitionHolder.getValue();
 		for (Study s : getSelectableStudyListPM().getSelectedStudiesModel()) {
 			Arm left = d_selectedArms.get(s).get(base).getValue();
 			Arm right = d_selectedArms.get(s).get(subj).getValue();
@@ -230,4 +207,5 @@ public class PairWiseMetaAnalysisWizardPresentation extends NetworkMetaAnalysisW
 		ma.setName(name);
 		return ma;
 	}
+
 }

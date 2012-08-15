@@ -177,11 +177,11 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 
 	
 	public ObservableList<TreatmentDefinition> getSelectedRawTreatmentDefinitions() {
-		return d_rawAlternativesGraph.getDefinitions();
+		return d_rawAlternativesGraph.getSelectedDefinitions();
 	}
 	
 	public ObservableList<TreatmentDefinition> getSelectedRefinedTreatmentDefinitions() {
-		return d_refinedAlternativesGraph.getDefinitions();
+		return d_refinedAlternativesGraph.getSelectedDefinitions();
 	}
 	
 	public TreatmentDefinitionsGraphModel getOverviewGraph(){
@@ -292,7 +292,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	public void populateSelectableStudies() {
 		d_selectableStudies.clear();
 		d_selectableStudies.addAll(filterStudiesComparing(getOutcomeMeasureModel().getValue(), 
-				getStudiesEndpointAndIndication(), getRefinedAlternativesGraph().getDefinitions()));
+				getStudiesEndpointAndIndication(), getRefinedAlternativesGraph().getSelectedDefinitions()));
 	}
 
 
@@ -472,7 +472,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 
 	protected Set<TreatmentDefinition> permuteTreatmentDefinitions() {
 		Set<TreatmentDefinition> set = new HashSet<TreatmentDefinition>();
-		for (TreatmentDefinition trivial : getRawAlternativesGraph().getDefinitions()) {
+		for (TreatmentDefinition trivial : getRawAlternativesGraph().getSelectedDefinitions()) {
 			// Find the categorizations relevant to the current combination of drugs
 			List<TreatmentCategorization> catzs = new ArrayList<TreatmentCategorization>();
 			List<Integer> nCat = new ArrayList<Integer>();

@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,8 +45,9 @@ import org.jgrapht.graph.ListenableUndirectedGraph;
 
 import com.jgoodies.binding.list.ObservableList;
 
-@SuppressWarnings("serial")
 public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<TreatmentDefinitionsGraphModel.Vertex, TreatmentDefinitionsGraphModel.Edge> {
+	private static final long serialVersionUID = -7829573824453914937L;
+
 	public static class Vertex {
 		private TreatmentDefinition d_definition;
 		private int d_sampleSize;

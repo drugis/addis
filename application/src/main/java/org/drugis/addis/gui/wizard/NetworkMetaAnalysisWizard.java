@@ -36,7 +36,6 @@ import javax.swing.JScrollPane;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
-import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
 import org.pietschy.wizard.models.StaticModel;
