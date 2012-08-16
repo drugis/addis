@@ -37,6 +37,7 @@ import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
@@ -57,11 +58,14 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.ValueModelWrapper;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
+import org.drugis.common.beans.FilteredObservableList;
+import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.SuffixedObservableList;
 import org.drugis.common.beans.TransformOnceObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.beans.ValueEqualsModel;
 import org.drugis.common.validation.BooleanNotModel;
+import org.drugis.common.validation.PropertyUniqueModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -170,12 +174,14 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 	private final HashMap<DecisionTreeEdge, ValueModel> d_choiceForEdge = new HashMap<DecisionTreeEdge, ValueModel>();
 	private final HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>> d_optionsForEdge = new HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>>();
 	private final HashMap<Category, ValueHolder<Boolean>> d_categoryUsed = new HashMap<Category, ValueHolder<Boolean>>();
+	private ValueModel d_nameAvailableModel;
 	
 	public TreatmentCategorizationWizardPresentation(final TreatmentCategorization bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
 		d_contentAwareCategories = new ContentAwareListModel<Category>(bean.getCategories());
-
+		d_nameAvailableModel = createNameAvailableModel();
+		
 		// Magic nodes
 		d_fixedRangeNode = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, getBean().getDoseUnit());
 		d_flexibleLowerNode = createMinDoseNode();
@@ -550,5 +556,29 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 	
 	private DoseQuantityChoiceNode createMaxDoseNode() {
 		return new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
+	}
+
+	public ValueModel getNameAvailableModel() {
+		return d_nameAvailableModel ;
+	}
+	
+	private ValueModel createNameAvailableModel() {
+		final FilteredObservableList<TreatmentCategorization> categorizations = new FilteredObservableList<TreatmentCategorization>(
+				d_domain.getTreatmentCategorizations(),
+				createDrugFilter((Drug)getDrug().getValue()));
+		getDrug().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				categorizations.setFilter(createDrugFilter((Drug)getDrug().getValue()));
+			}
+		});
+		return new PropertyUniqueModel<TreatmentCategorization>(categorizations, getBean(), TreatmentCategorization.PROPERTY_NAME);
+	}
+
+	private Filter<TreatmentCategorization> createDrugFilter(final Drug drug) {
+		return new Filter<TreatmentCategorization>() {
+			public boolean accept(TreatmentCategorization obj) {
+				return EqualsUtil.equal(obj.getDrug(), drug);
+			}
+		};
 	}
 }

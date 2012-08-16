@@ -26,10 +26,15 @@
 
 package org.drugis.addis.gui.wizard;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -40,6 +45,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
@@ -74,11 +82,12 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 
 	private final NotEmptyValidator d_validator;
 
-	public AddTreatmentCategorizationWizardStep(final TreatmentCategorizationWizardPresentation presentationModel, JDialog dialog) {
-		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
+	public AddTreatmentCategorizationWizardStep(final TreatmentCategorizationWizardPresentation pm, JDialog dialog) {
+		super(pm, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
 		d_validators.add(new ListItemsUniqueModel<Category>(d_pm.getCategories(), Category.class, Category.PROPERTY_NAME));
+		d_validators.add(pm.getNameAvailableModel());
 		
 		d_pm.getCategories().addListDataListener(new IndifferentListDataListener() {
 			protected void update() {
@@ -111,6 +120,18 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 
 		builder.addLabel("Name:", cc.xy(7, row));
 		builder.add(name, cc.xy(9, row));
+		
+		name.addCaretListener(new CaretListener() {
+			public void caretUpdate(CaretEvent e) {
+				setNameValidBorder(name);
+			}
+
+		});
+		d_pm.getDrug().addValueChangeListener(new PropertyChangeListener() {		
+			public void propertyChange(PropertyChangeEvent evt) {
+				setNameValidBorder(name);
+			}
+		});
 		d_validator.add(name);
 
 		row += 2;
@@ -145,6 +166,17 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		return builder.getPanel();
 	}
 
+	
+	private void setNameValidBorder(final JTextField name) {
+		if (!(Boolean)d_pm.getNameAvailableModel().getValue()) {
+			name.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+			name.setToolTipText("Treatment with this drug and name already exists, please change it.");
+		} else {
+			name.setBorder(new JTextField().getBorder());
+			name.setToolTipText(null);
+		}
+	}
+	
 	private JButton createNewDrugButton(final ValueModel drugModel) {
 		final JButton btn = GUIFactory.createPlusButton("Create drug");
 		btn.addActionListener(new ActionListener() {
