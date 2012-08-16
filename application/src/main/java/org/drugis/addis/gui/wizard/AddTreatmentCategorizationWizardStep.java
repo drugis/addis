@@ -39,26 +39,30 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+import javax.swing.SwingUtilities;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
+import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
+import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.DoseView;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
 import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
+import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.validation.ListItemsUniqueModel;
 
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.beans.PropertyAdapter;
+import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -74,31 +78,15 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		super(presentationModel, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
 		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
-
-		d_pm.getCategories().addListDataListener(new ListDataListener() {
-			@Override
-			public void intervalRemoved(final ListDataEvent e) {
-				rebuildPanel();
-			}
-
-			@Override
-			public void intervalAdded(final ListDataEvent e) {
-				rebuildPanel();
-			}
-
-			@Override
-			public void contentsChanged(final ListDataEvent e) {
-				rebuildPanel();
+		d_validators.add(new ListItemsUniqueModel<Category>(d_pm.getCategories(), Category.class, Category.PROPERTY_NAME));
+		
+		d_pm.getCategories().addListDataListener(new IndifferentListDataListener() {
+			protected void update() {
+				rebuildPanel();				
 			}
 		});
 	}
 
-
-	@Override
-	protected void initialize() {
-//		rebuildPanel();
-	}
-	
 	@Override
 	protected JPanel buildPanel() {
 		final FormLayout layout = new FormLayout(
@@ -129,7 +117,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		builder.addSeparator("Category labels", cc.xyw(1, row, colSpan));
 
 		row += 2;
-		final JComponent categoriesPanel = createCategoriesPanel(d_pm);
+		final JComponent categoriesPanel = createCategoriesPanel();
 		final JScrollPane catPane = new JScrollPane(categoriesPanel);
 		catPane.setPreferredSize(new Dimension(PANEL_WIDTH, 200));
 		builder.add(catPane, cc.xyw(1, row, colSpan));
@@ -160,7 +148,6 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 	private JButton createNewDrugButton(final ValueModel drugModel) {
 		final JButton btn = GUIFactory.createPlusButton("Create drug");
 		btn.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(final ActionEvent e) {
 				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), drugModel);
 			}
@@ -168,44 +155,87 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		return btn;
 	}
 
-	private JComponent createCategoriesPanel(final TreatmentCategorizationWizardPresentation model) {
+	private JComponent createCategoriesPanel() {
 		final FormLayout layout = new FormLayout(
-				"left:pref, 3dlu, fill:pref:grow, 3dlu, pref",
+				"left:pref, 3dlu, fill:pref:grow, 3dlu, pref, 3dlu, pref",
 				"p");
 		final PanelBuilder builder = new PanelBuilder(layout);
 		final CellConstraints cc = new CellConstraints();
 		builder.setDefaultDialogBorder();
 		int row = 1;
 
-		for(final Category category : model.getCategories()) {
-			builder.add(new JLabel("Category name"), cc.xy(1, row));
-			final JTextField name = BasicComponentFactory.createTextField(new PropertyAdapter<Category>(category, Category.PROPERTY_NAME), false);
-			builder.add(name, cc.xy(3, row));
-			final JButton remove = GUIFactory.createIconButton(FileNames.ICON_DELETE, "delete");
-			Bindings.bind(remove, "enabled", d_pm.getCategoryUsed(category));
-			remove.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					model.getCategories().remove(category);
+		ObservableList<Category> categories = d_pm.getCategories();
+		for (int i = 0; i < categories.size(); i++) {
+			final int idx = i;
+			Category category = d_pm.getCategories().get(idx);
+
+			builder.add(new JLabel("Category: "), cc.xy(1, row));
+			builder.add(BasicComponentFactory.createLabel(getNameModel(idx)), cc.xy(3, row));
+			JButton rename = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_EDIT));
+			rename.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					showRenameDialog(idx);
 				}
 			});
-			builder.add(remove, cc.xy(5, row));
+			builder.add(rename, cc.xy(5, row));
+
+			final JButton remove = GUIFactory.createIconButton(FileNames.ICON_DELETE, "delete");
+			remove.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
+					d_pm.getCategories().remove(idx);
+				}
+			});
+			builder.add(remove, cc.xy(7, row));
+			
+			Bindings.bind(remove, "enabled", d_pm.getCategoryUsed(category));
+			Bindings.bind(rename, "enabled", d_pm.getCategoryUsed(category));
 			row = LayoutUtil.addRow(layout, row);
 		}
 
-		builder.add(createAddCategoryButton(model), cc.xy(1, row));
+		builder.add(createAddCategoryButton(), cc.xy(1, row));
 		return builder.getPanel();
 	}
 
-
-	private JButton createAddCategoryButton(final TreatmentCategorizationWizardPresentation model) {
-		final JButton btn = GUIFactory.createLabeledIconButton("Add category" ,FileNames.ICON_PLUS);
+	private JButton createAddCategoryButton() {
+		final JButton btn = GUIFactory.createLabeledIconButton("Add category", FileNames.ICON_PLUS);
 		btn.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(final ActionEvent e) {
-				model.getCategories().add(new Category(d_pm.getBean()));
+				Category category = new Category(d_pm.getBean());
+				category.setName("Category " + ((int)d_pm.getCategories().size() + 1));
+				d_pm.getCategories().add(category);
+				showRenameDialog(d_pm.getCategories().indexOf(category));
 			}
 		});
 		return btn;
 	}
+	
+
+	private ValueModel getNameModel(final int idx) {
+		return new PresentationModel<TypeWithName>(d_pm.getCategories().get(idx)).getModel(TypeWithName.PROPERTY_NAME);
+	}
+	
+	private void showRenameDialog(final int idx) {
+		SwingUtilities.invokeLater(new Runnable() {			
+			public void run() {
+				final JDialog renameDialog = new RenameCategoryDialog(idx);
+				renameDialog.setVisible(true);
+			}
+		});
+	}
+
+	@SuppressWarnings("serial")
+	private class RenameCategoryDialog extends RenameDialog {
+		private Category d_category;
+
+		public RenameCategoryDialog(int idx) {
+			super(d_dialog, "Rename " + getNameModel(idx).getValue(), true, d_pm.getCategories(), idx);
+			d_category = d_pm.getCategories().get(idx);
+		}
+
+		protected void rename(String newName) {
+			d_category.setName(newName);
+		} 
+		
+	}
+	
 }

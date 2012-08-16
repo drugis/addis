@@ -31,31 +31,24 @@ import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ListOfNamedValidator;
-import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.AddListItemsPresentation;
+import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.OkCancelDialog;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.PresentationModel;
@@ -92,17 +85,8 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	private void resetUnderlyingList() {
 		d_validator = new ListOfNamedValidator<T>(d_pm.getList(), d_pm.getMinElements());
 		PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-		d_pm.getList().addListDataListener(new ListDataListener() {
-			
-			public void intervalRemoved(ListDataEvent e) {
-				rebuild();
-			}
-			
-			public void intervalAdded(ListDataEvent e) {
-				rebuild();
-			}
-			
-			public void contentsChanged(ListDataEvent e) {
+		d_pm.getList().addListDataListener(new IndifferentListDataListener() {
+			public void update() {
 				rebuild();
 			}
 		});
@@ -199,7 +183,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	}
 	
 	private void showRenameDialog(final int idx) {
-		JDialog renameDialog = new RenameDialog(d_parent, "Rename " + d_pm.getItemName(), true, idx);
+		JDialog renameDialog = new AddListItemsRenameDialog(d_parent, "Rename " + d_pm.getItemName(), true, idx);
 		renameDialog.setVisible(true);
 	}
 
@@ -207,64 +191,18 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		return new PresentationModel<TypeWithName>(d_pm.getList().get(idx)).getModel(TypeWithName.PROPERTY_NAME);
 	}
 	
-	private final class RenameDialog extends OkCancelDialog {
-		private final int d_idx;
-		private final ValueHolder<String> d_name;
-		private ValueHolder<Boolean> d_okEnabledModel = new ModifiableHolder<Boolean>(true);
-
-		private RenameDialog(Dialog owner, String title, boolean modal, int idx) {
-			super(owner, title, modal);
-			setLocationRelativeTo(owner);
-			d_idx = idx;
-			d_name = new ModifiableHolder<String>(d_pm.getList().get(d_idx).getName());
-			d_name.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					d_okEnabledModel.setValue(isCommitAllowed());
-				}
-			});
-			initComponents();
+	private class AddListItemsRenameDialog extends RenameDialog {
+		private AddListItemsRenameDialog(Dialog owner, String title, boolean modal, int idx) {
+			super(owner, title, modal, d_pm.getList(), idx);
 		}
 
-		private boolean nameIsUnique() {
-			for(int i = 0; i < d_pm.getList().size(); ++i) {
-				if (i != d_idx && d_name.getValue().equals(d_pm.getList().get(i).getName())) {
-					return false;
-				}
-			}
-			return true;
+		@Override
+		protected void rename(String newName) {
+			d_pm.rename(d_idx, newName);
 		}
 
-		private void initComponents() {
-			getUserPanel().setLayout(new BorderLayout());
-			getUserPanel().add(BasicComponentFactory.createTextField(d_name, false), BorderLayout.CENTER);
-			pack();
-
-			getUserPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit");
-			getUserPanel().getActionMap().put("submit", new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					commit();
-				}
-			});
-			
-			Bindings.bind(d_okButton, "enabled", d_okEnabledModel);
-		}
-
-		protected void commit() {
-			if (isCommitAllowed()) {
-				d_pm.rename(d_idx, d_name.getValue());
-				setVisible(false);
-			}
-		}
-
-		protected void cancel() {
-			setVisible(false);
-		}
-
-		private boolean isCommitAllowed() {
-			return !d_name.getValue().isEmpty() && nameIsUnique();
-		}
 	}
-
+	
 	class RemoveItemListener extends AbstractAction {
 		int d_index;
 		
