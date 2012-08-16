@@ -30,7 +30,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -45,9 +44,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
@@ -67,17 +63,15 @@ import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.validation.ListItemsUniqueModel;
 
-import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.looks.LookUtils;
-import com.jgoodies.validation.view.ValidationComponentUtils;
 
 public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 7730051460456443680L;
@@ -124,22 +118,11 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		builder.add(name, cc.xy(9, row));
 		
 		d_pm.getNameAvailableModel().addValueChangeListener(new PropertyChangeListener() {
-			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				setNameValidBorder(name);
 			}
 		});
-//		name.addCaretListener(new CaretListener() {
-//			public void caretUpdate(CaretEvent e) {
-//				setNameValidBorder(name);
-//			}
-//
-//		});
-//		d_pm.getDrug().addValueChangeListener(new PropertyChangeListener() {		
-//			public void propertyChange(PropertyChangeEvent evt) {
-//				setNameValidBorder(name);
-//			}
-//		});
+
 		d_validator.add(name);
 
 		row += 2;
@@ -255,7 +238,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 	
 
 	private ValueModel getNameModel(final int idx) {
-		return new PresentationModel<TypeWithName>(d_pm.getCategories().get(idx)).getModel(TypeWithName.PROPERTY_NAME);
+		return new PropertyAdapter<TypeWithName>(d_pm.getCategories().get(idx), TypeWithName.PROPERTY_NAME, true);
 	}
 	
 	private void showRenameDialog(final int idx) {
