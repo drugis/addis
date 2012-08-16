@@ -51,7 +51,7 @@ public class DrugsKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "atcCode" };
+		return new String[] { Drug.PROPERTY_NAME, Drug.PROPERTY_ATCCODE };
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {
