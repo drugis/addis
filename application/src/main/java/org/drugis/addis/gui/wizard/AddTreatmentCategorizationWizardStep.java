@@ -76,6 +76,8 @@ import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.looks.LookUtils;
+import com.jgoodies.validation.view.ValidationComponentUtils;
 
 public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 7730051460456443680L;
@@ -121,17 +123,23 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		builder.addLabel("Name:", cc.xy(7, row));
 		builder.add(name, cc.xy(9, row));
 		
-		name.addCaretListener(new CaretListener() {
-			public void caretUpdate(CaretEvent e) {
-				setNameValidBorder(name);
-			}
-
-		});
-		d_pm.getDrug().addValueChangeListener(new PropertyChangeListener() {		
+		d_pm.getNameAvailableModel().addValueChangeListener(new PropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				setNameValidBorder(name);
 			}
 		});
+//		name.addCaretListener(new CaretListener() {
+//			public void caretUpdate(CaretEvent e) {
+//				setNameValidBorder(name);
+//			}
+//
+//		});
+//		d_pm.getDrug().addValueChangeListener(new PropertyChangeListener() {		
+//			public void propertyChange(PropertyChangeEvent evt) {
+//				setNameValidBorder(name);
+//			}
+//		});
 		d_validator.add(name);
 
 		row += 2;
@@ -168,13 +176,17 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 
 	
 	private void setNameValidBorder(final JTextField name) {
+		name.setOpaque(true);
 		if (!(Boolean)d_pm.getNameAvailableModel().getValue()) {
+			name.setBackground(AuxComponentFactory.COLOR_ERROR);
 			name.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 			name.setToolTipText("Treatment with this drug and name already exists, please change it.");
 		} else {
+			name.setBackground(new JTextField().getBackground());
 			name.setBorder(new JTextField().getBorder());
 			name.setToolTipText(null);
 		}
+		
 	}
 	
 	private JButton createNewDrugButton(final ValueModel drugModel) {
