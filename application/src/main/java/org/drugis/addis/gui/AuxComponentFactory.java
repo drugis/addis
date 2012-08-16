@@ -89,6 +89,7 @@ public class AuxComponentFactory {
 	private static final String NCT_NOTE = "Source Text (ClinicalTrials.gov):";
 	public static final Color COLOR_NOTE = new Color(255, 255, 180);
 	public static final Color COLOR_NOTE_EDIT = new Color(255, 255, 210);
+	public static final Color COLOR_ERROR = new Color(255, 215, 215);
 
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
 		return createBoundComboBox(values, model, false);

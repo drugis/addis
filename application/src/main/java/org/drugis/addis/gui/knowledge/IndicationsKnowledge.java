@@ -53,7 +53,7 @@ public class IndicationsKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "code" };
+		return new String[] { Indication.PROPERTY_NAME, Indication.PROPERTY_CODE };
 	}
 
 
