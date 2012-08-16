@@ -33,6 +33,7 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
@@ -87,8 +88,14 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "type", "indication", "outcomeMeasure",
-		"includedDrugs", "studiesIncluded", "sampleSize" };
+		return new String[] { 
+				PairWiseMetaAnalysis.PROPERTY_NAME,
+				PairWiseMetaAnalysis.PROPERTY_TYPE,
+				PairWiseMetaAnalysis.PROPERTY_INDICATION,
+				PairWiseMetaAnalysis.PROPERTY_OUTCOME_MEASURE,
+				PairWiseMetaAnalysis.PROPERTY_ALTERNATIVES,
+				PairWiseMetaAnalysis.PROPERTY_INCLUDED_STUDIES, 
+				PairWiseMetaAnalysis.PROPERTY_SAMPLE_SIZE};
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {

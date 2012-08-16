@@ -39,6 +39,7 @@ import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.entities.UnknownDose;
+import org.drugis.common.EqualsUtil;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -227,7 +228,7 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 	public boolean equals(Object obj) {
 		if (obj instanceof TreatmentCategorization) { 
 			TreatmentCategorization other = (TreatmentCategorization) obj;
-			return d_drug.equals(other.d_drug) && d_name.equals(other.d_name);
+			return EqualsUtil.equal(d_drug, other.d_drug) && EqualsUtil.equal(d_name, other.d_name);
 		}
 		return false;
 	}
@@ -250,6 +251,6 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 	
 	@Override
 	public int hashCode() {
-		return d_drug.hashCode() * 31 + d_name.hashCode();
+		return EqualsUtil.hashCode(d_drug) * 31 + EqualsUtil.hashCode(d_name);
 	}
 }

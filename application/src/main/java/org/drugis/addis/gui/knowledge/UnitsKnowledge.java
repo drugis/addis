@@ -53,7 +53,7 @@ public class UnitsKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "symbol" };
+		return new String[] { Unit.PROPERTY_NAME, Unit.PROPERTY_SYMBOL };
 	}
 
 	@Override
