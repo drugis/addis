@@ -134,8 +134,6 @@ public class NetworkMetaAnalysisWizardPMTest {
 	 * The raw selection (selection of trivial TreatmentDefinitions) should be considered
 	 * complete if they form a connected subgraph of the getRawAlternativesGraph and they
 	 * contain at least one TreatmentDefinition.
-	 * 
-	 * FIXME: this test probably tests for *at least two*, should be fixed.
 	 */
 	@Test
 	public void testRawSelectionCompleteModel() {
@@ -148,6 +146,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		ArrayList<TreatmentDefinition> newList = new ArrayList<TreatmentDefinition>();
 		newList.add(d_sertrSet);
+		newList.add(d_paroxSet);
 		d_pm.getSelectedRawTreatmentDefinitions().clear();
 		d_pm.getSelectedRawTreatmentDefinitions().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
@@ -504,7 +503,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_paroxSet,
 				d_sertrSet}));
 		d_pm.populateSelectableStudies();
-
+		d_pm.rebuildArmSelection();
 		assertTrue(d_pm.getSelectedStudies().contains(study));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
@@ -656,6 +655,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.rebuildRefinedAlternativesGraph();
 
 		d_pm.populateSelectableStudies();
+		d_pm.rebuildArmSelection();
 		TreatmentDefinition fluoxFixed = new TreatmentDefinition(fluoxCat.getCategory(new FixedDose()));
 		
 		Study multiple = ExampleData.buildStudyMultipleArmsperDrug();
