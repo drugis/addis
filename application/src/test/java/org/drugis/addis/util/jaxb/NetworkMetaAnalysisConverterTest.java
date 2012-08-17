@@ -126,8 +126,7 @@ public class NetworkMetaAnalysisConverterTest {
 		d_jaxbConverterTest.doRoundTripTest(getTransformedSavedResultsData());
 	}
 	
-	private static InputStream getTransformedSavedResultsData()
-			throws TransformerException, IOException {
+	private static InputStream getTransformedSavedResultsData() throws TransformerException, IOException {
 		return JAXBConvertorTest.getTestData(TEST_DATA_WITH_RESULTS);
 	}
 		

@@ -89,7 +89,7 @@ public class FrequencyMeasurement extends BasicMeasurement {
 
 	private void checkCategory(String category) {
 		if (!getFrequencies().containsKey(category)) {
-			throw new IllegalArgumentException("illegal category");
+			throw new IllegalArgumentException("Illegal category: " + category );
 		}
 	}
 
