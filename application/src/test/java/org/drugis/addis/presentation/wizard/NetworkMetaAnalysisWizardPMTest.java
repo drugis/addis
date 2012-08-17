@@ -134,8 +134,6 @@ public class NetworkMetaAnalysisWizardPMTest {
 	 * The raw selection (selection of trivial TreatmentDefinitions) should be considered
 	 * complete if they form a connected subgraph of the getRawAlternativesGraph and they
 	 * contain at least one TreatmentDefinition.
-	 * 
-	 * FIXME: this test probably tests for *at least two*, should be fixed.
 	 */
 	@Test
 	public void testRawSelectionCompleteModel() {
@@ -148,6 +146,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		
 		ArrayList<TreatmentDefinition> newList = new ArrayList<TreatmentDefinition>();
 		newList.add(d_sertrSet);
+		newList.add(d_paroxSet);
 		d_pm.getSelectedRawTreatmentDefinitions().clear();
 		d_pm.getSelectedRawTreatmentDefinitions().addAll(newList);
 		assertFalse((Boolean)completeModel.getValue());
@@ -381,7 +380,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		TreatmentDefinition tSertr = TreatmentDefinition.createTrivial(sertr);
 
 		assertEquals(Arrays.asList(tFluox, tParox, tSertr),
-				d_pm.getRefinedAlternativesGraph().getTreatmentDefinitions());
+				d_pm.getRefinedAlternativesGraph().getSelectedDefinitions());
 	}
 	
 	//// Beyond here we should have REFINED TreatmentDefinitions.
@@ -504,7 +503,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 				d_paroxSet,
 				d_sertrSet}));
 		d_pm.populateSelectableStudies();
-
+		d_pm.rebuildArmSelection();
 		assertTrue(d_pm.getSelectedStudies().contains(study));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_fluoxSet));
 		assertNotNull(d_pm.getSelectedArmModel(study, d_paroxSet));
@@ -656,6 +655,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		d_pm.rebuildRefinedAlternativesGraph();
 
 		d_pm.populateSelectableStudies();
+		d_pm.rebuildArmSelection();
 		TreatmentDefinition fluoxFixed = new TreatmentDefinition(fluoxCat.getCategory(new FixedDose()));
 		
 		Study multiple = ExampleData.buildStudyMultipleArmsperDrug();
@@ -666,7 +666,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		Arm arm = arms.get(0); // The currently unused arm 
 		d_pm.getSelectedArmModel(multiple, d_paroxSet).setValue(arm);
 		
-		NetworkMetaAnalysis ma = d_pm.createAnalysis("name");
+		NetworkMetaAnalysis ma = (NetworkMetaAnalysis) d_pm.createAnalysis("name");
 		assertEquals(d_pm.getSelectedRefinedTreatmentDefinitions(), ma.getAlternatives());
 		JUnitUtil.assertAllAndOnly(ma.getIncludedStudies(),
 				d_pm.getSelectableStudyListPM().getSelectedStudiesModel());
@@ -674,7 +674,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 		assertEquals(d_pm.getIndicationModel().getValue(), ma.getIndication());
 		assertEquals(arm, ma.getArm(multiple, d_paroxSet));
 		d_pm.getSelectedRefinedTreatmentDefinitions().remove(d_sertrSet);
-		ma = d_pm.createAnalysis("name");
+		ma = (NetworkMetaAnalysis) d_pm.createAnalysis("name");
 		assertEquals(d_pm.getSelectedRefinedTreatmentDefinitions(), ma.getAlternatives());
 	}
 }

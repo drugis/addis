@@ -73,7 +73,10 @@ public class TreatmentCategorizationKnowledge extends CategoryKnowledgeBase {
 
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "drug", "name", "categories" };
+		return new String[] { 
+				TreatmentCategorization.PROPERTY_DRUG, 
+				TreatmentCategorization.PROPERTY_NAME, 
+				TreatmentCategorization.PROPERTY_CATEGORIES };
 	}
 
 	@Override

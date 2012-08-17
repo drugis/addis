@@ -34,7 +34,7 @@ import javax.swing.JLabel;
 
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -46,9 +46,9 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public class RefineDrugSelectionWizardStep extends PanelWizardStep {
 	private static final long serialVersionUID = -585100940524715529L;
-	private AbstractMetaAnalysisWizardPM d_pm;
+	private NetworkMetaAnalysisWizardPM d_pm;
 
-	public RefineDrugSelectionWizardStep(AbstractMetaAnalysisWizardPM pm) { 
+	public RefineDrugSelectionWizardStep(NetworkMetaAnalysisWizardPM pm) { 
 		super("Refine Drugs","Optionally select Treatment Categorizations to use for the selected drugs");
 		d_pm = pm;
 	}

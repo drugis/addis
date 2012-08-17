@@ -85,7 +85,7 @@ public class StudyGraphModelTest {
 	
 	@Test
 	public void testGetDrugs() {
-		assertAllAndOnly(d_drugs, d_pm.getTreatmentDefinitions());
+		assertAllAndOnly(d_drugs, d_pm.getDefinitions());
 	}
 	
 	@Test

@@ -35,25 +35,25 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.presentation.wizard.AnalysisWizardPresentation;
+import org.drugis.common.beans.ValueEqualsModel;
+import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.validation.BooleanAndModel;
+import org.drugis.common.validation.BooleanNotModel;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
+import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class IndicationAndNameInputPanel {
-
-
-	private static boolean stepComplete(AnalysisWizardPresentation pm) {
-		return pm.getIndicationModel().getValue() != null && pm.getNameValidModel().getValue();
-	}
 
 	private static void updateBorder(final JTextField nameInput, final Border border, AnalysisWizardPresentation pm) {
 		if (!pm.getNameValidModel().getValue()){
@@ -73,36 +73,44 @@ public class IndicationAndNameInputPanel {
 	public static Component create(final PanelWizardStep panelWizardStep, final AnalysisWizardPresentation pm) {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
-				"p, 3dlu, p"
+				"p"
 			);	
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
+		addToBuilder(builder, 1, pm);
+
+		ValueModel complete = new BooleanAndModel(pm.getNameValidModel(),
+				new BooleanNotModel(new ValueEqualsModel(pm.getIndicationModel(), null)));
+		Bindings.bind(panelWizardStep, "complete", complete);
+		return builder.getPanel();
+	}
+
+	/**
+	 * Add the name and indication components to an existing builder. The builder's layout is assumed to have
+	 * at least three columns, and at least one available row. Rows are added as needed.
+	 * @param complete 
+	 * @return The index of the last used row. 
+	 */
+	public static int addToBuilder(PanelBuilder builder, int row, final AnalysisWizardPresentation pm) {
 		CellConstraints cc = new CellConstraints();
-	
-		
+
 		final JTextField nameInput = BasicComponentFactory.createTextField(pm.getNameModel(), false);
 		nameInput.setColumns(20);
 		final Border border = nameInput.getBorder();
-		builder.add(new JLabel("Name : "), cc.xy(1, 1));
-		builder.add(nameInput, cc.xy(3, 1));
+		builder.add(new JLabel("Name : "), cc.xy(1, row));
+		builder.add(nameInput, cc.xy(3, row));
 		pm.getNameValidModel().addValueChangeListener(new PropertyChangeListener() {
-			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				updateBorder(nameInput, border, pm);
-				panelWizardStep.setComplete(stepComplete(pm));
 			}
 		});
 	
+		row = LayoutUtil.addRow(builder.getLayout(), row);
 		JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationsModel(), pm.getIndicationModel(), true);
-		builder.add(new JLabel("Indication : "), cc.xy(1, 3));
-		builder.add(indBox, cc.xy(3, 3));
-		pm.getIndicationModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				panelWizardStep.setComplete(stepComplete(pm));
-			}
-		});
-		JPanel panel = builder.getPanel();
-		return panel;
+		builder.add(new JLabel("Indication : "), cc.xy(1, row));
+		builder.add(indBox, cc.xy(3, row));
+
+		return row;
 	}
 
 }

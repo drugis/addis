@@ -69,7 +69,6 @@ import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.DependentEntitiesException;
 import org.drugis.addis.entities.Domain;
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.EntityCategory;
@@ -179,11 +178,7 @@ public class AddisWindow extends JFrame {
 		for (EntityCategory cat : getDomain().getCategories()) {
 			CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(cat);
 			if (knowledge.isToolbarCategory()) {
-				JButton button = createToolbarButton(knowledge);
-				builder.addButton(button);
-				if(cat.equals(DomainImpl.CATEGORY_PAIR_WISE_META_ANALYSES)) {
-					button.setEnabled(false);
-				}
+				builder.addButton(createToolbarButton(knowledge));
 			}
 		}
 
@@ -282,11 +277,7 @@ public class AddisWindow extends JFrame {
 		JMenu addMenu = new JMenu("Add");
 		addMenu.setMnemonic('a');
 		for (EntityCategory cat : getDomain().getCategories()) {
-			JMenuItem item = createAddMenuItem(CategoryKnowledgeFactory.getCategoryKnowledge(cat));
-			addMenu.add(item);
-			if(cat.equals(DomainImpl.CATEGORY_PAIR_WISE_META_ANALYSES)) {
-				item.setEnabled(false);
-			}
+			addMenu.add(createAddMenuItem(CategoryKnowledgeFactory.getCategoryKnowledge(cat)));
 		}
 		return addMenu;
 	}
