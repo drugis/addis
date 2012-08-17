@@ -63,6 +63,7 @@ import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Edge;
 import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.CollectionUtil;
+import org.drugis.common.beans.AffixedObservableList;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.event.IndifferentListDataListener;
@@ -506,9 +507,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 
 
 	public List<TreatmentCategorization> getAvailableCategorizations(Drug drug) {
-		List<TreatmentCategorization> categorizations = d_domain.getCategorizations(drug);
-		categorizations.add(0, TreatmentCategorization.createTrivial(drug));
-		return categorizations;
+		return AffixedObservableList.createPrefixed(d_domain.getCategorizations(drug), TreatmentCategorization.createTrivial(drug));
 	}
 
 	public ValueModel getCategorizationModel(Drug drug) {

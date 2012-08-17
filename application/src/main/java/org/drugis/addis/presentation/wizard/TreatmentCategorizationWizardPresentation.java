@@ -57,10 +57,10 @@ import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.ValueModelWrapper;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.beans.AffixedObservableList;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.FilteredObservableList.Filter;
-import org.drugis.common.beans.SuffixedObservableList;
 import org.drugis.common.beans.TransformOnceObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.beans.ValueEqualsModel;
@@ -406,7 +406,7 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 						return new LeafNode(a);
 					}
 		});
-		return new SuffixedObservableList<DecisionTreeNode>(transformedCategories, extraOptions);
+		return AffixedObservableList.createSuffixed(transformedCategories, extraOptions);
 	}
 
 	public ObservableList<DecisionTreeNode> getOptionsForEdge(final DecisionTreeEdge edge) {
