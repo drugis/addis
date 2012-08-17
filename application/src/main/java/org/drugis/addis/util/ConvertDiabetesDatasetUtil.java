@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,17 +36,11 @@ import org.drugis.addis.entities.data.AddisData;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.util.jaxb.JAXBConvertor;
 import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
-import org.drugis.addis.util.jaxb.JAXBConvertorTest;
 import org.drugis.addis.util.jaxb.JAXBHandler;
 import org.drugis.common.beans.SuffixedObservableList;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.jgoodies.binding.list.ObservableList;
 
