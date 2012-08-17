@@ -127,7 +127,6 @@ public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<Tr
 	
 	public void rebuildGraph() {
 		if (!d_rebuildNeeded) {
-			System.out.println("Rebuild not needed");
 			return;
 		}
 
