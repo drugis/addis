@@ -84,7 +84,7 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 	}
 
 	public DecisionTreeNode getEdgeTarget(final DecisionTreeEdge e) {
-		return new Pair<DecisionTreeNode>(getIncidentVertices(e)).getSecond();
+		return containsEdge(e) ? new Pair<DecisionTreeNode>(getIncidentVertices(e)).getSecond() : null;
 	}
 
 	public DecisionTreeNode getEdgeSource(final DecisionTreeEdge e) {

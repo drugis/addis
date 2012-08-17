@@ -82,8 +82,14 @@ public class NetworkMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "type", "indication", "outcomeMeasure",
-				"includedDrugs", "studiesIncluded", "sampleSize" };
+		return new String[] { 
+				NetworkMetaAnalysis.PROPERTY_NAME,
+				NetworkMetaAnalysis.PROPERTY_TYPE,
+				NetworkMetaAnalysis.PROPERTY_INDICATION,
+				NetworkMetaAnalysis.PROPERTY_OUTCOME_MEASURE,
+				NetworkMetaAnalysis.PROPERTY_ALTERNATIVES, 
+				NetworkMetaAnalysis.PROPERTY_INCLUDED_STUDIES, 
+				NetworkMetaAnalysis.PROPERTY_SAMPLE_SIZE };
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {

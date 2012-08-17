@@ -41,6 +41,8 @@ import java.util.List;
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Domain;
+import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
@@ -63,11 +65,14 @@ public class TreatmentCategorizationWizardPresentationTest {
 
 	private TreatmentCategorization d_bean;
 	private TreatmentCategorizationWizardPresentation d_pm;
+	private Domain d_domain;
 
 	@Before
 	public void setUp() {
 		d_bean = TreatmentCategorization.createDefault("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
-		d_pm = new TreatmentCategorizationWizardPresentation(d_bean, null);
+		d_domain = new DomainImpl();
+		ExampleData.initDefaultData(d_domain);
+		d_pm = new TreatmentCategorizationWizardPresentation(d_bean, d_domain);
 	}
 
 	@Test
