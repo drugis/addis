@@ -31,13 +31,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.ReadOnlyObservableList;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.TransformedObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -48,8 +48,8 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 
 	public SelectableOptionsModel() {
 		ObservableList<Option<E>> contentAware = new ContentAwareListModel<Option<E>>(d_options);
-		FilteredObservableList<Option<E>> selectedOptions = new FilteredObservableList<Option<E>>(contentAware, new Filter<Option<E>>() {
-			public boolean accept(Option<E> obj) {
+		FilteredObservableList<Option<E>> selectedOptions = new FilteredObservableList<Option<E>>(contentAware, new Predicate<Option<E>>() {
+			public boolean evaluate(Option<E> obj) {
 				return obj.toggle.getValue();
 			}
 		});

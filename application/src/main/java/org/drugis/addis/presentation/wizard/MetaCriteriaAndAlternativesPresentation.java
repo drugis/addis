@@ -36,13 +36,14 @@ import java.util.TreeSet;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
@@ -51,7 +52,6 @@ import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.TransformedObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.validation.BooleanAndModel;
 
@@ -162,22 +162,22 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		}
 	}
 	
-	private class OutcomeMeasureFilter implements Filter<MetaAnalysis> {
+	private class OutcomeMeasureFilter implements Predicate<MetaAnalysis> {
 		private final OutcomeMeasure d_om;
 		public OutcomeMeasureFilter(OutcomeMeasure om) {
 			d_om = om;
 		}
-		public boolean accept(MetaAnalysis ma) {
+		public boolean evaluate(MetaAnalysis ma) {
 			return ma.getOutcomeMeasure().equals(d_om);
 		}
 	}
 
-	public static class IndicationFilter implements Filter<MetaAnalysis> {
+	public static class IndicationFilter implements Predicate<MetaAnalysis> {
 		private final Indication d_indication;
 		public IndicationFilter(Indication i) {
 			d_indication = i;
 		}
-		public boolean accept(MetaAnalysis ma) {
+		public boolean evaluate(MetaAnalysis ma) {
 			return ma.getIndication().equals(d_indication);
 		}
 	}
@@ -218,8 +218,8 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 				new String[] {CriterionAnalysisPair.PROPERTY_ANALYSIS});
 		
 		// Filter the CriterionAnalysisPair list to include only selected criteria.
-		final Filter<CriterionAnalysisPair> criterionSelectedFilter = new Filter<CriterionAnalysisPair>() {
-			public boolean accept(CriterionAnalysisPair obj) {
+		final Predicate<CriterionAnalysisPair> criterionSelectedFilter = new Predicate<CriterionAnalysisPair>() {
+			public boolean evaluate(CriterionAnalysisPair obj) {
 				return getSelectedCriteria().contains(obj.getCriterion());
 			}
 		};

@@ -37,7 +37,7 @@ import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.util.jaxb.JAXBConvertor;
 import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.jaxb.JAXBHandler;
-import org.drugis.common.beans.SuffixedObservableList;
+import org.drugis.common.beans.AffixedObservableList;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -162,7 +162,7 @@ public class ConvertDiabetesDatasetUtil {
 			newSom.setValue(newChar);
 			study.getStudyOutcomeMeasures().add(study.getStudyOutcomeMeasures().indexOf(oldSom), newSom);
 			for(WhenTaken wt : oldSom.getWhenTaken()) { 
-				for(Arm arm : new SuffixedObservableList<Arm>(study.getArms(), (Arm)null)) { 
+				for(Arm arm : AffixedObservableList.createSuffixed(study.getArms(),  (Arm)null)) { 
 					FrequencyMeasurement m = (FrequencyMeasurement) study.getMeasurement(oldSom.getValue(), arm, wt);
 					if(m == null) continue;
 					FrequencyMeasurement newFreq = new FrequencyMeasurement(newChar);
