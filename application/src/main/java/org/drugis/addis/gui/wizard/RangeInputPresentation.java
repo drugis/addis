@@ -26,6 +26,7 @@
 
 package org.drugis.addis.gui.wizard;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.treatment.ChoiceNode;
 import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
@@ -36,7 +37,6 @@ import org.drugis.addis.presentation.ValueModelWrapper;
 import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation.CategorySpecifiers;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.validation.ListMinimumSizeModel;
@@ -71,9 +71,9 @@ public class RangeInputPresentation {
 
 		final FilteredObservableList<DecisionTreeNode> choiceNodesSelected =
 			new FilteredObservableList<DecisionTreeNode>(selections,
-				new Filter<DecisionTreeNode>() {
+				new Predicate<DecisionTreeNode>() {
 					@Override
-					public boolean accept(final DecisionTreeNode obj) {
+					public boolean evaluate(final DecisionTreeNode obj) {
 						return obj != null && obj instanceof ChoiceNode;
 					}});
 

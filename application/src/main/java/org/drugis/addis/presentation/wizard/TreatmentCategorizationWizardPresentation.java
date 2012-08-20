@@ -60,7 +60,6 @@ import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.AffixedObservableList;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformOnceObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.beans.ValueEqualsModel;
@@ -574,9 +573,9 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 		return new PropertyUniqueModel<TreatmentCategorization>(categorizations, getBean(), TreatmentCategorization.PROPERTY_NAME);
 	}
 
-	private Filter<TreatmentCategorization> createDrugFilter(final Drug drug) {
-		return new Filter<TreatmentCategorization>() {
-			public boolean accept(TreatmentCategorization obj) {
+	private Predicate<TreatmentCategorization> createDrugFilter(final Drug drug) {
+		return new Predicate<TreatmentCategorization>() {
+			public boolean evaluate(TreatmentCategorization obj) {
 				return EqualsUtil.equal(obj.getDrug(), drug);
 			}
 		};

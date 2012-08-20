@@ -29,6 +29,7 @@ package org.drugis.addis.presentation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DrugTreatment;
@@ -45,7 +46,7 @@ public class TreatmentCategorizationPresentation extends PresentationModel<Treat
 	private final Map<Category, StudyListPresentation> d_studyListPresentations = new HashMap<Category, StudyListPresentation>();
 	private final Domain d_domain;
 
-	private static class StudyCategoryFilter implements FilteredObservableList.Filter<Study> {
+	private static class StudyCategoryFilter implements Predicate<Study> {
 		private final Category d_category;
 
 		public StudyCategoryFilter(final Category category) {
@@ -53,7 +54,7 @@ public class TreatmentCategorizationPresentation extends PresentationModel<Treat
 		}
 
 		@Override
-		public boolean accept(final Study s) {
+		public boolean evaluate(final Study s) {
 			for (final Arm arm : s.getArms()) {
 				final TreatmentActivity treatment = s.getTreatment(arm);
 				for (final DrugTreatment drugTreatment : treatment.getTreatments()) {
