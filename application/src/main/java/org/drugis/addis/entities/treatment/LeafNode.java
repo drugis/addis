@@ -26,6 +26,8 @@
 
 package org.drugis.addis.entities.treatment;
 
+import org.drugis.common.EqualsUtil;
+
 public class LeafNode implements DecisionTreeNode {
 	public static final String NAME_EXCLUDE = "Exclude";
 	private final Category d_category;
@@ -50,5 +52,14 @@ public class LeafNode implements DecisionTreeNode {
 
 	public Category getCategory() {
 		return d_category;
+	}
+
+	@Override
+	public boolean equivalent(DecisionTreeNode o) {
+		if (!(o instanceof LeafNode)) { 
+			return false;
+		} else { 
+			return EqualsUtil.equal(getCategory(), ((LeafNode)o).getCategory());
+		}
 	}
 }
