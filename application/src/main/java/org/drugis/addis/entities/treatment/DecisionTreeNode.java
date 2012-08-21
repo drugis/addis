@@ -26,8 +26,7 @@
 
 package org.drugis.addis.entities.treatment;
 
-
-
 public interface DecisionTreeNode {
 	public abstract String getName();
+	public abstract boolean equivalent(DecisionTreeNode o);
 }

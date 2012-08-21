@@ -106,4 +106,6 @@ public class DecisionTreeTest {
 		tree.replaceChild(edge, new LeafNode(new Category(d_tc, "int")));
 		assertEquals("int", tree.decide(42).getName());
 	}
+	
+	
 }

@@ -48,4 +48,13 @@ public class TypeEdge implements DecisionTreeEdge {
 	public Class<?> getType() {
 		return d_type;
 	}
+
+	@Override
+	public boolean equivalent(DecisionTreeEdge o) {
+		if(!(o instanceof TypeEdge)) { 
+			return false;
+		} else {
+			return getType().equals((TypeEdge)o);
+		}
+	}
 }

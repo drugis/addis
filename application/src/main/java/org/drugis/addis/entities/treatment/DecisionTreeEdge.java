@@ -33,4 +33,6 @@ public interface DecisionTreeEdge {
 	 * @return True for accept, false for reject.
 	 */
 	public boolean decide(Object object);
+	
+	public boolean equivalent(DecisionTreeEdge o);
 }
