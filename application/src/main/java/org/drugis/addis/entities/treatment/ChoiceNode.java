@@ -73,4 +73,14 @@ public class ChoiceNode implements DecisionTreeNode {
 	public String toString() {
 		return getName();
 	}
+
+	@Override
+	public boolean equivalent(DecisionTreeNode o) {
+		if(!(o instanceof ChoiceNode)) {
+			return false;
+		} else {
+			ChoiceNode other = (ChoiceNode)o;
+			return getBeanClass().equals(other.getBeanClass()) && getPropertyName().equals(other.getPropertyName());
+		}
+	}
 }

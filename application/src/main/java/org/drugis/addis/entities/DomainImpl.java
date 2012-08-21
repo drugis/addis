@@ -34,9 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.list.TreeList;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
@@ -46,7 +44,6 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.SortedSetModel;
 
 import com.jgoodies.binding.beans.BeanUtils;
@@ -138,13 +135,13 @@ public class DomainImpl extends Domain {
 	private FilteredObservableList<MetaAnalysis> d_pairWiseMetaAnalyses;
 	
 	public DomainImpl() {
-		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new FilteredObservableList.Filter<MetaAnalysis>() {
-			public boolean accept(MetaAnalysis obj) {
+		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new Predicate<MetaAnalysis>() {
+			public boolean evaluate(MetaAnalysis obj) {
 				return obj instanceof PairWiseMetaAnalysis;
 			}
 		});
-		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new FilteredObservableList.Filter<MetaAnalysis>() {
-			public boolean accept(MetaAnalysis obj) {
+		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new Predicate<MetaAnalysis>() {
+			public boolean evaluate(MetaAnalysis obj) {
 				return obj instanceof NetworkMetaAnalysis;
 			}
 		});
@@ -191,12 +188,12 @@ public class DomainImpl extends Domain {
 		return new FilteredObservableList<Study>(getStudies(), new IndicationFilter(i));
 	}
 	
-	public List<TreatmentCategorization> getCategorizations(final Drug drug) {
-		return new TreeList<TreatmentCategorization>(CollectionUtils.select(getTreatmentCategorizations(), new Predicate<TreatmentCategorization>() {
-			public boolean evaluate(TreatmentCategorization object) {
-				return object.getDrug().equals(drug);
+	public ObservableList<TreatmentCategorization> getCategorizations(final Drug drug) {
+		return new FilteredObservableList<TreatmentCategorization>(getTreatmentCategorizations(), new Predicate<TreatmentCategorization>() {
+			public boolean evaluate(TreatmentCategorization obj) {
+				return obj.getDrug().equals(drug);
 			}
-		}));
+		});
 	}
 	
 	@Override
@@ -400,58 +397,58 @@ public class DomainImpl extends Domain {
 		return d_units;
 	}
 
-	public static class EndpointFilter implements Filter<Study> {
+	public static class EndpointFilter implements Predicate<Study> {
 		private Endpoint d_endpoint;
 
 		public EndpointFilter(Endpoint e) {
 			d_endpoint = e;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return Study.extractVariables(s.getEndpoints()).contains(d_endpoint);
 		}
 	}
-	public static class AdverseEventFilter implements Filter<Study> {
+	public static class AdverseEventFilter implements Predicate<Study> {
 		private AdverseEvent d_adverseEvent;
 
 		public AdverseEventFilter(AdverseEvent ade) {
 			d_adverseEvent = ade;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return Study.extractVariables(s.getAdverseEvents()).contains(d_adverseEvent);
 		}
 	}
-	public static class PopulationCharacteristicFilter implements Filter<Study> {
+	public static class PopulationCharacteristicFilter implements Predicate<Study> {
 		private PopulationCharacteristic d_popChar;
 
 		public PopulationCharacteristicFilter(PopulationCharacteristic e) {
 			d_popChar = e;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return Study.extractVariables(s.getPopulationChars()).contains(d_popChar);
 		}
 	}
-	public static class IndicationFilter implements Filter<Study> {
+	public static class IndicationFilter implements Predicate<Study> {
 		private final Indication d_indication;
 
 		public IndicationFilter(Indication indication) {
 			d_indication = indication;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return s.getIndication().equals(d_indication);
 		}
 	}
-	public class TreatmentDefinitionFilter implements Filter<Study> {
+	public class TreatmentDefinitionFilter implements Predicate<Study> {
 		private final TreatmentDefinition d_treatmentDefinition;
 		
 		public TreatmentDefinitionFilter(TreatmentDefinition ds) {
 			d_treatmentDefinition = ds;
 		}
 		
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return s.getTreatmentDefinitions().contains(d_treatmentDefinition);
 		}
 	}

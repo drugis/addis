@@ -63,8 +63,8 @@ import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Edge;
 import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.CollectionUtil;
+import org.drugis.common.beans.AffixedObservableList;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.event.IndifferentListDataListener;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.event.GraphEdgeChangeEvent;
@@ -337,7 +337,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 
 
-	private Filter<Study> getIndicationOutcomeFilter() {
+	private Predicate<Study> getIndicationOutcomeFilter() {
 		if (d_indicationHolder.getValue() == null || d_outcomeHolder.getValue() == null) {
 			return new FalseFilter();
 		} else {
@@ -506,9 +506,7 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 
 
 	public List<TreatmentCategorization> getAvailableCategorizations(Drug drug) {
-		List<TreatmentCategorization> categorizations = d_domain.getCategorizations(drug);
-		categorizations.add(0, TreatmentCategorization.createTrivial(drug));
-		return categorizations;
+		return AffixedObservableList.createPrefixed(d_domain.getCategorizations(drug), TreatmentCategorization.createTrivial(drug));
 	}
 
 	public ValueModel getCategorizationModel(Drug drug) {
@@ -519,14 +517,14 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 	
 	
-	final class FalseFilter implements Filter<Study> {
-		public boolean accept(Study s) {
+	final class FalseFilter implements Predicate<Study> {
+		public boolean evaluate(Study s) {
 			return false;
 		}
 	}
 
-	final class IndicationOutcomeFilter implements Filter<Study> {
-		public boolean accept(Study s) {
+	final class IndicationOutcomeFilter implements Predicate<Study> {
+		public boolean evaluate(Study s) {
 			return s.getIndication().equals(d_indicationHolder.getValue()) && 
 					s.getOutcomeMeasures().contains(d_outcomeHolder.getValue()) && 
 					s.getMeasuredTreatmentDefinitions(d_outcomeHolder.getValue()).size() >= 2;

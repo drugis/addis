@@ -28,6 +28,7 @@ package org.drugis.addis.entities.treatment;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import edu.uci.ics.jung.graph.DelegateTree;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -105,4 +106,35 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		removeChild(getEdgeTarget(edge));
 		addChild(edge, parent, newChild);
 	}
+	
+	public boolean equivalent(DecisionTree obj) {
+		return equivalent(getRoot(), obj.getRoot(), this, obj);
+	}
+
+	private boolean equivalent(DecisionTreeNode n1, DecisionTreeNode n2, DecisionTree t1, DecisionTree t2) {
+		boolean equivalent = n1.equivalent(n2);
+		if(equivalent) {
+			for (DecisionTreeEdge e1 : t1.getOutEdges(n1)) { 
+				DecisionTreeEdge e2 = containsEquivalent(t2.getOutEdges(n2), e1);
+				if (e2 != null) { 
+					equivalent = false;
+				} else { 
+					equivalent = equivalent(getEdgeTarget(e1), getEdgeTarget(e2), t1, t2);
+				}
+			} 
+		} else { 
+			equivalent = false;
+		}
+		return equivalent;
+	}
+
+	private DecisionTreeEdge containsEquivalent(Collection<DecisionTreeEdge> list, DecisionTreeEdge edge) {
+		for (DecisionTreeEdge e2 : list) { 
+			if (e2.equivalent(edge)) {
+				return e2;
+			}
+		}
+		return null;
+	}
+	
 }

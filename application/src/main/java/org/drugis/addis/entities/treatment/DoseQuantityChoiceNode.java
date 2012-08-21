@@ -58,4 +58,12 @@ public class DoseQuantityChoiceNode extends ChoiceNode {
 	public DoseUnit getDoseUnit() {
 		return d_doseUnit;
 	}
+	
+	@Override
+	public boolean equivalent(DecisionTreeNode o) {
+		if (!(o instanceof DoseQuantityChoiceNode)) {
+			return false;
+		}
+		return getDoseUnit().equals(((DoseQuantityChoiceNode)o).getDoseUnit()) && super.equivalent(o);
+	}
 }

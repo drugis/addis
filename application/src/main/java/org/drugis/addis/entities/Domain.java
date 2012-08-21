@@ -77,7 +77,7 @@ public abstract class Domain {
 
 	public abstract SortedSetModel<Study> getStudies();
 	
-	public abstract List<TreatmentCategorization> getCategorizations(final Drug drug);
+	public abstract ObservableList<TreatmentCategorization> getCategorizations(final Drug drug);
 	
 	public abstract SortedSetModel<MetaAnalysis> getMetaAnalyses();
 

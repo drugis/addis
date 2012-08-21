@@ -26,6 +26,7 @@
 
 package org.drugis.addis.presentation;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
@@ -55,9 +56,8 @@ public class TreatmentDefinitionPresentation extends PresentationModel<Treatment
 		
 	public TreatmentDefinitionPresentation(final TreatmentDefinition drugs, Domain domain) {
 		super(drugs);
-		ObservableList<Study> studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
-			@Override
-			public boolean accept(Study s) {
+		ObservableList<Study> studies = new FilteredObservableList<Study>(domain.getStudies(), new Predicate<Study>() {
+			public boolean evaluate(Study s) {
 				return EntityUtil.flatten(s.getTreatmentDefinitions()).equals(drugs);
 			}
 		});		

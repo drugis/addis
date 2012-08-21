@@ -244,7 +244,9 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 	public boolean deepEquals(Entity obj) {
 		if (equals(obj)) { 
 			TreatmentCategorization other = (TreatmentCategorization) obj;
-			return d_categories.equals(other.d_categories) && d_drug.deepEquals(other.d_drug);
+			return d_categories.equals(other.d_categories) 
+					&& d_drug.deepEquals(other.d_drug) 
+					&& d_decisionTree.equivalent(other.d_decisionTree);
 		}
 		return false;
 	}
