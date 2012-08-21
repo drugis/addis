@@ -12,7 +12,7 @@
 
 \section{Overview}
 
-ADDIS has a layered architecture based on the "Presentation Model" design pattern.
+ADDIS has a layered architecture based on the `Presentation Model' design pattern.
 
 \begin{figure}[h]
 \centering
@@ -39,7 +39,7 @@ ADDIS also integrates the GeMTC and JSMAA components which have a similar archit
 ADDIS does quite a bit of statistical calculations.
 We see these as part of the domain logic.
 Therefore if they are reasonably small, such calculations will usually be placed in separate classes in the entities package.
-See for example the "entities.relativeeffect" sub-package.
+See for example the {\tt entities.relativeeffect} sub-package.
 These classes are not serialized to XML like other entities so they are not really entities.
 More complex calculations often have their own package, such as lyndobrien and mcmcmodel.
 
@@ -65,7 +65,7 @@ JAXB reads/writes the XML and generates java objects to represent the XML struct
 Unfortunately these objects are of low quality and can not be used to replace the entities.
 Therefore, there is a JAXBConvertor to convert between the JAXB-generated objects and our hand-crafted entities.
 
-To maintain backward compatibility, we simply define an XSLT (XSL Transform) definition from the previous to the current version.
+To maintain backward compatibility, we define an XSLT (XSL Transform) definition from the previous to the current version.
 These can be chained (see Figure~\ref{fig:xml}) to read data from any previous version.
 There is also a {\tt transform0-1.xslt} that was painstakingly constructed to convert the legacy XML to something sensible (and schema-compliant).
 
@@ -85,9 +85,9 @@ In such cases, there is a separate *WizardPresentation that encapsulates the cre
 For example, the NetworkMetaAnalysisWizard has a step where studies can be included or excluded.
 It consists of a table listing all available studies and a few of their characteristics.
 In the table, studies can be included or excluded using checkboxes.
-Steps furtheron in the wizard use the list of included studies.
+Steps further on in the wizard use the list of included studies.
 The table is built using a TableModel that encodes most of the logic and has tests.
-A JTable simply displays this model.
+A JTable displays this model.
 Each checkbox is backed by a ValueModel that holds either true or false.
 The presentation is responsible for appropriately handling changes in the value - the GUI is only concerned with the ValueModel.
 The presentation model also provides an ObservableList of selected studies that can be displayed in other wizard steps, or used to build other TableModels, ValueModels, etc.
@@ -95,7 +95,7 @@ The presentation model also provides an ObservableList of selected studies that 
 \section{Computationally intensive tasks}
 
 Some tasks performed by ADDIS are computationally intensive and inherently parallel.
-To support such tasks, the {\tt org.drugis.common.threading} package has a flexible task scheduler that can handle tasks composed of (parallel or sequantial) subtasks.
+To support such tasks, the {\tt org.drugis.common.threading} package has a flexible task scheduler that can handle tasks composed of (parallel or sequential) subtasks.
 It will automatically run as many parallel tasks as there are CPU cores available.
 
 \begin{figure}[h]
@@ -104,7 +104,7 @@ It will automatically run as many parallel tasks as there are CPU cores availabl
 \caption{The ActivityTask corresponding to a network meta-analysis with two parallel chains}
 \end{figure}
 
-Such complex tasks are modeled as "ActivityTasks", using the language of UML "activity diagrams".
+Such complex tasks are modeled as {\tt ActivityTasks}, using the language of UML activity diagrams.
 An example activity is shown for a network meta-analysis with 2 chains.
 
 Any computation that takes more than a few seconds should be scheduled using this mechanism.
@@ -131,9 +131,9 @@ The system should generate sufficient revenue to support its continued developme
 Since the business model has not been decided on, we focus on concerns that are likely to be common to potential approaches.
 \begin{enumerate}[label=V\arabic*]
 \item\label{vProductLine} Custom variants for different audiences, such as regulators, reimbursement authorities and industry (product line)
-\item\label{vInHouse} ``In-house'' deployments of the system for when the analyses are confidential / sensitive
+\item\label{vInHouse} `In-house' deployments of the system for when the analyses are confidential / sensitive
 \item\label{vSilo} Access to internal organization data, possibly in conjunction with public data
-\item\label{vEaseOfUse} Ease of use: the system should visually attractive to ``sell'' it, and be easy to use to limit frustrations and the need for training
+\item\label{vEaseOfUse} Ease of use: the system should visually attractive to `sell' it, and be easy to use to limit frustrations and the need for training
 \end{enumerate}
 
 \paragraph{Development}
@@ -214,7 +214,7 @@ The following is a possible transition strategy:
 \item Start building a read/write version of `rctWiki.org'
 \item Integrate with TrialMine.org (\ref{eReview})
 \end{enumerate}
-By focussing on on analysis functionality first, we have the quickest path to a useful system and enable the development of analysis functionality needed for several research proposals.
+By focussing on analysis functionality first, we have the quickest path to a useful system and enable the development of analysis functionality needed for several research proposals.
 In the interim, the desktop version of ADDIS can be used for data entry.
 
 \end{document}
