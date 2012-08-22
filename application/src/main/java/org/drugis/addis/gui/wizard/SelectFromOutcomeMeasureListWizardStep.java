@@ -334,6 +334,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 		@Override
 		protected void cancel() {
 			setVisible(false);
+			dispose();
 		}
 
 		@Override
@@ -346,6 +347,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 					d_epm.getStudy().replaceWhenTaken(d_som, d_old, d_wt);
 				}
 				setVisible(false);
+				dispose();
 			}
 		}
 		

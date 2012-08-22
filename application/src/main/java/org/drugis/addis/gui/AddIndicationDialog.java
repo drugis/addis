@@ -60,6 +60,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 	@Override
 	protected void cancel() {
 		setVisible(false);
+		dispose();
 	}
 
 	@Override
@@ -73,6 +74,8 @@ public class AddIndicationDialog extends OkCancelDialog {
 		
 		d_domain.getIndications().add(d_indication);
 		setVisible(false);
+		dispose();
+
 		d_mainWindow.leftTreeFocus(d_indication);
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_indication);

@@ -60,6 +60,7 @@ public class AddUnitDialog extends OkCancelDialog {
 	@Override
 	protected void cancel() {
 		setVisible(false);
+		dispose();
 	}
 
 	@Override
@@ -73,6 +74,7 @@ public class AddUnitDialog extends OkCancelDialog {
 		
 		d_domain.getUnits().add(d_unit);
 		setVisible(false);
+		dispose();
 		d_mainWindow.leftTreeFocus(d_unit);
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_unit);

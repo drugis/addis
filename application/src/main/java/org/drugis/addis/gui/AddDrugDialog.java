@@ -60,6 +60,7 @@ public class AddDrugDialog extends OkCancelDialog {
 	@Override
 	protected void cancel() {
 		setVisible(false);
+		dispose();
 	}
 	
 	@Override
@@ -73,6 +74,7 @@ public class AddDrugDialog extends OkCancelDialog {
 		
 		d_domain.getDrugs().add(d_drug);
 		setVisible(false);
+		dispose();
 		d_mainWindow.leftTreeFocus(d_drug);
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_drug);

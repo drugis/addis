@@ -201,6 +201,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 	public void destroyInputWindow() {
 		if (d_window != null) {		
 			d_window.setVisible(false);
+			d_window.dispose();
 			d_window = null;
 		}
 	}

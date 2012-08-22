@@ -66,6 +66,7 @@ public class AddVariableDialog extends OkCancelDialog {
 	@Override
 	protected void cancel() {
 		setVisible(false);
+		dispose();
 	}
 
 	@Override
@@ -90,6 +91,7 @@ public class AddVariableDialog extends OkCancelDialog {
 		}
 		
 		setVisible(false);
+		dispose();
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_pm.getBean());
 		d_mainWindow.leftTreeFocus(d_pm.getBean());
