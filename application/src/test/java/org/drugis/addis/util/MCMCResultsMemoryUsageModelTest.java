@@ -40,6 +40,7 @@ import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.parameterization.RandomEffectsVariance;
 import org.drugis.mtc.test.FileResults;
 import org.drugis.mtc.util.EmpiricalDensityDatasetTest;
+import org.drugis.mtc.util.MCMCResultsMemoryUsageModel;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;

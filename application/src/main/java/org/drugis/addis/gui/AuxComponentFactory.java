@@ -293,8 +293,7 @@ public class AuxComponentFactory {
 		return AuxComponentFactory.textPaneDimension(area, 230, 50);
 	}
 
-	public static Dimension textPaneDimension(JTextPane area, int dluX,
-			int dluY) {
+	public static Dimension textPaneDimension(JTextPane area, int dluX, int dluY) {
 		return new Dimension(
 				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
 				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));

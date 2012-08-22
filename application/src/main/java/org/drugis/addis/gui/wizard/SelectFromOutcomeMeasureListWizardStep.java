@@ -252,7 +252,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 				});
 				momentPanelBuilder.add(editButton, cc.xy(5, row));
 				
-				JButton deleteButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+				JButton deleteButton = new JButton(Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
 				deleteButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						d_slot.getWhenTaken().remove(wt);
