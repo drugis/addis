@@ -148,6 +148,15 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 		}
 	
 		@Override
+		public boolean equivalent(DecisionTreeNode o) {
+			if (!(o instanceof CategorySpecifiers)) { 
+				return false;
+			} else {
+				return equals(o);
+			}
+		}
+		
+		@Override
 		public String toString() {
 			return getName();
 		}

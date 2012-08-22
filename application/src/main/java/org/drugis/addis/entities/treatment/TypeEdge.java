@@ -54,7 +54,7 @@ public class TypeEdge implements DecisionTreeEdge {
 		if(!(o instanceof TypeEdge)) { 
 			return false;
 		} else {
-			return getType().equals((TypeEdge)o);
+			return getType().equals(((TypeEdge)o).getType());
 		}
 	}
 }
