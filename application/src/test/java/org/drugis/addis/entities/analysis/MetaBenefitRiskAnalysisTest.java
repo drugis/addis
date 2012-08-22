@@ -100,6 +100,7 @@ public class MetaBenefitRiskAnalysisTest {
 		}
 		assertEquals(expected, d_BRAnalysis.getDependencies());
 	}
+
 	
 	@Test
 	public void testGetDistribution() {

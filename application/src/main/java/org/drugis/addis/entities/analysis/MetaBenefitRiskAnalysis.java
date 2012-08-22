@@ -112,16 +112,16 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 
 	
-	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalyses,
 			TreatmentDefinition baseline, List<TreatmentDefinition> alternatives, AnalysisType analysisType) {
-		this(name, indication, metaAnalysis, baseline, alternatives, analysisType, null); 
+		this(name, indication, metaAnalyses, baseline, alternatives, analysisType, null); 
 	}
 
-	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalyses,
 			TreatmentDefinition baseline, List<TreatmentDefinition> alternatives, AnalysisType analysisType, DecisionContext context) {
 		super(name);
 		d_indication = indication;
-		d_metaAnalyses = metaAnalysis;
+		d_metaAnalyses = metaAnalyses;
 		d_alternatives = new SortedSetModel<TreatmentDefinition>(alternatives);
 		d_baseline = baseline;
 		d_alternatives.add(baseline);

@@ -54,11 +54,11 @@ public class TreatmentDefinitionPresentation extends PresentationModel<Treatment
 
 	private StudyListPresentation d_studyListPresentation;
 		
-	public TreatmentDefinitionPresentation(final TreatmentDefinition drugs, Domain domain) {
-		super(drugs);
+	public TreatmentDefinitionPresentation(final TreatmentDefinition definitions, Domain domain) {
+		super(definitions);
 		ObservableList<Study> studies = new FilteredObservableList<Study>(domain.getStudies(), new Predicate<Study>() {
 			public boolean evaluate(Study s) {
-				return EntityUtil.flatten(s.getTreatmentDefinitions()).equals(drugs);
+				return EntityUtil.flatten(s.getTreatmentDefinitions()).equals(definitions);
 			}
 		});		
 		d_studyListPresentation = new StudyListPresentation(studies);

@@ -363,9 +363,9 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
-		ObservableList<Study> d1Studies = d_domain.getTreatmentDefinition(d1);
-		ObservableList<Study> d2Studies = d_domain.getTreatmentDefinition(d2);
-		ObservableList<Study> d3Studies = d_domain.getTreatmentDefinition(d3);		
+		ObservableList<Study> d1Studies = d_domain.getStudies(d1);
+		ObservableList<Study> d2Studies = d_domain.getStudies(d2);
+		ObservableList<Study> d3Studies = d_domain.getStudies(d3);		
 		
 		d_domain.getEndpoints().add(e);
 		d_domain.getDrugs().addAll(Arrays.asList(d1, d2, d3));

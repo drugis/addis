@@ -104,26 +104,30 @@ public class NetworkBuilderFactory {
 		}
 	}
 	
-	public static NetworkBuilder<TreatmentDefinition> createBuilderStub(List<TreatmentDefinition> drugs) {
+	public static NetworkBuilder<TreatmentDefinition> createBuilderStub(List<TreatmentDefinition> definitions) {
 		NetworkBuilderStub builder = new NetworkBuilderStub();
-		for(TreatmentDefinition s : drugs) { 
-			builder.addTreatment(s);
+		for(TreatmentDefinition d : definitions) { 
+			builder.addTreatment(d);
 		}
 		return builder;
 	}
 
-	public static NetworkBuilder<TreatmentDefinition> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> drugs, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+	public static NetworkBuilder<TreatmentDefinition> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> definitions, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		if (isContinuous(outcomeMeasure)) {
-			return createContinuousBuilder(outcomeMeasure, studies, drugs, armMap);
+			return createContinuousBuilder(outcomeMeasure, studies, definitions, armMap);
 		} else {
-			return createRateBuilder(outcomeMeasure, studies, drugs, armMap);
+			return createRateBuilder(outcomeMeasure, studies, definitions, armMap);
 		}
 	}
 	
-	private static NetworkBuilder<TreatmentDefinition> createContinuousBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> drugs, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+	private static NetworkBuilder<TreatmentDefinition> createContinuousBuilder(
+			OutcomeMeasure outcomeMeasure,
+			List<Study> studies,
+			List<TreatmentDefinition> definitions, 
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		ContinuousNetworkBuilder<TreatmentDefinition> builder = new ContinuousNetworkBuilder<TreatmentDefinition>(s_transform, s_descTransform);
 		for(Study s : studies){
-			for (TreatmentDefinition d : drugs) {
+			for (TreatmentDefinition d : definitions) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicContinuousMeasurement cm = (BasicContinuousMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
 					builder.add(s.getName(), d, cm.getMean(), cm.getStdDev(), cm.getSampleSize());
@@ -133,10 +137,10 @@ public class NetworkBuilderFactory {
 		return builder;
 	}
 
-	private static NetworkBuilder<TreatmentDefinition> createRateBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> drugs, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+	private static NetworkBuilder<TreatmentDefinition> createRateBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> definitions, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		DichotomousNetworkBuilder<TreatmentDefinition> builder = new DichotomousNetworkBuilder<TreatmentDefinition>(s_transform, s_descTransform);
 		for(Study s : studies){
-			for (TreatmentDefinition d : drugs) {
+			for (TreatmentDefinition d : definitions) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicRateMeasurement brm = (BasicRateMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
 					builder.add(s.getName(), d, brm.getRate(), brm.getSampleSize());

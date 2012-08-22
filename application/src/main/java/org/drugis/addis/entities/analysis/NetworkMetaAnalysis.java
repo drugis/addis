@@ -43,7 +43,6 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
@@ -75,6 +74,7 @@ import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.ProxyMultivariateNormalSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.RankProbabilitySummary;
+import org.drugis.mtc.util.MCMCResultsAvailableModel;
 
 import com.jgoodies.binding.value.ValueModel;
 

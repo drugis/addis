@@ -39,10 +39,10 @@ import org.drugis.addis.entities.treatment.TreatmentDefinition;
 
 public class RelativeEffectFactory {
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, OutcomeMeasure om, TreatmentDefinition baseDrug, TreatmentDefinition subjDrug, Class<T> type, boolean isCorrected) {
+			Study s, OutcomeMeasure om, TreatmentDefinition baseline, TreatmentDefinition subject, Class<T> type, boolean isCorrected) {
 		
-		Arm base = findFirstArm(s, baseDrug);
-		Arm subj = findFirstArm(s, subjDrug);
+		Arm base = findFirstArm(s, baseline);
+		Arm subj = findFirstArm(s, subject);
 		
 		if (type.equals(BasicStandardisedMeanDifference.class)) {
 			return buildStandardisedMeanDifference(s, om, base, subj);
@@ -64,16 +64,17 @@ public class RelativeEffectFactory {
 	}
 	
 	public static <T extends RelativeEffect<?>> RelativeEffect<?> buildRelativeEffect(
-			Study s, OutcomeMeasure om, TreatmentDefinition baseDrug, TreatmentDefinition subjDrug, Class<T> type) {
-		return buildRelativeEffect(s, om, baseDrug, subjDrug, type, false);
+			Study s, OutcomeMeasure om, TreatmentDefinition baseline, TreatmentDefinition subject, Class<T> type) {
+		return buildRelativeEffect(s, om, baseline, subject, type, false);
 	}
 
 	public static Arm findFirstArm(Study s, TreatmentDefinition d) {
 		for (Arm a : s.getArms()) {
-			if (s.getTreatmentDefinition(a).equals(d))
+			if (d.match(s, a)) {
 				return a;
+			}
 		}
-		throw new IllegalArgumentException("Drug " + d.toString() + " not used in study " + s.toString());
+		throw new IllegalArgumentException("Treatment definition " + d.toString() + " not used in study " + s.toString());
 	}
 	
 

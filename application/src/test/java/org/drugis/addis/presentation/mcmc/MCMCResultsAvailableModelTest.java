@@ -33,6 +33,7 @@ import java.beans.PropertyChangeListener;
 
 import org.drugis.addis.util.FakeResults;
 import org.drugis.common.JUnitUtil;
+import org.drugis.mtc.util.MCMCResultsAvailableModel;
 import org.junit.Test;
 
 public class MCMCResultsAvailableModelTest {

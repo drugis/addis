@@ -194,11 +194,11 @@ public class ForestPlotPresentation {
 		return interval;
 	}
 	
-	public TreatmentDefinition getLowValueFavorsDrug() {
+	public TreatmentDefinition getLowValueFavorsTreatment() {
 		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_baseline : d_subject;
 	}
 	
-	public TreatmentDefinition getHighValueFavorsDrug() {
+	public TreatmentDefinition getHighValueFavorsTreatment() {
 		return d_outMeas.getDirection().equals(Direction.HIGHER_IS_BETTER) ? d_subject : d_baseline;
 	}
 	
