@@ -86,7 +86,7 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 	 * @return A new TreatmentCategorization.
 	 */
 	public static TreatmentCategorization createDefault() {
-		return createDefault("", null, DoseUnit.MILLIGRAMS_A_DAY);
+		return createDefault("", null, DoseUnit.createMilliGramsPerDay());
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class TreatmentCategorization extends AbstractEntity implements Comparabl
 	 * @return A new TreatmentCategorization.
 	 */
 	public static TreatmentCategorization createTrivial(Drug drug) {
-		TreatmentCategorization categorization = new TreatmentCategorization("", drug, DoseUnit.MILLIGRAMS_A_DAY, false);
+		TreatmentCategorization categorization = new TreatmentCategorization("", drug, DoseUnit.createMilliGramsPerDay(), false);
 		Category category = new Category(categorization);
 		categorization.addCategory(category);
 		categorization.d_decisionTree = new DecisionTree(new LeafNode(category));

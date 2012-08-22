@@ -580,7 +580,7 @@ public class NetworkMetaAnalysisWizardPMTest {
 
 	private void addCitalopram() {
 		Arm arm = ExampleData.buildStudyBennie().createAndAddArm("Citalopram-2", 100, 
-				ExampleData.buildDrugCitalopram(), new FixedDose(12, DoseUnit.MILLIGRAMS_A_DAY));
+				ExampleData.buildDrugCitalopram(), new FixedDose(12, DoseUnit.createMilliGramsPerDay()));
 		ExampleData.buildStudyBennie().setMeasurement(ExampleData.buildEndpointCgi(), arm, 
 				new BasicContinuousMeasurement(3.0, 1.2, 103));
 		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));

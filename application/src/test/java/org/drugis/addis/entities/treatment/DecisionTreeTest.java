@@ -64,7 +64,7 @@ public class DecisionTreeTest {
 
 	@Test
 	public void testMultiLevelDecision() {
-		final DoseUnit unit = DoseUnit.MILLIGRAMS_A_DAY;
+		final DoseUnit unit = DoseUnit.createMilliGramsPerDay();
 
 		final DecisionTreeNode root = new ChoiceNode(Object.class, "class");
 		final DecisionTree tree = new DecisionTree(root);

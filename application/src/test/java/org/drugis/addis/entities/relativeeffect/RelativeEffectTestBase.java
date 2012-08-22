@@ -66,8 +66,8 @@ public class RelativeEffectTestBase {
 		ExampleData.addDefaultEpochs(s);
 	
 		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_rateEndpoint));
-		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY));
-		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertr, new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY));		
+		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));
+		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertr, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));		
 		
 		BasicRateMeasurement m_sertr = (BasicRateMeasurement) d_rateEndpoint.buildMeasurement(g_sertr);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_rateEndpoint.buildMeasurement(g_fluox);
@@ -110,7 +110,7 @@ public class RelativeEffectTestBase {
 			}
 
 	private Arm addArm(Study study, Drug drug, int nSubjects) {
-		FixedDose dose = new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(10.0, DoseUnit.createMilliGramsPerDay());
 		Arm group = study.createAndAddArm(drug.getName(), nSubjects, drug, dose);
 		return group;
 	}
