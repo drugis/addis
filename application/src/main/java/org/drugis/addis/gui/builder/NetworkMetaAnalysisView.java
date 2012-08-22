@@ -64,8 +64,6 @@ import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
 import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
-import org.drugis.addis.util.EmpiricalDensityDataset;
-import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
 import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
 import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
@@ -78,11 +76,11 @@ import org.drugis.common.threading.ThreadHandler;
 import org.drugis.common.threading.status.TaskTerminatedModel;
 import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MCMCResults;
 import org.drugis.mtc.MCMCResultsEvent;
 import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.gui.results.NetworkRelativeEffectTableCellRenderer;
+import org.drugis.mtc.gui.results.ResultsComponentFactory;
 import org.drugis.mtc.gui.results.SimulationComponentFactory;
 import org.drugis.mtc.gui.results.SummaryCellRenderer;
 import org.drugis.mtc.parameterization.BasicParameter;
@@ -90,8 +88,6 @@ import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
 import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.presentation.NodeSplitWrapper;
-import org.drugis.mtc.presentation.SimulationConsistencyWrapper;
-import org.drugis.mtc.presentation.SimulationNodeSplitWrapper;
 import org.drugis.mtc.presentation.results.NetworkInconsistencyFactorsTableModel;
 import org.drugis.mtc.presentation.results.NetworkRelativeEffectTableModel;
 import org.drugis.mtc.presentation.results.NetworkVarianceTableModel;
@@ -105,7 +101,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.xy.XYDataset;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.value.ValueModel;
@@ -431,7 +426,7 @@ implements ViewBuilder {
 
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, colSpan));
+			builder.add(ResultsComponentFactory.buildNodeSplitDensityChart(p, d_pm.getNodeSplitModel(p), d_pm.getConsistencyModel()), cc.xyw(1, row, colSpan));
 
 			LayoutUtil.addRow(layout);
 			row += 2;
@@ -502,31 +497,6 @@ implements ViewBuilder {
 		tabbedPane.addTab(NODE_SPLIT_TAB_TITLE, buildNodeSplitTab());
 		tabbedPane.addTab(MEMORY_USAGE_TAB_TITLE, buildMemoryUsageTab());
 		return tabbedPane;
-	}
-
-	private JComponent makeNodeSplitDensityChart(final BasicParameter p) {
-		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitWrapper)) {
-			return new JLabel("Can not build density plot based on saved results.");
-		}
-		final SimulationNodeSplitWrapper<TreatmentDefinition> splitWrapper = (SimulationNodeSplitWrapper<TreatmentDefinition>) d_pm.getNodeSplitModel(p);
-		XYDataset dataset;
-		final MCMCResults splitResults = splitWrapper.getModel().getResults();
-		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyWrapper) {
-			final SimulationConsistencyWrapper<TreatmentDefinition> consistencyWrapper = (SimulationConsistencyWrapper<TreatmentDefinition>) d_pm.getConsistencyModel();
-			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()),
-					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()),
-					new PlotParameter(consistencyWrapper.getModel().getResults(), p));
-		} else {
-			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()),
-					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()));
-		}
-		final JFreeChart chart = ChartFactory.createXYLineChart(
-	            p.getName() + " density plot", "Relative Effect", "Density",
-	            dataset, PlotOrientation.VERTICAL,
-	            true, true, false
-	        );
-
-        return new ChartPanel(chart);
 	}
 
 	private JComponent createRankProbChart() {
