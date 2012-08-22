@@ -26,7 +26,10 @@
 
 package org.drugis.addis.gui.builder;
 
+import java.awt.Dimension;
+
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
 import org.drugis.addis.entities.Drug;
@@ -50,14 +53,17 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 public class TreatmentCategorizationView implements ViewBuilder {
 
 	private final TreatmentCategorizationPresentation d_model;
+	private AddisWindow d_parent;
 
 	public TreatmentCategorizationView(final TreatmentCategorizationPresentation treatmentCategorizationPresentation, final AddisWindow parent) {
 		d_model = treatmentCategorizationPresentation;
+		d_parent = parent;
 	}
 
 	@Override
@@ -73,8 +79,13 @@ public class TreatmentCategorizationView implements ViewBuilder {
 		// ---------- Tree visualization ----------
 		builder = new SingleColumnPanelBuilder();
 		builder.addSeparator("Dose Decision Tree");
-		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = TreatmentCategorizationOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
-		builder.add(treeView);
+		String doseUnit = d_model.getModel(TreatmentCategorization.PROPERTY_DOSE_UNIT).getValue().toString();
+		builder.add(new JLabel("Dose range values are in: " + doseUnit));
+		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = 
+				TreatmentCategorizationOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
+		Dimension rightSideSize = d_parent.getRightPanel().getPreferredSize();
+		treeView.setPreferredSize(new Dimension(rightSideSize.width, rightSideSize.height - 300));
+		builder.add(new GraphZoomScrollPane(treeView));
 		tabbedPane.addTab("Decision tree", builder.getPanel());
 
 		return tabbedPane;

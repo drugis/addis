@@ -81,7 +81,8 @@ public class TreatmentCategorizationOverviewWizardStep extends AbstractTreatment
 	
 	public static VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> buildDecisionTreeView(final DecisionTree tree) { 
 		// Crazy hack because sizes start at 600x600 by default.
-		final Layout<DecisionTreeNode, DecisionTreeEdge> layout = new TreeLayout<DecisionTreeNode, DecisionTreeEdge>(new DecisionTree(new LeafNode()), 150, 75);
+		final Layout<DecisionTreeNode, DecisionTreeEdge> layout = 
+				new TreeLayout<DecisionTreeNode, DecisionTreeEdge>(new DecisionTree(new LeafNode()), 150, 75);
 		layout.getSize().height = 1;
 		layout.getSize().width = 1;
 		layout.setGraph(tree);
