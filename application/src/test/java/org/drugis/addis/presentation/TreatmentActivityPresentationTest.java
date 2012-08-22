@@ -51,8 +51,8 @@ public class TreatmentActivityPresentationTest {
 	@Before
 	public void setUp() {
 		d_combTreatment = new TreatmentActivity();
-		d_combTreatment.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
-		d_combTreatment.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), DoseUnit.MILLIGRAMS_A_DAY));
+		d_combTreatment.addTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay()));
+		d_combTreatment.addTreatment(new Drug("Paroxetine", "N062"), new FlexibleDose(new Interval<Double>(3.0, 7.0), DoseUnit.createMilliGramsPerDay()));
 		d_pm = new TreatmentActivityPresentation(d_combTreatment);
 	}
 	

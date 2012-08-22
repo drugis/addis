@@ -39,7 +39,7 @@ public class UnknownDoseTest {
 	
 	@Test
 	public void testNotEqualsKnown() {
-		assertNotSame(new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY), new UnknownDose());
+		assertNotSame(new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()), new UnknownDose());
 	}
 	
 	@Test

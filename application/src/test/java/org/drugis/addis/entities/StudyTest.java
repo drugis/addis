@@ -359,7 +359,7 @@ public class StudyTest {
 		Set<Entity> dep = new HashSet<Entity>(s.getOutcomeMeasures());
 		dep.add(ExampleData.buildDrugFluoxetine());
 		dep.add(ExampleData.buildDrugParoxetine());
-		dep.add(DoseUnit.MILLIGRAMS_A_DAY.getUnit());
+		dep.add(DoseUnit.createMilliGramsPerDay().getUnit());
 		dep.add(s.getIndication());
 		assertEquals(dep, s.getDependencies());
 	}	
@@ -407,7 +407,7 @@ public class StudyTest {
 		PopulationCharacteristic v = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		Study s = new Study("X", new Indication(0L, "Y"));
 		ExampleData.addDefaultEpochs(s);
-		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, DoseUnit.MILLIGRAMS_A_DAY));
+		s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, DoseUnit.createMilliGramsPerDay()));
 		s.getPopulationChars().clear();
 		s.getPopulationChars().addAll(Study.wrapVariables(Collections.singletonList(v)));
 		BasicContinuousMeasurement m = new BasicContinuousMeasurement(0.0, 1.0, 5);
@@ -423,7 +423,7 @@ public class StudyTest {
 	public void testChangePopulationCharRetainMeasurements() {
 		Study s = new Study("X", new Indication(0L, "Y"));
 		ExampleData.addDefaultEpochs(s);
-		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, DoseUnit.MILLIGRAMS_A_DAY));
+		Arm arm1 = s.createAndAddArm("X", 200, new Drug("X", "ATC3"), new FixedDose(5, DoseUnit.createMilliGramsPerDay()));
 		
 		PopulationCharacteristic v1 = new PopulationCharacteristic("Age1", new ContinuousVariableType());
 		PopulationCharacteristic v2 = new PopulationCharacteristic("Age2", new ContinuousVariableType());
@@ -643,7 +643,7 @@ public class StudyTest {
 		assertEquals(Collections.emptyList(), d_clone.getMeasuredArms(ExampleData.buildAdverseEventConvulsion(), d1));
 		
 		assertEquals(1, d1.getContents().size()); 		// Sanity check
-		d_clone.createAndAddArm("Bla", 100, d1.getContents().first().getDrug(), new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY));
+		d_clone.createAndAddArm("Bla", 100, d1.getContents().first().getDrug(), new FixedDose(20.0, DoseUnit.createMilliGramsPerDay()));
 		assertEquals(Collections.singletonList(a1), d_clone.getMeasuredArms(ExampleData.buildEndpointHamd(), d1));
 		
 		TreatmentCategorization catz = ExampleData.buildCategorizationFixedFlexible(ExampleData.buildDrugFluoxetine());

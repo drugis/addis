@@ -154,21 +154,21 @@ public class TreatmentDefinitionTest {
 	@Test
 	public void testMatch() { 
 		TreatmentActivity act1 = new TreatmentActivity();
-		act1.addTreatment(ExampleData.buildDrugEscitalopram(), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		act1.addTreatment(ExampleData.buildDrugEscitalopram(), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay()));
 		
 		TreatmentActivity act2 = new TreatmentActivity();
-		act2.addTreatment(ExampleData.buildDrugViagra(), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		act2.addTreatment(ExampleData.buildDrugViagra(), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay()));
 		assertTrue(d_single.match(act1));
 		assertFalse(d_single.match(act2));
 		
 		TreatmentActivity act3 = new TreatmentActivity();		
-		act3.addTreatment(ExampleData.buildDrugViagra(), new FlexibleDose(3.0, 7.0, DoseUnit.MILLIGRAMS_A_DAY));
-		FixedDose fixed1 = new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY);
+		act3.addTreatment(ExampleData.buildDrugViagra(), new FlexibleDose(3.0, 7.0, DoseUnit.createMilliGramsPerDay()));
+		FixedDose fixed1 = new FixedDose(12.0, DoseUnit.createMilliGramsPerDay());
 		act3.addTreatment(ExampleData.buildDrugCandesartan(), fixed1);
 		
 		TreatmentActivity act4 = new TreatmentActivity();
-		act4.addTreatment(ExampleData.buildDrugCitalopram(), new FlexibleDose(1.0, 12.0, DoseUnit.MILLIGRAMS_A_DAY));
-		act4.addTreatment(ExampleData.buildDrugEscitalopram(), new FlexibleDose(3.0, 7.0, DoseUnit.MILLIGRAMS_A_DAY));
+		act4.addTreatment(ExampleData.buildDrugCitalopram(), new FlexibleDose(1.0, 12.0, DoseUnit.createMilliGramsPerDay()));
+		act4.addTreatment(ExampleData.buildDrugEscitalopram(), new FlexibleDose(3.0, 7.0, DoseUnit.createMilliGramsPerDay()));
 		
 		assertFalse(d_multi.match(act1));
 		assertFalse(d_multi.match(act2));	

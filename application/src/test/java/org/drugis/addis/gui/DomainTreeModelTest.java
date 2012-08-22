@@ -94,7 +94,7 @@ public class DomainTreeModelTest {
 		
 		ExampleData.addDefaultEpochs(d_firstStudy);
 
-		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, DoseUnit.MILLIGRAMS_A_DAY));
+		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, DoseUnit.createMilliGramsPerDay()));
 		
 		d_firstStudy.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_firstEndpoint));
 		d_firstStudy.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(d_firstADE));
