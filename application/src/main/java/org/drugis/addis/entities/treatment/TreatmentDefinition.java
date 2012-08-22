@@ -102,12 +102,12 @@ public class TreatmentDefinition extends AbstractEntity implements Comparable<Tr
 	}
 	
 	@Override
-	public boolean deepEquals(Entity other) {
-		if(!equals(other)) {
+	public boolean deepEquals(Entity o) {
+		if(!equals(o)) {
 			return false;
 		}
-		TreatmentDefinition ds = (TreatmentDefinition) other;
-		return EntityUtil.deepEqual(getContents(), ds.getContents());
+		TreatmentDefinition other = (TreatmentDefinition) o;
+		return EntityUtil.deepEqual(getContents(), other.getContents());
 	}
 	
 	@Override

@@ -28,7 +28,7 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
-import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;
+import org.drugis.addis.presentation.wizard.SelectedTreatmentDefinitionsGraphListener;
 import org.jgraph.JGraph;
 import org.jgraph.graph.GraphLayoutCache;
 
@@ -44,9 +44,8 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
-		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
-		SelectedDrugsGraphListener listener =
-			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
+		ObservableList<TreatmentDefinition> selectedDefinitions = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
+		SelectedTreatmentDefinitionsGraphListener listener = new SelectedTreatmentDefinitionsGraphListener(this, graph, selectedDefinitions);
 		graph.addMouseListener(listener);
 		return graph;
 	}

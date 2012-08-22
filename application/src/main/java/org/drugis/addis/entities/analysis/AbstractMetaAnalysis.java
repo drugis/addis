@@ -214,11 +214,11 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	}
 
 	private static List<TreatmentDefinition> calculateDefinitions(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
-		SortedSet<TreatmentDefinition> drugs = new TreeSet<TreatmentDefinition>();
+		SortedSet<TreatmentDefinition> treatments = new TreeSet<TreatmentDefinition>();
 		for (Map<TreatmentDefinition, Arm> entry : armMap.values()) {
-			drugs.addAll(entry.keySet());
+			treatments.addAll(entry.keySet());
 		}
-		return new ArrayList<TreatmentDefinition>(drugs);
+		return new ArrayList<TreatmentDefinition>(treatments);
 	}
 
 	private static List<Study> calculateStudies(Map<Study, Map<TreatmentDefinition, Arm>> armMap) {

@@ -39,14 +39,14 @@ import org.jgraph.graph.DefaultGraphCell;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public class SelectedDrugsGraphListener extends MouseAdapter {
+public class SelectedTreatmentDefinitionsGraphListener extends MouseAdapter {
 	
-	private ObservableList<TreatmentDefinition> d_drugList;
+	private ObservableList<TreatmentDefinition> d_definitionList;
 	private JGraph d_jgraph;
 	private SelectableTreatmentDefinitionsGraph d_studyGraph;
 
-	public SelectedDrugsGraphListener(SelectableTreatmentDefinitionsGraph selectableTreatmentDefinitionsGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDrugs) {
-		d_drugList = selectedDrugs;
+	public SelectedTreatmentDefinitionsGraphListener(SelectableTreatmentDefinitionsGraph selectableTreatmentDefinitionsGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDefinitions) {
+		d_definitionList = selectedDefinitions;
 		d_studyGraph = selectableTreatmentDefinitionsGraph;
 		d_jgraph = graph;
 	}
@@ -59,20 +59,20 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 			DefaultGraphCell realcell = (DefaultGraphCell) cell;
 			Object obj = realcell.getUserObject();
 			if (obj instanceof Vertex) {
-				selectUnselectDrug(((Vertex) obj).getTreatmentDefinition());
+				selectUnselectDefinition(((Vertex) obj).getTreatmentDefinition());
 			}
 		}
 	}	
 
-	private void selectUnselectDrug(TreatmentDefinition drug) {
-		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_drugList);
-		if (drugs.contains(drug)) {
-			drugs.remove(drug);
+	private void selectUnselectDefinition(TreatmentDefinition definition) {
+		List<TreatmentDefinition> definitions = new ArrayList<TreatmentDefinition>(d_definitionList);
+		if (definitions.contains(definition)) {
+			definitions.remove(definition);
 		} else {
-			drugs.add(drug);
+			definitions.add(definition);
 		}
-		d_drugList.clear();
-		d_drugList.addAll(drugs);
+		d_definitionList.clear();
+		d_definitionList.addAll(definitions);
 		d_studyGraph.resetVertexAttributes();
 	}
 

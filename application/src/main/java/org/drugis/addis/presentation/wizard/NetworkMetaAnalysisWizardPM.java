@@ -114,7 +114,9 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 			public boolean evaluate(Study s) {
 				int count = 0;
 				for (TreatmentDefinition def : defs) { 
-					if (!s.getMeasuredArms(var, def).isEmpty()) ++count;
+					if (!s.getMeasuredArms(var, def).isEmpty()) {
+						++count;
+					}
 				}
 				return count > 1;
 			}

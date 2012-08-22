@@ -65,8 +65,8 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		addModel(getConsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getConsistencyModel().getDescription());
 		addModel(getInconsistencyModel(), getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + getInconsistencyModel().getDescription());
 		for (BasicParameter p : getBean().getSplitParameters()) {
-			NodeSplitWrapper<TreatmentDefinition> m = getBean().getNodeSplitModel(p);
-			addModel(m, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + m.getDescription());
+			NodeSplitWrapper<TreatmentDefinition> nsw = getBean().getNodeSplitModel(p);
+			addModel(nsw, getBean().getOutcomeMeasure(), getBean().getName() + " \u2014 " + nsw.getDescription());
 		}
 		for(MTCModelWrapper<TreatmentDefinition> model : d_models.keySet()) { 
 			model.addPropertyChangeListener(new PropertyChangeListener() {		
