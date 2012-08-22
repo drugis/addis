@@ -35,8 +35,6 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.StudyGraph;
-import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
 import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardModel;
@@ -56,14 +54,21 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		getTitleComponent().setPreferredSize(new Dimension(550, 100));
 	}
 
-	private static WizardModel buildModel(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
+	private static WizardModel buildModel(final NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, main));
-		wizardModel.add(new SelectEndpointWizardStep(pm));
-		wizardModel.add(new SelectDrugsWizardStep(pm));
+		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm.getRawAlternativesGraph(), new Runnable() {
+			public void run() {
+				pm.rebuildRawAlternativesGraph();
+			}
+		}, "Select Drugs", pm.getRawDescription()));		
 		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
-		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm));
-		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm, main);
+		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm.getRefinedAlternativesGraph(), new Runnable() {
+			public void run() {
+				pm.rebuildRefinedAlternativesGraph();
+			}
+		}, "Select Definitions", pm.getRefinedDescription()));
+		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm);
 		selectStudiesStep.setComplete(true);
 		wizardModel.add(selectStudiesStep);
 		wizardModel.add(new SelectArmsWizardStep(pm));
@@ -74,10 +79,10 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 	}
 	
 
-	public static class OverviewWizardStep extends AbstractOverviewWizardStep<SelectableTreatmentDefinitionsGraphModel> {
+	public static class OverviewWizardStep extends AbstractOverviewWizardStep {
 		private StudyGraph d_studyGraph;
 
-		public OverviewWizardStep(AbstractMetaAnalysisWizardPM<SelectableTreatmentDefinitionsGraphModel> pm, AddisWindow main) {
+		public OverviewWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 			super(pm, main);
 
 			setLayout(new BorderLayout());

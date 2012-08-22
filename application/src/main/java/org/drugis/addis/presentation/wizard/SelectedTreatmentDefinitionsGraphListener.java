@@ -32,22 +32,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.addis.gui.SelectableStudyGraph;
+import org.drugis.addis.gui.SelectableTreatmentDefinitionsGraph;
 import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel.Vertex;
 import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultGraphCell;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public class SelectedDrugsGraphListener extends MouseAdapter {
+public class SelectedTreatmentDefinitionsGraphListener extends MouseAdapter {
 	
-	private ObservableList<TreatmentDefinition> d_drugList;
+	private ObservableList<TreatmentDefinition> d_definitionList;
 	private JGraph d_jgraph;
-	private SelectableStudyGraph d_studyGraph;
+	private SelectableTreatmentDefinitionsGraph d_studyGraph;
 
-	public SelectedDrugsGraphListener(SelectableStudyGraph selectableStudyGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDrugs) {
-		d_drugList = selectedDrugs;
-		d_studyGraph = selectableStudyGraph;
+	public SelectedTreatmentDefinitionsGraphListener(SelectableTreatmentDefinitionsGraph selectableTreatmentDefinitionsGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDefinitions) {
+		d_definitionList = selectedDefinitions;
+		d_studyGraph = selectableTreatmentDefinitionsGraph;
 		d_jgraph = graph;
 	}
 	
@@ -59,20 +59,20 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 			DefaultGraphCell realcell = (DefaultGraphCell) cell;
 			Object obj = realcell.getUserObject();
 			if (obj instanceof Vertex) {
-				selectUnselectDrug(((Vertex) obj).getTreatmentDefinition());
+				selectUnselectDefinition(((Vertex) obj).getTreatmentDefinition());
 			}
 		}
 	}	
 
-	private void selectUnselectDrug(TreatmentDefinition drug) {
-		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_drugList);
-		if (drugs.contains(drug)) {
-			drugs.remove(drug);
+	private void selectUnselectDefinition(TreatmentDefinition definition) {
+		List<TreatmentDefinition> definitions = new ArrayList<TreatmentDefinition>(d_definitionList);
+		if (definitions.contains(definition)) {
+			definitions.remove(definition);
 		} else {
-			drugs.add(drug);
+			definitions.add(definition);
 		}
-		d_drugList.clear();
-		d_drugList.addAll(drugs);
+		d_definitionList.clear();
+		d_definitionList.addAll(definitions);
 		d_studyGraph.resetVertexAttributes();
 	}
 

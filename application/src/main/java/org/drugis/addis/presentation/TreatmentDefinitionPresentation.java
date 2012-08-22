@@ -26,7 +26,7 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.Characteristic;
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
@@ -38,7 +38,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class TreatmentDefinitionPresentation extends PresentationModel<TreatmentDefinition> implements StudyListPresentation, LabeledPresentation {
+public class TreatmentDefinitionPresentation extends PresentationModel<TreatmentDefinition> implements LabeledPresentation {
 	
 	public class LabelModel extends DefaultLabelModel {
 		
@@ -51,26 +51,21 @@ public class TreatmentDefinitionPresentation extends PresentationModel<Treatment
 			return getBean().getLabel();
 		}
 	}
-		
-	private CharacteristicVisibleMap d_charVisibleMap = new CharacteristicVisibleMap();
-	private FilteredObservableList<Study> d_studies;
 
-	public TreatmentDefinitionPresentation(final TreatmentDefinition drugs, Domain domain) {
-		super(drugs);
-		d_studies = new FilteredObservableList<Study>(domain.getStudies(), new FilteredObservableList.Filter<Study>() {
-			@Override
-			public boolean accept(Study s) {
-				return EntityUtil.flatten(s.getTreatmentDefinition()).equals(drugs);
+	private StudyListPresentation d_studyListPresentation;
+		
+	public TreatmentDefinitionPresentation(final TreatmentDefinition definitions, Domain domain) {
+		super(definitions);
+		ObservableList<Study> studies = new FilteredObservableList<Study>(domain.getStudies(), new Predicate<Study>() {
+			public boolean evaluate(Study s) {
+				return EntityUtil.flatten(s.getTreatmentDefinitions()).equals(definitions);
 			}
 		});		
-	}
-	
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
-		return d_charVisibleMap.get(c);
+		d_studyListPresentation = new StudyListPresentation(studies);
 	}
 
-	public ObservableList<Study> getIncludedStudies() {
-		return d_studies;
+	public StudyListPresentation getStudyListPresentation() {
+		return d_studyListPresentation;
 	}
 
 	public AbstractValueModel getLabelModel() {

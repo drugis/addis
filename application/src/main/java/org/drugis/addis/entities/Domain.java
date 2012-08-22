@@ -77,7 +77,7 @@ public abstract class Domain {
 
 	public abstract SortedSetModel<Study> getStudies();
 	
-	public abstract List<TreatmentCategorization> getCategorizations(final Drug drug);
+	public abstract ObservableList<TreatmentCategorization> getCategorizations(final Drug drug);
 	
 	public abstract SortedSetModel<MetaAnalysis> getMetaAnalyses();
 
@@ -113,7 +113,7 @@ public abstract class Domain {
 	 * Get studies by Drug.
 	 * @return An unmodifiable sorted set of studies. Never null.
 	 */
-	public abstract ObservableList<Study> getTreatmentDefinition(Drug d);
+	public abstract ObservableList<Study> getStudies(Drug d);
 	
 	/**
 	 * Get studies by Indication.

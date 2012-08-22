@@ -47,9 +47,26 @@ public class SelectableTreatmentDefinitionsGraphModel extends TreatmentDefinitio
 	
 	private ObservableList<TreatmentDefinition> d_selectedDefinitions = new ArrayListModel<TreatmentDefinition>(d_definitions);
 	private ValueHolder<Boolean> d_complete = new ModifiableHolder<Boolean>(false);
+	private int d_minSelection;
+	private int d_maxSelection;
 
-	public SelectableTreatmentDefinitionsGraphModel(ObservableList<Study> studies, ObservableList<TreatmentDefinition> definitions, ValueHolder<OutcomeMeasure> outcome) {
+	/**
+	 * Creates a selectable graph of TreatmentDefinitions compared in studies
+	 * @param studies the list of studies (the comparisons made in the studies are the edges) 
+	 * @param definitions the vertices 
+	 * @param outcome the outcome measure to be used for comparison
+	 * @param minSelection minimum number of definitions that should be selected 
+	 * @param maxSelection maximum number of definitions that should be selected 
+	 */
+	public SelectableTreatmentDefinitionsGraphModel(ObservableList<Study> studies, 
+			ObservableList<TreatmentDefinition> definitions, 
+			ValueHolder<OutcomeMeasure> outcome, 
+			int minSelection, 
+			int maxSelection) {
 		super(studies, definitions, outcome);
+		
+		d_minSelection = minSelection;
+		d_maxSelection = maxSelection;
 		d_selectedDefinitions.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				updateComplete();
@@ -78,7 +95,12 @@ public class SelectableTreatmentDefinitionsGraphModel extends TreatmentDefinitio
 	}
 	
 	private void updateComplete() {
-		d_complete.setValue(getSelectedDefinitions().size() > 1 && isSelectionConnected());
+		d_complete.setValue(checkBounds() && isSelectionConnected());
+	}
+
+	private boolean checkBounds() {
+		int size = getSelectedDefinitions().size();
+		return (d_minSelection != -1 ? size >= d_minSelection : true) && (d_maxSelection != -1 ? size <= d_maxSelection : true);
 	}
 	
 	public ValueHolder<Boolean> getSelectionCompleteModel() {

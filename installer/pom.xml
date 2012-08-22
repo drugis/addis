@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.15.2-SNAPSHOT</version>
+		<version>1.15.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -53,7 +53,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.1</version>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<id>create-staging-area</id>

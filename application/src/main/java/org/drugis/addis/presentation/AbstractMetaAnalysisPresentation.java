@@ -26,28 +26,24 @@
 
 package org.drugis.addis.presentation;
 
-import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ArrayListModel;
-import com.jgoodies.binding.list.ObservableList;
-import com.jgoodies.binding.value.AbstractValueModel;
 
 
-@SuppressWarnings("serial")
-public abstract class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T>
-implements StudyListPresentation {
+public abstract class AbstractMetaAnalysisPresentation<T extends MetaAnalysis> extends PresentationModel<T> {
 
+	private static final long serialVersionUID = -4373738159087617991L;
 	protected PresentationModelFactory d_mgr;
-	protected DefaultStudyListPresentation d_studyModel;
+	protected StudyListPresentation d_studyModel;
 	
 	public AbstractMetaAnalysisPresentation(T bean, PresentationModelFactory mgr) {
 		super(bean);
 		d_mgr = mgr;
-		d_studyModel = new DefaultStudyListPresentation(new ArrayListModel<Study>(bean.getIncludedStudies()));
+		d_studyModel = new StudyListPresentation(new ArrayListModel<Study>(bean.getIncludedStudies()));
 	}
 
 	public LabeledPresentation getIndicationModel() {
@@ -59,16 +55,9 @@ implements StudyListPresentation {
 		return d_mgr.getLabeledModel(getBean().getOutcomeMeasure());
 	}
 
-
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
-		return d_studyModel.getCharacteristicVisibleModel(c);
+	public StudyListPresentation getStudyListPresentation() {
+		return d_studyModel;
 	}
-
-
-	public ObservableList<Study> getIncludedStudies() {
-		return d_studyModel.getIncludedStudies();
-	}
-
 
 	public VariableType getAnalysisType() {
 		return getBean().getOutcomeMeasure().getVariableType();

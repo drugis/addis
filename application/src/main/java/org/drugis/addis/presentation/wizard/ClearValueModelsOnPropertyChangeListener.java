@@ -24,18 +24,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation;
+package org.drugis.addis.presentation.wizard;
 
-import org.drugis.addis.entities.Characteristic;
-import org.drugis.addis.entities.Study;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import com.jgoodies.binding.list.ObservableList;
-import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.value.ValueModel;
 
-public interface SelectableStudyListPresentation {
-	public ObservableList<Study> getAvailableStudies();
-	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s);
-	public ObservableList<Study> getSelectedStudiesModel();
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c);
-	public StudyListPresentation getSource();
+public class ClearValueModelsOnPropertyChangeListener implements PropertyChangeListener {
+	private List<ValueModel> holders;
+	
+	public ClearValueModelsOnPropertyChangeListener(ValueModel h) {
+		holders = new ArrayList<ValueModel>();
+		holders.add(h);
+	}
+	
+	public ClearValueModelsOnPropertyChangeListener(ValueModel[] holders) {
+		this.holders = Arrays.asList(holders);
+	}
+	
+	public void propertyChange(PropertyChangeEvent arg0) {
+		for (ValueModel h : holders) {
+			h.setValue(null);
+		}
+	}
 }

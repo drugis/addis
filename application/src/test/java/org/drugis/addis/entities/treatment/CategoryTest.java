@@ -1,3 +1,29 @@
+/*
+ * This file is part of ADDIS (Aggregate Data Drug Information System).
+ * ADDIS is distributed from http://drugis.org/.
+ * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Ahmad Kamal, Daniel Reid.
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Daniel Reid, Florin Schimbinschi.
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Joël Kuiper, Wouter Reckman.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.assertEquals;
@@ -98,6 +124,32 @@ public class CategoryTest {
 		assertTrue(catA.deepEquals(catA2));
 		d_catz2.setDrug(new Drug(d_catz1.getDrug().getName(), "ANOTHERATC"));
 		assertFalse(catA.deepEquals(catA2));
+	}
+	
+	@Test
+	public void testDeepEqualsWithTreeModification() {
+		Category cat1 = new Category(d_catz1, "A");
+		Category cat2 = new Category(d_catz2, "A");
+		
+		d_catz2.setName(d_catz1.getName());
+		
+		DecisionTree tree1 = d_catz1.getDecisionTree();
+		final ChoiceNode choice1 = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, DoseUnit.MILLIGRAMS_A_DAY);
+		tree1.replaceChild(tree1.findMatchingEdge(tree1.getRoot(), FixedDose.class), choice1);
+
+		tree1.addChild(new RangeEdge(0.0, false, Double.POSITIVE_INFINITY, false), choice1, new LeafNode(cat1));
+		d_catz1.splitRange(choice1, 20.0, false);
+		
+		assertFalse(cat1.deepEquals(cat2));
+		
+		DecisionTree tree2 = d_catz2.getDecisionTree();
+		final ChoiceNode choice2 = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, DoseUnit.MILLIGRAMS_A_DAY);
+		tree2.replaceChild(tree2.findMatchingEdge(tree2.getRoot(), FixedDose.class), choice2);
+
+		tree2.addChild(new RangeEdge(0.0, false, Double.POSITIVE_INFINITY, false), choice2, new LeafNode(cat2));
+		d_catz2.splitRange(choice2, 20.0, false);
+		
+		assertTrue(cat1.deepEquals(cat2));
 	}
 	
 	@Test

@@ -24,36 +24,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.presentation.mcmc;
+package org.drugis.addis.gui;
 
-import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.mtc.MCMCResults;
-import org.drugis.mtc.MCMCResultsEvent;
-import org.drugis.mtc.MCMCResultsListener;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
+import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
+import org.drugis.addis.presentation.wizard.SelectedTreatmentDefinitionsGraphListener;
+import org.jgraph.JGraph;
+import org.jgraph.graph.GraphLayoutCache;
 
-import com.jgoodies.binding.value.AbstractValueModel;
+import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
-public class MCMCResultsAvailableModel extends AbstractValueModel implements ValueHolder<Boolean>, MCMCResultsListener {
+public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 
-	private boolean d_val;
-
-	public MCMCResultsAvailableModel(MCMCResults results) {
-		d_val = results.getNumberOfSamples() > 0;
-		results.addResultsListener(this);
+	public SelectableTreatmentDefinitionsGraph(SelectableTreatmentDefinitionsGraphModel pm) {
+		super(pm);
 	}
-
-	public Boolean getValue() {
-		return d_val;
+	
+	@Override
+	protected JGraph createGraph(GraphLayoutCache cache) {
+		final JGraph graph = super.createGraph(cache);
+		ObservableList<TreatmentDefinition> selectedDefinitions = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
+		SelectedTreatmentDefinitionsGraphListener listener = new SelectedTreatmentDefinitionsGraphListener(this, graph, selectedDefinitions);
+		graph.addMouseListener(listener);
+		return graph;
 	}
+	
+	@Override
+	protected MyDefaultCellViewFactory getCellFactory() {
+		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions());
+	}	
 
-	public void setValue(Object newValue) {
-		throw new IllegalAccessError("MCMCResultsAvailableModel is read-only");
-	}
-
-	public void resultsEvent(MCMCResultsEvent event) {
-		boolean oldval = d_val;
-		d_val = event.getSource().getNumberOfSamples() > 0;
-		fireValueChange(oldval, d_val);
-	}
 }

@@ -42,8 +42,7 @@ import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.presentation.TreatmentDefinitionsGraphModel;
-import org.drugis.addis.presentation.wizard.AbstractMetaAnalysisWizardPM;
+import org.drugis.addis.presentation.wizard.NetworkMetaAnalysisWizardPM;
 import org.drugis.common.gui.LayoutUtil;
 import org.pietschy.wizard.PanelWizardStep;
 
@@ -54,71 +53,67 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class SelectArmsWizardStep extends PanelWizardStep {
 	
-	private PanelBuilder d_builder;
-	private FormLayout d_layout;
-	private final AbstractMetaAnalysisWizardPM<? extends TreatmentDefinitionsGraphModel> d_pm;
 
-	public SelectArmsWizardStep (AbstractMetaAnalysisWizardPM<? extends TreatmentDefinitionsGraphModel> pm) {
+	private final NetworkMetaAnalysisWizardPM d_pm;
+
+	public SelectArmsWizardStep (NetworkMetaAnalysisWizardPM pm) {
 		super ("Select Arms","Select the specific arms to be used for the meta-analysis");
 		setLayout(new BorderLayout());
 		d_pm = pm;
-		
-		d_layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow", "p");	
-		
-		d_builder = new PanelBuilder(d_layout);
-		d_builder.setDefaultDialogBorder();
 	}
 
 	@Override
 	public void prepare() {
+		d_pm.rebuildArmSelection();
+		
 		removeAll();
 		
+		FormLayout layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow", "p");	
+		PanelBuilder builder = new PanelBuilder(layout);
+		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
-		d_builder = new PanelBuilder(d_layout);
-		d_builder.setDefaultDialogBorder();
 		
 		int row = 1;
 		for (Study curStudy : d_pm.getSelectableStudyListPM().getSelectedStudiesModel()) {
-			d_builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
-			row = LayoutUtil.addRow(d_layout, row);
+			builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
+			row = LayoutUtil.addRow(layout, row);
 			
-			for (TreatmentDefinition def: d_pm.getSelectedRawTreatmentDefinitions()) {
+			for (TreatmentDefinition def: d_pm.getSelectedRefinedTreatmentDefinitions()) {
 				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
-					row = createArmSelect(row, curStudy, def, cc);
+					row = createArmSelect(builder, row, curStudy, def, cc);
 				}
 			}
 		}
 		
-		JScrollPane sp = new JScrollPane(d_builder.getPanel());
+		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp, BorderLayout.CENTER);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
 
 		setComplete(true);
 	}
 
-	private int createArmSelect(int row, final Study curStudy, TreatmentDefinition drug, CellConstraints cc) {
-		d_builder.addLabel(drug.getLabel(), cc.xy(2, row));
+	private int createArmSelect(PanelBuilder builder, int row, final Study curStudy, TreatmentDefinition def, CellConstraints cc) {
+		builder.addLabel(def.getLabel(), cc.xy(2, row));
 		
-		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, drug);
+		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, def);
 
-		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, drug), true);
+		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, def), true);
 		if (arms.getSize() == 1)
 			drugBox.setEnabled(false);
 		final JPanel drugAndDosePanel = new JPanel(new BorderLayout());
 		
-		d_builder.add(drugBox, cc.xy(4, row));
+		builder.add(drugBox, cc.xy(4, row));
 		drugBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateDrugAndDoseLabel(curStudy, drugBox, drugAndDosePanel);
 			}
 		});
-		row = LayoutUtil.addRow(d_layout, row);
+		row = LayoutUtil.addRow(builder.getLayout(), row);
 		updateDrugAndDoseLabel(curStudy, drugBox, drugAndDosePanel);
-		d_builder.add(drugAndDosePanel, cc.xy(4, row));
+		builder.add(drugAndDosePanel, cc.xy(4, row));
 		
-		return LayoutUtil.addRow(d_layout, row);
+		return LayoutUtil.addRow(builder.getLayout(), row);
 	}
 
 	private void updateDrugAndDoseLabel(Study curStudy, JComboBox drugBox, JPanel drugAndDosePanel) {

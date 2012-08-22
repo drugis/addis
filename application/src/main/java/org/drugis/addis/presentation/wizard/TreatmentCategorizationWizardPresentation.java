@@ -26,18 +26,18 @@
 
 package org.drugis.addis.presentation.wizard;
 
-import static org.apache.commons.collections15.CollectionUtils.*;
+import static org.apache.commons.collections15.CollectionUtils.find;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.AbstractDose;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.UnknownDose;
@@ -47,23 +47,28 @@ import org.drugis.addis.entities.treatment.DecisionTree;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
-import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.presentation.DecisionTreeChildModel;
 import org.drugis.addis.presentation.DecisionTreeOutEdgesModel;
 import org.drugis.addis.presentation.DoseUnitPresentation;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
+import org.drugis.addis.presentation.ValueModelWrapper;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.beans.AffixedObservableList;
 import org.drugis.common.beans.ContentAwareListModel;
-import org.drugis.common.beans.SuffixedObservableList;
+import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.TransformOnceObservableList;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.beans.ValueEqualsModel;
+import org.drugis.common.validation.BooleanNotModel;
+import org.drugis.common.validation.PropertyUniqueModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -72,6 +77,61 @@ import edu.uci.ics.jung.graph.util.Pair;
 
 @SuppressWarnings("serial")
 public class TreatmentCategorizationWizardPresentation extends PresentationModel<TreatmentCategorization> {
+	private final class CategoryUsedModel extends AbstractValueModel {
+		private final Category d_category;
+		
+		private boolean d_value;
+
+		private CategoryUsedModel(Category category) {
+			d_category = category;
+			
+			getBean().getDecisionTree().getObservableGraph().addGraphEventListener(
+				new GraphEventListener<DecisionTreeNode, DecisionTreeEdge>() {
+					public void handleGraphEvent(GraphEvent<DecisionTreeNode, DecisionTreeEdge> evt) {
+						update();
+					}
+				});
+			d_knownDoseChoice.addValueChangeListener(
+				new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						update();
+					}
+				});
+			
+			d_value = calculate();
+		}
+
+		protected void update() {
+			boolean oldValue = d_value;
+			d_value = calculate();
+			fireValueChange(oldValue, d_value);
+		}
+
+		private boolean calculate() {
+			DecisionTreeNode knownDose = d_knownDoseChoice.getValue();
+			if (knownDose instanceof LeafNode) {
+				LeafNode leafNode = (LeafNode) knownDose;
+				return EqualsUtil.equal(leafNode.getCategory(), d_category) ||
+						isLeafNodeReachable(getEdgeTarget(findTypeEdge(UnknownDose.class)), d_category);
+			}
+			if (knownDose.equals(CategorySpecifiers.DO_NOT_CONSIDER)) {
+				return isLeafNodeReachable(getEdgeTarget(findTypeEdge(FixedDose.class)), d_category) || 
+						isLeafNodeReachable(getEdgeTarget(findTypeEdge(UnknownDose.class)), d_category);
+			}
+			return isLeafNodeReachable(getBean().getDecisionTree().getRoot(), d_category); // CONSIDER
+		}
+
+		@Override
+		public Object getValue() {
+			return d_value;
+		}
+
+		@Override
+		public void setValue(Object newValue) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	public static enum CategorySpecifiers implements DecisionTreeNode {
 		CONSIDER("Consider dose type"),
 		DO_NOT_CONSIDER("Do not consider dose type");
@@ -87,6 +147,15 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 			return d_title;
 		}
 	
+		@Override
+		public boolean equivalent(DecisionTreeNode o) {
+			if (!(o instanceof CategorySpecifiers)) { 
+				return false;
+			} else {
+				return equals(o);
+			}
+		}
+		
 		@Override
 		public String toString() {
 			return getName();
@@ -113,12 +182,14 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 	private final HashMap<DecisionTreeEdge, ValueModel> d_choiceForEdge = new HashMap<DecisionTreeEdge, ValueModel>();
 	private final HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>> d_optionsForEdge = new HashMap<DecisionTreeEdge, ObservableList<DecisionTreeNode>>();
 	private final HashMap<Category, ValueHolder<Boolean>> d_categoryUsed = new HashMap<Category, ValueHolder<Boolean>>();
+	private ValueModel d_nameAvailableModel;
 	
 	public TreatmentCategorizationWizardPresentation(final TreatmentCategorization bean, final Domain domain) {
 		super(bean);
 		d_domain = domain;
 		d_contentAwareCategories = new ContentAwareListModel<Category>(bean.getCategories());
-
+		d_nameAvailableModel = createNameAvailableModel();
+		
 		// Magic nodes
 		d_fixedRangeNode = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, getBean().getDoseUnit());
 		d_flexibleLowerNode = createMinDoseNode();
@@ -150,19 +221,27 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 		d_considerFlexibleUpper = new ValueEqualsModel(getModelForFlexibleDose(), d_flexibleUpperNode);
 	}
 	
-	private void attachCategoryUsedListener(final ValueModel categoryUsed, final Category category) {
-		final DecisionTree tree = getBean().getDecisionTree();
-		GraphEventListener<DecisionTreeNode, DecisionTreeEdge> listener = new GraphEventListener<DecisionTreeNode, DecisionTreeEdge>() {
-			public void handleGraphEvent(GraphEvent<DecisionTreeNode, DecisionTreeEdge> evt) {
-				categoryUsed.setValue(findLeafNode(tree.getVertices(), category) == null);
+	public boolean isLeafNodeReachable(DecisionTreeNode node, Category category) {
+		if (node == null) {
+			return false;
+		}
+		if (node instanceof LeafNode) {
+			LeafNode leafNode = (LeafNode) node;
+			return EqualsUtil.equal(leafNode.getCategory(), category);
+		}
+		
+		if (node instanceof ChoiceNode) {
+			for (DecisionTreeEdge edge : getBean().getDecisionTree().getOutEdges(node)) {
+				if (isLeafNodeReachable(getEdgeTarget(edge), category)) {
+					return true;
+				}
 			}
-		}; 
-		getBean().getDecisionTree().getObservableGraph().addGraphEventListener(listener);
-		d_knownDoseChoice.addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				categoryUsed.setValue(findLeafNode(Collections.singleton(d_knownDoseChoice.getValue()), category) == null);
-			}
-		});
+		}
+		return false;
+	}
+
+	private ValueHolder<Boolean> createCategoryNotUsedModel(final Category category) {
+		return new ValueModelWrapper<Boolean>(new BooleanNotModel(new CategoryUsedModel(category)));
 	}
 
 	private DecisionTreeNode getEdgeTarget(final DecisionTreeEdge edge) {
@@ -322,9 +401,7 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 	 */
 	public ValueModel getCategoryUsed(Category category) { 
 		if(d_categoryUsed.get(category) == null) { 
-			ModifiableHolder<Boolean> value = new ModifiableHolder<Boolean>(true);
-			attachCategoryUsedListener(value, category);
-			d_categoryUsed.put(category, value);
+			d_categoryUsed.put(category, createCategoryNotUsedModel(category));
 		}
 		return d_categoryUsed.get(category);
 	}
@@ -337,7 +414,7 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 						return new LeafNode(a);
 					}
 		});
-		return new SuffixedObservableList<DecisionTreeNode>(transformedCategories, extraOptions);
+		return AffixedObservableList.createSuffixed(transformedCategories, extraOptions);
 	}
 
 	public ObservableList<DecisionTreeNode> getOptionsForEdge(final DecisionTreeEdge edge) {
@@ -487,5 +564,29 @@ public class TreatmentCategorizationWizardPresentation extends PresentationModel
 	
 	private DoseQuantityChoiceNode createMaxDoseNode() {
 		return new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, getBean().getDoseUnit());
+	}
+
+	public ValueModel getNameAvailableModel() {
+		return d_nameAvailableModel ;
+	}
+	
+	private ValueModel createNameAvailableModel() {
+		final FilteredObservableList<TreatmentCategorization> categorizations = new FilteredObservableList<TreatmentCategorization>(
+				d_domain.getTreatmentCategorizations(),
+				createDrugFilter((Drug)getDrug().getValue()));
+		getDrug().addValueChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				categorizations.setFilter(createDrugFilter((Drug)getDrug().getValue()));
+			}
+		});
+		return new PropertyUniqueModel<TreatmentCategorization>(categorizations, getBean(), TreatmentCategorization.PROPERTY_NAME);
+	}
+
+	private Predicate<TreatmentCategorization> createDrugFilter(final Drug drug) {
+		return new Predicate<TreatmentCategorization>() {
+			public boolean evaluate(TreatmentCategorization obj) {
+				return EqualsUtil.equal(obj.getDrug(), drug);
+			}
+		};
 	}
 }

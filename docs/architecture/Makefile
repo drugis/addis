@@ -3,7 +3,7 @@ all: architecture.pdf
 %.pdf: %.tex
 	pdflatex $<
 
-architecture.pdf: overview.pdf xml.pdf presentation.pdf activitytask.pdf
+architecture.pdf: overview.pdf xml.pdf presentation.pdf activitytask.pdf future.pdf
 
 %.eps: %.dia
 	dia -e $@ -t eps $<

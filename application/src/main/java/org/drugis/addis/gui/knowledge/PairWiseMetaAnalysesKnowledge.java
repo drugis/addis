@@ -33,13 +33,14 @@ import javax.swing.JDialog;
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.PairWiseMetaAnalysisView;
 import org.drugis.addis.gui.wizard.PairwiseMetaAnalysisWizard;
 import org.drugis.addis.presentation.PairWiseMetaAnalysisPresentation;
-import org.drugis.addis.presentation.wizard.MetaAnalysisWizardPresentation;
+import org.drugis.addis.presentation.wizard.PairWiseMetaAnalysisWizardPresentation;
 import org.drugis.common.gui.ViewBuilder;
 import org.pietschy.wizard.Wizard;
 import org.pietschy.wizard.WizardFrameCloser;
@@ -70,7 +71,7 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 			ValueModel selectionModel) {
 		JDialog dialog = new JDialog(mainWindow, "Create DerSimonian-Laird random effects meta-analysis", true);
 		Wizard wizard = new PairwiseMetaAnalysisWizard(mainWindow,
-				new MetaAnalysisWizardPresentation(domain, mainWindow.getPresentationModelFactory()));
+				new PairWiseMetaAnalysisWizardPresentation(domain, mainWindow.getPresentationModelFactory()));
 		dialog.getContentPane().add(wizard);
 		dialog.setMinimumSize(new Dimension(700, 550));
 		dialog.setPreferredSize(AddisWindow.fitDimensionToScreen(790, 650));
@@ -87,8 +88,14 @@ public class PairWiseMetaAnalysesKnowledge extends CategoryKnowledgeBase {
 	
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { "name", "type", "indication", "outcomeMeasure",
-		"includedDrugs", "studiesIncluded", "sampleSize" };
+		return new String[] { 
+				PairWiseMetaAnalysis.PROPERTY_NAME,
+				PairWiseMetaAnalysis.PROPERTY_TYPE,
+				PairWiseMetaAnalysis.PROPERTY_INDICATION,
+				PairWiseMetaAnalysis.PROPERTY_OUTCOME_MEASURE,
+				PairWiseMetaAnalysis.PROPERTY_ALTERNATIVES,
+				PairWiseMetaAnalysis.PROPERTY_INCLUDED_STUDIES, 
+				PairWiseMetaAnalysis.PROPERTY_SAMPLE_SIZE};
 	}
 
 	public ViewBuilder getEntityViewBuilder(AddisWindow main, Domain domain, Entity entity) {

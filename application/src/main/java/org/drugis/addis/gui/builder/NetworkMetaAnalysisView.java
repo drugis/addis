@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,11 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,31 +39,23 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 
-import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.StudyGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.components.ScrollableJPanel;
 import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.presentation.NetworkMetaAnalysisPresentation;
-import org.drugis.addis.presentation.mcmc.MCMCResultsAvailableModel;
-import org.drugis.addis.util.EmpiricalDensityDataset;
-import org.drugis.addis.util.EmpiricalDensityDataset.PlotParameter;
-import org.drugis.addis.util.MCMCResultsMemoryUsageModel;
-import org.drugis.common.gui.FileSaveDialog;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
@@ -75,14 +63,9 @@ import org.drugis.common.gui.table.EnhancedTable;
 import org.drugis.common.gui.table.TableCopyHandler;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.status.TaskTerminatedModel;
-import org.drugis.common.validation.BooleanAndModel;
-import org.drugis.mtc.MCMCModel;
-import org.drugis.mtc.MCMCResults;
-import org.drugis.mtc.MCMCResultsEvent;
-import org.drugis.mtc.MixedTreatmentComparison;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.gui.results.NetworkRelativeEffectTableCellRenderer;
+import org.drugis.mtc.gui.results.ResultsComponentFactory;
 import org.drugis.mtc.gui.results.SimulationComponentFactory;
 import org.drugis.mtc.gui.results.SummaryCellRenderer;
 import org.drugis.mtc.parameterization.BasicParameter;
@@ -90,8 +73,6 @@ import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
 import org.drugis.mtc.presentation.MTCModelWrapper;
 import org.drugis.mtc.presentation.NodeSplitWrapper;
-import org.drugis.mtc.presentation.SimulationConsistencyWrapper;
-import org.drugis.mtc.presentation.SimulationNodeSplitWrapper;
 import org.drugis.mtc.presentation.results.NetworkInconsistencyFactorsTableModel;
 import org.drugis.mtc.presentation.results.NetworkRelativeEffectTableModel;
 import org.drugis.mtc.presentation.results.NetworkVarianceTableModel;
@@ -99,16 +80,12 @@ import org.drugis.mtc.presentation.results.NodeSplitResultsTableModel;
 import org.drugis.mtc.summary.NodeSplitPValueSummary;
 import org.drugis.mtc.summary.QuantileSummary;
 import org.drugis.mtc.summary.Summary;
-import org.drugis.mtc.util.MCMCResultsWriter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.xy.XYDataset;
 
-import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -176,86 +153,18 @@ implements ViewBuilder {
 		builder.add(builderheader.getPanel(), cc.xyw(1, row, colSpan));
 		row += 2;
 
-		row = buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row);
-		row = buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row);
+		row = ResultsComponentFactory.buildMemoryUsage(d_pm.getConsistencyModel(), "Consistency model", builder, layout, row, d_mainWindow);
+		row = ResultsComponentFactory.buildMemoryUsage(d_pm.getInconsistencyModel(), "Inconsistency model", builder, layout, row, d_mainWindow);
 		builder.addSeparator("", cc.xyw(1, row, 3));
 		row += 2;
 		for(final BasicParameter p : d_pm.getSplitParameters()) {
-			row = buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row);
+			row = ResultsComponentFactory.buildMemoryUsage(d_pm.getNodeSplitModel(p), "<html>Node Split model:<br />&nbsp;&nbsp;&nbsp; Parameter " + p.getName() + "</html>", builder, layout, row, d_mainWindow);
 			LayoutUtil.addRow(layout);
 			builder.addSeparator("", cc.xyw(1, row, 3));
 			row += 2;
 		}
 
 		return builder.getPanel();
-	}
-
-	private int buildMemoryUsage(final MTCModelWrapper<TreatmentDefinition> model, final String name, final PanelBuilder builder, final FormLayout layout, final int row) {
-		final CellConstraints cc = new CellConstraints();
-		if(model.isSaved()) {
-			LayoutUtil.addRow(layout);
-			builder.add(new JLabel(name), cc.xy(1, row));
-			builder.add(new JLabel("N/A"), cc.xyw(3, row, 7));
-			return row + 2;
-		} else {
-			final MixedTreatmentComparison mtc = model.getModel();
-
-			final MCMCResultsMemoryUsageModel memoryModel = new MCMCResultsMemoryUsageModel(mtc.getResults());
-			final JLabel memory = AuxComponentFactory.createAutoWrapLabel(memoryModel);
-
-			final MCMCResultsAvailableModel resultsAvailableModel = new MCMCResultsAvailableModel(mtc.getResults());
-			final TaskTerminatedModel modelTerminated = new TaskTerminatedModel(mtc.getActivityTask());
-
-			final JButton clearButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
-			clearButton.setToolTipText("Clear results");
-			final BooleanAndModel modelFinishedAndResults = new BooleanAndModel(Arrays.<ValueModel>asList(modelTerminated, resultsAvailableModel));
-			Bindings.bind(clearButton, "enabled",  modelFinishedAndResults);
-
-
-			final JButton saveButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
-			saveButton.setToolTipText("Save to R-file");
-			Bindings.bind(saveButton, "enabled", modelFinishedAndResults);
-			saveButton.addActionListener(buildRButtonActionListener(mtc));
-
-			clearButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					mtc.getResults().clear();
-					// FIXME: change MCMC contract so clear fires a MCMCResultsClearedEvent
-					memoryModel.resultsEvent(new MCMCResultsEvent(mtc.getResults()));
-					resultsAvailableModel.resultsEvent(new MCMCResultsEvent(mtc.getResults()));
-				}
-			});
-
-			LayoutUtil.addRow(layout);
-			builder.add(new JLabel(name), cc.xy(1, row));
-			builder.add(memory, cc.xy(3, row));
-			builder.add(clearButton, cc.xy(5, row));
-			builder.add(saveButton, cc.xy(7, row));
-			return row + 2;
-		}
-	}
-
-	private ActionListener buildRButtonActionListener(final MCMCModel model) {
-		return new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				final FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "R", "R files") {
-					@Override
-					public void doAction(final String path, final String extension) {
-						try {
-							final MCMCResultsWriter writer = new MCMCResultsWriter(model.getResults());
-							writer.write(new FileOutputStream(path));
-						} catch (final FileNotFoundException e) {
-							throw new RuntimeException(e);
-						} catch (final IOException e) {
-							throw new RuntimeException(e);
-						}
-					}
-				};
-				dialog.saveActions();
-			}
-		};
 	}
 
 	private JComponent buildInconsistencyTab() {
@@ -431,7 +340,7 @@ implements ViewBuilder {
 
 			LayoutUtil.addRow(layout);
 			row += 2;
-			builder.add(makeNodeSplitDensityChart(p), cc.xyw(1, row, colSpan));
+			builder.add(ResultsComponentFactory.buildNodeSplitDensityChart(p, d_pm.getNodeSplitModel(p), d_pm.getConsistencyModel()), cc.xyw(1, row, colSpan));
 
 			LayoutUtil.addRow(layout);
 			row += 2;
@@ -502,31 +411,6 @@ implements ViewBuilder {
 		tabbedPane.addTab(NODE_SPLIT_TAB_TITLE, buildNodeSplitTab());
 		tabbedPane.addTab(MEMORY_USAGE_TAB_TITLE, buildMemoryUsageTab());
 		return tabbedPane;
-	}
-
-	private JComponent makeNodeSplitDensityChart(final BasicParameter p) {
-		if (!(d_pm.getNodeSplitModel(p) instanceof SimulationNodeSplitWrapper)) {
-			return new JLabel("Can not build density plot based on saved results.");
-		}
-		final SimulationNodeSplitWrapper<TreatmentDefinition> splitWrapper = (SimulationNodeSplitWrapper<TreatmentDefinition>) d_pm.getNodeSplitModel(p);
-		XYDataset dataset;
-		final MCMCResults splitResults = splitWrapper.getModel().getResults();
-		if(d_pm.getConsistencyModel() instanceof SimulationConsistencyWrapper) {
-			final SimulationConsistencyWrapper<TreatmentDefinition> consistencyWrapper = (SimulationConsistencyWrapper<TreatmentDefinition>) d_pm.getConsistencyModel();
-			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()),
-					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()),
-					new PlotParameter(consistencyWrapper.getModel().getResults(), p));
-		} else {
-			dataset = new EmpiricalDensityDataset(50, new PlotParameter(splitResults, splitWrapper.getDirectEffect()),
-					new PlotParameter(splitResults, splitWrapper.getIndirectEffect()));
-		}
-		final JFreeChart chart = ChartFactory.createXYLineChart(
-	            p.getName() + " density plot", "Relative Effect", "Density",
-	            dataset, PlotOrientation.VERTICAL,
-	            true, true, false
-	        );
-
-        return new ChartPanel(chart);
 	}
 
 	private JComponent createRankProbChart() {
@@ -622,16 +506,13 @@ implements ViewBuilder {
 		return builder.getPanel();
 	}
 
-
-
-
 	/**
 	 * Make table of results (Cipriani et al., Lancet(2009), fig. 3, pp752).
 	 * @param mtc Model for which to display results.
 	 * @return A TablePanel
 	 */
 	private TablePanel createNetworkTablePanel(final MTCModelWrapper<TreatmentDefinition> mtc) {
-		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getIncludedDrugs(), mtc));
+		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getAlternatives(), mtc));
 		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
 		table.setTableHeader(null);
 		setColumnWidths(table);

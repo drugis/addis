@@ -126,4 +126,13 @@ public class RangeEdge implements DecisionTreeEdge, Comparable<RangeEdge> {
 		}
 
 	}
+
+	@Override
+	public boolean equivalent(DecisionTreeEdge o) {
+		if(!(o instanceof RangeEdge)) { 
+			return false;
+		} else {
+			return d_boundedInterval.equals(((RangeEdge)o).d_boundedInterval);
+		}
+	}
 }

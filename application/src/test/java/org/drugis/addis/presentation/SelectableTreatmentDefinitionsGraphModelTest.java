@@ -54,7 +54,7 @@ import org.junit.Test;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
-public class SelectableStudyGraphModelTest {
+public class SelectableTreatmentDefinitionsGraphModelTest {
 
 	private Domain d_domain;
 	private ArrayList<TreatmentDefinition> d_drugs;
@@ -74,7 +74,7 @@ public class SelectableStudyGraphModelTest {
 		ObservableList<Study> studies = new ArrayListModel<Study>(Arrays.asList(
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), 
 				ExampleData.buildStudyDeWilde(), ExampleData.buildStudyMultipleArmsperDrug()));
-		d_pm = new SelectableTreatmentDefinitionsGraphModel(studies, d_drugListHolder, outcome);
+		d_pm = new SelectableTreatmentDefinitionsGraphModel(studies, d_drugListHolder, outcome, 2, -1);
 	}
 	
 	@Test

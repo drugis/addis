@@ -38,6 +38,7 @@ import java.util.TreeMap;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
@@ -47,7 +48,6 @@ import org.drugis.common.DateUtil;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -117,9 +117,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <T extends Variable> ObservableList<StudyOutcomeMeasure<T>> convert(final Class<T> cls, final ObservableList<StudyOutcomeMeasure<? extends Variable>> list) {
-		return (ObservableList) new FilteredObservableList<StudyOutcomeMeasure<? extends Variable>>(list, new Filter<StudyOutcomeMeasure<? extends Variable>>() {
+		return (ObservableList) new FilteredObservableList<StudyOutcomeMeasure<? extends Variable>>(list, new Predicate<StudyOutcomeMeasure<? extends Variable>>() {
 			@Override
-			public boolean accept(final StudyOutcomeMeasure<? extends Variable> obj) {
+			public boolean evaluate(final StudyOutcomeMeasure<? extends Variable> obj) {
 				return cls.equals(obj.getValueClass());
 			}
 		});
@@ -356,12 +356,12 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public Set<TreatmentDefinition> getTreatmentDefinition() {
-		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
+	public Set<TreatmentDefinition> getTreatmentDefinitions() {
+		final Set<TreatmentDefinition> treatments = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
-			drugs.add(getTreatmentDefinition(a));
+			treatments.add(getTreatmentDefinition(a));
 		}
-		return drugs;
+		return treatments;
 	}
 
 	public Indication getIndication() {
@@ -719,12 +719,12 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public TreatmentDefinition getTreatmentDefinition(final Arm a) {
 		final Activity activity = getActivity(a);
 		if (activity instanceof TreatmentActivity) {
-			return getTreatmentDefinition((TreatmentActivity) activity);
+			return buildTreatmentDefinition((TreatmentActivity) activity);
 		}
 		return new TreatmentDefinition();
 	}
 
-	private TreatmentDefinition getTreatmentDefinition(final TreatmentActivity activity) {
+	private static TreatmentDefinition buildTreatmentDefinition(final TreatmentActivity activity) {
 		final List<Drug> drugs = new ArrayList<Drug>();
 		for(final DrugTreatment ta : activity.getTreatments()) {
 			drugs.add(ta.getDrug());
@@ -810,7 +810,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 */
 	public Set<TreatmentDefinition> getMeasuredTreatmentDefinitions(final Variable v, final WhenTaken wt) {
 		final Set<TreatmentDefinition> definitions = new HashSet<TreatmentDefinition>();
-		for (final TreatmentDefinition d : getTreatmentDefinition()) {
+		for (final TreatmentDefinition d : getTreatmentDefinitions()) {
 			if (wt != null && isMeasured(v, d, wt)) {
 				definitions.add(d);
 			}
@@ -849,7 +849,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private ObservableList<Arm> getArms(final TreatmentDefinition d) {
-		return new FilteredObservableList<Arm>(d_arms, new DrugArmFilter(d));
+		return new FilteredObservableList<Arm>(d_arms, new TreatmentArmFilter(d));
 	}
 
 	public ObservableList<StudyOutcomeMeasure<Endpoint>> getEndpoints() {
@@ -872,7 +872,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return soms;
 	}
 
-	public class IsMeasuredFilter implements Filter<Arm> {
+	public class IsMeasuredFilter implements Predicate<Arm> {
 		private final Variable d_v;
 		private final WhenTaken d_wt;
 
@@ -882,21 +882,21 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 
 		@Override
-		public boolean accept(final Arm a) {
+		public boolean evaluate(final Arm a) {
 			return isMeasured(d_v, a, d_wt);
 		}
 	}
 
-	public class DrugArmFilter implements Filter<Arm> {
+	public class TreatmentArmFilter implements Predicate<Arm> {
 		private final TreatmentDefinition d_d;
 
-		public DrugArmFilter(final TreatmentDefinition d) {
+		public TreatmentArmFilter(final TreatmentDefinition d) {
 			d_d = d;
 		}
 
 		@Override
-		public boolean accept(final Arm a) {
-			return getTreatmentDefinition(a).equals(d_d);
+		public boolean evaluate(final Arm a) {
+			return d_d.match(Study.this, a);
 		}
 	}
 

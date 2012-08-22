@@ -89,6 +89,7 @@ public class AuxComponentFactory {
 	private static final String NCT_NOTE = "Source Text (ClinicalTrials.gov):";
 	public static final Color COLOR_NOTE = new Color(255, 255, 180);
 	public static final Color COLOR_NOTE_EDIT = new Color(255, 255, 210);
+	public static final Color COLOR_ERROR = new Color(255, 215, 215);
 
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
 		return createBoundComboBox(values, model, false);
@@ -99,8 +100,8 @@ public class AuxComponentFactory {
 	}
 	
 	public static <T> JComboBox createBoundComboBox(ListModel list, ValueModel model, boolean isEntity) {
-		SelectionInList<T> typeSelectionInList = new SelectionInList<T>(list, model);
-		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);
+		SelectionInList<T> selectionInList = new SelectionInList<T>(list, model);
+		JComboBox comboBox = BasicComponentFactory.createComboBox(selectionInList);
 		
 		if (isEntity) {
 			final ListCellRenderer renderer = comboBox.getRenderer();
@@ -119,30 +120,6 @@ public class AuxComponentFactory {
 		
 		return comboBox;
 	}	
-	
-	@Deprecated
-	public static <T> JComboBox createBoundComboBox(ValueModel listHolder, ValueModel model, boolean isEntity) {
-		SelectionInList<T> typeSelectionInList =
-			new SelectionInList<T>(listHolder, model);
-		JComboBox comboBox = BasicComponentFactory.createComboBox(typeSelectionInList);
-		
-		if (isEntity) {
-			final ListCellRenderer renderer = comboBox.getRenderer();
-			comboBox.setRenderer(new ListCellRenderer() {
-				@Override
-				public Component getListCellRendererComponent(JList list, Object value,
-						int index, boolean isSelected, boolean cellHasFocus) {
-					return renderer.getListCellRendererComponent(list, getDescription(value), index, isSelected, cellHasFocus);
-				}
-
-				private String getDescription(Object value) {
-					return value == null ? "" : ((Entity)value).getLabel();
-				}
-			});
-		}
-		
-		return comboBox;
-	}
 
 	public static JScrollPane createTextArea(ValueModel model, boolean editable) {
 		JTextArea area = BasicComponentFactory.createTextArea(model);
@@ -316,8 +293,7 @@ public class AuxComponentFactory {
 		return AuxComponentFactory.textPaneDimension(area, 230, 50);
 	}
 
-	public static Dimension textPaneDimension(JTextPane area, int dluX,
-			int dluY) {
+	public static Dimension textPaneDimension(JTextPane area, int dluX, int dluY) {
 		return new Dimension(
 				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
 				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));

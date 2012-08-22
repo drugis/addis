@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,8 +45,9 @@ import org.jgrapht.graph.ListenableUndirectedGraph;
 
 import com.jgoodies.binding.list.ObservableList;
 
-@SuppressWarnings("serial")
 public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<TreatmentDefinitionsGraphModel.Vertex, TreatmentDefinitionsGraphModel.Edge> {
+	private static final long serialVersionUID = -7829573824453914937L;
+
 	public static class Vertex {
 		private TreatmentDefinition d_definition;
 		private int d_sampleSize;
@@ -127,7 +127,6 @@ public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<Tr
 	
 	public void rebuildGraph() {
 		if (!d_rebuildNeeded) {
-			System.out.println("Rebuild not needed");
 			return;
 		}
 
@@ -190,7 +189,7 @@ public class TreatmentDefinitionsGraphModel extends ListenableUndirectedGraph<Tr
 	 * Return the list of drugs that are included in at least one of the studies having the correct indication
 	 * and outcome.
 	 */
-	public List<TreatmentDefinition> getTreatmentDefinitions() {
+	public ObservableList<TreatmentDefinition> getDefinitions() {
 		return d_definitions;
 	}
 	

@@ -39,20 +39,20 @@ import com.jgoodies.binding.list.ObservableList;
 @SuppressWarnings("serial")
 public class SelectableCellViewFactory extends MyDefaultCellViewFactory {
 
-	private ObservableList<TreatmentDefinition> d_selectedDrugs;
+	private ObservableList<TreatmentDefinition> d_selectedDefinitions;
 
 	@SuppressWarnings("rawtypes")
 	public SelectableCellViewFactory(JGraphModelAdapter model, ObservableList<TreatmentDefinition> observableList) {
 		super(model);
 		
-		d_selectedDrugs = observableList;
+		d_selectedDefinitions = observableList;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void addVertexAttributes(AttributeMap map, Vertex v) {
 		Color col = null;
-		if (d_selectedDrugs.contains(v.getTreatmentDefinition())) {
+		if (d_selectedDefinitions.contains(v.getTreatmentDefinition())) {
 			col = Color.green;
 		} else {
 			col = Color.lightGray;
