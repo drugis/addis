@@ -20,136 +20,30 @@
         <drug name="Vildagliptin" atcCode="A10BH02"/>
     </drugs>
     <treatmentCategorizations>
-        <treatmentCategorization drug="Sitagliptin" name="High Dose/ Low Dose">
+        <treatmentCategorization drug="Sitagliptin" name="Licensed Dose">
             <unit scaleModifier="MILLI" perTime="P1D">
                 <unit name="gram"/>
             </unit>
-            <category name="Low Dose"/>
-            <category name="High Dose"/>
+            <category name="Licensed"/>
             <decisionTree>
                 <rootNode>
                     <typeEdge matchType="FixedDose">
                         <choiceNode objectType="FixedDose" property="quantity">
-                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="100.0" isRangeUpperBoundOpen="false">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="95.0" isRangeUpperBoundOpen="false">
+<leafNode/>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="95.0" isRangeLowerBoundOpen="true" rangeUpperBound="105.0" isRangeUpperBoundOpen="false">
 <leafNode>
-    <category name="Low Dose"/>
+    <category name="Licensed"/>
 </leafNode>
                             </rangeEdge>
-                            <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-<leafNode>
-    <category name="High Dose"/>
-</leafNode>
-                            </rangeEdge>
-                        </choiceNode>
-                    </typeEdge>
-                    <typeEdge matchType="FlexibleDose">
-                        <choiceNode objectType="FlexibleDose" property="minDose">
-                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="100.0" isRangeUpperBoundOpen="false">
-<choiceNode objectType="FlexibleDose" property="maxDose">
-    <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="100.0" isRangeUpperBoundOpen="false">
-        <leafNode>
-            <category name="Low Dose"/>
-        </leafNode>
-    </rangeEdge>
-    <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <leafNode/>
-    </rangeEdge>
-</choiceNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-<choiceNode objectType="FlexibleDose" property="maxDose">
-    <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <leafNode>
-            <category name="High Dose"/>
-        </leafNode>
-    </rangeEdge>
-</choiceNode>
-                            </rangeEdge>
-                        </choiceNode>
-                    </typeEdge>
-                    <typeEdge matchType="UnknownDose">
-                        <leafNode/>
-                    </typeEdge>
-                </rootNode>
-            </decisionTree>
-        </treatmentCategorization>
-        <treatmentCategorization drug="Vildagliptin" name="25, 50, 100 mg/day">
-            <unit scaleModifier="MILLI" perTime="P1D">
-                <unit name="gram"/>
-            </unit>
-            <category name="25 mg"/>
-            <category name="50 mg"/>
-            <category name="100 mg"/>
-            <decisionTree>
-                <rootNode>
-                    <typeEdge matchType="FixedDose">
-                        <choiceNode objectType="FixedDose" property="quantity">
-                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="25.0" isRangeUpperBoundOpen="false">
-<leafNode>
-    <category name="25 mg"/>
-</leafNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="25.0" isRangeLowerBoundOpen="true" rangeUpperBound="50.0" isRangeUpperBoundOpen="false">
-<leafNode>
-    <category name="50 mg"/>
-</leafNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="50.0" isRangeLowerBoundOpen="true" rangeUpperBound="100.0" isRangeUpperBoundOpen="false">
-<leafNode>
-    <category name="100 mg"/>
-</leafNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+                            <rangeEdge rangeLowerBound="105.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
 <leafNode/>
                             </rangeEdge>
                         </choiceNode>
                     </typeEdge>
                     <typeEdge matchType="FlexibleDose">
-                        <choiceNode objectType="FlexibleDose" property="minDose">
-                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="25.0" isRangeUpperBoundOpen="false">
-<choiceNode objectType="FlexibleDose" property="maxDose">
-    <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="25.0" isRangeUpperBoundOpen="false">
-        <leafNode>
-            <category name="25 mg"/>
-        </leafNode>
-    </rangeEdge>
-    <rangeEdge rangeLowerBound="25.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <leafNode/>
-    </rangeEdge>
-</choiceNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="25.0" isRangeLowerBoundOpen="true" rangeUpperBound="50.0" isRangeUpperBoundOpen="false">
-<choiceNode objectType="FlexibleDose" property="maxDose">
-    <rangeEdge rangeLowerBound="25.0" isRangeLowerBoundOpen="true" rangeUpperBound="50.0" isRangeUpperBoundOpen="false">
-        <leafNode>
-            <category name="50 mg"/>
-        </leafNode>
-    </rangeEdge>
-    <rangeEdge rangeLowerBound="50.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <leafNode/>
-    </rangeEdge>
-</choiceNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="50.0" isRangeLowerBoundOpen="true" rangeUpperBound="100.0" isRangeUpperBoundOpen="false">
-<choiceNode objectType="FlexibleDose" property="maxDose">
-    <rangeEdge rangeLowerBound="50.0" isRangeLowerBoundOpen="true" rangeUpperBound="100.0" isRangeUpperBoundOpen="false">
-        <leafNode>
-            <category name="100 mg"/>
-        </leafNode>
-    </rangeEdge>
-    <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <leafNode/>
-    </rangeEdge>
-</choiceNode>
-                            </rangeEdge>
-                            <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-<choiceNode objectType="FlexibleDose" property="maxDose">
-    <rangeEdge rangeLowerBound="100.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
-        <leafNode/>
-    </rangeEdge>
-</choiceNode>
-                            </rangeEdge>
-                        </choiceNode>
+                        <leafNode/>
                     </typeEdge>
                     <typeEdge matchType="UnknownDose">
                         <leafNode/>
@@ -157,25 +51,87 @@
                 </rootNode>
             </decisionTree>
         </treatmentCategorization>
-        <treatmentCategorization drug="Liraglutide" name="Low Dose / High Dose">
-            <unit scaleModifier="MICRO" perTime="P1D">
+        <treatmentCategorization drug="Vildagliptin" name="Licensed Dose">
+            <unit scaleModifier="MILLI" perTime="P1D">
                 <unit name="gram"/>
             </unit>
-            <category name="Low Dose"/>
-            <category name="High Dose"/>
+            <category name="Licensed"/>
             <decisionTree>
                 <rootNode>
                     <typeEdge matchType="FixedDose">
                         <choiceNode objectType="FixedDose" property="quantity">
-                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="200.0" isRangeUpperBoundOpen="false">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="95.0" isRangeUpperBoundOpen="false">
+<leafNode/>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="95.0" isRangeLowerBoundOpen="true" rangeUpperBound="105.0" isRangeUpperBoundOpen="false">
 <leafNode>
-    <category name="Low Dose"/>
+    <category name="Licensed"/>
 </leafNode>
                             </rangeEdge>
-                            <rangeEdge rangeLowerBound="200.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+                            <rangeEdge rangeLowerBound="105.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode/>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <leafNode/>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode/>
+                    </typeEdge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+        <treatmentCategorization drug="Liraglutide" name="Typical Dose">
+            <unit scaleModifier="MILLI" perTime="P1D">
+                <unit name="gram"/>
+            </unit>
+            <category name="Typical"/>
+            <decisionTree>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <choiceNode objectType="FixedDose" property="quantity">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="1.1" isRangeUpperBoundOpen="false">
+<leafNode/>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="1.1" isRangeLowerBoundOpen="true" rangeUpperBound="1.3" isRangeUpperBoundOpen="false">
 <leafNode>
-    <category name="High Dose"/>
+    <category name="Typical"/>
 </leafNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="1.3" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode/>
+                            </rangeEdge>
+                        </choiceNode>
+                    </typeEdge>
+                    <typeEdge matchType="FlexibleDose">
+                        <leafNode/>
+                    </typeEdge>
+                    <typeEdge matchType="UnknownDose">
+                        <leafNode/>
+                    </typeEdge>
+                </rootNode>
+            </decisionTree>
+        </treatmentCategorization>
+        <treatmentCategorization drug="Exenatide" name="Typical Dose">
+            <unit scaleModifier="MICRO" perTime="PT12H">
+                <unit name="gram"/>
+            </unit>
+            <category name="Typical"/>
+            <decisionTree>
+                <rootNode>
+                    <typeEdge matchType="FixedDose">
+                        <choiceNode objectType="FixedDose" property="quantity">
+                            <rangeEdge rangeLowerBound="0.0" isRangeLowerBoundOpen="false" rangeUpperBound="9.0" isRangeUpperBoundOpen="false">
+<leafNode/>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="9.0" isRangeLowerBoundOpen="true" rangeUpperBound="11.0" isRangeUpperBoundOpen="false">
+<leafNode>
+    <category name="Typical"/>
+</leafNode>
+                            </rangeEdge>
+                            <rangeEdge rangeLowerBound="11.0" isRangeLowerBoundOpen="true" rangeUpperBound="INF" isRangeUpperBoundOpen="true">
+<leafNode/>
                             </rangeEdge>
                         </choiceNode>
                     </typeEdge>
@@ -226,7 +182,7 @@
         <endpoint name="HOMA-IR end" description="" direction="HIGHER_IS_BETTER">
             <continuous unitOfMeasurement=""/>
         </endpoint>
-        <endpoint name="HbA1c change" description="" direction="HIGHER_IS_BETTER">
+        <endpoint name="HbA1c change" description="Change from baseline in HbA1c level" direction="LOWER_IS_BETTER">
             <continuous unitOfMeasurement="%"/>
         </endpoint>
         <endpoint name="HbA1c end" description="" direction="LOWER_IS_BETTER">
@@ -3260,7 +3216,7 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="5.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -3276,7 +3232,7 @@ any investigational drug. Subjects were excluded if they had evidence of clinica
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="10.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -5126,7 +5082,7 @@ screening.</value>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="5.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -5142,7 +5098,7 @@ screening.</value>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="10.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -6556,7 +6512,7 @@ screening.</value>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="0.08">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -6567,28 +6523,12 @@ screening.</value>
                     <usedBy epoch="Main phase" arm="Exenatide bd"/>
                     <notes/>
                 </studyActivity>
-                <studyActivity name="Exenatide bs">
-                    <activity>
-                        <treatment>
-                            <drugTreatment>
-<fixedDose quantity="0.08">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
-        <unit name="gram"/>
-    </doseUnit>
-</fixedDose>
-<drug name="Exenatide"/>
-                            </drugTreatment>
-                        </treatment>
-                    </activity>
-                    <usedBy epoch="Main phase" arm="Exenatide  bs"/>
-                    <notes/>
-                </studyActivity>
                 <studyActivity name="Exenatide bds">
                     <activity>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="0.08">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT8H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -6597,6 +6537,22 @@ screening.</value>
                         </treatment>
                     </activity>
                     <usedBy epoch="Main phase" arm="Exenatide bds"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity name="Exenatide bs">
+                    <activity>
+                        <treatment>
+                            <drugTreatment>
+<fixedDose quantity="0.08">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
+        <unit name="gram"/>
+    </doseUnit>
+</fixedDose>
+<drug name="Exenatide"/>
+                            </drugTreatment>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="Exenatide  bs"/>
                     <notes/>
                 </studyActivity>
             </activities>
@@ -7218,8 +7174,8 @@ Have used drugs for weight loss within 1 month of screening.
                     <activity>
                         <treatment>
                             <drugTreatment>
-<fixedDose quantity="20.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+<fixedDose quantity="10.0">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -15635,7 +15591,7 @@ medications, or any investigational drug.</value>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="5.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -15651,7 +15607,7 @@ medications, or any investigational drug.</value>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="10.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -20140,7 +20096,7 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="5.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -20156,7 +20112,7 @@ in patients with type 2 diabetes naive to antidiabetic agents and whose disease 
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="10.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -23417,12 +23373,28 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                     <usedBy epoch="Main phase" arm="Placebo"/>
                     <notes/>
                 </studyActivity>
+                <studyActivity name="Exenatide 7.5ug/day">
+                    <activity>
+                        <treatment>
+                            <drugTreatment>
+<fixedDose quantity="7.5">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
+        <unit name="gram"/>
+    </doseUnit>
+</fixedDose>
+<drug name="Exenatide"/>
+                            </drugTreatment>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="Exenatide 7.5ug/day"/>
+                    <notes/>
+                </studyActivity>
                 <studyActivity name="Exenatide 2.5ug/day">
                     <activity>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="2.5">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -23438,7 +23410,7 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="5.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -23449,28 +23421,12 @@ agents that had not been stable for a minimum of 6 weeks prior to screening; or 
                     <usedBy epoch="Main phase" arm="Exenatide 5ug/day"/>
                     <notes/>
                 </studyActivity>
-                <studyActivity name="Exenatide 7.5ug/day">
-                    <activity>
-                        <treatment>
-                            <drugTreatment>
-<fixedDose quantity="7.5">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
-        <unit name="gram"/>
-    </doseUnit>
-</fixedDose>
-<drug name="Exenatide"/>
-                            </drugTreatment>
-                        </treatment>
-                    </activity>
-                    <usedBy epoch="Main phase" arm="Exenatide 7.5ug/day"/>
-                    <notes/>
-                </studyActivity>
                 <studyActivity name="Exenatide 10ug/day">
                     <activity>
                         <treatment>
                             <drugTreatment>
 <fixedDose quantity="10.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
 </fixedDose>
@@ -32961,7 +32917,7 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-HbA1c change"/>
                     <arm name="Exenatide "/>
-                    <continuousMeasurement mean="0.09" sampleSize="121" stdDev="1.1"/>
+                    <continuousMeasurement mean="-0.89" sampleSize="112" stdDev="0.95"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
                         <epoch name="Main phase"/>
                     </whenTaken>
@@ -32969,7 +32925,7 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                 <measurement>
                     <studyOutcomeMeasure id="endpoint-HbA1c change"/>
                     <arm name="Placebo"/>
-                    <continuousMeasurement mean="-0.89" sampleSize="112" stdDev="0.95"/>
+                    <continuousMeasurement mean="0.09" sampleSize="121" stdDev="1.1"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
                         <epoch name="Main phase"/>
                     </whenTaken>
@@ -33369,11 +33325,11 @@ function (serum glutamic oxaloacetic transaminase or serum glutamic pyruvic tran
                     <activity>
                         <treatment>
                             <drugTreatment>
-<flexibleDose minDose="5.0" maxDose="10.0">
-    <doseUnit scaleModifier="MICRO" perTime="P1D">
+<fixedDose quantity="10.0">
+    <doseUnit scaleModifier="MICRO" perTime="PT12H">
         <unit name="gram"/>
     </doseUnit>
-</flexibleDose>
+</fixedDose>
 <drug name="Exenatide"/>
                             </drugTreatment>
                         </treatment>
@@ -33929,6 +33885,475 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
         </study>
     </studies>
     <metaAnalyses>
+        <pairwiseMetaAnalysis name="Exenatide HbA1c">
+            <indication name="Type II diabetes mellitus "/>
+            <endpoint name="HbA1c change"/>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Placebo" study="Buse et al, 2004"/>
+                    <arm name="Placebo" study="DeFronzo et al, 2005"/>
+                    <arm name="Placebo" study="Gao et al, 2008"/>
+                    <arm name="Placebo" study="Kendall et al, 2005"/>
+                    <arm name="Placebo" study="Moretto et al, 2008"/>
+                    <arm name="Placebo" study="Poon et al, 2005"/>
+                    <arm name="Placebo" study="Zinman et al, 2007"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Exenatide"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Exenatide high-dose" study="Buse et al, 2004"/>
+                    <arm name="Exenatide high-dose" study="DeFronzo et al, 2005"/>
+                    <arm name="Exenatide" study="Gao et al, 2008"/>
+                    <arm name="Exenatide high-dose" study="Kendall et al, 2005"/>
+                    <arm name="Exenatide high-dose" study="Moretto et al, 2008"/>
+                    <arm name="Exenatide 10ug/day" study="Poon et al, 2005"/>
+                    <arm name="Exenatide " study="Zinman et al, 2007"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
+        <networkMetaAnalysis name="HbA1c network">
+            <indication name="Type II diabetes mellitus "/>
+            <endpoint name="HbA1c change"/>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Exenatide high-dose" study="Buse et al, 2004"/>
+                    <arm name="Exenatide high-dose" study="DeFronzo et al, 2005"/>
+                    <arm name="Exenatide" study="Gao et al, 2008"/>
+                    <arm name="Exenatide high-dose" study="Kendall et al, 2005"/>
+                    <arm name="Exenatide high-dose" study="Moretto et al, 2008"/>
+                    <arm name="Exenatide 10ug/day" study="Poon et al, 2005"/>
+                    <arm name="Exenatide " study="Zinman et al, 2007"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Liraglutide 1200ug/day" study="Marre et al, 2009"/>
+                    <arm name="Liraglutide 1200ug/day" study="Nauck et al, 2008"/>
+                    <arm name="Liraglutide 1200ug/day" study="Zinman et al, 2009"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Placebo" study="Bosi et al, 2007"/>
+                    <arm name="Placebo" study="Buse et al, 2004"/>
+                    <arm name="Placebo" study="Charbonnel et al, 2006"/>
+                    <arm name="Placebo" study="DeFronzo et al, 2005"/>
+                    <arm name="Placebo" study="Dejager et al, 2007"/>
+                    <arm name="Placebo" study="Gao et al, 2008"/>
+                    <arm name="Placebo" study="Goldstein et al, 2007"/>
+                    <arm name="Placebo" study="Goodman et al, 2009"/>
+                    <arm name="Placebo" study="Hanefeld et al, 2008"/>
+                    <arm name="Placebo" study="Hermansen et al, 2007"/>
+                    <arm name="Placebo" study="Kendall et al, 2005"/>
+                    <arm name="Placebo" study="Marre et al, 2009"/>
+                    <arm name="Placebo" study="Mohan et al, 2008"/>
+                    <arm name="Placebo" study="Moretto et al, 2008"/>
+                    <arm name="Placebo" study="Nauck et al, 2008"/>
+                    <arm name="Placebo" study="Nonaka et al, 2008"/>
+                    <arm name="Placebo" study="Pi-Sunyer et al, 2007"/>
+                    <arm name="Placebo" study="Poon et al, 2005"/>
+                    <arm name="Placebo" study="Raz et al, 2006"/>
+                    <arm name="Placebo" study="Ristic et al, 2005"/>
+                    <arm name="Placebo" study="Scott et al, 2008"/>
+                    <arm name="Placebo" study="Zinman et al, 2007"/>
+                    <arm name="Placebo" study="Zinman et al, 2009"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Sitagliptin" study="Charbonnel et al, 2006"/>
+                    <arm name="Sitagliptin " study="Goldstein et al, 2007"/>
+                    <arm name="Sitagliptin high-dose" study="Hanefeld et al, 2008"/>
+                    <arm name="Sitagliptin" study="Hermansen et al, 2007"/>
+                    <arm name="Sitagliptin" study="Mohan et al, 2008"/>
+                    <arm name="Sitagliptin" study="Nonaka et al, 2008"/>
+                    <arm name="Sitagliptin" study="Raz et al, 2006"/>
+                    <arm name="Sitagliptin " study="Scott et al, 2008"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Vildagliptin high-dose" study="Bosi et al, 2007"/>
+                    <arm name="Vildagliptin high-dose" study="Dejager et al, 2007"/>
+                    <arm name="Vildagliptin pm" study="Goodman et al, 2009"/>
+                    <arm name="Vildagliptin high-dose" study="Pi-Sunyer et al, 2007"/>
+                    <arm name="Vildagliptin high-dose" study="Ristic et al, 2005"/>
+                </arms>
+            </alternative>
+            <consistencyResults>
+                <mcmcSettings tuningIterations="20000" simulationIterations="50000" inferenceIterations="10000" thinningInterval="10" numberOfChains="4" varianceScalingFactor="2.5"/>
+                <rankProbabilitySummary>0.0 0.0 1.0 0.0 0.0 0.0248 0.0013 0.0 0.1292 0.8447 0.1785 0.0056 0.0 0.692 0.1239 0.7633 0.0304 0.0 0.1756 0.0307 0.0334 0.9627 0.0 0.0032 7.0E-4</rankProbabilitySummary>
+                <relativeEffectsSummary>
+                    <means>-0.277980796948049 0.8351892916280564 0.09283027183043654 0.2228864938868875</means>
+                    <covariance>0.02407414155000137 0.006778876177937461 0.006719714973560761 0.006860913044232128 0.006884626790841943 0.006841840971773628 0.006877497716959183 0.011492930738121868 0.006764602643274858 0.017476362505661553</covariance>
+                </relativeEffectsSummary>
+                <relativeEffectsQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.5875739138156331"/>
+                        <quantile level="0.5" value="-0.27762381286466653"/>
+                        <quantile level="0.975" value="0.024042216020341314"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="0.6700980378054922"/>
+                        <quantile level="0.5" value="0.8343755355422322"/>
+                        <quantile level="0.975" value="1.0007678571197238"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.12018030829941961"/>
+                        <quantile level="0.5" value="0.09249125048096474"/>
+                        <quantile level="0.975" value="0.30259297852300693"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.041661568032314134"/>
+                        <quantile level="0.5" value="0.22399244431561532"/>
+                        <quantile level="0.975" value="0.48194430772426355"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.02404221602034118"/>
+                        <quantile level="0.5" value="0.27762381286466653"/>
+                        <quantile level="0.975" value="0.5875739138156332"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="0.855651120514103"/>
+                        <quantile level="0.5" value="1.1114105364131215"/>
+                        <quantile level="0.975" value="1.3741132203800435"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="0.08203348600942431"/>
+                        <quantile level="0.5" value="0.36800387358993564"/>
+                        <quantile level="0.975" value="0.6668671407195412"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="0.16696106845753883"/>
+                        <quantile level="0.5" value="0.5019778291539121"/>
+                        <quantile level="0.975" value="0.8271554328301687"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.0007678571197238"/>
+                        <quantile level="0.5" value="-0.8343755355422322"/>
+                        <quantile level="0.975" value="-0.6700980378054922"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.3741132203800435"/>
+                        <quantile level="0.5" value="-1.1114105364131215"/>
+                        <quantile level="0.975" value="-0.855651120514103"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.8776457532328491"/>
+                        <quantile level="0.5" value="-0.7425684695452011"/>
+                        <quantile level="0.975" value="-0.6071362803899707"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.8199182735933775"/>
+                        <quantile level="0.5" value="-0.6121524192248478"/>
+                        <quantile level="0.975" value="-0.4135452657428661"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.30259297852300693"/>
+                        <quantile level="0.5" value="-0.09249125048096474"/>
+                        <quantile level="0.975" value="0.12018030829941972"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.6668671407195411"/>
+                        <quantile level="0.5" value="-0.36800387358993564"/>
+                        <quantile level="0.975" value="-0.08203348600942409"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="0.6071362803899707"/>
+                        <quantile level="0.5" value="0.7425684695452011"/>
+                        <quantile level="0.975" value="0.8776457532328492"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.11328236703982465"/>
+                        <quantile level="0.5" value="0.129123821080258"/>
+                        <quantile level="0.975" value="0.36991322372371815"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.48194430772426344"/>
+                        <quantile level="0.5" value="-0.22399244431561532"/>
+                        <quantile level="0.975" value="0.041661568032314356"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.8271554328301686"/>
+                        <quantile level="0.5" value="-0.5019778291539121"/>
+                        <quantile level="0.975" value="-0.1669610684575387"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="0.41354526574286615"/>
+                        <quantile level="0.5" value="0.6121524192248478"/>
+                        <quantile level="0.975" value="0.8199182735933777"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.3699132237237181"/>
+                        <quantile level="0.5" value="-0.129123821080258"/>
+                        <quantile level="0.975" value="0.1132823670398248"/>
+                    </relativeEffectQuantileSummary>
+                </relativeEffectsQuantileSummary>
+                <summary psrf="1.0002615066897003">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="Typical" drug="Exenatide" name="Typical Dose"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.0007678571197238"/>
+                    <quantile level="0.5" value="-0.8343755355422322"/>
+                    <quantile level="0.975" value="-0.6700980378054922"/>
+                </summary>
+                <summary psrf="1.000399336024304">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="Typical" drug="Liraglutide" name="Typical Dose"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.3741132203800435"/>
+                    <quantile level="0.5" value="-1.1114105364131215"/>
+                    <quantile level="0.975" value="-0.855651120514103"/>
+                </summary>
+                <summary psrf="1.0006774112895087">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="Licensed" drug="Sitagliptin" name="Licensed Dose"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-0.8776457532328491"/>
+                    <quantile level="0.5" value="-0.7425684695452011"/>
+                    <quantile level="0.975" value="-0.6071362803899707"/>
+                </summary>
+                <summary psrf="1.0000146053588794">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="Licensed" drug="Vildagliptin" name="Licensed Dose"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-0.8199182735933775"/>
+                    <quantile level="0.5" value="-0.6121524192248478"/>
+                    <quantile level="0.975" value="-0.4135452657428661"/>
+                </summary>
+                <summary psrf="1.0007814231385237">
+                    <variance name="var.d"/>
+                    <quantile level="0.025" value="0.13051012478813334"/>
+                    <quantile level="0.5" value="0.18287481980164072"/>
+                    <quantile level="0.975" value="0.27325336900991115"/>
+                </summary>
+            </consistencyResults>
+        </networkMetaAnalysis>
+        <pairwiseMetaAnalysis name="Liraglutide HbA1c">
+            <indication name="Type II diabetes mellitus "/>
+            <endpoint name="HbA1c change"/>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Placebo" study="Marre et al, 2009"/>
+                    <arm name="Placebo" study="Nauck et al, 2008"/>
+                    <arm name="Placebo" study="Zinman et al, 2009"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Liraglutide"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Liraglutide 1200ug/day" study="Marre et al, 2009"/>
+                    <arm name="Liraglutide 1200ug/day" study="Nauck et al, 2008"/>
+                    <arm name="Liraglutide 1200ug/day" study="Zinman et al, 2009"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
         <pairwiseMetaAnalysis name="Sitagliptin HbA1c">
             <indication name="Type II diabetes mellitus "/>
             <endpoint name="HbA1c change"/>
@@ -33944,7 +34369,6 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                     <arm name="Placebo" study="Mohan et al, 2008"/>
                     <arm name="Placebo" study="Nonaka et al, 2008"/>
                     <arm name="Placebo" study="Raz et al, 2006"/>
-                    <arm name="Placebo" study="Scott et al, 2007"/>
                     <arm name="Placebo" study="Scott et al, 2008"/>
                 </arms>
             </alternative>
@@ -33955,12 +34379,11 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                 <arms>
                     <arm name="Sitagliptin" study="Charbonnel et al, 2006"/>
                     <arm name="Sitagliptin " study="Goldstein et al, 2007"/>
-                    <arm name="Sitagliptin mid-dose twice/day" study="Hanefeld et al, 2008"/>
+                    <arm name="Sitagliptin high-dose" study="Hanefeld et al, 2008"/>
                     <arm name="Sitagliptin" study="Hermansen et al, 2007"/>
                     <arm name="Sitagliptin" study="Mohan et al, 2008"/>
                     <arm name="Sitagliptin" study="Nonaka et al, 2008"/>
                     <arm name="Sitagliptin" study="Raz et al, 2006"/>
-                    <arm name="Sitagliptin 25mg/day" study="Scott et al, 2007"/>
                     <arm name="Sitagliptin " study="Scott et al, 2008"/>
                 </arms>
             </alternative>
@@ -33976,10 +34399,8 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                     <arm name="Placebo" study="Bosi et al, 2007"/>
                     <arm name="Placebo" study="Dejager et al, 2007"/>
                     <arm name="Placebo" study="Goodman et al, 2009"/>
-                    <arm name="Placebo" study="Kikuchi et al, 2009"/>
                     <arm name="Placebo" study="Pi-Sunyer et al, 2007"/>
                     <arm name="Placebo" study="Ristic et al, 2005"/>
-                    <arm name="Placebo" study="Scherbaum et al, 2008"/>
                 </arms>
             </alternative>
             <alternative>
@@ -33987,13 +34408,11 @@ and Thiazolidinedione in Patients With Type 2 Diabetes (LEAD-4 Met+TZD)</value>
                     <trivialCategory drug="Vildagliptin"/>
                 </treatmentDefinition>
                 <arms>
-                    <arm name="Vildagliptin" study="Bosi et al, 2007"/>
-                    <arm name="Vildagliptin" study="Dejager et al, 2007"/>
-                    <arm name="Vildagliptin am" study="Goodman et al, 2009"/>
-                    <arm name="Vildagliptin" study="Kikuchi et al, 2009"/>
-                    <arm name="Vildagliptin" study="Pi-Sunyer et al, 2007"/>
-                    <arm name="Vildagliptin" study="Ristic et al, 2005"/>
-                    <arm name="Vildagliptin " study="Scherbaum et al, 2008"/>
+                    <arm name="Vildagliptin high-dose" study="Bosi et al, 2007"/>
+                    <arm name="Vildagliptin high-dose" study="Dejager et al, 2007"/>
+                    <arm name="Vildagliptin pm" study="Goodman et al, 2009"/>
+                    <arm name="Vildagliptin high-dose" study="Pi-Sunyer et al, 2007"/>
+                    <arm name="Vildagliptin high-dose" study="Ristic et al, 2005"/>
                 </arms>
             </alternative>
         </pairwiseMetaAnalysis>
