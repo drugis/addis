@@ -313,6 +313,7 @@ public class AddStudyWizardPresentation {
 
 
 	public Study saveStudy() {
+
 		if (getArms().isEmpty())
 			throw new IllegalStateException("No arms selected in study.");
 		if (!isIdAvailable())
