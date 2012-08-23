@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,6 +66,7 @@ import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
+import org.drugis.mtc.gui.MainWindow;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -79,106 +80,106 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends PanelWizardStep {
 	private SelectFromFiniteListPresentation<T> d_pm;
-	
+
 	private class RemoveSlotListener extends AbstractAction {
 		int d_index;
-		
-		public RemoveSlotListener(int index) {
+
+		public RemoveSlotListener(final int index) {
 			d_index = index;
 		}
-		
-		public void actionPerformed(ActionEvent e) {
+
+		public void actionPerformed(final ActionEvent e) {
 			d_pm.removeSlot(d_index);
 			prepare();
-		}	
-	} 
-		
+		}
+	}
+
 	private class newOptionButtonListener extends AbstractAction {
 		int d_index;
 
-		public newOptionButtonListener(int index) {
+		public newOptionButtonListener(final int index) {
 			d_index = index;
 		}
-		
-		public void actionPerformed(ActionEvent e) {
+
+		public void actionPerformed(final ActionEvent e) {
 			d_pm.showAddOptionDialog(d_index);
 		}
 	}
-		
+
 	private PanelBuilder d_builder;
 	private JScrollPane d_scrollPane;
 	private final AddEpochsPresentation d_epm;
 	private final JDialog d_parent;
-		
-	public SelectFromOutcomeMeasureListWizardStep(JDialog parent, SelectFromFiniteListPresentation<T> pm, AddEpochsPresentation epm) {
+
+	public SelectFromOutcomeMeasureListWizardStep(final JDialog parent, final SelectFromFiniteListPresentation<T> pm, final AddEpochsPresentation epm) {
 		super(pm.getTitle(), pm.getDescription());
 		d_parent = parent;
 		d_epm = epm;
 		setLayout(new BorderLayout());
 		d_pm = pm;
 		setComplete((Boolean)d_pm.getInputCompleteModel().getValue());
-		
+
 		PropertyConnector.connectAndUpdate(d_pm.getInputCompleteModel(), this, "complete");
 	}
-		
+
 	 @Override
 	public void prepare() {
 		 this.setVisible(false);
-		 
+
 		 if (d_scrollPane != null)
 			 remove(d_scrollPane);
-		 
+
 		 buildWizardStep();
 		 this.setVisible(true);
 		 repaint();
 	 }
-		 
+
 	private void buildWizardStep() {
 		FormLayout layout = new FormLayout(
 				"max(30dlu;pref), 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref",
 				"p, 3dlu, p"
-				);	
+				);
 		d_builder = new PanelBuilder(layout);
 		d_builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
+
 		d_builder.addLabel(d_pm.getTypeName() + "s: ", cc.xy(5, 1));
-		
+
 		int row = buildSlotsPart(7, cc, 1, layout);
-		
+
 		// Add slot button
 		row += 2;
 		JButton btn = new JButton("Add");
 		d_builder.add(btn, cc.xy(1, row));
 		Bindings.bind(btn, "enabled", d_pm.getAddSlotsEnabledModel());
 		btn.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				d_pm.addSlot();
 				prepare();
 			}
 		});
 		d_builder.addSeparator("", cc.xy(5, row));
-	
+
 		JPanel panel = d_builder.getPanel();
 		d_scrollPane = new JScrollPane(panel);
 		d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-	
+
 		add(d_scrollPane, BorderLayout.CENTER);
 	}
 
-	private int buildSlotsPart(int fullWidth, CellConstraints cc, int row, FormLayout layout) {
+	private int buildSlotsPart(final int fullWidth, final CellConstraints cc, int row, final FormLayout layout) {
 		for(int i = 0; i < d_pm.countSlots(); ++i) {
 			row = LayoutUtil.addRow(layout, row);
-			
+
 			// add 'remove' button
 			JButton btn = new JButton("Remove");
 			d_builder.add(btn, cc.xy(1, row));
 			btn.addActionListener(new RemoveSlotListener(i));
-						
+
 			// dropdown
 			ModifiableHolder<T> slot = d_pm.getSlot(i);
 			d_builder.add(AuxComponentFactory.createBoundComboBox(d_pm.getOptions(), slot, true), cc.xy(5, row));
-			
+
 			// (new) + button
 			if (d_pm.hasAddOptionDialog()) {
 				JButton addOptionButton = GUIFactory.createPlusButton("Create " + d_pm.getTypeName());
@@ -187,32 +188,32 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 			}
 
 			row = createAdditionalComponents(slot, d_builder, layout, row);
-			
+
 			row = createMeasurementMomentsRow(slot, d_builder, layout, row);
-			
+
 			if (slot instanceof TypeWithNotes) {
 				row = LayoutUtil.addRow(layout, row);
 				d_builder.add(new NotesView(((TypeWithNotes)slot).getNotes(), true), cc.xy(5, row));
 			}
-			
+
 			row = LayoutUtil.addRow(layout, row);
 		}
-		return row;	
+		return row;
 	}
 
-	private int createMeasurementMomentsRow(ModifiableHolder<T> slot, final PanelBuilder builder, FormLayout layout, int row) {
+	private int createMeasurementMomentsRow(final ModifiableHolder<T> slot, final PanelBuilder builder, final FormLayout layout, int row) {
 		CellConstraints cc = new CellConstraints();
 		row = LayoutUtil.addRow(layout, row);
 		builder.add(new MeasurementMomentsPanel<T>(d_parent, (StudyOutcomeMeasure<T>) slot, d_epm), cc.xyw(3, row, 5));
 		return row;
 	}
-	
+
 	private static class MeasurementMomentsPanel<T extends Variable> extends JPanel {
 		private final JDialog d_parent;
 		private final StudyOutcomeMeasure<T> d_slot;
 		private final AddEpochsPresentation d_epm;
 
-		public MeasurementMomentsPanel(JDialog parent, StudyOutcomeMeasure<T> slot, AddEpochsPresentation epm) {
+		public MeasurementMomentsPanel(final JDialog parent, final StudyOutcomeMeasure<T> slot, final AddEpochsPresentation epm) {
 			d_parent = parent;
 			d_slot = slot;
 			d_epm = epm;
@@ -226,24 +227,24 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 			add(buildPanel());
 			setVisible(true);
 		}
-	
+
 		private JComponent buildPanel() {
 			FormLayout momentLayout = new FormLayout(
 					"right:pref, 3dlu, left:pref, 3dlu, left:pref, 3dlu, left:pref",
 					"p, 3dlu, p"
-					);			
+					);
 			final PanelBuilder momentPanelBuilder = new PanelBuilder(momentLayout);
 			CellConstraints cc = new CellConstraints();
 			int row = 1;
 			final StudyOutcomeMeasure<T> som = ((StudyOutcomeMeasure<T>)d_slot);
-			
+
 			for (final WhenTaken wt : som.getWhenTaken()) {
 				row = LayoutUtil.addRow(momentLayout, row);
 				momentPanelBuilder.addLabel("Measurement moment: ", cc.xy(1, row));
 				momentPanelBuilder.addLabel(wt.toString(), cc.xy(3, row));
 				JButton editButton = new JButton(Main.IMAGELOADER.getIcon(FileNames.ICON_EDIT));
 				editButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(final ActionEvent e) {
 						AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, wt, (StudyOutcomeMeasure<T>) d_slot, d_epm);
 						GUIHelper.centerWindow(dialog, d_parent);
 						dialog.setVisible(true);
@@ -251,22 +252,22 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 					}
 				});
 				momentPanelBuilder.add(editButton, cc.xy(5, row));
-				
-				JButton deleteButton = new JButton(Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
+
+				JButton deleteButton = new JButton(MainWindow.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
 				deleteButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(final ActionEvent e) {
 						d_slot.getWhenTaken().remove(wt);
 						rebuild();
 					}
 				});
 				momentPanelBuilder.add(deleteButton, cc.xy(7, row));
 			}
-			
+
 			row = LayoutUtil.addRow(momentLayout, row);
 			JButton addWhenTakenButton = new JButton("Add measurement moment");
 			addWhenTakenButton.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(final ActionEvent e) {
 					AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, (StudyOutcomeMeasure<T>) d_slot, d_epm);
 					GUIHelper.centerWindow(dialog, d_parent);
 					dialog.setVisible(true);
@@ -277,7 +278,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 			return momentPanelBuilder.getPanel();
 		}
 	}
-	
+
 	private static class AddWhenTakenDialog<T extends Variable> extends OkCancelDialog {
 
 		private final StudyOutcomeMeasure<T> d_som;
@@ -286,40 +287,40 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 		private final ValueHolder<Boolean> d_validModel = new ModifiableHolder<Boolean>();
 		private final AddEpochsPresentation d_epm;
 
-		public AddWhenTakenDialog(JDialog parent, WhenTaken wt, StudyOutcomeMeasure<T> som, AddEpochsPresentation epm) {
+		public AddWhenTakenDialog(final JDialog parent, final WhenTaken wt, final StudyOutcomeMeasure<T> som, final AddEpochsPresentation epm) {
 			super(parent, true);
 			d_old = wt;
 			d_som = som;
 			d_epm = epm;
-			
+
 			if (d_old == null) {
 				d_wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epm.getStudy().findTreatmentEpoch());
 			} else {
 				d_wt = wt.clone();
 			}
-			
+
 			d_wt.addPropertyChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
+				public void propertyChange(final PropertyChangeEvent evt) {
 					d_validModel.setValue(isUnique());
 				}
 			});
 			d_validModel.setValue(isUnique());
-			
+
 			Bindings.bind(d_okButton, "enabled", d_validModel);
 
 			getUserPanel().add(new MeasurementMomentsEditorPanel<T>(d_wt, epm));
-			
+
 			getUserPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit");
 			getUserPanel().getActionMap().put("submit", new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(final ActionEvent e) {
 					commit();
 				}
 			});
-			
+
 			pack();
 		}
-		
-		public AddWhenTakenDialog(JDialog parent, StudyOutcomeMeasure<T> som, AddEpochsPresentation epm) {
+
+		public AddWhenTakenDialog(final JDialog parent, final StudyOutcomeMeasure<T> som, final AddEpochsPresentation epm) {
 			this(parent, null, som, epm);
 		}
 
@@ -330,7 +331,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 				return d_wt.equals(d_old);
 			}
 		}
-		
+
 		@Override
 		protected void cancel() {
 			setVisible(false);
@@ -350,28 +351,28 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 				dispose();
 			}
 		}
-		
+
 	}
-	
+
 	private static class MeasurementMomentsEditorPanel<T extends Variable> extends JPanel {
 		private final AddEpochsPresentation d_epm;
 		private final WhenTaken d_wt;
 
-		public MeasurementMomentsEditorPanel(WhenTaken wt, AddEpochsPresentation epm) {
+		public MeasurementMomentsEditorPanel(final WhenTaken wt, final AddEpochsPresentation epm) {
 			d_wt = wt;
 			d_epm = epm;
 			add(buildPanel());
 		}
-	
+
 		private JComponent buildPanel() {
 			FormLayout momentLayout = new FormLayout(
 					"max(30dlu;pref), 3dlu, right:pref, 3dlu, fill:pref:grow, 3dlu, left:pref, 3dlu, left:pref",
 					"p"
-					);			
+					);
 			final PanelBuilder momentPanelBuilder = new PanelBuilder(momentLayout);
 			CellConstraints cc = new CellConstraints();
 			int row2 = 1;
-			
+
 			WhenTakenPresentation wtp = new WhenTakenPresentation(d_wt, d_epm.getList());
 			row2 = LayoutUtil.addRow(momentLayout, row2);
 
@@ -388,15 +389,15 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 
 			// duration units input
 			final JComboBox unitsField = AuxComponentFactory.createBoundComboBox(
-					DurationPresentation.DateUnits.values(), 
+					DurationPresentation.DateUnits.values(),
 					new PropertyAdapter<DurationPresentation<WhenTaken>>(durationModel, DurationPresentation.PROPERTY_DURATION_UNITS, true));
 			momentPanelBuilder.add(unitsField, cc.xy(5, row2));
-			
+
 			final JComboBox relativeTofield = AuxComponentFactory.createBoundComboBox(
-					RelativeTo.values(), 
+					RelativeTo.values(),
 					new PropertyAdapter<WhenTaken>(d_wt, WhenTaken.PROPERTY_RELATIVE_TO, true));
 			momentPanelBuilder.add(relativeTofield, cc.xy(7, row2));
-			
+
 			final JComboBox epochField = AuxComponentFactory.createBoundComboBox(d_epm.getList(),
 					new PropertyAdapter<WhenTaken>(d_wt, WhenTaken.PROPERTY_EPOCH), true);
 			momentPanelBuilder.add(epochField, cc.xy(9, row2));
@@ -404,8 +405,8 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 			return momentPanelBuilder.getPanel();
 		}
 	}
-	
-	protected int createAdditionalComponents(ModifiableHolder<T> slot, PanelBuilder builder, FormLayout layout, int row) {
+
+	protected int createAdditionalComponents(final ModifiableHolder<T> slot, final PanelBuilder builder, final FormLayout layout, final int row) {
 		return row;
 	}
 }
