@@ -121,7 +121,7 @@ public class StudyPresentationTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
-		d_study.createAndAddArm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), DoseUnit.MILLIGRAMS_A_DAY));
+		d_study.createAndAddArm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), DoseUnit.createMilliGramsPerDay()));
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());

@@ -54,7 +54,7 @@ public class DoseUnitTest {
 	public void setUp() {
 		d_gram = new Unit("gram", "g");
 		d_meter = new Unit("meter", "m");
-		d_mgDay = DoseUnit.MILLIGRAMS_A_DAY.clone();
+		d_mgDay = DoseUnit.createMilliGramsPerDay().clone();
 		d_kgHr = ExampleData.KILOGRAMS_PER_HOUR.clone();
 	}
 	
@@ -100,10 +100,10 @@ public class DoseUnitTest {
 	
 	@Test
 	public void testConvert() { 
-		assertEquals(0.0001, DoseUnit.convert(2400, DoseUnit.MILLIGRAMS_A_DAY, ExampleData.KILOGRAMS_PER_HOUR), Precision.EPSILON);
+		assertEquals(0.0001, DoseUnit.convert(2400, DoseUnit.createMilliGramsPerDay(), ExampleData.KILOGRAMS_PER_HOUR), Precision.EPSILON);
 		
 		DoseUnit gHour = new DoseUnit(new Unit("gram", "g"), ScaleModifier.UNIT, EntityUtil.createDuration("PT1H"));
-		assertEquals(240000, DoseUnit.convert(10, gHour, DoseUnit.MILLIGRAMS_A_DAY), Precision.EPSILON);
+		assertEquals(240000, DoseUnit.convert(10, gHour, DoseUnit.createMilliGramsPerDay()), Precision.EPSILON);
 	}
 	
 	@Test

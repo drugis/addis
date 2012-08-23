@@ -128,7 +128,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testCategoryMatching() {
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.MILLIGRAMS_A_DAY);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.createMilliGramsPerDay());
 		Category fluoxCat = new Category(catz, "Include");
 		catz.addCategory(fluoxCat);
 		DecisionTree tree = catz.getDecisionTree();
@@ -230,7 +230,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		HashSet<Entity> deps = new HashSet<Entity>();
 		deps.add(d_fluox);
 		deps.add(d_sertr);
-		deps.add(DoseUnit.MILLIGRAMS_A_DAY.getUnit());
+		deps.add(DoseUnit.createMilliGramsPerDay().getUnit());
 		deps.add(d_ind);
 		deps.add(d_rateEndpoint);
 		deps.addAll(Arrays.asList(new Study[]{d_bennie, d_boyer, d_fava, d_newhouse, d_sechter}));

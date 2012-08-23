@@ -437,7 +437,7 @@ public class JAXBConvertorTest {
 		final org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setDoseUnit(JAXBConvertor
-				.convertDoseUnit(DoseUnit.MILLIGRAMS_A_DAY));
+				.convertDoseUnit(DoseUnit.createMilliGramsPerDay()));
 
 		final org.drugis.addis.entities.data.DrugTreatment dt = new org.drugis.addis.entities.data.DrugTreatment();
 		dt.setDrug(nameReference(name));
@@ -454,7 +454,7 @@ public class JAXBConvertorTest {
 		flexDose.setMinDose(quantity);
 		flexDose.setMaxDose(maxQuantity);
 		flexDose.setDoseUnit(JAXBConvertor
-				.convertDoseUnit(DoseUnit.MILLIGRAMS_A_DAY));
+				.convertDoseUnit(DoseUnit.createMilliGramsPerDay()));
 
 		final org.drugis.addis.entities.data.DrugTreatment dt2 = new org.drugis.addis.entities.data.DrugTreatment();
 		dt2.setDrug(nameReference(name));
@@ -526,7 +526,7 @@ public class JAXBConvertorTest {
 		final org.drugis.addis.entities.data.FixedDose fixDose = new org.drugis.addis.entities.data.FixedDose();
 		fixDose.setQuantity(quantity);
 		fixDose.setDoseUnit(JAXBConvertor
-				.convertDoseUnit(DoseUnit.MILLIGRAMS_A_DAY));
+				.convertDoseUnit(DoseUnit.createMilliGramsPerDay()));
 		final org.drugis.addis.entities.data.DrugTreatment t = new org.drugis.addis.entities.data.DrugTreatment();
 		t.setDrug(nameReference(drugName1));
 		t.setFixedDose(fixDose);
@@ -611,7 +611,7 @@ public class JAXBConvertorTest {
 	}
 
 	private DrugTreatment buildFixedDoseDrugTreatment(final Drug drug, final double quantity) {
-		final FixedDose dose = new FixedDose(quantity, DoseUnit.MILLIGRAMS_A_DAY);
+		final FixedDose dose = new FixedDose(quantity, DoseUnit.createMilliGramsPerDay());
 		final DrugTreatment dt = new DrugTreatment(drug, dose);
 		return dt;
 	}
@@ -619,7 +619,7 @@ public class JAXBConvertorTest {
 	private TreatmentActivity buildFlexibleDoseTreatmentActivity(final Drug drug,
 			final double minQuantity, final double maxQuantity) {
 		final FlexibleDose dose = new FlexibleDose(new Interval<Double>(minQuantity,
-				maxQuantity), DoseUnit.MILLIGRAMS_A_DAY);
+				maxQuantity), DoseUnit.createMilliGramsPerDay());
 		return new TreatmentActivity(new DrugTreatment(drug, dose));
 	}
 
@@ -1078,10 +1078,10 @@ public class JAXBConvertorTest {
 						PredefinedActivity.RANDOMIZATION));
 		final DrugTreatment fluoxActivity = new DrugTreatment(
 				ExampleData.buildDrugFluoxetine(), new FixedDose(12.5,
-						DoseUnit.MILLIGRAMS_A_DAY));
+						DoseUnit.createMilliGramsPerDay()));
 		final DrugTreatment sertrActivity = new DrugTreatment(
 				ExampleData.buildDrugSertraline(), new FixedDose(12.5,
-						DoseUnit.MILLIGRAMS_A_DAY));
+						DoseUnit.createMilliGramsPerDay()));
 		final List<DrugTreatment> combTreatment = Arrays.asList(fluoxActivity,
 				sertrActivity);
 		sas.getStudyActivity().add(
@@ -1089,7 +1089,7 @@ public class JAXBConvertorTest {
 						new TreatmentActivity(combTreatment)));
 		final DrugTreatment paroxActivity = new DrugTreatment(
 				ExampleData.buildDrugParoxetine(), new FixedDose(12.0,
-						DoseUnit.MILLIGRAMS_A_DAY));
+						DoseUnit.createMilliGramsPerDay()));
 		sas.getStudyActivity().add(
 				buildStudyActivity("Parox fixed dose", new TreatmentActivity(
 						paroxActivity)));
@@ -1315,10 +1315,10 @@ public class JAXBConvertorTest {
 				"Randomization", PredefinedActivity.RANDOMIZATION);
 		final DrugTreatment fluoxDrugTreatment = new DrugTreatment(
 				ExampleData.buildDrugFluoxetine(), new FixedDose(12.5,
-						DoseUnit.MILLIGRAMS_A_DAY));
+						DoseUnit.createMilliGramsPerDay()));
 		final DrugTreatment sertrDrugTreatment = new DrugTreatment(
 				ExampleData.buildDrugSertraline(), new FixedDose(12.5,
-						DoseUnit.MILLIGRAMS_A_DAY));
+						DoseUnit.createMilliGramsPerDay()));
 		;
 		final StudyActivity combTreatmentActivity = new StudyActivity(
 				"Fluox + Sertr fixed dose", new TreatmentActivity(
@@ -1326,7 +1326,7 @@ public class JAXBConvertorTest {
 		final StudyActivity paroxTreatmentActivity = new StudyActivity(
 				"Parox fixed dose", new TreatmentActivity(new DrugTreatment(
 						ExampleData.buildDrugParoxetine(), new FixedDose(12.0,
-								DoseUnit.MILLIGRAMS_A_DAY))));
+								DoseUnit.createMilliGramsPerDay()))));
 		study2.getStudyActivities().add(randomizationActivity);
 		study2.getStudyActivities().add(combTreatmentActivity);
 		study2.getStudyActivities().add(paroxTreatmentActivity);

@@ -53,8 +53,8 @@ public class CategoryTest {
 	
 	@Before
 	public void setUp() {
-		d_catz1 = TreatmentCategorization.createDefault("The best", ExampleData.buildDrugEscitalopram(), DoseUnit.MILLIGRAMS_A_DAY);
-		d_catz2 = TreatmentCategorization.createDefault("The worst", ExampleData.buildDrugEscitalopram(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_catz1 = TreatmentCategorization.createDefault("The best", ExampleData.buildDrugEscitalopram(), DoseUnit.createMilliGramsPerDay());
+		d_catz2 = TreatmentCategorization.createDefault("The worst", ExampleData.buildDrugEscitalopram(), DoseUnit.createMilliGramsPerDay());
 	}
 	
 	@Test
@@ -178,10 +178,10 @@ public class CategoryTest {
 	@Test 
 	public void testMatch() {
 		UnknownDose unknownDose = new UnknownDose();
-		FixedDose fixedDose20 = new FixedDose(20.0, DoseUnit.MILLIGRAMS_A_DAY);
-		FixedDose fixedDose25 = new FixedDose(25.0, DoseUnit.MILLIGRAMS_A_DAY);
-		FlexibleDose flexDose20 = new FlexibleDose(0.0, 20.0, DoseUnit.MILLIGRAMS_A_DAY);
-		FlexibleDose flexDose25 = new FlexibleDose(0.0, 25.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose fixedDose20 = new FixedDose(20.0, DoseUnit.createMilliGramsPerDay());
+		FixedDose fixedDose25 = new FixedDose(25.0, DoseUnit.createMilliGramsPerDay());
+		FlexibleDose flexDose20 = new FlexibleDose(0.0, 20.0, DoseUnit.createMilliGramsPerDay());
+		FlexibleDose flexDose25 = new FlexibleDose(0.0, 25.0, DoseUnit.createMilliGramsPerDay());
 		
 		Drug fluox = ExampleData.buildDrugFluoxetine();
 		Drug sertr = ExampleData.buildDrugSertraline();

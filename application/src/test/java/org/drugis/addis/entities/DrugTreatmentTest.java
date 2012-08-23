@@ -42,7 +42,7 @@ public class DrugTreatmentTest {
 	@Before
 	public void setUp() {
 		d_pg = new DrugTreatment(null, null);
-		d_orig = new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		d_orig = new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay()));
 		d_clone = d_orig.clone();
 	}
 	
@@ -63,7 +63,7 @@ public class DrugTreatmentTest {
 	
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DOSE, null, new FixedDose(1.0, DoseUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DOSE, null, new FixedDose(1.0, DoseUnit.createMilliGramsPerDay()));
 	}
 	
 	@Test
@@ -84,13 +84,13 @@ public class DrugTreatmentTest {
 	@Test
 	public void testEquals() {
 		assertEquals(new DrugTreatment(null, null), d_pg);
-		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)), d_orig);
+		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay())), d_orig);
 		JUnitUtil.assertNotEquals(new DrugTreatment(null, null), d_orig);
 		JUnitUtil.assertNotEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), null), d_orig);
-		JUnitUtil.assertNotEquals(new DrugTreatment(null, new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)), d_orig);
+		JUnitUtil.assertNotEquals(new DrugTreatment(null, new FixedDose(12.0, DoseUnit.createMilliGramsPerDay())), d_orig);
 		
 		assertEquals(new DrugTreatment(null, null).hashCode(), d_pg.hashCode());
-		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)).hashCode(), d_orig.hashCode());
+		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay())).hashCode(), d_orig.hashCode());
 	}
 
 }
