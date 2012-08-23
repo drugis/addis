@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.drugis.addis.AppInfo;
 
 public final class CopyrightInfo {
@@ -44,9 +46,8 @@ public final class CopyrightInfo {
 	private static String d_aboutText;
 	private static String d_headerText;
 	private static int d_aboutNewLines;
-	
+
 	public CopyrightInfo() {
-		d_aboutNewLines = 2;
 		d_authors = new String[years.length+1][];
 		d_authors[YEAR2009] = new String[] {"Gert van Valkenhoef" , "Tommi Tervonen"};
 		d_authors[YEAR2010] = new String[] {"Gert van Valkenhoef" , "Tommi Tervonen", "Tijs Zwinkels", "Maarten Jacobs",
@@ -54,34 +55,20 @@ public final class CopyrightInfo {
 		d_authors[YEAR2011] = new String[] {"Gert van Valkenhoef", "Ahmad Kamal", "Daniel Reid", "Florin Schimbinschi" };
 		d_authors[YEAR2012] = new String[] {"Gert van Valkenhoef", "Daniel Reid", "Joël Kuiper", "Wouter Reckman" };
 		d_aboutText = new String(AppInfo.getAppName() + " is open source and licensed under GPLv3.\n");
-		
-		d_headerText = "/*\n" +
-		" * This file is part of ADDIS (Aggregate Data Drug Information System).\n" +
-		" * ADDIS is distributed from http://drugis.org/.\n";
 
-		int c=0;
-		for(int i=0; i < years.length; ++i) {
-			d_headerText += " * Copyright (C) " + years[i] + " ";			
-			d_aboutText += "Copyright \u00A9" + years[i] + "\n";
-			
-			for(String author : d_authors[i]) {
-				c += author.length() + 2;
-				d_headerText += author + ", ";
-				if(c > 72) {
-					d_headerText += "\n * ";
-					c = 3 + author.length();
-				}				 
-				d_aboutText += author + "\n";
-				++d_aboutNewLines;
-			}
-			
-			d_headerText = d_headerText.subSequence(0, d_headerText.lastIndexOf(",") ) + ".";
-			d_headerText += "\n";
-			d_aboutText += "\n";
-			++d_aboutNewLines;
+		d_headerText = "This file is part of ADDIS (Aggregate Data Drug Information System).\n" +
+		"ADDIS is distributed from http://drugis.org/.\n";
+
+		for(int i = 0 ; i < years.length; ++i) {
+			d_headerText += WordUtils.wrap("Copyright \u00A9 " + years[i] + " " + StringUtils.join(d_authors[i], ", ") + ".\n", 72);
+			d_aboutText += "Copyright \u00A9" + years[i] +  "\n" +  StringUtils.join(d_authors[i], "\n") + "\n\n";
+
 		}
-		
-		d_headerText +=
+
+		d_aboutNewLines = StringUtils.split(d_aboutText, "\n").length;
+		d_headerText = "/*\n * " + StringUtils.join(StringUtils.split(d_headerText, "\n"), "\n * ");
+
+		d_headerText += "\n" +
 				" *\n" +
 				" * This program is free software: you can redistribute it and/or modify\n" +
 				" * it under the terms of the GNU General Public License as published by\n" +
@@ -96,7 +83,7 @@ public final class CopyrightInfo {
 				" * You should have received a copy of the GNU General Public License\n" +
 				" * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n" +
 				" */\n\n";
-	
+
 	}
 
 	public String getAboutText() {
@@ -105,7 +92,7 @@ public final class CopyrightInfo {
 	public int getAboutLineCount() {
 		return d_aboutNewLines;
 	}
-	
+
 	public void writeHeader(String fileName) throws IOException {
 		Writer out = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
 	    try {
@@ -114,7 +101,7 @@ public final class CopyrightInfo {
 	      out.close();
 	    }
 	}
-	
+
 	public static void main(String [] args) {
 		try {
 			new CopyrightInfo().writeHeader(HEADER_FILENAME);
@@ -122,5 +109,5 @@ public final class CopyrightInfo {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
