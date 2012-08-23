@@ -206,7 +206,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 			});
 			builder.add(rename, cc.xy(5, row));
 
-			final JButton remove = GUIFactory.createIconButton(FileNames.ICON_DELETE, "delete");
+			final JButton remove = GUIFactory.createIconButton(org.drugis.mtc.gui.FileNames.ICON_DELETE, "delete");
 			remove.addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
 					d_pm.getCategories().remove(idx);

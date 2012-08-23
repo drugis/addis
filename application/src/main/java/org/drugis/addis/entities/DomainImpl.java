@@ -180,7 +180,7 @@ public class DomainImpl extends Domain {
 	 * Creates new trivial TreatmentDefinitions based on drug
 	 * @param the drug to create a list for
 	 */
-	public ObservableList<Study> getTreatmentDefinition(Drug d) {
+	public ObservableList<Study> getStudies(Drug d) {
 		return new FilteredObservableList<Study>(getStudies(), new TreatmentDefinitionFilter(TreatmentDefinition.createTrivial(d)));
 	}
 	
@@ -444,12 +444,17 @@ public class DomainImpl extends Domain {
 	public class TreatmentDefinitionFilter implements Predicate<Study> {
 		private final TreatmentDefinition d_treatmentDefinition;
 		
-		public TreatmentDefinitionFilter(TreatmentDefinition ds) {
-			d_treatmentDefinition = ds;
+		public TreatmentDefinitionFilter(TreatmentDefinition td) {
+			d_treatmentDefinition = td;
 		}
 		
 		public boolean evaluate(Study s) {
-			return s.getTreatmentDefinitions().contains(d_treatmentDefinition);
+			for (Arm a : s.getArms()) {
+				if (d_treatmentDefinition.match(s, a)) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

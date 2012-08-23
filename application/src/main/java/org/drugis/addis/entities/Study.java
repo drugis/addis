@@ -357,11 +357,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public Set<TreatmentDefinition> getTreatmentDefinitions() {
-		final Set<TreatmentDefinition> drugs = new HashSet<TreatmentDefinition>();
+		final Set<TreatmentDefinition> treatments = new HashSet<TreatmentDefinition>();
 		for (final Arm a : getArms()) {
-			drugs.add(getTreatmentDefinition(a));
+			treatments.add(getTreatmentDefinition(a));
 		}
-		return drugs;
+		return treatments;
 	}
 
 	public Indication getIndication() {
@@ -719,12 +719,12 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public TreatmentDefinition getTreatmentDefinition(final Arm a) {
 		final Activity activity = getActivity(a);
 		if (activity instanceof TreatmentActivity) {
-			return getTreatmentDefinition((TreatmentActivity) activity);
+			return buildTreatmentDefinition((TreatmentActivity) activity);
 		}
 		return new TreatmentDefinition();
 	}
 
-	private TreatmentDefinition getTreatmentDefinition(final TreatmentActivity activity) {
+	private static TreatmentDefinition buildTreatmentDefinition(final TreatmentActivity activity) {
 		final List<Drug> drugs = new ArrayList<Drug>();
 		for(final DrugTreatment ta : activity.getTreatments()) {
 			drugs.add(ta.getDrug());
@@ -849,7 +849,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private ObservableList<Arm> getArms(final TreatmentDefinition d) {
-		return new FilteredObservableList<Arm>(d_arms, new DrugArmFilter(d));
+		return new FilteredObservableList<Arm>(d_arms, new TreatmentArmFilter(d));
 	}
 
 	public ObservableList<StudyOutcomeMeasure<Endpoint>> getEndpoints() {
@@ -887,10 +887,10 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 	}
 
-	public class DrugArmFilter implements Predicate<Arm> {
+	public class TreatmentArmFilter implements Predicate<Arm> {
 		private final TreatmentDefinition d_d;
 
-		public DrugArmFilter(final TreatmentDefinition d) {
+		public TreatmentArmFilter(final TreatmentDefinition d) {
 			d_d = d;
 		}
 

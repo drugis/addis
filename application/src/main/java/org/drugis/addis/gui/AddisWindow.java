@@ -323,7 +323,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		final JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+		final JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -438,7 +438,7 @@ public class AddisWindow extends JFrame {
 	}
 	
 	private JMenuItem createSaveItem() {
-		d_saveMenuItem = new JMenuItem("Save", Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
+		d_saveMenuItem = new JMenuItem("Save", Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_SAVEFILE));
 		d_saveMenuItem.setMnemonic('s');
 		Bindings.bind(d_saveMenuItem, "enabled", d_main.getDomainChangedModel());
 		
@@ -461,7 +461,7 @@ public class AddisWindow extends JFrame {
 	}
 	
 	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save As", Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
+		JMenuItem saveItem = new JMenuItem("Save As", Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_SAVEFILE));
 		
 		// attach to ctrl-shift-s
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
@@ -623,7 +623,7 @@ public class AddisWindow extends JFrame {
 					"Do you really want to delete " + selectedType + " " + selected
 					+ " ?", "Confirm deletion", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE, Main.IMAGELOADER
-					.getIcon(FileNames.ICON_DELETE));
+					.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
 			if (conf != JOptionPane.YES_OPTION) {
 				return false;
 			}
