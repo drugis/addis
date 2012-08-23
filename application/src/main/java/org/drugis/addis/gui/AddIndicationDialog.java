@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ public class AddIndicationDialog extends OkCancelDialog {
 	private Indication d_indication;
 	private AddisWindow d_mainWindow;
 	private ValueModel d_selectionModel;
-	
+
 	public AddIndicationDialog(AddisWindow mainWindow, Domain domain, ValueModel selection) {
 		super(mainWindow, "Add Indication");
 		setModal(true);
@@ -59,7 +59,6 @@ public class AddIndicationDialog extends OkCancelDialog {
 
 	@Override
 	protected void cancel() {
-		setVisible(false);
 		dispose();
 	}
 
@@ -71,9 +70,8 @@ public class AddIndicationDialog extends OkCancelDialog {
 			    "Couldn't add Indication", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		d_domain.getIndications().add(d_indication);
-		setVisible(false);
 		dispose();
 
 		d_mainWindow.leftTreeFocus(d_indication);

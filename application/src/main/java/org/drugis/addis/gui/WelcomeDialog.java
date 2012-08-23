@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -50,38 +50,37 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
-public class WelcomeDialog extends JFrame { 
-	
+public class WelcomeDialog extends JFrame {
+
 	private static final int COMP_HEIGHT = 65;
 	private static final int FULL_WIDTH = 446; // width of the header image
 	private static final int SPACING = 3;
 	private static final int BUTTON_WIDTH = 151;
 	private static final int TEXT_WIDTH = FULL_WIDTH - SPACING - BUTTON_WIDTH;
-	
+
 	private Main d_main;
 
 	public WelcomeDialog(Main main) {
 		super();
 		d_main = main;
-		setTitle("Welcome to " + AppInfo.getAppName());		
+		setTitle("Welcome to " + AppInfo.getAppName());
 		initComps();
 		setResizable(false);
 		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
-		
+
 		pack();
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);				
+				System.exit(0);
 			}
 		});
 	}
-	
+
 	private void closeWelcome() {
-		setVisible(false);
 		dispose();
 	}
-	
+
 	private void initComps() {
 		final AbstractAction exampleAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -89,7 +88,7 @@ public class WelcomeDialog extends JFrame {
 				closeWelcome();
 			}
 		};
-		
+
 		final AbstractAction loadAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				if(d_main.fileLoadActions() == JFileChooser.APPROVE_OPTION) {
@@ -97,39 +96,39 @@ public class WelcomeDialog extends JFrame {
 				}
 			}
 		};
-			
+
 		final AbstractAction newAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				d_main.newFileActions();
 				closeWelcome();
 			}
 		};
-		
+
 		FormLayout layout = new FormLayout(
-				"left:pref, " + SPACING + "px, left:pref", 
+				"left:pref, " + SPACING + "px, left:pref",
 				"p, 3dlu, p, " + SPACING + "px, p, " + SPACING + "px, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();	
-		
+		CellConstraints cc = new CellConstraints();
+
 		builder.add(createImageLabel(FileNames.IMAGE_HEADER), cc.xyw(1, 1, 3));
-		
+
 		builder.add(createButton("Load example", FileNames.ICON_TIP, exampleAction), cc.xy(1, 3));
 		builder.add(
 				createLabel("Example studies and analyses with anti-depressants. Recommended for first time users."),
 				cc.xy(3, 3));
-		
+
 		builder.add(createButton("Open file", FileNames.ICON_OPENFILE, loadAction), cc.xy(1, 5));
 		builder.add(
 				createLabel("Load an existing ADDIS data file stored on your computer."),
 				cc.xy(3, 5));
-		
+
 		builder.add(createButton("New dataset", FileNames.ICON_FILE_NEW, newAction), cc.xy(1, 7));
 		builder.add(
 				createLabel("Start with an empty file to build up your own data and analyses."),
 				cc.xy(3, 7));
-		
+
 		builder.add(createImageLabel(FileNames.IMAGE_FOOTER), cc.xyw(1, 9, 3));
-		
+
 		setContentPane(builder.getPanel());
 	}
 

@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -55,17 +55,14 @@ public abstract class AbstractTreatmentCategorizationWizardStep extends PanelWiz
 	protected final TreatmentCategorizationWizardPresentation d_pm;
 	protected JDialog d_dialog;
 	protected ListDataListener d_rebuildListener = new ListDataListener() {
-			@Override
 			public void intervalRemoved(final ListDataEvent e) {
 				rebuildPanel();
 			}
-	
-			@Override
+
 			public void intervalAdded(final ListDataEvent e) {
 				rebuildPanel();
 			}
-	
-			@Override
+
 			public void contentsChanged(final ListDataEvent e) {}
 		};
 
@@ -73,14 +70,14 @@ public abstract class AbstractTreatmentCategorizationWizardStep extends PanelWiz
 		this(presentationModel, null, null, null, dialog);
 	}
 
-	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel, 
-			String name, 
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel,
+			String name,
 			String summary, JDialog dialog) {
 		this(presentationModel, name, summary, null, dialog);
 	}
 
-	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel, 
-			String name, 
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel,
+			String name,
 			String summary,
 			Icon icon, JDialog dialog) {
 		super(name, summary, icon);
@@ -95,21 +92,21 @@ public abstract class AbstractTreatmentCategorizationWizardStep extends PanelWiz
 		this.setVisible(false);
 		initialize();
 	 	buildWizardStep();
-	 	BooleanAndModel valid = new BooleanAndModel(d_validators);  
+	 	BooleanAndModel valid = new BooleanAndModel(d_validators);
 	 	PropertyConnector.connectAndUpdate(valid, this, "complete");
 	 	this.setVisible(true);
 	}
-	
+
 	protected void initialize() {}
-	
+
 	private void buildWizardStep() {
-		if(d_dialogCache == null) { 
+		if(d_dialogCache == null) {
 			d_dialogCache = buildPanel();
 		}
 		removeAll();
 		add(d_dialogCache);
 	}
-	
+
 	protected void rebuildPanel() {
 		setVisible(false);
 		removeAll();
@@ -117,6 +114,6 @@ public abstract class AbstractTreatmentCategorizationWizardStep extends PanelWiz
 		add(d_dialogCache);
 		setVisible(true);
 	}
-	
+
 	protected abstract JPanel buildPanel();
 }

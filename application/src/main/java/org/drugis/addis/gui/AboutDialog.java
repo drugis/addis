@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -51,26 +51,26 @@ public class AboutDialog extends JDialog {
 
 	public AboutDialog(JFrame parent) {
 		super(parent);
-		setTitle("About " + AppInfo.getAppName());		
+		setTitle("About " + AppInfo.getAppName());
 		initComps();
 		pack();
 	}
-	
+
 	private void initComps() {
 		CopyrightInfo copyInfo = new CopyrightInfo();
 		setPreferredSize(new Dimension(450, copyInfo.getAboutLineCount() * 26));
 		String title = AppInfo.getAppName() + " v" + AppInfo.getAppVersion();
-		
+
 		JPanel panel = new JPanel(new BorderLayout());
-		
+
 		JLabel titleLabel = new JLabel(title);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		Font font = titleLabel.getFont();
 		font = font.deriveFont(Font.BOLD, 14F);
 		titleLabel.setFont(font);
 		panel.add(titleLabel, BorderLayout.NORTH);
-		
-		
+
+
 		JPanel licPanel = new JPanel(new BorderLayout());
 		JTextArea licArea = new JTextArea(copyInfo.getAboutText()) {
 			@Override
@@ -82,7 +82,7 @@ public class AboutDialog extends JDialog {
 		licArea.setLineWrap(true);
 		licArea.setEditable(false);
 		licArea.setOpaque(false);
-		
+
 		licPanel.add(licArea, BorderLayout.CENTER);
 		JLabel linkLabel = GUIFactory.buildSiteLink();
 		linkLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -94,19 +94,18 @@ public class AboutDialog extends JDialog {
 		label.setIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_DOCTOR));
 		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.add(label, BorderLayout.EAST);
-		
+
 		JButton closeButton = new JButton("Close");
 		closeButton.setMnemonic('c');
 		closeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				setVisible(false);
 				dispose();
 			}
 		});
-		
+
 		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		panel.add(closeButton, BorderLayout.SOUTH);		
-		
+		panel.add(closeButton, BorderLayout.SOUTH);
+
 		setContentPane(panel);
 	}
 }

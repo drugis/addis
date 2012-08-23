@@ -2,12 +2,12 @@
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
  * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
+ * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen,
+ * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi,
  * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
+ * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal,
  * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
+ * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid,
  * Joël Kuiper, Wouter Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -60,17 +60,17 @@ abstract public class JTableWithPopupEditor extends JTable {
 	private JLabel d_hidden;
 	private int d_row = 0;
 	private int d_col = 0;
-	
+
 	public JTableWithPopupEditor(TableModel model, Window frame) {
 		super(model);
 		d_parent = frame;
-		
+
 		setCellSelectionEnabled(true);
-		
+
 		if (d_parent == null) {
 			return;
 		}
-		
+
 		// Mouse listener to start editing cell
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -80,7 +80,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 				startCellEditor(row, col);
 			}
 		});
-		
+
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -88,13 +88,13 @@ abstract public class JTableWithPopupEditor extends JTable {
 					int col = getSelectedColumn();
 					int row = getSelectedRow();
 					if (row >= 0 && col >= 0) {
-						e.consume();						
+						e.consume();
 						startCellEditor(row, col);
 					}
 				}
-			}			
-		});		
-		
+			}
+		});
+
 		// Make sure the window closes when our hidden field gains focus
 		d_hidden = new JLabel();
 		d_hidden.setFocusable(true);
@@ -105,19 +105,19 @@ abstract public class JTableWithPopupEditor extends JTable {
 			}
 		};
 		d_hidden.addFocusListener(destroyInputListener);
-		
+
 		d_parent.addFocusListener(destroyInputListener);
 		addFocusListener(destroyInputListener);
-		
+
 		addAncestorListener(new AncestorListener() {
 			public void ancestorRemoved(AncestorEvent event) {
 				destroyInputWindow();
 			}
-			
+
 			public void ancestorMoved(AncestorEvent event) {
 				positionWindow();
 			}
-			
+
 			public void ancestorAdded(AncestorEvent e) {
 			}
 		});
@@ -130,7 +130,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 			}
 		});
 	}
-	
+
 	private void positionWindow() {
 		if (d_window != null) {
 			setWindowLocation();
@@ -138,38 +138,38 @@ abstract public class JTableWithPopupEditor extends JTable {
 	}
 
 	abstract protected JPanel createEditorPanel(int row, int col);
-	
+
 	private JWindow startCellEditor(int row, int col) {
 		destroyInputWindow();
-		
+
 		JPanel panel = createEditorPanel(row, col);
 		if (panel == null) {
 			return null;
 		}
-		
+
 		for (Component c : panel.getComponents()) {
 			c.addKeyListener(new KeyAdapter() {
 				@Override public void keyPressed(KeyEvent e) {
 					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						destroyInputWindow();
 					}
-				}			
+				}
 			});
 			Set<AWTKeyStroke> keys = new HashSet<AWTKeyStroke>(c.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
 			keys.add(AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_ENTER, 0));
 			c.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, keys);
 		}
-			
-		
+
+
 		panel.add(d_hidden);
 
 		// create the window
 		final JWindow window = new JWindow(d_parent);
 		d_window = window;
-		
+
 		window.getContentPane().add(panel, BorderLayout.CENTER);
 		window.pack();
-		
+
 		d_col = col;
 		d_row = row;
 		setWindowLocation();
@@ -182,12 +182,12 @@ abstract public class JTableWithPopupEditor extends JTable {
 			}
 		});
 
-		window.setVisible(true);		
+		window.setVisible(true);
 
 		// Make sure the first component has focus
 		window.requestFocusInWindow();
 		window.getFocusTraversalPolicy().getFirstComponent(window).requestFocus();
-		
+
 		return window;
 	}
 
@@ -199,8 +199,7 @@ abstract public class JTableWithPopupEditor extends JTable {
 	}
 
 	public void destroyInputWindow() {
-		if (d_window != null) {		
-			d_window.setVisible(false);
+		if (d_window != null) {
 			d_window.dispose();
 			d_window = null;
 		}
@@ -214,5 +213,5 @@ abstract public class JTableWithPopupEditor extends JTable {
 			}
 		});
 	}
-	
+
 }
