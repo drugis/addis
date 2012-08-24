@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,14 +39,14 @@ import org.jgraph.graph.DefaultGraphCell;
 
 import com.jgoodies.binding.list.ObservableList;
 
-public class SelectedDrugsGraphListener extends MouseAdapter {
+public class SelectedTreatmentDefinitionsGraphListener extends MouseAdapter {
 	
-	private ObservableList<TreatmentDefinition> d_drugList;
+	private ObservableList<TreatmentDefinition> d_definitionList;
 	private JGraph d_jgraph;
 	private SelectableTreatmentDefinitionsGraph d_studyGraph;
 
-	public SelectedDrugsGraphListener(SelectableTreatmentDefinitionsGraph selectableTreatmentDefinitionsGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDrugs) {
-		d_drugList = selectedDrugs;
+	public SelectedTreatmentDefinitionsGraphListener(SelectableTreatmentDefinitionsGraph selectableTreatmentDefinitionsGraph, JGraph graph, ObservableList<TreatmentDefinition> selectedDefinitions) {
+		d_definitionList = selectedDefinitions;
 		d_studyGraph = selectableTreatmentDefinitionsGraph;
 		d_jgraph = graph;
 	}
@@ -59,20 +59,20 @@ public class SelectedDrugsGraphListener extends MouseAdapter {
 			DefaultGraphCell realcell = (DefaultGraphCell) cell;
 			Object obj = realcell.getUserObject();
 			if (obj instanceof Vertex) {
-				selectUnselectDrug(((Vertex) obj).getTreatmentDefinition());
+				selectUnselectDefinition(((Vertex) obj).getTreatmentDefinition());
 			}
 		}
 	}	
 
-	private void selectUnselectDrug(TreatmentDefinition drug) {
-		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_drugList);
-		if (drugs.contains(drug)) {
-			drugs.remove(drug);
+	private void selectUnselectDefinition(TreatmentDefinition definition) {
+		List<TreatmentDefinition> definitions = new ArrayList<TreatmentDefinition>(d_definitionList);
+		if (definitions.contains(definition)) {
+			definitions.remove(definition);
 		} else {
-			drugs.add(drug);
+			definitions.add(definition);
 		}
-		d_drugList.clear();
-		d_drugList.addAll(drugs);
+		d_definitionList.clear();
+		d_definitionList.addAll(definitions);
 		d_studyGraph.resetVertexAttributes();
 	}
 

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ package org.drugis.addis.gui;
 
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.SelectableTreatmentDefinitionsGraphModel;
-import org.drugis.addis.presentation.wizard.SelectedDrugsGraphListener;
+import org.drugis.addis.presentation.wizard.SelectedTreatmentDefinitionsGraphListener;
 import org.jgraph.JGraph;
 import org.jgraph.graph.GraphLayoutCache;
 
@@ -44,9 +44,8 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
-		ObservableList<TreatmentDefinition> selectedDrugs = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
-		SelectedDrugsGraphListener listener =
-			new SelectedDrugsGraphListener(this, graph, selectedDrugs);
+		ObservableList<TreatmentDefinition> selectedDefinitions = ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions();
+		SelectedTreatmentDefinitionsGraphListener listener = new SelectedTreatmentDefinitionsGraphListener(this, graph, selectedDefinitions);
 		graph.addMouseListener(listener);
 		return graph;
 	}

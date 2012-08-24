@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,10 +46,10 @@ import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
+import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
@@ -73,14 +73,14 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
-	
+
 	public static class WhenTakenFactory {
 		private final AddEpochsPresentation d_epochs;
 
-		public WhenTakenFactory(AddEpochsPresentation epochs) {
+		public WhenTakenFactory(final AddEpochsPresentation epochs) {
 			d_epochs = epochs;
 		}
-		
+
 		public WhenTaken buildDefault() {
 			WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.getList().get(0));
 			whenTaken.commit();
@@ -91,20 +91,20 @@ public class AddStudyWizardPresentation {
 	public abstract class OutcomeMeasurementsModel {
 		abstract public TableModel getMeasurementTableModel();
 	}
-	
+
 	private Domain d_domain;
 	private PresentationModelFactory d_pmf;
 	private StudyPresentation d_newStudyPM;
-	
+
 	private SelectAdverseEventsPresentation d_adverseEventSelect;
 	private SelectPopulationCharsPresentation d_populationCharSelect;
 	private SelectEndpointPresentation d_endpointSelect;
 	private AddArmsPresentation d_arms;
 	private AddEpochsPresentation d_epochs;
-	
+
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow) {
+	public AddStudyWizardPresentation(final Domain d, final PresentationModelFactory pmf, final AddisWindow mainWindow) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_newStudyPM = new StudyPresentation(new Study(), pmf);
@@ -117,36 +117,36 @@ public class AddStudyWizardPresentation {
 		d_arms = new AddArmsPresentation(getNewStudy(), "Arm", 2);
 		resetStudy();
 	}
-	
+
 	private void updateSelectionHolders() {
 		getAddArmsModel().setStudy(getNewStudy());
 		getAddEpochsModel().setStudy(getNewStudy());
-		
+
 		d_endpointSelect.setSlots(getNewStudy().getEndpoints());
 		d_adverseEventSelect.setSlots(getNewStudy().getAdverseEvents());
 		d_populationCharSelect.setSlots(getNewStudy().getPopulationChars());
-		
+
 		ListDataListener removeOrphansListener = new ListDataListener() {
-			public void intervalRemoved(ListDataEvent e) {
+			public void intervalRemoved(final ListDataEvent e) {
 				deleteOrphanUsedBys();
 			}
-			
-			public void intervalAdded(ListDataEvent e) {
+
+			public void intervalAdded(final ListDataEvent e) {
 				deleteOrphanUsedBys();
 			}
-			
-			public void contentsChanged(ListDataEvent e) {
+
+			public void contentsChanged(final ListDataEvent e) {
 				deleteOrphanUsedBys();
 			}
 		};
 		getAddArmsModel().getList().addListDataListener(removeOrphansListener);
 		getAddEpochsModel().getList().addListDataListener(removeOrphansListener);
-		
+
 		new ContentAwareListModel<StudyOutcomeMeasure<Endpoint>>(getNewStudy().getEndpoints());
 		new ContentAwareListModel<StudyOutcomeMeasure<AdverseEvent>>(getNewStudy().getAdverseEvents());
 		new ContentAwareListModel<StudyOutcomeMeasure<PopulationCharacteristic>>(getNewStudy().getPopulationChars());
 	}
-	
+
 	void deleteOrphanUsedBys() {
 		for (StudyActivity sa : getNewStudy().getStudyActivities()) {
 			for (UsedBy ub: sa.getUsedBy()) {
@@ -158,33 +158,33 @@ public class AddStudyWizardPresentation {
 			}
 		}
 	}
-	
-	public AddStudyWizardPresentation(Domain d, PresentationModelFactory pmf, AddisWindow mainWindow, Study origStudy) {
+
+	public AddStudyWizardPresentation(final Domain d, final PresentationModelFactory pmf, final AddisWindow mainWindow, final Study origStudy) {
 		this(d, pmf, mainWindow);
 		d_origStudy = origStudy;
 		setNewStudy(origStudy.clone());
 	}
-	
+
 	public ValueModel getSourceModel() {
 		return getCharacteristicModel(BasicStudyCharacteristic.SOURCE);
 	}
-	
+
 	public ValueModel getSourceNoteModel() {
 		return getCharacteristicNoteModel(BasicStudyCharacteristic.SOURCE);
 	}
-	
+
 	public ValueModel getIdModel() {
 		return d_newStudyPM.getModel(Study.PROPERTY_NAME);
 	}
-	
+
 	public ValueModel getIdNoteModel() {
 		return new NoteModel(getNewStudy());
 	}
-	
+
 	public ValueModel getTitleModel() {
 		return new MutableCharacteristicHolder(getNewStudy(), BasicStudyCharacteristic.TITLE);
 	}
-	
+
 	public Domain getDomain() {
 		return d_domain;
 	}
@@ -197,8 +197,8 @@ public class AddStudyWizardPresentation {
 			setNewStudy(clinicaltrialsData);
 		}
 	}
-	
-	public void setNewStudy(Study study) {
+
+	public void setNewStudy(final Study study) {
 		d_newStudyPM = new StudyPresentation(study, d_pmf);
 		updateSelectionHolders();
 	}
@@ -206,7 +206,7 @@ public class AddStudyWizardPresentation {
 	public SortedSetModel<Indication> getIndicationsModel() {
 		return d_domain.getIndications();
 	}
-	
+
 	public ValueModel getIndicationModel() {
 		return d_newStudyPM.getModel(Study.PROPERTY_INDICATION);
 	}
@@ -214,48 +214,48 @@ public class AddStudyWizardPresentation {
 	public ValueModel getIndicationNoteModel() {
 		return new NoteModel(getNewStudy().getIndicationWithNotes());
 	}
-	
+
 	public void resetStudy() {
 		d_newStudyPM = (StudyPresentation) new StudyPresentation(new Study(), d_pmf);
 		getSourceModel().setValue(Source.MANUAL);
-		
+
 		// Add 2 arms by default:
 		getArms().add(getAddArmsModel().createItem());
 		getArms().add(getAddArmsModel().createItem());
-		
+
 		// Add 1 epoch by default:
 		getEpochs().add(getAddEpochsModel().createItem());
-		
+
 		updateSelectionHolders();
-		
+
 		d_endpointSelect.addSlot(); // by default have 1 endpoint slot.
 	}
-	
-	
-	public MutableCharacteristicHolder getCharacteristicModel(BasicStudyCharacteristic c) {
+
+
+	public MutableCharacteristicHolder getCharacteristicModel(final BasicStudyCharacteristic c) {
 		return new MutableCharacteristicHolder(getNewStudy(),c);
 	}
 
-	public ValueModel getCharacteristicNoteModel(BasicStudyCharacteristic c) {
+	public ValueModel getCharacteristicNoteModel(final BasicStudyCharacteristic c) {
 		return new NoteModel(getNewStudy().getCharacteristicWithNotes(c));
 	}
 
 	public ObservableList<Arm> getArms() {
 		return getNewStudy().getArms();
 	}
-	
+
 	public ObservableList<Epoch> getEpochs() {
 		return getNewStudy().getEpochs();
 	}
-	
+
 	public SortedSetModel<Drug> getDrugsModel(){
 		return d_domain.getDrugs();
 	}
-	
-	public BasicArmPresentation getArmModel(int armNumber){
+
+	public BasicArmPresentation getArmModel(final int armNumber){
 		return new BasicArmPresentation(getArms().get(armNumber), d_pmf);
 	}
-	
+
 	public AddArmsPresentation getAddArmsModel() {
 		return d_arms;
 	}
@@ -264,60 +264,58 @@ public class AddStudyWizardPresentation {
 		return d_epochs;
 	}
 
-	public TreatmentActivityPresentation getTreatmentActivityModel(int armNumber){
+	public TreatmentActivityPresentation getTreatmentActivityModel(final int armNumber){
 		Arm arm = getArms().get(armNumber);
 		return new TreatmentActivityPresentation(getNewStudy().getTreatment(arm));
 	}
-	
-	public ValueModel getArmNoteModel(int idx) {
+
+	public ValueModel getArmNoteModel(final int idx) {
 		if(getArms().size() <= idx)
 			return null;
 		return new ArmNoteModel(getArms().get(idx));
 	}
-	
+
 	@SuppressWarnings("serial")
 	static class ArmNoteModel extends AbstractValueModel {
 		private final Arm d_arm;
 
-		public ArmNoteModel(Arm arm) {
+		public ArmNoteModel(final Arm arm) {
 			d_arm = arm;
 		}
-		
+
 		public String getValue() {
 			return d_arm.getNotes().size() > 0 ? d_arm.getNotes().get(0).getText() : null;
 		}
 
-		public void setValue(Object newValue) {
+		public void setValue(final Object newValue) {
 		}
 	}
-	
+
 	@SuppressWarnings("serial")
 	static class NoteModel extends AbstractValueModel {
 		private final TypeWithNotes d_obj;
 
-		public NoteModel(TypeWithNotes obj) {
+		public NoteModel(final TypeWithNotes obj) {
 			d_obj = obj;
 		}
-		
+
 		public String getValue() {
 			return (d_obj != null && d_obj.getNotes().size() > 0) ? d_obj.getNotes().get(0).getText() : null;
 		}
 
-		public void setValue(Object newValue) {
+		public void setValue(final Object newValue) {
 		}
 	}
 
 	public StudyMeasurementTableModel getEndpointMeasurementTableModel() {
 		return new StudyMeasurementTableModel(getNewStudy(), d_pmf, Endpoint.class, false);
 	}
-	
-	
+
+
 	public Study saveStudy() {
-		if (getArms().isEmpty()) 
+
+		if (getArms().isEmpty())
 			throw new IllegalStateException("No arms selected in study.");
-		Study r = getNewStudy();
-		if (Study.extractVariables(r.getEndpoints()).isEmpty()) 
-			throw new IllegalStateException("No endpoints selected in study.");
 		if (!isIdAvailable())
 			throw new IllegalStateException("Study with this ID already exists in domain");
 
@@ -328,10 +326,10 @@ public class AddStudyWizardPresentation {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Add the study to the domain.
 		d_domain.getStudies().add(getNewStudy());
-		
+
 		return getNewStudy();
 	}
 
@@ -340,14 +338,14 @@ public class AddStudyWizardPresentation {
 		if (!d_domain.getStudies().contains(getNewStudy())) {
 			return true;
 		}
-		
+
 		if (isEditing()) {
 			return getNewStudy().equals(d_origStudy);
 		}
-		
+
 		return false;
 	}
-	
+
 	Study getStudy() {
 		return getNewStudy();
 	}
@@ -355,7 +353,7 @@ public class AddStudyWizardPresentation {
 	private Study getNewStudy() {
 		return d_newStudyPM.getBean();
 	}
-	
+
 	public StudyPresentation getNewStudyPM() {
 		return d_newStudyPM;
 	}
@@ -363,7 +361,7 @@ public class AddStudyWizardPresentation {
 	private StudyMeasurementTableModel getAdverseEventMeasurementTableModel() {
 		return new StudyMeasurementTableModel(getNewStudy(),d_pmf, AdverseEvent.class, false);
 	}
-	
+
 	private PopulationCharTableModel getPopulationCharMeasurementTableModel() {
 		return d_newStudyPM.getPopulationCharTableModel();
 	}
@@ -374,8 +372,8 @@ public class AddStudyWizardPresentation {
 				return getAdverseEventMeasurementTableModel();
 			}
 		};
-	} 
-	
+	}
+
 	public OutcomeMeasurementsModel getEndpointsModel() {
 		return new OutcomeMeasurementsModel() {
 			public StudyMeasurementTableModel getMeasurementTableModel() {
@@ -383,22 +381,22 @@ public class AddStudyWizardPresentation {
 			}
 		};
 	}
-	
+
 	public OutcomeMeasurementsModel getPopulationCharsModel() {
 		return new OutcomeMeasurementsModel() {
 			public TableModel getMeasurementTableModel() {
 				return getPopulationCharMeasurementTableModel();
 			}
 		};
-	} 
+	}
 
 	public SelectFromFiniteListPresentation<AdverseEvent> getAdverseEventSelectModel() {
 		return d_adverseEventSelect;
 	}
-	
+
 	public SelectFromFiniteListPresentation<Endpoint> getEndpointSelectModel() {
 		return d_endpointSelect;
-	} 
+	}
 
 	public SelectFromFiniteListPresentation<PopulationCharacteristic> getPopulationCharSelectModel() {
 		return d_populationCharSelect;
