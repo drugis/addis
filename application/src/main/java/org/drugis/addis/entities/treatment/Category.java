@@ -57,13 +57,13 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	public String getName() {
 		return d_name;
 	}
-	
+
 	public void setName(String name) {
 		String oldVal = d_name;
 		d_name = name;
 		firePropertyChange(PROPERTY_NAME, oldVal, d_name);
 	}
-	
+
 	@Override
 	public String getLabel() {
 		return getCategorization().getDrug().getLabel() + (!getName().isEmpty() ? " " + getName() : "");
@@ -72,12 +72,12 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	@Override
 	public Set<? extends Entity> getDependencies() {
 		Set<Entity> dependencies = new HashSet<Entity>(d_owner.getDependencies());
-		if (!d_owner.isTrivial()) { 
+		if (!d_owner.isTrivial()) {
 			dependencies.add(d_owner);
 		}
 		return dependencies;
 	}
-	
+
 	@Override
 	public boolean equals(final Object o) {
 		if (o instanceof Category) {
@@ -86,7 +86,7 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 		}
 		return false;
 	}
-	
+
 	/**
 	 * The implementation of deepEquals(Entity) for TreatmentCategorization and
 	 * Category is complicated by their circular dependency. However,
@@ -95,22 +95,22 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	 */
 	@Override
 	public boolean deepEquals(Entity obj) {
-		if(obj instanceof Category) { 
+		if(obj instanceof Category) {
 			Category other = (Category) obj;
 			return d_name.equals(other.d_name) && d_owner.deepEquals(other.d_owner);
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getName().hashCode() + 31 * getCategorization().hashCode();
 	}
-	
+
 	@Override
 	public int compareTo(Category o) {
 		int ownerSame = d_owner.compareTo(o.d_owner);
-		if (ownerSame != 0) { 
+		if (ownerSame != 0) {
 			return ownerSame;
 		}
 		return getName().compareTo(o.getName()) ;
@@ -127,22 +127,27 @@ public class Category extends AbstractEntity implements TypeWithName, Comparable
 	public Drug getDrug() {
 		return d_owner.getDrug();
 	}
-	
+
 	/**
 	 * @return true iff the given DrugTreatment falls within this Category.
 	 */
 	public boolean match(DrugTreatment t) {
 		return getDrug().equals(t.getDrug()) && match(t.getDose());
 	}
-	
+
 	/**
 	 * @return true iff the given Dose falls within this Category.
 	 */
 	public boolean match(AbstractDose dose) {
 		return this.equals(d_owner.getCategory(dose));
 	}
-	
+
 	public String toString() {
 		return getLabel();
 	}
+
+	public String getCriterionLabel() {
+		return d_owner.getDecisionTree().getLabel(this);
+	}
+
 }
