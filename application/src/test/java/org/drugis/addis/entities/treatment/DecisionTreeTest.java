@@ -28,14 +28,15 @@ package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.assertEquals;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.FixedDose;
 import org.junit.Test;
 
 public class DecisionTreeTest {
-	
+
 	private final TreatmentCategorization d_tc = TreatmentCategorization.createDefault();
-	
+
 	@Test
 	public void testTrivialDecision() {
 		final DecisionTreeNode root = new LeafNode();
@@ -106,6 +107,17 @@ public class DecisionTreeTest {
 		tree.replaceChild(edge, new LeafNode(new Category(d_tc, "int")));
 		assertEquals("int", tree.decide(42).getName());
 	}
-	
-	
+
+	@Test
+	public void testToString() {
+		TreatmentCategorization catz1 = ExampleData.buildCategorizationFixedDose(ExampleData.buildDrugFluoxetine());
+		assertEquals("Class Fixed", catz1.getDecisionTree().getLabel(catz1.getCategories().get(0)));
+
+		TreatmentCategorization catz2 = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugFluoxetine());
+		assertEquals("(Class Flexible AND Max Dose 0.00 ≤ x ≤ 20.00) OR (Class Fixed AND Quantity 0.00 ≤ x ≤ 20.00)",
+				catz2.getDecisionTree().getLabel(catz2.getCategories().get(0)));
+
+	}
+
+
 }
