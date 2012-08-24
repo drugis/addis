@@ -79,7 +79,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TreatmentDefinition getTreatmentCategorySet(Treatment t) { 
+	public TreatmentDefinition getTreatmentDefinition(Treatment t) { 
 		return getBean().getBuilder().getTreatmentMap().getKey(t);
 	}
 	
