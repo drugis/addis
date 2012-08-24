@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -363,9 +363,9 @@ public class DomainTest {
 		s2.setMeasurement(e, g3, m3);
 		
 		
-		ObservableList<Study> d1Studies = d_domain.getTreatmentDefinition(d1);
-		ObservableList<Study> d2Studies = d_domain.getTreatmentDefinition(d2);
-		ObservableList<Study> d3Studies = d_domain.getTreatmentDefinition(d3);		
+		ObservableList<Study> d1Studies = d_domain.getStudies(d1);
+		ObservableList<Study> d2Studies = d_domain.getStudies(d2);
+		ObservableList<Study> d3Studies = d_domain.getStudies(d3);		
 		
 		d_domain.getEndpoints().add(e);
 		d_domain.getDrugs().addAll(Arrays.asList(d1, d2, d3));

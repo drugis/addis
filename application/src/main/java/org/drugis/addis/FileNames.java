@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,14 +42,12 @@ public class FileNames {
 	public static final String ICON_NETWMETASTUDY_NEW = "netwmetastudy_new.gif";
 	public static final String ICON_BENEFITRISK = "benefitrisk.gif";
 	public static final String ICON_BENEFITRISK_NEW = "benefitrisk_new.gif";
-	public static final String ICON_DELETE = "delete.gif";
 	public static final String ICON_EDIT = "edit.gif";
 	public static final String ICON_INDICATION = "indication.gif";
 	public static final String ICON_PLUS = "add.gif";
 	public static final String ICON_IMPORT = "import.gif";
 	public static final String ICON_COLLAPSE = "collapse.gif";
 	public static final String ICON_EXPAND = "expand.gif";
-	public static final String ICON_SAVEFILE = "savefile.gif";
 	public static final String ICON_SAVEFILEAS = "saveas.gif";	
 	public static final String ICON_OPENFILE = "openfile.gif";
 	public static final String ICON_FILE_NEW = "newfile.gif";

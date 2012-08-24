@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,16 +112,16 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	public static String PROPERTY_METAANALYSES = "metaAnalyses";
 
 	
-	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalyses,
 			TreatmentDefinition baseline, List<TreatmentDefinition> alternatives, AnalysisType analysisType) {
-		this(name, indication, metaAnalysis, baseline, alternatives, analysisType, null); 
+		this(name, indication, metaAnalyses, baseline, alternatives, analysisType, null); 
 	}
 
-	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalysis,
+	public MetaBenefitRiskAnalysis(String name, Indication indication, List<MetaAnalysis> metaAnalyses,
 			TreatmentDefinition baseline, List<TreatmentDefinition> alternatives, AnalysisType analysisType, DecisionContext context) {
 		super(name);
 		d_indication = indication;
-		d_metaAnalyses = metaAnalysis;
+		d_metaAnalyses = metaAnalyses;
 		d_alternatives = new SortedSetModel<TreatmentDefinition>(alternatives);
 		d_baseline = baseline;
 		d_alternatives.add(baseline);
