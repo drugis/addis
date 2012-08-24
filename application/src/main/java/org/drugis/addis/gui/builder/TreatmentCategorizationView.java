@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
@@ -39,11 +40,13 @@ import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AddisWindow;
+import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.components.AddisTabbedPane;
 import org.drugis.addis.gui.wizard.TreatmentCategorizationOverviewWizardStep;
 import org.drugis.addis.presentation.TreatmentCategorizationPresentation;
+import org.drugis.addis.presentation.UnmodifiableHolder;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.SingleColumnPanelBuilder;
 import org.drugis.common.gui.ViewBuilder;
@@ -61,8 +64,8 @@ public class TreatmentCategorizationView implements ViewBuilder {
 	private final TreatmentCategorizationPresentation d_model;
 	private AddisWindow d_parent;
 
-	public TreatmentCategorizationView(final TreatmentCategorizationPresentation treatmentCategorizationPresentation, final AddisWindow parent) {
-		d_model = treatmentCategorizationPresentation;
+	public TreatmentCategorizationView(final TreatmentCategorizationPresentation pm, final AddisWindow parent) {
+		d_model = pm;
 		d_parent = parent;
 	}
 
@@ -81,7 +84,7 @@ public class TreatmentCategorizationView implements ViewBuilder {
 		builder.addSeparator("Dose Decision Tree");
 		String doseUnit = d_model.getModel(TreatmentCategorization.PROPERTY_DOSE_UNIT).getValue().toString();
 		builder.add(new JLabel("Dose range values are in: " + doseUnit));
-		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView = 
+		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView =
 				TreatmentCategorizationOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
 		Dimension rightSideSize = d_parent.getRightPanel().getPreferredSize();
 		treeView.setPreferredSize(new Dimension(rightSideSize.width, rightSideSize.height - 300));
@@ -113,6 +116,12 @@ public class TreatmentCategorizationView implements ViewBuilder {
 					+  CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingular()
 					+ " categorized as '" + category.getName() + "'", cc.xy(1, row));
 			row = LayoutUtil.addRow(layout, row);
+			String criterionLabel = category.getCriterionLabel();
+			String[] criteria = StringUtils.splitByWholeSeparator(criterionLabel, " OR ");
+			criterionLabel = StringUtils.join(criteria, " OR\n");
+			builder.add(AuxComponentFactory.createAutoWrapLabel(new UnmodifiableHolder<String>("Inclusion criteria: " + criterionLabel)), cc.xy(1, row));
+			row = LayoutUtil.addRow(layout, row);
+
 			builder.add(DrugView.buildStudyListComponent(d_model.getCategorizedStudyList(category), Main.getMainWindow()), cc.xy(1, row));
 			layout.appendRow(RowSpec.decode("10dlu"));
 			row += 1;

@@ -48,7 +48,7 @@ public class DoseQuantityChoiceNode extends ChoiceNode {
 		}
 		d_doseUnit = doseUnit;
 	}
-	
+
 	@Override
 	public Object getValue(Object obj) {
 		final double value = (Double) super.getValue(obj);
@@ -58,7 +58,7 @@ public class DoseQuantityChoiceNode extends ChoiceNode {
 	public DoseUnit getDoseUnit() {
 		return d_doseUnit;
 	}
-	
+
 	@Override
 	public boolean equivalent(DecisionTreeNode o) {
 		if (!(o instanceof DoseQuantityChoiceNode)) {
