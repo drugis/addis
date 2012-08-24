@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,17 +28,25 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.drugis.addis.entities.CategoricalVariableType;
+import org.drugis.addis.entities.ContinuousMeasurement;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.RateVariableType;
+import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
-	
+
+	private static final int EXTRA_COLUMNS = 4;
 	protected final BenefitRiskAnalysis<Alternative> d_br;
-	
+
 	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra) {
 		d_br = bra;
 		d_br.getMeasurementSource().addMeasurementsChangedListener(new Listener() {
@@ -47,13 +55,13 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 			}
 		});
 	}
-	
+
 	public int getColumnCount() {
-		return d_br.getCriteria().size()+1;
+		return d_br.getAlternatives().size() + EXTRA_COLUMNS;
 	}
 
 	public int getRowCount() {
-		return d_br.getAlternatives().size();
+		return d_br.getCriteria().size();
 	}
 
 	@Override
@@ -63,26 +71,41 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 
 	@Override
 	public String getColumnName(int index) {
-		if (index == 0) {
-			return "Alternative";
+		switch (index) {
+			case 0: return "Criteria";
+			case 1: return "Direction";
+			case 2: return "Description";
+			case 3: return "Unit";
+			default: return d_br.getAlternatives().get(index - EXTRA_COLUMNS).getLabel();
 		}
-		return d_br.getCriteria().get(index-1).toString();	
 	}
-	
+
 	@Override
 	public Class<?> getColumnClass(int index) {
-		if (index == 0) {
+		if (index < EXTRA_COLUMNS) {
 			return String.class;
 		}
-		return Distribution.class;	
+		return Distribution.class;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Alternative a = d_br.getAlternatives().get(rowIndex);
-
-		if (columnIndex == 0) return a.getLabel();
-
-		OutcomeMeasure om = d_br.getCriteria().get(columnIndex-1);
+		OutcomeMeasure om = d_br.getCriteria().get(rowIndex);
+		switch (columnIndex) {
+			case 0: return om.getLabel();
+			case 1: return om.getDirection();
+			case 2: return om.getDescription();
+			case 3: return getUnitOfMeasurement(om);
+		}
+		Alternative a = d_br.getAlternatives().get(columnIndex - EXTRA_COLUMNS);
 		return d_br.getMeasurement(om, a);
+	}
+
+	private String getUnitOfMeasurement(OutcomeMeasure om) {
+		if (om.getVariableType().getClass().equals(ContinuousVariableType.class)) {
+			return ((ContinuousVariableType)om.getVariableType()).getUnitOfMeasurement();
+		} else if (om.getVariableType().getClass().equals(RateVariableType.class)) {
+			return Variable.UOM_DEFAULT_RATE;
+		}
+		return om.getVariableType().getLabel();
 	}
 }

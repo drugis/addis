@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ package org.drugis.addis.gui.builder;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import javax.swing.table.TableColumn;
 
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
+import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -68,6 +71,7 @@ import org.drugis.mtc.gui.results.NetworkRelativeEffectTableCellRenderer;
 import org.drugis.mtc.gui.results.ResultsComponentFactory;
 import org.drugis.mtc.gui.results.SimulationComponentFactory;
 import org.drugis.mtc.gui.results.SummaryCellRenderer;
+import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
 import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
@@ -512,12 +516,37 @@ implements ViewBuilder {
 	 * @return A TablePanel
 	 */
 	private TablePanel createNetworkTablePanel(final MTCModelWrapper<TreatmentDefinition> mtc) {
-		final JTable table = new JTable(NetworkRelativeEffectTableModel.build(d_pm.getAlternatives(), mtc));
-		table.setDefaultRenderer(Object.class, new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous()));
+		NetworkRelativeEffectTableModel tableModel = NetworkRelativeEffectTableModel.build(d_pm.getAlternatives(), mtc);
+		final JTable table = new JTable(tableModel);
+		final NetworkRelativeEffectTableCellRenderer renderer = new NetworkRelativeEffectTableCellRenderer(!d_pm.isContinuous());
+		table.setDefaultRenderer(Object.class, renderer);
 		table.setTableHeader(null);
+
+		table.addMouseListener(treatmentCategorizationListener(renderer));
+
 		setColumnWidths(table);
 		TableCopyHandler.registerCopyAction(table);
 		return new TablePanel(table);
+	}
+
+	private MouseAdapter treatmentCategorizationListener(final NetworkRelativeEffectTableCellRenderer renderer) {
+		return new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() > 1) {
+					JTable table = (JTable)e.getComponent();
+					int row = table.convertRowIndexToModel(table.rowAtPoint(e.getPoint()));
+					int col = table.convertColumnIndexToModel(table.columnAtPoint(e.getPoint()));
+					if(col == row) {
+						Treatment treatment = renderer.getTreatment(table.getModel(), col);
+						TreatmentDefinition treatmentDefinition = d_pm.getTreatmentDefinition(treatment);
+						Category category = treatmentDefinition.getContents().first();
+						if(category != null && !category.isTrivial()) {
+							d_mainWindow.leftTreeFocus(category.getCategorization());
+						}
+					}
+				}
+			}
+		};
 	}
 
 	private void setColumnWidths(final JTable table) {
