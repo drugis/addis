@@ -28,15 +28,11 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.CategoricalVariableType;
-import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;

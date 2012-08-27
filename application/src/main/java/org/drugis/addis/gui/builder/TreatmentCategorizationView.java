@@ -26,8 +26,6 @@
 
 package org.drugis.addis.gui.builder;
 
-import java.awt.Dimension;
-
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -36,8 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.DecisionTreeEdge;
-import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
@@ -56,17 +52,12 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-
 public class TreatmentCategorizationView implements ViewBuilder {
 
 	private final TreatmentCategorizationPresentation d_model;
-	private AddisWindow d_parent;
 
 	public TreatmentCategorizationView(final TreatmentCategorizationPresentation pm, final AddisWindow parent) {
 		d_model = pm;
-		d_parent = parent;
 	}
 
 	@Override
@@ -81,14 +72,14 @@ public class TreatmentCategorizationView implements ViewBuilder {
 
 		// ---------- Tree visualization ----------
 		builder = new SingleColumnPanelBuilder();
-		builder.addSeparator("Dose Decision Tree");
-		String doseUnit = d_model.getModel(TreatmentCategorization.PROPERTY_DOSE_UNIT).getValue().toString();
-		builder.add(new JLabel("Dose range values are in: " + doseUnit));
-		final VisualizationViewer<DecisionTreeNode, DecisionTreeEdge> treeView =
-				TreatmentCategorizationOverviewWizardStep.buildDecisionTreeView(d_model.getBean().getDecisionTree());
-		Dimension rightSideSize = d_parent.getRightPanel().getPreferredSize();
-		treeView.setPreferredSize(new Dimension(rightSideSize.width, rightSideSize.height - 300));
-		builder.add(new GraphZoomScrollPane(treeView));
+		FormLayout layout = new FormLayout("fill:pref:grow", "p, 3dlu, p, 3dlu, fill:pref:grow");
+		final PanelBuilder tree = new PanelBuilder(layout);
+		CellConstraints cc = new CellConstraints();
+		tree.addSeparator("Dose Decision Tree", cc.xy(1, 1));
+		tree.add(new JLabel("Dose range values are in: " + d_model.getModel(TreatmentCategorization.PROPERTY_DOSE_UNIT).getValue().toString()), cc.xy(1, 3));
+
+		tree.add(TreatmentCategorizationOverviewWizardStep.buildOverview(d_model.getBean().getDecisionTree()), cc.xy(1, 5));
+		builder.add(tree.getPanel());
 		tabbedPane.addTab("Decision tree", builder.getPanel());
 
 		return tabbedPane;
