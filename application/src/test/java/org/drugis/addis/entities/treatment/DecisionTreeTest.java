@@ -114,7 +114,7 @@ public class DecisionTreeTest {
 		assertEquals("Class Fixed", catz1.getDecisionTree().getLabel(catz1.getCategories().get(0)));
 
 		TreatmentCategorization catz2 = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugFluoxetine());
-		assertEquals("(Class Flexible AND Max Dose 0.00 ≤ x ≤ 20.00) OR (Class Fixed AND Quantity 0.00 ≤ x ≤ 20.00)",
+		assertEquals("(Class Fixed AND Quantity 0.00 ≤ x ≤ 20.00) OR (Class Flexible AND Max Dose 0.00 ≤ x ≤ 20.00)",
 				catz2.getDecisionTree().getLabel(catz2.getCategories().get(0)));
 
 	}
