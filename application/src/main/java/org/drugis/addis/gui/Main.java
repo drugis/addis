@@ -196,23 +196,22 @@ public class Main extends AbstractObservable {
 	private boolean loadDomainFromXMLFile(String fileName) {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			XmlFormatType loadedVersion;
 			try {
 				FileInputStream in = new FileInputStream(f);
-				loadedVersion = loadDomainFromInputStream(in);
+				d_xmlType = loadDomainFromInputStream(in);
 			} catch (Exception e) {
 				ErrorDialog.showDialog(e, "Error loading file", "Error loading data from \"" + fileName + "\"", false);
 				return false;
 			}
-			if (!loadedVersion.isValid()) {
+			if (!d_xmlType.isValid()) {
 				JOptionPane.showMessageDialog(s_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} else if (loadedVersion.isFuture()) {
+			} else if (d_xmlType.isFuture()) {
 				JOptionPane.showMessageDialog(s_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} else if (loadedVersion.isLegacy()) {
+			} else if (d_xmlType.isLegacy()) {
 				askToConvertToNew(fileName);
 				return true;
 			} else {
@@ -228,16 +227,16 @@ public class Main extends AbstractObservable {
 
 	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
 		BufferedInputStream fis = new BufferedInputStream(in);
-		d_xmlType = JAXBHandler.determineXmlType(fis);
-		if (!d_xmlType.isValid() || d_xmlType.isFuture()) {
-			return d_xmlType;
-		} else if (d_xmlType.isLegacy()) {
+		XmlFormatType xmlType = JAXBHandler.determineXmlType(fis);
+		if (!xmlType.isValid() || xmlType.isFuture()) {
+			return xmlType;
+		} else if (xmlType.isLegacy()) {
 			d_domainMgr.loadLegacyXMLDomain(fis);
 		} else {
-			d_domainMgr.loadXMLDomain(fis, d_xmlType.getVersion());
+			d_domainMgr.loadXMLDomain(fis, xmlType.getVersion());
 		}
 		attachDomainChangedModel();
-		return d_xmlType;
+		return xmlType;
 	}
 
 	private void attachDomainChangedModel() {
@@ -266,7 +265,7 @@ public class Main extends AbstractObservable {
 
 	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		loadDomainFromInputStream(fis);
+		d_xmlType = loadDomainFromInputStream(fis);
 	}
 
 	void newFileActions() {
