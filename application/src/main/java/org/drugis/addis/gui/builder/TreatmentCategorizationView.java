@@ -81,7 +81,6 @@ public class TreatmentCategorizationView implements ViewBuilder {
 		tree.add(TreatmentCategorizationOverviewWizardStep.buildOverview(d_model.getBean().getDecisionTree()), cc.xy(1, 5));
 		builder.add(tree.getPanel());
 		tabbedPane.addTab("Decision tree", builder.getPanel());
-
 		return tabbedPane;
 	}
 

@@ -91,9 +91,11 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 			case 1: return om.getDirection();
 			case 2: return om.getDescription();
 			case 3: return getUnitOfMeasurement(om);
+			default: {
+				Alternative a = d_br.getAlternatives().get(columnIndex - EXTRA_COLUMNS);
+				return d_br.getMeasurement(om, a);
+			}
 		}
-		Alternative a = d_br.getAlternatives().get(columnIndex - EXTRA_COLUMNS);
-		return d_br.getMeasurement(om, a);
 	}
 
 	private String getUnitOfMeasurement(OutcomeMeasure om) {
