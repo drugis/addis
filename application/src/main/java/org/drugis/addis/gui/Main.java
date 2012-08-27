@@ -82,6 +82,7 @@ public class Main extends AbstractObservable {
 	private String d_displayName = null;
 	private DomainChangedModel d_domainChanged;
 	private final boolean d_headless;
+	private XmlFormatType d_xmlType = null;
 
 	public Main(String[] args, boolean headless) {
 		d_headless = headless;
@@ -227,20 +228,20 @@ public class Main extends AbstractObservable {
 
 	private XmlFormatType loadDomainFromInputStream(InputStream in)	throws IOException {
 		BufferedInputStream fis = new BufferedInputStream(in);
-		XmlFormatType xmlType = JAXBHandler.determineXmlType(fis);
-		if (!xmlType.isValid() || xmlType.isFuture()) {
-			return xmlType;
-		} else if (xmlType.isLegacy()) {
+		d_xmlType = JAXBHandler.determineXmlType(fis);
+		if (!d_xmlType.isValid() || d_xmlType.isFuture()) {
+			return d_xmlType;
+		} else if (d_xmlType.isLegacy()) {
 			d_domainMgr.loadLegacyXMLDomain(fis);
 		} else {
-			d_domainMgr.loadXMLDomain(fis, xmlType.getVersion());
+			d_domainMgr.loadXMLDomain(fis, d_xmlType.getVersion());
 		}
 		attachDomainChangedModel();
-		return xmlType;
+		return d_xmlType;
 	}
 
 	private void attachDomainChangedModel() {
-		d_domainChanged = new DomainChangedModel(getDomain(), false);
+		d_domainChanged = new DomainChangedModel(getDomain(), d_xmlType != null ? d_xmlType.isPast() : false);
 	}
 
 	private void askToConvertToNew(String fileName) {
