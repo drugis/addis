@@ -48,31 +48,31 @@ public class BenefitRiskMeasurementTableModelTest {
 		d_brAnalysis = ExampleData.buildMetaBenefitRiskAnalysis();
 		d_pm = new BenefitRiskMeasurementTableModel<TreatmentDefinition>(d_brAnalysis);
 	}
-	
+
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_brAnalysis.getCriteria().size() + 1, d_pm.getColumnCount());
+		assertEquals(d_brAnalysis.getAlternatives().size() + BenefitRiskMeasurementTableModel.EXTRA_COLUMNS, d_pm.getColumnCount());
 	}
-	
+
 	@Test
 	public void testGetRowCount() {
 		assertEquals(d_brAnalysis.getAlternatives().size(), d_pm.getRowCount());
 	}
-	
+
 	@Test
-	public void testGetDrugNames() {
+	public void testGetAlternativeNames() {
 		for (int i = 0; i < d_brAnalysis.getAlternatives().size(); ++i)
-			assertEquals(d_brAnalysis.getAlternatives().get(i).getLabel(), d_pm.getValueAt(i, 0));
+			assertEquals(d_brAnalysis.getAlternatives().get(i).getLabel(), d_pm.getColumnName(i + BenefitRiskMeasurementTableModel.EXTRA_COLUMNS));
 	}
-	
+
 	@Test
 	public void testGetOutcomeNames() {
 		List<OutcomeMeasure> outcomeMeasures = d_brAnalysis.getCriteria();
 		for (int j=0; j<outcomeMeasures.size(); ++j) {
-			assertEquals(outcomeMeasures.get(j).toString(), d_pm.getColumnName(j+1));
+			assertEquals(outcomeMeasures.get(j).toString(), d_pm.getValueAt(j, 0));
 		}
 	}
-	
+
 	@Test
 	public void testGetValueAt() {
 		for (int i = 0; i < d_brAnalysis.getAlternatives().size(); ++i) {
@@ -80,7 +80,7 @@ public class BenefitRiskMeasurementTableModelTest {
 				TreatmentDefinition drug = d_brAnalysis.getAlternatives().get(i);
 				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
 				GaussianBase expected = (GaussianBase)d_brAnalysis.getMeasurement(om, drug);
-				GaussianBase actual = (GaussianBase) d_pm.getValueAt(i, j+1);
+				GaussianBase actual = (GaussianBase) d_pm.getValueAt(j, i + BenefitRiskMeasurementTableModel.EXTRA_COLUMNS);
 				assertEquals(expected.getMu(), actual.getMu(), 0.000001);
 				assertEquals(expected.getSigma(), actual.getSigma(), 0.000001);
 			}

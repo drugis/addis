@@ -40,7 +40,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
 
-	private static final int EXTRA_COLUMNS = 4;
+	public static final int EXTRA_COLUMNS = 4;
 	protected final BenefitRiskAnalysis<Alternative> d_br;
 
 	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra) {
