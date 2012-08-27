@@ -66,22 +66,22 @@ public abstract class AbstractTreatmentCategorizationWizardStep extends PanelWiz
 			public void contentsChanged(final ListDataEvent e) {}
 		};
 
-	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel, JDialog dialog) {
-		this(presentationModel, null, null, null, dialog);
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation pm, JDialog dialog) {
+		this(pm, null, null, null, dialog);
 	}
 
-	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel,
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation pm,
 			String name,
 			String summary, JDialog dialog) {
-		this(presentationModel, name, summary, null, dialog);
+		this(pm, name, summary, null, dialog);
 	}
 
-	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation presentationModel,
+	public AbstractTreatmentCategorizationWizardStep(TreatmentCategorizationWizardPresentation pm,
 			String name,
 			String summary,
 			Icon icon, JDialog dialog) {
 		super(name, summary, icon);
-		d_pm = presentationModel;
+		d_pm = pm;
 		d_dialog = dialog;
 		d_mainWindow = Main.getMainWindow();
 		d_domain = d_mainWindow.getDomain();
