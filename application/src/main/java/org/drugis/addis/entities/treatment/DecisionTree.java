@@ -29,7 +29,6 @@ package org.drugis.addis.entities.treatment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -149,11 +148,6 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 
 	public String getLabel(Category category) {
 		List<LeafNode> leafs = findLeafNodes(category);
-		Collections.sort(leafs, new Comparator<LeafNode>() {
-			public int compare(LeafNode o1, LeafNode o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
 		List<String> labels = new ArrayList<String>();
 		for (LeafNode leaf : leafs) {
 			labels.add(getLabel(leaf));

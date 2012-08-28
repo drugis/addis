@@ -336,7 +336,6 @@ public class Main extends AbstractObservable {
 		System.setProperty("sun.awt.exception.handler", ErrorDialogExceptionHandler.class.getName());
 
 		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
-			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				e.printStackTrace();
 				ErrorDialog.showDialog(e, "Unexpected error.");
@@ -344,7 +343,6 @@ public class Main extends AbstractObservable {
 		};
 
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
-			@Override
 			public void run() {
 				Main main = new Main(args, false);
 				main.startGUI();
