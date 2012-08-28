@@ -129,7 +129,6 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		final JComboBox treatmentSelect = AuxComponentFactory.createBoundComboBox(d_pm.getActivityOptions().toArray(), d_pm.getActivityModel());
 		final ListCellRenderer renderer = treatmentSelect.getRenderer();
 		treatmentSelect.setRenderer(new ListCellRenderer() {
-			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
 				if (value instanceof TreatmentActivity) {
