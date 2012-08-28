@@ -42,15 +42,15 @@ import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 
 public class DomainManager {
 	private Domain d_domain = new DomainImpl();
-	
+
 	public Domain getDomain() {
 		return d_domain;
 	}
-	
+
 	public void resetDomain() {
 		d_domain = new DomainImpl();
 	}
-	
+
 	/**
 	 * Replace the Domain by a new instance loaded from a XML stream (old format, .xml).
 	 * @param is Stream to read objects from.
@@ -66,7 +66,7 @@ public class DomainManager {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Replace the Domain by a new instance loaded from a XML stream (new format, .addis).
 	 * @param is XML stream to read objects from.

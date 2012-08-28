@@ -152,6 +152,7 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		for (LeafNode leaf : leafs) {
 			labels.add(getLabel(leaf));
 		}
+		Collections.sort(labels);
 		if(labels.size() < 2) {
 			return StringUtils.join(labels, ") OR (");
 
@@ -170,7 +171,7 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 			labels.add(getLabel(parent));
 		}
 		Collections.reverse(labels);
-		return  StringUtils.join(labels, " AND ");
+		return StringUtils.join(labels, " AND ");
 	}
 
 	private List<LeafNode> findLeafNodes(Category category) {

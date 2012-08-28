@@ -82,6 +82,7 @@ public class Main extends AbstractObservable {
 	private String d_displayName = null;
 	private DomainChangedModel d_domainChanged;
 	private final boolean d_headless;
+	private XmlFormatType d_xmlType = null;
 
 	public Main(String[] args, boolean headless) {
 		d_headless = headless;
@@ -195,23 +196,22 @@ public class Main extends AbstractObservable {
 	private boolean loadDomainFromXMLFile(String fileName) {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			XmlFormatType loadedVersion;
 			try {
 				FileInputStream in = new FileInputStream(f);
-				loadedVersion = loadDomainFromInputStream(in);
+				d_xmlType = loadDomainFromInputStream(in);
 			} catch (Exception e) {
 				ErrorDialog.showDialog(e, "Error loading file", "Error loading data from \"" + fileName + "\"", false);
 				return false;
 			}
-			if (!loadedVersion.isValid()) {
+			if (!d_xmlType.isValid()) {
 				JOptionPane.showMessageDialog(s_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} else if (loadedVersion.isFuture()) {
+			} else if (d_xmlType.isFuture()) {
 				JOptionPane.showMessageDialog(s_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} else if (loadedVersion.isLegacy()) {
+			} else if (d_xmlType.isLegacy()) {
 				askToConvertToNew(fileName);
 				return true;
 			} else {
@@ -240,7 +240,7 @@ public class Main extends AbstractObservable {
 	}
 
 	private void attachDomainChangedModel() {
-		d_domainChanged = new DomainChangedModel(getDomain(), false);
+		d_domainChanged = new DomainChangedModel(getDomain(), d_xmlType != null ? d_xmlType.isPast() : false);
 	}
 
 	private void askToConvertToNew(String fileName) {
@@ -265,7 +265,7 @@ public class Main extends AbstractObservable {
 
 	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		loadDomainFromInputStream(fis);
+		d_xmlType = loadDomainFromInputStream(fis);
 	}
 
 	void newFileActions() {
@@ -336,7 +336,6 @@ public class Main extends AbstractObservable {
 		System.setProperty("sun.awt.exception.handler", ErrorDialogExceptionHandler.class.getName());
 
 		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
-			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				e.printStackTrace();
 				ErrorDialog.showDialog(e, "Unexpected error.");
@@ -344,7 +343,6 @@ public class Main extends AbstractObservable {
 		};
 
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
-			@Override
 			public void run() {
 				Main main = new Main(args, false);
 				main.startGUI();

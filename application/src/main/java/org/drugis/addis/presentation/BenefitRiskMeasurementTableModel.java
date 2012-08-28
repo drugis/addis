@@ -28,15 +28,11 @@ package org.drugis.addis.presentation;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.drugis.addis.entities.CategoricalVariableType;
-import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.RateMeasurement;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.VariableType;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.Distribution;
@@ -44,7 +40,7 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 @SuppressWarnings("serial")
 public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extends AbstractTableModel {
 
-	private static final int EXTRA_COLUMNS = 4;
+	public static final int EXTRA_COLUMNS = 4;
 	protected final BenefitRiskAnalysis<Alternative> d_br;
 
 	public BenefitRiskMeasurementTableModel(BenefitRiskAnalysis<Alternative> bra) {
@@ -95,9 +91,11 @@ public class BenefitRiskMeasurementTableModel<Alternative extends Entity> extend
 			case 1: return om.getDirection();
 			case 2: return om.getDescription();
 			case 3: return getUnitOfMeasurement(om);
+			default: {
+				Alternative a = d_br.getAlternatives().get(columnIndex - EXTRA_COLUMNS);
+				return d_br.getMeasurement(om, a);
+			}
 		}
-		Alternative a = d_br.getAlternatives().get(columnIndex - EXTRA_COLUMNS);
-		return d_br.getMeasurement(om, a);
 	}
 
 	private String getUnitOfMeasurement(OutcomeMeasure om) {
