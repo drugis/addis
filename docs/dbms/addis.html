@@ -1,0 +1,3136 @@
+<!-- $Header: /cvsroot/autodoc/autodoc/html.tmpl,v 1.4 2006/05/16 19:01:27 rbt Exp $ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+  <head>
+    <title>Index for addis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+	BODY {
+		color:	#000000;
+		background-color: #FFFFFF;
+		font-family: Helvetica, sans-serif;
+	}
+
+	P {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+
+	P.w3ref {
+		font-size: 8pt;
+		font-style: italic;
+		text-align: right;
+	}
+
+	P.detail {
+		font-size: 10pt;
+	}
+
+	.error {
+		color: #FFFFFF;
+		background-color: #FF0000;
+	}
+
+	H1, H2, H3, H4, H5, H6 {
+	}
+
+	OL {
+		list-style-type: upper-alpha;
+	}
+
+	UL.topic {
+		list-style-type: upper-alpha;
+	}
+
+	LI.topic {
+		font-weight : bold;
+	}
+
+	HR {
+		color: #00FF00;
+		background-color: #808080;
+	}
+
+	TABLE {
+		border-width: medium;
+		padding: 3px;
+		background-color: #000000;
+		width: 90%;
+	}
+
+	CAPTION {
+		text-transform: capitalize;
+		font-weight : bold;
+		font-size: 14pt;
+	}
+
+	TH {
+		color: #FFFFFF;
+		background-color: #000000;
+		text-align: left;
+	}
+
+	TR {
+		color: #000000;
+		background-color: #000000;
+		vertical-align: top;
+	}
+
+	TR.tr0 {
+		background-color: #F0F0F0;
+	}
+
+	TR.tr1 {
+		background-color: #D8D8D8;
+	}
+
+	TD {
+		font-size: 12pt;
+	}
+
+	TD.col0 {
+		font-weight : bold;
+		width: 20%;
+	}
+
+	TD.col1 {
+		font-style: italic;
+		width: 15%;
+	}
+
+	TD.col2 {
+		font-size: 12px;
+	}
+    </style>
+    <link rel="stylesheet" type="text/css" media="all" href="all.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="screen.css">
+    <link rel="stylesheet" type="text/css" media="print" href="print.css">
+    <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+  </head>
+  <body>
+
+    <!-- Primary Index -->
+	<p><br><br>Dumped on 2012-08-29</p>
+<h1><a name="index">Index of database - addis</a></h1>
+<ul>
+    
+    <li><a name="public.schema">public</a></li><ul>
+    	<li><a href="#public.table.categorical-study-measurements">categorical_study_measurements</a></li><li><a href="#public.table.categorical-variables">categorical_variables</a></li><li><a href="#public.table.code-systems">code_systems</a></li><li><a href="#public.table.continuous-study-measurements">continuous_study_measurements</a></li><li><a href="#public.table.continuous-variables">continuous_variables</a></li><li><a href="#public.table.drugs">drugs</a></li><li><a href="#public.table.indications">indications</a></li><li><a href="#public.table.rate-study-measurements">rate_study_measurements</a></li><li><a href="#public.table.studies">studies</a></li><li><a href="#public.table.study-activities">study_activities</a></li><li><a href="#public.table.study-activity-drugs">study_activity_drugs</a></li><li><a href="#public.table.study-activity-usages">study_activity_usages</a></li><li><a href="#public.table.study-arms">study_arms</a></li><li><a href="#public.table.study-epochs">study_epochs</a></li><li><a href="#public.table.study-measurements">study_measurements</a></li><li><a href="#public.table.study-objectives">study_objectives</a></li><li><a href="#public.table.study-outcome-measures">study_outcome_measures</a></li><li><a href="#public.table.study-references">study_references</a></li><li><a href="#public.table.units">units</a></li><li><a href="#public.table.variables">variables</a></li>
+  	
+    </ul>
+    
+</ul>
+
+    <!-- Schema Creation -->
+    <!-- publicpublic -->
+
+		
+		
+        <hr>
+		<h2>Table:
+			<a name="public.table.categorical-study-measurements">categorical_study_measurements</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>categorical_study_measurements Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-measurements">study_measurements.study#1</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-measurements">study_measurements.measurement_nr#1</a>
+                  
+                
+                </td>
+            	<td>measurement_nr</td>
+            	<td>smallint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>category</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>rate</td>
+            	<td>smallint</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.categorical-variables">categorical_variables</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>categorical_variables Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                
+                  
+                  <a href="#public.table.variables">variables.name</a>
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                
+                </td>
+            	<td>category</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+
+				
+				
+				</i>
+				<br><br>FIXME: I probably have a lot of categories
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.code-systems">code_systems</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>code_systems Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>code_system</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>code_system_name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.indications">indications</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.continuous-study-measurements">continuous_study_measurements</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>continuous_study_measurements Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-measurements">study_measurements.study#1</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-measurements">study_measurements.measurement_nr#1</a>
+                  
+                
+                </td>
+            	<td>measurement_nr</td>
+            	<td>smallint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>mean</td>
+            	<td>double precision</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>std_dev</td>
+            	<td>double precision</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>sample_size</td>
+            	<td>bigint</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.continuous-variables">continuous_variables</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>continuous_variables Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.variables">variables.name</a>
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>measurement_description</td>
+            	<td>text</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.units">units.ucum_code</a>
+                  
+                
+                </td>
+            	<td>measurement_unit</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.drugs">drugs</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>drugs Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>atc_code</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-drugs">study_activity_drugs</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.indications">indications</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>indications Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>code</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.code-systems">code_systems.code_system</a>
+                  
+                
+                </td>
+            	<td>code_system</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.studies">studies</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+       codeCodeSystem code, code_system
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.rate-study-measurements">rate_study_measurements</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>rate_study_measurements Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-measurements">study_measurements.study#1</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-measurements">study_measurements.measurement_nr#1</a>
+                  
+                
+                </td>
+            	<td>measurement_nr</td>
+            	<td>smallint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>rate</td>
+            	<td>smallint</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>sample_size</td>
+            	<td>smallint</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.studies">studies</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>studies Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                  <a href="#public.table.indications">indications.name</a>
+                  
+                
+                </td>
+            	<td>indication</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>title</td>
+            	<td>text</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>allocation_type</td>
+            	<td>allocationvaluetype</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>blinding_type</td>
+            	<td>blindingvaluetype</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>number_of_centers</td>
+            	<td>bigint</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>start_date</td>
+            	<td>date</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>end_date</td>
+            	<td>date</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>status</td>
+            	<td>studystatustype</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>inclusion</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>exclusion</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>source</td>
+            	<td>studysourcetype</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>created_at</td>
+            	<td>date</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.study-activities">study_activities</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-usages">study_activity_usages</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-arms">study_arms</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-epochs">study_epochs</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-measurements">study_measurements</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-objectives">study_objectives</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-outcome-measures">study_outcome_measures</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-references">study_references</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-activities">study_activities</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_activities Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>activity_category</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-drugs">study_activity_drugs</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-usages">study_activity_usages</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-activity-drugs">study_activity_drugs</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_activity_drugs Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-activities">study_activities.study#1</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-activities">study_activities.name#1</a>
+                  
+                
+                </td>
+            	<td>activity</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.drugs">drugs.name</a>
+                  
+                
+                </td>
+            	<td>drug</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>min_dose</td>
+            	<td>double precision</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>max_dose</td>
+            	<td>double precision</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>per_time</td>
+            	<td>interval</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.units">units.ucum_code</a>
+                  
+                
+                </td>
+            	<td>unit</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-activity-usages">study_activity_usages</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_activity_usages Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-arms">study_arms.study#1</a>
+                  
+                
+                  
+                  <a href="#public.table.study-epochs">study_epochs.study#2</a>
+                  
+                
+                  
+                  <a href="#public.table.study-activities">study_activities.study#3</a>
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+					
+
+					
+				
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-arms">study_arms.name#1</a>
+                  
+                
+                </td>
+            	<td>arm</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-epochs">study_epochs.name#2</a>
+                  
+                
+                </td>
+            	<td>epoch</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                  <a href="#public.table.study-activities">study_activities.name#3</a>
+                  
+                
+                </td>
+            	<td>activity</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-arms">study_arms</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_arms Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>arm_size</td>
+            	<td>bigint</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-usages">study_activity_usages</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-measurements">study_measurements</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-epochs">study_epochs</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_epochs Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#2
+                    
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#2
+                    
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                
+                </td>
+            	<td>epoch_nr</td>
+            	<td>bigint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#2
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>duration</td>
+            	<td>interval</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-usages">study_activity_usages</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-outcome-measures">study_outcome_measures</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-measurements">study_measurements</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_measurements Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.study-arms">study_arms.study#1</a>
+                  
+                
+                  
+                  <a href="#public.table.study-outcome-measures">study_outcome_measures.study#2</a>
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>measurement_nr</td>
+            	<td>smallint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.study-outcome-measures">study_outcome_measures.outcome_measure_nr#2</a>
+                  
+                
+                </td>
+            	<td>outcome_measure_nr</td>
+            	<td>bigint</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                  <a href="#public.table.study-arms">study_arms.name#1</a>
+                  
+                
+                </td>
+            	<td>arm</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>type</td>
+            	<td>variablechildtype</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>how_long</td>
+            	<td>interval</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>relative_to</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.categorical-study-measurements">categorical_study_measurements</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.continuous-study-measurements">continuous_study_measurements</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.rate-study-measurements">rate_study_measurements</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-objectives">study_objectives</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_objectives Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>objective_nr</td>
+            	<td>bigint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>objective</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>primary</td>
+            	<td>boolean</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+       objectives objective_nr, objective
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-outcome-measures">study_outcome_measures</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_outcome_measures Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                  
+                  <a href="#public.table.study-epochs">study_epochs.study#1</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>outcome_measure_nr</td>
+            	<td>bigint</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>primary</td>
+            	<td>boolean</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                  <a href="#public.table.variables">variables.name</a>
+                  
+                
+                </td>
+            	<td>variable</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>duration</td>
+            	<td>interval</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>relative_to</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.study-epochs">study_epochs.name#1</a>
+                  
+                
+                </td>
+            	<td>epoch</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.study-measurements">study_measurements</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.study-references">study_references</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>study_references Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.studies">studies.name</a>
+                  
+                
+                </td>
+            	<td>study</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>pubmed_id</td>
+            	<td>bigint</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.units">units</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>units Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>ucum_code</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				<br><br>API link to UCUM system
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.continuous-variables">continuous_variables</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-activity-drugs">study_activity_drugs</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.variables">variables</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>variables Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>description</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>variable_type</td>
+            	<td>character varying(255)</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>direction</td>
+            	<td>directiontype</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>child_type</td>
+            	<td>variablechildtype</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.categorical-variables">categorical_variables</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.continuous-variables">continuous_variables</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-outcome-measures">study_outcome_measures</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+
+	<!-- We've gone through the table structure, now lets take a look at user functions -->
+	
+
+
+<p class="w3ref">Generated by <a href="http://www.rbt.ca/autodoc/">PostgreSQL Autodoc</a></p>
+<p class="w3ref"><a href="http://validator.w3.org/check/referer">W3C HTML 4.01 Strict</a></p>
+</body></html>
