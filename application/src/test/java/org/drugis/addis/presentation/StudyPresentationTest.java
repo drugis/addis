@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@ public class StudyPresentationTest {
 		StudyCharacteristicHolder model = d_model.getCharacteristicModel(DerivedStudyCharacteristic.DOSING);
 		PropertyChangeListener mock = JUnitUtil.mockListener(model, "value", null, DerivedStudyCharacteristic.Dosing.FLEXIBLE);
 		model.addPropertyChangeListener(mock);
-		d_study.createAndAddArm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), DoseUnit.MILLIGRAMS_A_DAY));
+		d_study.createAndAddArm("A", 0, null, new FlexibleDose(new Interval<Double>(1d,10d), DoseUnit.createMilliGramsPerDay()));
 		
 		verify(mock);
 		assertEquals(DerivedStudyCharacteristic.Dosing.FLEXIBLE, model.getValue());

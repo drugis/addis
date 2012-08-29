@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ public class StudyActivityTest {
 		d_epoch = new Epoch("Main phase", DatatypeFactory.newInstance().newDuration("PT5H"));
 		d_arm = new Arm("Group", 12);
 		d_fluoxetine = new Drug("Fluoxetine", null);
-		Activity treatment = new TreatmentActivity(new DrugTreatment(d_fluoxetine, new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY)));
+		Activity treatment = new TreatmentActivity(new DrugTreatment(d_fluoxetine, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay())));
 		d_main = new StudyActivity("treatment", treatment);
 	}
 
@@ -122,7 +122,7 @@ public class StudyActivityTest {
 	@Test
 	public void testDependencies() {
 		assertEquals(Collections.emptySet(), d_randomization.getDependencies());
-		assertEquals(new HashSet<Entity>(Arrays.asList(d_fluoxetine, DoseUnit.MILLIGRAMS_A_DAY.getUnit())), d_main.getDependencies());
+		assertEquals(new HashSet<Entity>(Arrays.asList(d_fluoxetine, DoseUnit.createMilliGramsPerDay().getUnit())), d_main.getDependencies());
 	}
 	
 	@Test
@@ -159,7 +159,7 @@ public class StudyActivityTest {
 		assertFalse(d_undefined.isComplete());
 		assertTrue(d_randomization.isComplete());
 		assertTrue(d_main.isComplete());
-		d_main.setActivity(new TreatmentActivity(new DrugTreatment(null, new FixedDose(10.0, DoseUnit.MILLIGRAMS_A_DAY))));
+		d_main.setActivity(new TreatmentActivity(new DrugTreatment(null, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()))));
 		assertFalse(d_main.isComplete());
 		d_main.setActivity(new TreatmentActivity(new DrugTreatment(d_fluoxetine, null)));		
 		assertFalse(d_main.isComplete());

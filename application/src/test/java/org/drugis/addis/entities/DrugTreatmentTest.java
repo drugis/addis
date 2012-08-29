@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,18 +34,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DrugTreatmentTest {
-	
+
 	private DrugTreatment d_pg;
 	private DrugTreatment d_orig;
 	private DrugTreatment d_clone;
+	private DoseUnit	d_mgDay;
 
 	@Before
 	public void setUp() {
+		d_mgDay = DoseUnit.createMilliGramsPerDay();
 		d_pg = new DrugTreatment(null, null);
-		d_orig = new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY));
+		d_orig = new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, d_mgDay));
 		d_clone = d_orig.clone();
 	}
-	
+
 	@Test
 	public void testDescription() {
 		assertEquals("Fluoxetine 12.0 mg/day", d_orig.getLabel());
@@ -60,22 +62,22 @@ public class DrugTreatmentTest {
 	public void testSetDrug() {
 		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DRUG, null, new Drug("D", "atc"));
 	}
-	
+
 	@Test
 	public void testSetDose() {
-		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DOSE, null, new FixedDose(1.0, DoseUnit.MILLIGRAMS_A_DAY));
+		JUnitUtil.testSetter(d_pg, DrugTreatment.PROPERTY_DOSE, null, new FixedDose(1.0, DoseUnit.createMilliGramsPerDay()));
 	}
-	
+
 	@Test
 	public void testCloneReturnsEqualEntity() {
 		assertEquals(d_orig, d_clone);
 	}
-	
+
 	@Test
 	public void testCloneReturnsDistinctObject() {
 		assertFalse(d_orig == d_clone);
 	}
-	
+
 	@Test
 	public void testCloneReturnsDistinctDose() {
 		assertFalse(d_orig.getDose() == d_clone.getDose());
@@ -84,13 +86,13 @@ public class DrugTreatmentTest {
 	@Test
 	public void testEquals() {
 		assertEquals(new DrugTreatment(null, null), d_pg);
-		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)), d_orig);
+		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, d_mgDay)), d_orig);
 		JUnitUtil.assertNotEquals(new DrugTreatment(null, null), d_orig);
 		JUnitUtil.assertNotEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), null), d_orig);
-		JUnitUtil.assertNotEquals(new DrugTreatment(null, new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)), d_orig);
-		
+		JUnitUtil.assertNotEquals(new DrugTreatment(null, new FixedDose(12.0, d_mgDay)), d_orig);
+
 		assertEquals(new DrugTreatment(null, null).hashCode(), d_pg.hashCode());
-		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, DoseUnit.MILLIGRAMS_A_DAY)).hashCode(), d_orig.hashCode());
+		assertEquals(new DrugTreatment(new Drug("Fluoxetine", "N06AB12"), new FixedDose(12.0, d_mgDay)).hashCode(), d_orig.hashCode());
 	}
 
 }

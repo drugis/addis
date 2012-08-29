@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,15 @@ package org.drugis.addis.entities.treatment;
 
 import static org.junit.Assert.assertEquals;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.FixedDose;
 import org.junit.Test;
 
 public class DecisionTreeTest {
-	
+
 	private final TreatmentCategorization d_tc = TreatmentCategorization.createDefault();
-	
+
 	@Test
 	public void testTrivialDecision() {
 		final DecisionTreeNode root = new LeafNode();
@@ -64,7 +65,7 @@ public class DecisionTreeTest {
 
 	@Test
 	public void testMultiLevelDecision() {
-		final DoseUnit unit = DoseUnit.MILLIGRAMS_A_DAY;
+		final DoseUnit unit = DoseUnit.createMilliGramsPerDay();
 
 		final DecisionTreeNode root = new ChoiceNode(Object.class, "class");
 		final DecisionTree tree = new DecisionTree(root);
@@ -106,6 +107,17 @@ public class DecisionTreeTest {
 		tree.replaceChild(edge, new LeafNode(new Category(d_tc, "int")));
 		assertEquals("int", tree.decide(42).getName());
 	}
-	
-	
+
+	@Test
+	public void testToString() {
+		TreatmentCategorization catz1 = ExampleData.buildCategorizationFixedDose(ExampleData.buildDrugFluoxetine());
+		assertEquals("Class Fixed", catz1.getDecisionTree().getLabel(catz1.getCategories().get(0)));
+
+		TreatmentCategorization catz2 = ExampleData.buildCategorizationUpto20mg(ExampleData.buildDrugFluoxetine());
+		assertEquals("(Class Fixed AND Quantity 0.00 ≤ x ≤ 20.00) OR (Class Flexible AND Max Dose 0.00 ≤ x ≤ 20.00)",
+				catz2.getDecisionTree().getLabel(catz2.getCategories().get(0)));
+
+	}
+
+
 }

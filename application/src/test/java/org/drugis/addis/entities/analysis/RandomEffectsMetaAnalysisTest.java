@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testCategoryMatching() {
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.MILLIGRAMS_A_DAY);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.createMilliGramsPerDay());
 		Category fluoxCat = new Category(catz, "Include");
 		catz.addCategory(fluoxCat);
 		DecisionTree tree = catz.getDecisionTree();
@@ -230,7 +230,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		HashSet<Entity> deps = new HashSet<Entity>();
 		deps.add(d_fluox);
 		deps.add(d_sertr);
-		deps.add(DoseUnit.MILLIGRAMS_A_DAY.getUnit());
+		deps.add(DoseUnit.createMilliGramsPerDay().getUnit());
 		deps.add(d_ind);
 		deps.add(d_rateEndpoint);
 		deps.addAll(Arrays.asList(new Study[]{d_bennie, d_boyer, d_fava, d_newhouse, d_sechter}));

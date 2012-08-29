@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,24 +82,25 @@ public class Main extends AbstractObservable {
 	private String d_displayName = null;
 	private DomainChangedModel d_domainChanged;
 	private final boolean d_headless;
+	private XmlFormatType d_xmlType = null;
 
 	public Main(String[] args, boolean headless) {
 		d_headless = headless;
-		
+
 		if (!d_headless) {
 			GUIHelper.initializeLookAndFeel();
 			UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 			ToolTipManager.sharedInstance().setInitialDelay(0);
-	
+
 			GUIFactory.configureJFreeChartLookAndFeel();
 		}
-		
+
 		initializeDomain();
-		
+
 		if (args.length > 0) {
 			d_curFilename = args[0];
 		}
-		
+
 		addTaskFailureListener();
 	}
 
@@ -108,7 +109,7 @@ public class Main extends AbstractObservable {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getPropertyName().equals(ThreadHandler.PROPERTY_FAILED_TASK)) {
 					final TaskFailedEvent taskEvent = (TaskFailedEvent) event.getNewValue();
-					
+
 					Runnable r = new Runnable() {
 						public void run() {
 							Throwable cause = taskEvent.getCause();
@@ -124,20 +125,20 @@ public class Main extends AbstractObservable {
 	public static void bindPrintScreen(Container container) {
 		final JComponent content = (JComponent) container;
 		content.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(PRINT_SCREEN), "printWindow");
-		content.getActionMap().put("printWindow", 
-		new AbstractAction("printWindow") { 
+		content.getActionMap().put("printWindow",
+		new AbstractAction("printWindow") {
 			public void actionPerformed(ActionEvent evt) {
-				try { 		
+				try {
 					ImageExporter.writeImage(content, content, content.getWidth(), content.getHeight());
 
-				} 
+				}
 				catch (Exception e) {
 					throw new RuntimeException("Error writing image: " + e.getMessage(), e);
 				}
-			} 
+			}
 		});
 	}
-	
+
 	protected void showWelcome() {
 		final WelcomeDialog welcome = new WelcomeDialog(this);
 		GUIHelper.centerWindow(welcome);
@@ -156,11 +157,11 @@ public class Main extends AbstractObservable {
 
 	private void quit() {
 		if (s_window != null) {
-			s_window.dispose(); 
+			s_window.dispose();
 		}
 		System.exit(0);
 	}
-	
+
 
 	private void saveDomainToXMLFile(String fileName) throws IOException {
 		File f = new File(fileName);
@@ -176,7 +177,7 @@ public class Main extends AbstractObservable {
 		d_domainMgr = new DomainManager();
 		attachDomainChangedModel();
 	}
-	
+
 	public void loadExampleDomain() {
 		try {
 			loadDomainFromXMLResource(EXAMPLE_XML);
@@ -191,27 +192,26 @@ public class Main extends AbstractObservable {
 	public Domain getDomain() {
 		return d_domainMgr.getDomain();
 	}
-	
+
 	private boolean loadDomainFromXMLFile(String fileName) {
 		File f = new File(fileName);
 		if (f.exists() && f.isFile()) {
-			XmlFormatType loadedVersion;
 			try {
 				FileInputStream in = new FileInputStream(f);
-				loadedVersion = loadDomainFromInputStream(in);
+				d_xmlType = loadDomainFromInputStream(in);
 			} catch (Exception e) {
 				ErrorDialog.showDialog(e, "Error loading file", "Error loading data from \"" + fileName + "\"", false);
 				return false;
 			}
-			if (!loadedVersion.isValid()) {
+			if (!d_xmlType.isValid()) {
 				JOptionPane.showMessageDialog(s_window, "The file you are attempting to load is not formatted as a valid ADDIS XML file.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} else if (loadedVersion.isFuture()) {
+			} else if (d_xmlType.isFuture()) {
 				JOptionPane.showMessageDialog(s_window, "The XML file was created with a newer version of ADDIS than you are using. Please download the new version to read it.",
 						"Error loading file", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} else if (loadedVersion.isLegacy()) {
+			} else if (d_xmlType.isLegacy()) {
 				askToConvertToNew(fileName);
 				return true;
 			} else {
@@ -240,19 +240,19 @@ public class Main extends AbstractObservable {
 	}
 
 	private void attachDomainChangedModel() {
-		d_domainChanged = new DomainChangedModel(getDomain(), false);
+		d_domainChanged = new DomainChangedModel(getDomain(), d_xmlType != null ? d_xmlType.isPast() : false);
 	}
 
 	private void askToConvertToNew(String fileName) {
-		int response = JOptionPane.showConfirmDialog(s_window, 
-				"The data format for ADDIS has changed.\n\nWould you like to save this file in the new file format (.addis)?", 
+		int response = JOptionPane.showConfirmDialog(s_window,
+				"The data format for ADDIS has changed.\n\nWould you like to save this file in the new file format (.addis)?",
 				"Save in new format?", JOptionPane.YES_NO_OPTION);
-		
+
 		if (response == JOptionPane.OK_OPTION) {
 			if(fileName.endsWith(".xml")) {
 				fileName = fileName.replace(".xml", ".addis");
 			} else {
-				fileName += ".addis"; 
+				fileName += ".addis";
 			}
 			saveDomainToFile(fileName);
 			setFileNameAndReset(fileName);
@@ -265,7 +265,7 @@ public class Main extends AbstractObservable {
 
 	private void loadDomainFromXMLResource(String fileName) throws IOException, ClassNotFoundException {
 		InputStream fis = Main.class.getResourceAsStream("/org/drugis/addis/" + fileName);
-		loadDomainFromInputStream(fis);
+		d_xmlType = loadDomainFromInputStream(fis);
 	}
 
 	void newFileActions() {
@@ -277,7 +277,7 @@ public class Main extends AbstractObservable {
 	public void newDomain() {
 		d_domainMgr.resetDomain(); // Create an empty domain.
 		setCurFilename(null);
-		setDisplayName(DISPLAY_NEW);		
+		setDisplayName(DISPLAY_NEW);
 		setDataChanged(false);
 	}
 
@@ -289,7 +289,6 @@ public class Main extends AbstractObservable {
 
 	private void disposeMainWindow() {
 		if (s_window != null) {
-			s_window.setVisible(false);
 			s_window.dispose();
 			s_window = null;
 		}
@@ -315,7 +314,7 @@ public class Main extends AbstractObservable {
 		}
 		return false;
 	}
-	
+
 	public void saveDomainToFile(String path) {
 		try {
 			saveDomainToXMLFile(path);
@@ -335,17 +334,15 @@ public class Main extends AbstractObservable {
 
 	public static void main(final String[] args) {
 		System.setProperty("sun.awt.exception.handler", ErrorDialogExceptionHandler.class.getName());
-		
+
 		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
-			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				e.printStackTrace();
 				ErrorDialog.showDialog(e, "Unexpected error.");
 			}
 		};
-		
+
 		Thread mainThread = new Thread(threadGroup, "Main thread") {
-			@Override
 			public void run() {
 				Main main = new Main(args, false);
 				main.startGUI();
@@ -353,7 +350,7 @@ public class Main extends AbstractObservable {
 		};
 		mainThread.start();
 	}
- 
+
 	private void startGUI() {
 		if (d_curFilename == null) {
 			showWelcome();
@@ -398,13 +395,13 @@ public class Main extends AbstractObservable {
 	}
 
 	/**
-	 * Beware of the singleton! 
-	 * @return returns the only AddisWindow currently in existence for this process 
+	 * Beware of the singleton!
+	 * @return returns the only AddisWindow currently in existence for this process
 	 */
-	public static AddisWindow getMainWindow() { 
+	public static AddisWindow getMainWindow() {
 		return s_window;
 	}
-	
+
 	public DomainChangedModel getDomainChangedModel() {
 		return d_domainChanged;
 	}
@@ -418,5 +415,5 @@ public class Main extends AbstractObservable {
 	public String getDisplayName() {
 		return d_displayName;
 	}
-	
+
 }

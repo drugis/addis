@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package org.drugis.addis.presentation.wizard;
 
 import static org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation.findLeafNode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -46,14 +47,15 @@ import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.FlexibleDose;
+import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.UnknownDose;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.DecisionTreeEdge;
 import org.drugis.addis.entities.treatment.DecisionTreeNode;
 import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
-import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.drugis.addis.entities.treatment.LeafNode;
 import org.drugis.addis.entities.treatment.RangeEdge;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +71,7 @@ public class TreatmentCategorizationWizardPresentationTest {
 
 	@Before
 	public void setUp() {
-		d_bean = TreatmentCategorization.createDefault("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.MILLIGRAMS_A_DAY);
+		d_bean = TreatmentCategorization.createDefault("HD/LD", ExampleData.buildDrugCandesartan(), DoseUnit.createMilliGramsPerDay());
 		d_domain = new DomainImpl();
 		ExampleData.initDefaultData(d_domain);
 		d_pm = new TreatmentCategorizationWizardPresentation(d_bean, d_domain);
@@ -319,5 +321,16 @@ public class TreatmentCategorizationWizardPresentationTest {
 	private static void assertNodeHasCategory(DecisionTreeNode node, Category category) {
 		assertTrue(node instanceof LeafNode);
 		assertEquals(category, ((LeafNode)node).getCategory());
+	}
+	
+	/*
+	 * Regression test for bug #566 
+	 */
+	@Test
+	public void testDoNotReuseDefaultDose() {
+		TreatmentCategorizationWizardPresentation pm1 = new TreatmentCategorizationWizardPresentation(TreatmentCategorization.createDefault(), d_domain);
+		TreatmentCategorizationWizardPresentation pm2 = new TreatmentCategorizationWizardPresentation(TreatmentCategorization.createDefault(), d_domain);
+		pm1.getDoseUnit().setScaleModifier(ScaleModifier.MEGA);
+		assertFalse(pm2.getDoseUnit().equals(pm1.getDoseUnit()));
 	}
 }

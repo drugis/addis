@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ public class DoseUnitTest {
 	public void setUp() {
 		d_gram = new Unit("gram", "g");
 		d_meter = new Unit("meter", "m");
-		d_mgDay = DoseUnit.MILLIGRAMS_A_DAY.clone();
+		d_mgDay = DoseUnit.createMilliGramsPerDay().clone();
 		d_kgHr = ExampleData.KILOGRAMS_PER_HOUR.clone();
 	}
 	
@@ -100,10 +100,10 @@ public class DoseUnitTest {
 	
 	@Test
 	public void testConvert() { 
-		assertEquals(0.0001, DoseUnit.convert(2400, DoseUnit.MILLIGRAMS_A_DAY, ExampleData.KILOGRAMS_PER_HOUR), Precision.EPSILON);
+		assertEquals(0.0001, DoseUnit.convert(2400, DoseUnit.createMilliGramsPerDay(), ExampleData.KILOGRAMS_PER_HOUR), Precision.EPSILON);
 		
 		DoseUnit gHour = new DoseUnit(new Unit("gram", "g"), ScaleModifier.UNIT, EntityUtil.createDuration("PT1H"));
-		assertEquals(240000, DoseUnit.convert(10, gHour, DoseUnit.MILLIGRAMS_A_DAY), Precision.EPSILON);
+		assertEquals(240000, DoseUnit.convert(10, gHour, DoseUnit.createMilliGramsPerDay()), Precision.EPSILON);
 	}
 	
 	@Test

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,11 @@ package org.drugis.addis.entities.treatment;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.drugis.common.EqualsUtil;
 
 import edu.uci.ics.jung.graph.DelegateTree;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -45,7 +50,7 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		public ObservableDirectedGraph(final Graph<V, E> delegate) {
 			super(delegate);
 		}
-		
+
 		@Override
 		public Collection<V> getSuccessors(V vertex) {
 			return new ArrayList<V>(super.getSuccessors(vertex));
@@ -105,7 +110,7 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		removeChild(getEdgeTarget(edge));
 		addChild(edge, parent, newChild);
 	}
-	
+
 	public boolean equivalent(DecisionTree obj) {
 		return equivalent(getRoot(), obj.getRoot(), this, obj);
 	}
@@ -122,11 +127,11 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 				} else {
 					equivalent = false;
 				}
-				
+
 				if (!equivalent) {
 					break;
 				}
-			} 
+			}
 		}
 		return equivalent;
 	}
@@ -139,5 +144,44 @@ public class DecisionTree extends DelegateTree<DecisionTreeNode, DecisionTreeEdg
 		}
 		return null;
 	}
-	
+
+
+	public String getLabel(Category category) {
+		List<LeafNode> leafs = findLeafNodes(category);
+		List<String> labels = new ArrayList<String>();
+		for (LeafNode leaf : leafs) {
+			labels.add(getLabel(leaf));
+		}
+		Collections.sort(labels);
+		if(labels.size() < 2) {
+			return StringUtils.join(labels, ") OR (");
+
+		} else {
+			return "(" + StringUtils.join(labels, ") OR (") + ")";
+		}
+	}
+
+	private String getLabel(DecisionTreeNode leaf) {
+		List<String> labels = new ArrayList<String>();
+
+		DecisionTreeEdge parentEdge = getParentEdge(leaf);
+		DecisionTreeNode parent = getParent(leaf);
+		labels.add(parent + " " + parentEdge);
+		if(!isRoot(parent)) {
+			labels.add(getLabel(parent));
+		}
+		Collections.reverse(labels);
+		return StringUtils.join(labels, " AND ");
+	}
+
+	private List<LeafNode> findLeafNodes(Category category) {
+		List<LeafNode> leafs = new ArrayList<LeafNode>();
+		for (DecisionTreeNode node : getVertices()) {
+			if (node instanceof LeafNode) {
+				LeafNode leafNode = (LeafNode) node;
+				if (EqualsUtil.equal(leafNode.getCategory(), category)) leafs.add(leafNode);
+			}
+		}
+		return leafs;
+	}
 }

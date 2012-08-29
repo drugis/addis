@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,15 +42,15 @@ import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 
 public class DomainManager {
 	private Domain d_domain = new DomainImpl();
-	
+
 	public Domain getDomain() {
 		return d_domain;
 	}
-	
+
 	public void resetDomain() {
 		d_domain = new DomainImpl();
 	}
-	
+
 	/**
 	 * Replace the Domain by a new instance loaded from a XML stream (old format, .xml).
 	 * @param is Stream to read objects from.
@@ -66,7 +66,7 @@ public class DomainManager {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Replace the Domain by a new instance loaded from a XML stream (new format, .addis).
 	 * @param is XML stream to read objects from.

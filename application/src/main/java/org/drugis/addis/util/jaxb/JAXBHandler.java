@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class JAXBHandler {
 		public static final int INVALID = -1;
 		public static final int LEGACY_VERSION = 0;
 		public static final int CURRENT_VERSION = currentSchemaVersion();
-		
+
 		private final int d_version;
 
 		XmlFormatType(int version) {
@@ -60,20 +60,24 @@ public class JAXBHandler {
 		public int getVersion() {
 			return d_version;
 		}
-		
+
 		public boolean isLegacy() {
 			return d_version == LEGACY_VERSION;
 		}
-		
+
+		public boolean isPast() {
+			return d_version < CURRENT_VERSION;
+		}
+
 		public boolean isFuture() {
 			return d_version > CURRENT_VERSION;
 		}
-		
+
 		public boolean isValid() {
 			return d_version > INVALID;
 		}
 	}
-	
+
 	public static int currentSchemaVersion() {
 		try {
 			InputStream is = Domain.class.getResourceAsStream("current-schema-version");
@@ -83,7 +87,7 @@ public class JAXBHandler {
 			throw new RuntimeException(e);
 		}
 	}
-		
+
 	private static JAXBContext s_jaxb;
 
 	private static void initialize() throws JAXBException {
@@ -91,7 +95,7 @@ public class JAXBHandler {
 			s_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
 		}
 	}
-	
+
 	public static void marshallAddisData(AddisData data, OutputStream os) throws JAXBException {
 		initialize();
 		Marshaller marshaller = s_jaxb.createMarshaller();
@@ -99,14 +103,14 @@ public class JAXBHandler {
 		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-" + XmlFormatType.CURRENT_VERSION + ".xsd");
 		marshaller.marshal(data, os);
 	}
-	
+
 	public static AddisData unmarshallAddisData(InputStream is) throws JAXBException {
 		initialize();
 		Unmarshaller unmarshaller = s_jaxb.createUnmarshaller();
 		unmarshaller.setEventHandler(new AddisDataValidationEventHandler());
 		return (AddisData) unmarshaller.unmarshal(is);
 	}
-	
+
 	// should be moved somewhere else and changed
 	public static class AddisDataValidationEventHandler implements ValidationEventHandler  {
 		public boolean handleEvent(ValidationEvent ve) {
@@ -115,7 +119,7 @@ public class JAXBHandler {
 			System.err.println("Invalid AddisData document: " + locator.getURL());
 			System.err.println("Error: " + ve.getMessage());
 			//Output line and column number
-			System.err.println("Error at column " + locator.getColumnNumber() + 
+			System.err.println("Error at column " + locator.getColumnNumber() +
 								", line " + locator.getLineNumber());
 			if (ve.getSeverity() == ValidationEvent.ERROR) {
 				return true; // keeps unmarshalling
@@ -134,7 +138,7 @@ public class JAXBHandler {
 			return new XmlFormatType(XmlFormatType.INVALID);
 		}
 		String str = new String(buffer, 0, bytesRead);
-		
+
 		Pattern addisPattern = Pattern.compile("^(<\\?xml[^\\?]*\\?>[\\s]*)?<addis-data[^>]*>");
 		Matcher addisMatcher = addisPattern.matcher(str);
 		if (!addisMatcher.find()) {

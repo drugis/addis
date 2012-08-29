@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,7 +252,7 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Paroxetine data 1
-		FixedDose dose = new FixedDose(25.5, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-0", 102, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(67);
@@ -264,7 +264,7 @@ public class ExampleData {
 		pConv.setSampleSize(40);
 		
 		// Fluoxetine data
-		dose = new FixedDose(27.5, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(27.5, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 101, buildDrugFluoxetine(), dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(67);
@@ -325,7 +325,7 @@ public class ExampleData {
 		addDefaultEpochs(study);
 
 		// Paroxetine data
-		FixedDose dose = new FixedDose(25.5, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
@@ -335,7 +335,7 @@ public class ExampleData {
 		pConv.setSampleSize(40);
 
 		// Fluoxetine data
-		dose = new FixedDose(27.5, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(27.5, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
@@ -389,19 +389,19 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Paroxetine data 1
-		FixedDose dose = new FixedDose(25.5, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox0 = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd0 = (BasicRateMeasurement)hamd.buildMeasurement(parox0);
 		pHamd0.setRate(23);
 		
 		// Paroxetine data 2
-		dose = new FixedDose(5.5, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(5.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox1 = study.createAndAddArm("Paroxetine-1", 54, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd1 = (BasicRateMeasurement)hamd.buildMeasurement(parox1);
 		pHamd1.setRate(23);
 
 		// Fluoxetine data
-		dose = new FixedDose(27.5, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(27.5, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-2", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
@@ -460,7 +460,7 @@ public class ExampleData {
 		// STUDY_START, STUDY_END missing
 		
 		// Citalopram data
-		FixedDose dose = new FixedDose(40, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(40, DoseUnit.createMilliGramsPerDay());
 		Arm cita = study.createAndAddArm("Citalopram-0", 125, buildDrugCitalopram(), dose);
 		BasicContinuousMeasurement cCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(cita);
 		cCgi.setMean(-1.2);
@@ -469,7 +469,7 @@ public class ExampleData {
 		cMadrs.setRate(57);
 		
 		// Escitalopram high dose data
-		dose = new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(20, DoseUnit.createMilliGramsPerDay());
 		Arm esciHigh = study.createAndAddArm("Escitalopram-1", 125, buildDrugEscitalopram(), dose);
 		BasicContinuousMeasurement ehCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciHigh);
 		ehCgi.setMean(-1.4);
@@ -478,7 +478,7 @@ public class ExampleData {
 		ehMadrs.setRate(64);
 
 		// Escitalopram low dose data
-		dose = new FixedDose(10, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(10, DoseUnit.createMilliGramsPerDay());
 		Arm esciLow = study.createAndAddArm("Escitalopram-2", 119, buildDrugEscitalopram(), dose);
 		BasicContinuousMeasurement elCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciLow);
 		elCgi.setMean(-1.3);
@@ -487,7 +487,7 @@ public class ExampleData {
 		elMadrs.setRate(59);
 		
 		// Placebo data
-		dose = new FixedDose(0, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(0, DoseUnit.createMilliGramsPerDay());
 		Arm placebo = study.createAndAddArm("Placebo-3", 122, buildPlacebo(), dose);
 		BasicContinuousMeasurement plCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(placebo);
 		plCgi.setMean(-0.8);
@@ -530,8 +530,8 @@ public class ExampleData {
 		
 		addDefaultEpochs(study);
 		
-		FixedDose fluoxDose = new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY);
-		FixedDose sertrDose = new FixedDose(50, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose fluoxDose = new FixedDose(20, DoseUnit.createMilliGramsPerDay());
+		FixedDose sertrDose = new FixedDose(50, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-0", 144, buildDrugFluoxetine(), fluoxDose);
 		Arm sertr = study.createAndAddArm("Sertraline-1", 142, buildDrugSertraline(), sertrDose);
 		
@@ -597,7 +597,7 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Paroxetine data
-		FixedDose dose = new FixedDose(25.5, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(23);
@@ -606,7 +606,7 @@ public class ExampleData {
 		pCgi.setStdDev(0.16);
 		
 		// Fluoxetine data
-		dose = new FixedDose(20, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(20, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 144, buildDrugFluoxetine(), dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
@@ -615,7 +615,7 @@ public class ExampleData {
 		fCgi.setStdDev(0.16);
 
 		// Sertraline data
-		dose = new FixedDose(50, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(50, DoseUnit.createMilliGramsPerDay());
 		Arm sertr = study.createAndAddArm("Sertraline-2", 142, buildDrugSertraline(), dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
@@ -680,12 +680,12 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Candesartan data
-		FixedDose cDose = new FixedDose(32, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose cDose = new FixedDose(32, DoseUnit.createMilliGramsPerDay());
 		Arm cand = study.createAndAddArm("Candesartan-0", 1273, buildDrugCandesartan(), cDose);
 		BasicRateMeasurement cDeath = new BasicRateMeasurement(302, cand.getSize());
 		
 		// Placebo data
-		FixedDose pDose = new FixedDose(32, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose pDose = new FixedDose(32, DoseUnit.createMilliGramsPerDay());
 		Arm placebo = study.createAndAddArm("Placebo-1", 1271, buildPlacebo(), pDose);
 		BasicRateMeasurement pDeath = new BasicRateMeasurement(347, placebo.getSize());
 
@@ -733,19 +733,19 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
-		FixedDose dose = new FixedDose(75.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, DoseUnit.createMilliGramsPerDay());
 		Arm sertr = study.createAndAddArm("Sertraline-0", 96, sertraline, dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		sHamd.setRate(70);
 
 		// Fluoxetine data
-		dose = new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 92, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(57);
 		
 		// Paroxetine data
-		dose = new FixedDose(0.0, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(0.0, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-2", 93, paroxetine, dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(64);
@@ -1059,16 +1059,16 @@ public class ExampleData {
 		study.getEpochs().add(new Epoch("Main phase", EntityUtil.createDuration("P5D")));
 		
 		// Sertraline data
-		FixedDose dose = new FixedDose(75.0, DoseUnit.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, DoseUnit.createMilliGramsPerDay());
 		Arm sertr = study.createAndAddArm("Sertraline-0", 96, sertraline, dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		sHamd.setRate(70);
 		
 		// Fluoxetine + Paroxetine data
-		dose = new FixedDose(30.0, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, DoseUnit.createMilliGramsPerDay());
 		Arm fluoxAndParox = study.createAndAddArm("Fluoxetine-Paroxetine-1", 92, fluoxetine, dose);
 		Activity activity = study.getActivity(fluoxAndParox);
-		dose = new FixedDose(15.0, DoseUnit.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(15.0, DoseUnit.createMilliGramsPerDay());
 		((TreatmentActivity)activity).getTreatments().add(new DrugTreatment(paroxetine, dose));
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluoxAndParox);
 		fHamd.setRate(25);
@@ -1107,7 +1107,7 @@ public class ExampleData {
 	}
 	
 	public static TreatmentCategorization buildCategorizationFixedDose(Drug d) { 
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, DoseUnit.MILLIGRAMS_A_DAY);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, DoseUnit.createMilliGramsPerDay());
 		Category include = new Category(catz, "Include");
 		catz.addCategory(include);
 		DecisionTree tree = catz.getDecisionTree();
@@ -1116,7 +1116,7 @@ public class ExampleData {
 	}
 	
 	public static TreatmentCategorization buildCategorizationKnownDose(Drug d) { 
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Known Doses", d, DoseUnit.MILLIGRAMS_A_DAY);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Known Doses", d, DoseUnit.createMilliGramsPerDay());
 		Category include = new Category(catz, "Include");
 		catz.addCategory(include);
 		DecisionTree tree = catz.getDecisionTree();
@@ -1126,7 +1126,7 @@ public class ExampleData {
 	}
 	
 	public static TreatmentCategorization buildCategorizationUpto20mg(Drug d) { 
-		DoseUnit doseUnit = DoseUnit.MILLIGRAMS_A_DAY;
+		DoseUnit doseUnit = DoseUnit.createMilliGramsPerDay();
 		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include up to 20mg", d, doseUnit);
 		Category include = new Category(catz, "Include");
 		catz.addCategory(include);
@@ -1149,7 +1149,7 @@ public class ExampleData {
 	
 	
 	public static TreatmentCategorization buildCategorizationFixedFlexible(Drug d) { 
-		TreatmentCategorization catz = TreatmentCategorization.createDefault("Categorize Fixed, Flexible", d, DoseUnit.MILLIGRAMS_A_DAY);
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Categorize Fixed, Flexible", d, DoseUnit.createMilliGramsPerDay());
 		Category fixed = new Category(catz, "Fixed");
 		Category flexible = new Category(catz, "Flexible");
 
