@@ -60,8 +60,9 @@ public class AddUnitView implements ViewBuilder{
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Unit.PROPERTY_NAME), false);
 		d_name.setColumns(15);
 		d_symbol = BasicComponentFactory.createTextField(d_model.getModel(Unit.PROPERTY_SYMBOL), false);
-		d_validator.add(d_name);
-		d_validator.add(d_symbol);
+		
+		d_validator.add(d_model.getModel(Unit.PROPERTY_NAME));
+		d_validator.add(d_model.getModel(Unit.PROPERTY_SYMBOL));
 	}
 
 	@Override

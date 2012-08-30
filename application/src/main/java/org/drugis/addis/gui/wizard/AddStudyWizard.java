@@ -62,7 +62,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
@@ -112,6 +111,7 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
+import org.drugis.addis.gui.components.ComboBoxSelectionModel;
 import org.drugis.addis.gui.components.MeasurementTable;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
@@ -974,7 +974,7 @@ public class AddStudyWizard extends Wizard {
 				indBox.setSelectedIndex(0);
 			}
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
-			d_validator.add(indBox);
+			d_validator.add(new ComboBoxSelectionModel(indBox));
 			
 			// (new) '+' button
 			JButton btn = GUIFactory.createPlusButton("Create Indication");
@@ -1078,7 +1078,7 @@ public class AddStudyWizard extends Wizard {
 					}
 				});
 				
-				d_validator.add(d_idField);
+				d_validator.add(d_pm.getIdModel());
 				
 				// add import button
 				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
@@ -1098,8 +1098,8 @@ public class AddStudyWizard extends Wizard {
 
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));
-				d_titleField = AuxComponentFactory.createTextArea(d_pm.getTitleModel(), true);
-				d_validator.add((JTextArea)((JScrollPane)d_titleField).getViewport().getView());
+				d_titleField = AuxComponentFactory.createTextArea(d_pm.getTitleModel(), true, false);
+				d_validator.add(d_pm.getTitleModel());
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));

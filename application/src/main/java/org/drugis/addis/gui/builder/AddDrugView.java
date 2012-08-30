@@ -69,13 +69,15 @@ public class AddDrugView implements ViewBuilder {
 	
 	@SuppressWarnings("serial")
 	public void initComponents() {
+		d_validator.add(d_model.getModel(Drug.PROPERTY_NAME));
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
 		d_name.setColumns(15);
-		d_validator.add(d_name);
+		
 		d_loadButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search ATC Code");
 		d_loadButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
+		
+		d_validator.add(d_model.getModel(Drug.PROPERTY_ATCCODE));
 		d_atcCodeTextField = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
-		d_validator.add(d_atcCodeTextField);
 		
 		d_loadButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

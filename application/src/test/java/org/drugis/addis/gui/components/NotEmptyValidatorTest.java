@@ -30,16 +30,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.jgoodies.binding.adapter.Bindings;
 
 public class NotEmptyValidatorTest {
-	
 	private NotEmptyValidator v;
 	private JButton button;
 	
@@ -51,23 +49,19 @@ public class NotEmptyValidatorTest {
 	}
 	
 	@Test
-	public void testValidatesCorretly() {
-		JTextField f1 = new JTextField("");
-		JTextField f2 = new JTextField("");
-		JComboBox box = new JComboBox(new Object[] { "x", "y"});
-		box.setSelectedIndex(-1);
-		v.add(f1);
-		v.add(f2);
-		v.add(box);
+	public void testValidatesCorrectly() {
+		ModifiableHolder<String> vm1 = new ModifiableHolder<String>("");
+		ModifiableHolder<String> vm2 = new ModifiableHolder<String>("");
+		
+		v.add(vm1);
+		v.add(vm2);
+		
 		assertFalse(button.isEnabled());
-		f1.setText("jaa");
+		vm1.setValue("text");
 		assertFalse(button.isEnabled());
-		f2.setText("hgmm");
-		assertFalse(button.isEnabled());
-		box.setSelectedIndex(0);
+		vm2.setValue("more text");
 		assertTrue(button.isEnabled());
-		f1.setText("");
+		vm1.setValue(null);
 		assertFalse(button.isEnabled());
 	}
-
 }

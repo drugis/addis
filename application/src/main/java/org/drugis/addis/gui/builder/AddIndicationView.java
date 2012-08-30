@@ -30,7 +30,11 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
+import javax.swing.text.Document;
 
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.gui.components.NotEmptyValidator;
@@ -40,6 +44,7 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -62,8 +67,9 @@ public class AddIndicationView implements ViewBuilder {
 		PropertyConnector.connectAndUpdate(d_model.getModel(Indication.PROPERTY_CODE), d_code, "value");
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Indication.PROPERTY_NAME), false);
 		
-		d_validator.add(d_code);
-		d_validator.add(d_name);
+		d_validator.add(new DocumentNotEmptyModel(d_code.getDocument()));
+		d_validator.add(d_model.getModel(Indication.PROPERTY_NAME));
+
 	}
 
 	public JComponent buildPanel() {
@@ -88,4 +94,40 @@ public class AddIndicationView implements ViewBuilder {
 		return builder.getPanel();	
 	}
 
+	
+	private static class DocumentNotEmptyModel extends AbstractValueModel {
+		private static final long serialVersionUID = 843575902496056597L;
+		private Document d_document;
+
+		public DocumentNotEmptyModel(Document document) {
+			d_document = document;
+			document.addDocumentListener(new DocumentListener() {
+				public void changedUpdate(DocumentEvent ev) {
+					fireValueChange(null, getValue());			
+				}
+
+				public void insertUpdate(DocumentEvent ev) {
+					fireValueChange(null, getValue());
+				}
+
+				public void removeUpdate(DocumentEvent ev) {
+					fireValueChange(null, getValue());
+				}
+			});
+		}
+		
+		@Override
+		public Object getValue() {
+			try {
+				return d_document.getText(0, d_document.getLength());
+			} catch (BadLocationException e) {
+				return null;
+			}
+		}
+
+		@Override
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Modification not allowed");
+		}
+	}
 }

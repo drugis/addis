@@ -56,6 +56,7 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.DoseView;
+import org.drugis.addis.gui.components.ComboBoxSelectionModel;
 import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
 import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
@@ -112,7 +113,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		final JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_domain.getDrugs(), d_pm.getDrug(), true);
 		builder.add(drugSelect, cc.xy(3, row));
 		builder.add(createNewDrugButton(d_pm.getDrug()), cc.xy(5, row));
-		d_validator.add(drugSelect);
+		d_validator.add(new ComboBoxSelectionModel(drugSelect));
 
 		builder.addLabel("Name:", cc.xy(7, row));
 		builder.add(name, cc.xy(9, row));
@@ -123,7 +124,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 			}
 		});
 
-		d_validator.add(name);
+		d_validator.add(d_pm.getModel(TreatmentCategorization.PROPERTY_NAME));
 
 		row += 2;
 		builder.addSeparator("Category labels", cc.xyw(1, row, colSpan));
