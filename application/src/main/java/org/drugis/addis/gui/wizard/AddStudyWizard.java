@@ -36,8 +36,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -111,10 +109,10 @@ import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.StudyView;
 import org.drugis.addis.gui.components.ComboBoxPopupOnFocusListener;
-import org.drugis.addis.gui.components.ComboBoxSelectionModel;
 import org.drugis.addis.gui.components.MeasurementTable;
-import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.components.NotesView;
+import org.drugis.addis.gui.util.ComboBoxSelectionModel;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.addis.imports.PubMedIDRetriever;
 import org.drugis.addis.presentation.AbstractListValidator;
 import org.drugis.addis.presentation.DurationPresentation;
@@ -931,7 +929,7 @@ public class AddStudyWizard extends Wizard {
 	
 	public static class SelectIndicationWizardStep extends PanelWizardStep {
 		private PanelBuilder d_builder;
-		private NotEmptyValidator d_validator;
+		private BooleanAndModel d_validator = new BooleanAndModel();
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
 		private AddisWindow d_mainWindow;
@@ -948,7 +946,6 @@ public class AddStudyWizard extends Wizard {
 		 @Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_validator = new NotEmptyValidator();
 			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
@@ -974,7 +971,7 @@ public class AddStudyWizard extends Wizard {
 				indBox.setSelectedIndex(0);
 			}
 			d_builder.add(indBox, cc.xyw(3, 3, 2));
-			d_validator.add(new ComboBoxSelectionModel(indBox));
+			d_validator.add(new NonEmptyValueModel(new ComboBoxSelectionModel(indBox)));
 			
 			// (new) '+' button
 			JButton btn = GUIFactory.createPlusButton("Create Indication");
@@ -1004,19 +1001,20 @@ public class AddStudyWizard extends Wizard {
 		private JComponent d_titleField;
 		private PanelBuilder d_builder;
 		private JButton d_importButton;
-		private NotEmptyValidator d_validator;
+		private BooleanAndModel d_validator = new BooleanAndModel();
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
 		
-		public class IdStepValidator extends NotEmptyValidator {
-			 public IdStepValidator(ValueModel idModel) {
-				 idModel.addValueChangeListener(new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						update();
-					}
-				});
+		private class IdStepValidator extends NonEmptyValueModel {
+			public IdStepValidator(ValueModel idModel) {
+				super(idModel);
+//				 idModel.addValueChangeListener(new PropertyChangeListener() {
+//					public void propertyChange(PropertyChangeEvent evt) {
+//						update();
+//					}
+//				});
 			}
-
+			
 			@Override
 			public Boolean getValue() {
 				return super.getValue() && d_pm.isIdAvailable();
@@ -1031,7 +1029,7 @@ public class AddStudyWizard extends Wizard {
 		@Override
 		public void prepare() {
 			 this.setVisible(false);
-			 d_validator = new IdStepValidator(d_pm.getIdModel());
+			 d_validator.add(new IdStepValidator(d_pm.getIdModel()));
 			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
 			 
 			 if (d_scrollPane != null)
@@ -1078,8 +1076,6 @@ public class AddStudyWizard extends Wizard {
 					}
 				});
 				
-				d_validator.add(d_pm.getIdModel());
-				
 				// add import button
 				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
 						"Enter NCT id to retrieve study data from ClinicalTrials.gov");
@@ -1099,7 +1095,7 @@ public class AddStudyWizard extends Wizard {
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));
 				d_titleField = AuxComponentFactory.createTextArea(d_pm.getTitleModel(), true, false);
-				d_validator.add(d_pm.getTitleModel());
+				d_validator.add(new NonEmptyValueModel(d_pm.getTitleModel()));
 				d_builder.add(d_titleField, cc.xy(3, 7));		
 				
 				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));

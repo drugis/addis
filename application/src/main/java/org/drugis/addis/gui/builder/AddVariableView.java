@@ -51,8 +51,8 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
-import org.drugis.addis.gui.components.ComboBoxSelectionModel;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.ComboBoxSelectionModel;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.addis.presentation.VariablePresentation;
 import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.ViewBuilder;
@@ -78,9 +78,8 @@ public class AddVariableView implements ViewBuilder {
 	private JScrollPane d_scrollPane;
 	private JButton d_AddcatBtn;
 	private final JDialog d_dialog;
-	private final NotEmptyValidator d_NotEmptyValidator;
 	private final TwoCategoriesModel d_enoughCategories;
-	private BooleanAndModel d_validator;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	
 	public AddVariableView(JDialog dialog, PresentationModel<Variable> model, JButton okButton) {
 		d_dialog = dialog;
@@ -88,9 +87,7 @@ public class AddVariableView implements ViewBuilder {
 		
 		d_categories = new JList(d_model.getCategoricalModel().getBean().getCategories());
 		
-		d_NotEmptyValidator = new NotEmptyValidator();		
 		d_enoughCategories = new TwoCategoriesModel(d_categories.getModel());
-		d_validator = new BooleanAndModel(d_NotEmptyValidator);
 		Bindings.bind(okButton, "enabled", d_validator);
 	}
 	
@@ -116,14 +113,14 @@ public class AddVariableView implements ViewBuilder {
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(OutcomeMeasure.PROPERTY_NAME), false);
 		AutoSelectFocusListener.add(d_name);
 		d_name.setColumns(30);
-		d_NotEmptyValidator.add(d_model.getModel(OutcomeMeasure.PROPERTY_NAME));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(OutcomeMeasure.PROPERTY_NAME)));
 		
 		d_description = BasicComponentFactory.createTextField(
 				d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION), false);
 		
 		AutoSelectFocusListener.add(d_description);
 		d_description.setColumns(30);
-		d_NotEmptyValidator.add(d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION)));
 		
 		d_unitOfMeasurement = BasicComponentFactory.createTextField(
 				d_model.getContinuousModel().getModel(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT));
@@ -137,7 +134,7 @@ public class AddVariableView implements ViewBuilder {
 					OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
 		}
 		
-		d_NotEmptyValidator.add(new ComboBoxSelectionModel(d_typeCombo));
+		d_validator.add(new NonEmptyValueModel(new ComboBoxSelectionModel(d_typeCombo)));
 	}
 
 

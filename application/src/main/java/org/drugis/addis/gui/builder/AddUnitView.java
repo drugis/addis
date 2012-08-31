@@ -32,8 +32,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.drugis.addis.entities.Unit;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.validation.BooleanAndModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -46,12 +47,11 @@ public class AddUnitView implements ViewBuilder{
 
 	private final PresentationModel<Unit> d_model;
 	private JTextField d_name;
-	private NotEmptyValidator d_validator;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	private JTextField d_symbol;
 	private JPanel d_panel;
 
 	public AddUnitView(PresentationModel<Unit> presentationModel, JButton okButton) {
-		d_validator = new NotEmptyValidator();
 		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = presentationModel;
 	}
@@ -61,8 +61,8 @@ public class AddUnitView implements ViewBuilder{
 		d_name.setColumns(15);
 		d_symbol = BasicComponentFactory.createTextField(d_model.getModel(Unit.PROPERTY_SYMBOL), false);
 		
-		d_validator.add(d_model.getModel(Unit.PROPERTY_NAME));
-		d_validator.add(d_model.getModel(Unit.PROPERTY_SYMBOL));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Unit.PROPERTY_NAME)));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Unit.PROPERTY_SYMBOL)));
 	}
 
 	@Override

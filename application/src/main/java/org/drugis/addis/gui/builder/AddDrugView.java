@@ -40,10 +40,11 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.addis.util.AtcParser;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.validation.BooleanAndModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -58,25 +59,24 @@ public class AddDrugView implements ViewBuilder {
 	private String d_atcCode;
 	private JButton d_loadButton;
 	private PresentationModel<Drug> d_model;
-	private NotEmptyValidator d_validator;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	private JPanel d_panel; 
 
 	public AddDrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
-		d_validator = new NotEmptyValidator();
 		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = presentationModel;
 	}
 	
 	@SuppressWarnings("serial")
 	public void initComponents() {
-		d_validator.add(d_model.getModel(Drug.PROPERTY_NAME));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Drug.PROPERTY_NAME)));
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
 		d_name.setColumns(15);
 		
 		d_loadButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search ATC Code");
 		d_loadButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
 		
-		d_validator.add(d_model.getModel(Drug.PROPERTY_ATCCODE));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Drug.PROPERTY_ATCCODE)));
 		d_atcCodeTextField = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
 		
 		d_loadButton.addActionListener(new AbstractAction() {

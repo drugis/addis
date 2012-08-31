@@ -56,12 +56,13 @@ import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.gui.builder.DoseView;
-import org.drugis.addis.gui.components.ComboBoxSelectionModel;
-import org.drugis.addis.gui.components.NotEmptyValidator;
 import org.drugis.addis.gui.renderer.CategoryComboboxRenderer;
+import org.drugis.addis.gui.util.ComboBoxSelectionModel;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.addis.presentation.wizard.TreatmentCategorizationWizardPresentation;
 import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.validation.BooleanAndModel;
 import org.drugis.common.validation.ListItemsUniqueModel;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -77,11 +78,10 @@ import com.jgoodies.forms.layout.FormLayout;
 public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCategorizationWizardStep {
 	private static final long serialVersionUID = 7730051460456443680L;
 
-	private final NotEmptyValidator d_validator;
+	private final BooleanAndModel d_validator = new BooleanAndModel();
 
 	public AddTreatmentCategorizationWizardStep(final TreatmentCategorizationWizardPresentation pm, JDialog dialog) {
 		super(pm, "Add characteristics", "Add the name, drug and categories for this treatment", dialog);
-		d_validator = new NotEmptyValidator();
 		d_validators.add(d_validator);
 		d_validators.add(new ListItemsUniqueModel<Category>(d_pm.getCategories(), Category.class, Category.PROPERTY_NAME));
 		d_validators.add(pm.getNameAvailableModel());
@@ -113,7 +113,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		final JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_domain.getDrugs(), d_pm.getDrug(), true);
 		builder.add(drugSelect, cc.xy(3, row));
 		builder.add(createNewDrugButton(d_pm.getDrug()), cc.xy(5, row));
-		d_validator.add(new ComboBoxSelectionModel(drugSelect));
+		d_validator.add(new NonEmptyValueModel(new ComboBoxSelectionModel(drugSelect)));
 
 		builder.addLabel("Name:", cc.xy(7, row));
 		builder.add(name, cc.xy(9, row));
@@ -124,7 +124,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 			}
 		});
 
-		d_validator.add(d_pm.getModel(TreatmentCategorization.PROPERTY_NAME));
+		d_validator.add(new NonEmptyValueModel(d_pm.getModel(TreatmentCategorization.PROPERTY_NAME)));
 
 		row += 2;
 		builder.addSeparator("Category labels", cc.xyw(1, row, colSpan));

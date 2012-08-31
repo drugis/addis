@@ -1,4 +1,4 @@
-package org.drugis.addis.gui.components;
+package org.drugis.addis.gui.util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

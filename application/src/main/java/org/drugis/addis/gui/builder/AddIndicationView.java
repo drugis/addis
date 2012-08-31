@@ -32,13 +32,13 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultFormatter;
 import javax.swing.text.Document;
 
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.validation.BooleanAndModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -53,10 +53,9 @@ public class AddIndicationView implements ViewBuilder {
 	private JFormattedTextField d_code;
 	private JTextField d_name;
 	private PresentationModel<Indication> d_model;
-	private NotEmptyValidator d_validator;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	
 	public AddIndicationView(PresentationModel<Indication> model, JButton okButton) {
-		d_validator = new NotEmptyValidator();
 		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = model;
 	}
@@ -68,7 +67,7 @@ public class AddIndicationView implements ViewBuilder {
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Indication.PROPERTY_NAME), false);
 		
 		d_validator.add(new DocumentNotEmptyModel(d_code.getDocument()));
-		d_validator.add(d_model.getModel(Indication.PROPERTY_NAME));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Indication.PROPERTY_NAME)));
 
 	}
 
@@ -118,11 +117,7 @@ public class AddIndicationView implements ViewBuilder {
 		
 		@Override
 		public Object getValue() {
-			try {
-				return d_document.getText(0, d_document.getLength());
-			} catch (BadLocationException e) {
-				return null;
-			}
+				return (d_document.getLength() != 0);
 		}
 
 		@Override
