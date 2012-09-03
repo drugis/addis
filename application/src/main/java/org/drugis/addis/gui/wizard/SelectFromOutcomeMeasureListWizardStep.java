@@ -33,7 +33,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -48,7 +47,6 @@ import javax.swing.KeyStroke;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.FileNames;
-import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.Variable;
