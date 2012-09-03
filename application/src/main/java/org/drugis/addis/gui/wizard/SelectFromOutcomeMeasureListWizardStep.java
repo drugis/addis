@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -47,6 +48,7 @@ import javax.swing.KeyStroke;
 import javax.swing.text.DefaultFormatter;
 
 import org.drugis.addis.FileNames;
+import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
 import org.drugis.addis.entities.Variable;
@@ -266,7 +268,6 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 			row = LayoutUtil.addRow(momentLayout, row);
 			JButton addWhenTakenButton = new JButton("Add measurement moment");
 			addWhenTakenButton.addActionListener(new ActionListener() {
-				@Override
 				public void actionPerformed(final ActionEvent e) {
 					AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, (StudyOutcomeMeasure<T>) d_slot, d_epm);
 					GUIHelper.centerWindow(dialog, d_parent);
@@ -396,7 +397,7 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 					new PropertyAdapter<WhenTaken>(d_wt, WhenTaken.PROPERTY_RELATIVE_TO, true));
 			momentPanelBuilder.add(relativeTofield, cc.xy(7, row2));
 
-			final JComboBox epochField = AuxComponentFactory.createBoundComboBox(d_epm.getList(),
+			final JComboBox epochField = AuxComponentFactory.createBoundComboBox(d_epm.getList().toArray(),
 					new PropertyAdapter<WhenTaken>(d_wt, WhenTaken.PROPERTY_EPOCH), true);
 			momentPanelBuilder.add(epochField, cc.xy(9, row2));
 
