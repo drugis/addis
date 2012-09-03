@@ -101,13 +101,12 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		return d_pm.getNotes(t);
 	}
 
-	public void rebuild() { 
+	public void rebuild() {
 		this.setVisible(false);
-		 
-		if (d_scrollPane != null)
-			remove(d_scrollPane);
+
+		if (d_scrollPane != null) remove(d_scrollPane);
 		buildWizardStep();
-		 
+
 		this.setVisible(true);
 	}
 
@@ -124,14 +123,14 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		d_builder = new PanelBuilder(layout);
 		d_builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
+
 		int rows = 1;
 		d_builder.addSeparator(d_pm.getItemName() + "s", cc.xyw(1, 1, 9));
-		
+
 		for(int i = 0; i < d_pm.getList().size(); ++i) {
 			rows = addComponents(d_builder, layout, cc, rows, i);
 		}
-		
+
 		rows = LayoutUtil.addRow(layout, rows);
 		JButton addBtn = new JButton("Add " + d_pm.getItemName());
 		d_builder.add(addBtn, cc.xy(1, rows));
@@ -140,24 +139,24 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 				d_pm.getList().add(createItem());
 			}
 		});
-		
+
 		JPanel panel = d_builder.getPanel();
 		this.setLayout(new BorderLayout());
 		d_scrollPane = new JScrollPane(panel);
 		d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-	
+
 		add(d_scrollPane, BorderLayout.CENTER);
 	}
 
 	private int addComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, final int idx) {
 		rows = LayoutUtil.addRow(layout, rows);
-		
-		// add "remove" button 
+
+		// add "remove" button
 		JButton removeBtn = new JButton("Remove");
 		Bindings.bind(removeBtn, "enabled", d_pm.getRemovable(d_pm.getList().get(idx)));
 		builder.add(removeBtn, cc.xy(1, rows));
 		removeBtn.addActionListener(new RemoveItemListener(idx));
-		
+
 		// name input field
 		builder.addLabel("Name: ", cc.xy (3, rows));
 		JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -171,17 +170,17 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		});
 		namePanel.add(editNameButton);
 		builder.add(namePanel, cc.xy(5, rows));
-		
+
 		// type specific input fields
 		addAdditionalFields(builder, cc, rows, idx);
-		
+
 		// notes
 		rows = LayoutUtil.addRow(layout, rows);
 		d_builder.add(AddStudyWizard.buildNotesEditor(getNotes(d_pm.getList().get(idx))), cc.xyw(5, rows, 5));
-	
+
 		return rows;
 	}
-	
+
 	private void showRenameDialog(final int idx) {
 		JDialog renameDialog = new AddListItemsRenameDialog(d_parent, "Rename " + d_pm.getItemName(), true, idx);
 		renameDialog.setVisible(true);
@@ -190,7 +189,7 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	private ValueModel getNameModel(final int idx) {
 		return new PresentationModel<TypeWithName>(d_pm.getList().get(idx)).getModel(TypeWithName.PROPERTY_NAME);
 	}
-	
+
 	private class AddListItemsRenameDialog extends RenameDialog {
 		private AddListItemsRenameDialog(Dialog owner, String title, boolean modal, int idx) {
 			super(owner, title, modal, d_pm.getList(), idx);
@@ -200,18 +199,17 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		protected void rename(String newName) {
 			d_pm.rename(d_idx, newName);
 		}
-
 	}
-	
-	class RemoveItemListener extends AbstractAction {
+
+	private class RemoveItemListener extends AbstractAction {
 		int d_index;
-		
+
 		public RemoveItemListener(int index) {
 			d_index = index;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
-			d_pm.getList().remove(d_index);
-		}	
+			d_pm.remove(d_index);
+		}
 	}
 }

@@ -41,18 +41,18 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 		FROM_EPOCH_START("From start of");
 
 		String d_string;
-		
+
 		RelativeTo(String s) {
 			d_string = s;
 		}
-		
+
 		@Override
 		public String toString() {
 			return d_string;
 		}
 	}
-	
-	
+
+
 	public static final String PROPERTY_EPOCH = "epoch";
 	public static final String PROPERTY_RELATIVE_TO = "relativeTo";
 	public static final String PROPERTY_OFFSET = "offset";
@@ -75,15 +75,15 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	public void setOffset(Duration duration) {
-		checkCommited();
+		checkCommited("Offset");
 		Duration oldValue = d_offset;
 		d_offset = duration;
 		firePropertyChange(PROPERTY_OFFSET, oldValue, d_offset);
 	}
 
-	private void checkCommited() {
+	private void checkCommited(String source) {
 		if (d_committed) {
-			throw new UnsupportedOperationException("Attempt to modify WhenTaken after commit.");
+			throw new UnsupportedOperationException("Attempt to modify WhenTaken after commit from " + source + ".");
 		}
 	}
 
@@ -92,18 +92,18 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	public void setRelativeTo(RelativeTo relativeTo) {
-		checkCommited();
+		checkCommited("relativeTo");
 		RelativeTo oldValue = d_relativeTo;
 		d_relativeTo = relativeTo;
 		firePropertyChange(PROPERTY_RELATIVE_TO, oldValue, d_relativeTo);
 	}
-	
+
 	public Epoch getEpoch() {
 		return d_epoch;
 	}
-	
+
 	public void setEpoch(Epoch epoch) {
-		checkCommited();
+		checkCommited("Epoch");
 		Epoch oldValue = d_epoch;
 		d_epoch = epoch;
 		firePropertyChange(PROPERTY_EPOCH, oldValue, d_epoch);
@@ -115,15 +115,15 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	public Duration getDuration() {
 		return getOffset();
 	}
-	
+
 	/**
 	 * @see org.drugis.addis.entities.TypeWithDuration
-	 */	
+	 */
 	public void setDuration(Duration duration) {
 		setOffset(duration);
 	}
 
-	
+
 	public Set<? extends Entity> getDependencies() {
 		return Collections.singleton(d_epoch);
 	}
@@ -158,9 +158,9 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 		if (d_relativeTo != o.d_relativeTo) {
 			return d_relativeTo == RelativeTo.FROM_EPOCH_START ? -1 : 1;
 		}
-		return getOffset().compare(o.getOffset());		
+		return getOffset().compare(o.getOffset());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int code = 1;

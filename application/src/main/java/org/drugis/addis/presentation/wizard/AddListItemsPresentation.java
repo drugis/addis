@@ -83,4 +83,8 @@ public abstract class AddListItemsPresentation<T extends TypeWithName> extends A
 	 * @param newName Desired new name.
 	 */
 	public abstract void rename(int idx, String newName);
+
+	public T remove(int idx) {
+		return d_list.remove(idx);
+	}
 }
