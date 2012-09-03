@@ -52,7 +52,6 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.NoteViewButton;
 import org.drugis.addis.gui.RelativeEffectTableDialog;
-import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.MeasurementCellRenderer;
 import org.drugis.addis.presentation.MeanDifferenceTableModel;
 import org.drugis.addis.presentation.OddsRatioTableModel;
@@ -67,6 +66,7 @@ import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.gui.table.EnhancedTable;
+import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
