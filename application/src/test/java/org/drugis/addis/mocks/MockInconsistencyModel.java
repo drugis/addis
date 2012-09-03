@@ -42,6 +42,7 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.InconsistencyParameter;
 import org.drugis.mtc.yadas.YadasInconsistencyModel;
+import org.drugis.mtc.yadas.YadasModelFactory;
 import org.drugis.mtc.yadas.YadasResults;
 
 public class MockInconsistencyModel extends YadasInconsistencyModel implements InconsistencyModel {
@@ -49,17 +50,17 @@ public class MockInconsistencyModel extends YadasInconsistencyModel implements I
 	boolean d_ready = false;
 	private ActivityTask d_task;
 	private YadasResults d_results;
-	
+
 	private static final int BURNIN_ITER = 1000;
 	private static final int SIMULATION_ITER = 10000;
 	private List<Treatment> d_treatments;
-	
-	public static InconsistencyModel buildMockSimulationInconsistencyModel() { 
-		return new MockInconsistencyModel();	
+
+	public static InconsistencyModel buildMockSimulationInconsistencyModel() {
+		return new MockInconsistencyModel();
 	}
-	
-	public static InconsistencyModel buildMockSimulationInconsistencyModel(List<Treatment> treatments) { 
-		return new MockInconsistencyModel(treatments);	
+
+	public static InconsistencyModel buildMockSimulationInconsistencyModel(List<Treatment> treatments) {
+		return new MockInconsistencyModel(treatments);
 	}
 
 	private MockInconsistencyModel() {
@@ -67,22 +68,22 @@ public class MockInconsistencyModel extends YadasInconsistencyModel implements I
 	}
 
 	public MockInconsistencyModel(List<Treatment> treatments) {
-		super(null);
+		super(null, new YadasModelFactory().getDefaults());
 		Task start = new SimpleSuspendableTask(new Runnable() { public void run() {} });
 		Task end = new SimpleSuspendableTask(new Runnable() { public void run() { finished(); } });
-		d_task = new ActivityTask(new ActivityModel(start, end, 
+		d_task = new ActivityTask(new ActivityModel(start, end,
 				Collections.singleton(new DirectTransition(start, end))));
 		d_results = new YadasResults();
 		d_results.setNumberOfIterations(SIMULATION_ITER);
 		d_results.setNumberOfChains(1);
 		d_treatments = treatments;
 		d_results.setDirectParameters(getInconsistencyFactors());
-		
+
 	}
 
 	public List<Parameter> getInconsistencyFactors() {
 		List<Treatment> cycle = new ArrayList<Treatment>();
-		for(Treatment t : d_treatments) { 
+		for(Treatment t : d_treatments) {
 			cycle.add(t);
 		}
 		cycle.add(d_treatments.get(0));
@@ -122,7 +123,7 @@ public class MockInconsistencyModel extends YadasInconsistencyModel implements I
 	public MCMCResults getResults() {
 		return d_results;
 	}
-	
+
 	protected void finished() {
 		d_results.simulationFinished();
 	}
