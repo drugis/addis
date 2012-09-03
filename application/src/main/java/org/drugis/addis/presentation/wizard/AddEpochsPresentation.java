@@ -47,6 +47,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
+
 	private final class EpochEnabledListener implements PropertyChangeListener {
 		private final Epoch d_epoch;
 		private final ValueModel d_model;
@@ -61,16 +62,16 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 		public void propertyChange(PropertyChangeEvent evt) {
 			d_model.setValue(isEditable(d_epoch));
 		}
-		
+
 		private boolean isEditable(final Epoch t) {
 			boolean editable = true;
-			for(StudyOutcomeMeasure<?> om : d_study.getStudyOutcomeMeasures()) { 
+			for(StudyOutcomeMeasure<?> om : d_study.getStudyOutcomeMeasures()) {
 				Predicate<WhenTaken> isUsed = new Predicate<WhenTaken>() {
 					public boolean evaluate(WhenTaken object) {
 						return object.getEpoch().equals(t);
 					}
 				};
-				if(exists(om.getWhenTaken(), isUsed)) { 
+				if(exists(om.getWhenTaken(), isUsed)) {
 					editable = false;
 				}
 			}
@@ -90,11 +91,11 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 	public ObservableList<Note> getNotes(Epoch t) {
 		return t.getNotes();
 	}
-		
+
 	@Override
 	public ValueModel getRemovable(final Epoch t) {
 		ValueModel model = d_editable.get(t);
-		if(model == null) { 
+		if(model == null) {
 			d_editable.put(t, buildIsEditableModel(t));
 		}
 		return d_editable.get(t);
@@ -102,12 +103,12 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 
 	private ValueModel buildIsEditableModel(final Epoch t) {
 		final ValueModel model = new ModifiableHolder<Boolean>();
-		for(StudyOutcomeMeasure<?> om : d_study.getStudyOutcomeMeasures()) { 
+		for(StudyOutcomeMeasure<?> om : d_study.getStudyOutcomeMeasures()) {
 			om.addPropertyChangeListener(new EpochEnabledListener(t, model));
 		}
 		return model;
 	}
-	
+
 	@Override
 	public Epoch createItem() {
 		return new Epoch(nextItemName(), EntityUtil.createDuration("P0D"));
@@ -127,7 +128,7 @@ public class AddEpochsPresentation extends AddListItemsPresentation<Epoch> {
 		d_study = study;
 		setList(d_study.getEpochs());
 	}
-	
+
 	public Study getStudy() {
 		return d_study;
 	}
