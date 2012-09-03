@@ -122,7 +122,11 @@ public class AuxComponentFactory {
 	}	
 
 	public static JScrollPane createTextArea(ValueModel model, boolean editable) {
-		JTextArea area = BasicComponentFactory.createTextArea(model);
+		return createTextArea(model, editable, true);
+	}
+	
+	public static JScrollPane createTextArea(ValueModel model, boolean editable, boolean commitOnFocusLost) {
+		JTextArea area = BasicComponentFactory.createTextArea(model, commitOnFocusLost);
 		dontStealTabKey(area);
 		area.setEditable(editable);
 		area.setLineWrap(true);

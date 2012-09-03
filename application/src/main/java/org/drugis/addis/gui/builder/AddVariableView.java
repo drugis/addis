@@ -41,6 +41,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.CategoricalVariableType;
@@ -50,13 +51,17 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.AutoSelectFocusListener;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.ComboBoxSelectionModel;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.addis.presentation.VariablePresentation;
+import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.validation.BooleanAndModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -67,34 +72,38 @@ public class AddVariableView implements ViewBuilder {
 	private JTextField d_description;
 	private JTextField d_unitOfMeasurement;
 	private VariablePresentation d_model;
-	private JComboBox d_type;
+	private JComboBox d_typeCombo;
 	private JComboBox d_direction;
 	private JList d_categories;
-	private NotEmptyValidator d_validator;
 	private JScrollPane d_scrollPane;
 	private JButton d_AddcatBtn;
 	private final JDialog d_dialog;
+	private final TwoCategoriesModel d_enoughCategories;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	
 	public AddVariableView(JDialog dialog, PresentationModel<Variable> model, JButton okButton) {
 		d_dialog = dialog;
 		d_model = (VariablePresentation) model;
-		d_validator = new NotEmptyValidator();
+		
+		d_categories = new JList(d_model.getCategoricalModel().getBean().getCategories());
+		
+		d_enoughCategories = new TwoCategoriesModel(d_categories.getModel());
 		Bindings.bind(okButton, "enabled", d_validator);
 	}
 	
 	private void initComponents() {
-		d_type = AuxComponentFactory.createBoundComboBox(d_model.getVariableTypes(), d_model.getTypeModel());
-		d_type.addItemListener(new ItemListener() {	
+		d_typeCombo = AuxComponentFactory.createBoundComboBox(d_model.getVariableTypes(), d_model.getTypeModel());
+		d_typeCombo.addItemListener(new ItemListener() {	
 			public void itemStateChanged(ItemEvent e) {
-				boolean catVisible = d_type.getSelectedItem() instanceof CategoricalVariableType;
-				d_scrollPane.setVisible(catVisible);
-				d_AddcatBtn.setVisible(catVisible);
-				if (catVisible){
+				boolean categoricalSelected = d_typeCombo.getSelectedItem() instanceof CategoricalVariableType;
+				d_scrollPane.setVisible(categoricalSelected);
+				d_AddcatBtn.setVisible(categoricalSelected);
+				if (categoricalSelected){
 					d_dynamicLabel.setText("Categories: ");
-					d_validator.add(d_categories);
+					d_validator.add(d_enoughCategories);
 				} else {
 					d_dynamicLabel.setText("Unit of Measurement: ");
-					d_validator.remove(d_categories);
+					d_validator.remove(d_enoughCategories);
 				}
 				updateUOMVisible();
 				d_dialog.pack();
@@ -104,14 +113,14 @@ public class AddVariableView implements ViewBuilder {
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(OutcomeMeasure.PROPERTY_NAME), false);
 		AutoSelectFocusListener.add(d_name);
 		d_name.setColumns(30);
-		d_validator.add(d_name);
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(OutcomeMeasure.PROPERTY_NAME)));
 		
 		d_description = BasicComponentFactory.createTextField(
 				d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION), false);
 		
 		AutoSelectFocusListener.add(d_description);
 		d_description.setColumns(30);
-		d_validator.add(d_description);
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(OutcomeMeasure.PROPERTY_DESCRIPTION)));
 		
 		d_unitOfMeasurement = BasicComponentFactory.createTextField(
 				d_model.getContinuousModel().getModel(ContinuousVariableType.PROPERTY_UNIT_OF_MEASUREMENT));
@@ -125,15 +134,14 @@ public class AddVariableView implements ViewBuilder {
 					OutcomeMeasure.Direction.values(), d_model.getModel(OutcomeMeasure.PROPERTY_DIRECTION));
 		}
 		
-		d_categories = new JList(d_model.getCategoricalModel().getBean().getCategories());
-		
-		d_validator.add(d_type);
+		d_validator.add(new NonEmptyValueModel(new ComboBoxSelectionModel(d_typeCombo)));
 	}
 
 
 	private void updateUOMVisible() {
-		d_unitOfMeasurement.setVisible(d_type.getSelectedItem() instanceof ContinuousVariableType);
-		d_dynamicLabel.setVisible(d_type.getSelectedItem() instanceof ContinuousVariableType);
+		boolean continuousSelected = d_typeCombo.getSelectedItem() instanceof ContinuousVariableType;
+		d_unitOfMeasurement.setVisible(continuousSelected);
+		d_dynamicLabel.setVisible(continuousSelected);
 	}
 	
 	/**
@@ -155,7 +163,7 @@ public class AddVariableView implements ViewBuilder {
 		builder.addSeparator(categoryName , cc.xyw(1, 1, 3));
 		
 		builder.addLabel("Type:", cc.xy(1, 3));
-		builder.add(d_type, cc.xy(3, 3));
+		builder.add(d_typeCombo, cc.xy(3, 3));
 	
 		builder.addLabel("Name:", cc.xy(1, 5));
 		builder.add(d_name, cc.xy(3,5));
@@ -189,5 +197,30 @@ public class AddVariableView implements ViewBuilder {
 		}
 		
 		return builder.getPanel();
+	}
+	
+	
+	private static class TwoCategoriesModel extends AbstractValueModel {
+		private static final long serialVersionUID = 7039312266818135795L;
+		private ListModel d_list;
+
+		public TwoCategoriesModel(ListModel list) {
+			d_list = list;
+			list.addListDataListener(new IndifferentListDataListener() {
+				protected void update() {
+					fireValueChange(null, getValue());
+				}
+			});
+		}
+
+		@Override
+		public Boolean getValue() {
+			return d_list.getSize() >= 2;
+		}
+
+		@Override
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Unexpected modification");
+		}
 	}
 }
