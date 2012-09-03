@@ -40,58 +40,48 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-@SuppressWarnings("serial")
 public class TablePanel extends JPanel {
-	
-	protected JTable d_table;
+	private static final long serialVersionUID = -3818839238577628096L;
 
-	public TablePanel() {
-		super(new BorderLayout());
-	}
-	
 	public TablePanel(JTable table) {
 		super(new BorderLayout());
-		init(table);
-	}
-	
-	public void init(JTable table) {
-		d_table = table;
-		addScrollPane();
-	}
-	
-	public JTable getTable() {
-		return d_table;
+		add(createPanel(table), BorderLayout.CENTER);
 	}
 
-	private void addScrollPane() {
+	private JPanel createPanel(final JTable table) {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		final JScrollPane sp = new JScrollPane(d_table);		
+		final JScrollPane sp = new JScrollPane(table);
 		sp.setBorder(BorderFactory.createEmptyBorder());
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		
+
 		panel.add(sp);
-		
+
 		final ComponentAdapter scrollPaneSizer = new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				if (findParent() == null)
+				final int padding = 2; // FIXME: magic number
+				final int margin = 50; // FIXME: magic number
+
+				if (findParent() == null) {
 					return;
-				int tablewidth = d_table.getPreferredSize().width + 2; // FIXME: magic number
-				int panelwidth = findParent().getSize().width - 50; // FIXME: magic number
-				
+				}
+				int tablewidth = table.getPreferredSize().width + padding;
+				int panelwidth = findParent().getSize().width - margin;
+
 				int headerHeight = 0;
-				if (d_table.getTableHeader() != null)
-					headerHeight = d_table.getTableHeader().getHeight();
-				
-				int height = d_table.getPreferredSize().height  + sp.getHorizontalScrollBar().getHeight() + headerHeight + 2; // FIXME: magic number
-				
+				if (table.getTableHeader() != null) {
+					headerHeight = table.getTableHeader().getHeight();
+				}
+
+				int height = table.getPreferredSize().height  + sp.getHorizontalScrollBar().getHeight() + headerHeight + padding;
+
 				sp.setPreferredSize(new Dimension(Math.min(tablewidth, panelwidth), height));
 				sp.revalidate();
 			}
 		};
-		d_table.addComponentListener(scrollPaneSizer);
-		
+		table.addComponentListener(scrollPaneSizer);
+
 		this.addHierarchyListener(new HierarchyListener() {
 			public void hierarchyChanged(HierarchyEvent e) {
 				if (findParent() != null) {
@@ -99,8 +89,8 @@ public class TablePanel extends JPanel {
 				}
 			}
 		});
-		
-		add(panel, BorderLayout.CENTER);
+
+		return panel;
 	}
 
 	protected Container findParent() {
