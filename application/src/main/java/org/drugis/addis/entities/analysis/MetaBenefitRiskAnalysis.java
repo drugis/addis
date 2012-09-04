@@ -307,7 +307,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	
 	public MCMCModelWrapper getBaselineModel(OutcomeMeasure om) {
 		MCMCModelWrapper model = d_baselineModelMap.get(om);
-		if (model == null || model.getDestroyed()) {
+		if (model == null || model.isDestroyed()) {
 			model = createBaselineModel(om);
 			d_baselineModelMap.put(om, model);
 		}
