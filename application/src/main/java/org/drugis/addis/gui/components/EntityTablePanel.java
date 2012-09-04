@@ -38,6 +38,7 @@ import org.drugis.addis.gui.renderer.EntityCellRenderer;
 import org.drugis.addis.presentation.EntityTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.common.gui.table.EnhancedTable;
+import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.binding.list.ObservableList;
 

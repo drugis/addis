@@ -38,6 +38,7 @@ import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 

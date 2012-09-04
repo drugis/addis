@@ -48,39 +48,41 @@ import org.drugis.mtc.Parameter;
 import org.drugis.mtc.summary.NormalSummary;
 import org.drugis.mtc.util.DerSimonianLairdPooling;
 import org.drugis.mtc.yadas.AbstractYadasModel;
+import org.drugis.mtc.yadas.YadasSettings;
 
 abstract public class AbstractBaselineModel<T extends Measurement> extends AbstractYadasModel {
 	protected List<T> d_measurements;
-	protected final RandomGenerator d_rng = new JDKRandomGenerator(); 
- 
+	protected final RandomGenerator d_rng = new JDKRandomGenerator();
+
 	private Parameter d_muParam = new Parameter() {
 		public String getName() {
 			return("mu");
 		}
-		public String toString() { 
+		public String toString() {
 			return getName();
 		};
 	};
-	
+
 	private Parameter d_sigmaParam = new Parameter() {
 		public String getName() {
 			return("sd");
 		}
-		public String toString() { 
+		public String toString() {
 			return getName();
 		};
 	};
-	
+
 	private NormalSummary d_summary;
-	
+
 	public AbstractBaselineModel(List<T> measurements) {
+		super(new YadasSettings(5000, 15000, 10, 4, 2.5));
 		setTuningIterations(5000);
 		setSimulationIterations(15000);
 		d_results.setDirectParameters(Collections.singletonList(d_muParam));
 		d_summary = new NormalSummary(d_results, d_muParam);
 		d_measurements = measurements;
 	}
-	
+
 	public NormalSummary getSummary() {
 		return d_summary;
 	}
@@ -89,7 +91,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 	protected List<Parameter> getParameters() {
 		return Arrays.asList(d_muParam, d_sigmaParam);
 	}
-	
+
 	protected double getStandardDeviationPrior() {
 		// FIXME: the factor 2 below is rather arbitrary. However, it is required to make
 		// the tests pass for network-br. Until baselines can be specified explicitly, it
@@ -104,11 +106,11 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 		}
 		return 2 * maxDev;
 	}
-	
+
 	protected abstract EstimateWithPrecision estimateTreatmentEffect(int i);
 
 	protected abstract void createDataBond(MCMCParameter studyMu);
-	
+
 	protected double[] initializeStandardDeviation() {
 		return new double[] {d_rng.nextDouble() * getStandardDeviationPrior()};
 	}
@@ -132,22 +134,22 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 	}
 
 	private double generate(final EstimateWithPrecision e) {
-		return e.getPointEstimate() + d_rng.nextGaussian() * VARIANCE_SCALING * e.getStandardError();
+		return e.getPointEstimate() + d_rng.nextGaussian() * getSettings().getVarianceScalingFactor() * e.getStandardError();
 	}
-	
+
 	@Override
 	protected void prepareModel() {
 	}
-	
+
 	@Override
 	protected void createChain(int chain) {
 		MCMCParameter studyMu = new MCMCParameter(initializeStudyMeans(), doubleArray(0.1, d_measurements.size()), null);
 		MCMCParameter mu = new MCMCParameter(initializeMean(), new double[] {0.1}, null);
 		MCMCParameter sd = new MCMCParameter(initializeStandardDeviation(), new double[] {0.1}, null);
-	
+
 		// data bond
 		createDataBond(studyMu);
-		
+
 		// studyMu bond
 		new BasicMCMCBond(new MCMCParameter[] {studyMu, mu, sd},
 				new ArgumentMaker[] {
@@ -155,7 +157,7 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 					new GroupArgument(1, new int[d_measurements.size()]),
 					new GroupArgument(2, new int[d_measurements.size()])
 				}, new Gaussian());
-	
+
 		// priors
 		new BasicMCMCBond(new MCMCParameter[] {mu},
 				new ArgumentMaker[] {
@@ -169,12 +171,12 @@ abstract public class AbstractBaselineModel<T extends Measurement> extends Abstr
 					new ConstantArgument(0.0),
 					new ConstantArgument(getStandardDeviationPrior())
 				}, new Uniform());
-		
+
 		List<MCMCParameter> parameters = new ArrayList<MCMCParameter>();
 		parameters.add(studyMu);
 		parameters.add(mu);
 		parameters.add(sd);
-		
+
 		addTuners(parameters);
 		addWriters(Arrays.asList(
 				d_results.getParameterWriter(d_muParam, chain, mu, 0),

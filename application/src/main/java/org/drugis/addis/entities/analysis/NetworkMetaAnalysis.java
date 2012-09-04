@@ -149,21 +149,21 @@ public class NetworkMetaAnalysis extends AbstractMetaAnalysis implements MetaAna
 	}
 
 	public synchronized InconsistencyWrapper<TreatmentDefinition> getInconsistencyModel() {
-		if (d_inconsistencyModel == null || d_inconsistencyModel.getDestroyed()) {
+		if (d_inconsistencyModel == null || d_inconsistencyModel.isDestroyed()) {
 			d_inconsistencyModel = createInconsistencyModel();
 		}
 		return d_inconsistencyModel;
 	}
 
 	public synchronized ConsistencyWrapper<TreatmentDefinition> getConsistencyModel() {
-		if (d_consistencyModel == null || d_consistencyModel.getDestroyed()) {
+		if (d_consistencyModel == null || d_consistencyModel.isDestroyed()) {
 			d_consistencyModel = createConsistencyModel();
 		}
 		return d_consistencyModel;
 	}
 
 	public synchronized NodeSplitWrapper<TreatmentDefinition> getNodeSplitModel(final BasicParameter p) {
-		if (!d_nodeSplitModels.containsKey(p) || d_nodeSplitModels.get(p).getDestroyed()) {
+		if (!d_nodeSplitModels.containsKey(p) || d_nodeSplitModels.get(p).isDestroyed()) {
 			d_nodeSplitModels.put(p, createNodeSplitModel(p));
 		}
 		return d_nodeSplitModels.get(p);

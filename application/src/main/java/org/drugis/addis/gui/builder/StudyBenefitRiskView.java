@@ -34,10 +34,10 @@ import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.DistributionQuantileCellRenderer;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.table.EnhancedTable;
+import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
