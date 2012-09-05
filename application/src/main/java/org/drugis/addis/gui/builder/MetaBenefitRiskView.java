@@ -158,7 +158,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<TreatmentDefini
 
 		builder.addSeparator("Relative effect distributions", cc.xyw(1, row, width));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField("Relative measurements: log odds-ratio or mean difference, with "
+		builder.add(AuxComponentFactory.createTextPane("Relative measurements: log odds-ratio or mean difference, with "
 				+ d_pm.getBaseline().getLabel() +" as the common comparator."),cc.xy(1, row));
 		row += 2;
 		final EnhancedTable table = EnhancedTable.createWithSorter(d_pm.getRelativeMeasurementTableModel());
@@ -169,7 +169,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<TreatmentDefini
 
 		builder.addSeparator("Baseline effect distributions", cc.xyw(1, row, width));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField("Baseline measurements: log odds or mean for " +
+		builder.add(AuxComponentFactory.createTextPane("Baseline measurements: log odds or mean for " +
 				d_pm.getBaseline().getLabel() + ". The method used to derive the assumed odds or mean are heuristic, "
 				+ "and these values should be interpreted with care."), cc.xy(1, row));
 		row += 2;
@@ -181,7 +181,7 @@ public class MetaBenefitRiskView extends AbstractBenefitRiskView<TreatmentDefini
 
 		builder.addSeparator("Measurements", cc.xyw(1, row, width));
 		row += 2;
-		builder.add(AuxComponentFactory.createHtmlField("Measurements: incidence approximated with logit-Normal distribution, or continuous variables approximated with a Normal distribution."),
+		builder.add(AuxComponentFactory.createTextPane("Measurements: incidence approximated with logit-Normal distribution, or continuous variables approximated with a Normal distribution."),
 				cc.xy(1, row));
 		row += 2;
 		final EnhancedTable table3 = EnhancedTable.createWithSorter(d_pm.getMeasurementTableModel());

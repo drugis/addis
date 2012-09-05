@@ -150,7 +150,7 @@ implements ViewBuilder {
 		builder.addSeparator("Memory usage", cc.xyw(1, row, colSpan));
 		row += 2;
 
-		builderheader.add(AuxComponentFactory.createHtmlField("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
+		builderheader.add(AuxComponentFactory.createTextPane("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
 				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
 		"discarding the results, it will no longer be possible to display the convergence plots."), cc.xy(1,1));
 
@@ -198,7 +198,7 @@ implements ViewBuilder {
 				"using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see " +
 				" G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, " +
 				"101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.";
-		final JComponent inconsistencyNote = AuxComponentFactory.createHtmlField(inconsistencyText);
+		final JComponent inconsistencyNote = AuxComponentFactory.createTextPane(inconsistencyText);
 
 		builder.add(inconsistencyNote, cc.xyw(1, row, colSpan));
 		row += 2;
@@ -276,7 +276,7 @@ implements ViewBuilder {
 				"even more with the data, and can be used to estimate the probability that, given the priors and the data, " +
 				"each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. " +
 				"Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.";
-		final JComponent consistencyNote = AuxComponentFactory.createHtmlField(consistencyText);
+		final JComponent consistencyNote = AuxComponentFactory.createTextPane(consistencyText);
 		builder.add(consistencyNote, cc.xyw(1, row, colSpan));
 
 		final TablePanel relativeEffectsTablePanel = createNetworkTablePanel(consistencyModel);
@@ -316,10 +316,10 @@ implements ViewBuilder {
 		row += 2;
 
 		builder.add(
-				AuxComponentFactory.createHtmlField("<p>Node-splitting analysis is an alternative method to assess inconsistency in network meta-analysis. " +
+				AuxComponentFactory.createTextPane("Node-splitting analysis is an alternative method to assess inconsistency in network meta-analysis. " +
 						"It assesses whether direct and indirect evidence on a specific node (the split node) are in agreement. " +
 						"While the results are easier to interpret, it requires a separate model to be run for each node to be split. " +
-						"</p><p>The table below allows you to compare the estimated quantiles for the direct and indirect evidence as well " +
+						"<p>The table below allows you to compare the estimated quantiles for the direct and indirect evidence as well " +
 						"as the combined evidence. In addition a P-value is shown; a large value indicates no significant inconsistency was found. " +
 						"See S. Dias et al. (2010), <em>Checking consistency in mixed treatment comparison meta-analysis</em>, " +
 						"Statistics in Medicine, 29(7-8, Sp. Iss. SI): 932-944. <a href=\"http://dx.doi.org/10.1002/sim.3767\">doi:10.1002/sim.3767</a>.</p>"),

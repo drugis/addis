@@ -26,11 +26,13 @@
 
 package org.drugis.addis.gui;
 
+import static org.drugis.common.gui.TextComponentFactory.createTextArea;
+import static org.drugis.common.gui.TextComponentFactory.putTextPaneInScrollPane;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.KeyboardFocusManager;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -48,15 +50,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 import javax.swing.text.StyledDocument;
@@ -69,10 +67,10 @@ import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.gui.wizard.AddStudyWizard;
 import org.drugis.addis.presentation.StudyCharacteristicHolder;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.common.BrowserLaunch;
 import org.drugis.common.gui.DayDateFormat;
 import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
+import org.drugis.common.gui.TextComponentFactory;
 
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
@@ -81,7 +79,6 @@ import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.util.DefaultUnitConverter;
 
 public class AuxComponentFactory {
 
@@ -94,15 +91,15 @@ public class AuxComponentFactory {
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model) {
 		return createBoundComboBox(values, model, false);
 	}
-	
+
 	public static <T> JComboBox createBoundComboBox(T[] values, ValueModel model, boolean isEntity) {
 		return createBoundComboBox(new ArrayListModel<T>(Arrays.asList(values)), model, isEntity);
 	}
-	
+
 	public static <T> JComboBox createBoundComboBox(ListModel list, ValueModel model, boolean isEntity) {
 		SelectionInList<T> selectionInList = new SelectionInList<T>(list, model);
 		JComboBox comboBox = BasicComponentFactory.createComboBox(selectionInList);
-		
+
 		if (isEntity) {
 			final ListCellRenderer renderer = comboBox.getRenderer();
 			comboBox.setRenderer(new ListCellRenderer() {
@@ -117,40 +114,10 @@ public class AuxComponentFactory {
 				}
 			});
 		}
-		
-		return comboBox;
-	}	
 
-	public static JScrollPane createTextArea(ValueModel model, boolean editable) {
-		return createTextArea(model, editable, true);
+		return comboBox;
 	}
-	
-	public static JScrollPane createTextArea(ValueModel model, boolean editable, boolean commitOnFocusLost) {
-		JTextArea area = BasicComponentFactory.createTextArea(model, commitOnFocusLost);
-		dontStealTabKey(area);
-		area.setEditable(editable);
-		area.setLineWrap(true);
-		area.setWrapStyleWord(true);
-		if (!editable) {
-			area.setUI(new javax.swing.plaf.basic.BasicTextAreaUI());
-		}
-		
-		JScrollPane pane = new JScrollPane(area);
-		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(new Dimension(
-				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(200, area), 
-				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(50, area)));
-		return pane;
-	}
-	
-	public static void dontStealTabKey(final JTextArea area) {
-		area.setFocusTraversalKeys(
-				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
-				new JLabel().getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
-		area.setFocusTraversalKeys(
-				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
-				new JLabel().getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
-	}
+
 
 	public static JComponent createCharacteristicView(StudyCharacteristicHolder model) {
 		JComponent component = null;
@@ -166,7 +133,7 @@ public class AuxComponentFactory {
 			component = new JPanel();
 			component.setLayout(new BoxLayout(component, BoxLayout.Y_AXIS));
 			for (PubMedId pmid : (PubMedIdList) model.getValue()) {
-				component.add(new LinkLabel(pmid.getId(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pmid.getId()));	
+				component.add(new LinkLabel(pmid.getId(), "http://www.ncbi.nlm.nih.gov/pubmed/" + pmid.getId()));
 			}
 		} else if (valueType.equals(Set.class)) {
 			component = new ListPanel(model, "value", Entity.class);
@@ -175,12 +142,12 @@ public class AuxComponentFactory {
 		}
 		return component;
 	}
-	
+
 	public static JTextField createNonNegativeIntegerTextField(ValueModel model) {
 	    NumberFormatter numberFormatter = new EmptyNumberFormatter(NumberFormat.getIntegerInstance(),0);
         numberFormatter.setValueClass(Integer.class);
         numberFormatter.setMinimum(0);
-		
+
 		JFormattedTextField field = new JFormattedTextField(numberFormatter);
 		field.setColumns(3);
 		Bindings.bind(field, model);
@@ -191,16 +158,16 @@ public class AuxComponentFactory {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(table, BorderLayout.CENTER);
 		panel.add(table.getTableHeader(), BorderLayout.PAGE_START);
-		
+
 		table.setBackground(Color.WHITE);
 		table.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		return panel;
 	}
-	
+
 	public static JRadioButton createDynamicEnabledRadioButton(String text, Object choice, ValueModel selectedValueModel, ValueModel enabledModel) {
 		JRadioButton button = BasicComponentFactory.createRadioButton(selectedValueModel, choice, text);
 		Bindings.bind(button,"enabled", enabledModel);
-		
+
 		return button;
 	}
 
@@ -208,7 +175,7 @@ public class AuxComponentFactory {
 			ValueHolder<Boolean> enabledModel,
 			ValueHolder<Boolean> selectedModel) {
 		JCheckBox checkBox = BasicComponentFactory.createCheckBox(selectedModel, name);
-		Bindings.bind(checkBox,"enabled", enabledModel);	
+		Bindings.bind(checkBox,"enabled", enabledModel);
 		return checkBox;
 	}
 
@@ -219,41 +186,14 @@ public class AuxComponentFactory {
 		return scroll;
 	}
 
-	public static JComponent createTextPane(String html, boolean scrollable) {
-		JTextPane area = new JTextPane();
-		area.setContentType("text/html");
-		area.setText(html);
-		area.setCaretPosition(0);
-		area.setEditable(false);
-		
-		if (!scrollable) {
-			area.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), 
-					BorderFactory.createEmptyBorder(4,4,4,4)));
-			return area;
-		}
-		
-		return putTextPaneInScrollPane(area);
-	}
-
-	private static JComponent putTextPaneInScrollPane(JTextPane area) {
-		JScrollPane pane = new JScrollPane(area);
-		pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		pane.setPreferredSize(defaultTextPaneDimension(area));
-		
-		pane.setWheelScrollingEnabled(true);
-		pane.getVerticalScrollBar().setValue(0);
-		
-		return pane;
-	}
-	
 	public static JComponent createNoteView(Note note, boolean scrollable) {
 		JTextPane area = new JTextPane();
-		
+
 		StyledDocument doc = area.getStyledDocument();
 		AddStudyWizard.addStylesToDoc(doc);
-		
+
 		area.setBackground(COLOR_NOTE);
-		
+
 		try {
 			switch (note.getSource()) {
 			case CLINICALTRIALS:
@@ -270,58 +210,28 @@ public class AuxComponentFactory {
 
 		area.setEditable(false);
 		if (!scrollable) {
-			area.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), 
+			area.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
 					BorderFactory.createEmptyBorder(4,4,4,4)));
 			return area;
 		}
-		
+
 		return putTextPaneInScrollPane(area);
 	}
-	
+
 	/**
 	 * Create a styled HTML text pane with a certain (HTML) body text. Use &lt;p&gt;'s to structure.
+	 * Allows links in &lt;a href=""&gt;link&lt;/a&gt; style
 	 */
-	public static JComponent createHtmlField(String bodyText) {	
-		JLabel label = new JLabel("<html><div style='margin:0; padding: 10px;'>" + bodyText + "</div></html>", SwingConstants.CENTER);
-		label.setOpaque(true);
-		label.setBackground(COLOR_NOTE);
-		label.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-		return label;
+	public static JTextPane createTextPane(String str) {
+		JTextPane pane = TextComponentFactory.createTextPaneWithHyperlinks("<html><div style='margin:0; padding: 10px;'>" + str + "</div></html>", COLOR_NOTE, true);
+		pane.setOpaque(true);
+		pane.setBackground(COLOR_NOTE);
+		pane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		return pane;
 	}
-	
+
 	public static JLabel createAutoWrapLabel(ValueModel value) {
 		return BasicComponentFactory.createLabel(new HTMLWrappingModel(value));
 	}
 
-	public static Dimension defaultTextPaneDimension(JTextPane area) {
-		return AuxComponentFactory.textPaneDimension(area, 230, 50);
-	}
-
-	public static Dimension textPaneDimension(JTextPane area, int dluX, int dluY) {
-		return new Dimension(
-				DefaultUnitConverter.getInstance().dialogUnitXAsPixel(dluX, area), 
-				DefaultUnitConverter.getInstance().dialogUnitYAsPixel(dluY, area));
-	}
-
-	public static JTextPane createTextPaneWithHyperlinks(String str) {
-		return createTextPaneWithHyperlinks(str, COLOR_NOTE, true);
-	}
-	
-	public static JTextPane createTextPaneWithHyperlinks(String str, Color bg, boolean opaque) {
-		JTextPane pane = new JTextPane();
-		pane.setBackground(bg);
-		pane.setContentType("text/html");
-		pane.setText(str);
-		pane.setEditable(false);
-		pane.setOpaque(opaque);
-		pane.addHyperlinkListener(new HyperlinkListener() {
-			@Override
-			public void hyperlinkUpdate(HyperlinkEvent e) {
-				if(HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType())) {
-					BrowserLaunch.openURL(e.getURL().toExternalForm());
-				}
-			}
-		});
-		return pane;
-	}
 }
