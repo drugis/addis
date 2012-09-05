@@ -66,6 +66,7 @@ import org.drugis.common.gui.table.TableCopyHandler;
 import org.drugis.common.gui.table.TablePanel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.mtc.gui.Help;
 import org.drugis.mtc.gui.MainWindow;
 import org.drugis.mtc.gui.results.NetworkRelativeEffectTableCellRenderer;
 import org.drugis.mtc.gui.results.ResultsComponentFactory;
@@ -150,9 +151,7 @@ implements ViewBuilder {
 		builder.addSeparator("Memory usage", cc.xyw(1, row, colSpan));
 		row += 2;
 
-		builderheader.add(AuxComponentFactory.createTextPane("Network meta-analysis results can use quite a bit of memory. Here, the results of " +
-				"analyses may be discarded to save memory. The aggregate-level results will be maintained. However, after " +
-		"discarding the results, it will no longer be possible to display the convergence plots."), cc.xy(1,1));
+		builderheader.add(AuxComponentFactory.createTextPane(Help.getHelpText("memoryUsage")), cc.xy(1,1));
 
 		builder.add(builderheader.getPanel(), cc.xyw(1, row, colSpan));
 		row += 2;
@@ -191,14 +190,7 @@ implements ViewBuilder {
 
 		row += 2;
 
-		final String inconsistencyText = "In network meta-analysis, because of the more complex evidence structure, we can assess <em>inconsistency</em> of evidence, " +
-				"in addition to <em>heterogeneity</em> within a comparison. Whereas heterogeneity represents between-study variation in the measured relative effect" +
-				"of a pair of treatments, inconsistency can only occur when a treatment C has a different effect when it is compared with A or B (i.e., studies comparing " +
-				"A and C are systematically different from studies comparing B and C). Thus, inconsistency may even occur with normal meta-analysis, but can only be detected " +
-				"using a network meta-analysis, and then only when there are closed loops in the evidence structure. For more information about assessing inconsistency, see " +
-				" G. Lu and A. E. Ades (2006), <em>Assessing evidence inconsistency in mixed treatment comparisons</em>, Journal of the American Statistical Association, " +
-				"101(474): 447-459. <a href=\"http://dx.doi.org/10.1198/016214505000001302\">doi:10.1198/016214505000001302</a>.";
-		final JComponent inconsistencyNote = AuxComponentFactory.createTextPane(inconsistencyText);
+		final JComponent inconsistencyNote = AuxComponentFactory.createTextPane(Help.getHelpText("inconsistency"));
 
 		builder.add(inconsistencyNote, cc.xyw(1, row, colSpan));
 		row += 2;
@@ -267,16 +259,8 @@ implements ViewBuilder {
 		builder.add(simulationControls, cc.xyw(1, row, 3));
 
 		row += 2;
-		final String consistencyText = "If there is no relevant inconsistency in the evidence, a consistency model can be used to draw " +
-				"conclusions about the relative effect of the included treatments. Using normal meta-analysis, we could only get a " +
-				"subset of the confidence intervals for relative effects we derive using network meta-analysis. " +
-				"Network meta-analysis gives a consistent, integrated picture of the relative effects. " +
-				"However, given such a consistent set of relative effect estimates, it may still be difficult to draw " +
-				"conclusions on a potentially large set of treatments. Luckily, the Bayesian approach allows us to do " +
-				"even more with the data, and can be used to estimate the probability that, given the priors and the data, " +
-				"each of the treatments is the best, the second best, etc. This is given below in the rank probability plot. " +
-				"Rank probabilities sum to one, both within a rank over treatments and within a treatment over ranks.";
-		final JComponent consistencyNote = AuxComponentFactory.createTextPane(consistencyText);
+
+		final JComponent consistencyNote = AuxComponentFactory.createTextPane(Help.getHelpText("consistency"));
 		builder.add(consistencyNote, cc.xyw(1, row, colSpan));
 
 		final TablePanel relativeEffectsTablePanel = createNetworkTablePanel(consistencyModel);
@@ -315,14 +299,7 @@ implements ViewBuilder {
 		builder.addSeparator("Results - node-splitting analysis of inconsistency", cc.xyw(1, row, colSpan));
 		row += 2;
 
-		builder.add(
-				AuxComponentFactory.createTextPane("Node-splitting analysis is an alternative method to assess inconsistency in network meta-analysis. " +
-						"It assesses whether direct and indirect evidence on a specific node (the split node) are in agreement. " +
-						"While the results are easier to interpret, it requires a separate model to be run for each node to be split. " +
-						"<p>The table below allows you to compare the estimated quantiles for the direct and indirect evidence as well " +
-						"as the combined evidence. In addition a P-value is shown; a large value indicates no significant inconsistency was found. " +
-						"See S. Dias et al. (2010), <em>Checking consistency in mixed treatment comparison meta-analysis</em>, " +
-						"Statistics in Medicine, 29(7-8, Sp. Iss. SI): 932-944. <a href=\"http://dx.doi.org/10.1002/sim.3767\">doi:10.1002/sim.3767</a>.</p>"),
+		builder.add(AuxComponentFactory.createTextPane(Help.getHelpText("nodeSplit")),
 				cc.xyw(1, row, colSpan));
 		row += 2;
 

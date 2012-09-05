@@ -37,6 +37,7 @@ import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.components.ListPanel;
 import org.drugis.addis.presentation.AbstractMetaAnalysisPresentation;
+import org.drugis.mtc.gui.Help;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -91,8 +92,7 @@ public abstract class AbstractMetaAnalysisView<T extends AbstractMetaAnalysisPre
 		builder.add(drugList, cc.xy(3, 9));
 
 		if(d_pm.getBean() instanceof NetworkMetaAnalysis){
-			String paneText =  "Network Meta-Analysis (or Mixed Treatment Comparison, MTC) is a technique to meta-analyze more than two drugs at the same time. Using a full Bayesian evidence network, all indirect comparisons are taken into account to arrive at a single, integrated, estimate of the effect of all included treatments based on all included studies.";
-			JComponent generalPane = AuxComponentFactory.createTextPane(paneText);
+			JComponent generalPane = AuxComponentFactory.createTextPane(Help.getHelpText("networkMetaAnalysis"));
 			builder.add(generalPane, cc.xyw(1, 11, 3));
 		}
 

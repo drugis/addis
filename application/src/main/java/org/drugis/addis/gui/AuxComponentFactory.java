@@ -223,7 +223,7 @@ public class AuxComponentFactory {
 	 * Allows links in &lt;a href=""&gt;link&lt;/a&gt; style
 	 */
 	public static JTextPane createTextPane(String str) {
-		JTextPane pane = TextComponentFactory.createTextPaneWithHyperlinks("<html><div style='margin:0; padding: 10px;'>" + str + "</div></html>", COLOR_NOTE, true);
+		JTextPane pane = TextComponentFactory.createTextPaneWithHyperlinks("<html><div style='margin:0; padding: 0px 10px 10px 10px;'>" + str + "</div></html>", COLOR_NOTE, true);
 		pane.setOpaque(true);
 		pane.setBackground(COLOR_NOTE);
 		pane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
