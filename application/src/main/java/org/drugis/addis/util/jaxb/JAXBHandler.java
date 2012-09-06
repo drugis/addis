@@ -101,6 +101,7 @@ public class JAXBHandler {
 		Marshaller marshaller = s_jaxb.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-" + XmlFormatType.CURRENT_VERSION + ".xsd");
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		marshaller.marshal(data, os);
 	}
 

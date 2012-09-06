@@ -28,21 +28,22 @@ package org.drugis.addis.gui;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
@@ -53,27 +54,25 @@ import org.drugis.addis.util.jaxb.JAXBHandler;
 import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
 import org.drugis.common.ImageLoader;
 import org.drugis.common.beans.AbstractObservable;
+import org.drugis.common.gui.ErrorDialog;
 import org.drugis.common.gui.FileLoadDialog;
 import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.threading.ThreadHandler;
-import org.drugis.common.threading.event.TaskFailedEvent;
 
 @SuppressWarnings("serial")
 public class Main extends AbstractObservable {
 	public static final ImageLoader IMAGELOADER = new ImageLoader("/org/drugis/addis/gfx/");
-	public static class ErrorDialogExceptionHandler {
-		public void handle(Throwable e) {
-			e.printStackTrace();
-			ErrorDialog.showDialog(e, "Unexpected error.");
-		}
-	}
-
 	private static final String EXAMPLE_XML = "defaultData.addis";
 	private static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
 	static final String DISPLAY_EXAMPLE = "Example Data";
 	static final String DISPLAY_NEW = "New File";
 	public static final String PROPERTY_DISPLAY_NAME = "displayName";
+	private static final String BUG_REPORTING_TEXT = "<html>This is probably a bug. " +
+			"Help us improve ADDIS by reporting this problem to us.<br/>" +
+			"Attaching the stack trace and the .addis data file would be very helpful.<br/>" +
+			"See <a href=\"http://drugis.org/addis-bug\">http://drugis.org/addis-bug</a> for instructions.<br/><br/>" +
+			"Consider restarting ADDIS.</html>";
 
 	private static AddisWindow s_window;
 
@@ -100,26 +99,6 @@ public class Main extends AbstractObservable {
 		if (args.length > 0) {
 			d_curFilename = args[0];
 		}
-
-		addTaskFailureListener();
-	}
-
-	private void addTaskFailureListener() {
-		ThreadHandler.getInstance().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getPropertyName().equals(ThreadHandler.PROPERTY_FAILED_TASK)) {
-					final TaskFailedEvent taskEvent = (TaskFailedEvent) event.getNewValue();
-
-					Runnable r = new Runnable() {
-						public void run() {
-							Throwable cause = taskEvent.getCause();
-							ErrorDialog.showDialog(cause, taskEvent.getSource() + " failed");
-						}
-					};
-					SwingUtilities.invokeLater(r);
-				}
-			}
-		});
 	}
 
 	public static void bindPrintScreen(Container container) {
@@ -163,6 +142,35 @@ public class Main extends AbstractObservable {
 	}
 
 
+	public static class XMLStreamFilter extends FilterOutputStream {
+		private static List<Character> s_invalids = new ArrayList<Character>();
+		static {
+			for (int i = 0x0; i <= 0xFFFD; i++) {
+				if (!((i == 0x9) || (i == 0xA) || (i == 0xD) || ((i >= 0x20) && (i <= 0xD7FF)))) {
+					s_invalids.add((char) i);
+				}
+			}
+		}
+
+		public XMLStreamFilter(OutputStream out) {
+			super(out);
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			if(!s_invalids.contains((char)b)) {
+				super.write(b);
+			} else {
+				System.err.println("Removing invalid character while marshalling XML: " + (char)b);
+			}
+		}
+
+		public static List<Character> getCharacters() {
+			return s_invalids;
+		}
+
+	}
+
 	private void saveDomainToXMLFile(String fileName) throws IOException {
 		File f = new File(fileName);
 		if (f.exists()) {
@@ -170,8 +178,11 @@ public class Main extends AbstractObservable {
 		}
 
 		FileOutputStream fos = new FileOutputStream(f);
-		d_domainMgr.saveXMLDomain(fos);
+		FilterOutputStream os = new XMLStreamFilter(fos);
+
+		d_domainMgr.saveXMLDomain(os);
 	}
+
 
 	private void initializeDomain() {
 		d_domainMgr = new DomainManager();
@@ -333,22 +344,12 @@ public class Main extends AbstractObservable {
 	}
 
 	public static void main(final String[] args) {
-		System.setProperty("sun.awt.exception.handler", ErrorDialogExceptionHandler.class.getName());
-
-		ThreadGroup threadGroup = new ThreadGroup("ExceptionGroup") {
-			public void uncaughtException(Thread t, Throwable e) {
-				e.printStackTrace();
-				ErrorDialog.showDialog(e, "Unexpected error.");
-			}
-		};
-
-		Thread mainThread = new Thread(threadGroup, "Main thread") {
+		GUIHelper.startApplicationWithErrorHandler(new Runnable() {
 			public void run() {
 				Main main = new Main(args, false);
 				main.startGUI();
 			}
-		};
-		mainThread.start();
+		}, BUG_REPORTING_TEXT);
 	}
 
 	private void startGUI() {

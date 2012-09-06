@@ -48,7 +48,7 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<Arm, StudyBene
 	public StudyBenefitRiskView(StudyBenefitRiskPresentation model, AddisWindow mainWindow) {
 		super(model, mainWindow);
 	}
-	
+
 	public JPanel buildMeasurementsPanel() {
 		CellConstraints cc = new CellConstraints();
 		FormLayout layout = new FormLayout("fill:0:grow",
@@ -56,7 +56,7 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<Arm, StudyBene
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 
-		builder.add(AuxComponentFactory.createHtmlField("Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution."),
+		builder.add(AuxComponentFactory.createTextPane("Measurements: incidence approximated with Beta-distribution, or continuous variables approximated with a Normal distribution."),
 				cc.xy(1, 1));
 		EnhancedTable table = EnhancedTable.createWithSorter(((StudyBenefitRiskPresentation) d_pm).getMeasurementTableModel());
 		table.setDefaultRenderer(Distribution.class, new DistributionQuantileCellRenderer());
@@ -70,17 +70,17 @@ public class StudyBenefitRiskView extends AbstractBenefitRiskView<Arm, StudyBene
 	protected JPanel buildOverviewPanel() {
 		FormLayout layout = new FormLayout(
 				"fill:0:grow",
-				"p, 3dlu, p, " + // 1-3 
+				"p, 3dlu, p, " + // 1-3
 				"3dlu, p");
-		
+
 		PanelBuilder builder = new PanelBuilder(layout, new JPanel());
 		builder.setDefaultDialogBorder();
-		
+
 		CellConstraints cc =  new CellConstraints();
-		
+
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(BenefitRiskAnalysis.class).getSingularCapitalized(), cc.xy(1, 1));
 		builder.add(buildOverviewPart(), cc.xy(1, 3));
-		
+
 		return builder.getPanel();
 	}
 

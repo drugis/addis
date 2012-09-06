@@ -59,6 +59,7 @@ import org.drugis.addis.presentation.wizard.CriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.MetaCriteriaAndAlternativesPresentation;
 import org.drugis.addis.presentation.wizard.StudyCriteriaAndAlternativesPresentation;
 import org.drugis.common.gui.LayoutUtil;
+import org.drugis.common.gui.TextComponentFactory;
 import org.pietschy.wizard.InvalidStateException;
 import org.pietschy.wizard.PanelWizardStep;
 import org.pietschy.wizard.Wizard;
@@ -80,11 +81,11 @@ public class BenefitRiskWizard extends Wizard {
 
 	public BenefitRiskWizard(AddisWindow mainWindow, BenefitRiskWizardPM pm) {
 		super(buildModel(pm, mainWindow));
-		
+
 		getTitleComponent().setPreferredSize(new Dimension(700 , 100));
 		setPreferredSize(new Dimension(700, 550));
 		setMinimumSize(new Dimension(700, 550));
-		
+
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
 
@@ -111,28 +112,28 @@ public class BenefitRiskWizard extends Wizard {
 				return pm.getEvidenceTypeHolder().getValue() == BRAType.Synthesis;
 			}
 		});
-		
+
 		return wizardModel;
-		
-		
+
+
 	}
 
 	private static <Alternative extends Comparable<Alternative> & Entity> Component buildAlternativesPanel(FormLayout layout, CriteriaAndAlternativesPresentation<Alternative> critAltPM) {
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		
+
 		JLabel alternativesLabel = new JLabel("Alternatives");
 		alternativesLabel.setFont(alternativesLabel.getFont().deriveFont(Font.BOLD));
 		builder.add(alternativesLabel, cc.xy(1, 1));
-		
+
 		int row = 1;
 		for (final Alternative a : critAltPM.getAlternativesListModel()){
 			LayoutUtil.addRow(layout);
 
 			final ValueHolder<Boolean> selectedModel = critAltPM.getAlternativeSelectedModel(a);
 			final ValueHolder<Boolean> enabledModel  = critAltPM.getAlternativeEnabledModel(a);
-			
-			JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.getLabel(), enabledModel, selectedModel);				
+
+			JCheckBox armCheckbox = AuxComponentFactory.createDynamicEnabledBoundCheckbox(a.getLabel(), enabledModel, selectedModel);
 			builder.add(armCheckbox, cc.xy(1, row += 2));
 		}
 
@@ -142,17 +143,17 @@ public class BenefitRiskWizard extends Wizard {
 		builder.add(AuxComponentFactory.createBoundComboBox(critAltPM.getSelectedAlternatives(), model, true), cc.xy(1, row += 2));
 
 		return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
-	}	
-	
+	}
+
 
 	private static <Alternative extends Comparable<Alternative>> int addCriterionCheckbox(OutcomeMeasure out,
 			CriteriaAndAlternativesPresentation<Alternative> critAltPM, FormLayout layout, PanelBuilder builder,
 			CellConstraints cc, int row) {
 		// Add outcome measure checkbox
 		row = LayoutUtil.addRow(layout, row);
-		
-		builder.add(AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(), 
-				critAltPM.getCriterionEnabledModel(out), 
+
+		builder.add(AuxComponentFactory.createDynamicEnabledBoundCheckbox(out.getName(),
+				critAltPM.getCriterionEnabledModel(out),
 				critAltPM.getCriterionSelectedModel(out)), cc.xyw(1, row, 3));
 		return row;
 	}
@@ -161,37 +162,37 @@ public class BenefitRiskWizard extends Wizard {
 		private static final long serialVersionUID = 5441828903910494369L;
 
 		public DescriptivesStep(BenefitRiskWizardPM pm) {
-			super("BRAT descriptives", 
+			super("BRAT descriptives",
 					"Define the decision context according to the BRAT framework");
 			setComplete(true);
-			
+
 			FormLayout layout = new FormLayout(
 					"right:pref, 3dlu, fill:0:grow",
 					"p"
 			);
-	
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			builder.setDefaultDialogBorder();
-			
+
 			int row = 1;
-			
+
 			for (AbstractBenefitRiskPresentation.DecisionContextField field : pm.getDecisionContextFields()) {
 				builder.addLabel(field.getName() + ": ", cc.xy(1, row));
-				builder.add(AuxComponentFactory.createTextArea(field.getModel(), true), cc.xy(3, row));
+				builder.add(TextComponentFactory.createTextArea(field.getModel(), true), cc.xy(3, row));
 				row = LayoutUtil.addRow(layout, row);
-				builder.add(AuxComponentFactory.createHtmlField(field.getHelpText()), cc.xy(3, row));
+				builder.add(AuxComponentFactory.createTextPane(field.getHelpText()), cc.xy(3, row));
 				row = LayoutUtil.addRow(layout, row, "7dlu");
 			}
-			
+
 			this.setLayout(new BorderLayout());
 			JScrollPane scrollPane = new AddisScrollPane(builder.getPanel());
-		
+
 			add(scrollPane, BorderLayout.CENTER);
 		}
 	}
-	
+
 	private static class FirstWizardStep extends PanelWizardStep {
 		private static final long serialVersionUID = 2986876155242979527L;
 
@@ -202,18 +203,18 @@ public class BenefitRiskWizard extends Wizard {
 			FormLayout layout = new FormLayout(
 					"right:pref, 3dlu, left:pref:grow",
 					"p, 7dlu, p, 7dlu, p, 7dlu, p, 7dlu, p"
-			);	
-	
+			);
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			int row = 1;
-			
+
 			builder.add(IndicationAndNameInputPanel.create(this, pm), cc.xyw(1, row, 3));
 
 			row += 2;
 			builder.add(BasicComponentFactory.createCheckBox(pm.getIncludeDescriptivesModel(), "Include BRAT decision context definition"), cc.xyw(1, row, 3));
-			
+
 			row += 2;
 			builder.add(new JLabel("Study type : "), cc.xy(1, row));
 			JPanel studyTypeRadioButtonPanel = new JPanel();
@@ -223,7 +224,7 @@ public class BenefitRiskWizard extends Wizard {
 			studyTypeRadioButtonPanel.add(MetaAnalysisButton);
 		    studyTypeRadioButtonPanel.add(StudyButton);
 		    builder.add(studyTypeRadioButtonPanel, cc.xy(3, row));
-		    
+
 			row += 2;
 			builder.add(new JLabel("Analysis type : "), cc.xy(1, row));
 			JPanel analysisTypeRadioButtonPanel = new JPanel();
@@ -233,7 +234,7 @@ public class BenefitRiskWizard extends Wizard {
 			analysisTypeRadioButtonPanel.add(SMAAButton);
 		    analysisTypeRadioButtonPanel.add(LyndOBrienButton);
 		    builder.add(analysisTypeRadioButtonPanel, cc.xy(3, row));
-		    
+
 			add(builder.getPanel());
 		}
 	}
@@ -260,40 +261,40 @@ public class BenefitRiskWizard extends Wizard {
 		private AddisWindow d_main;
 		private StudyCriteriaAndAlternativesPresentation d_studyPM;
 		private final BenefitRiskWizardPM d_pm;
-	
+
 		public SelectOutcomeMeasuresAndArmsWizardStep(BenefitRiskWizardPM pm, StudyCriteriaAndAlternativesPresentation studyCriteriaAndAlternativesPresentation, AddisWindow main) {
 			super("Select OutcomeMeasures and Arms","In this step you select the criteria (specific outcomemeasures) " +
 					"and the alternatives (drugs) to include in the benefit-risk analysis. To perform the analysis, at least " +
 					"two criteria and at least two alternatives must be included.");
 			d_pm = pm;
 			d_main = main;
-			d_studyPM = studyCriteriaAndAlternativesPresentation;	
+			d_studyPM = studyCriteriaAndAlternativesPresentation;
 		}
-		
+
 		@Override
 		public void prepare() {
 			removeAll();
 			add(buildPanel());
 			Bindings.bind(this, "complete", d_pm.getCompleteModel());
 		}
-		
+
 		@Override
 		public void applyState() throws InvalidStateException {
 			d_main.leftTreeFocus(d_pm.saveAnalysis());
 		}
-		
+
 		private JPanel buildPanel() {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p"
-					);	
-			
+					);
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			builder.add(buildOutcomeMeasuresPane(), cc.xy(1, 1));
 			builder.add(buildAlternativesPane(), cc.xy(3, 1));
-			
+
 			return builder.getPanel();
 		}
 
@@ -301,11 +302,11 @@ public class BenefitRiskWizard extends Wizard {
 			FormLayout layout = new FormLayout(
 					"left:pref:grow, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
-					);	
-			
+					);
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			JLabel outcomeMeasuresLabel = new JLabel("Criteria");
 			outcomeMeasuresLabel.setFont(outcomeMeasuresLabel.getFont().deriveFont(Font.BOLD));
 			builder.add(outcomeMeasuresLabel, cc.xyw(1, 1, 3));
@@ -314,7 +315,7 @@ public class BenefitRiskWizard extends Wizard {
 				// Add outcome measure checkbox
 				row = addCriterionCheckbox(out, d_studyPM, layout, builder, cc, row);
 			}
-			
+
 			return AuxComponentFactory.createInScrollPane(builder, PREFERRED_COLUMN_SIZE);
 		}
 
@@ -322,11 +323,11 @@ public class BenefitRiskWizard extends Wizard {
 			FormLayout layout = new FormLayout(
 					"left:pref, 3dlu, left:pref",
 					"p, 3dlu, p, 3dlu, p"
-					);	
+					);
 
 			return buildAlternativesPanel(layout, d_studyPM);
 		}
-	
+
 	}
 
 	public static class SelectCriteriaAndAlternativesWizardStep extends PanelWizardStep {
@@ -342,7 +343,7 @@ public class BenefitRiskWizard extends Wizard {
 				  "and at least two alternatives must be included.");
 			d_mainWindow = main;
 			d_pm = pm;
-			d_metaPM = d_pm.getMetaBRPresentation(); 
+			d_metaPM = d_pm.getMetaBRPresentation();
 		}
 
 		@Override
@@ -351,7 +352,7 @@ public class BenefitRiskWizard extends Wizard {
 			add(buildPanel());
 			Bindings.bind(this, "complete", d_pm.getCompleteModel());
 		}
-		
+
 		@Override
 		public void applyState() throws InvalidStateException {
 			d_mainWindow.leftTreeFocus(d_pm.saveAnalysis());
@@ -359,12 +360,12 @@ public class BenefitRiskWizard extends Wizard {
 
 		private JComponent buildPanel() {
 			GridLayout layout = new GridLayout(1, 2, 15, 0);
-			
+
 			JPanel panel = new JPanel(layout);
-			
+
 			panel.add(buildCriteriaPane());
 			panel.add(buildAlternativesPane());
-			
+
 			return panel;
 		}
 
@@ -398,7 +399,7 @@ public class BenefitRiskWizard extends Wizard {
 			} else {
 				String warnHTMLText = "<i>Note</i>: To create a benefit-risk analysis, first create " +
 						"at least two meta-analyses with at least two overlapping alternatives.";
-				JComponent htmlField = AuxComponentFactory.createHtmlField(warnHTMLText);
+				JComponent htmlField = AuxComponentFactory.createTextPane(warnHTMLText);
 				htmlField.setPreferredSize(new Dimension(PREFERRED_COLUMN_SIZE.width - 5, 100));
 
 				int row = 1;
@@ -413,10 +414,10 @@ public class BenefitRiskWizard extends Wizard {
 			// create the panel
 			JPanel radioButtonPanel = new JPanel();
 			radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel,BoxLayout.Y_AXIS));
-			
+
 			// Retrieve the valueModel to see whether we should enable the radio-buttons.
 			ValueHolder<Boolean> enabledModel = d_metaPM.getCriterionSelectedModel(out);
-			
+
 			// Add the radio buttons
 			for (MetaAnalysis ma : d_metaPM.getMetaAnalyses(out)){
 				ValueHolder<MetaAnalysis> selectedModel = d_metaPM.getMetaAnalysesSelectedModel(out);
@@ -430,8 +431,8 @@ public class BenefitRiskWizard extends Wizard {
 			FormLayout layout = new FormLayout(
 					"left:pref",
 					"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
-					);	
-			
+					);
+
 			return buildAlternativesPanel(layout, d_metaPM);
 		}
 
