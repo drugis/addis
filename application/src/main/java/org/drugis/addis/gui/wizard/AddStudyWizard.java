@@ -36,11 +36,14 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -1002,18 +1005,13 @@ public class AddStudyWizard extends Wizard {
 		private JComponent d_titleField;
 		private PanelBuilder d_builder;
 		private JButton d_importButton;
-		private BooleanAndModel d_validator = new BooleanAndModel();
+		private List<ValueModel> d_validators = new LinkedList<ValueModel>();
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
 
 		private class IdStepValidator extends NonEmptyValueModel {
 			public IdStepValidator(ValueModel idModel) {
 				super(idModel);
-//				 idModel.addValueChangeListener(new PropertyChangeListener() {
-//					public void propertyChange(PropertyChangeEvent evt) {
-//						update();
-//					}
-//				});
 			}
 
 			@Override
@@ -1029,16 +1027,27 @@ public class AddStudyWizard extends Wizard {
 
 		@Override
 		public void prepare() {
-			 this.setVisible(false);
-			 d_validator.add(new IdStepValidator(d_pm.getIdModel()));
-			 PropertyConnector.connectAndUpdate(d_validator, this, "complete");
+			this.setVisible(false);
+			d_validators.clear();
+			d_validators.add(new IdStepValidator(d_pm.getIdModel()));
+			d_validators.add(new NonEmptyValueModel(d_pm.getTitleModel()));
 
-			 if (d_scrollPane != null)
-				 remove(d_scrollPane);
+			if (d_scrollPane != null)
+				remove(d_scrollPane);
 
-			 buildWizardStep();
-			 this.setVisible(true);
-			 repaint();
+			buildWizardStep();
+			final BooleanAndModel validator = new BooleanAndModel(d_validators);
+			validator.addPropertyChangeListener(new PropertyChangeListener() {
+
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					System.out.println("Changed! to " + validator.getValue());
+				}
+			});
+			PropertyConnector.connectAndUpdate(validator, this, "complete");
+
+			this.setVisible(true);
+			repaint();
 		}
 
 		private void buildWizardStep() {
@@ -1096,7 +1105,6 @@ public class AddStudyWizard extends Wizard {
 				// add title label
 				d_builder.addLabel("Title:",cc.xy(1, 7));
 				d_titleField = TextComponentFactory.createTextArea(d_pm.getTitleModel(), true, false);
-				d_validator.add(new NonEmptyValueModel(d_pm.getTitleModel()));
 				d_builder.add(d_titleField, cc.xy(3, 7));
 
 				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));
