@@ -85,7 +85,7 @@ public class NetworkBenefitRiskIT extends NetworkBenefitRiskTestBase {
 		d_brpm = new MetaBenefitRiskPresentation(d_br, null);
 		for (final AddisMCMCPresentation model : d_brpm.getWrappedModels()) {
 			System.out.println("Running " + model);
-			model.getModel().setSimulationIterations(50000);
+			model.getModel().setSimulationIterations(100000);
 			model.getModel().setExtendSimulation(ExtendSimulation.FINISH);
 			TaskUtil.run(model.getModel().getActivityTask());
 		}
