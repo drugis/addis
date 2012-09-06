@@ -96,8 +96,8 @@ public class JAXBHandlerTest {
 	@Test
 	public void doNotSerializeInvalidCharsTest() throws JAXBException, ConversionException, IOException {
 		DomainImpl domainImpl = new DomainImpl();
-
-		System.setErr(new PrintStream(new OutputStream() { // Supress system err output for test
+		PrintStream err = System.err;
+		System.setErr(new PrintStream(new OutputStream() { // suppress system err output for test
 		    public void write(int b) {
 		    }
 		}));
@@ -113,6 +113,7 @@ public class JAXBHandlerTest {
 		os.close();
 
 		JAXBHandler.unmarshallAddisData(new ByteArrayInputStream(out.toByteArray()));
+		System.setErr(err); // reset system.err output
 	}
 
 	@Test
@@ -121,7 +122,6 @@ public class JAXBHandlerTest {
 		XmlFormatType emptyVersion = JAXBHandler.determineXmlType(emptyInput);
 		assertFalse(emptyVersion.isValid());
 		assertFalse(emptyVersion.isLegacy());
-
 		ByteArrayInputStream v3input = new ByteArrayInputStream(V3_XML.getBytes());
 		XmlFormatType v3version = JAXBHandler.determineXmlType(v3input);
 		assertTrue(v3version.isValid());
