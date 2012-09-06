@@ -36,8 +36,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1037,13 +1035,6 @@ public class AddStudyWizard extends Wizard {
 
 			buildWizardStep();
 			final BooleanAndModel validator = new BooleanAndModel(d_validators);
-			validator.addPropertyChangeListener(new PropertyChangeListener() {
-
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					System.out.println("Changed! to " + validator.getValue());
-				}
-			});
 			PropertyConnector.connectAndUpdate(validator, this, "complete");
 
 			this.setVisible(true);
