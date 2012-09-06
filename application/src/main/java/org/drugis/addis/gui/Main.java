@@ -32,8 +32,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -138,6 +142,35 @@ public class Main extends AbstractObservable {
 	}
 
 
+	public static class XMLStreamFilter extends FilterOutputStream {
+		private static List<Character> s_invalids = new ArrayList<Character>();
+		static {
+			for (int i = 0x0; i <= 0xFFFD; i++) {
+				if (!((i == 0x9) || (i == 0xA) || (i == 0xD) || ((i >= 0x20) && (i <= 0xD7FF)))) {
+					s_invalids.add((char) i);
+				}
+			}
+		}
+
+		public XMLStreamFilter(OutputStream out) {
+			super(out);
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			if(!s_invalids.contains((char)b)) {
+				super.write(b);
+			} else {
+				System.err.println("Removing invalid character while marshalling XML: " + (char)b);
+			}
+		}
+
+		public static List<Character> getCharacters() {
+			return s_invalids;
+		}
+
+	}
+
 	private void saveDomainToXMLFile(String fileName) throws IOException {
 		File f = new File(fileName);
 		if (f.exists()) {
@@ -145,8 +178,11 @@ public class Main extends AbstractObservable {
 		}
 
 		FileOutputStream fos = new FileOutputStream(f);
-		d_domainMgr.saveXMLDomain(fos);
+		FilterOutputStream os = new XMLStreamFilter(fos);
+
+		d_domainMgr.saveXMLDomain(os);
 	}
+
 
 	private void initializeDomain() {
 		d_domainMgr = new DomainManager();

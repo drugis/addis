@@ -31,31 +31,39 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
+import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.data.AddisData;
-import org.drugis.addis.util.jaxb.JAXBConvertor;
-import org.drugis.addis.util.jaxb.JAXBHandler;
+import org.drugis.addis.gui.Main;
+import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class JAXBHandlerTest {
-	private static final String V3_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+	private static final String V3_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 	"<addis-data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 	"            xsi:noNamespaceSchemaLocation=\"http://drugis.org/files/addis-3.xsd\">\n" +
 	"</addis-data>\n";
-	
+
 	private static final String V2_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 	"<addis-data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://drugis.org/files/addis-2.xsd\">\n" +
 	"</addis-data>\n";
-	
+
 	private static final String LEGACY_XML = "<?xml version=\"1.0\" ?>\n" +
 	"<addis-data>\n" +
 	"</addis-data>\n";
@@ -64,7 +72,7 @@ public class JAXBHandlerTest {
 	"<oranges>\n" +
 	"</oranges>\n";
 
-	
+
 	@Test
 	public void testUnmarshallMarshallXmlCompare() throws JAXBException, SAXException, TransformerException, IOException {
 		// read xml file
@@ -76,41 +84,64 @@ public class JAXBHandlerTest {
 
 		// read back generated xml
 		AddisData data_clone = JAXBHandler.unmarshallAddisData(new FileInputStream(testFile));
-		
+
 		// compare
 		assertEquals(data, data_clone);
-		
+
 		File temp = new File(testFile);
 		temp.delete();
 	}
-	
+
+
+	@Test
+	public void doNotSerializeInvalidCharsTest() throws JAXBException, ConversionException, IOException {
+		DomainImpl domainImpl = new DomainImpl();
+
+		System.setErr(new PrintStream(new OutputStream() { // Supress system err output for test
+		    public void write(int b) {
+		    }
+		}));
+
+		List<Character> invalidXMLChars = Main.XMLStreamFilter.getCharacters();
+		Drug drug = new Drug(StringUtils.join(invalidXMLChars, " "), "#");
+		domainImpl.getDrugs().add(drug);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		FilterOutputStream os = new Main.XMLStreamFilter(out);
+
+		JAXBHandler.marshallAddisData(JAXBConvertor.convertDomainToAddisData(domainImpl), os);
+
+		os.close();
+
+		JAXBHandler.unmarshallAddisData(new ByteArrayInputStream(out.toByteArray()));
+	}
+
 	@Test
 	public void determineXmlVersionTest() throws IOException {
 		ByteArrayInputStream emptyInput = new ByteArrayInputStream("".getBytes());
 		XmlFormatType emptyVersion = JAXBHandler.determineXmlType(emptyInput);
 		assertFalse(emptyVersion.isValid());
 		assertFalse(emptyVersion.isLegacy());
-		
+
 		ByteArrayInputStream v3input = new ByteArrayInputStream(V3_XML.getBytes());
 		XmlFormatType v3version = JAXBHandler.determineXmlType(v3input);
 		assertTrue(v3version.isValid());
 		assertFalse(v3version.isLegacy());
 		assertEquals(3, v3version.getVersion());
-		
+
 		ByteArrayInputStream v2input = new ByteArrayInputStream(V2_XML.getBytes());
 		XmlFormatType v2version = JAXBHandler.determineXmlType(v2input);
 		assertTrue(v2version.isValid());
 		assertFalse(v2version.isLegacy());
 		assertEquals(2, v2version.getVersion());
-		
+
 		ByteArrayInputStream v0input = new ByteArrayInputStream(LEGACY_XML.getBytes());
 		XmlFormatType v0version = JAXBHandler.determineXmlType(v0input);
 		assertTrue(v0version.isValid());
 		assertTrue(v0version.isLegacy());
-		
+
 		ByteArrayInputStream otherInput = new ByteArrayInputStream(OTHER_XML.getBytes());
 		XmlFormatType otherVersion = JAXBHandler.determineXmlType(otherInput);
 		assertFalse(otherVersion.isValid());
 	}
-	
+
 }
