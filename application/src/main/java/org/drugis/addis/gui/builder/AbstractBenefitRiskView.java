@@ -150,7 +150,10 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 	private JComponent createSummaryLabel(BRATTableModel<Alternative, ? extends BenefitRiskAnalysis<Alternative>> model) {
 		String baselineName = model.getBaseline().getLabel();
 		String subjectName = model.getSubject().getLabel();
-		String str = "Key Benefit-Risk Summary table with embedded relative effect forest plot. The color in the \"difference\" column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
+		String str =
+				"<p>Key Benefit-Risk Summary table with embedded relative effect forest plot. " +
+				"The color in the \"difference\" column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). " +
+				"The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.</p>";
 		return AuxComponentFactory.createTextPane(str);
 	}
 
