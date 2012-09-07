@@ -89,11 +89,11 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 	}
 
 	public CategoryDataset getRankProbabilityDataset() {
-		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities(), this.getConsistencyModel());
+		return new RankProbabilityDataset(getBean().getConsistencyModel().getRankProbabilities());
 	}
 	
 	public TableModel getRankProbabilityTableModel() {
-		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities(), this.getConsistencyModel());
+		return new RankProbabilityTableModel(getBean().getConsistencyModel().getRankProbabilities());
 	}
 
 	public String getRankProbabilityRankChartNote() {
