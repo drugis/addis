@@ -1,0 +1,28 @@
+Edarbi / TAK-491 EPAR
+---------------------
+
+Edarbi is a medicine that contains the active substance azilsartan medoxomil. It is available as tablets (20 mg, 40 and 80 mg). Edarbi is used in adults who have essential hypertension (high blood pressure). ‘Essential’ means that the hypertension has no obvious cause.
+
+http://www.ema.europa.eu/docs/en_GB/document_library/EPAR_-_Public_assessment_report/human/002293/WC500119206.pdf
+
+Main studies
+------------
+
+Monotherapy
+
+ * 491-008: NCT00696241
+ * 491-019: NCT00696436
+ * 491-301: NCT00846365
+ * 491-020: NCT00760214
+ * 491-011: NCT00591253
+
+Coadministration
+
+ * 491-009: NCT00591773
+ * 491-010: NCT00591266
+ * 491CLD-306: NCT00818883
+
+Open label safety
+
+ * 491-006: NCT00695955
+ * 491-016: NCT00696384
