@@ -75,7 +75,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 		return other != null && d_som == other.d_som;
 	}
 	
-	public boolean shallowEquals(Object o)  { 
+	public boolean deepEquals(Object o)  { 
 		MeasurementKey other = matching(o);
 		return other != null && EqualsUtil.equal(d_som, other.d_som);
 	}

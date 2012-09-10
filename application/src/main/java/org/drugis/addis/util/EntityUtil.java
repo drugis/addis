@@ -90,7 +90,7 @@ public class EntityUtil {
 			}
 			java.lang.reflect.Method shallowEquals;
 			try { 
-				shallowEquals = key.getClass().getMethod("shallowEquals", Object.class);
+				shallowEquals = key.getClass().getMethod("deepEquals", Object.class);
 				boolean shallowEqual = ((Boolean)shallowEquals.invoke(key, otherKey));
 				if (shallowEqual) return otherKey;
 			} catch (NoSuchMethodException e) {
