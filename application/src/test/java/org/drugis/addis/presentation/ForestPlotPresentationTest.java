@@ -101,10 +101,10 @@ public class ForestPlotPresentationTest {
 
 		ExampleData.addDefaultMeasurementMoments(d_s1);
 		ExampleData.addDefaultMeasurementMoments(d_s2);
-		d_s1.setMeasurement(d_endpoint, pBase, d_mBase1);
-		d_s1.setMeasurement(d_endpoint, pSubj, d_mSubj1);
-		d_s2.setMeasurement(d_endpoint, pBase2, d_mBase2);
-		d_s2.setMeasurement(d_endpoint, pSubj2, d_mSubj2);
+		d_s1.setMeasurement(d_s1.findStudyOutcomeMeasure(d_endpoint), pBase, d_mBase1);
+		d_s1.setMeasurement(d_s1.findStudyOutcomeMeasure(d_endpoint), pSubj, d_mSubj1);
+		d_s2.setMeasurement(d_s2.findStudyOutcomeMeasure(d_endpoint), pBase2, d_mBase2);
+		d_s2.setMeasurement(d_s2.findStudyOutcomeMeasure(d_endpoint), pSubj2, d_mSubj2);
 		
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(d_s1);

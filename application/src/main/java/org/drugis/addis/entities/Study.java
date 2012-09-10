@@ -181,7 +181,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			@Override
 			public MeasurementKey transform(final MeasurementKey key) {
 				if (key.getArm() != null && key.getArm().equals(oldArm)) {
-					return new MeasurementKey(key.getOutcomeMeasure(), newArm, key.getWhenTaken());
+					return new MeasurementKey(key.getStudyOutcomeMeasure(), newArm, key.getWhenTaken());
 				}
 				return key;
 			}
@@ -238,7 +238,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			@Override
 			public MeasurementKey transform(final MeasurementKey input) {
 				if (input.getVariable().equals(studyOutcomeMeasure.getValue()) && input.getWhenTaken().equals(oldWhenTaken)) {
-					return new MeasurementKey(input.getOutcomeMeasure(), input.getArm(), newWhenTaken);
+					return new MeasurementKey(input.getStudyOutcomeMeasure(), input.getArm(), newWhenTaken);
 				}
 				return input;
 			}
@@ -449,88 +449,65 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public int compareTo(final Study other) {
 		return getName().compareTo(other.getName());
 	}
-
-	public BasicMeasurement getMeasurement(final Variable v, final Arm a, final WhenTaken wt) {
-		StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(v);
-		final MeasurementKey key = new MeasurementKey(som != null ? som : new StudyOutcomeMeasure<Variable>(v, wt), a, wt);
-		final BasicMeasurement basicMeasurement = d_measurements.get(key);
-		return basicMeasurement;
+	
+	public void setMeasurement(final StudyOutcomeMeasure<? extends Variable> som, final BasicMeasurement m) { 
+		setMeasurement(som, null, m);
 	}
 
-	public BasicMeasurement getMeasurement(final Variable v, final Arm a) {
-		final WhenTaken mm = defaultMeasurementMoment();
-		return mm == null ? null : d_measurements.get(new MeasurementKey(new StudyOutcomeMeasure<Variable>(v), a, mm));
+	public void setMeasurement(final StudyOutcomeMeasure<? extends Variable> som, final Arm a, final BasicMeasurement m) { 
+		forceLegalArguments(som, a, m);
+		d_measurements.put(new MeasurementKey(som, a, defaultMeasurementMoment()), m);
 	}
-
-	public BasicMeasurement getMeasurement(final Variable v) {
-		return getMeasurement(v, null);
+	
+	public void setMeasurement(final StudyOutcomeMeasure<? extends Variable> som, final Arm a, WhenTaken wt, final BasicMeasurement m) { 
+		d_measurements.put(new MeasurementKey(som, a, wt), m);
 	}
-
-	public BasicMeasurement getMeasurement(final StudyOutcomeMeasure<? extends Variable> dV, final Arm dA) {
-		return getMeasurement(dV.getValue(), dA);
-	}
-
-	private void forceLegalArguments(final OutcomeMeasure e, final Arm a, final Measurement m) {
-		if (!getArms().contains(a)) {
-			throw new IllegalArgumentException("Arm " + a
-					+ " not part of this study.");
+	
+	private <T extends Variable> void forceLegalArguments(final StudyOutcomeMeasure<? extends Variable> som, final Arm a, final Measurement m) {
+		if(som == null) { 
+			throw new IllegalArgumentException("StudyOutcomeMeasure may not be null for measurement " + m);
 		}
-		if (!getOutcomeMeasures().contains(e)) {
-			throw new IllegalArgumentException("Outcome " + e
-					+ " not measured by this study.");
+		Variable v = som.getValue();
+		boolean studyContains = false;
+		for(StudyOutcomeMeasure<? extends Variable> om : getStudyOutcomeMeasures()) {
+			if (om.getValue().equals(v)) studyContains = true;
 		}
-		if (m != null && !m.isOfType(e.getVariableType())) {
-			throw new IllegalArgumentException(
-			"Measurement does not conform with outcome");
-		}
-	}
-
-	public void setMeasurement(final OutcomeMeasure om, final Arm a, final BasicMeasurement m) {
-		forceLegalArguments(om, a, m);
-		d_measurements.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(om, defaultMeasurementMoment()), a, defaultMeasurementMoment()), m);
-	}
-
-	/**
-	 * Set population characteristic measurement on arm.
-	 *
-	 * @param v
-	 * @param a
-	 * @param m
-	 */
-	public void setMeasurement(final Variable v, final Arm a, final BasicMeasurement m) {
-		forceLegalArguments(v, a, m);
-		StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(v);
-		d_measurements.put(new MeasurementKey(som != null ? som : new StudyOutcomeMeasure<Variable>(v, defaultMeasurementMoment()), a, defaultMeasurementMoment()), m);
-	}
-
-	/**
-	 * Set population characteristic measurement on study.
-	 *
-	 * @param v
-	 * @param m
-	 */
-	public void setMeasurement(final Variable v, final BasicMeasurement m) {
-		forceLegalArguments(v, null, m);
-		setMeasurement(v, null, m);
-	}
-
-	private void forceLegalArguments(final Variable v, final Arm a, final Measurement m) {
-		if (!extractVariables(getPopulationChars()).contains(v)) {
-			throw new IllegalArgumentException("Variable " + v
-					+ " not in study");
+		if (!studyContains) {
+			throw new IllegalArgumentException("Variable " + som.getValue() + " not in study");
 		}
 		if (a != null && !d_arms.contains(a)) {
 			throw new IllegalArgumentException("Arm " + a + " not in study");
 		}
-		if (!m.isOfType(v.getVariableType())) {
-			throw new IllegalArgumentException(
-			"Measurement does not conform with outcome");
+		if (m != null && !m.isOfType(v.getVariableType())) {
+			throw new IllegalArgumentException("Measurement does not conform with outcome");
 		}
 		if (findTreatmentEpoch() == null) {
 			throw new IllegalStateException("Attempting to add measurement before treatment epoch is defined.");
 		}
 	}
+	
+	public BasicMeasurement getMeasurement(final StudyOutcomeMeasure<? extends Variable> som , final Arm a, final WhenTaken wt) {
+		return d_measurements.get(new MeasurementKey(som, a, wt)); 
+	}
+	
+	public BasicMeasurement getMeasurement(final StudyOutcomeMeasure<? extends Variable> som , final Arm a) {
+		return d_measurements.get(new MeasurementKey(som, a, defaultMeasurementMoment())); 
+	}
 
+	public BasicMeasurement getMeasurement(final Variable v, final Arm a, final WhenTaken wt) { 
+		StudyOutcomeMeasure<? extends Variable> som = findStudyOutcomeMeasure(v);
+		return getMeasurement(som != null ? som : new StudyOutcomeMeasure<Variable>(v, wt), a, wt);
+	}
+	
+	public BasicMeasurement getMeasurement(final Variable v, final Arm a) { 
+		final WhenTaken mm = defaultMeasurementMoment();
+		return mm == null ? null : getMeasurement(v, a, mm);
+	}
+	
+	public BasicMeasurement getMeasurement(final Variable v) {
+		return getMeasurement(v, null);
+	}
+	
 	public List<OutcomeMeasure> getOutcomeMeasures() {
 		final List<OutcomeMeasure> sortedList = new ArrayList<OutcomeMeasure>(extractVariables(getEndpoints()));
 		sortedList.addAll(extractVariables(getAdverseEvents()));
@@ -545,7 +522,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		}
 		return vars;
 	}
-
+	
 	public List<? extends Variable> getVariables(final Class<? extends Variable> type) {
 		return extractVariables(getStudyOutcomeMeasures(type));
 	}
@@ -562,7 +539,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		throw new IllegalArgumentException("Unknown variable type " + type.getSimpleName());
 	}
 
-	public ObservableList<StudyOutcomeMeasure<?>> getStudyOutcomeMeasures() {
+	public ObservableList<StudyOutcomeMeasure<? extends Variable>> getStudyOutcomeMeasures() {
 		return d_outcomeMeasures;
 	}
 
@@ -633,9 +610,9 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		return d_measurements;
 	}
 
-	public void setMeasurement(final MeasurementKey key, final BasicMeasurement value) {
-		d_measurements.put(key, value);
-	}
+//	public void setMeasurement(final MeasurementKey key, final BasicMeasurement value) {
+//		d_measurements.put(key, value);
+//	}
 
 	public ObjectWithNotes<?> getIndicationWithNotes() {
 		return d_indication;
@@ -842,12 +819,12 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public boolean isMeasured(final Variable v, final Arm a, final WhenTaken wt) {
-		return getMeasurement(v, a, wt) != null	&& getMeasurement(v, a, wt).isComplete();
+		return getMeasurement(v, a, wt) != null && getMeasurement(v, a, wt).isComplete();
 	}
 
 
 	public boolean isMeasured(final Variable v, final Arm a) {
-		return getMeasurement(v, a) != null	&& getMeasurement(v, a).isComplete();
+		return getMeasurement(v, a) != null && getMeasurement(v, a).isComplete();
 	}
 
 	private ObservableList<Arm> getArms(final TreatmentDefinition d) {

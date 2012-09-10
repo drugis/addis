@@ -923,7 +923,8 @@ public class JAXBConvertor {
 		
 		Map<MeasurementKey, BasicMeasurement> measurements = convertMeasurements(study.getMeasurements(), arms, newStudy.getEpochs(), outcomeMeasures);
 		for(Entry<MeasurementKey, BasicMeasurement> m : measurements.entrySet()) {
-			newStudy.setMeasurement(m.getKey(), m.getValue());
+			MeasurementKey key = m.getKey();
+			newStudy.setMeasurement(key.getStudyOutcomeMeasure(), key.getArm(), key.getWhenTaken(), m.getValue());
 		}
 		
 		convertNotes(study.getNotes().getNote(), newStudy.getNotes());

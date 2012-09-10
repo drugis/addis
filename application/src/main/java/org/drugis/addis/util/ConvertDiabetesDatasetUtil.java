@@ -49,7 +49,6 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.FrequencyMeasurement;
-import org.drugis.addis.entities.MeasurementKey;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PubMedIdList;
@@ -196,7 +195,7 @@ public class ConvertDiabetesDatasetUtil {
 					for(String oldCat : oldCats) { 
 						setNewFreq(newCats, m, newFreq, oldCat);
 					}
-					study.setMeasurement(new MeasurementKey(newSom, arm, wt), newFreq);
+					study.setMeasurement(newSom, arm, wt, newFreq);
 				}
 			}
 			newSom.getNotes().add(new Note(Source.MANUAL, "Re-encoded from: " + StringUtils.join(oldCats, ", ")));

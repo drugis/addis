@@ -27,8 +27,10 @@
 package org.drugis.addis.entities;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
+import org.apache.commons.collections15.comparators.NullComparator;
 import org.drugis.common.EqualsUtil;
 
 public class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
@@ -38,16 +40,9 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 	private final StudyOutcomeMeasure<? extends Variable> d_som;
 
 	public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
-		if (som.getValue() == null) {
-			throw new NullPointerException("Variable may not be null");
-		}
-		if (som.getValue() instanceof OutcomeMeasure && a == null) {
-			throw new NullPointerException(
-					"Arm may not be null for Endpoints/ADEs");
-		}
-		if (wt == null) {
-			throw new NullPointerException("Moment of measurement may not be null");
-		}
+		if (som.getValue() instanceof OutcomeMeasure && a == null) throw new NullPointerException("Arm may not be null for Endpoints/ADEs");
+		if (wt == null) throw new NullPointerException("Moment of measurement may not be null");
+		
 		d_som = som;
 		d_arm = a;
 		d_wt = wt;
@@ -57,7 +52,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 		return d_som.getValue();
 	}
 
-	public StudyOutcomeMeasure<? extends Variable> getOutcomeMeasure() { 
+	public StudyOutcomeMeasure<? extends Variable> getStudyOutcomeMeasure() { 
 		return d_som;
 	}
 	
@@ -78,7 +73,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 	public boolean equals(Object o) {
 		if (o instanceof MeasurementKey) {
 			MeasurementKey other = (MeasurementKey) o;
-			return d_som.equals(other.d_som)
+			return	EqualsUtil.equal(d_som.getValue(), other.d_som.getValue())
 					&& EqualsUtil.equal(d_arm, other.d_arm)
 					&& EqualsUtil.equal(d_wt, other.d_wt);
 		}
@@ -88,7 +83,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 	@Override
 	public int hashCode() {
 		int code = 1;
-		code = code * 31 + d_som.hashCode();
+		code = code * 31 + (d_som == null ? 0 : System.identityHashCode(d_som));
 		code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
 		code = code * 31 + (d_wt == null ? 0 : d_wt.hashCode());
 		return code;
@@ -101,9 +96,12 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 
 	@Override
 	public int compareTo(MeasurementKey o) {
-		Variable variable = d_som.getValue();
-		Variable otherVariable = o.d_som.getValue();
-		if (variable.compareTo(otherVariable) == 0) {
+		int variable = new NullComparator<Variable>(new Comparator<Variable>() {
+			public int compare(Variable o1, Variable o2) {
+				return o1.compareTo(o2);
+			}
+		}, false).compare(d_som.getValue(), o.d_som.getValue());
+		if (variable == 0) {
 			if (d_arm != null) {
 				if (d_arm.compareTo(o.d_arm) == 0) {
 					return d_wt.compareTo(o.d_wt);
@@ -115,6 +113,6 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 				return -1;
 			}
 		}
-		return variable.compareTo(otherVariable);
+		return variable;
 	}
 }

@@ -216,7 +216,7 @@ public class StudyTest {
 		Arm group = study.createAndAddArm("", 100, null, null);
 		BasicRateMeasurement m = new BasicRateMeasurement(0, group.getSize());
 		m.setRate(12);
-		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
+		study.setMeasurement(study.findStudyOutcomeMeasure(study.getOutcomeMeasures().iterator().next()), study.getArms().get(0), m);
 		
 		assertEquals(m, study.getMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0)));
 	}
@@ -226,8 +226,7 @@ public class StudyTest {
 		Study study = new Study("X", new Indication(0L, ""));
 		Endpoint e = new Endpoint("E", Endpoint.convertVarType(Variable.Type.RATE));
 		Arm pg = new Arm("", 100);
-		study.setMeasurement(e, pg, 
-				new BasicRateMeasurement(100, pg.getSize()));
+		study.setMeasurement(study.findStudyOutcomeMeasure(e), pg, new BasicRateMeasurement(100, pg.getSize()));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -241,7 +240,7 @@ public class StudyTest {
 		BasicMeasurement m = new BasicRateMeasurement(12, group.getSize());
 		
 		study.getOutcomeMeasures().iterator().next().setVariableType(new ContinuousVariableType());
-		study.setMeasurement(study.getOutcomeMeasures().iterator().next(), study.getArms().get(0), m);
+		study.setMeasurement(study.findStudyOutcomeMeasure(study.getOutcomeMeasures().iterator().next()), study.getArms().get(0), m);
 	}
 
 	@Test
@@ -339,9 +338,9 @@ public class StudyTest {
 		study1.setStudyActivityAt(arm, study1.getEpochs().get(0), sa);
 		study2.setStudyActivityAt(arm, study1.getEpochs().get(0), sa);
 		
-		study1.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
+		study1.setMeasurement(study1.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), arm, new BasicRateMeasurement(50, 100));
 		assertFalse(study1.deepEquals(study2));
-		study2.setMeasurement(ExampleData.buildAdverseEventConvulsion(), arm, new BasicRateMeasurement(50, 100));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), arm, new BasicRateMeasurement(50, 100));
 		assertTrue(study1.deepEquals(study2));
 		
 		study1.getNotes().add(new Note(Source.MANUAL, "testnote"));
@@ -397,9 +396,9 @@ public class StudyTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testSetPopulationCharNotPresent() {
-		Variable v = new PopulationCharacteristic("Age", new ContinuousVariableType());
+		AbstractVariable v = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		Study s = new Study("X", new Indication(0L, "Y"));
-		s.setMeasurement(v, new BasicContinuousMeasurement(0.0, 1.0, 5));
+		s.setMeasurement(s.findStudyOutcomeMeasure(v), new BasicContinuousMeasurement(0.0, 1.0, 5));
 	}
 	
 	@Test
@@ -412,10 +411,10 @@ public class StudyTest {
 		s.getPopulationChars().addAll(Study.wrapVariables(Collections.singletonList(v)));
 		BasicContinuousMeasurement m = new BasicContinuousMeasurement(0.0, 1.0, 5);
 		
-		s.setMeasurement(v, m);
+		s.setMeasurement(s.findStudyOutcomeMeasure(v), m);
 		assertEquals(m, s.getMeasurement(v));
 		
-		s.setMeasurement(v, s.getArms().get(0), m);
+		s.setMeasurement(s.findStudyOutcomeMeasure(v), s.getArms().get(0), m);
 		assertEquals(m, s.getMeasurement(v, s.getArms().get(0)));
 	}
 	
@@ -441,10 +440,10 @@ public class StudyTest {
 		BasicMeasurement m11 = new BasicContinuousMeasurement(3.0, 2.0, 150);
 		BasicMeasurement m20 = new BasicContinuousMeasurement(3.0, 2.0, 150);
 		BasicMeasurement m21 = new BasicContinuousMeasurement(3.0, 2.0, 150);
-		s.setMeasurement(v1, m10);
-		s.setMeasurement(v1, arm1, m11);
-		s.setMeasurement(v2, m20);
-		s.setMeasurement(v2, arm1, m21);
+		s.setMeasurement(s.findStudyOutcomeMeasure(v1), m10);
+		s.setMeasurement(s.findStudyOutcomeMeasure(v1), arm1, m11);
+		s.setMeasurement(s.findStudyOutcomeMeasure(v2), m20);
+		s.setMeasurement(s.findStudyOutcomeMeasure(v2), arm1, m21);
 
 		s.getPopulationChars().remove(new StudyOutcomeMeasure<PopulationCharacteristic>(v1));
 		s.getPopulationChars().add(new StudyOutcomeMeasure<PopulationCharacteristic>(v3));
@@ -617,7 +616,7 @@ public class StudyTest {
 		
 		// Add an incomplete measurement for the default measurement moment, to see that it is excluded
 		BasicRateMeasurement m = new BasicRateMeasurement(null, 100);
-		d_clone.setMeasurement(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(0), m);
+		d_clone.setMeasurement(d_clone.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), d_clone.getArms().get(0), m);
 		assertEquals(Collections.emptySet(), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion()));
 
 		// Complete the measurement, to see that it is included
@@ -627,7 +626,7 @@ public class StudyTest {
 
 		// Add a complete measurement for a different measurement moment, to see that it is excluded
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, d_clone.findTreatmentEpoch());
-		d_clone.setMeasurement(new MeasurementKey(d_clone.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), d_clone.getArms().get(1), wt), new BasicRateMeasurement(3, 100));
+		d_clone.setMeasurement(d_clone.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), d_clone.getArms().get(1), wt, new BasicRateMeasurement(3, 100));
 		assertEquals(Collections.singleton(d_clone.getTreatmentDefinition(d_clone.getArms().get(1))), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion(), wt));
 	}
 	

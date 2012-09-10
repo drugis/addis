@@ -1343,12 +1343,9 @@ public class JAXBConvertorTest {
 		study2.setStudyActivityAt(paroxArm, epoch1, randomizationActivity);
 		study2.setStudyActivityAt(fluoxArm, epoch2, combTreatmentActivity);
 		study2.setStudyActivityAt(paroxArm, epoch2, paroxTreatmentActivity);
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm,
-				new BasicRateMeasurement(10, 110));
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), fluoxArm,
-				new BasicRateMeasurement(10, 110));
-		study2.setMeasurement(ExampleData.buildAgeVariable(),
-				new BasicContinuousMeasurement(0.2, 0.01, 110));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildEndpointHamd()), paroxArm, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildEndpointHamd()), fluoxArm, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildAgeVariable()), new BasicContinuousMeasurement(0.2, 0.01, 110));
 
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 		assertEquals(study, JAXBConvertor.convertStudy(study2));
