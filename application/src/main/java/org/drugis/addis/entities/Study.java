@@ -547,7 +547,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		addVariable(om, null);
 	}
 
-
 	public void addVariable(final Variable om, final WhenTaken wt) {
 		if (om instanceof Endpoint) {
 			getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(((Endpoint) om), wt));
@@ -609,10 +608,6 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	public Map<MeasurementKey, BasicMeasurement> getMeasurements() {
 		return d_measurements;
 	}
-
-//	public void setMeasurement(final MeasurementKey key, final BasicMeasurement value) {
-//		d_measurements.put(key, value);
-//	}
 
 	public ObjectWithNotes<?> getIndicationWithNotes() {
 		return d_indication;
