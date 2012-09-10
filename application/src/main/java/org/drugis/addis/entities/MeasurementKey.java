@@ -71,15 +71,26 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 
 	@Override
 	public boolean equals(Object o) {
+		MeasurementKey other = matching(o);
+		return other != null && d_som == other.d_som;
+	}
+	
+	public boolean shallowEquals(Object o)  { 
+		MeasurementKey other = matching(o);
+		return other != null && EqualsUtil.equal(d_som, other.d_som);
+	}
+	
+	public MeasurementKey matching(Object o) {
 		if (o instanceof MeasurementKey) {
 			MeasurementKey other = (MeasurementKey) o;
-			return	EqualsUtil.equal(d_som.getValue(), other.d_som.getValue())
-					&& EqualsUtil.equal(d_arm, other.d_arm)
-					&& EqualsUtil.equal(d_wt, other.d_wt);
+			if(EqualsUtil.equal(d_arm, other.d_arm)
+				&& EqualsUtil.equal(d_wt, other.d_wt)) {
+				return other;
+			}
 		}
-		return false;
+		return null;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int code = 1;
@@ -100,7 +111,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 			public int compare(Variable o1, Variable o2) {
 				return o1.compareTo(o2);
 			}
-		}, false).compare(d_som.getValue(), o.d_som.getValue());
+		}).compare(d_som.getValue(), o.d_som.getValue());
 		if (variable == 0) {
 			if (d_arm != null) {
 				if (d_arm.compareTo(o.d_arm) == 0) {

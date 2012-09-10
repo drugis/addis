@@ -71,16 +71,34 @@ public class EntityUtil {
 		if (o1.keySet().size() != o2.keySet().size()) return false;
 		for (Entry<?,? extends Entity> entry : o1.entrySet()) {
 			Object actualKey = findMatchingKey(entry.getKey(), o2.keySet());
+			if (actualKey == null) return false;
 			if (!deepEqual(entry.getValue(), o2.get(actualKey)))
 				return false;
 		}
 		return true;
 	}
 	
+	/**
+	 * Find a key in a set using Object.equals or by using Object.shallowEquals(Object o) using reflection
+	 * Object.shallowEquals may be implemented to use a different equals criteria and is invoked after Object.equals
+	 * @param key the key to find
+	 * @param keySet the set to find key
+	 * @return null or the element in the keySet
+	 */
 	private static Object findMatchingKey(Object key, Set<?> keySet) {
 		for (Object otherKey : keySet) {
 			if (EqualsUtil.equal(key, otherKey)) {
 				return otherKey;
+			}
+			java.lang.reflect.Method shallowEquals;
+			try { 
+				shallowEquals = key.getClass().getMethod("shallowEquals", Object.class);
+				boolean shallowEqual = ((Boolean)shallowEquals.invoke(key, otherKey));
+				if (shallowEqual) return otherKey;
+			} catch (NoSuchMethodException e) {
+				continue;
+			} catch (Exception e) {
+				throw new RuntimeException("Reflection failed for shallowEquals on: " + e);
 			}
 		}
 		return null;
