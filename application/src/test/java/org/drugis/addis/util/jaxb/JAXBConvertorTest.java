@@ -948,13 +948,14 @@ public class JAXBConvertorTest {
 				whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
 
 		final Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
-		expected.put(new MeasurementKey(ep, arm5, whenTaken), crm1);
-		expected.put(new MeasurementKey(ep, arm8, whenTaken), crm2);
-		expected.put(new MeasurementKey(ae, arm5, whenTaken), crm2);
-		expected.put(new MeasurementKey(ae, arm8, whenTaken), crm1);
-		expected.put(new MeasurementKey(pc, arm5, whenTaken), ccm1);
-		expected.put(new MeasurementKey(pc, arm8, whenTaken), ccm1);
-		expected.put(new MeasurementKey(pc, null, whenTaken), ccm1);
+		
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ep), arm5, whenTaken), crm1);
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ep), arm8, whenTaken), crm2);
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ae), arm5, whenTaken), crm2);
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ae), arm8, whenTaken), crm1);
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(pc), arm5, whenTaken), ccm1);
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(pc), arm8, whenTaken), ccm1);
+		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(pc), null, whenTaken), ccm1);
 
 		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements,
 				arms, epochs, oms));

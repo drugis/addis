@@ -181,7 +181,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			@Override
 			public MeasurementKey transform(final MeasurementKey key) {
 				if (key.getArm() != null && key.getArm().equals(oldArm)) {
-					return new MeasurementKey(key.getVariable(), newArm, key.getWhenTaken());
+					return new MeasurementKey(key.getOutcomeMeasure(), newArm, key.getWhenTaken());
 				}
 				return key;
 			}
@@ -238,7 +238,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			@Override
 			public MeasurementKey transform(final MeasurementKey input) {
 				if (input.getVariable().equals(studyOutcomeMeasure.getValue()) && input.getWhenTaken().equals(oldWhenTaken)) {
-					return new MeasurementKey(input.getVariable(), input.getArm(), newWhenTaken);
+					return new MeasurementKey(input.getOutcomeMeasure(), input.getArm(), newWhenTaken);
 				}
 				return input;
 			}
@@ -451,21 +451,22 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	public BasicMeasurement getMeasurement(final Variable v, final Arm a, final WhenTaken wt) {
-		final MeasurementKey key = new MeasurementKey(v, a, wt);
+		StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(v);
+		final MeasurementKey key = new MeasurementKey(som != null ? som : new StudyOutcomeMeasure<Variable>(v, wt), a, wt);
 		final BasicMeasurement basicMeasurement = d_measurements.get(key);
 		return basicMeasurement;
 	}
 
 	public BasicMeasurement getMeasurement(final Variable v, final Arm a) {
 		final WhenTaken mm = defaultMeasurementMoment();
-		return mm == null ? null : d_measurements.get(new MeasurementKey(v, a, mm));
+		return mm == null ? null : d_measurements.get(new MeasurementKey(new StudyOutcomeMeasure<Variable>(v), a, mm));
 	}
 
 	public BasicMeasurement getMeasurement(final Variable v) {
 		return getMeasurement(v, null);
 	}
 
-	public Object getMeasurement(final StudyOutcomeMeasure<AdverseEvent> dV, final Arm dA) {
+	public BasicMeasurement getMeasurement(final StudyOutcomeMeasure<? extends Variable> dV, final Arm dA) {
 		return getMeasurement(dV.getValue(), dA);
 	}
 
@@ -486,7 +487,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 
 	public void setMeasurement(final OutcomeMeasure om, final Arm a, final BasicMeasurement m) {
 		forceLegalArguments(om, a, m);
-		d_measurements.put(new MeasurementKey(om, a, defaultMeasurementMoment()), m);
+		d_measurements.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(om, defaultMeasurementMoment()), a, defaultMeasurementMoment()), m);
 	}
 
 	/**
@@ -498,7 +499,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	 */
 	public void setMeasurement(final Variable v, final Arm a, final BasicMeasurement m) {
 		forceLegalArguments(v, a, m);
-		d_measurements.put(new MeasurementKey(v, a, defaultMeasurementMoment()), m);
+		StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(v);
+		d_measurements.put(new MeasurementKey(som != null ? som : new StudyOutcomeMeasure<Variable>(v, defaultMeasurementMoment()), a, defaultMeasurementMoment()), m);
 	}
 
 	/**

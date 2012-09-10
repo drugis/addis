@@ -627,7 +627,7 @@ public class StudyTest {
 
 		// Add a complete measurement for a different measurement moment, to see that it is excluded
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, d_clone.findTreatmentEpoch());
-		d_clone.setMeasurement(new MeasurementKey(ExampleData.buildAdverseEventConvulsion(), d_clone.getArms().get(1), wt), new BasicRateMeasurement(3, 100));
+		d_clone.setMeasurement(new MeasurementKey(d_clone.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), d_clone.getArms().get(1), wt), new BasicRateMeasurement(3, 100));
 		assertEquals(Collections.singleton(d_clone.getTreatmentDefinition(d_clone.getArms().get(1))), d_clone.getMeasuredTreatmentDefinitions(ExampleData.buildAdverseEventConvulsion(), wt));
 	}
 	

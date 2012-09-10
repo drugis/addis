@@ -120,6 +120,11 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	}
 	
 	@Override
+	public int hashCode() {
+		return d_class.hashCode() + 31 * d_isPrimary.hashCode() + 31 * d_whenTaken.hashCode();
+	}
+	
+	@Override
 	public String toString() {
 		return (d_isPrimary ? "primary measure: " : "secondary measure: ") +
 				(getValue() != null ? getValue().getName() : "???") + " " + d_whenTaken + " " + getNotes();

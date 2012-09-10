@@ -222,8 +222,7 @@ public class ClinicaltrialsImporter {
 		}
 	}
 	
-	private static void addStudyAdverseEvents(Study study, ClinicalStudy studyImport) { 
-	}
+	private static void addStudyAdverseEvents(Study study, ClinicalStudy studyImport) { }
 
 	private static String addIfAny(String noteStr, String fieldName, String timeFrame) {
 		if (timeFrame != null && !timeFrame.equals("")) {
