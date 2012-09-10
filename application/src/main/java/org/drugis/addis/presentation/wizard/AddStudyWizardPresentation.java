@@ -192,7 +192,7 @@ public class AddStudyWizardPresentation {
 	public void importCT() throws IOException {
 		if(getIdModel().getValue().toString().length() != 0) {
 			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
-			String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
+			String url = "http://clinicaltrials.gov/show/"+studyID+"?resultsxml=true";
 			Study clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url);
 			setNewStudy(clinicaltrialsData);
 		}

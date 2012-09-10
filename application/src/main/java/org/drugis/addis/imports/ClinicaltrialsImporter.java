@@ -47,6 +47,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
+import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Indication;
@@ -60,8 +62,6 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
-import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 
@@ -96,7 +96,7 @@ public class ClinicaltrialsImporter {
 		}
 	}
 
-	public static void getClinicaltrialsData(Study study, File file){
+	public static void getClinicaltrialsData(Study study, File file) {
 		try {
 			getClinicaltrialsData(study, new FileInputStream(file));
 		} catch (FileNotFoundException e) {
@@ -151,10 +151,9 @@ public class ClinicaltrialsImporter {
 
 		// Start and end date
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.STUDY_START,
-				objectWithNote(guessDate(studyImport.startDate), studyImport.startDate));
+				objectWithNote(guessDate(studyImport.getStartDate()), studyImport.getStartDate() != null ? studyImport.getStartDate().getContent() : ""));
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.STUDY_END,
-				objectWithNote(guessDate(studyImport.endDate), studyImport.endDate));
-		
+				objectWithNote(guessDate(studyImport.getCompletionDate()), studyImport.getCompletionDate() != null ? studyImport.getCompletionDate().getContent() : ""));
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.STATUS, 
 				objectWithNote(guessStatus(studyImport), studyImport.getOverallStatus().trim()));
 		
@@ -165,7 +164,7 @@ public class ClinicaltrialsImporter {
 				objectWithNote(guessExclusion(criteria), criteria.trim()));
 		
 		// References
-		for (Reference ref : studyImport.getReference()) {
+		for (ReferenceStruct ref : studyImport.getReference()) {
 			if (ref.getPMID() != null) {
 				((PubMedIdList)study.getCharacteristic(BasicStudyCharacteristic.PUBMED)).add(new PubMedId(ref.getPMID()));
 			}
@@ -196,7 +195,7 @@ public class ClinicaltrialsImporter {
 
 	private static void addStudyEndpoints(Study study, ClinicalStudy studyImport) {
 		// Outcome Measures
-		for (PrimaryOutcome endp : studyImport.getPrimaryOutcome()) {
+		for (ProtocolOutcomeStruct endp : studyImport.getPrimaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
 			om.setIsPrimary(true);
 			String noteStr = endp.getMeasure();
@@ -209,7 +208,7 @@ public class ClinicaltrialsImporter {
 			study.getEndpoints().add(om);
 		}
 		
-		for (SecondaryOutcome endp : studyImport.getSecondaryOutcome()) {
+		for (ProtocolOutcomeStruct endp : studyImport.getSecondaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
 			om.setIsPrimary(false);
 			String noteStr = endp.getMeasure();
@@ -222,6 +221,9 @@ public class ClinicaltrialsImporter {
 			study.getEndpoints().add(om);
 		}
 	}
+	
+	private static void addStudyAdverseEvents(Study study, ClinicalStudy studyImport) { 
+	}
 
 	private static String addIfAny(String noteStr, String fieldName, String timeFrame) {
 		if (timeFrame != null && !timeFrame.equals("")) {
@@ -233,7 +235,7 @@ public class ClinicaltrialsImporter {
 	private static void addStudyArms(Study study, ClinicalStudy studyImport, Epoch mainphaseEpoch) {
 		// Add note to the study-arms.
 		Map<String,Arm> armLabels = new HashMap<String,Arm>();
-		for(ArmGroup ag : studyImport.getArmGroup()){
+		for(ArmGroupStruct ag : studyImport.getArmGroup()){
 			Arm arm = new Arm(ag.getArmGroupLabel(), 0);
 			study.getArms().add(arm);
 			String noteStr = "Arm Type: " + ag.getArmGroupType() + "\nArm Description: " + ag.getDescription();
@@ -242,7 +244,7 @@ public class ClinicaltrialsImporter {
 		}
 		
 		// Add note about the drugs to the study-arms.
-		for(Intervention i : studyImport.getIntervention()){
+		for(InterventionStruct i : studyImport.getIntervention()){
 			String noteStr = "\n\nIntervention Name: " + i.getInterventionName() + "\nIntervention Type: " + 
 								i.getInterventionType() + "\nIntervention Description: " + i.getDescription();
 			boolean notAssigned = true;
@@ -305,12 +307,12 @@ public class ClinicaltrialsImporter {
 		return status;
 	}
 
-	private static Date guessDate(String startDate2) {
+	private static Date guessDate(DateStruct startDate2) {
 		Date startDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
 		try {
 			if (startDate2 != null)
-					startDate = sdf.parse(startDate2);
+					startDate = sdf.parse(startDate2.getContent());
 		} catch (ParseException e) {
 			System.err.println("ClinicalTrialsImporter:: Couldn't parse date. Left empty.");
 		}
@@ -352,7 +354,7 @@ public class ClinicaltrialsImporter {
 
 	private static String createCentersNote(ClinicalStudy studyImport) {
 		String noteStr = "";
-		for (Location l : studyImport.getLocation()) {
+		for (LocationStruct l : studyImport.getLocation()) {
 			noteStr += l.getFacility().getName()+"\n";
 		}
 		return noteStr;

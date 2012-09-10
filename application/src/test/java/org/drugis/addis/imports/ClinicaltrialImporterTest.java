@@ -62,7 +62,7 @@ public class ClinicaltrialImporterTest {
 	@Test
 	public void testGetClinicaltrialsDataFromUri() {
 		try {
-			ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, "http://clinicaltrials.gov/show/NCT00644527?displayxml=true");
+			ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, "http://clinicaltrials.gov/show/NCT00644527?resultsxml=true");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -111,4 +111,16 @@ public class ClinicaltrialImporterTest {
 		                 || note.getText().contains("Quality of life (SF 36), Vital Exhaustion Brief Questionnaire, Primary outcome measure at 5 and 10 weeks.");
 		assertTrue(checkNote);
 	}
+	
+	@Test
+	public void testGetClinicaltrialsDataWithResults() { 
+		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00423098.xml"));
+		testRetrieveStudyWithResults();
+
+	}
+	
+	private void testRetrieveStudyWithResults() {
+		
+	}
+	
 }
