@@ -39,8 +39,6 @@ import javax.xml.datatype.Duration;
 
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.TypeWithName;
-import org.drugis.addis.entities.treatment.Category;
-import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.EqualsUtil;
 
 public class EntityUtil {
@@ -103,11 +101,24 @@ public class EntityUtil {
 		}
 		return null;
 	}
-
-	public static HashSet<Category> flatten(Collection<TreatmentDefinition> set) {
-		HashSet<Category> flat = new HashSet<Category>();
-		for (TreatmentDefinition nested : set) {
-			flat.addAll(nested.getContents());
+	
+	/**
+	 * Flattens a Collection of Entities by dynamically calling getContents() on its members
+	 * @return a Collection of type T containing all the elements resulting from getContents()
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Entity> Collection<T> flatten(Collection<? extends Entity> set) {
+		HashSet<T> flat = new HashSet<T>();
+		for (Entity nested : set) {
+			java.lang.reflect.Method getContents;
+			try { 
+				getContents = nested.getClass().getMethod("getContents");
+				flat.addAll((Collection<T>)getContents.invoke(nested));
+			} catch (NoSuchMethodException e) {
+				continue;
+			} catch (Exception e) {
+				throw new RuntimeException("Reflection failed for getContents on: " + e);
+			}
 		}
 		return flat;
 	}

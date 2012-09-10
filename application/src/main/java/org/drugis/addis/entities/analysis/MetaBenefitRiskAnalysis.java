@@ -211,7 +211,7 @@ public class MetaBenefitRiskAnalysis extends BenefitRiskAnalysis<TreatmentDefini
 	public Set<? extends Entity> getDependencies() {
 		HashSet<Entity> dependencies = new HashSet<Entity>();
 		dependencies.add(d_indication);
-		for (Category category : EntityUtil.flatten(d_alternatives)) {
+		for (Category category : EntityUtil.<Category>flatten(d_alternatives)) {
 			dependencies.addAll(category.getDependencies());
 		}
 		EntityUtil.addRecursiveDependencies(dependencies, d_metaAnalyses);

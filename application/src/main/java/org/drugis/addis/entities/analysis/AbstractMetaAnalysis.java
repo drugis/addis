@@ -27,6 +27,7 @@
 package org.drugis.addis.entities.analysis;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -172,7 +173,7 @@ public abstract class AbstractMetaAnalysis extends AbstractNamedEntity<MetaAnaly
 	@Override
 	public Set<Entity> getDependencies() {
 		HashSet<Entity> deps = new HashSet<Entity>();
-		HashSet<Category> categories = EntityUtil.flatten(getAlternatives());
+		Collection<Category> categories = EntityUtil.flatten(getAlternatives());
 		for (Category category : categories) { 
 			deps.addAll(category.getDependencies());
 		}
