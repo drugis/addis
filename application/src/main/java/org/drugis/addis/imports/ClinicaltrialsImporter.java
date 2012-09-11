@@ -25,6 +25,7 @@
  */
 
 package org.drugis.addis.imports;
+import static org.apache.commons.collections15.CollectionUtils.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,12 +40,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
@@ -206,6 +209,9 @@ public class ClinicaltrialsImporter {
 			wt.commit();
 			om.getWhenTaken().add(wt);
 			study.getEndpoints().add(om);
+			if (studyImport.getClinicalResults() != null) { 
+				addPrimaryMeasurement(om, endp, study, studyImport);
+			}
 		}
 		
 		for (ProtocolOutcomeStruct endp : studyImport.getSecondaryOutcome()) {
@@ -219,10 +225,23 @@ public class ClinicaltrialsImporter {
 			wt.commit();
 			om.getWhenTaken().add(wt);
 			study.getEndpoints().add(om);
+			
 		}
 	}
-	
-	private static void addStudyAdverseEvents(Study study, ClinicalStudy studyImport) { }
+
+	private static void addPrimaryMeasurement(
+			final StudyOutcomeMeasure<Endpoint> om, 
+			final ProtocolOutcomeStruct endp, 
+			final Study study, 
+			final ClinicalStudy studyImport) {
+		List<ResultsOutcomeStruct> outcomes = studyImport.getClinicalResults().getOutcomeList().outcome;
+		ResultsOutcomeStruct outcome = find(outcomes, new Predicate<ResultsOutcomeStruct>() {
+			public boolean evaluate(ResultsOutcomeStruct object) {
+				return object.getTitle().equals(endp.getMeasure());
+			}
+		});
+		System.out.println(outcome.getDescription());
+	}
 
 	private static String addIfAny(String noteStr, String fieldName, String timeFrame) {
 		if (timeFrame != null && !timeFrame.equals("")) {
