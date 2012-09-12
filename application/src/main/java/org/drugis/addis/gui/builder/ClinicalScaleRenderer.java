@@ -68,7 +68,7 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 			} else {
 				PresentationModel<ScaleCriterion> cpm = new PresentationModel<ScaleCriterion>((ScaleCriterion) c);
 				JLabel orLabel = new JLabel("RMD: ");
-				JLabel scaleLabel = BasicComponentFactory.createLabel(cpm.getModel(ScaleCriterion.PROPERTY_SCALE), 
+				JLabel scaleLabel = BasicComponentFactory.createLabel(cpm.getModel(ScaleCriterion.PROPERTY_SCALE),
 						new fi.smaa.jsmaa.gui.IntervalFormat());
 				JPanel panel = new JPanel(new FlowLayout());
 				panel.add(orLabel);
@@ -83,13 +83,13 @@ public class ClinicalScaleRenderer implements ScaleRenderer {
 		JPanel panel = new JPanel(new FlowLayout());
 		addPropertyToPanel(cpm, panel, "Risk: ", OddsRatioScalePresentation.PROPERTY_RISK);
 		addPropertyToPanel(cpm, panel, "RD: ", OddsRatioScalePresentation.PROPERTY_RISK_DIFFERENCE);
-		
+
 		JLabel label = BasicComponentFactory.createLabel(cpm.getModel(OddsRatioScalePresentation.PROPERTY_NNT_LABEL));
 		JLabel valueLabel = BasicComponentFactory.createLabel(cpm.getModel(OddsRatioScalePresentation.PROPERTY_NNT),
 				new NumberAndIntervalFormat());
 		panel.add(label);
 		panel.add(valueLabel);
-		
+
 		return panel;
 	}
 
