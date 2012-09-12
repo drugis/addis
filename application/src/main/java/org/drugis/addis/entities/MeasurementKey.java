@@ -35,6 +35,14 @@ import org.drugis.common.EqualsUtil;
 
 public class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
 
+	public static class NullVariable extends AbstractVariable {
+
+		protected NullVariable(String name, VariableType type) {
+			super(name, type);
+		} 
+		
+	}
+	
 	private final Arm d_arm;
 	private final WhenTaken d_wt;
 	private final StudyOutcomeMeasure<? extends Variable> d_som;
@@ -49,7 +57,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 	}
 
 	public Variable getVariable() {
-		return d_som.getValue();
+		return d_som.getValue() != null ? d_som.getValue() : new NullVariable("",  new RateVariableType()); // FIXME I should know what type I am
 	}
 
 	public StudyOutcomeMeasure<? extends Variable> getStudyOutcomeMeasure() { 

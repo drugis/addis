@@ -25,7 +25,7 @@
  */
 
 package org.drugis.addis.imports;
-import static org.apache.commons.collections15.CollectionUtils.*;
+import static org.apache.commons.collections15.CollectionUtils.find;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,6 +49,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicMeasurement;
+import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
@@ -177,7 +179,7 @@ public class ClinicaltrialsImporter {
 		study.getEpochs().add(mainphaseEpoch);
 		addStudyArms(study, studyImport, mainphaseEpoch);
 
-		addStudyEndpoints(study, studyImport);
+		addStudyOutcomeMeasures(study, studyImport);
 		
 		if (study.getCharacteristic(BasicStudyCharacteristic.ALLOCATION).equals(Allocation.RANDOMIZED)) {
 			Epoch randomizationEpoch = new Epoch("Randomization", null);
@@ -196,21 +198,21 @@ public class ClinicaltrialsImporter {
 				objectWithNote(Source.CLINICALTRIALS, studyImport.getRequiredHeader().getUrl().trim()));
 	}
 
-	private static void addStudyEndpoints(Study study, ClinicalStudy studyImport) {
+	private static void addStudyOutcomeMeasures(Study study, ClinicalStudy studyImport) {
 		// Outcome Measures
-		for (ProtocolOutcomeStruct endp : studyImport.getPrimaryOutcome()) {
+		for (ProtocolOutcomeStruct outcome : studyImport.getPrimaryOutcome()) {
 			StudyOutcomeMeasure<Endpoint> om = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
 			om.setIsPrimary(true);
-			String noteStr = endp.getMeasure();
-			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
-			noteStr = addIfAny(noteStr, "Safety issue", endp.getSafetyIssue());
+			String noteStr = outcome.getMeasure();
+			noteStr = addIfAny(noteStr, "Time frame", outcome.getTimeFrame());
+			noteStr = addIfAny(noteStr, "Safety issue", outcome.getSafetyIssue());
 			om.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
 			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0));
 			wt.commit();
 			om.getWhenTaken().add(wt);
 			study.getEndpoints().add(om);
 			if (studyImport.getClinicalResults() != null) { 
-				addPrimaryMeasurement(om, endp, study, studyImport);
+				addPrimaryMeasurement(om, outcome, wt, study, studyImport);
 			}
 		}
 		
@@ -225,22 +227,65 @@ public class ClinicaltrialsImporter {
 			wt.commit();
 			om.getWhenTaken().add(wt);
 			study.getEndpoints().add(om);
-			
 		}
 	}
 
 	private static void addPrimaryMeasurement(
 			final StudyOutcomeMeasure<Endpoint> om, 
-			final ProtocolOutcomeStruct endp, 
+			final ProtocolOutcomeStruct outcomeStruct, 
+			final WhenTaken wt, 
 			final Study study, 
 			final ClinicalStudy studyImport) {
 		List<ResultsOutcomeStruct> outcomes = studyImport.getClinicalResults().getOutcomeList().outcome;
 		ResultsOutcomeStruct outcome = find(outcomes, new Predicate<ResultsOutcomeStruct>() {
 			public boolean evaluate(ResultsOutcomeStruct object) {
-				return object.getTitle().equals(endp.getMeasure());
+				return object.getTitle().equals(outcomeStruct.getMeasure());
 			}
 		});
-		System.out.println(outcome.getDescription());
+		for (GroupStruct xmlArm : outcome.getGroupList().group) { 
+			final Arm arm = findArmWithName(study, xmlArm.getTitle());
+			final String xmlArmId = xmlArm.groupId;
+			
+			MeasureStruct total = outcome.measureList.measure.get(0);
+			MeasureStruct affected = outcome.measureList.measure.get(1);
+			
+			List<MeasurementStruct> totalMeasurements = total.getCategoryList().getCategory().get(0).measurementList.measurement;
+			List<MeasurementStruct> affectedMeasurements = affected.getCategoryList().getCategory().get(0).measurementList.measurement;
+			
+			MeasurementStruct totalMeasurement = findMeasurement(xmlArmId, totalMeasurements);
+			MeasurementStruct affectedMeasurement = findMeasurement(xmlArmId, affectedMeasurements);
+			
+			BasicMeasurement meas = new BasicRateMeasurement(
+					Integer.parseInt(affectedMeasurement.valueAttribute), 
+					Integer.parseInt(totalMeasurement.valueAttribute));
+			study.setMeasurement(om, arm, wt, meas); // Fails for multiple epochs
+		}
+//		// assume first measure in rate measurements is always #participants?
+//		for (MeasureStruct measure : outcome.getMeasureList().measure) {
+//			MeasurementStruct m1 = measure.getCategoryList().getCategory().get(0).measurementList.measurement.get(0);
+//			MeasurementStruct m2 = measure.getCategoryList().getCategory().get(0).measurementList.measurement.get(1);
+//			if (measure.getParam().equals("Number")) { // Needs different cases for Continuous, Categorical
+//				Arm a = findArmWithName(study, findArmName(outcome, m1));
+//				BasicMeasurement meas = new BasicRateMeasurement(Integer.parseInt(m1.valueAttribute), Integer.parseInt(m2.valueAttribute));
+//				study.setMeasurement(om, a, wt, meas); // Fails for multiple epochs
+//			}
+//		}
+	}
+
+	private static MeasurementStruct findMeasurement(final String xmlArmId, List<MeasurementStruct> totalMeasurements) {
+		return find(totalMeasurements, new Predicate<MeasurementStruct>() {
+			public boolean evaluate(MeasurementStruct object) {
+				return object.getGroupId().equalsIgnoreCase(xmlArmId);
+			}
+		});
+	}
+	
+	private static Arm findArmWithName(final Study study, final String armName) {
+		return find(study.getArms(), new Predicate<Arm>() {
+			public boolean evaluate(Arm object) {
+				return object.getName().equalsIgnoreCase(armName);
+			}
+		});
 	}
 
 	private static String addIfAny(String noteStr, String fieldName, String timeFrame) {

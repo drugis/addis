@@ -40,6 +40,7 @@ import javax.swing.event.ListDataListener;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
+import org.drugis.addis.entities.MeasurementKey.NullVariable;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
@@ -470,7 +471,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		Variable v = som.getValue();
 		boolean studyContains = false;
 		for(StudyOutcomeMeasure<? extends Variable> om : getStudyOutcomeMeasures()) {
-			if (om.getValue().equals(v)) studyContains = true;
+			if (EqualsUtil.equal(om.getValue(), v)) studyContains = true;
 		}
 		if (!studyContains) {
 			throw new IllegalArgumentException("Variable " + som.getValue() + " not in study");
@@ -478,7 +479,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		if (a != null && !d_arms.contains(a)) {
 			throw new IllegalArgumentException("Arm " + a + " not in study");
 		}
-		if (m != null && !m.isOfType(v.getVariableType())) {
+		if (m != null && v != null && !m.isOfType(v.getVariableType())) {
 			throw new IllegalArgumentException("Measurement does not conform with outcome");
 		}
 		if (findTreatmentEpoch() == null) {
@@ -491,7 +492,7 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 	
 	public BasicMeasurement getMeasurement(final StudyOutcomeMeasure<? extends Variable> som , final Arm a) {
-		return d_measurements.get(new MeasurementKey(som, a, defaultMeasurementMoment())); 
+		return getMeasurement(som, a, defaultMeasurementMoment());
 	}
 
 	public BasicMeasurement getMeasurement(final Variable v, final Arm a, final WhenTaken wt) { 
@@ -535,6 +536,8 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 			return (ObservableList) getAdverseEvents();
 		} else if (type == PopulationCharacteristic.class) {
 			return (ObservableList) getPopulationChars();
+		} else if (type == NullVariable.class) {
+			return new ArrayListModel<StudyOutcomeMeasure<T>>(Collections.<StudyOutcomeMeasure<T>>emptySet());
 		}
 		throw new IllegalArgumentException("Unknown variable type " + type.getSimpleName());
 	}
@@ -572,10 +575,16 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 	private boolean orphanKey(final MeasurementKey k) {
-		final StudyOutcomeMeasure<Variable> som = findStudyOutcomeMeasure(k.getVariable());
-		if (som == null) {
+		if (k.getVariable() instanceof MeasurementKey.NullVariable) { 
+			return false;
+		}
+		
+		StudyOutcomeMeasure<? extends Variable> som = findStudyOutcomeMeasure(k.getVariable());
+
+		if (som == null) { 
 			return true;
 		}
+		
 		if (!som.getWhenTaken().contains(k.getWhenTaken())) {
 			return true;
 		}
