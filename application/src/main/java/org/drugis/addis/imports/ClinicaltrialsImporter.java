@@ -250,15 +250,14 @@ public class ClinicaltrialsImporter {
 			final Arm arm = findArmWithName(study, xmlArm.getTitle());
 			final String xmlArmId = xmlArm.groupId;
 
-			// Fails for multiple epochs since it gets the first category only
+			// Fails for multiple epochs since we treat them as categorical variables (seems to be the default)
 			if (outcome.measureList.measure.get(0).getParam().equals("Number")
 				&& outcome.measureList.measure.get(1).getParam().equals("Number")) {
 				BasicMeasurement meas = createBasicMeasurement(
 						getMeasurementForArm(outcome, xmlArmId, 0),
 						getMeasurementForArm(outcome, xmlArmId, 1));
 				om.getValue().setVariableType(new RateVariableType());
-				if (study.setMeasurement(om, arm, wt, meas) != null)
-					System.out.println("REPLACEAAA");
+				study.setMeasurement(om, arm, wt, meas);
 			}
 
 		}
@@ -327,7 +326,7 @@ public class ClinicaltrialsImporter {
 					study.setStudyActivityAt(arm, mainphaseEpoch, act);
 				}
 			}
-			/* Add the intervention note to all arms if it can't be mapped to any single arm */
+			// Add the intervention note to all arms if it can't be mapped to any single arm
 			if (notAssigned) {
 				for (Arm arm : study.getArms()) {
 					Note note = arm.getNotes().get(0);
