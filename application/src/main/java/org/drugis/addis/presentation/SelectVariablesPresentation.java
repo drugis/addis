@@ -118,7 +118,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	public boolean hasAddOptionDialog() {
 		return true;
 	}
-	
+
 	public void showAddOptionDialog(int idx) {
 		throw new RuntimeException("AddOptionDialog not implemented");
 	}
@@ -152,7 +152,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 			bindSlot(slot);
 		}
 	}
-	
+
 	class Slot<E> extends ModifiableHolder<E> {
 		private List<ModifiableHolder<E>> d_slots;
 		public Slot(List<ModifiableHolder<E>> slots) {
@@ -160,7 +160,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 		}
 		@Override
 		public void setValue(Object obj) {
-			super.setValue(obj);			
+			super.setValue(obj);
 			// Make sure each option is selected only once
 			for (ModifiableHolder<E> s : d_slots) {
 				if (s.getValue() != null && s != this && EqualsUtil.equal(s.getValue(), getValue())) {
@@ -168,9 +168,9 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 				}
 			}
 		}
-		
+
 	}
-	
+
 	class SlotsUniqueListener implements PropertyChangeListener {
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -185,17 +185,17 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 			}
 		}
 	}
-	
+
 	public class InputCompleteModel extends AbstractValueModel implements PropertyChangeListener {
 		private Boolean d_oldValue;
-		
+
 		public InputCompleteModel() {
 			for (ModifiableHolder<T> s : d_slots) {
 				s.addValueChangeListener(this);
 			}
 			d_oldValue = getValue();
 		}
-		
+
 		public void propertyChange(PropertyChangeEvent evt) {
 			evaluate();
 		}
@@ -210,19 +210,23 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 		public Boolean getValue() {
 			boolean r = true;
 			for (ModifiableHolder<T> s: d_slots) {
-				if (s.getValue() == null) {
-					r = false;
-					break;
+				if (s instanceof StudyOutcomeMeasure) {
+					StudyOutcomeMeasure<T> som = (StudyOutcomeMeasure<T>) s;
+					if (s.getValue() != null && som.hasPlaceholder()) {
+						r = false;
+						break;
+					}
 				}
+
 			}
 			return r;
 		}
-		
+
 		public void addSlot(ModifiableHolder<T> s) {
 			s.addValueChangeListener(this);
 			evaluate();
 		}
-		
+
 		public void removeSlot(ModifiableHolder<T> s) {
 			s.removeValueChangeListener(this);
 			evaluate();
@@ -232,7 +236,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 			throw new RuntimeException("InputCompleteModel is read-only");
 		}
 	}
-	
+
 	public class AddSlotsAlwaysEnabledModel extends AbstractValueModel {
 		public Object getValue() {
 			return true;

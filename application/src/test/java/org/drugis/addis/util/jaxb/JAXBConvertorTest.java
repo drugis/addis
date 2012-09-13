@@ -948,14 +948,14 @@ public class JAXBConvertorTest {
 				whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
 
 		final Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
-		
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ep), arm5, whenTaken), crm1);
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ep), arm8, whenTaken), crm2);
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ae), arm5, whenTaken), crm2);
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(ae), arm8, whenTaken), crm1);
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(pc), arm5, whenTaken), ccm1);
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(pc), arm8, whenTaken), ccm1);
-		expected.put(new MeasurementKey(new StudyOutcomeMeasure<Variable>(pc), null, whenTaken), ccm1);
+
+		expected.put(new MeasurementKey(oms.get(epName), arm5, whenTaken), crm1);
+		expected.put(new MeasurementKey(oms.get(epName), arm8, whenTaken), crm2);
+		expected.put(new MeasurementKey(oms.get(aeName), arm5, whenTaken), crm2);
+		expected.put(new MeasurementKey(oms.get(aeName), arm8, whenTaken), crm1);
+		expected.put(new MeasurementKey(oms.get(pcName), arm5, whenTaken), ccm1);
+		expected.put(new MeasurementKey(oms.get(pcName), arm8, whenTaken), ccm1);
+		expected.put(new MeasurementKey(oms.get(pcName), null, whenTaken), ccm1);
 
 		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements,
 				arms, epochs, oms));
@@ -1480,8 +1480,8 @@ public class JAXBConvertorTest {
 		domain.getStudies().add(study);
 
 		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(
-				name, 
-				ExampleData.buildEndpointHamd(), 
+				name,
+				ExampleData.buildEndpointHamd(),
 				study.getTreatmentDefinition(base),
 				study.getTreatmentDefinition(subject),
 				armsList, false);

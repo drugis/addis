@@ -30,19 +30,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 
-import org.apache.commons.collections15.comparators.NullComparator;
 import org.drugis.common.EqualsUtil;
 
-public class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
+public class MeasurementKey extends AbstractEntity implements Entity {
 
-	public static class NullVariable extends AbstractVariable {
-
-		protected NullVariable(String name, VariableType type) {
-			super(name, type);
-		} 
-		
-	}
-	
 	private final Arm d_arm;
 	private final WhenTaken d_wt;
 	private final StudyOutcomeMeasure<? extends Variable> d_som;
@@ -50,20 +41,20 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 	public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
 		if (som.getValue() instanceof OutcomeMeasure && a == null) throw new NullPointerException("Arm may not be null for Endpoints/ADEs");
 		if (wt == null) throw new NullPointerException("Moment of measurement may not be null");
-		
+
 		d_som = som;
 		d_arm = a;
 		d_wt = wt;
 	}
 
 	public Variable getVariable() {
-		return d_som.getValue() != null ? d_som.getValue() : new NullVariable("",  new RateVariableType()); // FIXME I should know what type I am
+		return d_som.getValue();
 	}
 
-	public StudyOutcomeMeasure<? extends Variable> getStudyOutcomeMeasure() { 
+	public StudyOutcomeMeasure<? extends Variable> getStudyOutcomeMeasure() {
 		return d_som;
 	}
-	
+
 	public Arm getArm() {
 		return d_arm;
 	}
@@ -82,12 +73,12 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 		MeasurementKey other = matching(o);
 		return other != null && d_som == other.d_som;
 	}
-	
-	public boolean deepEquals(Object o)  { 
+
+	public boolean deepEquals(Object o)  {
 		MeasurementKey other = matching(o);
 		return other != null && EqualsUtil.equal(d_som, other.d_som);
 	}
-	
+
 	public MeasurementKey matching(Object o) {
 		if (o instanceof MeasurementKey) {
 			MeasurementKey other = (MeasurementKey) o;
@@ -98,7 +89,7 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 		}
 		return null;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int code = 1;
@@ -113,25 +104,22 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 		return Collections.emptySet();
 	}
 
-	@Override
-	public int compareTo(MeasurementKey o) {
-		int variable = new NullComparator<Variable>(new Comparator<Variable>() {
-			public int compare(Variable o1, Variable o2) {
-				return o1.compareTo(o2);
-			}
-		}).compare(d_som.getValue(), o.d_som.getValue());
-		if (variable == 0) {
-			if (d_arm != null) {
-				if (d_arm.compareTo(o.d_arm) == 0) {
-					return d_wt.compareTo(o.d_wt);
+	public static class MeasurementKeyComparator implements Comparator<MeasurementKey> {
+		public int compare(MeasurementKey k0, MeasurementKey k1) {
+			int variable = k0.getVariable().compareTo(k1.getVariable());
+			if (variable == 0) {
+				if (k0.getArm() != null) {
+					if (k0.getArm().compareTo(k1.getArm()) == 0) {
+						return k0.getWhenTaken().compareTo(k1.getWhenTaken());
+					}
+					return k0.getArm().compareTo(k1.getArm());
+				} else if (k1.getArm() == null) {
+					return k0.getWhenTaken().compareTo(k1.getWhenTaken());
+				} else {
+					return -1;
 				}
-				return d_arm.compareTo(o.d_arm);
-			} else if (o.d_arm == null) {
-				return d_wt.compareTo(o.d_wt);
-			} else {
-				return -1;
 			}
+			return variable;
 		}
-		return variable;
 	}
 }

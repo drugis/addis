@@ -41,6 +41,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Note;
+import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
@@ -56,16 +57,16 @@ public class ClinicaltrialImporterTest {
 	private static InputStream getXMLResource(String name) {
 		return ClinicaltrialImporterTest.class.getResourceAsStream(name);
 	}
-	
+
 	Domain d_testDomain;
 	Study  d_testStudy;
-	
+
 	@Before
 	public void setUp() {
 		d_testDomain = new DomainImpl();
 		d_testStudy  = new Study();
 	}
-	
+
 	@Test
 	public void testGetClinicaltrialsDataFromUri() {
 		try {
@@ -74,11 +75,11 @@ public class ClinicaltrialImporterTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void testGetClinicaltrialsData(){
 		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00644527.xml"));
-		
+
 		testRetrievedStudy();
  	}
 
@@ -89,7 +90,7 @@ public class ClinicaltrialImporterTest {
 		assertEquals(BasicStudyCharacteristic.Blinding.DOUBLE_BLIND, d_testStudy.getCharacteristic( BasicStudyCharacteristic.BLINDING));
 		assertEquals(1, d_testStudy.getCharacteristic(BasicStudyCharacteristic.CENTERS));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.OBJECTIVE)).contains("specific interest is the use of music in the evening") );
-		assertNull(d_testStudy.getIndication()); 
+		assertNull(d_testStudy.getIndication());
 
 		Date expectedStartDate = null, expectedEndDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
@@ -99,39 +100,43 @@ public class ClinicaltrialImporterTest {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 		assertEquals(new Date().toString(), d_testStudy.getCharacteristic(BasicStudyCharacteristic.CREATION_DATE).toString());
 		assertEquals(Source.CLINICALTRIALS, d_testStudy.getCharacteristic(BasicStudyCharacteristic.SOURCE));
-		
+
 		assertEquals(expectedStartDate , d_testStudy.getCharacteristic(BasicStudyCharacteristic.STUDY_START));
 		assertEquals(expectedEndDate, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STUDY_END));
 		assertEquals(BasicStudyCharacteristic.Status.COMPLETED, d_testStudy.getCharacteristic(BasicStudyCharacteristic.STATUS));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.INCLUSION)).contains("Patients aged 18 to 70 years with a Goldberg Depression Test Score of 15 to 65"));
 		assertTrue(((String)d_testStudy.getCharacteristic(BasicStudyCharacteristic.EXCLUSION)).contains("Patients under psychiatric treatment because of psychoses"));
-		
-		
+
+
 		assertTrue(Study.extractVariables(d_testStudy.getEndpoints()).size() > 0);
 		Note note = d_testStudy.getEndpoints().get(0).getNotes().get(0);
-		
-		
-		Boolean checkNote = note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up") 
+
+
+		Boolean checkNote = note.getText().contains("the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up")
 		                 || note.getText().contains("Quality of life (SF 36), Vital Exhaustion Brief Questionnaire, Primary outcome measure at 5 and 10 weeks.");
 		assertTrue(checkNote);
 	}
-	
+
 	@Test
-	public void testGetClinicaltrialsDataWithResults() { 
+	public void testGetClinicaltrialsDataWithResults() {
 		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00423098.xml"));
 		StudyOutcomeMeasure<? extends Variable> som = d_testStudy.getStudyOutcomeMeasures().get(0);
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_testStudy.getEpochs().get(1));
+
+		assertTrue(som.getNotes().get(0).getText().startsWith("Number of Patients With Complete Remission"));
+		assertEquals("Standard dose", d_testStudy.getArms().get(0).getName());
+		assertEquals("Low dose", d_testStudy.getArms().get(1).getName());
 
 		BasicMeasurement m1 = d_testStudy.getMeasurement(som, d_testStudy.getArms().get(0), wt);
 		BasicMeasurement m2 = d_testStudy.getMeasurement(som, d_testStudy.getArms().get(1), wt);
 
 		assertEquals(new BasicRateMeasurement(8, 42), m1);
 		assertEquals(new BasicRateMeasurement(8, 39), m2);
-
+		assertEquals(new RateVariableType(), som.getValue().getVariableType());
 	}
-	
-	
+
+
 }
