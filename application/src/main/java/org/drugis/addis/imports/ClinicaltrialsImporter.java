@@ -50,6 +50,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
@@ -73,6 +74,7 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
+import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
@@ -182,6 +184,8 @@ public class ClinicaltrialsImporter {
 			}
 		}
 
+		// Arms and measurements
+
 		Epoch mainphaseEpoch = new Epoch("Main phase", null);
 		study.getEpochs().add(mainphaseEpoch);
 		addStudyArms(study, studyImport, mainphaseEpoch);
@@ -198,11 +202,60 @@ public class ClinicaltrialsImporter {
 			}
 		}
 
+		// Adverse events
+		if (studyImport.getClinicalResults() != null) {
+			addAdverseEvents(study, studyImport);
+		}
+
 		// Import date & Source.
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.CREATION_DATE,
 				objectWithNote(new Date(), studyImport.getRequiredHeader().getDownloadDate().trim()));
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.SOURCE,
 				objectWithNote(Source.CLINICALTRIALS, studyImport.getRequiredHeader().getUrl().trim()));
+	}
+
+	private static void addAdverseEvents(Study study, ClinicalStudy studyImport) {
+		ReportedEventsStruct reportedEvents = studyImport.clinicalResults.reportedEvents;
+		for (EventCategoryStruct sae : reportedEvents.seriousEvents.categoryList.category) {
+			addEvents(study, reportedEvents, sae);
+		}
+
+		for (EventCategoryStruct ae : reportedEvents.otherEvents.categoryList.category) {
+			addEvents(study, reportedEvents, ae);
+		}
+
+	}
+
+	private static void addEvents(Study study, ReportedEventsStruct reportedEvents, EventCategoryStruct sae) {
+		for (EventStruct event : sae.getEventList().event) {
+			StudyOutcomeMeasure<AdverseEvent> ae = new StudyOutcomeMeasure<AdverseEvent>(AdverseEvent.class);
+			String noteStr = event.getSubTitle().value + " (" + sae.title + ")";
+			noteStr = addIfAny(noteStr,"Description", event.description);
+			noteStr = addIfAny(noteStr,"Assesement", event.assessment);
+
+			WhenTaken wt = setDefaultWhenTaken(study, ae);
+			study.getAdverseEvents().add(ae);
+
+			ae.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
+			for (final EventCountsStruct counts : event.getCounts()) {
+				GroupStruct xmlArm = find(reportedEvents.groupList.group, new Predicate<GroupStruct>() {
+					public boolean evaluate(GroupStruct object) {
+						return object.getGroupId().equalsIgnoreCase(counts.groupId);
+				}});
+				Arm arm = findArmWithName(study, xmlArm.getTitle());
+				BasicRateMeasurement m =
+						new BasicRateMeasurement(Integer.parseInt(counts.subjectsAffected), Integer.parseInt(counts.subjectsAtRisk));
+				ae.getValue().setVariableType(new RateVariableType());
+				study.setMeasurement(ae, arm, wt, m);
+			}
+		}
+	}
+
+	private static WhenTaken setDefaultWhenTaken(Study study, StudyOutcomeMeasure<? extends Variable> ae) {
+		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0));
+		wt.commit();
+		ae.getWhenTaken().add(wt);
+		return wt;
 	}
 
 	private static void addStudyOutcomeMeasures(Study study, ClinicalStudy studyImport) {
@@ -214,9 +267,9 @@ public class ClinicaltrialsImporter {
 			noteStr = addIfAny(noteStr, "Time frame", outcome.getTimeFrame());
 			noteStr = addIfAny(noteStr, "Safety issue", outcome.getSafetyIssue());
 			som.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
-			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0));
-			wt.commit();
-			som.getWhenTaken().add(wt);
+
+			WhenTaken wt = setDefaultWhenTaken(study, som);
+
 			study.getEndpoints().add(som);
 			if (studyImport.getClinicalResults() != null) {
 				addMeasurements(som, outcome, wt, study, studyImport);
@@ -292,7 +345,7 @@ public class ClinicaltrialsImporter {
 
 	private static void addBasicRateMeasurement(
 			final Study study,
-			final StudyOutcomeMeasure<Endpoint> som,
+			final StudyOutcomeMeasure<? extends Variable> som,
 			final WhenTaken wt,
 			GroupStruct xmlArm,
 			ResultsOutcomeStruct outcome) {
@@ -308,7 +361,7 @@ public class ClinicaltrialsImporter {
 
 	private static void addContinuousRateMeasurement(
 			final Study study,
-			final StudyOutcomeMeasure<Endpoint> som,
+			final StudyOutcomeMeasure<? extends Variable> som,
 			final WhenTaken wt,
 			GroupStruct xmlArm,
 			ResultsOutcomeStruct outcome) {
@@ -376,9 +429,9 @@ public class ClinicaltrialsImporter {
 		});
 	}
 
-	private static String addIfAny(String noteStr, String fieldName, String timeFrame) {
-		if (timeFrame != null && !timeFrame.equals("")) {
-			return noteStr + "\n\n" + fieldName + ": " + timeFrame;
+	private static String addIfAny(String noteStr, String fieldName, String value) {
+		if (value != null && !value.equals("")) {
+			return noteStr + "\n\n" + fieldName + ": " + value;
 		}
 		return noteStr;
 	}
