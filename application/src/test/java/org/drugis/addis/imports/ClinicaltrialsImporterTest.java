@@ -150,7 +150,7 @@ public class ClinicaltrialsImporterTest {
 
 		assertMeasurementEquals(m3, d_testStudy.getMeasurement(som2, arm1, wt));
 		assertMeasurementEquals(m4, d_testStudy.getMeasurement(som2, arm2, wt));
-
+		// TODO add tests for categorical and rate measurements
 
 	}
 

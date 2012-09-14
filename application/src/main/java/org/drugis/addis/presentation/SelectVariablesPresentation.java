@@ -55,6 +55,11 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private String d_title;
 	private String d_description;
 	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
+	private PropertyChangeListener d_placeHolderListener = new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+			d_inputCompleteModel.evaluate();
+		}
+	};
 	private final WhenTakenFactory d_wtf;
 	private final Class<T> d_type;
 
@@ -83,6 +88,8 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 
 	private void bindSlot(StudyOutcomeMeasure<T> slot) {
 		slot.addPropertyChangeListener("value", d_slotValueListener);
+		slot.addPropertyChangeListener(StudyOutcomeMeasure.PROPERTY_HAS_PLACEHOLDER, d_placeHolderListener);
+
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() - 1, d_slots.size());
 		d_inputCompleteModel.addSlot(slot);
 	}
@@ -99,6 +106,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 
 	private void unbindSlot(StudyOutcomeMeasure<T> s) {
 		s.removePropertyChangeListener("value", d_slotValueListener);
+		s.removePropertyChangeListener(StudyOutcomeMeasure.PROPERTY_HAS_PLACEHOLDER, d_placeHolderListener);
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}

@@ -27,6 +27,7 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -40,6 +41,7 @@ import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.StudyOutcomeMeasure.EmptyVariable;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 import org.drugis.addis.util.EntityUtil;
@@ -142,9 +144,9 @@ public class SelectVariablesPresentationTest {
 		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
 
-		mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value",
-				Boolean.FALSE, Boolean.TRUE);
+		mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value", Boolean.FALSE, Boolean.TRUE);
 		d_pm.getInputCompleteModel().addValueChangeListener(mock);
+		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		d_pm.getSlot(0).setValue(d_ade2);
 		assertEquals(Boolean.TRUE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
@@ -177,8 +179,13 @@ public class SelectVariablesPresentationTest {
 		d_pm.addSlot();
 		d_pm.getSlot(1).setValue(d_ade1);
 		assertEquals(d_ade1, d_pm.getSlot(1).getValue());
+		assertFalse(d_pm.getSlot(1).hasPlaceholder());
+		assertTrue(d_pm.getSlot(0).hasPlaceholder());
+
 		d_pm.getSlot(0).setValue(d_ade1);
 		assertEquals(d_ade1, d_pm.getSlot(0).getValue());
-		assertEquals(null, d_pm.getSlot(1).getValue());
+
+		assertFalse(d_pm.getSlot(0).hasPlaceholder());
+		assertTrue(d_pm.getSlot(1).hasPlaceholder());
 	}
 }

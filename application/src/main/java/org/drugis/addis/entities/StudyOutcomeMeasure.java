@@ -58,7 +58,6 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 		T getDummy() {
 			return d_dummy;
 		}
-
 	}
 
 	public static final String PROPERTY_IS_PRIMARY = "isPrimary";
@@ -121,6 +120,7 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 		super.setValue(newValue);
 		d_placeholder.setValue(null);
 		firePropertyChange(PROPERTY_HAS_PLACEHOLDER, true, false);
+
 	}
 
 	private T initializePlaceholder() {

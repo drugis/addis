@@ -286,7 +286,7 @@ public class ClinicaltrialsImporter {
 			int frequency = Integer.parseInt(getMeasurementForArm(outcome, xmlArm.groupId, 1, i).getValueAttribute());
 			frequencies.put(name, frequency);
 		}
-		som.getValue().setVariableType(new CategoricalVariableType());
+		som.getValue().setVariableType(new CategoricalVariableType(categoryNames));
 		study.setMeasurement(som, arm, wt, new FrequencyMeasurement(categoryNames, frequencies));
 	}
 
@@ -337,7 +337,7 @@ public class ClinicaltrialsImporter {
 		double stdDev = Double.parseDouble(rateStruct.spread);
 		if (rateMeasure.dispersion.equals("Standard Error")) {
 			stdDev = stdDev * Math.sqrt(total);
-		} else if (!rateMeasure.dispersion.equals("Standard Deviation ")) {
+		} else if (!rateMeasure.dispersion.equals("Standard Deviation")) {
 			System.err.println("Cannot convert dispersion in " + rateMeasure.title + " of type" + rateMeasure.dispersion);
 			return null;
 		}
@@ -349,9 +349,9 @@ public class ClinicaltrialsImporter {
 			MeasurementStruct totalStruct,
 			MeasureStruct rateMeasure) {
 		boolean isPercentage = StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage");
-		float total = Float.parseFloat(totalStruct.valueAttribute);
-		float rate = Float.parseFloat(rateStruct.valueAttribute);
-		return new BasicRateMeasurement((int)total, (int)(isPercentage ? ((rate / 100) * total) : rate));
+		double total = Double.parseDouble(totalStruct.valueAttribute);
+		double rate =  Double.parseDouble(rateStruct.valueAttribute);
+		return new BasicRateMeasurement((int) Math.round(total), (int)Math.round((isPercentage ? ((rate / 100) * total) : rate)));
 	}
 
 	private static MeasurementStruct getMeasurementForArm(ResultsOutcomeStruct outcome, final String xmlArmId, int index, int categoryIdx) {
