@@ -27,6 +27,7 @@
 package org.drugis.addis.imports;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -35,6 +36,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
+import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
@@ -50,9 +54,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class ClinicaltrialImporterTest {
+public class ClinicaltrialsImporterTest {
 	private static InputStream getXMLResource(String name) {
-		return ClinicaltrialImporterTest.class.getResourceAsStream(name);
+		return ClinicaltrialsImporterTest.class.getResourceAsStream(name);
 	}
 
 	Domain d_testDomain;
@@ -120,14 +124,44 @@ public class ClinicaltrialImporterTest {
 	@Test
 	public void testGetClinicaltrialsDataWithResults() {
 		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00696436.xml"));
-		StudyOutcomeMeasure<? extends Variable> som = d_testStudy.getStudyOutcomeMeasures().get(0);
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_testStudy.getEpochs().get(1));
+		Arm arm1 = d_testStudy.getArms().get(0);
+		Arm arm2 = d_testStudy.getArms().get(1);
 
-		assertTrue(som.getNotes().get(0).getText().startsWith("Change From Baseline in the 24-hour Mean Systolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring."));
-		assertEquals("Azilsartan Medoxomil 40 mg QD", d_testStudy.getArms().get(0).getName());
-		assertEquals("Azilsartan Medoxomil 80 mg QD", d_testStudy.getArms().get(1).getName());
+		assertEquals("Azilsartan Medoxomil 40 mg QD", arm1.getName());
+		assertEquals("Azilsartan Medoxomil 80 mg QD", arm2.getName());
 		assertEquals(5, d_testStudy.getArms().size());
 
+		StudyOutcomeMeasure<? extends Variable> som1 = d_testStudy.getStudyOutcomeMeasures().get(0);
+
+		assertTrue(som1.getNotes().get(0).getText().startsWith("Change From Baseline in the 24-hour Mean Systolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring."));
+		assertTrue(som1.getIsPrimary());
+		BasicContinuousMeasurement m1 = new BasicContinuousMeasurement(-13.42, 10.622, 237);
+		BasicContinuousMeasurement m2 = new BasicContinuousMeasurement(-14.53, 10.623, 229);
+		assertMeasurementEquals(m1, d_testStudy.getMeasurement(som1, arm1, wt));
+		assertMeasurementEquals(m2, d_testStudy.getMeasurement(som1, arm2, wt));
+
+		StudyOutcomeMeasure<? extends Variable> som2 = d_testStudy.getStudyOutcomeMeasures().get(1);
+		assertTrue(som2.getNotes().get(0).getText().startsWith("Change From Baseline in Mean Trough Clinic Sitting Systolic Blood Pressure."));
+		assertFalse(som2.getIsPrimary());
+
+		BasicContinuousMeasurement m3 = new BasicContinuousMeasurement(-16.38, 15.728, 269);
+		BasicContinuousMeasurement m4 = new BasicContinuousMeasurement(-16.74, 15.725, 270);
+
+		assertMeasurementEquals(m3, d_testStudy.getMeasurement(som2, arm1, wt));
+		assertMeasurementEquals(m4, d_testStudy.getMeasurement(som2, arm2, wt));
+
+
+	}
+
+	private static void assertMeasurementEquals(BasicContinuousMeasurement m1, BasicMeasurement m2) {
+		if (m2 instanceof BasicContinuousMeasurement) {
+			assertEquals(m1.getMean(), ((BasicContinuousMeasurement) m2).getMean(), 0.001);
+			assertEquals(m1.getStdDev(), ((BasicContinuousMeasurement) m2).getStdDev(), 0.001);
+			assertEquals(m1.getSampleSize(), m2.getSampleSize());
+		} else {
+			assertEquals(m1, m2);
+		}
 	}
 
 

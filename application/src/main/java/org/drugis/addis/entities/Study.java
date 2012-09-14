@@ -151,10 +151,11 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 		for (final Epoch epoch : d_epochs) {
 			newStudy.replaceEpoch(epoch, epoch.clone());
 		}
-		// WhenTakens are already cloned by StudyOutcomeMeasure.clone(), but the old versions are referenced by MeasurementKeys
-		for (final StudyOutcomeMeasure<?> som : newStudy.getStudyOutcomeMeasures()) {
-			for (final WhenTaken wt : som.getWhenTaken()) {
-				newStudy.updateMeasurementKeys(som, wt, wt);
+		for (int i = 0; i < newStudy.getStudyOutcomeMeasures().size(); i++) {
+			final StudyOutcomeMeasure<?> oldSom = this.getStudyOutcomeMeasures().get(i);
+			final StudyOutcomeMeasure<?> newSom = newStudy.getStudyOutcomeMeasures().get(i);
+			for (int j = 0; j < newSom.getWhenTaken().size(); j++) {
+				newStudy.updateMeasurementKeys(oldSom, newSom, oldSom.getWhenTaken().get(j), newSom.getWhenTaken().get(j));
 			}
 		}
 
@@ -221,24 +222,25 @@ public class Study extends AbstractNamedEntity<Study> implements TypeWithNotes {
 	}
 
 
-	public <V extends Variable> void replaceWhenTaken(final StudyOutcomeMeasure<V> studyOutcomeMeasure,
+	public <V extends Variable> void replaceWhenTaken(final StudyOutcomeMeasure<V> som,
 			final WhenTaken oldWhenTaken, final WhenTaken newWhenTaken) {
 		if (!newWhenTaken.isCommitted()) {
 			throw new IllegalArgumentException("The new WhenTaken must be committed");
 		}
-		updateMeasurementKeys(studyOutcomeMeasure, oldWhenTaken, newWhenTaken);
+		updateMeasurementKeys(som, som, oldWhenTaken, newWhenTaken);
 
-		final ObservableList<WhenTaken> whenTakens = studyOutcomeMeasure.getWhenTaken();
+		final ObservableList<WhenTaken> whenTakens = som.getWhenTaken();
 		whenTakens.set(whenTakens.indexOf(oldWhenTaken), newWhenTaken);
 	}
 
-	private <V extends Variable> void updateMeasurementKeys(final StudyOutcomeMeasure<V> studyOutcomeMeasure,
+	private <V extends Variable> void updateMeasurementKeys(
+			final StudyOutcomeMeasure<? extends V> oldSom, final StudyOutcomeMeasure<? extends V> newSom,
 			final WhenTaken oldWhenTaken, final WhenTaken newWhenTaken) {
 		transformMeasurementKeys(new Transformer<MeasurementKey, MeasurementKey>() {
 			@Override
 			public MeasurementKey transform(final MeasurementKey input) {
-				if (input.getVariable().equals(studyOutcomeMeasure.getValue()) && input.getWhenTaken().equals(oldWhenTaken)) {
-					return new MeasurementKey(input.getStudyOutcomeMeasure(), input.getArm(), newWhenTaken);
+				if (input.getStudyOutcomeMeasure() == oldSom && input.getWhenTaken().equals(oldWhenTaken)) {
+					return new MeasurementKey(newSom, input.getArm(), newWhenTaken);
 				}
 				return input;
 			}

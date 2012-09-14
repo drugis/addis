@@ -40,6 +40,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,14 +49,19 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.BasicStudyCharacteristic;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
+import org.drugis.addis.entities.CategoricalVariableType;
+import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
+import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
@@ -247,31 +253,110 @@ public class ClinicaltrialsImporter {
 			}
 		});
 		for (GroupStruct xmlArm : outcome.getGroupList().group) {
-			final Arm arm = findArmWithName(study, xmlArm.getTitle());
-			final String xmlArmId = xmlArm.groupId;
-
 			// Fails for multiple epochs since we treat them as categorical variables (seems to be the default)
-			if (outcome.measureList.measure.get(0).getParam().equals("Number")
-				&& outcome.measureList.measure.get(1).getParam().equals("Number")) {
-				BasicMeasurement meas = createBasicMeasurement(
-						getMeasurementForArm(outcome, xmlArmId, 0),
-						getMeasurementForArm(outcome, xmlArmId, 1));
-				om.getValue().setVariableType(new RateVariableType());
-				study.setMeasurement(om, arm, wt, meas);
+			MeasureStruct total = outcome.measureList.measure.get(0);
+			MeasureStruct second = outcome.measureList.measure.get(1);
+			List<MeasureCategoryStruct> categories = total.getCategoryList().getCategory();
+			if (categories.size() == 1) {
+				if (total.getParam().equals("Number") && second.getParam().equals("Number")) {
+					addBasicRateMeasurement(study, om, wt, xmlArm, outcome);
+				}
+				if (total.getParam().equals("Number") && !second.getParam().equals("Number")) {
+					addContinuousRateMeasurement(study, om, wt, xmlArm, outcome);
+				}
+			} else if (categories.size() > 1) {	 // Categorical variable
+				addFrequencyMeasurement(study, om, wt, xmlArm, outcome, categories);
 			}
-
 		}
 	}
 
-	private static BasicMeasurement createBasicMeasurement(MeasurementStruct rate, MeasurementStruct total) {
-		return new BasicRateMeasurement(
-				Integer.parseInt(total.valueAttribute),
-				Integer.parseInt(rate.valueAttribute));
+	private static void addFrequencyMeasurement(
+			Study study,
+			StudyOutcomeMeasure<Endpoint> som,
+			WhenTaken wt,
+			GroupStruct xmlArm,
+			ResultsOutcomeStruct outcome, List<MeasureCategoryStruct> categories) {
+		final Arm arm = findArmWithName(study, xmlArm.getTitle());
+		List<String> categoryNames = new LinkedList<String>();
+		Map<String, Integer> frequencies = new HashMap<String, Integer>();
+		for (int i = 0; i < categories.size(); i++) {
+			MeasureCategoryStruct category = categories.get(i);
+			String name = category.subTitle;
+			categoryNames.add(name);
+			int frequency = Integer.parseInt(getMeasurementForArm(outcome, xmlArm.groupId, 1, i).getValueAttribute());
+			frequencies.put(name, frequency);
+		}
+		som.getValue().setVariableType(new CategoricalVariableType());
+		study.setMeasurement(som, arm, wt, new FrequencyMeasurement(categoryNames, frequencies));
 	}
 
-	private static MeasurementStruct getMeasurementForArm(ResultsOutcomeStruct outcome, final String xmlArmId, int index) {
+	private static void addBasicRateMeasurement(
+			final Study study,
+			final StudyOutcomeMeasure<Endpoint> som,
+			final WhenTaken wt,
+			GroupStruct xmlArm,
+			ResultsOutcomeStruct outcome) {
+		final Arm arm = findArmWithName(study, xmlArm.getTitle());
+		final String xmlArmId = xmlArm.groupId;
+		BasicMeasurement meas = createBasicRateMeasurement(
+				getMeasurementForArm(outcome, xmlArmId, 0, 0),
+				getMeasurementForArm(outcome, xmlArmId, 1, 0),
+				outcome.measureList.measure.get(1));
+		som.getValue().setVariableType(new RateVariableType());
+		study.setMeasurement(som, arm, wt, meas);
+	}
+
+	private static void addContinuousRateMeasurement(
+			final Study study,
+			final StudyOutcomeMeasure<Endpoint> som,
+			final WhenTaken wt,
+			GroupStruct xmlArm,
+			ResultsOutcomeStruct outcome) {
+		final Arm arm = findArmWithName(study, xmlArm.getTitle());
+		final String xmlArmId = xmlArm.groupId;
+		MeasureStruct rateMeasure = outcome.measureList.measure.get(1);
+
+		if(!(rateMeasure.param.equalsIgnoreCase("Mean") || rateMeasure.param.equalsIgnoreCase("Least Squares Mean"))) {
+			System.err.println(("Cannon import mean, not of type 'mean' or 'Least Squares Mean', but " + rateMeasure.param));
+			return;
+		}
+		BasicMeasurement meas = createBasicContinuousMeasurement(
+				getMeasurementForArm(outcome, xmlArmId, 0, 0),
+				getMeasurementForArm(outcome, xmlArmId, 1, 0),
+				rateMeasure);
+		som.getValue().setVariableType(new ContinuousVariableType());
+		study.setMeasurement(som, arm, wt, meas);
+	}
+
+	private static BasicMeasurement createBasicContinuousMeasurement(
+			MeasurementStruct totalStruct,
+			MeasurementStruct rateStruct,
+			MeasureStruct rateMeasure) {
+		int total = Integer.parseInt(totalStruct.valueAttribute);
+		double mean = Double.parseDouble(rateStruct.valueAttribute);
+		double stdDev = Double.parseDouble(rateStruct.spread);
+		if (rateMeasure.dispersion.equals("Standard Error")) {
+			stdDev = stdDev * Math.sqrt(total);
+		} else if (!rateMeasure.dispersion.equals("Standard Deviation ")) {
+			System.err.println("Cannot convert dispersion in " + rateMeasure.title + " of type" + rateMeasure.dispersion);
+			return null;
+		}
+		return new BasicContinuousMeasurement(mean, stdDev, total);
+	}
+
+	private static BasicMeasurement createBasicRateMeasurement(
+			MeasurementStruct rateStruct,
+			MeasurementStruct totalStruct,
+			MeasureStruct rateMeasure) {
+		boolean isPercentage = StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage");
+		float total = Float.parseFloat(totalStruct.valueAttribute);
+		float rate = Float.parseFloat(rateStruct.valueAttribute);
+		return new BasicRateMeasurement((int)total, (int)(isPercentage ? ((rate / 100) * total) : rate));
+	}
+
+	private static MeasurementStruct getMeasurementForArm(ResultsOutcomeStruct outcome, final String xmlArmId, int index, int categoryIdx) {
 		MeasureStruct measure = outcome.measureList.measure.get(index);
-		List<MeasurementStruct> measureMeasurements = measure.getCategoryList().getCategory().get(0).measurementList.measurement;
+		List<MeasurementStruct> measureMeasurements = measure.getCategoryList().getCategory().get(categoryIdx).measurementList.measurement;
 		return findMeasurement(xmlArmId, measureMeasurements);
 	}
 
