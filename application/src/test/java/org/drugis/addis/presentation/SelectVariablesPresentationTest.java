@@ -27,6 +27,7 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -40,6 +41,7 @@ import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.StudyOutcomeMeasure.EmptyVariable;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 import org.drugis.addis.util.EntityUtil;
@@ -58,61 +60,61 @@ public class SelectVariablesPresentationTest {
 	private AdverseEvent d_ade3 = new AdverseEvent("ADE 3", AdverseEvent.convertVarType(Variable.Type.RATE));
 	private SortedSetModel<AdverseEvent> d_list;
 	private SelectAdverseEventsPresentation d_pm;
-	
+
 	@Before
 	public void setUp() {
 		d_list = new SortedSetModel<AdverseEvent>(Arrays.asList(d_ade1, d_ade2));
-		
+
 		AddEpochsPresentation aep = new AddEpochsPresentation(new Study(), "epoch", 1);
 		aep.getList().add(new Epoch("test", EntityUtil.createDuration("P3D")));
 		WhenTakenFactory wtf = new WhenTakenFactory(aep);
 		d_pm = new SelectAdverseEventsPresentation(d_list, wtf, null);
 	}
-	
+
 	@Test
 	public void testGetTypeName() {
 		assertEquals(TYPENAME, d_pm.getTypeName());
 	}
-	
+
 	@Test
 	public void testHasAddOptionDialog() {
 		assertTrue(d_pm.hasAddOptionDialog());
 	}
-	
+
 	@Test
 	public void testGetTitle() {
 		assertEquals(TITLE, d_pm.getTitle());
 		assertEquals(DESCRIPTION, d_pm.getDescription());
 	}
-	
+
 	@Test
 	public void testGetOptions() {
 		assertEquals(d_list, d_pm.getOptions());
 		d_list.add(d_ade3);
 		assertEquals(d_list, d_pm.getOptions());
 	}
-	
+
 	@Test
 	public void testAddSlot() {
 		assertEquals(0, d_pm.countSlots());
 		d_pm.addSlot();
 		assertEquals(1, d_pm.countSlots());
 	}
-	
+
 	@Test
 	public void testGetSlot() {
 		d_pm.addSlot();
 		d_pm.getSlot(0).setValue(d_ade2);
 		assertEquals(d_ade2, d_pm.getSlot(0).getValue());
 	}
-	
+
 	@Test
 	public void testRemoveSlot() {
 		d_pm.addSlot();
 		assertEquals(1, d_pm.countSlots());
 		d_pm.removeSlot(0);
 		assertEquals(0, d_pm.countSlots());
-		
+
 		d_pm.addSlot();
 		d_pm.getSlot(0).setValue(d_ade1);
 		d_pm.addSlot();
@@ -120,7 +122,7 @@ public class SelectVariablesPresentationTest {
 		d_pm.removeSlot(0);
 		assertEquals(d_pm.getSlot(0).getValue(), d_ade2);
 	}
-	
+
 	@Test
 	public void testAddSlotsEnabledModel() {
 		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
@@ -130,26 +132,26 @@ public class SelectVariablesPresentationTest {
 		d_pm.addSlot();
 		assertEquals(d_pm.getAddSlotsEnabledModel().getValue(), Boolean.TRUE);
 	}
-	
+
 	@Test
 	public void testInputCompleteModel() {
 		assertEquals(Boolean.TRUE, d_pm.getInputCompleteModel().getValue());
-		
+
 		PropertyChangeListener mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value",
 				Boolean.TRUE, Boolean.FALSE);
 		d_pm.getInputCompleteModel().addValueChangeListener(mock);
 		d_pm.addSlot();
 		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
-		
-		mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value",
-				Boolean.FALSE, Boolean.TRUE);
+
+		mock = JUnitUtil.mockListener(d_pm.getInputCompleteModel(), "value", Boolean.FALSE, Boolean.TRUE);
 		d_pm.getInputCompleteModel().addValueChangeListener(mock);
+		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		d_pm.getSlot(0).setValue(d_ade2);
 		assertEquals(Boolean.TRUE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
 	}
-	
+
 	@Test
 	public void testInputCompleteModelAfterSetSlots() {
 		assertEquals(Boolean.TRUE, d_pm.getInputCompleteModel().getValue());
@@ -162,23 +164,28 @@ public class SelectVariablesPresentationTest {
 		assertEquals(Boolean.FALSE, d_pm.getInputCompleteModel().getValue());
 		verify(mock);
 	}
-	
+
 	@Test
 	public void testSetSlotsModifiesUnderlyingList() {
 		ArrayList<StudyOutcomeMeasure<AdverseEvent>> list = new ArrayList<StudyOutcomeMeasure<AdverseEvent>>();
 		d_pm.setSlots(list);
 		d_pm.addSlot();
-		assertEquals(Collections.singletonList(new StudyOutcomeMeasure<Variable>(Variable.class)), list);		
+		assertEquals(Collections.singletonList(new StudyOutcomeMeasure<AdverseEvent>(AdverseEvent.class)), list);
 	}
-	
+
 	@Test
 	public void testSelectSameValueTwiceRemovesFromFirst() {
 		d_pm.addSlot();
 		d_pm.addSlot();
 		d_pm.getSlot(1).setValue(d_ade1);
 		assertEquals(d_ade1, d_pm.getSlot(1).getValue());
+		assertFalse(d_pm.getSlot(1).hasPlaceholder());
+		assertTrue(d_pm.getSlot(0).hasPlaceholder());
+
 		d_pm.getSlot(0).setValue(d_ade1);
 		assertEquals(d_ade1, d_pm.getSlot(0).getValue());
-		assertEquals(null, d_pm.getSlot(1).getValue());
+
+		assertFalse(d_pm.getSlot(0).hasPlaceholder());
+		assertTrue(d_pm.getSlot(1).hasPlaceholder());
 	}
 }

@@ -222,7 +222,7 @@ public class StudyBenefitRiskAnalysisTest {
 		List<Arm> alternatives = study.getArms();
 		
 		for (Arm a : alternatives) {
-			study.setMeasurement(om, a, new BasicRateMeasurement(0, 100));
+			study.setMeasurement(study.findStudyOutcomeMeasure(om), a, new BasicRateMeasurement(0, 100));
 		}
 		((BasicRateMeasurement) study.getMeasurement(om, alternatives.get(0))).setRate(5);
 		

@@ -30,6 +30,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.collections15.Predicate;
+import org.drugis.addis.presentation.ModifiableHolder;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.beans.GuardedObservableList;
 
@@ -38,9 +40,31 @@ import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> {
+	public class EmptyVariable extends AbstractVariable {
+		private T d_dummy;
+
+		@SuppressWarnings("unchecked")
+		protected EmptyVariable(String name, VariableType type) {
+			super(name, type);
+			try {
+				d_dummy = (T) d_class.newInstance();
+			} catch (InstantiationException e) {
+				d_dummy = null;
+			} catch (Exception e) {
+				throw new IllegalStateException("Cannot create dummy variable for StudyOutcomeMeasure, unrecognized type " + d_class);
+			}
+		}
+
+		T getDummy() {
+			return d_dummy;
+		}
+	}
+
 	public static final String PROPERTY_IS_PRIMARY = "isPrimary";
+	public static final String PROPERTY_HAS_PLACEHOLDER = "hasPlaceholder";
 
 	protected static final String PROPERTY_WHEN_TAKEN_CHANGED = "whenTakenChanged";
+	private ValueHolder<EmptyVariable> d_placeholder = new ModifiableHolder<EmptyVariable>(null);
 
 	private Boolean d_isPrimary = false;
 	private ObservableList<WhenTaken> d_whenTaken = new GuardedObservableList<WhenTaken>(new ArrayListModel<WhenTaken>(),
@@ -55,12 +79,12 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	public StudyOutcomeMeasure(Class<T> cls) {
 		this((T)null, cls);
 	}
-	
+
 	public StudyOutcomeMeasure(T obj) {
 		this(obj, obj.getClass());
 	}
-	
-	private StudyOutcomeMeasure(T obj, Class<? extends Variable> cls) { 
+
+	private StudyOutcomeMeasure(T obj, Class<? extends Variable> cls) {
 		super(obj);
 		d_class = cls;
 		d_whenTaken.addListDataListener(new ListDataListener() {
@@ -84,6 +108,38 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	}
 
 	@Override
+	public T getValue() {
+		if (super.getValue() == null) {
+			return initializePlaceholder();
+		}
+		return super.getValue();
+	}
+
+	@Override
+	public void setValue(Object newValue) {
+		super.setValue(newValue);
+		d_placeholder.setValue(null);
+		firePropertyChange(PROPERTY_HAS_PLACEHOLDER, true, false);
+
+	}
+
+	private T initializePlaceholder() {
+		if (d_placeholder.getValue() == null) {
+			d_placeholder.setValue(new EmptyVariable("", null));
+			firePropertyChange(PROPERTY_HAS_PLACEHOLDER, false, true);
+		}
+		return d_placeholder.getValue().getDummy();
+	}
+
+	public boolean hasPlaceholder() {
+		return d_placeholder.getValue() != null;
+	}
+
+	public T getPlaceholder() {
+		return d_placeholder.getValue().getDummy();
+	}
+
+	@Override
 	public StudyOutcomeMeasure<T> clone() {
 		StudyOutcomeMeasure<T> clone = new StudyOutcomeMeasure<T>(getValue());
 		clone.setIsPrimary(getIsPrimary());
@@ -99,7 +155,7 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	public Boolean getIsPrimary() {
 		return d_isPrimary;
 	}
-	
+
 	public void setIsPrimary(Boolean isPrimary) {
 		Boolean oldValue = new Boolean(d_isPrimary);
 		d_isPrimary = isPrimary;
@@ -118,7 +174,12 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 		}
 		return false;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return d_class.hashCode() + 31 * d_isPrimary.hashCode() + 31 * d_whenTaken.hashCode();
+	}
+
 	@Override
 	public String toString() {
 		return (d_isPrimary ? "primary measure: " : "secondary measure: ") +

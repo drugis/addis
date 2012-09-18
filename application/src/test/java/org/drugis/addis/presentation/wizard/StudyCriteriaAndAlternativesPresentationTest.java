@@ -76,8 +76,8 @@ public class StudyCriteriaAndAlternativesPresentationTest {
 	
 	@Test
 	public void testNullMeasuredCriteriaNotEnabled() {
-		d_study1.setMeasurement(ExampleData.buildEndpointHamd(), d_study1.getArms().get(0), null);
-		d_study1.setMeasurement(ExampleData.buildEndpointCgi(), d_study1.getArms().get(1), null);
+		d_study1.setMeasurement(d_study1.findStudyOutcomeMeasure(ExampleData.buildEndpointHamd()), d_study1.getArms().get(0), null);
+		d_study1.setMeasurement(d_study1.findStudyOutcomeMeasure(ExampleData.buildEndpointCgi()), d_study1.getArms().get(1), null);
 
 		d_pm.getStudyModel().setValue(d_study1);
 		
@@ -144,7 +144,7 @@ public class StudyCriteriaAndAlternativesPresentationTest {
 	
 	@Test
 	public void testAtLeastTwoNonMissingEnabled() {
-		d_study2.setMeasurement(ExampleData.buildAdverseEventConvulsion(), d_study2.getArms().get(0), new BasicRateMeasurement(5, 22));
+		d_study2.setMeasurement(d_study2.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), d_study2.getArms().get(0), new BasicRateMeasurement(5, 22));
 		d_study2.getMeasurement(ExampleData.buildEndpointHamd(), d_study2.getArms().get(0)).setSampleSize(null);
 
 		d_pm.getStudyModel().setValue(d_study2);
@@ -155,7 +155,7 @@ public class StudyCriteriaAndAlternativesPresentationTest {
 	
 	@Test
 	public void testAtLeastTwoNonMissingEnabledBLAAA() {
-		d_study2.setMeasurement(ExampleData.buildAdverseEventConvulsion(), d_study2.getArms().get(0), new BasicRateMeasurement(5, 22));
+		d_study2.setMeasurement(d_study2.findStudyOutcomeMeasure(ExampleData.buildAdverseEventConvulsion()), d_study2.getArms().get(0), new BasicRateMeasurement(5, 22));
 		((BasicRateMeasurement)d_study2.getMeasurement(ExampleData.buildEndpointHamd(), d_study2.getArms().get(0))).setRate(null);
 
 		d_pm.getStudyModel().setValue(d_study2);

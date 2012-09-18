@@ -581,15 +581,15 @@ public class NetworkMetaAnalysisWizardPMTest {
 	private void addCitalopram() {
 		Arm arm = ExampleData.buildStudyBennie().createAndAddArm("Citalopram-2", 100, 
 				ExampleData.buildDrugCitalopram(), new FixedDose(12, DoseUnit.createMilliGramsPerDay()));
-		ExampleData.buildStudyBennie().setMeasurement(ExampleData.buildEndpointCgi(), arm, 
-				new BasicContinuousMeasurement(3.0, 1.2, 103));
+		Study r = ExampleData.buildStudyBennie();
+		r.setMeasurement(r.findStudyOutcomeMeasure(ExampleData.buildEndpointCgi()), arm, new BasicContinuousMeasurement(3.0, 1.2, 103));
 		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
 	}
 
 	private void makeMissing() {
 		// make setraline missing in study bennie
-		ExampleData.buildStudyBennie().setMeasurement(ExampleData.buildEndpointCgi(), 
-				ExampleData.buildStudyBennie().findArm("Sertraline-1"), null);
+		Study r = ExampleData.buildStudyBennie();
+		r.setMeasurement(r.findStudyOutcomeMeasure(ExampleData.buildEndpointCgi()), ExampleData.buildStudyBennie().findArm("Sertraline-1"), null);
 		
 		d_pm = new NetworkMetaAnalysisWizardPM(d_domain, new PresentationModelFactory(d_domain));
 	}

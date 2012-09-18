@@ -278,12 +278,12 @@ public class ExampleData {
 		addDefaultMeasurementMoments(study);
 
 		// only set measurements once studyactivities are initialised
-		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
-		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
-		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
-		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
-		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		study.setMeasurement(buildAdverseEventConvulsion(), fluox, pConv);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), parox, pCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), parox, pConv);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), fluox, fHamd);		
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluox, fCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), fluox, pConv);
 		return study;
 	}
 
@@ -346,10 +346,10 @@ public class ExampleData {
 		addBaselineMeasurementMoment(study, Endpoint.class);
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(hamd, parox, pHamd);
-		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);		
-		study.setMeasurement(hamd, fluox, fHamd);
-		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), parox, pConv);		
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), fluox, fConv);
 		return study;
 	}
 
@@ -409,9 +409,9 @@ public class ExampleData {
 		// Initialise measurement moment data structure (only after arms are created)
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(hamd, parox0, pHamd0);
-		study.setMeasurement(hamd, parox1, pHamd1);
-		study.setMeasurement(hamd, fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox0, pHamd0);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox1, pHamd1);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluox, fHamd);
 
 		return study;
 	}
@@ -497,14 +497,14 @@ public class ExampleData {
 		
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(buildEndpointCgi(), cita, cCgi);
-		study.setMeasurement(buildEndpointMadrs(), cita, cMadrs);
-		study.setMeasurement(buildEndpointCgi(), esciHigh, ehCgi);
-		study.setMeasurement(buildEndpointMadrs(), esciHigh, ehMadrs);
-		study.setMeasurement(buildEndpointCgi(), esciLow, elCgi);
-		study.setMeasurement(buildEndpointMadrs(), esciLow, elMadrs);
-		study.setMeasurement(buildEndpointCgi(), placebo, plCgi);
-		study.setMeasurement(buildEndpointMadrs(), placebo, plMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), cita, cCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), cita, cMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), esciHigh, ehCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), esciHigh, ehMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), esciLow, elCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), esciLow, elMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), placebo, plCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), placebo, plMadrs);
 		return study;
 }
 	
@@ -544,8 +544,8 @@ public class ExampleData {
 		fCgi.setStdDev(0.5);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
-		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluox, fCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), fluox, fHamd);
 
 		// Sertraline data
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
@@ -553,8 +553,8 @@ public class ExampleData {
 		sCgi.setStdDev(0.5);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
-		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
-		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), sertr, sCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), sertr, sHamd);
 		return study;
 	}
 
@@ -625,12 +625,12 @@ public class ExampleData {
 
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
-		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
-		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
-		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
-		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), parox, pCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluox, fCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), sertr, sCgi);
 
 		return study;
 	}
@@ -691,8 +691,8 @@ public class ExampleData {
 
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
-		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCVdeath()), cand, cDeath);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCVdeath()), placebo, pDeath);
 		
 		return study;
 	}
@@ -752,9 +752,9 @@ public class ExampleData {
 
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(hamd, parox, pHamd);
-		study.setMeasurement(hamd, fluox, fHamd);
-		study.setMeasurement(hamd, sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), sertr, sHamd);
 		
 		return study;
 	}
@@ -1074,8 +1074,8 @@ public class ExampleData {
 		fHamd.setRate(25);
 		
 		// Add measurements at the very last to prevent them from getting reset
-		study.setMeasurement(hamd, sertr, sHamd);
-		study.setMeasurement(hamd, fluoxAndParox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluoxAndParox, fHamd);
 		
 		return study;
 	}
