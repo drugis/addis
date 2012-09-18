@@ -26,3 +26,16 @@ Open label safety
 
  * 491-006: NCT00695955
  * 491-016: NCT00696384
+
+Initial example
+---------------
+
+The initial example will focus on the 5 randomized and blinded monotherapy studies. I propose to add the following note to the study ID for all studies:
+
+	This is one of the "main studies" supporting the Edarbi application for monotherapy identified in the EMA EPAR available at:
+
+	http://www.ema.europa.eu/docs/en_GB/document_library/EPAR_-_Public_assessment_report/human/002293/WC500119206.pdf
+
+	Retrieved from ClinicalTrials.gov using the Takeda internal study identifier 491-XXX.
+
+Where ofcourse XXX should be replaced by the appropriate ID.
