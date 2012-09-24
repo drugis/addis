@@ -9,6 +9,8 @@
     </indications>
     <drugs>
         <drug name="Azilsartan" atcCode="C09CA09"/>
+        <drug name="Chlortalidone" atcCode="C03BA04"/>
+        <drug name="Hydrochlorothiazide" atcCode="C03AA03"/>
         <drug name="Olmesartan" atcCode="C09CA08"/>
         <drug name="Placebo" atcCode="Placebo"/>
         <drug name="Valsartan" atcCode="C09CA03"/>
@@ -51,6 +53,9 @@
         <endpoint name="SBP mean trough (clinic, sitting)" description="Change from baseline in mean trough clinic sitting systolic blood pressure" direction="LOWER_IS_BETTER">
             <continuous unitOfMeasurement="mmHg"/>
         </endpoint>
+        <endpoint name="SBP mean trough (clinic, sitting) B" description="B" direction="HIGHER_IS_BETTER">
+            <continuous unitOfMeasurement="B"/>
+        </endpoint>
         <endpoint name="SBP nighttime mean" description="Change from baseline in nighttime (12am - 6am) mean systolic blood pressure" direction="LOWER_IS_BETTER">
             <continuous unitOfMeasurement="mmHg"/>
         </endpoint>
@@ -65,7 +70,19 @@
         <adverseEvent name="Abdominal adhesions" description="Abdominal adhesions (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Angioedema" description="Angioedema (Skin and subcutaneous tissue disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Asthma" description="Asthma (Respiratory, thoracic and mediastinal disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Atrial fibrillation" description="Atrial fibrillation (Cardiac disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Blood creatinine increased" description="Blood creatinine increased (Investigations)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Blood creatinine increased (non-serious)" description="Blood creatinine increased (Investigations)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Blood pressure increased" description="Blood pressure increased (Investigations)" direction="LOWER_IS_BETTER">
@@ -74,7 +91,13 @@
         <adverseEvent name="Breast cancer" description="Breast cancer (Neoplasms benign, malignant and unspecified (incl cysts and polyps))" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Cardiac arrest" description="Cardiac arrest (Cardiac disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Cellulitis" description="Cellulitis (Infections and infestations)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Cerebral infarction" description="Cerebral infarction (Nervous system disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Chest pain" description="Chest pain (General disorders)" direction="LOWER_IS_BETTER">
@@ -95,13 +118,28 @@
         <adverseEvent name="Deep vein thrombosis" description="Deep vein thrombosis (Vascular disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Dehydration" description="Dehydration (Metabolism and nutrition disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Diarrhoea" description="Diarrhoea (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Diastolic dysfunction" description="Diastolic dysfunction (Cardiac disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Diverticulitis" description="Diverticulitis (Infections and infestations)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Dizziness" description="Dizziness (Nervous system disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Dysfunctional uterine bleeding" description="Dysfunctional uterine bleeding (Reproductive system and breast disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Dyslipidemia" description="Dyslipidemia (Metabolism and nutrition disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Epigastric discomfort" description="Epigastric discomfort (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Epilepsy" description="Epilepsy (Nervous system disorders)" direction="LOWER_IS_BETTER">
@@ -113,10 +151,19 @@
         <adverseEvent name="Fall" description="Fall (Injury, poisoning and procedural complications)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Gastroenteritis" description="Gastroenteritis (Infections and infestations)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Gastrointestinal haemorrhage" description="Gastrointestinal haemorrhage (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Generalised oedema" description="Generalised oedema (General disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Headache" description="Headache (Nervous system disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Heat exhaustion" description="Heat exhaustion (Injury, poisoning and procedural complications)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Infected bites" description="Infected bites (Infections and infestations)" direction="LOWER_IS_BETTER">
@@ -143,7 +190,13 @@
         <adverseEvent name="Myocardial infarction" description="Myocardial infarction (Cardiac disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Nausea" description="Nausea (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Non-SAE" description="Non-serious adverse events (total)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Pancreatitis" description="Pancreatitis (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Partial seizures" description="Partial seizures (Nervous system disorders)" direction="LOWER_IS_BETTER">
@@ -152,10 +205,19 @@
         <adverseEvent name="Pneumonia" description="Pneumonia (Infections and infestations)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Pulmonary embolism" description="Pulmonary embolism (Respiratory, thoracic and mediastinal disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Road traffic accident" description="Road traffic accident (Injury, poisoning and procedural complications)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="SAE" description="Serious adverse events" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Shock" description="Shock (Vascular disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Sleep apnoea syndrome" description="Sleep apnoea syndrome (Respiratory, thoracic and mediastinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Status asthmaticus" description="Status asthmaticus (Respiratory, thoracic and mediastinal disorders)" direction="LOWER_IS_BETTER">
@@ -164,11 +226,26 @@
         <adverseEvent name="Subdural haematoma" description="Subdural haematoma (Injury, poisoning and procedural complications)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
+        <adverseEvent name="Systemic inflammatory response syndrome" description="Systemic inflammatory response syndrome (General disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
         <adverseEvent name="Transient ischaemic attack" description="Transient ischaemic attack (Nervous system disorders)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Troponin increased" description="Troponin increased (Investigations)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Viral infection" description="Viral infection (Infections and infestations)" direction="LOWER_IS_BETTER">
+            <rate/>
+        </adverseEvent>
+        <adverseEvent name="Vomiting" description="Vomiting (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
     </adverseEvents>
     <populationCharacteristics>
+        <populationCharacteristic name="Age" description="Age in years">
+            <continuous unitOfMeasurement="years"/>
+        </populationCharacteristic>
         <populationCharacteristic name="Age (cut-off 45, 65)" description="Age in years">
             <categorical>
                 <category>&lt; 45</category>
@@ -176,10 +253,58 @@
                 <category>&gt; 64</category>
             </categorical>
         </populationCharacteristic>
+        <populationCharacteristic name="BMI" description="Body Mass Index">
+            <continuous unitOfMeasurement="kg/m^2"/>
+        </populationCharacteristic>
+        <populationCharacteristic name="Chronic Kidney Disease" description="Chronic Kidney Disease (CKD) Status">
+            <rate/>
+        </populationCharacteristic>
+        <populationCharacteristic name="Diabetes" description="Diabetes Status">
+            <rate/>
+        </populationCharacteristic>
+        <populationCharacteristic name="Ethnicity" description="Ethnicity (NIH/OMB)">
+            <categorical>
+                <category>Hispanic or Latino</category>
+                <category>Not Hispanic or Latino</category>
+                <category>Unknown or Not Reported</category>
+            </categorical>
+        </populationCharacteristic>
         <populationCharacteristic name="Gender" description="Gender (male, female)">
             <categorical>
                 <category>Female</category>
                 <category>Male</category>
+            </categorical>
+        </populationCharacteristic>
+        <populationCharacteristic name="Height" description="Body height in cm">
+            <continuous unitOfMeasurement="cm"/>
+        </populationCharacteristic>
+        <populationCharacteristic name="Race" description="Race (NIH/OMB)">
+            <categorical>
+                <category>American Indian or Alaska Native</category>
+                <category>Asian</category>
+                <category>Native Hawaiian or Other Pacific Islander</category>
+                <category>Black or African American</category>
+                <category>White</category>
+                <category>More than one race</category>
+                <category>Unknown or Not Reported</category>
+            </categorical>
+        </populationCharacteristic>
+        <populationCharacteristic name="Region of Enrollment" description="Region of Enrollment">
+            <categorical>
+                <category>United States</category>
+                <category>Mexico</category>
+                <category>Chile</category>
+                <category>Argentina</category>
+            </categorical>
+        </populationCharacteristic>
+        <populationCharacteristic name="Weight" description="Body weight in kg">
+            <continuous unitOfMeasurement="kg"/>
+        </populationCharacteristic>
+        <populationCharacteristic name="eGFR category" description="Estimated Glomerular Filtration Rate Category">
+            <categorical>
+                <category>Moderate impairment</category>
+                <category>Mild impairment</category>
+                <category>Normal</category>
             </categorical>
         </populationCharacteristic>
     </populationCharacteristics>
@@ -5043,6 +5168,2145 @@ Intervention Description: Matching placebo, orally, once daily for up to six wee
 http://www.ema.europa.eu/docs/en_GB/document_library/EPAR_-_Public_assessment_report/human/002293/WC500119206.pdf
 
 Retrieved from ClinicalTrials.gov using the Takeda internal study identifier 491-019.</note>
+            </notes>
+        </study>
+        <study name="NCT00846365">
+            <indication name="Hypertensive disorder">
+                <notes>
+                    <note source="CLINICALTRIALS">Essential Hypertension</note>
+                </notes>
+            </indication>
+            <characteristics>
+                <title>
+                    <value>Efficacy and Safety of Azilsartan Medoxomil Plus Chlorthalidone in Participants With Moderate to Severe Hypertension</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Brief title: Efficacy and Safety of Azilsartan Medoxomil Plus Chlorthalidone in Participants With Moderate to Severe Hypertension
+
+Official title: A Phase 3, Double-Blind, Randomized, Efficacy and Safety Study Comparing the TAK-491 Plus Chlorthalidone Fixed-Dose Combination vs Benicar HCT (Olmesartan Medoxomil-Hydrochlorothiazide) in Subjects With Moderate to Severe Essential Hypertension</note>
+                    </notes>
+                </title>
+                <allocation>
+                    <value>RANDOMIZED</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Allocation:  Randomized, Endpoint Classification:  Safety/Efficacy Study, Intervention Model:  Parallel Assignment, Masking:  Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor), Primary Purpose:  Treatment</note>
+                    </notes>
+                </allocation>
+                <blinding>
+                    <value>DOUBLE_BLIND</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Allocation:  Randomized, Endpoint Classification:  Safety/Efficacy Study, Intervention Model:  Parallel Assignment, Masking:  Double Blind (Subject, Caregiver, Investigator, Outcomes Assessor), Primary Purpose:  Treatment</note>
+                    </notes>
+                </blinding>
+                <centers>
+                    <value>80</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Birmingham, Alabama, United States
+Haleyville, Alabama, United States
+Hueytown, Alabama, United States
+Jasper, Alabama, United States
+Tallassee, Alabama, United States
+Green Valley, Arizona, United States
+Phoenix, Arizona, United States
+Long Beach, California, United States
+National City, California, United States
+Roseville, California, United States
+San Francisco, California, United States
+San Jose, California, United States
+Newark, Delaware, United States
+Clearwater, Florida, United States
+Jacksonville, Florida, United States
+Jupiter, Florida, United States
+Miami, Florida, United States
+Ocala, Florida, United States
+Pembroke Pines, Florida, United States
+Plant City, Florida, United States
+Tallahassee, Florida, United States
+Arlington Heights, Illinois, United States
+Chicago, Illinois, United States
+Gurnee, Illinois, United States
+Avon, Indiana, United States
+Wichita, Kansas, United States
+Louisville, Kentucky, United States
+Auburn, Maine, United States
+Baltimore, Maryland, United States
+Brockton, Massachusetts, United States
+Haverhill, Massachusetts, United States
+North Dartmouth, Massachusetts, United States
+Bingham Farms, Michigan, United States
+Stevensville, Michigan, United States
+Olive Branch, Mississippi, United States
+Kansas City, Missouri, United States
+New York, New York, United States
+Burlington, North Carolina, United States
+Charlotte, North Carolina, United States
+Hickory, North Carolina, United States
+Shelby, North Carolina, United States
+Akron, Ohio, United States
+Cleveland, Ohio, United States
+Columbus, Ohio, United States
+Marion, Ohio, United States
+Middleburg Heights, Ohio, United States
+Willoughby Hills, Ohio, United States
+Norman, Oklahoma, United States
+Bensalem, Pennsylvania, United States
+Erie, Pennsylvania, United States
+Reading, Pennsylvania, United States
+Cranston, Rhode Island, United States
+Cumberland, Rhode Island, United States
+North Charleston, South Carolina, United States
+Jackson, Tennessee, United States
+Kingsport, Tennessee, United States
+Milan, Tennessee, United States
+Austin, Texas, United States
+Corpus Christi, Texas, United States
+Dallas, Texas, United States
+Houston, Texas, United States
+San Antonio, Texas, United States
+Salt Lake City, Utah, United States
+Arlington, Virginia, United States
+Burke, Virginia, United States
+Charlottesville, Virginia, United States
+Manassas, Virginia, United States
+Lakewood, Washington, United States
+Port Orchard, Washington, United States
+Menomonee Falls, Wisconsin, United States
+Temuco, Cautn, Chile
+La Serena, Elqui, Chile
+Vina del Mar, Valparaso, Chile
+Osorno, Chile
+Santiago, Chile
+Tijuana, Baja California, Mexico
+Leon, Guanajuato, Mexico
+Guadalajara, Jalisco, Mexico
+Chihuahua, Mexico
+San Luis Potosi, Mexico
+</note>
+                    </notes>
+                </centers>
+                <objective>
+                    <value>The purpose of this study is to determine the efficacy and safety of azilsartan medoxomilcombined with chlorthalidone, once daily (QD), in participants with moderate to severeessential hypertension.</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">The purpose of this study is to determine the efficacy and safety of azilsartan medoxomilcombined with chlorthalidone, once daily (QD), in participants with moderate to severeessential hypertension.</note>
+                    </notes>
+                </objective>
+                <study_start>
+                    <value>2009-03-01</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">March 2009</note>
+                    </notes>
+                </study_start>
+                <study_end>
+                    <value>2010-06-01</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">June 2010</note>
+                    </notes>
+                </study_end>
+                <status>
+                    <value>COMPLETED</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Completed</note>
+                    </notes>
+                </status>
+                <inclusion>
+                    <value>1. 190 mm Hg on Day -1 or if the participant has not received antihypertensive treatmentwithin 28 days before screening and has a mean sitting clinic systolic blood pressuregreater than or equal to 160 and less than or equal to 190 mm Hg at the ScreeningVisit and on Day -1.
+
+2. Females of childbearing potential who are sexually active must agree to use adequatecontraception, and can neither be pregnant nor lactating from Screening throughoutthe duration of the study.
+
+3. Has clinical laboratory test results within the reference range for the testinglaboratory or the investigator does not consider the results to be clinicallysignificant.
+
+4. Is willing to discontinue current antihypertensive medications on Day -21 or on Day-28 if is on amlodipine or chlorthalidone.</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Inclusion Criteria:
+
+1. 190 mm Hg on Day -1 or if the participant has not received antihypertensive treatmentwithin 28 days before screening and has a mean sitting clinic systolic blood pressuregreater than or equal to 160 and less than or equal to 190 mm Hg at the ScreeningVisit and on Day -1.
+
+2. Females of childbearing potential who are sexually active must agree to use adequatecontraception, and can neither be pregnant nor lactating from Screening throughoutthe duration of the study.
+
+3. Has clinical laboratory test results within the reference range for the testinglaboratory or the investigator does not consider the results to be clinicallysignificant.
+
+4. Is willing to discontinue current antihypertensive medications on Day -21 or on Day-28 if is on amlodipine or chlorthalidone.
+
+Exclusion Criteria:
+
+1. Has a mean sitting clinic diastolic blood pressure greater than 119 mm Hg.
+
+2. Has a baseline 24-hour ambulatory blood pressure monitoring reading of insufficientquality.
+
+3. Works a night (third) shift (from 11 PM [2300] to 7 AM [0700]).
+
+4. Has an upper arm circumference less than 24 cm or greater than 42 cm.
+
+5. Is noncompliant with study medication during the placebo run-in period.
+
+6. Has secondary hypertension of any etiology.
+
+7. Has a recent history of myocardial infarction, heart failure, unstable angina,coronary artery bypass graft, percutaneous coronary intervention, hypertensiveencephalopathy, cerebrovascular accident or transient ischemic attack.
+
+8. Has a clinically significant cardiac conduction.
+
+9. Has hemodynamically significant left ventricular outflow obstruction due to aorticvalvular disease.
+
+10. Has severe renal dysfunction or disease.
+
+11. Has a known or suspected unilateral or bilateral renal artery stenosis.
+
+12. Has a history of cancer that has not been in remission for at least 5 years prior tothe first dose of study drug.
+
+13. Has poorly controlled type 1 or type 2 diabetes mellitus.
+
+14. Has hypokalemia or hyperkalemia.
+
+15. Has an alanine aminotransferase or aspartate aminotransferase level of greater than2.5 times the upper limit of normal, active liver disease or jaundice.
+
+16. Has any other known serious disease or condition that would compromise safety, mightaffect life expectancy or make it difficult to successfully manage and follow theparticipant according to the protocol.
+
+17. Has a known hypersensitivity to angiotensin II receptor blockers or thiazide-typediuretics or other sulfonamide-derived compounds.
+
+18. Has been randomized in a previous Azilsartan Medoxomil study.
+
+19. Is currently participating in another investigational study or has participated in aninvestigational study or is receiving or has received any investigational compoundwithin 30 days prior to Randomization.
+
+20. Has a history of drug abuse or a history of alcohol abuse within the past 2 years.</note>
+                    </notes>
+                </inclusion>
+                <exclusion>
+                    <value>1. Has a mean sitting clinic diastolic blood pressure greater than 119 mm Hg.
+
+2. Has a baseline 24-hour ambulatory blood pressure monitoring reading of insufficientquality.
+
+3. Works a night (third) shift (from 11 PM [2300] to 7 AM [0700]).
+
+4. Has an upper arm circumference less than 24 cm or greater than 42 cm.
+
+5. Is noncompliant with study medication during the placebo run-in period.
+
+6. Has secondary hypertension of any etiology.
+
+7. Has a recent history of myocardial infarction, heart failure, unstable angina,coronary artery bypass graft, percutaneous coronary intervention, hypertensiveencephalopathy, cerebrovascular accident or transient ischemic attack.
+
+8. Has a clinically significant cardiac conduction.
+
+9. Has hemodynamically significant left ventricular outflow obstruction due to aorticvalvular disease.
+
+10. Has severe renal dysfunction or disease.
+
+11. Has a known or suspected unilateral or bilateral renal artery stenosis.
+
+12. Has a history of cancer that has not been in remission for at least 5 years prior tothe first dose of study drug.
+
+13. Has poorly controlled type 1 or type 2 diabetes mellitus.
+
+14. Has hypokalemia or hyperkalemia.
+
+15. Has an alanine aminotransferase or aspartate aminotransferase level of greater than2.5 times the upper limit of normal, active liver disease or jaundice.
+
+16. Has any other known serious disease or condition that would compromise safety, mightaffect life expectancy or make it difficult to successfully manage and follow theparticipant according to the protocol.
+
+17. Has a known hypersensitivity to angiotensin II receptor blockers or thiazide-typediuretics or other sulfonamide-derived compounds.
+
+18. Has been randomized in a previous Azilsartan Medoxomil study.
+
+19. Is currently participating in another investigational study or has participated in aninvestigational study or is receiving or has received any investigational compoundwithin 30 days prior to Randomization.
+
+20. Has a history of drug abuse or a history of alcohol abuse within the past 2 years.</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Inclusion Criteria:
+
+1. 190 mm Hg on Day -1 or if the participant has not received antihypertensive treatmentwithin 28 days before screening and has a mean sitting clinic systolic blood pressuregreater than or equal to 160 and less than or equal to 190 mm Hg at the ScreeningVisit and on Day -1.
+
+2. Females of childbearing potential who are sexually active must agree to use adequatecontraception, and can neither be pregnant nor lactating from Screening throughoutthe duration of the study.
+
+3. Has clinical laboratory test results within the reference range for the testinglaboratory or the investigator does not consider the results to be clinicallysignificant.
+
+4. Is willing to discontinue current antihypertensive medications on Day -21 or on Day-28 if is on amlodipine or chlorthalidone.
+
+Exclusion Criteria:
+
+1. Has a mean sitting clinic diastolic blood pressure greater than 119 mm Hg.
+
+2. Has a baseline 24-hour ambulatory blood pressure monitoring reading of insufficientquality.
+
+3. Works a night (third) shift (from 11 PM [2300] to 7 AM [0700]).
+
+4. Has an upper arm circumference less than 24 cm or greater than 42 cm.
+
+5. Is noncompliant with study medication during the placebo run-in period.
+
+6. Has secondary hypertension of any etiology.
+
+7. Has a recent history of myocardial infarction, heart failure, unstable angina,coronary artery bypass graft, percutaneous coronary intervention, hypertensiveencephalopathy, cerebrovascular accident or transient ischemic attack.
+
+8. Has a clinically significant cardiac conduction.
+
+9. Has hemodynamically significant left ventricular outflow obstruction due to aorticvalvular disease.
+
+10. Has severe renal dysfunction or disease.
+
+11. Has a known or suspected unilateral or bilateral renal artery stenosis.
+
+12. Has a history of cancer that has not been in remission for at least 5 years prior tothe first dose of study drug.
+
+13. Has poorly controlled type 1 or type 2 diabetes mellitus.
+
+14. Has hypokalemia or hyperkalemia.
+
+15. Has an alanine aminotransferase or aspartate aminotransferase level of greater than2.5 times the upper limit of normal, active liver disease or jaundice.
+
+16. Has any other known serious disease or condition that would compromise safety, mightaffect life expectancy or make it difficult to successfully manage and follow theparticipant according to the protocol.
+
+17. Has a known hypersensitivity to angiotensin II receptor blockers or thiazide-typediuretics or other sulfonamide-derived compounds.
+
+18. Has been randomized in a previous Azilsartan Medoxomil study.
+
+19. Is currently participating in another investigational study or has participated in aninvestigational study or is receiving or has received any investigational compoundwithin 30 days prior to Randomization.
+
+20. Has a history of drug abuse or a history of alcohol abuse within the past 2 years.</note>
+                    </notes>
+                </exclusion>
+                <references/>
+                <source>
+                    <value>CLINICALTRIALS</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">http://clinicaltrials.gov/show/NCT00846365</note>
+                    </notes>
+                </source>
+                <creation_date>
+                    <value>2012-09-24</value>
+                    <notes>
+                        <note source="CLINICALTRIALS">Information obtained from ClinicalTrials.gov on September 20, 2012</note>
+                    </notes>
+                </creation_date>
+            </characteristics>
+            <studyOutcomeMeasures>
+                <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)" primary="true">
+                    <endpoint name="SBP mean trough (clinic, sitting)"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline to Week 8 in Trough, Sitting, Clinic Systolic Blood Pressure.
+Description: The change in trough systolic blood pressure measured at week 8 or final visit relative to baseline. Systolic blood pressure is the average of the 3 serial trough sitting systolic blood pressure measurements.
+Time frame: Baseline and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP mean trough (clinic, sitting)" primary="false">
+                    <endpoint name="DBP mean trough (clinic, sitting)"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Trough, Sitting, Clinic Diastolic Blood Pressure
+Description: The change in trough diastolic blood pressure measured at week 4 and week 8 relative to baseline. Diastolic blood pressure is the average of the 3 serial trough sitting diastolic blood pressure measurements.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP trough mean" primary="false">
+                    <endpoint name="SBP trough mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Trough Mean Systolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in trough systolic blood pressure measured at week 4 and week 8 relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. Trough is the average of all measurements recorded from 22 to 24 hours after dosing.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP trough mean" primary="false">
+                    <endpoint name="DBP trough mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Trough Mean Diastolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in trough systolic blood pressure measured at week 4 and week 8 relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. Trough is the average of all measurements recorded from 22 to 24 hours after dosing.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP 24-hour mean" primary="false">
+                    <endpoint name="SBP 24-hour mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in 24-hour Mean Systolic Blood Pressure as Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the 24-hour mean  systolic blood pressure at week4  and week 8 relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. The 24-hour mean is the average of all measurements recorded for 24 hours after dosing.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP 24-hour mean" primary="false">
+                    <endpoint name="DBP 24-hour mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in 24-hour Mean Diastolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the 0 to 24-hours-after-dosing mean diastolic blood pressure measured at Week 4 and Week 8 relative to baseline. . Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. The mean consists of the average  of measurements collected over the subsequent 24 hours.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP daytime mean" primary="false">
+                    <endpoint name="SBP daytime mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Daytime Mean (6am to 10pm) Systolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the daytime, while awake (6am to 10pm) mean systolic blood pressure measured at Week 4 and Week 8 relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night Daytime mean is the average of measurements recorded between the hours of 6 AM (inclusive) and 10 PM (exclusive) included in the 24-hour mean calculations.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP daytime mean" primary="false">
+                    <endpoint name="DBP daytime mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Daytime Mean (6am to 10pm) Diastolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the daytime, while awake (6am to 10pm) mean diastolic blood pressure measured at Week 4 and Week 8relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. Daytime mean is the average of measurements recorded between the hours of 6 AM (inclusive) and 10 PM (exclusive) included in the 24-hour mean calculations.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP nighttime mean" primary="false">
+                    <endpoint name="SBP nighttime mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Nighttime Mean (12am to 6am) Systolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring
+Description: The change in the nighttime, while asleep (12am to 6am) mean systolic blood pressure measured at Week 4 and Week 8 to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. Nighttime mean is the average  of measurements recorded between the hours of 12 AM (inclusive) and 6 AM (exclusive) included in the 24-hour mean calculations.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP nighttime mean" primary="false">
+                    <endpoint name="DBP nighttime mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in Nighttime Mean (12am to 6am) Diastolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the nighttime, while asleep (12am to 6am) mean diastolic blood pressure measured at Week 4 and Week 8 relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. Nighttime mean is the average (arithmetic mean) of measurements recorded between the hours of 12 AM (inclusive) and 6 AM (exclusive) included in the 24-hour mean calculations.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP 12-hour mean" primary="false">
+                    <endpoint name="SBP 12-hour mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in 12-hr Mean Systolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the 0 to 12 hours-after-dosing mean Systolic Blood Pressure measured at Week 4 and Week 8 relative to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night The mean consists of the average (arithmetic mean) of measurements collected at each time frame and includes all observations recorded over the subsequent 12 hours.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP 12-hour mean" primary="false">
+                    <endpoint name="DBP 12-hour mean"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Change From Baseline in 12-hr Mean Diastolic Blood Pressure Measured by Ambulatory Blood Pressure Monitoring.
+Description: The change in the 0 to 12 hours-after-dosing mean diastolic blood pressure measured at Week 4 and Week 8 to baseline. Ambulatory blood pressure monitoring measures blood pressure at regular intervals throughout the day and night. The mean consists of the average (arithmetic mean) of measurements collected at each time frame and includes all observations recorded over the subsequent 12 hours.
+Time frame: Baseline, Week 4 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP response (clinic)" primary="false">
+                    <endpoint name="SBP response (clinic)"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Percentage of Participants Who Achieve a Clinic Systolic Blood Pressure Response, Defined as &lt;140 mm Hg for Participants Without Diabetes or CKD or &lt;130 mm Hg for Participants With Diabetes or CKD
+Description: Percentage of participants who achieve a clinic systolic blood pressure response, defined as &lt;140 mm Hg for participants without diabetes or CKD or &lt;130 mm Hg for participants with diabetes or CKD at each time frame relative to baseline.
+Time frame: Baseline, Week 2, Week 4, Week 6 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-DBP response (clinic)" primary="false">
+                    <endpoint name="DBP response (clinic)"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Percentage of Participants Who Achieve a Clinic Diastolic Blood Pressure Response, Defined as Defined as &lt;90 mm Hg for Participants Without Diabetes or CKD or &lt;80 mm Hg for Participants With Diabetes or CKD
+Description: Percentage of participants who achieve a clinic diastolic blood pressure response, defined as defined as &lt;90 mm Hg for participants without diabetes or CKD or &lt;80 mm Hg for participants with diabetes or CKD at each time frame relative to baseline.
+Time frame: Baseline, Week 2, Week 4, Week 6 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)" primary="false">
+                    <endpoint name="SBP and DBP response (clinic)"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Percentage of Participants Who Achieve a Clinic Diastolic AND Systolic Blood Pressure Response, Defined as &lt;140/90 mm Hg for Participants Without Diabetes or Chronic Kidney Disease (CKD) or &lt;130/80 mm Hg for Participants With Diabetes or CKD
+Description: Percentage of participants who achieve both a clinic diastolic blood pressure response, defined as &lt;140/90 mm Hg for participants without diabetes or chronic kidney disease (CKD) or &lt;130/80 mm Hg for participants with diabetes or CKD at each time frame relative to baseline.
+Time frame: Baseline, Week 2, Week 4, Week 6 and Week 8.
+Safety issue: No</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-SAE" primary="false">
+                    <adverseEvent name="SAE"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Total, serious adverse events (Total)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Cardiac arrest" primary="false">
+                    <adverseEvent name="Cardiac arrest"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Cardiac arrest (Cardiac disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Coronary artery disease" primary="false">
+                    <adverseEvent name="Coronary artery disease"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Coronary artery disease (Cardiac disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Diastolic dysfunction" primary="false">
+                    <adverseEvent name="Diastolic dysfunction"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Diastolic dysfunction (Cardiac disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Diarrhoea" primary="false">
+                    <adverseEvent name="Diarrhoea"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Diarrhoea (Gastrointestinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Epigastric discomfort" primary="false">
+                    <adverseEvent name="Epigastric discomfort"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Epigastric discomfort (Gastrointestinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Nausea" primary="false">
+                    <adverseEvent name="Nausea"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Nausea (Gastrointestinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Pancreatitis" primary="false">
+                    <adverseEvent name="Pancreatitis"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Pancreatitis (Gastrointestinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Vomiting" primary="false">
+                    <adverseEvent name="Vomiting"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Vomiting (Gastrointestinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Chest pain" primary="false">
+                    <adverseEvent name="Chest pain"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Chest pain (General disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Generalised oedema" primary="false">
+                    <adverseEvent name="Generalised oedema"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Generalised oedema (General disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Systemic inflammatory response syndrome" primary="false">
+                    <adverseEvent name="Systemic inflammatory response syndrome"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Systemic inflammatory response syndrome (General disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Cellulitis" primary="false">
+                    <adverseEvent name="Cellulitis"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Cellulitis (Infections and infestations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Gastroenteritis" primary="false">
+                    <adverseEvent name="Gastroenteritis"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Gastroenteritis (Infections and infestations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Pneumonia" primary="false">
+                    <adverseEvent name="Pneumonia"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Pneumonia (Infections and infestations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Viral infection" primary="false">
+                    <adverseEvent name="Viral infection"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Viral infection (Infections and infestations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Heat exhaustion" primary="false">
+                    <adverseEvent name="Heat exhaustion"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Heat exhaustion (Injury, poisoning and procedural complications)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Road traffic accident" primary="false">
+                    <adverseEvent name="Road traffic accident"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Road traffic accident (Injury, poisoning and procedural complications)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased" primary="false">
+                    <adverseEvent name="Blood creatinine increased"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Blood creatinine increased (Investigations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Troponin increased" primary="false">
+                    <adverseEvent name="Troponin increased"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Troponin increased (Investigations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Dehydration" primary="false">
+                    <adverseEvent name="Dehydration"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Dehydration (Metabolism and nutrition disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Cerebral infarction" primary="false">
+                    <adverseEvent name="Cerebral infarction"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Cerebral infarction (Nervous system disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Pulmonary embolism" primary="false">
+                    <adverseEvent name="Pulmonary embolism"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Pulmonary embolism (Respiratory, thoracic and mediastinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Asthma" primary="false">
+                    <adverseEvent name="Asthma"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Asthma (Respiratory, thoracic and mediastinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Sleep apnoea syndrome" primary="false">
+                    <adverseEvent name="Sleep apnoea syndrome"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Sleep apnoea syndrome (Respiratory, thoracic and mediastinal disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Angioedema" primary="false">
+                    <adverseEvent name="Angioedema"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Angioedema (Skin and subcutaneous tissue disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Deep vein thrombosis" primary="false">
+                    <adverseEvent name="Deep vein thrombosis"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Deep vein thrombosis (Vascular disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Shock" primary="false">
+                    <adverseEvent name="Shock"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Shock (Vascular disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Non-SAE" primary="false">
+                    <adverseEvent name="Non-SAE"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Total, other adverse events (Total)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased (non-serious)" primary="false">
+                    <adverseEvent name="Blood creatinine increased (non-serious)"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Blood creatinine increased (Investigations)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Dizziness" primary="false">
+                    <adverseEvent name="Dizziness"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Dizziness (Nervous system disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="adverseEvent-Headache" primary="false">
+                    <adverseEvent name="Headache"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Headache (Nervous system disorders)</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Age" primary="false">
+                    <populationCharacteristic name="Age"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Age
+Units: years</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Age (cut-off 45, 65)" primary="false">
+                    <populationCharacteristic name="Age (cut-off 45, 65)"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Age, Customized
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Gender" primary="false">
+                    <populationCharacteristic name="Gender"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Gender
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Ethnicity" primary="false">
+                    <populationCharacteristic name="Ethnicity"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Ethnicity (NIH/OMB)
+Description: Ethnicity was not collected from Latin American sites.
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Race" primary="false">
+                    <populationCharacteristic name="Race"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Race (NIH/OMB)
+Description: Participants could choose more than one category for race. Participants who chose more than 1 race category are included in each category indicated and are also included in the multiracial category.
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Region of Enrollment" primary="false">
+                    <populationCharacteristic name="Region of Enrollment"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Region of Enrollment
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Weight" primary="false">
+                    <populationCharacteristic name="Weight"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Weight
+Units: kg</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Height" primary="false">
+                    <populationCharacteristic name="Height"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Height
+Units: cm</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-BMI" primary="false">
+                    <populationCharacteristic name="BMI"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Body Mass Index (BMI)
+Description: BMI was calculated using height at Screening and weight at Baseline.
+Units: kg/m^2</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-eGFR category" primary="false">
+                    <populationCharacteristic name="eGFR category"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Estimated Glomerular Filtration Rate (eGFR) Category
+Description: eGFR = creatinine clearance, estimated using the Modification of Diet in Renal Disease equation with the following parameters:
+Moderate impairment: 30 to &lt;60 mL/min/1.73 m^2
+Mild impairment: 60 to &lt;90 mL/min/1.73 m^2
+Normal: 90 mL/min/1.73 m^2
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Chronic Kidney Disease" primary="false">
+                    <populationCharacteristic name="Chronic Kidney Disease"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Chronic Kidney Disease (CKD) Status
+Description: Participant was considered to have CKD if their eGFR was &lt;60 ml/min/1.73 m^2 or urinary albumin:creatinine ratio was &gt;200 mg albumin/g creatinine at Screening.
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+                <studyOutcomeMeasure id="popChar-Diabetes" primary="false">
+                    <populationCharacteristic name="Diabetes"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                    <notes>
+                        <note source="CLINICALTRIALS">Diabetes Status
+Units: participants</note>
+                    </notes>
+                </studyOutcomeMeasure>
+            </studyOutcomeMeasures>
+            <arms>
+                <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD" size="372">
+                    <notes>
+                        <note source="CLINICALTRIALS">Arm Name: Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD
+Arm Type: Experimental
+Arm Description: (dependant on blood pressure)
+
+Intervention Name: Azilsartan medoxomil and chlorthalidone
+Intervention Type: Drug
+Intervention Description: Azilsartan medoxomil 20 mg and chlorthalidone 12.5 mg, tablets, orally, and olmesartan medoxomil-hydrochlorothiazide placebo tablets once daily for 8 weeks.
+If participant does not achieve target blood pressure at Week 4, then the dosage will be increased to azilsartan medoxomil 40 mg and chlorthalidone 25 mg, tablets, orally, once daily for the remaining 4 weeks.</note>
+                    </notes>
+                </arm>
+                <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD" size="357">
+                    <notes>
+                        <note source="CLINICALTRIALS">Arm Name: Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD
+Arm Type: Experimental
+Arm Description: (dependant on blood pressure)
+
+Intervention Name: Azilsartan medoxomil and chlorthalidone
+Intervention Type: Drug
+Intervention Description: Azilsartan medoxomil 40 mg and chlorthalidone 12.5, mg, tablets, orally, and olmesartan medoxomil-hydrochlorothiazide placebo  tablets once daily for 8 weeks.
+If participant does not achieve target blood pressure at Week 4, then the dosage will be increased to azilsartan medoxomil 80 mg and chlorthalidone 25 mg, tablets, orally, once daily for the remaining 4 weeks.</note>
+                    </notes>
+                </arm>
+                <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD" size="356">
+                    <notes>
+                        <note source="CLINICALTRIALS">Arm Name: Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD
+Arm Type: Active Comparator
+Arm Description: (dependant on blood pressure)
+
+Intervention Name: Olmesartan medoxomil-hydrochlorothiazide
+Intervention Type: Drug
+Intervention Description: Olmesartan medoxomil 20 mg/hydrochlorothiazide 12.5 mg,  tablets, orally,  and Azilsartan medoxomil and chlorthalidone placebo-matching  tablets, orally, once daily for 8 weeks.
+If participant does not achieve target blood pressure at Week 4, then the dosage will be increased to olmesartan medoxomil 40 mg/hydrochlorothiazide 25 mg,  tablets, orally, once daily for the remaining 4 weeks.</note>
+                    </notes>
+                </arm>
+            </arms>
+            <measurements>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="-33.0" sampleSize="360" stdDev="0.87"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="-37.6" sampleSize="363" stdDev="0.83"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="-34.1" sampleSize="347" stdDev="0.88"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="-38.2" sampleSize="350" stdDev="0.85"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <continuousMeasurement mean="-26.9" sampleSize="352" stdDev="0.88"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP mean trough (clinic, sitting)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <continuousMeasurement mean="-31.5" sampleSize="353" stdDev="0.84"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Angioedema"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Angioedema"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Angioedema"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Asthma"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Asthma"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Asthma"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased (non-serious)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="36" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased (non-serious)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="44" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased (non-serious)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="25" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cardiac arrest"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cardiac arrest"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cardiac arrest"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cellulitis"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cellulitis"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cellulitis"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cerebral infarction"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cerebral infarction"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Cerebral infarction"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Chest pain"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Chest pain"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Chest pain"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Coronary artery disease"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Coronary artery disease"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Coronary artery disease"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Deep vein thrombosis"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Deep vein thrombosis"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Deep vein thrombosis"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dehydration"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dehydration"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dehydration"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diarrhoea"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diarrhoea"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diarrhoea"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diastolic dysfunction"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diastolic dysfunction"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Diastolic dysfunction"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="25" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="24" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Dizziness"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="20" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Epigastric discomfort"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Epigastric discomfort"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Epigastric discomfort"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Gastroenteritis"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Gastroenteritis"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Gastroenteritis"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Generalised oedema"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Generalised oedema"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Generalised oedema"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Headache"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="14" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Headache"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="14" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Headache"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="18" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Heat exhaustion"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Heat exhaustion"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Heat exhaustion"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Nausea"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Non-SAE"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="66" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Non-SAE"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="72" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Non-SAE"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="56" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pancreatitis"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pancreatitis"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pancreatitis"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pneumonia"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pneumonia"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pneumonia"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pulmonary embolism"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pulmonary embolism"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Pulmonary embolism"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Road traffic accident"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Road traffic accident"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Road traffic accident"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-SAE"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="4" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-SAE"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="8" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-SAE"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="6" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Shock"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Shock"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Shock"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Sleep apnoea syndrome"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Sleep apnoea syndrome"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Sleep apnoea syndrome"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Systemic inflammatory response syndrome"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Systemic inflammatory response syndrome"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Systemic inflammatory response syndrome"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Troponin increased"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Troponin increased"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Troponin increased"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Viral infection"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Viral infection"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Viral infection"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Vomiting"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age"/>
+                    <continuousMeasurement mean="56.0" sampleSize="1085" stdDev="10.38"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="55.5" sampleSize="372" stdDev="10.49"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="56.7" sampleSize="357" stdDev="10.83"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <continuousMeasurement mean="55.7" sampleSize="356" stdDev="9.78"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age (cut-off 45, 65)"/>
+                    <categoricalMeasurement>
+                        <category name="&lt; 45" rate="126"/>
+                        <category name="45-64" rate="745"/>
+                        <category name="&gt; 64" rate="214"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age (cut-off 45, 65)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="&lt; 45" rate="47"/>
+                        <category name="45-64" rate="252"/>
+                        <category name="&gt; 64" rate="73"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age (cut-off 45, 65)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="&lt; 45" rate="38"/>
+                        <category name="45-64" rate="244"/>
+                        <category name="&gt; 64" rate="75"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Age (cut-off 45, 65)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="&lt; 45" rate="41"/>
+                        <category name="45-64" rate="249"/>
+                        <category name="&gt; 64" rate="66"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-BMI"/>
+                    <continuousMeasurement mean="31.8" sampleSize="1085" stdDev="6.14"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-BMI"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="31.7" sampleSize="372" stdDev="5.94"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-BMI"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="31.8" sampleSize="357" stdDev="6.4"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-BMI"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <continuousMeasurement mean="31.9" sampleSize="356" stdDev="6.08"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Gender"/>
+                    <categoricalMeasurement>
+                        <category name="Female" rate="522"/>
+                        <category name="Male" rate="563"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Gender"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Female" rate="175"/>
+                        <category name="Male" rate="197"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Gender"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Female" rate="174"/>
+                        <category name="Male" rate="183"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Gender"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Female" rate="173"/>
+                        <category name="Male" rate="183"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Height"/>
+                    <continuousMeasurement mean="167.8" sampleSize="1085" stdDev="10.87"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Height"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="167.5" sampleSize="372" stdDev="11.22"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Height"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="167.8" sampleSize="357" stdDev="11.06"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Height"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <continuousMeasurement mean="168.2" sampleSize="356" stdDev="10.3"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Weight"/>
+                    <continuousMeasurement mean="89.95" sampleSize="1085" stdDev="20.981"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Weight"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="89.35" sampleSize="372" stdDev="20.995"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Weight"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <continuousMeasurement mean="89.87" sampleSize="357" stdDev="21.281"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Weight"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <continuousMeasurement mean="90.66" sampleSize="356" stdDev="20.7"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+            </measurements>
+            <epochs>
+                <epoch name="Randomization">
+                    <notes/>
+                </epoch>
+                <epoch name="Main phase">
+                    <duration>P56D</duration>
+                    <notes/>
+                </epoch>
+            </epochs>
+            <activities>
+                <studyActivity name="Randomization">
+                    <activity>
+                        <predefined>RANDOMIZATION</predefined>
+                    </activity>
+                    <usedBy epoch="Randomization" arm="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <usedBy epoch="Randomization" arm="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <usedBy epoch="Randomization" arm="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity name="Azilsartan 40 + Chlortalidone">
+                    <activity>
+                        <treatment>
+                            <drugTreatment>
+<flexibleDose minDose="20.0" maxDose="40.0">
+    <doseUnit scaleModifier="MILLI" perTime="P1D">
+        <unit name="gram"/>
+    </doseUnit>
+</flexibleDose>
+<drug name="Azilsartan"/>
+                            </drugTreatment>
+                            <drugTreatment>
+<flexibleDose minDose="12.5" maxDose="25.0">
+    <doseUnit scaleModifier="MILLI" perTime="P1D">
+        <unit name="gram"/>
+    </doseUnit>
+</flexibleDose>
+<drug name="Chlortalidone"/>
+                            </drugTreatment>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity name="Azilsartan 80 + Chlorthalidone">
+                    <activity>
+                        <treatment>
+                            <drugTreatment>
+<flexibleDose minDose="40.0" maxDose="80.0">
+    <doseUnit scaleModifier="MILLI" perTime="P1D">
+        <unit name="gram"/>
+    </doseUnit>
+</flexibleDose>
+<drug name="Azilsartan"/>
+                            </drugTreatment>
+                            <drugTreatment>
+<flexibleDose minDose="12.5" maxDose="25.0">
+    <doseUnit scaleModifier="MILLI" perTime="P1D">
+        <unit name="gram"/>
+    </doseUnit>
+</flexibleDose>
+<drug name="Chlortalidone"/>
+                            </drugTreatment>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <notes/>
+                </studyActivity>
+                <studyActivity name="Olmesartan + Hydrochlorothiazide">
+                    <activity>
+                        <treatment>
+                            <drugTreatment>
+<flexibleDose minDose="20.0" maxDose="40.0">
+    <doseUnit scaleModifier="MILLI" perTime="P1D">
+        <unit name="gram"/>
+    </doseUnit>
+</flexibleDose>
+<drug name="Olmesartan"/>
+                            </drugTreatment>
+                            <drugTreatment>
+<flexibleDose minDose="12.5" maxDose="25.0">
+    <doseUnit scaleModifier="MILLI" perTime="P1D">
+        <unit name="gram"/>
+    </doseUnit>
+</flexibleDose>
+<drug name="Hydrochlorothiazide"/>
+                            </drugTreatment>
+                        </treatment>
+                    </activity>
+                    <usedBy epoch="Main phase" arm="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <notes/>
+                </studyActivity>
+            </activities>
+            <notes>
+                <note source="CLINICALTRIALS">NCT00846365</note>
+                <note source="MANUAL">This is one of the "main studies" supporting the Edarbi application for monotherapy identified in the EMA EPAR available at:
+
+http://www.ema.europa.eu/docs/en_GB/document_library/EPAR_-_Public_assessment_report/human/002293/WC500119206.pdf
+
+Retrieved from ClinicalTrials.gov using the Takeda internal study identifier 491-301.</note>
             </notes>
         </study>
     </studies>
