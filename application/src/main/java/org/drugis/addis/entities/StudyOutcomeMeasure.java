@@ -48,8 +48,6 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 			super(name, type);
 			try {
 				d_dummy = (T) d_class.newInstance();
-			} catch (InstantiationException e) {
-				d_dummy = null;
 			} catch (Exception e) {
 				throw new IllegalStateException("Cannot create dummy variable for StudyOutcomeMeasure, unrecognized type " + d_class);
 			}
