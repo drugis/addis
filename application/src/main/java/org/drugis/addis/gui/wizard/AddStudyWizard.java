@@ -147,6 +147,7 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -1006,6 +1007,8 @@ public class AddStudyWizard extends Wizard {
 		private List<ValueModel> d_validators = new LinkedList<ValueModel>();
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
+		private JCheckBox d_withResultsCheckBox;
+		private ValueHolder<Boolean> d_withResults = new ModifiableHolder<Boolean>(false);
 
 		private class IdStepValidator extends NonEmptyValueModel {
 			public IdStepValidator(ValueModel idModel) {
@@ -1043,25 +1046,29 @@ public class AddStudyWizard extends Wizard {
 
 		private void buildWizardStep() {
 			 FormLayout layout = new FormLayout(
-						"right:pref, 3dlu, pref:grow:fill, 3dlu, left:pref",
-						"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p"
+						"right:pref, 3dlu, pref:grow:fill, 3dlu, left:pref, 3dlu, left:pref",
+						"p"
 						);
 				d_builder = new PanelBuilder(layout);
 				d_builder.setDefaultDialogBorder();
 				CellConstraints cc = new CellConstraints();
 
 				// add source fields
-				d_builder.addLabel("Source:",cc.xy(1, 1));
+				int row = 1;
+
+				d_builder.addLabel("Source:",cc.xy(1, row));
 				JComponent sourceSelecter = AuxComponentFactory.createBoundComboBox(Source.values(), d_pm.getSourceModel());
 				sourceSelecter.setEnabled(false);
-				d_builder.add(sourceSelecter, cc.xyw(3, 1, 2));
+				d_builder.add(sourceSelecter, cc.xyw(3, row, 2));
 
 				// add ID fields
-				d_builder.addLabel("ID:",cc.xy(1, 3));
+				row = LayoutUtil.addRow(layout, row);
+
+				d_builder.addLabel("ID:",cc.xy(1, row));
 				d_idField = BasicComponentFactory.createTextField(d_pm.getIdModel(), false);
 				d_idField.setColumns(30);
 				bindDefaultId(d_idField);
-				d_builder.add(d_idField, cc.xy(3, 3));
+				d_builder.add(d_idField, cc.xy(3, row));
 				d_idField.addCaretListener(new ImportButtonEnableListener());
 				final Border border = d_idField.getBorder();
 				d_idField.addCaretListener(new CaretListener() {
@@ -1078,29 +1085,44 @@ public class AddStudyWizard extends Wizard {
 				});
 
 				// add import button
-				d_importButton = GUIFactory.createIconButton(FileNames.ICON_IMPORT,
-						"Enter NCT id to retrieve study data from ClinicalTrials.gov");
+				row = LayoutUtil.addRow(layout, row);
+
+				d_importButton = GUIFactory.createLabeledIconButton("Import from ClinicalTrials.gov", FileNames.ICON_IMPORT);
+				d_importButton.setToolTipText("Enter NCT id above to retrieve study data from ClinicalTrials.gov");
 				d_importButton.setEnabled(isIdValid());
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
-						CTRetriever ctRetriever = new CTRetriever();
+						CTRetriever ctRetriever = new CTRetriever(d_withResults.getValue());
 						RunnableReadyModel readyModel = new RunnableReadyModel(ctRetriever);
 						new Thread(readyModel).start();
 					}});
-				d_builder.add(d_importButton, cc.xy(5, 3));
+
+				d_withResultsCheckBox = BasicComponentFactory.createCheckBox(d_withResults, "import results (experimental)");
+
+				ButtonBarBuilder2 bb = ButtonBarBuilder2.createLeftToRightBuilder();
+				bb.addButton(d_importButton);
+				bb.addRelatedGap();
+				bb.addButton(d_withResultsCheckBox);
+
+				d_builder.add(bb.getPanel(), cc.xy(3, row));
 
 				// add note to ID field
+				row = LayoutUtil.addRow(layout, row);
 				Study newStudy = d_pm.getNewStudyPM().getBean();
-				d_builder.add(buildNotesEditor(newStudy), cc.xy(3, 5));
+				d_builder.add(buildNotesEditor(newStudy), cc.xy(3, row));
 
 				// add title label
-				d_builder.addLabel("Title:",cc.xy(1, 7));
-				d_titleField = TextComponentFactory.createTextArea(d_pm.getTitleModel(), true, false);
-				d_builder.add(d_titleField, cc.xy(3, 7));
+				row = LayoutUtil.addRow(layout, row);
 
-				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, 9));
+				d_builder.addLabel("Title:",cc.xy(1, row));
+				d_titleField = TextComponentFactory.createTextArea(d_pm.getTitleModel(), true, false);
+				d_builder.add(d_titleField, cc.xy(3, row));
+
+				row = LayoutUtil.addRow(layout, row);
+				d_builder.add(buildNotesEditor((ObjectWithNotes<?>) getCharWithNotes(newStudy, BasicStudyCharacteristic.TITLE)), cc.xy(3, row));
 
 				// add clear button
+				row = LayoutUtil.addRow(layout, row);
 				JButton clearButton = new JButton("Clear input");
 				clearButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -1108,13 +1130,14 @@ public class AddStudyWizard extends Wizard {
 						prepare();
 					}
 				});
-				d_builder.add(clearButton, cc.xy(3, 11));
+				d_builder.add(clearButton, cc.xy(3, row));
 				String tip = 	"You can import studies from ClinicalTrials.gov by entering their NCT-ID, " +
 								"and then pressing the import button next to the ID field. " +
 								"For example, try " + EXAMPLE_NCT_ID + ".\n\n" +
 								"Unfortunately, due to limitations of ClinicalTrials.gov, it is currently not possible to import adverse events or study results.";
 
-				d_builder.add(buildTip(tip), cc.xy(3, 13));
+				row = LayoutUtil.addRow(layout, row);
+				d_builder.add(buildTip(tip), cc.xy(3, row));
 
 				this.setLayout(new BorderLayout());
 				d_scrollPane = new JScrollPane(d_builder.getPanel());
@@ -1136,10 +1159,17 @@ public class AddStudyWizard extends Wizard {
 			}
 		}
 		public class CTRetriever implements Runnable {
+
+			private boolean d_withResults;
+
+			public CTRetriever(boolean withResults) {
+				d_withResults = withResults;
+			}
+
 			public void run() {
 				try {
 					SwingUtilities.invokeAndWait(new StartLoadingAnimation());
-					d_pm.importCT();
+					d_pm.importCT(d_withResults);
 					SwingUtilities.invokeAndWait(new StopLoadingAnimation());
 				} catch (FileNotFoundException e) { // file not found is expected when user enters "strange" IDs
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);

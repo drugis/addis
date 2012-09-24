@@ -189,11 +189,17 @@ public class AddStudyWizardPresentation {
 		return d_domain;
 	}
 
-	public void importCT() throws IOException {
+	public void importCT(boolean withResults) throws IOException {
 		if(getIdModel().getValue().toString().length() != 0) {
 			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
-			String url = "http://clinicaltrials.gov/show/"+studyID+"?resultsxml=true";
-			Study clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, true);
+			Study clinicaltrialsData;
+			if (withResults) {
+				String url = "http://clinicaltrials.gov/show/"+studyID+"?resultsxml=true";
+				clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, true);
+			} else {
+				String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
+				clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, false);
+			}
 			setNewStudy(clinicaltrialsData);
 		}
 	}
