@@ -68,6 +68,7 @@ import org.drugis.addis.entities.FrequencyMeasurement;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.ObjectWithNotes;
+import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.PredefinedActivity;
 import org.drugis.addis.entities.PubMedId;
 import org.drugis.addis.entities.PubMedIdList;
@@ -138,6 +139,7 @@ public class ClinicaltrialsImporter {
 
 		if (shouldImportResults()) {
 			importAdverseEvents();
+			importPopulationCharacteristics();
 		}
 
 		// Import date & Source.
@@ -158,29 +160,29 @@ public class ClinicaltrialsImporter {
 		// ID  (& ID note =study url)
 		d_study.setName(d_studyImport.getIdInfo().getNctId());
 		d_study.getNotes().add(new Note(Source.CLINICALTRIALS, d_studyImport.getIdInfo().getNctId()));
-	
+
 		// Title
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.TITLE,
 				objectWithNote(d_studyImport.getBriefTitle().trim(), createTitleNote(d_studyImport)));
-	
+
 		// Study Centers
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.CENTERS,
 				objectWithNote(d_studyImport.getLocation().size(), createCentersNote(d_studyImport)));
-	
+
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.ALLOCATION,
 				objectWithNote(guessAllocation(d_studyImport), d_studyImport.getStudyDesign().trim()));
-	
+
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.BLINDING,
 				objectWithNote(guessBlinding(d_studyImport), d_studyImport.getStudyDesign().trim()));
-	
+
 		// Objective
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.OBJECTIVE,
 				objectWithNote(deindent(d_studyImport.getBriefSummary().getTextblock()),
 						deindent(d_studyImport.getBriefSummary().getTextblock())));
-	
+
 		// Indication note
 		d_study.getIndicationWithNotes().getNotes().add(new Note(Source.CLINICALTRIALS, createIndicationNote(d_studyImport)));
-	
+
 		// Start and end date
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.STUDY_START,
 				objectWithNote(guessDate(d_studyImport.getStartDate()), d_studyImport.getStartDate() != null ? d_studyImport.getStartDate().getContent() : ""));
@@ -188,7 +190,7 @@ public class ClinicaltrialsImporter {
 				objectWithNote(guessDate(d_studyImport.getCompletionDate()), d_studyImport.getCompletionDate() != null ? d_studyImport.getCompletionDate().getContent() : ""));
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.STATUS,
 				objectWithNote(guessStatus(d_studyImport), d_studyImport.getOverallStatus().trim()));
-	
+
 		String criteria = deindent(d_studyImport.getEligibility().getCriteria().getTextblock());
 		d_study.setCharacteristicWithNotes(BasicStudyCharacteristic.INCLUSION,
 				objectWithNote(guessInclusionCriteria(criteria), criteria));
@@ -198,13 +200,13 @@ public class ClinicaltrialsImporter {
 
 	private void importReferences() {
 		PubMedIdList list = (PubMedIdList) d_study.getCharacteristic(BasicStudyCharacteristic.PUBMED);
-	
+
 		for (ReferenceStruct ref : d_studyImport.getReference()) {
 			if (ref.getPMID() != null) {
 				list.add(new PubMedId(ref.getPMID()));
 			}
 		}
-	
+
 		if (d_importResults && d_studyImport.getResultsReference() != null) {
 			for (ReferenceStruct ref : d_studyImport.getResultsReference()) {
 				if (ref.getPMID() != null) {
@@ -231,11 +233,11 @@ public class ClinicaltrialsImporter {
 			noteBuilder.append(formatIfAny("Arm Name", ag.getArmGroupLabel(), ""));
 			noteBuilder.append(formatIfAny("Arm Type", ag.getArmGroupType(), "\n"));
 			noteBuilder.append(formatIfAny("Arm Description", ag.getDescription(), "\n"));
-	
+
 			arm.getNotes().add(new Note(Source.CLINICALTRIALS, noteBuilder.toString()));
 			armLabels.put(ag.getArmGroupLabel(), arm);
 		}
-	
+
 		// Add interventions to the study-arms.
 		List<String> interventionNames = new ArrayList<String>();
 		for(InterventionStruct i : d_studyImport.getIntervention()) {
@@ -248,7 +250,7 @@ public class ClinicaltrialsImporter {
 			noteBuilder.append(formatIfAny("Intervention Name", intervention.getInterventionName(), "\n"));
 			noteBuilder.append(formatIfAny("Intervention Type", intervention.getInterventionType(), "\n"));
 			noteBuilder.append(formatIfAny("Intervention Description", intervention.getDescription(), "\n"));
-	
+
 			boolean notAssigned = true;
 			for (String label : intervention.getArmGroupLabel()) {
 				StudyActivity act = new StudyActivity(interventionNames.get(i), new TreatmentActivity(new DrugTreatment(null, null)));
@@ -294,12 +296,13 @@ public class ClinicaltrialsImporter {
 	private void importStudyOutcomeMeasure(ProtocolOutcomeStruct outcome, boolean isPrimary) {
 		StudyOutcomeMeasure<Endpoint> som = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
 		som.setIsPrimary(isPrimary);
-	
+
 		StringBuilder noteBuilder = new StringBuilder(outcome.getMeasure());
+		noteBuilder.append(formatIfAny("Description", outcome.getDescription(), "\n"));
 		noteBuilder.append(formatIfAny("Time frame", outcome.getTimeFrame(), "\n"));
 		noteBuilder.append(formatIfAny("Safety issue", outcome.getSafetyIssue(), "\n"));
 		som.getNotes().add(new Note(Source.CLINICALTRIALS, noteBuilder.toString()));
-	
+
 		WhenTaken wt = createDefaultWhenTaken(som);
 		d_study.getEndpoints().add(som);
 		if (shouldImportResults()) {
@@ -309,25 +312,30 @@ public class ClinicaltrialsImporter {
 
 	private void importMeasurements(final ProtocolOutcomeStruct outcome, StudyOutcomeMeasure<Endpoint> som, WhenTaken wt) {
 		List<ResultsOutcomeStruct> outcomes = d_studyImport.getClinicalResults().getOutcomeList().outcome;
-		ResultsOutcomeStruct outcome1 = find(outcomes, new Predicate<ResultsOutcomeStruct>() {
+		ResultsOutcomeStruct results = find(outcomes, new Predicate<ResultsOutcomeStruct>() {
 			public boolean evaluate(ResultsOutcomeStruct object) {
 				return object.getTitle().equals(outcome.getMeasure());
 			}
 		});
-		for (GroupStruct xmlArm : outcome1.getGroupList().group) {
+		importMeasurements(som, wt, results.measureList.measure, results.getGroupList().group);
+	}
+
+	private void importMeasurements(StudyOutcomeMeasure<? extends Variable> som, WhenTaken wt, List<MeasureStruct> measurements, List<GroupStruct> groups) {
+		for (GroupStruct xmlArm : groups) {
 			// Fails for multiple epochs since we treat them as categorical variables (seems to be the default)
-			MeasureStruct total = outcome1.measureList.measure.get(0);
-			MeasureStruct second = outcome1.measureList.measure.get(1);
-			List<MeasureCategoryStruct> categories = total.getCategoryList().getCategory();
+
+			MeasureStruct total = measurements.get(0);
+			MeasureStruct second = measurements.get(1);
+			List<MeasureCategoryStruct> categories = second.getCategoryList().getCategory();
 			if (categories.size() == 1) {
 				if (total.getParam().equals("Number") && second.getParam().equals("Number")) {
-					addBasicRateMeasurement(d_study, som, wt, xmlArm, outcome1);
+					addBasicRateMeasurement(d_study, som, wt, xmlArm, measurements);
 				}
 				if (total.getParam().equals("Number") && !second.getParam().equals("Number")) {
-					addContinuousRateMeasurement(d_study, som, wt, xmlArm, outcome1);
+					addContinuousMeasurement(d_study, som, wt, xmlArm, measurements);
 				}
 			} else if (categories.size() > 1) {	 // Categorical variable
-				addFrequencyMeasurement(d_study, som, wt, xmlArm, outcome1, categories);
+				addFrequencyMeasurement(d_study, som, wt, xmlArm, second);
 			}
 		}
 	}
@@ -368,6 +376,28 @@ public class ClinicaltrialsImporter {
 		}
 	}
 
+
+	private void importPopulationCharacteristics() {
+		BaselineStruct baseline = d_studyImport.getClinicalResults().getBaseline();
+
+		List<MeasureStruct> measureList = baseline.getMeasureList().measure;
+		for (MeasureStruct popchar : measureList.subList(1, measureList.size())) {
+			StudyOutcomeMeasure<PopulationCharacteristic> som = new StudyOutcomeMeasure<PopulationCharacteristic>(PopulationCharacteristic.class);
+			d_study.getPopulationChars().add(som);
+
+			StringBuilder builder = new StringBuilder(popchar.getTitle());
+			builder.append(formatIfAny("Description", popchar.getDescription(), "\n"));
+			builder.append(formatIfAny("Units", popchar.getUnits(), "\n"));
+
+			som.getNotes().add(new Note(Source.CLINICALTRIALS, builder.toString()));
+			// Baseline measurements: at start of treatment
+			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.FROM_EPOCH_START, d_mainEpoch);
+			wt.commit();
+			som.getWhenTaken().add(wt);
+			importMeasurements(som, wt, Arrays.asList(measureList.get(0), popchar), baseline.getGroupList().group);
+		}
+	}
+
 	private static ObjectWithNotes<Object> objectWithNote(Object val, String note) {
 		ObjectWithNotes<Object> obj = new ObjectWithNotes<Object>(val);
 		obj.getNotes().add(new Note(Source.CLINICALTRIALS, note != null ? note : "N/A"));
@@ -401,10 +431,12 @@ public class ClinicaltrialsImporter {
 
 	private static void addFrequencyMeasurement(
 			Study study,
-			StudyOutcomeMeasure<Endpoint> som,
+			StudyOutcomeMeasure<? extends Variable> som,
 			WhenTaken wt,
 			GroupStruct xmlArm,
-			ResultsOutcomeStruct outcome, List<MeasureCategoryStruct> categories) {
+			MeasureStruct measurement) {
+		/*
+		List<MeasureCategoryStruct> categories = measurement.getCategoryList().getCategory();
 		final Arm arm = findArmWithName(study, xmlArm.getTitle());
 		List<String> categoryNames = new LinkedList<String>();
 		Map<String, Integer> frequencies = new HashMap<String, Integer>();
@@ -412,11 +444,12 @@ public class ClinicaltrialsImporter {
 			MeasureCategoryStruct category = categories.get(i);
 			String name = category.subTitle;
 			categoryNames.add(name);
-			int frequency = Integer.parseInt(getMeasurementForArm(outcome, xmlArm.groupId, 1, i).getValueAttribute());
+			int frequency = Integer.parseInt(getMeasurementForArm(xmlArm.groupId, i, measurement).getValueAttribute());
 			frequencies.put(name, frequency);
 		}
 		som.getValue().setVariableType(new CategoricalVariableType(categoryNames));
 		study.setMeasurement(som, arm, wt, new FrequencyMeasurement(categoryNames, frequencies));
+		*/
 	}
 
 	private static void addBasicRateMeasurement(
@@ -424,50 +457,50 @@ public class ClinicaltrialsImporter {
 			final StudyOutcomeMeasure<? extends Variable> som,
 			final WhenTaken wt,
 			GroupStruct xmlArm,
-			ResultsOutcomeStruct outcome) {
+			List<MeasureStruct> measurements) {
 		final Arm arm = findArmWithName(study, xmlArm.getTitle());
 		final String xmlArmId = xmlArm.groupId;
 		BasicMeasurement meas = createBasicRateMeasurement(
-				getMeasurementForArm(outcome, xmlArmId, 0, 0), // Total number of participants
-				getMeasurementForArm(outcome, xmlArmId, 1, 0), // Number of responders
-				outcome.measureList.measure.get(1));
+				getMeasurementForArm(xmlArmId, 0, measurements.get(0)), // Total number of participants
+				getMeasurementForArm(xmlArmId, 0, measurements.get(1)), // Number of responders
+				measurements.get(1));
 		som.getValue().setVariableType(new RateVariableType());
 		study.setMeasurement(som, arm, wt, meas);
 	}
 
-	private static void addContinuousRateMeasurement(
+	private static void addContinuousMeasurement(
 			final Study study,
 			final StudyOutcomeMeasure<? extends Variable> som,
 			final WhenTaken wt,
 			GroupStruct xmlArm,
-			ResultsOutcomeStruct outcome) {
+			List<MeasureStruct> measurements) {
 		final Arm arm = findArmWithName(study, xmlArm.getTitle());
 		final String xmlArmId = xmlArm.groupId;
-		MeasureStruct rateMeasure = outcome.measureList.measure.get(1);
+		MeasureStruct measure = measurements.get(1);
 
-		if(!(rateMeasure.param.equalsIgnoreCase("Mean") || rateMeasure.param.equalsIgnoreCase("Least Squares Mean"))) {
-			System.err.println(("Cannot import mean, not of type Mean or Least Squares Mean, but " + rateMeasure.param));
+		if(!(measure.param.equalsIgnoreCase("Mean") || measure.param.equalsIgnoreCase("Least Squares Mean"))) {
+			System.err.println(("Cannot import mean, not of type Mean or Least Squares Mean, but " + measure.param));
 			return;
 		}
 		BasicMeasurement meas = createBasicContinuousMeasurement(
-				getMeasurementForArm(outcome, xmlArmId, 0, 0),
-				getMeasurementForArm(outcome, xmlArmId, 1, 0),
-				rateMeasure);
+				getMeasurementForArm(xmlArmId, 0, measurements.get(0)), // Total number of participants
+				getMeasurementForArm(xmlArmId, 0, measurements.get(1)), // Mean and std.dev
+				measure);
 		som.getValue().setVariableType(new ContinuousVariableType());
 		study.setMeasurement(som, arm, wt, meas);
 	}
 
 	private static BasicMeasurement createBasicContinuousMeasurement(
 			MeasurementStruct totalStruct,
-			MeasurementStruct rateStruct,
-			MeasureStruct rateMeasure) {
+			MeasurementStruct measurementStruct,
+			MeasureStruct measure) {
 		int total = Integer.parseInt(totalStruct.valueAttribute);
-		double mean = Double.parseDouble(rateStruct.valueAttribute);
-		double stdDev = Double.parseDouble(rateStruct.spread);
-		if (rateMeasure.dispersion.equals("Standard Error")) {
+		double mean = Double.parseDouble(measurementStruct.valueAttribute);
+		double stdDev = Double.parseDouble(measurementStruct.spread);
+		if (measure.dispersion.equals("Standard Error")) {
 			stdDev = stdDev * Math.sqrt(total);
-		} else if (!rateMeasure.dispersion.equals("Standard Deviation")) {
-			System.err.println("Cannot convert dispersion in " + rateMeasure.title + " of type" + rateMeasure.dispersion);
+		} else if (!measure.dispersion.equals("Standard Deviation")) {
+			System.err.println("Cannot convert dispersion in " + measure.title + " of type" + measure.dispersion);
 			return null;
 		}
 		return new BasicContinuousMeasurement(mean, stdDev, total);
@@ -483,8 +516,7 @@ public class ClinicaltrialsImporter {
 		return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rate / 100) * total) : rate)), (int)Math.round(total));
 	}
 
-	private static MeasurementStruct getMeasurementForArm(ResultsOutcomeStruct outcome, final String xmlArmId, int index, int categoryIdx) {
-		MeasureStruct measure = outcome.measureList.measure.get(index);
+	private static MeasurementStruct getMeasurementForArm(final String xmlArmId, int categoryIdx, MeasureStruct measure) {
 		List<MeasurementStruct> measureMeasurements = measure.getCategoryList().getCategory().get(categoryIdx).measurementList.measurement;
 		return findMeasurement(xmlArmId, measureMeasurements);
 	}
