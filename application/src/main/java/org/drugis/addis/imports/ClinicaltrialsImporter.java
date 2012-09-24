@@ -79,6 +79,7 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
+import org.drugis.common.EqualsUtil;
 
 public class ClinicaltrialsImporter {
 
@@ -365,6 +366,9 @@ public class ClinicaltrialsImporter {
 						return object.getGroupId().equalsIgnoreCase(counts.groupId);
 				}});
 				Arm arm = findArmWithName(d_study, xmlArm.getTitle());
+				if (arm == null && !EqualsUtil.equal(xmlArm.getTitle(), "Total")) {
+					continue;
+				}
 				BasicRateMeasurement m =
 						new BasicRateMeasurement(Integer.parseInt(counts.subjectsAffected), Integer.parseInt(counts.subjectsAtRisk));
 				som.getValue().setVariableType(new RateVariableType());
@@ -432,9 +436,12 @@ public class ClinicaltrialsImporter {
 			WhenTaken wt,
 			GroupStruct xmlArm,
 			MeasureStruct measurement) {
+		final Arm arm = findArmWithName(study, xmlArm.getTitle());
+		if (arm == null && !EqualsUtil.equal(xmlArm.getTitle(), "Total")) {
+			return;
+		}
 		/*
 		List<MeasureCategoryStruct> categories = measurement.getCategoryList().getCategory();
-		final Arm arm = findArmWithName(study, xmlArm.getTitle());
 		List<String> categoryNames = new LinkedList<String>();
 		Map<String, Integer> frequencies = new HashMap<String, Integer>();
 		for (int i = 0; i < categories.size(); i++) {
@@ -456,6 +463,9 @@ public class ClinicaltrialsImporter {
 			GroupStruct xmlArm,
 			List<MeasureStruct> measurements) {
 		final Arm arm = findArmWithName(study, xmlArm.getTitle());
+		if (arm == null && !EqualsUtil.equal(xmlArm.getTitle(), "Total")) {
+			return;
+		}
 		final String xmlArmId = xmlArm.groupId;
 		BasicMeasurement meas = createBasicRateMeasurement(
 				getMeasurementForArm(xmlArmId, 0, measurements.get(0)), // Total number of participants
@@ -472,6 +482,10 @@ public class ClinicaltrialsImporter {
 			GroupStruct xmlArm,
 			List<MeasureStruct> measurements) {
 		final Arm arm = findArmWithName(study, xmlArm.getTitle());
+		if (arm == null && !EqualsUtil.equal(xmlArm.getTitle(), "Total")) {
+			return;
+		}
+
 		final String xmlArmId = xmlArm.groupId;
 		MeasureStruct measure = measurements.get(1);
 
@@ -492,9 +506,9 @@ public class ClinicaltrialsImporter {
 			MeasurementStruct measurementStruct,
 			MeasureStruct measure) {
 		int total = Integer.parseInt(totalStruct.valueAttribute);
-		double mean = Double.parseDouble(measurementStruct.valueAttribute);
-		double stdDev = Double.parseDouble(measurementStruct.spread);
-		if (measure.dispersion.equals("Standard Error")) {
+		Double mean = convertToDouble(measurementStruct.valueAttribute);
+		Double stdDev = convertToDouble(measurementStruct.spread);
+		if (measure.dispersion.equals("Standard Error") && stdDev != null) {
 			stdDev = stdDev * Math.sqrt(total);
 		} else if (!measure.dispersion.equals("Standard Deviation")) {
 			System.err.println("Cannot convert dispersion in " + measure.title + " of type" + measure.dispersion);
@@ -508,9 +522,17 @@ public class ClinicaltrialsImporter {
 			MeasurementStruct rateStruct,
 			MeasureStruct rateMeasure) {
 		boolean isPercentage = StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage");
-		double total = Double.parseDouble(totalStruct.valueAttribute);
-		double rate =  Double.parseDouble(rateStruct.valueAttribute);
+		Double total = convertToDouble(totalStruct.valueAttribute);
+		Double rate = convertToDouble(rateStruct.valueAttribute);
+		if (total == null || rate == null) {
+			return new BasicRateMeasurement();
+		}
+
 		return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rate / 100) * total) : rate)), (int)Math.round(total));
+	}
+
+	private static double convertToDouble(String text) {
+		return (text != null && !text.toLowerCase().contains("na")) ? Double.parseDouble(text) : null;
 	}
 
 	private static MeasurementStruct getMeasurementForArm(final String xmlArmId, int categoryIdx, MeasureStruct measure) {
