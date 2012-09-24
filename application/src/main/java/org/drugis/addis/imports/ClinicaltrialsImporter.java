@@ -27,17 +27,21 @@
 package org.drugis.addis.imports;
 import static org.apache.commons.collections15.CollectionUtils.find;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -48,7 +52,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.PredicateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
@@ -60,6 +66,7 @@ import org.drugis.addis.entities.BasicStudyCharacteristic.Allocation;
 import org.drugis.addis.entities.BasicStudyCharacteristic.Blinding;
 import org.drugis.addis.entities.CategoricalVariableType;
 import org.drugis.addis.entities.ContinuousVariableType;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FrequencyMeasurement;
@@ -74,12 +81,11 @@ import org.drugis.addis.entities.Source;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
-
-
 
 public class ClinicaltrialsImporter {
 
@@ -158,7 +164,8 @@ public class ClinicaltrialsImporter {
 
 		// Objective
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.OBJECTIVE,
-				objectWithNote(studyImport.getBriefSummary().getTextblock().trim(), studyImport.getBriefSummary().getTextblock().trim()));
+				objectWithNote(deindent(studyImport.getBriefSummary().getTextblock()),
+						deindent(studyImport.getBriefSummary().getTextblock())));
 
 		// Indication note
 		study.getIndicationWithNotes().getNotes().add(new Note(Source.CLINICALTRIALS, createIndicationNote(studyImport)));
@@ -171,11 +178,11 @@ public class ClinicaltrialsImporter {
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.STATUS,
 				objectWithNote(guessStatus(studyImport), studyImport.getOverallStatus().trim()));
 
-		String criteria = studyImport.getEligibility().getCriteria().getTextblock();
+		String criteria = deindent(studyImport.getEligibility().getCriteria().getTextblock());
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.INCLUSION,
-				objectWithNote(guessInclusionCriteria(criteria), criteria.trim()));
+				objectWithNote(guessInclusionCriteria(criteria), criteria));
 		study.setCharacteristicWithNotes(BasicStudyCharacteristic.EXCLUSION,
-				objectWithNote(guessExclusion(criteria), criteria.trim()));
+				objectWithNote(guessExclusion(criteria), criteria));
 
 		// References
 		for (ReferenceStruct ref : studyImport.getReference()) {
@@ -214,6 +221,31 @@ public class ClinicaltrialsImporter {
 				objectWithNote(Source.CLINICALTRIALS, studyImport.getRequiredHeader().getUrl().trim()));
 	}
 
+	/**
+	 * Remove indentation and text wrapping from a text field.
+	 * All leading and trailing whitespace is removed from each line of input.
+	 * Single newlines are removed, double newlines are retained.
+	 */
+	private static String deindent(String textblock) {
+		BufferedReader bufferedReader = new BufferedReader(new StringReader(textblock.trim()));
+		StringBuilder builder = new StringBuilder();
+		try {
+			for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
+				line = line.trim();
+				if (!line.isEmpty()) {
+					builder.append(line);
+				} else {
+					builder.append("\n\n");
+				}
+			}
+			bufferedReader.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		return builder.toString();
+	}
+
 	private static void addAdverseEvents(Study study, ClinicalStudy studyImport) {
 		ReportedEventsStruct reportedEvents = studyImport.clinicalResults.reportedEvents;
 		for (EventCategoryStruct sae : reportedEvents.seriousEvents.categoryList.category) {
@@ -226,12 +258,12 @@ public class ClinicaltrialsImporter {
 
 	}
 
-	private static void addEvents(Study study, ReportedEventsStruct reportedEvents, EventCategoryStruct sae) {
-		for (EventStruct event : sae.getEventList().event) {
+	private static void addEvents(Study study, ReportedEventsStruct reportedEvents, EventCategoryStruct events) {
+		for (EventStruct event : events.getEventList().event) {
 			StudyOutcomeMeasure<AdverseEvent> ae = new StudyOutcomeMeasure<AdverseEvent>(AdverseEvent.class);
-			String noteStr = event.getSubTitle().value + " (" + sae.title + ")";
-			noteStr = addIfAny(noteStr,"Description", event.description);
-			noteStr = addIfAny(noteStr,"Assesement", event.assessment);
+			String noteStr = event.getSubTitle().value + " (" + events.title + ")";
+			noteStr = addIfAny(noteStr, "Description", event.description);
+			noteStr = addIfAny(noteStr, "Assessment", event.assessment);
 
 			WhenTaken wt = setDefaultWhenTaken(study, ae);
 			study.getAdverseEvents().add(ae);
@@ -259,37 +291,27 @@ public class ClinicaltrialsImporter {
 	}
 
 	private static void addStudyOutcomeMeasures(Study study, ClinicalStudy studyImport) {
-		// Outcome Measures
 		for (ProtocolOutcomeStruct outcome : studyImport.getPrimaryOutcome()) {
-			StudyOutcomeMeasure<Endpoint> som = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
-			som.setIsPrimary(true);
-			String noteStr = outcome.getMeasure();
-			noteStr = addIfAny(noteStr, "Time frame", outcome.getTimeFrame());
-			noteStr = addIfAny(noteStr, "Safety issue", outcome.getSafetyIssue());
-			som.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
-
-			WhenTaken wt = setDefaultWhenTaken(study, som);
-
-			study.getEndpoints().add(som);
-			if (studyImport.getClinicalResults() != null) {
-				addMeasurements(som, outcome, wt, study, studyImport);
-			}
+			addStudyOutcomeMeasure(study, studyImport, outcome, true);
 		}
+		for (ProtocolOutcomeStruct outcome : studyImport.getSecondaryOutcome()) {
+			addStudyOutcomeMeasure(study, studyImport, outcome, false);
+		}
+	}
 
-		for (ProtocolOutcomeStruct endp : studyImport.getSecondaryOutcome()) {
-			StudyOutcomeMeasure<Endpoint> som = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
-			som.setIsPrimary(false);
-			String noteStr = endp.getMeasure();
-			noteStr = addIfAny(noteStr, "Time frame", endp.getTimeFrame());
-			noteStr = addIfAny(noteStr, "Safety issue", endp.getSafetyIssue());
-			som.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr));
-			WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, study.getEpochs().get(0));
-			wt.commit();
-			som.getWhenTaken().add(wt);
-			study.getEndpoints().add(som);
-			if (studyImport.getClinicalResults() != null) {
-				addMeasurements(som, endp, wt, study, studyImport);
-			}
+	private static void addStudyOutcomeMeasure(Study study, ClinicalStudy studyImport, ProtocolOutcomeStruct outcome, boolean isPrimary) {
+		StudyOutcomeMeasure<Endpoint> som = new StudyOutcomeMeasure<Endpoint>(Endpoint.class);
+		som.setIsPrimary(isPrimary);
+
+		StringBuilder noteBuilder = new StringBuilder(outcome.getMeasure());
+		noteBuilder.append(formatIfAny("Time frame", outcome.getTimeFrame(), "\n"));
+		noteBuilder.append(formatIfAny("Safety issue", outcome.getSafetyIssue(), "\n"));
+		som.getNotes().add(new Note(Source.CLINICALTRIALS, noteBuilder.toString()));
+
+		WhenTaken wt = setDefaultWhenTaken(study, som);
+		study.getEndpoints().add(som);
+		if (studyImport.getClinicalResults() != null) {
+			addMeasurements(som, outcome, wt, study, studyImport);
 		}
 	}
 
@@ -352,8 +374,8 @@ public class ClinicaltrialsImporter {
 		final Arm arm = findArmWithName(study, xmlArm.getTitle());
 		final String xmlArmId = xmlArm.groupId;
 		BasicMeasurement meas = createBasicRateMeasurement(
-				getMeasurementForArm(outcome, xmlArmId, 0, 0),
-				getMeasurementForArm(outcome, xmlArmId, 1, 0),
+				getMeasurementForArm(outcome, xmlArmId, 0, 0), // Total number of participants
+				getMeasurementForArm(outcome, xmlArmId, 1, 0), // Number of responders
 				outcome.measureList.measure.get(1));
 		som.getValue().setVariableType(new RateVariableType());
 		study.setMeasurement(som, arm, wt, meas);
@@ -370,7 +392,7 @@ public class ClinicaltrialsImporter {
 		MeasureStruct rateMeasure = outcome.measureList.measure.get(1);
 
 		if(!(rateMeasure.param.equalsIgnoreCase("Mean") || rateMeasure.param.equalsIgnoreCase("Least Squares Mean"))) {
-			System.err.println(("Cannon import mean, not of type 'mean' or 'Least Squares Mean', but " + rateMeasure.param));
+			System.err.println(("Cannot import mean, not of type Mean or Least Squares Mean, but " + rateMeasure.param));
 			return;
 		}
 		BasicMeasurement meas = createBasicContinuousMeasurement(
@@ -398,13 +420,13 @@ public class ClinicaltrialsImporter {
 	}
 
 	private static BasicMeasurement createBasicRateMeasurement(
-			MeasurementStruct rateStruct,
 			MeasurementStruct totalStruct,
+			MeasurementStruct rateStruct,
 			MeasureStruct rateMeasure) {
 		boolean isPercentage = StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage");
 		double total = Double.parseDouble(totalStruct.valueAttribute);
 		double rate =  Double.parseDouble(rateStruct.valueAttribute);
-		return new BasicRateMeasurement((int) Math.round(total), (int)Math.round((isPercentage ? ((rate / 100) * total) : rate)));
+		return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rate / 100) * total) : rate)), (int)Math.round(total));
 	}
 
 	private static MeasurementStruct getMeasurementForArm(ResultsOutcomeStruct outcome, final String xmlArmId, int index, int categoryIdx) {
@@ -429,11 +451,15 @@ public class ClinicaltrialsImporter {
 		});
 	}
 
-	private static String addIfAny(String noteStr, String fieldName, String value) {
+	private static String formatIfAny(String fieldName, String value, String separator) {
 		if (value != null && !value.equals("")) {
-			return noteStr + "\n\n" + fieldName + ": " + value;
+			return separator + fieldName + ": " + value;
 		}
-		return noteStr;
+		return "";
+	}
+
+	private static String addIfAny(String noteStr, String fieldName, String value) {
+		return noteStr + formatIfAny(fieldName, value, "\n\n");
 	}
 
 	private static void addStudyArms(Study study, ClinicalStudy studyImport, Epoch mainphaseEpoch) {
@@ -442,25 +468,38 @@ public class ClinicaltrialsImporter {
 		for(ArmGroupStruct ag : studyImport.getArmGroup()){
 			Arm arm = new Arm(ag.getArmGroupLabel(), 0);
 			study.getArms().add(arm);
-			String noteStr = "Arm Type: " + ag.getArmGroupType() + "\nArm Description: " + ag.getDescription();
-			arm.getNotes().add(new Note(Source.CLINICALTRIALS, noteStr.trim()));
+			StringBuilder noteBuilder = new StringBuilder();
+			noteBuilder.append(formatIfAny("Arm Name", ag.getArmGroupLabel(), ""));
+			noteBuilder.append(formatIfAny("Arm Type", ag.getArmGroupType(), "\n"));
+			noteBuilder.append(formatIfAny("Arm Description", ag.getDescription(), "\n"));
+
+			arm.getNotes().add(new Note(Source.CLINICALTRIALS, noteBuilder.toString()));
 			armLabels.put(ag.getArmGroupLabel(), arm);
 		}
 
-		// Add note about the drugs to the study-arms.
-		for(InterventionStruct i : studyImport.getIntervention()){
-			String noteStr = "\n\nIntervention Name: " + i.getInterventionName() + "\nIntervention Type: " +
-								i.getInterventionType() + "\nIntervention Description: " + i.getDescription();
+		// Add interventions to the study-arms.
+		List<String> interventionNames = new ArrayList<String>();
+		for(InterventionStruct i : studyImport.getIntervention()) {
+			interventionNames.add(i.getInterventionName());
+		}
+		uniqueify(interventionNames);
+		for (int i = 0; i < studyImport.getIntervention().size(); i++) {
+			InterventionStruct intervention = studyImport.getIntervention().get(i);
+			StringBuilder noteBuilder = new StringBuilder();
+			noteBuilder.append(formatIfAny("Intervention Name", intervention.getInterventionName(), "\n"));
+			noteBuilder.append(formatIfAny("Intervention Type", intervention.getInterventionType(), "\n"));
+			noteBuilder.append(formatIfAny("Intervention Description", intervention.getDescription(), "\n"));
+
 			boolean notAssigned = true;
-			for (String label : i.getArmGroupLabel()) {
-				StudyActivity act = new StudyActivity(i.getInterventionName(), null);
+			for (String label : intervention.getArmGroupLabel()) {
+				StudyActivity act = new StudyActivity(interventionNames.get(i), new TreatmentActivity(new DrugTreatment(null, null)));
 				study.getStudyActivities().add(act);
-				act.getNotes().add(new Note(Source.CLINICALTRIALS, i.getDescription()));
+				act.getNotes().add(new Note(Source.CLINICALTRIALS, intervention.getDescription()));
 				Arm arm = armLabels.get(label);
 				if (arm != null) {
 					notAssigned = false;
 					Note note = arm.getNotes().get(0);
-					note.setText(note.getText() + noteStr);
+					note.setText(note.getText() + "\n" + noteBuilder.toString());
 					study.setStudyActivityAt(arm, mainphaseEpoch, act);
 				}
 			}
@@ -468,7 +507,20 @@ public class ClinicaltrialsImporter {
 			if (notAssigned) {
 				for (Arm arm : study.getArms()) {
 					Note note = arm.getNotes().get(0);
-					note.setText(note.getText() + noteStr);
+					note.setText(note.getText() + "\n" + noteBuilder.toString());
+				}
+			}
+		}
+	}
+
+	private static void uniqueify(List<String> names) {
+		for (int i = 0; i < names.size() - 1; ++i) {
+			List<String> sublist = names.subList(i + 1, names.size());
+			String name = names.get(i);
+			if (sublist.contains(name)) {
+				names.set(i, name + " " + i);
+				for (int idx = sublist.indexOf(name); idx > -1; idx = sublist.indexOf(name)) {
+					sublist.set(idx, name + " " + (i + 1 + idx));
 				}
 			}
 		}
@@ -557,11 +609,18 @@ public class ClinicaltrialsImporter {
 	}
 
 	private static String createCentersNote(ClinicalStudy studyImport) {
-		String noteStr = "";
+		StringBuilder noteBuilder = new StringBuilder();
 		for (LocationStruct l : studyImport.getLocation()) {
-			noteStr += l.getFacility().getName()+"\n";
+			FacilityStruct f = l.getFacility();
+			AddressStruct a = f.getAddress();
+			List<String> fields = new ArrayList<String>(Arrays.asList(new String[] {
+					f.getName(), a.getZip(), a.getCity(), a.getState(), a.getCountry()
+				}));
+			CollectionUtils.filter(fields, PredicateUtils.notNullPredicate());
+			noteBuilder.append(StringUtils.join(fields, ", "));
+			noteBuilder.append('\n');
 		}
-		return noteStr;
+		return noteBuilder.toString();
 	}
 
 	private static String createTitleNote(ClinicalStudy studyImport) {
