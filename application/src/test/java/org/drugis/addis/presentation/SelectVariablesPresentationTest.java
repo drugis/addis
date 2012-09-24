@@ -27,8 +27,8 @@
 package org.drugis.addis.presentation;
 
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
@@ -41,7 +41,6 @@ import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.StudyOutcomeMeasure.EmptyVariable;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
 import org.drugis.addis.util.EntityUtil;
