@@ -3999,6 +3999,7 @@ Intervention Description: Azilsartan medoxomil 20 mg placebo-matching tablets, a
                     <notes/>
                 </epoch>
                 <epoch name="Main phase">
+                    <duration>P42D</duration>
                     <notes/>
                 </epoch>
             </epochs>
@@ -6420,6 +6421,7 @@ Intervention Description: Matching placebo, orally, once daily for up to six wee
                     <notes/>
                 </epoch>
                 <epoch name="Main phase">
+                    <duration>P42D</duration>
                     <notes/>
                 </epoch>
             </epochs>
