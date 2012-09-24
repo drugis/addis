@@ -71,7 +71,7 @@ public class ClinicaltrialsImporterTest {
 	@Test
 	public void testGetClinicaltrialsDataFromUri() {
 		try {
-			ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, "http://clinicaltrials.gov/show/NCT00644527?resultsxml=true");
+			ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, "http://clinicaltrials.gov/show/NCT00644527?resultsxml=true", true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -79,7 +79,7 @@ public class ClinicaltrialsImporterTest {
 
 	@Test
 	public void testGetClinicaltrialsData(){
-		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00644527.xml"));
+		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00644527.xml"), true);
 
 		testRetrievedStudy();
  	}
@@ -123,7 +123,7 @@ public class ClinicaltrialsImporterTest {
 
 	@Test
 	public void testGetClinicaltrialsDataWithResults() {
-		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00696436.xml"));
+		ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, getXMLResource("NCT00696436.xml"), true);
 		WhenTaken wt = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_testStudy.getEpochs().get(1));
 		Arm arm1 = d_testStudy.getArms().get(0);
 		Arm arm2 = d_testStudy.getArms().get(1);

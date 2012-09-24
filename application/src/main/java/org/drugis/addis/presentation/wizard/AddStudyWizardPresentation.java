@@ -193,7 +193,7 @@ public class AddStudyWizardPresentation {
 		if(getIdModel().getValue().toString().length() != 0) {
 			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
 			String url = "http://clinicaltrials.gov/show/"+studyID+"?resultsxml=true";
-			Study clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url);
+			Study clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, true);
 			setNewStudy(clinicaltrialsData);
 		}
 	}
