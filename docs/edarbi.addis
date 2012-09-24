@@ -54,9 +54,6 @@
         <endpoint name="SBP mean trough (clinic, sitting)" description="Change from baseline in mean trough clinic sitting systolic blood pressure" direction="LOWER_IS_BETTER">
             <continuous unitOfMeasurement="mmHg"/>
         </endpoint>
-        <endpoint name="SBP mean trough (clinic, sitting) B" description="B" direction="HIGHER_IS_BETTER">
-            <continuous unitOfMeasurement="B"/>
-        </endpoint>
         <endpoint name="SBP nighttime mean" description="Change from baseline in nighttime (12am - 6am) mean systolic blood pressure" direction="LOWER_IS_BETTER">
             <continuous unitOfMeasurement="mmHg"/>
         </endpoint>
@@ -135,9 +132,6 @@
             <rate/>
         </adverseEvent>
         <adverseEvent name="Cough" description="Cough (Respiratory, thoracic and mediastinal disorders)" direction="LOWER_IS_BETTER">
-            <rate/>
-        </adverseEvent>
-        <adverseEvent name="Cough (Respiratory, thoracic and mediastinal disorders)" description="Cough (Respiratory, thoracic and mediastinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Deep vein thrombosis" description="Deep vein thrombosis (Vascular disorders)" direction="LOWER_IS_BETTER">
