@@ -46,11 +46,10 @@ import com.jgoodies.binding.adapter.BasicComponentFactory;
 public class CharacteristicSelectDialog extends JDialog {
 	private StudyListPresentation d_pm;
 
-	public CharacteristicSelectDialog(JFrame parent,
-			StudyListPresentation pm) {
-		super(parent, "Select Characteristics to Show");
-		this.d_pm = pm;
-		setModal(true);
+	public CharacteristicSelectDialog(JFrame parent, StudyListPresentation pm) {
+		super(parent, "Select Characteristics to Show", true);
+		d_pm = pm;
+		setLocationByPlatform(true);
 		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		initComponents();
 		pack();

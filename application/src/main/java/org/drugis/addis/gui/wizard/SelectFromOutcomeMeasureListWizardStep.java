@@ -63,7 +63,6 @@ import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.WhenTakenPresentation;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
 import org.drugis.addis.util.EntityUtil;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.OkCancelDialog;
 import org.drugis.mtc.gui.MainWindow;
@@ -246,7 +245,6 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 				editButton.addActionListener(new ActionListener() {
 					public void actionPerformed(final ActionEvent e) {
 						AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, wt, (StudyOutcomeMeasure<T>) d_slot, d_epm);
-						GUIHelper.centerWindow(dialog, d_parent);
 						dialog.setVisible(true);
 						rebuild();
 					}
@@ -268,7 +266,6 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 			addWhenTakenButton.addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
 					AddWhenTakenDialog<T> dialog = new AddWhenTakenDialog<T>(d_parent, (StudyOutcomeMeasure<T>) d_slot, d_epm);
-					GUIHelper.centerWindow(dialog, d_parent);
 					dialog.setVisible(true);
 					rebuild();
 				}
@@ -288,6 +285,8 @@ public class SelectFromOutcomeMeasureListWizardStep<T extends Variable> extends 
 
 		public AddWhenTakenDialog(final JDialog parent, final WhenTaken wt, final StudyOutcomeMeasure<T> som, final AddEpochsPresentation epm) {
 			super(parent, true);
+			setLocationByPlatform(true);
+
 			d_old = wt;
 			d_som = som;
 			d_epm = epm;

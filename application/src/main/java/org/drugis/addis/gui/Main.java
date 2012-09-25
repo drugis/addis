@@ -146,7 +146,7 @@ public class Main extends AbstractObservable {
 
 	protected void showWelcome() {
 		final WelcomeDialog welcome = new WelcomeDialog(this);
-		GUIHelper.centerWindow(welcome);
+		welcome.setLocationByPlatform(true);
 		welcome.setVisible(true);
 	}
 
@@ -405,7 +405,7 @@ public class Main extends AbstractObservable {
 		if (!d_headless) {
 			s_window = new AddisWindow(this, getDomain());
 			s_window.pack();
-			GUIHelper.centerWindow(s_window);
+			s_window.setLocationByPlatform(true);
 			s_window.setVisible(true);
 		}
 	}
