@@ -1990,39 +1990,48 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testDefaultDataRoundTripConversion() throws Exception {
-		doRoundTripTest(getTransformedDefaultData());
+		doRoundTripTest(getTransformedDefaultData(), false);
+	}
+
+	@Test
+	public void testEdarbiDataRoundTripConversion() throws Exception {
+		doRoundTripTest(getTransformedEdarbiData(), false);
 	}
 
 	@Test
 	public void testSmallerDataRoundTripConversion() throws Exception {
-		// PubMedDataBankRetriever.copyStream(JAXBConvertor.transformToVersion(JAXBConvertorTest.class.getResourceAsStream(TEST_DATA_A_0),
-		// 0, 2), System.out);
-		doRoundTripTest(getTransformedTestData());
+		doRoundTripTest(getTransformedTestData(), true);
 	}
 
 	@Test
 	@Ignore
 	public void testMysteriousDataRoundTripConversion() throws Exception {
-		doRoundTripTest(getTestData(TEST_DATA_A_1));
+		// FIXME: fails because the transform1-2.xslt (or later in the chain) doesn't add missing characteristics
+		// The first study has only 8/13 characteristics defined.
+		doRoundTripTest(getTestData(TEST_DATA_A_1), false);
 	}
 
 	@Test
 	public void testCombinationTreatmentRoundTripConversion() throws Exception {
-		doRoundTripTest(getTestData(TEST_DATA_3));
+		doRoundTripTest(getTestData(TEST_DATA_3), false);
 	}
 
-	public void doRoundTripTest(final InputStream transformedXmlStream)
+	/**
+	 * @param sort Whether to sort the elements of the source XML to prevent order differences.
+	 */
+	public void doRoundTripTest(final InputStream transformedXmlStream, boolean sort)
 			throws JAXBException, ConversionException, SAXException, IOException {
 		System.clearProperty("javax.xml.transform.TransformerFactory");
-		final AddisData data = (AddisData) d_unmarshaller
-				.unmarshal(transformedXmlStream);
-		sortMeasurements(data);
-		sortAnalysisArms(data);
-		sortBenefitRiskOutcomes(data);
-		sortCategoricalMeasurementCategories(data);
-		sortMetaAnalysisAlternatives(data);
+		final AddisData data = (AddisData) d_unmarshaller.unmarshal(transformedXmlStream);
+		if (sort) {
+			sortMeasurements(data);
+			sortAnalysisArms(data);
+			sortBenefitRiskOutcomes(data);
+			sortCategoricalMeasurementCategories(data);
+			sortMetaAnalysisAlternatives(data);
+			sortUsedBys(data);
+		}
 		final Domain domainData = JAXBConvertor.convertAddisDataToDomain(data);
-		sortUsedBys(data);
 		final AddisData roundTrip = JAXBConvertor.convertDomainToAddisData(domainData);
 		assertXMLSimilar(data, roundTrip);
 	}
@@ -2048,6 +2057,7 @@ public class JAXBConvertorTest {
 
 		d_marshaller.marshal(actual, os1);
 		d_marshaller.marshal(expected, os2);
+
 		final Diff myDiff = new Diff(os1.toString(), os2.toString());
 	    assertTrue("XML similar " + myDiff.toString(), myDiff.similar());
 	}
@@ -2196,6 +2206,7 @@ public class JAXBConvertorTest {
 		}
 	}
 
+	// FIXME: is *not* compatible with MeasurementKey.MeasurementKeyComparator!
 	public static class MeasurementComparator implements
 			Comparator<org.drugis.addis.entities.data.Measurement> {
 		private final org.drugis.addis.entities.data.Study d_study;
@@ -2299,10 +2310,14 @@ public class JAXBConvertorTest {
 		return JAXBConvertor.transformToLatest(is, version);
 	}
 
-	private static InputStream getTransformedDefaultData()
-			throws TransformerException, IOException {
+	private static InputStream getTransformedDefaultData() throws TransformerException, IOException {
 		return getTestData(TEST_DATA_PATH +  "depressionExample.addis");
 	}
+
+	private static InputStream getTransformedEdarbiData() throws TransformerException, IOException {
+		return getTestData(TEST_DATA_PATH +  "hypertensionExample.addis");
+	}
+
 
 	private static InputStream getTransformedTestData()
 			throws TransformerException, IOException {

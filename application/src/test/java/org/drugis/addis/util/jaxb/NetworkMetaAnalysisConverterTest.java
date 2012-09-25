@@ -123,7 +123,7 @@ public class NetworkMetaAnalysisConverterTest {
 
 	@Test
 	public void testRoundTrip() throws JAXBException, ConversionException, TransformerException, IOException, SAXException {
-		d_jaxbConverterTest.doRoundTripTest(getTransformedSavedResultsData());
+		d_jaxbConverterTest.doRoundTripTest(getTransformedSavedResultsData(), false);
 	}
 	
 	private static InputStream getTransformedSavedResultsData() throws TransformerException, IOException {

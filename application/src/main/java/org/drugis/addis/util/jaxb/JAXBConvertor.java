@@ -1041,8 +1041,9 @@ public class JAXBConvertor {
 		if (baseArms.size() != subjArms.size()) {
 			throw new ConversionException("Alternative lists must have equal length. Offending MA: " + pwma);
 		}
-		TreatmentDefinition baseCat = null;
-		TreatmentDefinition subjCat = null;
+
+		TreatmentDefinition baseCat = TreatmentDefinitionConverter.load(pwma.getAlternative().get(0).getTreatmentDefinition(), domain);
+		TreatmentDefinition subjCat = TreatmentDefinitionConverter.load(pwma.getAlternative().get(1).getTreatmentDefinition(), domain);
 		for (int i = 0; i < baseArms.size(); ++i) {
 			if (!baseArms.get(i).getStudy().equals(subjArms.get(i).getStudy())) {
 				throw new ConversionException("Matching arms must be from the same study. Offending arms: " +
@@ -1052,10 +1053,6 @@ public class JAXBConvertor {
 			Arm base = findArm(baseArms.get(i).getName(), study.getArms());
 			Arm subj = findArm(subjArms.get(i).getName(), study.getArms());
 			studyArms.add(new StudyArmsEntry(study, base, subj));
-			if (i == 0) {
-				baseCat = study.getTreatmentDefinition(base);
-				subjCat = study.getTreatmentDefinition(subj);
-			}
 		}
 
 		Collections.sort(studyArms);
