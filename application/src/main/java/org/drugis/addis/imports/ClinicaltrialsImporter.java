@@ -429,12 +429,15 @@ public class ClinicaltrialsImporter {
 		BufferedReader bufferedReader = new BufferedReader(new StringReader(textblock.trim()));
 		StringBuilder builder = new StringBuilder();
 		try {
+			boolean first = true;
 			for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
 				line = line.trim();
 				if (!line.isEmpty()) {
-					builder.append(line);
+					builder.append((first ? "" : " ") + line);
+					first = false;
 				} else {
 					builder.append("\n\n");
+					first = true;
 				}
 			}
 			bufferedReader.close();
