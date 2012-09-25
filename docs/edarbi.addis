@@ -10572,6 +10572,1657 @@ Retrieved from ClinicalTrials.gov using the Takeda internal study identifier 491
             </notes>
         </study>
     </studies>
-    <metaAnalyses/>
-    <benefitRiskAnalyses/>
+    <metaAnalyses>
+        <pairwiseMetaAnalysis name="Clinic SBP Azilsartan 40 vs 80">
+            <indication name="Hypertensive disorder"/>
+            <endpoint name="SBP mean trough (clinic, sitting)"/>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-008 / NCT00696241"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-008 / NCT00696241"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+        </pairwiseMetaAnalysis>
+        <networkMetaAnalysis name="Clinic SBP network">
+            <indication name="Hypertensive disorder"/>
+            <endpoint name="SBP mean trough (clinic, sitting)"/>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Olmesartan"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Olmesartan 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Placebo QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Placebo QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Ramipril"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Ramipril 10 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Valsartan"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Valsartan 320 mg QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <consistencyResults>
+                <mcmcSettings tuningIterations="20000" simulationIterations="50000" inferenceIterations="10000" thinningInterval="10" numberOfChains="4" varianceScalingFactor="2.5"/>
+                <rankProbabilitySummary>0.0028 0.0012 0.0256 0.6165 0.3024 0.0515 0.0157 0.0145 0.0752 0.2997 0.4526 0.1423 0.0867 0.0691 0.2247 0.0607 0.1253 0.4335 0.2022 0.1779 0.3426 0.0167 0.0616 0.199 0.3912 0.3337 0.1487 0.005 0.0321 0.0893 0.3014 0.4036 0.1832 0.0014 0.026 0.0844</rankProbabilitySummary>
+                <relativeEffectsSummary>
+                    <means>-0.40107714771571407 1.8699012455537143 10.531855151210141 8.391530330317707 3.753727471678825</means>
+                    <covariance>13.391733131284523 7.355350166620962 6.562345808005968 6.7752595029177645 6.558490194255779 31.96293835739325 9.042919199218812 3.4970174423654323 12.313888465756271 18.502282350946633 3.46080019808027 7.9508766407779925 33.33558739136859 2.924608921715573 31.033228426769085</covariance>
+                </relativeEffectsSummary>
+                <relativeEffectsQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-8.239071979723496"/>
+                        <quantile level="0.5" value="-0.4084851466178875"/>
+                        <quantile level="0.975" value="7.454782319634181"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-10.469711420027485"/>
+                        <quantile level="0.5" value="1.898303470143608"/>
+                        <quantile level="0.975" value="13.892371350869542"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="1.5384562347073887"/>
+                        <quantile level="0.5" value="10.598027537441363"/>
+                        <quantile level="0.975" value="19.58656344980336"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-4.086851065315675"/>
+                        <quantile level="0.5" value="8.438926847611832"/>
+                        <quantile level="0.975" value="20.16181085900899"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-8.266139196452885"/>
+                        <quantile level="0.5" value="3.8100614098972847"/>
+                        <quantile level="0.975" value="15.306097220590024"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-7.454782319634176"/>
+                        <quantile level="0.5" value="0.4084851466178875"/>
+                        <quantile level="0.975" value="8.239071979723498"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-9.635382533755264"/>
+                        <quantile level="0.5" value="2.3056630575010337"/>
+                        <quantile level="0.975" value="13.841500250555645"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="1.49006227183968"/>
+                        <quantile level="0.5" value="10.979551399411893"/>
+                        <quantile level="0.975" value="20.103834636744462"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.8999042835897773"/>
+                        <quantile level="0.5" value="8.87629268259649"/>
+                        <quantile level="0.975" value="20.781674172642674"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-7.6566131739202445"/>
+                        <quantile level="0.5" value="4.182161201922916"/>
+                        <quantile level="0.975" value="16.169362997518817"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-13.892371350869533"/>
+                        <quantile level="0.5" value="-1.898303470143608"/>
+                        <quantile level="0.975" value="10.469711420027487"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-13.841500250555635"/>
+                        <quantile level="0.5" value="-2.3056630575010337"/>
+                        <quantile level="0.975" value="9.635382533755267"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.0879470224208148"/>
+                        <quantile level="0.5" value="8.681146995646788"/>
+                        <quantile level="0.975" value="20.6299454738262"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-9.68000859023491"/>
+                        <quantile level="0.5" value="6.592833959875414"/>
+                        <quantile level="0.975" value="22.549400128259634"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-11.414962804101336"/>
+                        <quantile level="0.5" value="1.8590896127760161"/>
+                        <quantile level="0.975" value="15.250199906404077"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-19.58656344980336"/>
+                        <quantile level="0.5" value="-10.598027537441363"/>
+                        <quantile level="0.975" value="-1.5384562347073856"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-20.103834636744455"/>
+                        <quantile level="0.5" value="-10.979551399411893"/>
+                        <quantile level="0.975" value="-1.4900622718396632"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-20.629945473826158"/>
+                        <quantile level="0.5" value="-8.681146995646788"/>
+                        <quantile level="0.975" value="3.0879470224208188"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-16.461369848448648"/>
+                        <quantile level="0.5" value="-2.156101340008691"/>
+                        <quantile level="0.975" value="12.09165395496556"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-19.283790306459764"/>
+                        <quantile level="0.5" value="-6.731282224808771"/>
+                        <quantile level="0.975" value="5.4166587950267795"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-20.161810859008988"/>
+                        <quantile level="0.5" value="-8.438926847611832"/>
+                        <quantile level="0.975" value="4.086851065315676"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-20.781674172642663"/>
+                        <quantile level="0.5" value="-8.87629268259649"/>
+                        <quantile level="0.975" value="3.8999042835897817"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-22.549400128259627"/>
+                        <quantile level="0.5" value="-6.592833959875414"/>
+                        <quantile level="0.975" value="9.68000859023492"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-12.09165395496555"/>
+                        <quantile level="0.5" value="2.156101340008691"/>
+                        <quantile level="0.975" value="16.46136984844866"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-20.781461708730657"/>
+                        <quantile level="0.5" value="-4.73092018298001"/>
+                        <quantile level="0.975" value="11.289076954256675"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-15.306097220590022"/>
+                        <quantile level="0.5" value="-3.8100614098972847"/>
+                        <quantile level="0.975" value="8.266139196452892"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-16.169362997518803"/>
+                        <quantile level="0.5" value="-4.182161201922916"/>
+                        <quantile level="0.975" value="7.65661317392025"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-15.250199906404072"/>
+                        <quantile level="0.5" value="-1.8590896127760161"/>
+                        <quantile level="0.975" value="11.414962804101338"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-5.416658795026772"/>
+                        <quantile level="0.5" value="6.731282224808771"/>
+                        <quantile level="0.975" value="19.283790306459764"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-11.28907695425667"/>
+                        <quantile level="0.5" value="4.73092018298001"/>
+                        <quantile level="0.975" value="20.78146170873066"/>
+                    </relativeEffectQuantileSummary>
+                </relativeEffectsQuantileSummary>
+                <summary psrf="1.000447950147578">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-8.239071979723496"/>
+                    <quantile level="0.5" value="-0.4084851466178875"/>
+                    <quantile level="0.975" value="7.454782319634181"/>
+                </summary>
+                <summary psrf="1.0007223198670796">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Olmesartan"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-10.469711420027485"/>
+                    <quantile level="0.5" value="1.898303470143608"/>
+                    <quantile level="0.975" value="13.892371350869542"/>
+                </summary>
+                <summary psrf="1.0004821044419903">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="1.5384562347073887"/>
+                    <quantile level="0.5" value="10.598027537441363"/>
+                    <quantile level="0.975" value="19.58656344980336"/>
+                </summary>
+                <summary psrf="1.0002948771076852">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Ramipril"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-4.086851065315675"/>
+                    <quantile level="0.5" value="8.438926847611832"/>
+                    <quantile level="0.975" value="20.16181085900899"/>
+                </summary>
+                <summary psrf="1.0005162960404899">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Valsartan"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-8.266139196452885"/>
+                    <quantile level="0.5" value="3.8100614098972847"/>
+                    <quantile level="0.975" value="15.306097220590024"/>
+                </summary>
+                <summary psrf="1.0042633103312752">
+                    <variance name="var.d"/>
+                    <quantile level="0.025" value="1.1018004126196412"/>
+                    <quantile level="0.5" value="4.650269921794505"/>
+                    <quantile level="0.975" value="13.099022343340964"/>
+                </summary>
+            </consistencyResults>
+        </networkMetaAnalysis>
+        <networkMetaAnalysis name="Non-SAE network">
+            <indication name="Hypertensive disorder"/>
+            <adverseEvent name="Non-SAE"/>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Olmesartan"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Olmesartan 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Placebo QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Placebo QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Ramipril"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Ramipril 10 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Valsartan"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Valsartan 320 mg QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <consistencyResults>
+                <mcmcSettings tuningIterations="20000" simulationIterations="50000" inferenceIterations="10000" thinningInterval="10" numberOfChains="4" varianceScalingFactor="2.5"/>
+                <rankProbabilitySummary>0.0317 0.0124 0.1566 0.0455 0.6155 0.1383 0.1473 0.0645 0.2868 0.1188 0.1631 0.2195 0.2272 0.1248 0.1751 0.1706 0.0893 0.213 0.2731 0.1798 0.145 0.1872 0.0555 0.1594 0.2097 0.2952 0.1195 0.2007 0.0408 0.1341 0.111 0.3233 0.117 0.2772 0.0358 0.1357</rankProbabilitySummary>
+                <relativeEffectsSummary>
+                    <means>-0.18301964162489118 0.15827249711030675 -0.1057502106657408 0.6169876349533246 0.11354405132528748</means>
+                    <covariance>0.17886739163178256 0.08848112338746907 0.0855097376565341 0.08967677458841863 0.0883644953808641 0.37486075171417765 0.1153021342187062 0.046420278051805784 0.15500778373774526 0.2713021714957754 0.04367346863029157 0.12280749257713376 0.3893661763024843 0.04723956877065086 0.3851452077439822</covariance>
+                </relativeEffectsSummary>
+                <relativeEffectsQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.0397133902801252"/>
+                        <quantile level="0.5" value="-0.20782868583165875"/>
+                        <quantile level="0.975" value="0.7291168896954063"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.1305194637604734"/>
+                        <quantile level="0.5" value="0.16734136068284902"/>
+                        <quantile level="0.975" value="1.3916144953771024"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.1819214973431058"/>
+                        <quantile level="0.5" value="-0.10455431688062639"/>
+                        <quantile level="0.975" value="0.9236613802122974"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.6717870539739821"/>
+                        <quantile level="0.5" value="0.5917712337083987"/>
+                        <quantile level="0.975" value="1.9142947239702215"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.1748418272588008"/>
+                        <quantile level="0.5" value="0.08552218124481746"/>
+                        <quantile level="0.975" value="1.4175055453679857"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.7291168896954058"/>
+                        <quantile level="0.5" value="0.20782868583165875"/>
+                        <quantile level="0.975" value="1.0397133902801254"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.9494062429812183"/>
+                        <quantile level="0.5" value="0.35857688266757104"/>
+                        <quantile level="0.975" value="1.6030704024584046"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.06570801159078"/>
+                        <quantile level="0.5" value="0.0814007138573472"/>
+                        <quantile level="0.975" value="1.0768553473429483"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.5259365137333414"/>
+                        <quantile level="0.5" value="0.7755226644307163"/>
+                        <quantile level="0.975" value="2.089576047208612"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.029131604215277"/>
+                        <quantile level="0.5" value="0.3131292007885631"/>
+                        <quantile level="0.975" value="1.5613406475303246"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.3916144953771015"/>
+                        <quantile level="0.5" value="-0.16734136068284902"/>
+                        <quantile level="0.975" value="1.1305194637604736"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.6030704024584044"/>
+                        <quantile level="0.5" value="-0.35857688266757104"/>
+                        <quantile level="0.975" value="0.9494062429812185"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.6076646415170743"/>
+                        <quantile level="0.5" value="-0.2726256816476022"/>
+                        <quantile level="0.975" value="1.0553241098494355"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.223378019461727"/>
+                        <quantile level="0.5" value="0.4324205664158576"/>
+                        <quantile level="0.975" value="2.1678167382199507"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.4031849560069485"/>
+                        <quantile level="0.5" value="-0.07156787252680133"/>
+                        <quantile level="0.975" value="1.3680165511094975"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.9236613802122967"/>
+                        <quantile level="0.5" value="0.10455431688062639"/>
+                        <quantile level="0.975" value="1.1819214973431065"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.0768553473429479"/>
+                        <quantile level="0.5" value="-0.0814007138573472"/>
+                        <quantile level="0.975" value="1.0657080115907802"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.0553241098494346"/>
+                        <quantile level="0.5" value="0.2726256816476022"/>
+                        <quantile level="0.975" value="1.6076646415170748"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-0.8187880041034773"/>
+                        <quantile level="0.5" value="0.7302128900683145"/>
+                        <quantile level="0.975" value="2.306493491691938"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.0914083101627874"/>
+                        <quantile level="0.5" value="0.224338818426573"/>
+                        <quantile level="0.975" value="1.5695667745653887"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.9142947239702206"/>
+                        <quantile level="0.5" value="-0.5917712337083987"/>
+                        <quantile level="0.975" value="0.6717870539739828"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.089576047208612"/>
+                        <quantile level="0.5" value="-0.7755226644307163"/>
+                        <quantile level="0.975" value="0.5259365137333419"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.1678167382199485"/>
+                        <quantile level="0.5" value="-0.4324205664158576"/>
+                        <quantile level="0.975" value="1.2233780194617274"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.306493491691938"/>
+                        <quantile level="0.5" value="-0.7302128900683145"/>
+                        <quantile level="0.975" value="0.8187880041034779"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.2212407339156246"/>
+                        <quantile level="0.5" value="-0.4700218253925647"/>
+                        <quantile level="0.975" value="1.2313019164535748"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.417505545367985"/>
+                        <quantile level="0.5" value="-0.08552218124481746"/>
+                        <quantile level="0.975" value="1.1748418272588008"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.5613406475303242"/>
+                        <quantile level="0.5" value="-0.3131292007885631"/>
+                        <quantile level="0.975" value="1.0291316042152774"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.3680165511094968"/>
+                        <quantile level="0.5" value="0.07156787252680133"/>
+                        <quantile level="0.975" value="1.4031849560069494"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.5695667745653878"/>
+                        <quantile level="0.5" value="-0.224338818426573"/>
+                        <quantile level="0.975" value="1.0914083101627883"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.2313019164535746"/>
+                        <quantile level="0.5" value="0.4700218253925647"/>
+                        <quantile level="0.975" value="2.221240733915625"/>
+                    </relativeEffectQuantileSummary>
+                </relativeEffectsQuantileSummary>
+                <summary psrf="1.0013476205513099">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.0397133902801252"/>
+                    <quantile level="0.5" value="-0.20782868583165875"/>
+                    <quantile level="0.975" value="0.7291168896954063"/>
+                </summary>
+                <summary psrf="1.002473266309507">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Olmesartan"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.1305194637604734"/>
+                    <quantile level="0.5" value="0.16734136068284902"/>
+                    <quantile level="0.975" value="1.3916144953771024"/>
+                </summary>
+                <summary psrf="1.001978993276741">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.1819214973431058"/>
+                    <quantile level="0.5" value="-0.10455431688062639"/>
+                    <quantile level="0.975" value="0.9236613802122974"/>
+                </summary>
+                <summary psrf="1.0021794169854572">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Ramipril"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-0.6717870539739821"/>
+                    <quantile level="0.5" value="0.5917712337083987"/>
+                    <quantile level="0.975" value="1.9142947239702215"/>
+                </summary>
+                <summary psrf="1.0015998170855005">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Valsartan"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.1748418272588008"/>
+                    <quantile level="0.5" value="0.08552218124481746"/>
+                    <quantile level="0.975" value="1.4175055453679857"/>
+                </summary>
+                <summary psrf="1.028341700112303">
+                    <variance name="var.d"/>
+                    <quantile level="0.025" value="0.004771009609496771"/>
+                    <quantile level="0.5" value="0.5427867061843015"/>
+                    <quantile level="0.975" value="1.0171687718361646"/>
+                </summary>
+            </consistencyResults>
+        </networkMetaAnalysis>
+        <networkMetaAnalysis name="SAE network">
+            <indication name="Hypertensive disorder"/>
+            <adverseEvent name="SAE"/>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 40 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-019 / NCT00696436"/>
+                    <arm name="Azilsartan Medoxomil 80 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Olmesartan"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Olmesartan 40 mg QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Placebo QD" study="TAK491-011 / NCT00591253"/>
+                    <arm name="Placebo QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Ramipril"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Ramipril 10 mg QD" study="TAK491-020 / NCT00760214"/>
+                </arms>
+            </alternative>
+            <alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Valsartan"/>
+                </treatmentDefinition>
+                <arms>
+                    <arm name="Valsartan 320 mg QD" study="TAK491-019 / NCT00696436"/>
+                </arms>
+            </alternative>
+            <consistencyResults>
+                <mcmcSettings tuningIterations="20000" simulationIterations="50000" inferenceIterations="10000" thinningInterval="10" numberOfChains="4" varianceScalingFactor="2.5"/>
+                <rankProbabilitySummary>0.1213 0.1444 0.3533 0.069 0.0974 0.2146 0.1959 0.2634 0.1872 0.0964 0.0899 0.1672 0.2283 0.2507 0.129 0.1089 0.139 0.1441 0.2524 0.1978 0.135 0.1292 0.1434 0.1422 0.1542 0.1103 0.1107 0.1994 0.2349 0.1905 0.0479 0.0334 0.0848 0.3971 0.2954 0.1414</rankProbabilitySummary>
+                <relativeEffectsSummary>
+                    <means>0.057143079477014844 0.2355143947262469 -0.7768778587757877 -0.4919401663616148 -0.06642943634744153</means>
+                    <covariance>0.6122558449068254 0.3383314074701542 0.32520152820456744 0.3108570504372709 0.33338126402666995 1.440557440600469 0.4610798712351451 0.18136672289874609 0.6102441433760667 1.5751680884601909 0.16776099900291858 0.508242122164469 1.2247377202363088 0.16440961760153078 1.5251375037388522</covariance>
+                </relativeEffectsSummary>
+                <relativeEffectsQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.6773854038599225"/>
+                        <quantile level="0.5" value="0.12449462539219497"/>
+                        <quantile level="0.975" value="1.5479166377623987"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.2885101106027905"/>
+                        <quantile level="0.5" value="0.33808366337705853"/>
+                        <quantile level="0.975" value="2.5993871101029122"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.480435233685736"/>
+                        <quantile level="0.5" value="-0.7097007287144933"/>
+                        <quantile level="0.975" value="1.4822727068902992"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.9005661282559783"/>
+                        <quantile level="0.5" value="-0.4366669200216274"/>
+                        <quantile level="0.975" value="1.697364757047175"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.722636780641885"/>
+                        <quantile level="0.5" value="-0.04468000747837103"/>
+                        <quantile level="0.975" value="2.3245977959144963"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.5479166377623987"/>
+                        <quantile level="0.5" value="-0.12449462539219497"/>
+                        <quantile level="0.975" value="1.6773854038599236"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.2572422678996067"/>
+                        <quantile level="0.5" value="0.2080520451781574"/>
+                        <quantile level="0.975" value="2.6037502853628594"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.515326371139698"/>
+                        <quantile level="0.5" value="-0.7772674234386117"/>
+                        <quantile level="0.975" value="1.4647471678837254"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.8520542963038142"/>
+                        <quantile level="0.5" value="-0.542628269080824"/>
+                        <quantile level="0.975" value="1.7689550920560047"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.593333190454955"/>
+                        <quantile level="0.5" value="-0.1483396982490619"/>
+                        <quantile level="0.975" value="2.370643480194329"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.5993871101029113"/>
+                        <quantile level="0.5" value="-0.33808366337705853"/>
+                        <quantile level="0.975" value="2.2885101106027914"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.6037502853628594"/>
+                        <quantile level="0.5" value="-0.2080520451781574"/>
+                        <quantile level="0.975" value="2.257242267899607"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-4.030933788456664"/>
+                        <quantile level="0.5" value="-0.9802816005232438"/>
+                        <quantile level="0.975" value="1.7474813331595538"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.8760408475385497"/>
+                        <quantile level="0.5" value="-0.7135247809533487"/>
+                        <quantile level="0.975" value="2.4811060658049926"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.0362887174437194"/>
+                        <quantile level="0.5" value="-0.2979838424573896"/>
+                        <quantile level="0.975" value="2.3214659634156143"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.482272706890298"/>
+                        <quantile level="0.5" value="0.7097007287144933"/>
+                        <quantile level="0.975" value="3.4804352336857374"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.4647471678837238"/>
+                        <quantile level="0.5" value="0.7772674234386117"/>
+                        <quantile level="0.975" value="3.5153263711397003"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.747481333159553"/>
+                        <quantile level="0.5" value="0.9802816005232438"/>
+                        <quantile level="0.975" value="4.0309337884566645"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.666778419064842"/>
+                        <quantile level="0.5" value="0.18800650509641292"/>
+                        <quantile level="0.975" value="3.5803648821791265"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.122975660869639"/>
+                        <quantile level="0.5" value="0.7048171197048364"/>
+                        <quantile level="0.975" value="3.663420802271411"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.697364757047175"/>
+                        <quantile level="0.5" value="0.4366669200216274"/>
+                        <quantile level="0.975" value="2.9005661282559783"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-1.7689550920560033"/>
+                        <quantile level="0.5" value="0.542628269080824"/>
+                        <quantile level="0.975" value="2.8520542963038165"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.481106065804987"/>
+                        <quantile level="0.5" value="0.7135247809533487"/>
+                        <quantile level="0.975" value="3.876040847538551"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.5803648821791256"/>
+                        <quantile level="0.5" value="-0.18800650509641292"/>
+                        <quantile level="0.975" value="2.666778419064844"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.7798525022250296"/>
+                        <quantile level="0.5" value="0.457607231145245"/>
+                        <quantile level="0.975" value="3.5725830924135025"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.3245977959144954"/>
+                        <quantile level="0.5" value="0.04468000747837103"/>
+                        <quantile level="0.975" value="2.7226367806418854"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.3706434801943277"/>
+                        <quantile level="0.5" value="0.1483396982490619"/>
+                        <quantile level="0.975" value="2.5933331904549557"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Olmesartan"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-2.321465963415614"/>
+                        <quantile level="0.5" value="0.2979838424573896"/>
+                        <quantile level="0.975" value="3.0362887174437203"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Placebo"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.663420802271409"/>
+                        <quantile level="0.5" value="-0.7048171197048364"/>
+                        <quantile level="0.975" value="2.1229756608696393"/>
+                    </relativeEffectQuantileSummary>
+                    <relativeEffectQuantileSummary>
+                        <relativeEffect whichEvidence="ALL">
+                            <treatmentDefinition>
+<trivialCategory drug="Valsartan"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Ramipril"/>
+                            </treatmentDefinition>
+                        </relativeEffect>
+                        <quantile level="0.025" value="-3.5725830924135"/>
+                        <quantile level="0.5" value="-0.457607231145245"/>
+                        <quantile level="0.975" value="2.7798525022250304"/>
+                    </relativeEffectQuantileSummary>
+                </relativeEffectsQuantileSummary>
+                <summary psrf="1.0029721335011492">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-1.6773854038599225"/>
+                    <quantile level="0.5" value="0.12449462539219497"/>
+                    <quantile level="0.975" value="1.5479166377623987"/>
+                </summary>
+                <summary psrf="1.0020188193768014">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Olmesartan"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-2.2885101106027905"/>
+                    <quantile level="0.5" value="0.33808366337705853"/>
+                    <quantile level="0.975" value="2.5993871101029122"/>
+                </summary>
+                <summary psrf="1.0037520307713845">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Placebo"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-3.480435233685736"/>
+                    <quantile level="0.5" value="-0.7097007287144933"/>
+                    <quantile level="0.975" value="1.4822727068902992"/>
+                </summary>
+                <summary psrf="1.0009871585399912">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Ramipril"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-2.9005661282559783"/>
+                    <quantile level="0.5" value="-0.4366669200216274"/>
+                    <quantile level="0.975" value="1.697364757047175"/>
+                </summary>
+                <summary psrf="1.0027464322734334">
+                    <relativeEffect whichEvidence="ALL">
+                        <treatmentDefinition>
+                            <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Valsartan"/>
+                        </treatmentDefinition>
+                    </relativeEffect>
+                    <quantile level="0.025" value="-2.722636780641885"/>
+                    <quantile level="0.5" value="-0.04468000747837103"/>
+                    <quantile level="0.975" value="2.3245977959144963"/>
+                </summary>
+                <summary psrf="1.007354616819356">
+                    <variance name="var.d"/>
+                    <quantile level="0.025" value="0.02581688241341515"/>
+                    <quantile level="0.5" value="0.8563533232720038"/>
+                    <quantile level="0.975" value="1.9092246746493862"/>
+                </summary>
+            </consistencyResults>
+        </networkMetaAnalysis>
+    </metaAnalyses>
+    <benefitRiskAnalyses>
+        <metaBenefitRiskAnalysis name="Benefit-risk" analysisType="SMAA">
+            <indication name="Hypertensive disorder"/>
+            <baseline>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+            </baseline>
+            <alternatives>
+                <treatmentDefinition>
+                    <richCategory categoryName="40" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <richCategory categoryName="80" drug="Azilsartan" name="20/40/80"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Olmesartan"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Placebo"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Ramipril"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Valsartan"/>
+                </treatmentDefinition>
+            </alternatives>
+            <metaAnalyses>
+                <metaAnalysis name="Clinic SBP network"/>
+                <metaAnalysis name="Non-SAE network"/>
+                <metaAnalysis name="SAE network"/>
+            </metaAnalyses>
+            <decisionContext>
+                <therapeuticContext></therapeuticContext>
+                <comparator></comparator>
+                <timeHorizon></timeHorizon>
+                <stakeholderPerspective></stakeholderPerspective>
+            </decisionContext>
+        </metaBenefitRiskAnalysis>
+    </benefitRiskAnalyses>
 </addis-data>
