@@ -269,6 +269,21 @@ public class ClinicaltrialsImporter {
 					note.setText(note.getText() + "\n" + noteBuilder.toString());
 				}
 			}
+
+			// Add Arm sizes to arms
+			if (shouldImportResults()) {
+				BaselineStruct baseline = d_studyImport.getClinicalResults().getBaseline();
+				for (final GroupStruct  xmlArm : baseline.groupList.group) {
+					Arm arm = findArmWithName(d_study, xmlArm.getTitle());
+					if (arm != null) {
+						MeasureCategoryStruct measures = baseline.getMeasureList().measure.get(0).categoryList.category.get(0);
+						MeasurementStruct measurement = findMeasurement(xmlArm.groupId, measures.getMeasurementList().measurement);
+						if (measurement != null) {
+							arm.setSize((int)convertToDouble(measurement.getValueAttribute()));
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -540,8 +555,8 @@ public class ClinicaltrialsImporter {
 		return findMeasurement(xmlArmId, measureMeasurements);
 	}
 
-	private static MeasurementStruct findMeasurement(final String xmlArmId, List<MeasurementStruct> totalMeasurements) {
-		return find(totalMeasurements, new Predicate<MeasurementStruct>() {
+	private static MeasurementStruct findMeasurement(final String xmlArmId, List<MeasurementStruct> measurements) {
+		return find(measurements, new Predicate<MeasurementStruct>() {
 			public boolean evaluate(MeasurementStruct object) {
 				return object.getGroupId().equalsIgnoreCase(xmlArmId);
 			}
