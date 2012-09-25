@@ -85,10 +85,10 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		d_validators.add(d_validator);
 		d_validators.add(new ListItemsUniqueModel<Category>(d_pm.getCategories(), Category.class, Category.PROPERTY_NAME));
 		d_validators.add(pm.getNameAvailableModel());
-		
+
 		d_pm.getCategories().addListDataListener(new IndifferentListDataListener() {
 			protected void update() {
-				rebuildPanel();				
+				rebuildPanel();
 			}
 		});
 	}
@@ -117,7 +117,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 
 		builder.addLabel("Name:", cc.xy(7, row));
 		builder.add(name, cc.xy(9, row));
-		
+
 		d_pm.getNameAvailableModel().addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				setNameValidBorder(name);
@@ -158,7 +158,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		return builder.getPanel();
 	}
 
-	
+
 	private void setNameValidBorder(final JTextField name) {
 		name.setOpaque(true);
 		if (!(Boolean)d_pm.getNameAvailableModel().getValue()) {
@@ -170,9 +170,9 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 			name.setBorder(new JTextField().getBorder());
 			name.setToolTipText(null);
 		}
-		
+
 	}
-	
+
 	private JButton createNewDrugButton(final ValueModel drugModel) {
 		final JButton btn = GUIFactory.createPlusButton("Create drug");
 		btn.addActionListener(new ActionListener() {
@@ -214,7 +214,7 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 				}
 			});
 			builder.add(remove, cc.xy(7, row));
-			
+
 			Bindings.bind(remove, "enabled", d_pm.getCategoryUsed(category));
 			Bindings.bind(rename, "enabled", d_pm.getCategoryUsed(category));
 			row = LayoutUtil.addRow(layout, row);
@@ -236,14 +236,14 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 		});
 		return btn;
 	}
-	
+
 
 	private ValueModel getNameModel(final int idx) {
 		return new PropertyAdapter<TypeWithName>(d_pm.getCategories().get(idx), TypeWithName.PROPERTY_NAME, true);
 	}
-	
+
 	private void showRenameDialog(final int idx) {
-		SwingUtilities.invokeLater(new Runnable() {			
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				final JDialog renameDialog = new RenameCategoryDialog(idx);
 				renameDialog.setVisible(true);
@@ -262,8 +262,8 @@ public class AddTreatmentCategorizationWizardStep extends AbstractTreatmentCateg
 
 		protected void rename(String newName) {
 			d_category.setName(newName);
-		} 
-		
+		}
+
 	}
-	
+
 }

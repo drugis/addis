@@ -269,6 +269,21 @@ public class ClinicaltrialsImporter {
 					note.setText(note.getText() + "\n" + noteBuilder.toString());
 				}
 			}
+
+			// Add Arm sizes to arms
+			if (shouldImportResults()) {
+				BaselineStruct baseline = d_studyImport.getClinicalResults().getBaseline();
+				for (final GroupStruct  xmlArm : baseline.groupList.group) {
+					Arm arm = findArmWithName(d_study, xmlArm.getTitle());
+					if (arm != null) {
+						MeasureCategoryStruct measures = baseline.getMeasureList().measure.get(0).categoryList.category.get(0);
+						MeasurementStruct measurement = findMeasurement(xmlArm.groupId, measures.getMeasurementList().measurement);
+						if (measurement != null) {
+							arm.setSize((int)convertToDouble(measurement.getValueAttribute()));
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -369,8 +384,7 @@ public class ClinicaltrialsImporter {
 				if (arm == null && !EqualsUtil.equal(xmlArm.getTitle(), "Total")) {
 					continue;
 				}
-				BasicRateMeasurement m =
-						new BasicRateMeasurement(Integer.parseInt(counts.subjectsAffected), Integer.parseInt(counts.subjectsAtRisk));
+				BasicRateMeasurement m = buildRateMeasurement(counts.subjectsAtRisk, counts.subjectsAffected, false);
 				som.getValue().setVariableType(new RateVariableType());
 				d_study.setMeasurement(som, arm, wt, m);
 			}
@@ -414,12 +428,15 @@ public class ClinicaltrialsImporter {
 		BufferedReader bufferedReader = new BufferedReader(new StringReader(textblock.trim()));
 		StringBuilder builder = new StringBuilder();
 		try {
+			boolean first = true;
 			for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
 				line = line.trim();
 				if (!line.isEmpty()) {
-					builder.append(line);
+					builder.append((first ? "" : " ") + line);
+					first = false;
 				} else {
 					builder.append("\n\n");
+					first = true;
 				}
 			}
 			bufferedReader.close();
@@ -521,14 +538,20 @@ public class ClinicaltrialsImporter {
 			MeasurementStruct totalStruct,
 			MeasurementStruct rateStruct,
 			MeasureStruct rateMeasure) {
-		boolean isPercentage = StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage");
-		Double total = convertToDouble(totalStruct.valueAttribute);
-		Double rate = convertToDouble(rateStruct.valueAttribute);
-		if (total == null || rate == null) {
-			return new BasicRateMeasurement();
-		}
+		return buildRateMeasurement(totalStruct.valueAttribute, rateStruct.valueAttribute, StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage"));
+	}
 
-		return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rate / 100) * total) : rate)), (int)Math.round(total));
+	private static BasicRateMeasurement buildRateMeasurement(String total, String rate, boolean isPercentage) {
+		Double totalValue = total == null ? null : convertToDouble(total);
+		Double rateValue = rate == null ?  null : convertToDouble(rate);
+		if (totalValue == null && rateValue != null) {
+			return new BasicRateMeasurement((int)Math.round(rateValue), null);
+		} else if (totalValue != null && rateValue == null) {
+			return new BasicRateMeasurement(null, (int)Math.round(totalValue));
+		} else if (rateValue != null && totalValue != null ) {
+			return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rateValue / 100) * totalValue) : rateValue)), (int)Math.round(totalValue));
+		}
+		return new BasicRateMeasurement();
 	}
 
 	private static double convertToDouble(String text) {
@@ -540,8 +563,8 @@ public class ClinicaltrialsImporter {
 		return findMeasurement(xmlArmId, measureMeasurements);
 	}
 
-	private static MeasurementStruct findMeasurement(final String xmlArmId, List<MeasurementStruct> totalMeasurements) {
-		return find(totalMeasurements, new Predicate<MeasurementStruct>() {
+	private static MeasurementStruct findMeasurement(final String xmlArmId, List<MeasurementStruct> measurements) {
+		return find(measurements, new Predicate<MeasurementStruct>() {
 			public boolean evaluate(MeasurementStruct object) {
 				return object.getGroupId().equalsIgnoreCase(xmlArmId);
 			}

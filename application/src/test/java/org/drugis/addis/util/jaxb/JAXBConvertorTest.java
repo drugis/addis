@@ -2301,7 +2301,7 @@ public class JAXBConvertorTest {
 
 	private static InputStream getTransformedDefaultData()
 			throws TransformerException, IOException {
-		return getTestData(TEST_DATA_PATH +  "defaultData.addis");
+		return getTestData(TEST_DATA_PATH +  "depressionExample.addis");
 	}
 
 	private static InputStream getTransformedTestData()

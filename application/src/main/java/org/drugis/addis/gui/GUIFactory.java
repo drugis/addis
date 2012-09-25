@@ -26,6 +26,8 @@
 
 package org.drugis.addis.gui;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import javax.swing.Icon;
@@ -56,18 +58,33 @@ import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 public class GUIFactory {
+	private static PrintStream s_errorStream =  System.err;
+
 	public static JButton createPlusButton(final String toolTipText) {
 		return createIconButton(FileNames.ICON_PLUS, toolTipText);
 	}
 
 	public static JButton createIconButton(final String iconName, final String toolTipText) {
+		suppressErrors(true);
 		Icon icon = Main.IMAGELOADER.getIcon(iconName);
 		if(icon == null) {
+			suppressErrors(false);
 			icon = MainWindow.IMAGELOADER.getIcon(iconName); // Fallback to MTC ImageLoader
 		}
 		JButton button = new JButton(icon);
 		button.setToolTipText(toolTipText);
 		return button;
+	}
+
+	public static void suppressErrors(boolean suppress) {
+		if(suppress) {
+	 		System.setErr(new PrintStream(new OutputStream() { // suppress system.err output
+			    public void write(int b) {
+			    }
+			}));
+		} else {
+			System.setErr(s_errorStream); // reset system.err output
+		}
 	}
 
 	public static JButton createLabeledIconButton(final String label, final String iconName) {

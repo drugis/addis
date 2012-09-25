@@ -63,7 +63,30 @@ import org.drugis.common.threading.ThreadHandler;
 @SuppressWarnings("serial")
 public class Main extends AbstractObservable {
 	public static final ImageLoader IMAGELOADER = new ImageLoader("/org/drugis/addis/gfx/");
-	private static final String EXAMPLE_XML = "defaultData.addis";
+
+	public enum Examples {
+		DEPRESSION("Severe depression", "depressionExample.addis"), HYPERTENSION("Hypertension", "hypertensionExample.addis");
+
+		final public String file;
+		final public String name;
+
+		Examples(String name, String file) {
+			this.name = name;
+			this.file = file;
+		}
+
+		public String toString() {
+			return this.name;
+		}
+
+		public static String findFileName(String name) {
+			for(Examples example : values()) {
+				if (example.name.equals(name)) return example.file;
+			}
+			throw new IllegalArgumentException("Could not find example data file for " + name);
+		}
+	}
+
 	private static final String PRINT_SCREEN = "F12"; // control p ... alt x ... etc
 	static final String DISPLAY_EXAMPLE = "Example Data";
 	static final String DISPLAY_NEW = "New File";
@@ -109,7 +132,6 @@ public class Main extends AbstractObservable {
 			public void actionPerformed(ActionEvent evt) {
 				try {
 					ImageExporter.writeImage(content, content, content.getWidth(), content.getHeight());
-
 				}
 				catch (Exception e) {
 					throw new RuntimeException("Error writing image: " + e.getMessage(), e);
@@ -189,9 +211,9 @@ public class Main extends AbstractObservable {
 		attachDomainChangedModel();
 	}
 
-	public void loadExampleDomain() {
+	public void loadExampleDomain(String exampleFile) {
 		try {
-			loadDomainFromXMLResource(EXAMPLE_XML);
+			loadDomainFromXMLResource(exampleFile);
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading default data: " + e.getMessage(), e);
 		}
@@ -293,7 +315,7 @@ public class Main extends AbstractObservable {
 	}
 
 	private void resetDomain() {
-		ThreadHandler.getInstance().clear();	// Terminate all running threads.
+		ThreadHandler.getInstance().clear(); // Terminate all running threads.
 		attachDomainChangedModel();
 		disposeMainWindow();
 	}
@@ -396,7 +418,6 @@ public class Main extends AbstractObservable {
 	}
 
 	/**
-	 * Beware of the singleton!
 	 * @return returns the only AddisWindow currently in existence for this process
 	 */
 	public static AddisWindow getMainWindow() {
