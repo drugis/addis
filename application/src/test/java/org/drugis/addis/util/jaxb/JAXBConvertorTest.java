@@ -948,13 +948,14 @@ public class JAXBConvertorTest {
 				whenTaken.getDuration(), whenTaken.getRelativeTo(), cm1));
 
 		final Map<MeasurementKey, BasicMeasurement> expected = new HashMap<MeasurementKey, BasicMeasurement>();
-		expected.put(new MeasurementKey(ep, arm5, whenTaken), crm1);
-		expected.put(new MeasurementKey(ep, arm8, whenTaken), crm2);
-		expected.put(new MeasurementKey(ae, arm5, whenTaken), crm2);
-		expected.put(new MeasurementKey(ae, arm8, whenTaken), crm1);
-		expected.put(new MeasurementKey(pc, arm5, whenTaken), ccm1);
-		expected.put(new MeasurementKey(pc, arm8, whenTaken), ccm1);
-		expected.put(new MeasurementKey(pc, null, whenTaken), ccm1);
+
+		expected.put(new MeasurementKey(oms.get(epName), arm5, whenTaken), crm1);
+		expected.put(new MeasurementKey(oms.get(epName), arm8, whenTaken), crm2);
+		expected.put(new MeasurementKey(oms.get(aeName), arm5, whenTaken), crm2);
+		expected.put(new MeasurementKey(oms.get(aeName), arm8, whenTaken), crm1);
+		expected.put(new MeasurementKey(oms.get(pcName), arm5, whenTaken), ccm1);
+		expected.put(new MeasurementKey(oms.get(pcName), arm8, whenTaken), ccm1);
+		expected.put(new MeasurementKey(oms.get(pcName), null, whenTaken), ccm1);
 
 		assertEquals(expected, JAXBConvertor.convertMeasurements(measurements,
 				arms, epochs, oms));
@@ -1342,12 +1343,9 @@ public class JAXBConvertorTest {
 		study2.setStudyActivityAt(paroxArm, epoch1, randomizationActivity);
 		study2.setStudyActivityAt(fluoxArm, epoch2, combTreatmentActivity);
 		study2.setStudyActivityAt(paroxArm, epoch2, paroxTreatmentActivity);
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), paroxArm,
-				new BasicRateMeasurement(10, 110));
-		study2.setMeasurement(ExampleData.buildEndpointHamd(), fluoxArm,
-				new BasicRateMeasurement(10, 110));
-		study2.setMeasurement(ExampleData.buildAgeVariable(),
-				new BasicContinuousMeasurement(0.2, 0.01, 110));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildEndpointHamd()), paroxArm, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildEndpointHamd()), fluoxArm, new BasicRateMeasurement(10, 110));
+		study2.setMeasurement(study2.findStudyOutcomeMeasure(ExampleData.buildAgeVariable()), new BasicContinuousMeasurement(0.2, 0.01, 110));
 
 		assertEntityEquals(study2, JAXBConvertor.convertStudy(study, domain));
 		assertEquals(study, JAXBConvertor.convertStudy(study2));
@@ -1482,8 +1480,8 @@ public class JAXBConvertorTest {
 		domain.getStudies().add(study);
 
 		RandomEffectsMetaAnalysis pwma = new RandomEffectsMetaAnalysis(
-				name, 
-				ExampleData.buildEndpointHamd(), 
+				name,
+				ExampleData.buildEndpointHamd(),
 				study.getTreatmentDefinition(base),
 				study.getTreatmentDefinition(subject),
 				armsList, false);

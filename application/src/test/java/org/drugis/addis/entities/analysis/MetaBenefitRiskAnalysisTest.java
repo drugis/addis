@@ -95,7 +95,7 @@ public class MetaBenefitRiskAnalysisTest {
 		expected.add(d_BRAnalysis.getIndication());
 		expected.addAll(d_BRAnalysis.getCriteria());
 		EntityUtil.addRecursiveDependencies(expected, d_BRAnalysis.getMetaAnalyses());
-		for (Category category : EntityUtil.flatten(d_BRAnalysis.getAlternatives())) {
+		for (Category category : EntityUtil.<Category>flatten(d_BRAnalysis.getAlternatives())) {
 			expected.addAll(category.getDependencies());
 		}
 		assertEquals(expected, d_BRAnalysis.getDependencies());

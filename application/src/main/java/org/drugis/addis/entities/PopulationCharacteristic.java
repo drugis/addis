@@ -28,6 +28,10 @@ package org.drugis.addis.entities;
 
 public class PopulationCharacteristic extends AbstractVariable {
 
+	public PopulationCharacteristic() {
+		this("", new RateVariableType());
+	}
+
 	public PopulationCharacteristic(String name, VariableType type) {
 		super(name, type);
 	}
@@ -35,7 +39,7 @@ public class PopulationCharacteristic extends AbstractVariable {
 	@Override
 	public boolean equals(Object o) {
 		if (o != null && o instanceof PopulationCharacteristic) {
-			return super.equals(o);			
+			return super.equals(o);
 		}
 		return false;
 	}

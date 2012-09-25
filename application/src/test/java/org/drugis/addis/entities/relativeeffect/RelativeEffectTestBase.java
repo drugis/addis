@@ -77,8 +77,8 @@ public class RelativeEffectTestBase {
 	
 		ExampleData.addDefaultMeasurementMoments(s);
 	
-		s.setMeasurement(d_rateEndpoint, g_sertr, m_sertr);
-		s.setMeasurement(d_rateEndpoint, g_fluox, m_fluox);		
+		s.setMeasurement(s.findStudyOutcomeMeasure(d_rateEndpoint), g_sertr, m_sertr);
+		s.setMeasurement(s.findStudyOutcomeMeasure(d_rateEndpoint), g_fluox, m_fluox);		
 		
 		return s;
 	}
@@ -103,8 +103,8 @@ public class RelativeEffectTestBase {
 
 				ExampleData.addDefaultMeasurementMoments(s);
 
-				s.setMeasurement(d_contEndpoint, group, measurement);
-				s.setMeasurement(d_contEndpoint, group1, measurement1);
+				s.setMeasurement(s.findStudyOutcomeMeasure(d_contEndpoint), group, measurement);
+				s.setMeasurement(s.findStudyOutcomeMeasure(d_contEndpoint), group1, measurement1);
 				
 				return s ;
 			}

@@ -101,8 +101,8 @@ public class DomainTreeModelTest {
 
 		ExampleData.addDefaultMeasurementMoments(d_firstStudy);
 		
-		d_firstStudy.setMeasurement(d_firstEndpoint, pg, d_firstEndpoint.buildMeasurement(pg));
-		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
+		d_firstStudy.setMeasurement(d_firstStudy.findStudyOutcomeMeasure(d_firstEndpoint), pg, d_firstEndpoint.buildMeasurement(pg));
+		d_firstStudy.setMeasurement(d_firstStudy.findStudyOutcomeMeasure(d_firstADE), pg, d_firstADE.buildMeasurement(pg));
 		
 		d_firstMetaAnalysis = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_firstEndpoint, Collections.singletonList((Study)d_firstStudy), TreatmentDefinition.createTrivial(d_firstDrug), TreatmentDefinition.createTrivial(d_firstDrug));
 		

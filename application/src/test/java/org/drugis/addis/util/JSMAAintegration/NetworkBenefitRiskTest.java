@@ -56,7 +56,6 @@ public class NetworkBenefitRiskTest extends NetworkBenefitRiskTestBase {
 	public void testSMAA() throws InterruptedException {
 		PerCriterionMeasurements measurements = new PerCriterionMeasurements(Collections.<Criterion>emptyList(), Collections.<Alternative>emptyList());
 		SMAAModel model = new SMAAModel("Test", measurements);
-		
 		model.addAlternative(new Alternative("Placebo"));
 		model.addAlternative(new Alternative("Fluoxetine"));
 		model.addAlternative(new Alternative("Paroxetine"));
