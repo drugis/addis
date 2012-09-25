@@ -80,7 +80,7 @@ public class WelcomeDialog extends JFrame {
 	private static final int TEXT_WIDTH = FULL_WIDTH - SPACING - BUTTON_WIDTH;
 
 	private Main d_main;
-	private static HelpLoader s_help = new HelpLoader(WelcomeDialog.class.getResourceAsStream("../examples.properties"));
+	private static HelpLoader s_help = new HelpLoader(WelcomeDialog.class.getResourceAsStream("examples.properties"));
 
 	public WelcomeDialog(Main main) {
 		super();
