@@ -26,22 +26,33 @@
 
 package org.drugis.addis.gui;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+import org.apache.commons.collections15.Closure;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
 
@@ -52,6 +63,7 @@ import com.jgoodies.forms.layout.FormLayout;
 @SuppressWarnings("serial")
 public class WelcomeDialog extends JFrame {
 
+	private static final Border ETCHED_BORDER = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 	private static final int COMP_HEIGHT = 65;
 	private static final int FULL_WIDTH = 446; // width of the header image
 	private static final int SPACING = 3;
@@ -81,15 +93,21 @@ public class WelcomeDialog extends JFrame {
 	}
 
 	private void initComps() {
+
+		final ButtonGroup examples = new ButtonGroup();
+		examples.add(new JRadioButton(Main.Examples.DEPRESSION.name, true));
+		examples.add(new JRadioButton(Main.Examples.HYPERTENSION.name));
+
+
 		final AbstractAction exampleAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_main.loadExampleDomain();
+				d_main.loadExampleDomain(Main.Examples.findFileName(getSelection(examples).getText()));
 				closeWelcome();
 			}
 		};
 
 		final AbstractAction loadAction = new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
 				if(d_main.fileLoadActions() == JFileChooser.APPROVE_OPTION) {
 					closeWelcome();
 				}
@@ -107,19 +125,28 @@ public class WelcomeDialog extends JFrame {
 				"left:pref, " + SPACING + "px, left:pref",
 				"p, 3dlu, p, " + SPACING + "px, p, " + SPACING + "px, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();
+		final CellConstraints cc = new CellConstraints();
 
 		builder.add(createImageLabel(FileNames.IMAGE_HEADER), cc.xyw(1, 1, 3));
 
 		builder.add(createButton("Load example", FileNames.ICON_TIP, exampleAction), cc.xy(1, 3));
-		builder.add(
-				createLabel("Example studies and analyses with anti-depressants. Recommended for first time users."),
-				cc.xy(3, 3));
+
+		final PanelBuilder radios = new PanelBuilder(new FormLayout("p", "p, 3dlu, p"));
+
+		final ArrayList<AbstractButton> buttons = Collections.list(examples.getElements());
+		org.apache.commons.collections15.CollectionUtils.forAllDo(buttons, new Closure<AbstractButton>() {
+			public void execute(AbstractButton input) {
+				int idx = buttons.indexOf(input);
+				radios.add(input, cc.xy(1, idx == 0 ? 1 : idx + 2 ));
+		}});
+
+		JPanel radiosPanel = radios.getPanel();
+		setBorder(radiosPanel);
+		builder.add(radiosPanel, cc.xy(3, 3));
 
 		builder.add(createButton("Open file", FileNames.ICON_OPENFILE, loadAction), cc.xy(1, 5));
-		builder.add(
-				createLabel("Load an existing ADDIS data file stored on your computer."),
-				cc.xy(3, 5));
+		JTextPane load = createLabel("Load an existing ADDIS data file stored on your computer.");
+		builder.add(load, cc.xy(3, 5));
 
 		builder.add(createButton("New dataset", FileNames.ICON_FILE_NEW, newAction), cc.xy(1, 7));
 		builder.add(
@@ -149,10 +176,25 @@ public class WelcomeDialog extends JFrame {
 	private JTextPane createLabel(String txt) {
 		JTextPane pane = new JTextPane();
 		pane.setText(txt);
-		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
-		pane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		setBorder(pane);
 		pane.setEditable(false);
 		return pane;
+	}
+
+	private void setBorder(JComponent pane) {
+		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
+		pane.setBorder(ETCHED_BORDER);
+		pane.setBackground(Color.white);
+	}
+
+	public static JRadioButton getSelection(ButtonGroup group) {
+	    for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {
+	        JRadioButton b = (JRadioButton)e.nextElement();
+	        if (b.getModel() == group.getSelection()) {
+	            return b;
+	        }
+	    }
+	    return null;
 	}
 
 }
