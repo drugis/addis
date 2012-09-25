@@ -1990,6 +1990,7 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testDefaultDataRoundTripConversion() throws Exception {
+		System.out.println("Starting round Trip");
 		doRoundTripTest(getTransformedDefaultData(), false);
 	}
 
@@ -2285,10 +2286,10 @@ public class JAXBConvertorTest {
 	}
 
 	@Test
+	@Ignore
 	public void writeTransformedXML() throws TransformerException, IOException {
 		final InputStream transformedXmlStream = getTransformedDefaultData();
-		final FileOutputStream output = new FileOutputStream(
-				"transformedDefaultData.xml");
+		final FileOutputStream output = new FileOutputStream("transformedDefaultData.xml");
 		PubMedDataBankRetriever.copyStream(transformedXmlStream, output);
 		output.close();
 	}
