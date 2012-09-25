@@ -1008,7 +1008,6 @@ public class AddStudyWizard extends Wizard {
 		private JScrollPane d_scrollPane;
 		private AddStudyWizardPresentation d_pm;
 		private JCheckBox d_withResultsCheckBox;
-		private ValueHolder<Boolean> d_withResults = new ModifiableHolder<Boolean>(false);
 
 		private class IdStepValidator extends NonEmptyValueModel {
 			public IdStepValidator(ValueModel idModel) {
@@ -1092,12 +1091,12 @@ public class AddStudyWizard extends Wizard {
 				d_importButton.setEnabled(isIdValid());
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
-						CTRetriever ctRetriever = new CTRetriever(d_withResults.getValue());
+						CTRetriever ctRetriever = new CTRetriever();
 						RunnableReadyModel readyModel = new RunnableReadyModel(ctRetriever);
 						new Thread(readyModel).start();
 					}});
 
-				d_withResultsCheckBox = BasicComponentFactory.createCheckBox(d_withResults, "import results (experimental)");
+				d_withResultsCheckBox = BasicComponentFactory.createCheckBox(d_pm.shouldImportCTWithResults(), "import results (experimental)");
 
 				ButtonBarBuilder2 bb = ButtonBarBuilder2.createLeftToRightBuilder();
 				bb.addButton(d_importButton);
@@ -1159,17 +1158,10 @@ public class AddStudyWizard extends Wizard {
 			}
 		}
 		public class CTRetriever implements Runnable {
-
-			private boolean d_withResults;
-
-			public CTRetriever(boolean withResults) {
-				d_withResults = withResults;
-			}
-
 			public void run() {
 				try {
 					SwingUtilities.invokeAndWait(new StartLoadingAnimation());
-					d_pm.importCT(d_withResults);
+					d_pm.importCT();
 					SwingUtilities.invokeAndWait(new StopLoadingAnimation());
 				} catch (FileNotFoundException e) { // file not found is expected when user enters "strange" IDs
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);

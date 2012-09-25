@@ -69,7 +69,7 @@ public class AddStudyWizardPresentationTest {
 	private void importStudy() throws MalformedURLException, IOException {
 		d_wizardImported = new AddStudyWizardPresentation(d_domain, new PresentationModelFactory(d_domain), null);
 		d_wizardImported.getIdModel().setValue("NCT00644527");
-		d_wizardImported.importCT(true);
+		d_wizardImported.importCT();
 	}
 
 	@Test
