@@ -75,8 +75,11 @@ public class Main extends AbstractObservable {
 			this.file = file;
 		}
 
-		public String toString() {
-			return this.name;
+		public static Examples findByName(String name) {
+			for(Examples example : values()) {
+				if (example.name.equals(name)) return example;
+			}
+			throw new IllegalArgumentException("Could not find example  for " + name);
 		}
 
 		public static String findFileName(String name) {

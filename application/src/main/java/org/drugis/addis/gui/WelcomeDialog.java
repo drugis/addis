@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
@@ -55,10 +57,14 @@ import javax.swing.border.EtchedBorder;
 import org.apache.commons.collections15.Closure;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
+import org.drugis.addis.gui.Main.Examples;
+import org.drugis.common.gui.HelpLoader;
+import org.drugis.common.gui.TextComponentFactory;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
 
 @SuppressWarnings("serial")
 public class WelcomeDialog extends JFrame {
@@ -71,15 +77,17 @@ public class WelcomeDialog extends JFrame {
 	private static final int TEXT_WIDTH = FULL_WIDTH - SPACING - BUTTON_WIDTH;
 
 	private Main d_main;
+	private final WelcomeDialog d_self;
+	private static HelpLoader s_help = new HelpLoader(WelcomeDialog.class.getResourceAsStream("../examples.properties"));
 
 	public WelcomeDialog(Main main) {
 		super();
+		d_self = this;
 		d_main = main;
 		setTitle("Welcome to " + AppInfo.getAppName());
 		initComps();
 		setResizable(false);
 		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
-
 		pack();
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -95,7 +103,7 @@ public class WelcomeDialog extends JFrame {
 	private void initComps() {
 
 		final ButtonGroup examples = new ButtonGroup();
-		examples.add(new JRadioButton(Main.Examples.DEPRESSION.name, true));
+		examples.add(new JRadioButton(Main.Examples.DEPRESSION.name));
 		examples.add(new JRadioButton(Main.Examples.HYPERTENSION.name));
 
 
@@ -128,17 +136,34 @@ public class WelcomeDialog extends JFrame {
 		final CellConstraints cc = new CellConstraints();
 
 		builder.add(createImageLabel(FileNames.IMAGE_HEADER), cc.xyw(1, 1, 3));
-
 		builder.add(createButton("Load example", FileNames.ICON_TIP, exampleAction), cc.xy(1, 3));
 
-		final PanelBuilder radios = new PanelBuilder(new FormLayout("p", "p, 3dlu, p"));
+		final PanelBuilder radios = new PanelBuilder(new FormLayout("p, fill:pref:grow, right:pref", "p, 3dlu, p"));
 
 		final ArrayList<AbstractButton> buttons = Collections.list(examples.getElements());
 		org.apache.commons.collections15.CollectionUtils.forAllDo(buttons, new Closure<AbstractButton>() {
-			public void execute(AbstractButton input) {
-				int idx = buttons.indexOf(input);
-				radios.add(input, cc.xy(1, idx == 0 ? 1 : idx + 2 ));
-		}});
+			public void execute(final AbstractButton exampleOption) {
+				int row = buttons.indexOf(exampleOption) == 0 ? 1 : buttons.indexOf(exampleOption) + 2;
+				radios.add(exampleOption, cc.xy(1, row));
+				JButton help = createHelpButton(exampleOption);
+				radios.add(help, cc.xy(3, row));
+			}
+
+			private JButton createHelpButton(final AbstractButton exampleOption) {
+				JButton help = GUIFactory.createIconButton(FileNames.ICON_TIP, "Information about this example");
+				removeBackground(help);
+
+				help.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Examples example = Examples.findByName(exampleOption.getText());
+						String helpText = s_help.getHelpText(example.name().toLowerCase());
+						JComponent helpPane = TextComponentFactory.createTextPane(helpText, true);
+						JOptionPane.showMessageDialog(d_self, helpPane);
+					}
+				});
+				return help;
+			}
+		});
 
 		JPanel radiosPanel = radios.getPanel();
 		setBorder(radiosPanel);
@@ -185,6 +210,12 @@ public class WelcomeDialog extends JFrame {
 		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
 		pane.setBorder(ETCHED_BORDER);
 		pane.setBackground(Color.white);
+	}
+
+	private void removeBackground(JButton button) {
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+		button.setBorderPainted(false);
 	}
 
 	public static JRadioButton getSelection(ButtonGroup group) {
