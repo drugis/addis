@@ -384,8 +384,7 @@ public class ClinicaltrialsImporter {
 				if (arm == null && !EqualsUtil.equal(xmlArm.getTitle(), "Total")) {
 					continue;
 				}
-				BasicRateMeasurement m =
-						new BasicRateMeasurement(Integer.parseInt(counts.subjectsAffected), Integer.parseInt(counts.subjectsAtRisk));
+				BasicRateMeasurement m = buildRateMeasurement(counts.subjectsAffected, counts.subjectsAtRisk, false);
 				som.getValue().setVariableType(new RateVariableType());
 				d_study.setMeasurement(som, arm, wt, m);
 			}
@@ -539,14 +538,16 @@ public class ClinicaltrialsImporter {
 			MeasurementStruct totalStruct,
 			MeasurementStruct rateStruct,
 			MeasureStruct rateMeasure) {
-		boolean isPercentage = StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage");
-		Double total = convertToDouble(totalStruct.valueAttribute);
-		Double rate = convertToDouble(rateStruct.valueAttribute);
-		if (total == null || rate == null) {
+		return buildRateMeasurement(totalStruct.valueAttribute, rateStruct.valueAttribute, StringUtils.containsIgnoreCase(rateMeasure.units, "Percentage"));
+	}
+
+	private static BasicRateMeasurement buildRateMeasurement(String total, String rate, boolean isPercentage) {
+		Double totalValue = total == null ? null : convertToDouble(total);
+		Double rateValue = rate == null ?  null : convertToDouble(rate);
+		if (totalValue == null || rateValue == null) {
 			return new BasicRateMeasurement();
 		}
-
-		return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rate / 100) * total) : rate)), (int)Math.round(total));
+		return new BasicRateMeasurement((int)Math.round((isPercentage ? ((rateValue / 100) * totalValue) : rateValue)), (int)Math.round(totalValue));
 	}
 
 	private static double convertToDouble(String text) {
