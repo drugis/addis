@@ -733,7 +733,7 @@ public class JAXBConvertor {
 			throw new ConversionException("StudyOutcomeMeasure type not supported: " + om.toString());
 		}
 		if (var == null) {
-			throw new ConversionException("Could not fidn variable for StudyOutcomeMeasure: " + om.toString());
+			throw new ConversionException("Could not find variable for StudyOutcomeMeasure: " + om.toString());
 		}
 		StudyOutcomeMeasure<Variable> studyOutcomeMeasure = new StudyOutcomeMeasure<Variable>(var);
 		boolean isPrimaryNull = om.isPrimary() == null ? true : om.isPrimary();
