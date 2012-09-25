@@ -52,12 +52,12 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 	public StudiesKnowledge() {
 		super("study", "Studies", FileNames.ICON_STUDY, Study.class);
 	}
-	
+
 	@Override
 	public String getNewIconName() {
 		return FileNames.ICON_STUDY_NEW;
 	}
-	
+
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(domain, mainWindow.getPresentationModelFactory(), mainWindow);
 		return buildStudyWizardDialog(mainWindow, "Add Study", pm);
@@ -74,12 +74,12 @@ public class StudiesKnowledge extends CategoryKnowledgeBase {
 		Main.bindPrintScreen(wizard);
 		return dialog;
 	}
-	
+
 	@Override
 	public boolean isToolbarCategory() {
 		return true;
 	}
-	
+
 	@Override
 	public ViewBuilder getCategoryViewBuilder(AddisWindow main, Domain domain) {
 		StudyListPresentation studyListPM = new StudyListPresentation(domain.getStudies());

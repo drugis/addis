@@ -51,6 +51,7 @@ public class AboutDialog extends JDialog {
 
 	public AboutDialog(JFrame parent) {
 		super(parent);
+		setLocationByPlatform(true);
 		setTitle("About " + AppInfo.getAppName());
 		initComps();
 		pack();

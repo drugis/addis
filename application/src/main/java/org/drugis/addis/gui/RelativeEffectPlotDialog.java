@@ -44,6 +44,7 @@ import org.drugis.common.gui.ImageExporter;
 public class RelativeEffectPlotDialog extends JDialog {
 	public RelativeEffectPlotDialog(final JDialog parent, ForestPlotPresentation pres, String title) {
 		super(parent, title);
+		setLocationByPlatform(true);
 
 		JPanel panel = new JPanel(new BorderLayout());
 

@@ -26,10 +26,14 @@
 
 package org.drugis.addis.gui;
 
+import static org.apache.commons.collections15.CollectionUtils.forAllDo;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -55,10 +60,14 @@ import javax.swing.border.EtchedBorder;
 import org.apache.commons.collections15.Closure;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
+import org.drugis.addis.gui.Main.Examples;
+import org.drugis.common.gui.HelpLoader;
+import org.drugis.common.gui.TextComponentFactory;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
 
 @SuppressWarnings("serial")
 public class WelcomeDialog extends JFrame {
@@ -71,6 +80,7 @@ public class WelcomeDialog extends JFrame {
 	private static final int TEXT_WIDTH = FULL_WIDTH - SPACING - BUTTON_WIDTH;
 
 	private Main d_main;
+	private static HelpLoader s_help = new HelpLoader(WelcomeDialog.class.getResourceAsStream("examples.properties"));
 
 	public WelcomeDialog(Main main) {
 		super();
@@ -79,7 +89,6 @@ public class WelcomeDialog extends JFrame {
 		initComps();
 		setResizable(false);
 		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
-
 		pack();
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -128,17 +137,32 @@ public class WelcomeDialog extends JFrame {
 		final CellConstraints cc = new CellConstraints();
 
 		builder.add(createImageLabel(FileNames.IMAGE_HEADER), cc.xyw(1, 1, 3));
-
 		builder.add(createButton("Load example", FileNames.ICON_TIP, exampleAction), cc.xy(1, 3));
 
-		final PanelBuilder radios = new PanelBuilder(new FormLayout("p", "p, 3dlu, p"));
+		final PanelBuilder radios = new PanelBuilder(new FormLayout("p, fill:pref:grow, right:pref", "p, 3dlu, p"));
 
 		final ArrayList<AbstractButton> buttons = Collections.list(examples.getElements());
-		org.apache.commons.collections15.CollectionUtils.forAllDo(buttons, new Closure<AbstractButton>() {
-			public void execute(AbstractButton input) {
-				int idx = buttons.indexOf(input);
-				radios.add(input, cc.xy(1, idx == 0 ? 1 : idx + 2 ));
-		}});
+		forAllDo(buttons, new Closure<AbstractButton>() {
+			public void execute(final AbstractButton exampleOption) {
+				int row = buttons.indexOf(exampleOption) == 0 ? 1 : buttons.indexOf(exampleOption) + 2;
+				radios.add(exampleOption, cc.xy(1, row));
+				radios.add(createHelpButton(exampleOption), cc.xy(3, row));
+			}
+
+			private JButton createHelpButton(final AbstractButton exampleOption) {
+				JButton help = GUIFactory.createIconButton(org.drugis.mtc.gui.FileNames.ICON_ABOUT, "Information about this example");
+				removeBackground(help);
+
+				help.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Examples example = Examples.findByName(exampleOption.getText());
+						String helpText = s_help.getHelpText(example.name().toLowerCase());
+						showExampleInfo(helpText);
+					}
+				});
+				return help;
+			}
+		});
 
 		JPanel radiosPanel = radios.getPanel();
 		setBorder(radiosPanel);
@@ -185,6 +209,36 @@ public class WelcomeDialog extends JFrame {
 		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
 		pane.setBorder(ETCHED_BORDER);
 		pane.setBackground(Color.white);
+	}
+
+	private void removeBackground(JButton button) {
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+		button.setBorderPainted(false);
+	}
+
+	private void showExampleInfo(String helpText) {
+		final JDialog dialog = new JDialog(this);
+		dialog.setLocationByPlatform(true);
+		dialog.setPreferredSize(new Dimension(500, 250));
+
+		JComponent helpPane = TextComponentFactory.createTextPane(helpText, true);
+
+		JButton closeButton = new JButton("Close");
+		closeButton.setMnemonic('c');
+		closeButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				dialog.dispose();
+			}
+		});
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(helpPane, BorderLayout.CENTER);
+		panel.add(closeButton, BorderLayout.SOUTH);
+
+		dialog.add(panel);
+		dialog.pack();
+		dialog.setVisible(true);
 	}
 
 	public static JRadioButton getSelection(ButtonGroup group) {

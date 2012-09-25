@@ -50,7 +50,7 @@ public class TreatmentCategorizationsConverterTest {
 
 	@Test
 	public void testRoundTripConversion() throws JAXBException, ConversionException, SAXException, IOException, TransformerException {
-		d_jaxbConverterTest.doRoundTripTest(getTransformedSavedResultsData());
+		d_jaxbConverterTest.doRoundTripTest(getTransformedSavedResultsData(), false);
 
 	}
 	

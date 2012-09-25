@@ -31,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +59,8 @@ import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ImageExporter;
 import org.drugis.common.threading.ThreadHandler;
 
+import com.sun.org.apache.xerces.internal.util.XMLChar;
+
 @SuppressWarnings("serial")
 public class Main extends AbstractObservable {
 	public static final ImageLoader IMAGELOADER = new ImageLoader("/org/drugis/addis/gfx/");
@@ -75,8 +76,11 @@ public class Main extends AbstractObservable {
 			this.file = file;
 		}
 
-		public String toString() {
-			return this.name;
+		public static Examples findByName(String name) {
+			for(Examples example : values()) {
+				if (example.name.equals(name)) return example;
+			}
+			throw new IllegalArgumentException("Could not find example  for " + name);
 		}
 
 		public static String findFileName(String name) {
@@ -142,7 +146,7 @@ public class Main extends AbstractObservable {
 
 	protected void showWelcome() {
 		final WelcomeDialog welcome = new WelcomeDialog(this);
-		GUIHelper.centerWindow(welcome);
+		welcome.setLocationByPlatform(true);
 		welcome.setVisible(true);
 	}
 
@@ -165,22 +169,13 @@ public class Main extends AbstractObservable {
 
 
 	public static class XMLStreamFilter extends FilterOutputStream {
-		private static List<Character> s_invalids = new ArrayList<Character>();
-		static {
-			for (int i = 0x0; i <= 0xFFFD; i++) {
-				if (!((i == 0x9) || (i == 0xA) || (i == 0xD) || ((i >= 0x20) && (i <= 0xD7FF)))) {
-					s_invalids.add((char) i);
-				}
-			}
-		}
-
 		public XMLStreamFilter(OutputStream out) {
 			super(out);
 		}
 
 		@Override
 		public void write(int b) throws IOException {
-			if(!s_invalids.contains((char)b)) {
+			if (XMLChar.isValid((char)b)) {
 				super.write(b);
 			} else {
 				System.err.println("Removing invalid character while marshalling XML: " + (char)b);
@@ -188,21 +183,19 @@ public class Main extends AbstractObservable {
 		}
 
 		public static List<Character> getCharacters() {
-			return s_invalids;
+			List<Character> invalids = new ArrayList<Character>();
+			for (int i = 0x0; i <= 0xFFFD; i++) {
+				if (!((i == 0x9) || (i == 0xA) || (i == 0xD) || ((i >= 0x20) && (i <= 0xD7FF)))) {
+					invalids.add((char) i);
+				}
+			}
+			return invalids;
 		}
 
 	}
 
 	private void saveDomainToXMLFile(String fileName) throws IOException {
-		File f = new File(fileName);
-		if (f.exists()) {
-			f.delete();
-		}
-
-		FileOutputStream fos = new FileOutputStream(f);
-		FilterOutputStream os = new XMLStreamFilter(fos);
-
-		d_domainMgr.saveXMLDomain(os);
+		d_domainMgr.saveXMLDomain(new File(fileName));
 	}
 
 
@@ -412,7 +405,7 @@ public class Main extends AbstractObservable {
 		if (!d_headless) {
 			s_window = new AddisWindow(this, getDomain());
 			s_window.pack();
-			GUIHelper.centerWindow(s_window);
+			s_window.setLocationByPlatform(true);
 			s_window.setVisible(true);
 		}
 	}

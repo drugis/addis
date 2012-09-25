@@ -52,7 +52,7 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 	public BenefitRiskAnalysesKnowledge() {
 		super("benefit-risk analysis", "Benefit-risk analyses", FileNames.ICON_BENEFITRISK, BenefitRiskAnalysis.class);
 	}
-	
+
 	public JDialog getAddDialog(AddisWindow mainWindow, Domain domain, ValueModel selectionModel) {
 		JDialog dialog = new JDialog(mainWindow, "Create Benefit-risk analysis", true);
 		Wizard wizard = new BenefitRiskWizard(mainWindow, new BenefitRiskWizardPM(domain));
@@ -60,20 +60,19 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		dialog.pack();
 		WizardFrameCloser.bind(wizard, dialog);
 		Main.bindPrintScreen(wizard);
-		dialog.setResizable(false);
 		return dialog;
 	}
-	
+
 	@Override
 	public boolean isToolbarCategory() {
 		return true;
 	}
-	
+
 	@Override
 	protected String[] getShownProperties() {
-		return new String[] { 
-				BenefitRiskAnalysis.PROPERTY_NAME, 
-				BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE, 
+		return new String[] {
+				BenefitRiskAnalysis.PROPERTY_NAME,
+				BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE,
 				BenefitRiskAnalysis.PROPERTY_INDICATION,
 				BenefitRiskAnalysis.PROPERTY_CRITERIA,
 				BenefitRiskAnalysis.PROPERTY_ALTERNATIVES};
@@ -91,7 +90,7 @@ public class BenefitRiskAnalysesKnowledge extends CategoryKnowledgeBase {
 		}
 		throw new RuntimeException("Unhandled BR Type!");
 	}
-	
+
 	@Override
 	public String getNewIconName() {
 		return FileNames.ICON_BENEFITRISK_NEW;

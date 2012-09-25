@@ -37,7 +37,6 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentation;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
@@ -46,11 +45,11 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 public class StudiesTablePanel extends TablePanel {
 	public StudiesTablePanel(StudyListPresentation studyListPresentationModel, AddisWindow main) {
 		super(EntityTablePanel.createTable(main, new StudyCharTableModel(studyListPresentationModel, main.getPresentationModelFactory())));
-		
+
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
 		bb.addButton(StudiesTablePanel.buildCustomizeButton(studyListPresentationModel, main));
 		bb.addGlue();
-		
+
 		add(bb.getPanel(), BorderLayout.SOUTH);
 	}
 
@@ -59,7 +58,6 @@ public class StudiesTablePanel extends TablePanel {
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
 				JDialog dialog = new CharacteristicSelectDialog(main, studyListPM);
-				GUIHelper.centerWindow(dialog, main);
 				dialog.setVisible(true);
 			}
 		});
