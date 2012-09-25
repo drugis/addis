@@ -9085,8 +9085,8 @@ Safety issue: No</note>
                         <note source="CLINICALTRIALS">Road traffic accident (Injury, poisoning and procedural complications)</note>
                     </notes>
                 </studyOutcomeMeasure>
-                <studyOutcomeMeasure id="adverseEvent-" primary="false">
-                    <adverseEvent name=""/>
+                <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased" primary="false">
+                    <adverseEvent name="Blood creatinine increased"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
                         <epoch name="Main phase"/>
                     </whenTaken>
@@ -9428,30 +9428,6 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     </whenTaken>
                 </measurement>
                 <measurement>
-                    <studyOutcomeMeasure id="adverseEvent-"/>
-                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
-                    <rateMeasurement rate="0" sampleSize="372"/>
-                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
-                        <epoch name="Main phase"/>
-                    </whenTaken>
-                </measurement>
-                <measurement>
-                    <studyOutcomeMeasure id="adverseEvent-"/>
-                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
-                    <rateMeasurement rate="1" sampleSize="357"/>
-                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
-                        <epoch name="Main phase"/>
-                    </whenTaken>
-                </measurement>
-                <measurement>
-                    <studyOutcomeMeasure id="adverseEvent-"/>
-                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
-                    <rateMeasurement rate="0" sampleSize="356"/>
-                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
-                        <epoch name="Main phase"/>
-                    </whenTaken>
-                </measurement>
-                <measurement>
                     <studyOutcomeMeasure id="adverseEvent-Angioedema"/>
                     <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
                     <rateMeasurement rate="0" sampleSize="372"/>
@@ -9495,6 +9471,30 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     <studyOutcomeMeasure id="adverseEvent-Asthma"/>
                     <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
                     <rateMeasurement rate="1" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="1" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="adverseEvent-Blood creatinine increased"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="0" sampleSize="356"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
                         <epoch name="Main phase"/>
                     </whenTaken>
