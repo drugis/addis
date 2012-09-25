@@ -93,9 +93,9 @@ public class MeasurementKey extends AbstractEntity implements Entity {
 	@Override
 	public int hashCode() {
 		int code = 1;
-		code = code * 31 + (d_som == null ? 0 : System.identityHashCode(d_som));
-		code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
-		code = code * 31 + (d_wt == null ? 0 : d_wt.hashCode());
+		code = code ^ (d_som == null ? 0 : System.identityHashCode(d_som));
+		code = code ^ (d_arm == null ? 0 : d_arm.hashCode());
+		code = code ^ (d_wt == null ? 0 : d_wt.hashCode());
 		return code;
 	}
 

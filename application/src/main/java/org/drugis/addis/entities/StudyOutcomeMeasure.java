@@ -30,6 +30,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.EqualsUtil;
@@ -175,7 +176,11 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 
 	@Override
 	public int hashCode() {
-		return d_class.hashCode() + 31 * d_isPrimary.hashCode() + 31 * d_whenTaken.hashCode();
+	    return new HashCodeBuilder(17, 37).
+	    	       append(d_class).
+	    	       append(d_isPrimary).
+	    	       append(d_whenTaken).
+	    	       toHashCode();
 	}
 
 	@Override
