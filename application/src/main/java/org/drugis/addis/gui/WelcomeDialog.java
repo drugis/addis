@@ -26,8 +26,9 @@
 
 package org.drugis.addis.gui;
 
-import static org.apache.commons.collections15.CollectionUtils.*;
+import static org.apache.commons.collections15.CollectionUtils.forAllDo;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -45,10 +46,10 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
@@ -79,12 +80,10 @@ public class WelcomeDialog extends JFrame {
 	private static final int TEXT_WIDTH = FULL_WIDTH - SPACING - BUTTON_WIDTH;
 
 	private Main d_main;
-	private final WelcomeDialog d_self;
 	private static HelpLoader s_help = new HelpLoader(WelcomeDialog.class.getResourceAsStream("../examples.properties"));
 
 	public WelcomeDialog(Main main) {
 		super();
-		d_self = this;
 		d_main = main;
 		setTitle("Welcome to " + AppInfo.getAppName());
 		initComps();
@@ -151,15 +150,14 @@ public class WelcomeDialog extends JFrame {
 			}
 
 			private JButton createHelpButton(final AbstractButton exampleOption) {
-				JButton help = GUIFactory.createIconButton(FileNames.ICON_TIP, "Information about this example");
+				JButton help = GUIFactory.createIconButton(org.drugis.mtc.gui.FileNames.ICON_ABOUT, "Information about this example");
 				removeBackground(help);
 
 				help.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Examples example = Examples.findByName(exampleOption.getText());
 						String helpText = s_help.getHelpText(example.name().toLowerCase());
-						JComponent helpPane = TextComponentFactory.createTextPane(helpText, true);
-						JOptionPane.showMessageDialog(d_self, helpPane);
+						showExampleInfo(helpText);
 					}
 				});
 				return help;
@@ -217,6 +215,30 @@ public class WelcomeDialog extends JFrame {
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);
 		button.setBorderPainted(false);
+	}
+
+	private void showExampleInfo(String helpText) {
+		final JDialog dialog = new JDialog(this);
+		dialog.setLocationByPlatform(true);
+		dialog.setPreferredSize(new Dimension(500, 250));
+
+		JComponent helpPane = TextComponentFactory.createTextPane(helpText, true);
+
+		JButton closeButton = new JButton("Close");
+		closeButton.setMnemonic('c');
+		closeButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				dialog.dispose();
+			}
+		});
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(helpPane, BorderLayout.CENTER);
+		panel.add(closeButton, BorderLayout.SOUTH);
+
+		dialog.add(panel);
+		dialog.pack();
+		dialog.setVisible(true);
 	}
 
 	public static JRadioButton getSelection(ButtonGroup group) {
