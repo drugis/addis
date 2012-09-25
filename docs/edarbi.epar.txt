@@ -12,7 +12,7 @@ Monotherapy
 
  * 491-008: NCT00696241
  * 491-019: NCT00696436
- * 491-301: NCT00846365
+ * 491-301: NCT00846365 --> does weird things to support multiple measurement moments
  * 491-020: NCT00760214
  * 491-011: NCT00591253
 

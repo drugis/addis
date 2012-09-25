@@ -107,6 +107,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private void unbindSlot(StudyOutcomeMeasure<T> s) {
 		s.removePropertyChangeListener("value", d_slotValueListener);
 		s.removePropertyChangeListener(StudyOutcomeMeasure.PROPERTY_HAS_PLACEHOLDER, d_placeHolderListener);
+
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}
@@ -183,11 +184,13 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt) {
 			StudyOutcomeMeasure<T> holder = (StudyOutcomeMeasure<T>) evt.getSource();
-			if (holder.getValue() == null) {
+			if (holder.getValue() == null && holder.hasPlaceholder()) {
 				return;
 			}
 			for (StudyOutcomeMeasure<T> som : d_slots) {
-				if (som.getValue() != null && som != holder && EqualsUtil.equal(som.getValue(), holder.getValue())) {
+				if ((som.getValue() != null && !som.hasPlaceholder())
+						&& som != holder
+						&& EqualsUtil.equal(som.getValue(), holder.getValue())) {
 					som.setValue(null);
 				}
 			}

@@ -116,9 +116,9 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	@Override
 	public void setValue(Object newValue) {
 		super.setValue(newValue);
+
 		d_placeholder.setValue(null);
 		firePropertyChange(PROPERTY_HAS_PLACEHOLDER, true, false);
-
 	}
 
 	private T initializePlaceholder() {
