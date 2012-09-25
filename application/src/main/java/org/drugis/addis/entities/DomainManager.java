@@ -26,6 +26,7 @@
 
 package org.drugis.addis.entities;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
@@ -124,8 +125,10 @@ public class DomainManager {
 
 	private void saveAddisData(AddisData data, OutputStream os) throws IOException {
 		try {
-			FilterOutputStream fos = new XMLStreamFilter(os);
+			BufferedOutputStream buf = new BufferedOutputStream(os);
+			FilterOutputStream fos = new XMLStreamFilter(buf);
 			JAXBHandler.marshallAddisData(data, fos);
+			buf.flush();
 			fos.close();
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
