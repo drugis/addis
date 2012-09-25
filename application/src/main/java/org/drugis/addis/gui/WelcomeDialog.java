@@ -26,6 +26,8 @@
 
 package org.drugis.addis.gui;
 
+import static org.apache.commons.collections15.CollectionUtils.*;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -103,7 +105,7 @@ public class WelcomeDialog extends JFrame {
 	private void initComps() {
 
 		final ButtonGroup examples = new ButtonGroup();
-		examples.add(new JRadioButton(Main.Examples.DEPRESSION.name));
+		examples.add(new JRadioButton(Main.Examples.DEPRESSION.name, true));
 		examples.add(new JRadioButton(Main.Examples.HYPERTENSION.name));
 
 
@@ -141,12 +143,11 @@ public class WelcomeDialog extends JFrame {
 		final PanelBuilder radios = new PanelBuilder(new FormLayout("p, fill:pref:grow, right:pref", "p, 3dlu, p"));
 
 		final ArrayList<AbstractButton> buttons = Collections.list(examples.getElements());
-		org.apache.commons.collections15.CollectionUtils.forAllDo(buttons, new Closure<AbstractButton>() {
+		forAllDo(buttons, new Closure<AbstractButton>() {
 			public void execute(final AbstractButton exampleOption) {
 				int row = buttons.indexOf(exampleOption) == 0 ? 1 : buttons.indexOf(exampleOption) + 2;
 				radios.add(exampleOption, cc.xy(1, row));
-				JButton help = createHelpButton(exampleOption);
-				radios.add(help, cc.xy(3, row));
+				radios.add(createHelpButton(exampleOption), cc.xy(3, row));
 			}
 
 			private JButton createHelpButton(final AbstractButton exampleOption) {
