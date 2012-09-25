@@ -54,6 +54,7 @@ import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.BasicArmPresentation;
+import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.MutableCharacteristicHolder;
 import org.drugis.addis.presentation.PopulationCharTableModel;
 import org.drugis.addis.presentation.PresentationModelFactory;
@@ -64,6 +65,7 @@ import org.drugis.addis.presentation.SelectPopulationCharsPresentation;
 import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.SortedSetModel;
@@ -101,6 +103,9 @@ public class AddStudyWizardPresentation {
 	private SelectEndpointPresentation d_endpointSelect;
 	private AddArmsPresentation d_arms;
 	private AddEpochsPresentation d_epochs;
+
+	private ValueHolder<Boolean> d_importCTWithResults = new ModifiableHolder<Boolean>(false);
+
 
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
@@ -189,11 +194,21 @@ public class AddStudyWizardPresentation {
 		return d_domain;
 	}
 
+	public ValueHolder<Boolean> shouldImportCTWithResults() {
+		return d_importCTWithResults;
+	}
+
 	public void importCT() throws IOException {
 		if(getIdModel().getValue().toString().length() != 0) {
 			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
-			String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
-			Study clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url);
+			Study clinicaltrialsData;
+			if (d_importCTWithResults.getValue()) {
+				String url = "http://clinicaltrials.gov/show/"+studyID+"?resultsxml=true";
+				clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, true);
+			} else {
+				String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
+				clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, false);
+			}
 			setNewStudy(clinicaltrialsData);
 		}
 	}

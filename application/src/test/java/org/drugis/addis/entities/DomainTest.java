@@ -345,7 +345,7 @@ public class DomainTest {
 		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, DoseUnit.createMilliGramsPerDay()));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		ExampleData.addDefaultMeasurementMoments(s1);
-		s1.setMeasurement(e, g1, m1);
+		s1.setMeasurement(s1.findStudyOutcomeMeasure(e), g1, m1);
 		d_domain.getIndications().add(d_indication);
 		
 		Indication indic2 = new Indication(1L, "");
@@ -359,8 +359,8 @@ public class DomainTest {
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		ExampleData.addDefaultMeasurementMoments(s2);
-		s2.setMeasurement(e, g2, m2);
-		s2.setMeasurement(e, g3, m3);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g2, m2);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g3, m3);
 		
 		
 		ObservableList<Study> d1Studies = d_domain.getStudies(d1);
@@ -395,7 +395,7 @@ public class DomainTest {
 		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, DoseUnit.createMilliGramsPerDay()));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		ExampleData.addDefaultMeasurementMoments(s1);
-		s1.setMeasurement(e, g1, m1);
+		s1.setMeasurement(s1.findStudyOutcomeMeasure(e), g1, m1);
 		d_domain.getIndications().add(d_indication);
 		
 		Indication indic2 = new Indication(1L, "");
@@ -409,8 +409,8 @@ public class DomainTest {
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		ExampleData.addDefaultMeasurementMoments(s1);
-		s2.setMeasurement(e, g2, m2);
-		s2.setMeasurement(e, g3, m3);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g2, m2);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g3, m3);
 		
 		d_domain.getEndpoints().add(e);
 		d_domain.getDrugs().addAll(Arrays.asList(d1, d2));
