@@ -37,8 +37,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -48,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
 import org.drugis.addis.util.jaxb.JAXBHandler.XmlFormatType;
@@ -96,11 +95,8 @@ public class JAXBHandlerTest {
 	@Test
 	public void doNotSerializeInvalidCharsTest() throws JAXBException, ConversionException, IOException {
 		DomainImpl domainImpl = new DomainImpl();
-		PrintStream err = System.err;
-		System.setErr(new PrintStream(new OutputStream() { // suppress system err output for test
-		    public void write(int b) {
-		    }
-		}));
+		GUIFactory.suppressErrors(true);
+
 
 		List<Character> invalidXMLChars = Main.XMLStreamFilter.getCharacters();
 		Drug drug = new Drug(StringUtils.join(invalidXMLChars, " "), "#");
@@ -113,7 +109,7 @@ public class JAXBHandlerTest {
 		os.close();
 
 		JAXBHandler.unmarshallAddisData(new ByteArrayInputStream(out.toByteArray()));
-		System.setErr(err); // reset system.err output
+		GUIFactory.suppressErrors(false);
 	}
 
 	@Test
