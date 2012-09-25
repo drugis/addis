@@ -26,6 +26,9 @@
 
 package org.drugis.addis.entities;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +37,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
 import org.drugis.addis.entities.data.AddisData;
+import org.drugis.addis.gui.Main.XMLStreamFilter;
 import org.drugis.addis.util.jaxb.JAXBConvertor;
 import org.drugis.addis.util.jaxb.JAXBHandler;
 import org.drugis.addis.util.jaxb.JAXBConvertor.ConversionException;
@@ -78,6 +82,7 @@ public class DomainManager {
 		try {
 			AddisData data = JAXBHandler.unmarshallAddisData(JAXBConvertor.transformToLatest(is, version));
 			d_domain = (Domain) JAXBConvertor.convertAddisDataToDomain(data);
+			is.close();
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		} catch (ConversionException e) {
@@ -88,17 +93,41 @@ public class DomainManager {
 	}
 
 	/**
-	 * Save the domain to an XML stream (new format, .xml)
-	 * @param os Stream to write objects to.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
+	 * Save the domain to an XML file (new format, .addis)
+	 * @param file File to write the domain to.
+	 */
+	public void saveXMLDomain(File file) throws IOException {
+		try {
+			AddisData addisData = JAXBConvertor.convertDomainToAddisData(d_domain);
+
+			// Open stream *after* conversion so we don't clear the file if it can't be saved.
+			FileOutputStream os = new FileOutputStream(file);
+			saveAddisData(addisData, os);
+		} catch (ConversionException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Save the domain to an XML stream (new format, .addis). WARNING: only for use in tests, as it increases the risk of data loss.
+	 * @see {@link #saveXMLDomain(File)}
+	 * @param os Stream to write domain to.
 	 */
 	public void saveXMLDomain(OutputStream os) throws IOException {
 		try {
-			JAXBHandler.marshallAddisData(JAXBConvertor.convertDomainToAddisData(d_domain), os);
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
+			AddisData addisData = JAXBConvertor.convertDomainToAddisData(d_domain);
+			saveAddisData(addisData, os);
 		} catch (ConversionException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void saveAddisData(AddisData data, OutputStream os) throws IOException {
+		try {
+			FilterOutputStream fos = new XMLStreamFilter(os);
+			JAXBHandler.marshallAddisData(data, fos);
+			fos.close();
+		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		}
 	}

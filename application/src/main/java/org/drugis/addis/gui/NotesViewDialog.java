@@ -36,7 +36,6 @@ import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.gui.components.NotesView;
-import org.drugis.common.gui.GUIHelper;
 
 import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -53,17 +52,16 @@ public class NotesViewDialog extends JDialog {
 		super(parent, "Notes");
 		d_description = description;
 		d_notes = notes;
-		
+		setLocationByPlatform(true);
 		setModal(true);
 		setPreferredSize(new Dimension(500, 300));
 		getContentPane().add(new JScrollPane(buildPanel()), BorderLayout.CENTER);
 		pack();
-		GUIHelper.centerWindow(this, parent);
 	}
 
 	private JPanel buildPanel() {
 		CellConstraints cc = new CellConstraints();
-		FormLayout layout = new FormLayout( 
+		FormLayout layout = new FormLayout(
 				"fill:0:grow",
 				"p, 3dlu, p"
 				);
@@ -72,7 +70,7 @@ public class NotesViewDialog extends JDialog {
 
 		builder.addLabel("Notes for " + d_description, cc.xy(1, 1));
 		builder.add(new NotesView(d_notes), cc.xy(1, 3));
-		
+
 		return builder.getPanel();
 	}
 }

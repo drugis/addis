@@ -80,7 +80,6 @@ import org.drugis.addis.gui.renderer.DomainTreeCellRenderer;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.gui.FileSaveDialog;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.mtc.gui.MainWindow;
 
@@ -270,7 +269,6 @@ public class AddisWindow extends JFrame {
 
 	private void showAboutDialog() {
 		final AboutDialog dlg = new AboutDialog(this);
-		GUIHelper.centerWindow(dlg, this);
 		dlg.setVisible(true);
 	}
 
@@ -661,7 +659,7 @@ public class AddisWindow extends JFrame {
 
 	public void showAddDialog(final CategoryKnowledge knowledge, final ValueModel selectionModel) {
 		JDialog dialog = knowledge.getAddDialog(this, getDomain(), selectionModel);
-		GUIHelper.centerWindow(dialog, this);
+		dialog.setLocationByPlatform(true);
 		dialog.setVisible(true);
 	}
 
@@ -669,7 +667,7 @@ public class AddisWindow extends JFrame {
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(), d_pmf, this, study);
 		JDialog dialog = StudiesKnowledge.buildStudyWizardDialog(this, "Edit Study", pm);
 		leftTreeFocus(d_domainTreeModel.getRoot());
-		GUIHelper.centerWindow(dialog, this);
+		dialog.setLocationByPlatform(true);
 		dialog.setVisible(true);
 	}
 

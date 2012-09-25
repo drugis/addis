@@ -48,7 +48,6 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.presentation.LabeledPresentation;
 import org.drugis.addis.presentation.RelativeEffectPresentation;
 import org.drugis.addis.presentation.RelativeEffectTableModel;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.table.EnhancedTableHeader;
 
 import com.jgoodies.binding.PresentationModel;
@@ -63,6 +62,7 @@ public class RelativeEffectTableDialog extends JDialog {
 
 	public RelativeEffectTableDialog(Window mainWindow, RelativeEffectTableModel model) {
 		super(mainWindow, model.getTitle());
+		setLocationByPlatform(true);
 		d_parentDialog = this;
 		d_tableModel = model;
 
@@ -119,7 +119,6 @@ public class RelativeEffectTableDialog extends JDialog {
 			d_dialog = new RelativeEffectPlotDialog(d_parentDialog,
 					d_tableModel.getPlotPresentation(row, col),
 					"Relative Effect plot");
-			GUIHelper.centerWindow(d_dialog, d_parentDialog);
 			d_dialog.setVisible(true);
 		}
 	}
