@@ -36,16 +36,15 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicMeasurement;
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
@@ -66,7 +65,7 @@ public class ForestPlotPresentationTest {
 	private static final int s_subjSize = 35;
 	private static final int s_baseSize = 41;
 	
-	private ForestPlotPresentation d_pm;
+	private REMAForestPlotPresentation d_pm;
 	private BasicContinuousMeasurement d_mBase1;
 	private BasicContinuousMeasurement d_mSubj1;
 	private BasicContinuousMeasurement d_mBase2;
@@ -110,8 +109,7 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s1);
 		studies.add(d_s2);
 		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
-		d_pm = new ForestPlotPresentation(studies, d_endpoint, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject), BasicMeanDifference.class, 
-				new PresentationModelFactory(new DomainImpl()), analysis);
+		d_pm = new REMAForestPlotPresentation(analysis, BasicMeanDifference.class);
 	}
 	
 	@Test
@@ -146,8 +144,8 @@ public class ForestPlotPresentationTest {
 	
 	@Test
 	public void testGetDrugsLabel() {
-		assertEquals("DrugA", d_pm.getLowValueFavorsTreatment().getLabel());
-		assertEquals("DrugB", d_pm.getHighValueFavorsTreatment().getLabel());
+		assertEquals("DrugA", d_pm.getLowValueFavors());
+		assertEquals("DrugB", d_pm.getHighValueFavors());
 	}
 	
 	@Test
@@ -161,8 +159,8 @@ public class ForestPlotPresentationTest {
 		// known intervals: "0.25 (-0.53, 1.03)" & "-0.25 (-1.09, 0.59)"
 		String interval1 = "0.25 (-0.53, 1.03)";
 		String interval2 = "-0.25 (-1.09, 0.59)";
-		assertEquals(interval1, d_pm.getCIlabelAt(1).getLabelModel().getValue());
-		assertEquals(interval2, d_pm.getCIlabelAt(0).getLabelModel().getValue());
+		assertEquals(interval1, d_pm.getCIlabelAt(1));
+		assertEquals(interval2, d_pm.getCIlabelAt(0));
 	}
 	
 	@Test
@@ -186,16 +184,14 @@ public class ForestPlotPresentationTest {
 		studies.add(d_s2);
 		
 		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("null", d_endpoint, studies, TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject));
-		ForestPlotPresentation pm = new ForestPlotPresentation(studies, d_endpoint,
-				TreatmentDefinition.createTrivial(d_baseline), TreatmentDefinition.createTrivial(d_subject),
-				BasicMeanDifference.class, new PresentationModelFactory(new DomainImpl()), analysis);
+		REMAForestPlotPresentation pm = new REMAForestPlotPresentation(analysis, BasicMeanDifference.class);
 		assertEquals(5, pm.getDiamondSize(0));
 		assertEquals(21, pm.getDiamondSize(1));
 	}
 	
 	@Test
 	public void testLogarithmic() {
-		Interval<Double> logint = ForestPlotPresentation.niceIntervalLog(0.0624, 4.1);
+		Interval<Double> logint = REMAForestPlotPresentation.niceIntervalLog(0.0624, 4.1);
 		assertEquals(logint.getLowerBound(), 1D/32D, 0.001);
 		assertEquals(logint.getUpperBound(), 8D, 0.001);
 	}
@@ -223,8 +219,8 @@ public class ForestPlotPresentationTest {
 	@Test
 	public void testLabelsForLowerIsBetter() {
 		d_endpoint.setDirection(Direction.LOWER_IS_BETTER);
-		assertEquals("DrugB", d_pm.getLowValueFavorsTreatment().getLabel());
-		assertEquals("DrugA", d_pm.getHighValueFavorsTreatment().getLabel());
+		assertEquals("DrugB", d_pm.getLowValueFavors());
+		assertEquals("DrugA", d_pm.getHighValueFavors());
 	}
 	
 	private static void assertRelativeEffectEqual(RelativeEffect<?> expected,

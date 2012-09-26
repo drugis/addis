@@ -44,8 +44,8 @@ public class RelativeEffectCanvas extends JPanel {
 		return d_plot;
 	}
 
-	public RelativeEffectCanvas(ForestPlotPresentation model) {
-		d_plot = new ForestPlot(model);
+	public RelativeEffectCanvas(ForestPlotPresentation pres) {
+		d_plot = new ForestPlot(pres);
 	}
 	
 	@Override

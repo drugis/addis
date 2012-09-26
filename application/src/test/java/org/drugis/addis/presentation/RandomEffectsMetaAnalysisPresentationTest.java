@@ -87,9 +87,8 @@ public class RandomEffectsMetaAnalysisPresentationTest {
 		PresentationModelFactory fact = new PresentationModelFactory(domain);
 		PairWiseMetaAnalysisPresentation pres = (PairWiseMetaAnalysisPresentation) fact.getModel(meta);
 		
-		ForestPlotPresentation expected = new ForestPlotPresentation(meta, BasicMeanDifference.class, 
-				new PresentationModelFactory(new DomainImpl()));
-		ForestPlotPresentation actual = pres.getForestPlotPresentation(BasicMeanDifference.class);
+		REMAForestPlotPresentation expected = new REMAForestPlotPresentation(meta, BasicMeanDifference.class);
+		REMAForestPlotPresentation actual = pres.getForestPlotPresentation(BasicMeanDifference.class);
 		assertEquals(expected.getRelativeEffectAt(0).getConfidenceInterval().getPointEstimate(), actual.getRelativeEffectAt(0).getConfidenceInterval().getPointEstimate(), 0.001);
 		assertEquals(expected.getHeterogeneity(), actual.getHeterogeneity());
 		assertEquals(expected.getHeterogeneityI2(), actual.getHeterogeneityI2());

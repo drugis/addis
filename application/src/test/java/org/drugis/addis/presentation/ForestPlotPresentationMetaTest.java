@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
@@ -41,7 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ForestPlotPresentationMetaTest {
-	private ForestPlotPresentation d_pm;
+	private REMAForestPlotPresentation d_pm;
 	
 	@Before
 	public void setUp() {
@@ -49,7 +48,7 @@ public class ForestPlotPresentationMetaTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		RandomEffectsMetaAnalysis analysis = ExampleData.buildRandomEffectsMetaAnalysis("TestMetaAnalysis", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
-		d_pm = new ForestPlotPresentation(analysis, BasicOddsRatio.class, new PresentationModelFactory(new DomainImpl()));
+		d_pm = new REMAForestPlotPresentation(analysis, BasicOddsRatio.class);
 	}
 	
 	@Test
@@ -72,9 +71,9 @@ public class ForestPlotPresentationMetaTest {
 	
 	@Test
 	public void testIsCombined() {
-		assertEquals(false, d_pm.isCombined(0));
-		assertEquals(false, d_pm.isCombined(1));
-		assertEquals(true, d_pm.isCombined(2));
+		assertEquals(false, d_pm.isPooledRelativeEffect(0));
+		assertEquals(false, d_pm.isPooledRelativeEffect(1));
+		assertEquals(true, d_pm.isPooledRelativeEffect(2));
 	}
 	
 	@Test

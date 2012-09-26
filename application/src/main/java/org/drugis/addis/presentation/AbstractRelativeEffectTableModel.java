@@ -32,6 +32,7 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
@@ -98,6 +99,6 @@ implements RelativeEffectTableModel {
 	public ForestPlotPresentation getPlotPresentation(int row, int column) {
 		Arm rowArm = d_study.getArms().get(row);
 		Arm colArm = d_study.getArms().get(column);
-		return ForestPlotPresentation.createStudyForestPlot((Study)d_study, d_outMeas, rowArm, colArm, getRelativeEffectType(), d_pmf);
+		return new StudyForestPlotPresentation(d_outMeas, new StudyArmsEntry((Study)d_study, rowArm, colArm), getRelativeEffectType());
 	}
 }

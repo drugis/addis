@@ -197,14 +197,14 @@ public class BRATTableModelTest {
 
 		double linMin = linVal.getQuantile(0.025);
 		double linMax = linVal.getQuantile(0.975);
-		Interval<Double> linScale = ForestPlotPresentation.niceIntervalLinear(linMin, linMax);
+		Interval<Double> linScale = REMAForestPlotPresentation.niceIntervalLinear(linMin, linMax);
 		assertEquals(new LinearScale(linScale), d_btmStudy.getNiceLinearScale());
 		
 		Distribution logVal1 = ((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference();
 		Distribution logVal2 = ((BRATDifference)d_btmStudy.getValueAt(2, COLUMN_DIFFERENCE)).getDifference();
 		double logMin = Math.min(logVal1.getQuantile(0.025), logVal2.getQuantile(0.025));
 		double logMax = Math.max(logVal1.getQuantile(0.975), logVal2.getQuantile(0.975));
-		Interval<Double> logScale = ForestPlotPresentation.niceIntervalLog(logMin, logMax);
+		Interval<Double> logScale = REMAForestPlotPresentation.niceIntervalLog(logMin, logMax);
 		assertEquals(new LogScale(logScale), d_btmStudy.getNiceLogScale());
 		
 		double min = Math.min(linScale.getLowerBound(), Math.log(logScale.getLowerBound()));

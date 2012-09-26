@@ -29,7 +29,6 @@ package org.drugis.addis.entities.relativeeffect;
 import org.drugis.addis.entities.Measurement;
 
 public interface RandomEffectMetaAnalysisRelativeEffect<T extends Measurement> extends RelativeEffect<T> {
-	
 	public double getHeterogeneity();
 	public double getHeterogeneityI2();
 }

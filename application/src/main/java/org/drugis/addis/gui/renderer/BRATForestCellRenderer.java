@@ -42,7 +42,7 @@ import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.LogScale;
 import org.drugis.addis.forestplot.RelativeEffectBar;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
-import org.drugis.addis.presentation.ForestPlotPresentation;
+import org.drugis.addis.presentation.REMAForestPlotPresentation;
 import org.drugis.common.gui.table.RenderAsImage;
 
 public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRenderer implements RenderAsImage {
@@ -76,7 +76,7 @@ public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRe
 				g.drawLine(originX, 1 - ForestPlot.ROWPAD, originX, ForestPlot.FULLROW);
 			} else if (d_forest.axis != null) {
 				g.drawLine(d_forest.scale.getBin(d_forest.axis.getMin()).bin, 1, d_forest.scale.getBin(d_forest.axis.getMax()).bin, 1);
-				ForestPlot.drawAxisTicks(g, 1, ForestPlotPresentation.getTicks(d_forest.scale, d_forest.axis), ForestPlotPresentation.getTickVals(d_forest.scale, d_forest.axis));
+				ForestPlot.drawAxisTicks(g, 1, REMAForestPlotPresentation.getTicks(d_forest.scale, d_forest.axis), REMAForestPlotPresentation.getTickVals(d_forest.scale, d_forest.axis));
 			}
 			g.translate(-PADDING, 0);
 		}

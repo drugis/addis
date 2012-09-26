@@ -45,8 +45,8 @@ public class PairWiseMetaAnalysisPresentation extends AbstractMetaAnalysisPresen
 		return d_mgr.getLabeledModel(getBean().getSecondAlternative());		
 	}
 
-	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
-		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
+	public REMAForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
+		REMAForestPlotPresentation pm = new REMAForestPlotPresentation(getBean(), type);
 		return pm;
 	}
 }

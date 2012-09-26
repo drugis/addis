@@ -65,15 +65,15 @@ public class ForestPlot extends JComponent {
 	private ForestPlotPresentation d_pm;
 	private Graphics2D d_g2d;
 	
-	public ForestPlot(ForestPlotPresentation pm) {
-		d_pm = pm;
+	public ForestPlot(ForestPlotPresentation pres) {
+		d_pm = pres;
 		d_bars = new ArrayList<RelativeEffectBar>();
 		
 		int yPos = ROWVCENTER;
 		
 		for (int i=0; i < d_pm.getNumRelativeEffects(); ++i) {		
 			d_bars.add(new RelativeEffectBar(d_pm.getScale(), yPos, (RelativeEffect<?>) d_pm.getRelativeEffectAt(i), 
-					d_pm.getDiamondSize(i), d_pm.isCombined(i)));
+					d_pm.getDiamondSize(i), d_pm.isPooledRelativeEffect(i)));
 			yPos += FULLROW;
 		}
 	}
@@ -100,7 +100,7 @@ public class ForestPlot extends JComponent {
 		//STUDY COLUMN & CI COLUMN:
 		for (int i = 0; i < d_pm.getNumRelativeEffects(); ++i) {
 			drawVerticalCenterString(d_g2d, d_pm.getStudyLabelAt(i), 1, Align.LEFT, FULLROW * (i + 1));
-			drawVerticalCenterString(d_g2d, d_pm.getCIlabelAt(i).getLabelModel().getString(), FULLWIDTH, Align.RIGHT, FULLROW * (i + 1));
+			drawVerticalCenterString(d_g2d, d_pm.getCIlabelAt(i), FULLWIDTH, Align.RIGHT, FULLROW * (i + 1));
 		}
 		
 		d_g2d.translate(STUDYWIDTH, FULLROW);
@@ -112,7 +112,7 @@ public class ForestPlot extends JComponent {
 	}
 
 	private int getNumRows() {
-		return (d_bars.size() + (d_pm.isMetaAnalysis() ? 5 : 4));
+		return (d_bars.size() + (d_pm.hasPooledRelativeEffect() ? 5 : 4));
 	}
 	
 	public void paintAxis(Graphics2D g2d) {
@@ -129,11 +129,11 @@ public class ForestPlot extends JComponent {
 		drawAxisTicks(g2d, y0, ticks, tickVals);
 		
 		drawVerticalCenterString(g2d, d_pm.getRelativeEffectAt(0).getName(), originX, Align.CENTER, FULLROW * (d_bars.size() + 1));
-		drawVerticalCenterString(g2d, ("Favours " + d_pm.getLowValueFavorsTreatment().getLabel()), (originX - HORPAD), Align.RIGHT, FULLROW * (d_bars.size() + 2));
-		drawVerticalCenterString(g2d, ("Favours " + d_pm.getHighValueFavorsTreatment().getLabel()), (originX + HORPAD), Align.LEFT, FULLROW * (d_bars.size() + 2));
+		drawVerticalCenterString(g2d, ("Favours " + d_pm.getLowValueFavors()), (originX - HORPAD), Align.RIGHT, FULLROW * (d_bars.size() + 2));
+		drawVerticalCenterString(g2d, ("Favours " + d_pm.getHighValueFavors()), (originX + HORPAD), Align.LEFT, FULLROW * (d_bars.size() + 2));
 		
 		// Draw the Heterogeneity
-		if (d_pm.isMetaAnalysis()) {
+		if (d_pm.hasPooledRelativeEffect()) {
 			drawVerticalCenterString(g2d, ("Heterogeneity = " + d_pm.getHeterogeneity() + " (I\u00B2 = " + d_pm.getHeterogeneityI2() + ")"), (FULLWIDTH / 4), Align.CENTER, FULLROW * (d_bars.size() + 3));
 			//draw dashed line from the combined diamond:
 			float[] dash = { 1f, 1f, 1f };

@@ -140,10 +140,10 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			}
 		}
 		if (!logCIs.isEmpty()) {
-			d_logScale = new LogScale(ForestPlotPresentation.getRange(logCIs, AxisType.LOGARITHMIC));
+			d_logScale = new LogScale(REMAForestPlotPresentation.getRange(logCIs, AxisType.LOGARITHMIC));
 		}
 		if (!linCIs.isEmpty()) {
-			d_linScale = new LinearScale(ForestPlotPresentation.getRange(linCIs, AxisType.LINEAR));
+			d_linScale = new LinearScale(REMAForestPlotPresentation.getRange(linCIs, AxisType.LINEAR));
 		}
 		
 		double hullLower = -1;
