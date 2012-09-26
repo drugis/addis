@@ -69,7 +69,7 @@ public class StudyOutcomeMeasure<T extends Variable> extends ObjectWithNotes<T> 
 	private ObservableList<WhenTaken> d_whenTaken = new GuardedObservableList<WhenTaken>(new ArrayListModel<WhenTaken>(),
 			new Predicate<WhenTaken>() {
 				public boolean evaluate(WhenTaken wt) {
-					return wt.isCommitted();
+					return wt != null && wt.isCommitted();
 				}
 			});
 

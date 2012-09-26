@@ -30,7 +30,7 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
+import org.drugis.addis.presentation.wizard.WhenTakenFactory;
 
 import com.jgoodies.binding.list.ObservableList;
 

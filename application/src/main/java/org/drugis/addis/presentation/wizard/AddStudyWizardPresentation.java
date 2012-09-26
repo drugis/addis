@@ -49,8 +49,6 @@ import org.drugis.addis.entities.StudyActivity;
 import org.drugis.addis.entities.StudyActivity.UsedBy;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.TypeWithNotes;
-import org.drugis.addis.entities.WhenTaken;
-import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.imports.ClinicaltrialsImporter;
 import org.drugis.addis.presentation.BasicArmPresentation;
@@ -66,7 +64,6 @@ import org.drugis.addis.presentation.StudyMeasurementTableModel;
 import org.drugis.addis.presentation.StudyPresentation;
 import org.drugis.addis.presentation.TreatmentActivityPresentation;
 import org.drugis.addis.presentation.ValueHolder;
-import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.SortedSetModel;
 
@@ -75,20 +72,6 @@ import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
-
-	public static class WhenTakenFactory {
-		private final AddEpochsPresentation d_epochs;
-
-		public WhenTakenFactory(final AddEpochsPresentation epochs) {
-			d_epochs = epochs;
-		}
-
-		public WhenTaken buildDefault() {
-			WhenTaken whenTaken = new WhenTaken(EntityUtil.createDuration("P0D"), RelativeTo.BEFORE_EPOCH_END, d_epochs.getList().get(0));
-			whenTaken.commit();
-			return whenTaken;
-		}
-	}
 
 	public abstract class OutcomeMeasurementsModel {
 		abstract public TableModel getMeasurementTableModel();
@@ -109,16 +92,18 @@ public class AddStudyWizardPresentation {
 
 	private Study d_origStudy = null;
 	private AddisWindow d_mainWindow;
+	private WhenTakenFactory d_wtf;
+
 	public AddStudyWizardPresentation(final Domain d, final PresentationModelFactory pmf, final AddisWindow mainWindow) {
 		d_domain = d;
 		d_pmf = pmf;
 		d_newStudyPM = new StudyPresentation(new Study(), pmf);
 		d_mainWindow = mainWindow;
 		d_epochs = new AddEpochsPresentation(getNewStudy(), "Epoch", 1);
-		WhenTakenFactory wtf = new WhenTakenFactory(d_epochs);
-		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), wtf, d_mainWindow);
-		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), wtf, d_mainWindow);
-		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), wtf, d_mainWindow);
+		d_wtf = new WhenTakenFactory(d_newStudyPM.getBean());
+		d_endpointSelect = new SelectEndpointPresentation(d_domain.getEndpoints(), d_wtf, d_mainWindow);
+		d_adverseEventSelect = new SelectAdverseEventsPresentation(d_domain.getAdverseEvents(), d_wtf, d_mainWindow);
+		d_populationCharSelect = new SelectPopulationCharsPresentation(d_domain.getPopulationCharacteristics(), d_wtf, d_mainWindow);
 		d_arms = new AddArmsPresentation(getNewStudy(), "Arm", 2);
 		resetStudy();
 	}
@@ -215,6 +200,7 @@ public class AddStudyWizardPresentation {
 
 	public void setNewStudy(final Study study) {
 		d_newStudyPM = new StudyPresentation(study, d_pmf);
+		d_wtf.study = study;
 		updateSelectionHolders();
 	}
 
