@@ -65,10 +65,6 @@ import com.sun.org.apache.xerces.internal.util.XMLChar;
 public class Main extends AbstractObservable {
 	public static final ImageLoader IMAGELOADER = new ImageLoader("/org/drugis/addis/gfx/");
 
-	static {
-		JAXBHandler.JAXB.getInstance();
-	}
-
 	public enum Examples {
 		DEPRESSION("Severe depression", "depressionExample.addis"), HYPERTENSION("Hypertension", "hypertensionExample.addis");
 
@@ -363,6 +359,7 @@ public class Main extends AbstractObservable {
 	}
 
 	public static void main(final String[] args) {
+		JAXBHandler.JAXB.getInstance(); // Initializes JAXBContext
 		GUIHelper.startApplicationWithErrorHandler(new Runnable() {
 			public void run() {
 				Main main = new Main(args, false);
