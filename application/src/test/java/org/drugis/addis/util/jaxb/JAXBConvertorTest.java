@@ -1990,7 +1990,6 @@ public class JAXBConvertorTest {
 
 	@Test
 	public void testDefaultDataRoundTripConversion() throws Exception {
-		System.out.println("Starting round Trip");
 		doRoundTripTest(getTransformedDefaultData(), false);
 	}
 

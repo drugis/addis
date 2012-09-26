@@ -88,17 +88,26 @@ public class JAXBHandler {
 		}
 	}
 
-	private static JAXBContext s_jaxb;
+	public static class JAXB {
+		private volatile static JAXBContext singleton;
 
-	private static void initialize() throws JAXBException {
-		if (s_jaxb == null) {
-			s_jaxb = JAXBContext.newInstance("org.drugis.addis.entities.data");
+		public static JAXBContext getInstance() {
+			if (singleton == null) {
+				synchronized (JAXBContext.class) {
+					if (singleton == null)
+						try {
+							singleton = JAXBContext.newInstance("org.drugis.addis.entities.data");
+						} catch (JAXBException e) {
+							throw new RuntimeException("Failed to initialze JAXB", e);
+						}
+				}
+			}
+			return singleton;
 		}
 	}
 
 	public static void marshallAddisData(AddisData data, OutputStream os) throws JAXBException {
-		initialize();
-		Marshaller marshaller = s_jaxb.createMarshaller();
+		Marshaller marshaller = JAXB.getInstance().createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		marshaller.setProperty(Marshaller.JAXB_NO_NAMESPACE_SCHEMA_LOCATION, "http://drugis.org/files/addis-" + XmlFormatType.CURRENT_VERSION + ".xsd");
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
@@ -106,8 +115,7 @@ public class JAXBHandler {
 	}
 
 	public static AddisData unmarshallAddisData(InputStream is) throws JAXBException {
-		initialize();
-		Unmarshaller unmarshaller = s_jaxb.createUnmarshaller();
+		Unmarshaller unmarshaller = JAXB.getInstance().createUnmarshaller();
 		unmarshaller.setEventHandler(new AddisDataValidationEventHandler());
 		return (AddisData) unmarshaller.unmarshal(is);
 	}

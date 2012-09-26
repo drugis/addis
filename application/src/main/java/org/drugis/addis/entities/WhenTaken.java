@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.xml.datatype.Duration;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.common.EqualsUtil;
 
@@ -51,7 +52,6 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 			return d_string;
 		}
 	}
-
 
 	public static final String PROPERTY_EPOCH = "epoch";
 	public static final String PROPERTY_RELATIVE_TO = "relativeTo";
@@ -134,7 +134,7 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 			return false;
 		}
 		WhenTaken other = (WhenTaken) obj;
-		return EqualsUtil.equal(getOffset(), other.getOffset())
+		return EqualsUtil.equal(d_offset, other.d_offset)
 				&& EqualsUtil.equal(d_relativeTo, other.d_relativeTo)
 				&& EqualsUtil.equal(d_epoch, other.d_epoch);
 	}
@@ -163,11 +163,11 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 
 	@Override
 	public int hashCode() {
-		int code = 1;
-		code = code * 31 + d_epoch.hashCode();
-		code = code * 31 + getOffset().hashCode();
-		code = code * 31 + d_relativeTo.hashCode();
-		return code;
+		return new HashCodeBuilder(17, 37)
+			.append(d_epoch)
+			.append(d_offset)
+			.append(d_relativeTo)
+			.toHashCode();
 	}
 
 	@Override
