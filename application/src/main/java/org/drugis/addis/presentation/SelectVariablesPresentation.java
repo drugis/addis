@@ -33,8 +33,9 @@ import java.util.List;
 
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
+import org.drugis.addis.presentation.wizard.WhenTakenFactory;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.gui.GUIHelper;
 
@@ -81,7 +82,10 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 
 	public void addSlot() {
 		StudyOutcomeMeasure<T> som = new StudyOutcomeMeasure<T>(d_type);
-		som.getWhenTaken().add(d_wtf.buildDefault());
+		WhenTaken measurmentEpoch = d_wtf.buildDefault();
+		if(measurmentEpoch != null) {
+			som.getWhenTaken().add(measurmentEpoch);
+		}
 		d_slots.add(som);
 		bindSlot(som);
 	}

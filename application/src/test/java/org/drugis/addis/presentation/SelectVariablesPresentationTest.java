@@ -42,7 +42,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
 import org.drugis.addis.presentation.wizard.AddEpochsPresentation;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
+import org.drugis.addis.presentation.wizard.WhenTakenFactory;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.JUnitUtil;
 import org.drugis.common.beans.SortedSetModel;
@@ -64,9 +64,10 @@ public class SelectVariablesPresentationTest {
 	public void setUp() {
 		d_list = new SortedSetModel<AdverseEvent>(Arrays.asList(d_ade1, d_ade2));
 
-		AddEpochsPresentation aep = new AddEpochsPresentation(new Study(), "epoch", 1);
+		Study study = new Study();
+		AddEpochsPresentation aep = new AddEpochsPresentation(study, "epoch", 1);
 		aep.getList().add(new Epoch("test", EntityUtil.createDuration("P3D")));
-		WhenTakenFactory wtf = new WhenTakenFactory(aep);
+		WhenTakenFactory wtf = new WhenTakenFactory(study);
 		d_pm = new SelectAdverseEventsPresentation(d_list, wtf, null);
 	}
 

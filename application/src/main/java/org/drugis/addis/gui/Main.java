@@ -359,6 +359,7 @@ public class Main extends AbstractObservable {
 	}
 
 	public static void main(final String[] args) {
+		JAXBHandler.JAXB.getInstance(); // Initializes JAXBContext
 		GUIHelper.startApplicationWithErrorHandler(new Runnable() {
 			public void run() {
 				Main main = new Main(args, false);
