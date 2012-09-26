@@ -53,7 +53,6 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 		}
 	}
 
-
 	public static final String PROPERTY_EPOCH = "epoch";
 	public static final String PROPERTY_RELATIVE_TO = "relativeTo";
 	public static final String PROPERTY_OFFSET = "offset";
@@ -135,7 +134,7 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 			return false;
 		}
 		WhenTaken other = (WhenTaken) obj;
-		return EqualsUtil.equal(getOffset(), other.getOffset())
+		return EqualsUtil.equal(d_offset, other.d_offset)
 				&& EqualsUtil.equal(d_relativeTo, other.d_relativeTo)
 				&& EqualsUtil.equal(d_epoch, other.d_epoch);
 	}
