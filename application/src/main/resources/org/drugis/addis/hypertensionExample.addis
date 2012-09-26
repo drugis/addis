@@ -9680,6 +9680,102 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     </whenTaken>
                 </measurement>
                 <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="218" sampleSize="343"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="257" sampleSize="360"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="282" sampleSize="362"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="290" sampleSize="363"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="221" sampleSize="334"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="256" sampleSize="347"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="269" sampleSize="350"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="277" sampleSize="350"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="165" sampleSize="345"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="205" sampleSize="352"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="236" sampleSize="353"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="233" sampleSize="353"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
                     <studyOutcomeMeasure id="endpoint-DBP trough mean"/>
                     <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
                     <continuousMeasurement mean="-13.4" sampleSize="223" stdDev="9.86"/>
@@ -9824,6 +9920,102 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     </whenTaken>
                 </measurement>
                 <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="176" sampleSize="343"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="209" sampleSize="360"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="249" sampleSize="362"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="252" sampleSize="363"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="162" sampleSize="334"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="213" sampleSize="347"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="229" sampleSize="350"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="241" sampleSize="350"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="124" sampleSize="345"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="157" sampleSize="352"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="196" sampleSize="353"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP and DBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="193" sampleSize="353"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
                     <studyOutcomeMeasure id="endpoint-SBP daytime mean"/>
                     <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
                     <continuousMeasurement mean="-26.7" sampleSize="290" stdDev="12.26"/>
@@ -9963,6 +10155,102 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     <studyOutcomeMeasure id="endpoint-SBP nighttime mean"/>
                     <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
                     <continuousMeasurement mean="-19.7" sampleSize="281" stdDev="12.57"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="207" sampleSize="343"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="238" sampleSize="360"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="278" sampleSize="362"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="276" sampleSize="363"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="191" sampleSize="334"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="239" sampleSize="347"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="257" sampleSize="350"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="266" sampleSize="350"/>
+                    <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="155" sampleSize="345"/>
+                    <whenTaken howLong="P14D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="184" sampleSize="352"/>
+                    <whenTaken howLong="P28D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="229" sampleSize="353"/>
+                    <whenTaken howLong="P42D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="endpoint-SBP response (clinic)"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="228" sampleSize="353"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
                         <epoch name="Main phase"/>
                     </whenTaken>
@@ -10893,6 +11181,115 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     </whenTaken>
                 </measurement>
                 <measurement>
+                    <studyOutcomeMeasure id="popChar-Chronic Kidney Disease"/>
+                    <rateMeasurement rate="94" sampleSize="1084"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Chronic Kidney Disease"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="25" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Chronic Kidney Disease"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="41" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Chronic Kidney Disease"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="28" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Diabetes"/>
+                    <rateMeasurement rate="188" sampleSize="1085"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Diabetes"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="58" sampleSize="372"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Diabetes"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <rateMeasurement rate="59" sampleSize="357"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Diabetes"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <rateMeasurement rate="71" sampleSize="356"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Ethnicity"/>
+                    <categoricalMeasurement>
+                        <category name="Hispanic or Latino" rate="122"/>
+                        <category name="Not Hispanic or Latino" rate="769"/>
+                        <category name="Unknown or Not Reported" rate="194"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Ethnicity"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Hispanic or Latino" rate="37"/>
+                        <category name="Not Hispanic or Latino" rate="265"/>
+                        <category name="Unknown or Not Reported" rate="70"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Ethnicity"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Hispanic or Latino" rate="41"/>
+                        <category name="Not Hispanic or Latino" rate="253"/>
+                        <category name="Unknown or Not Reported" rate="63"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Ethnicity"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Hispanic or Latino" rate="44"/>
+                        <category name="Not Hispanic or Latino" rate="251"/>
+                        <category name="Unknown or Not Reported" rate="61"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
                     <studyOutcomeMeasure id="popChar-Gender"/>
                     <categoricalMeasurement>
                         <category name="Female" rate="522"/>
@@ -10967,6 +11364,120 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     </whenTaken>
                 </measurement>
                 <measurement>
+                    <studyOutcomeMeasure id="popChar-Race"/>
+                    <categoricalMeasurement>
+                        <category name="American Indian or Alaska Native" rate="106"/>
+                        <category name="Asian" rate="17"/>
+                        <category name="Native Hawaiian or Other Pacific Islander" rate="3"/>
+                        <category name="Black or African American" rate="290"/>
+                        <category name="White" rate="680"/>
+                        <category name="More than one race" rate="11"/>
+                        <category name="Unknown or Not Reported" rate="0"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Race"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="American Indian or Alaska Native" rate="37"/>
+                        <category name="Asian" rate="7"/>
+                        <category name="Native Hawaiian or Other Pacific Islander" rate="3"/>
+                        <category name="Black or African American" rate="95"/>
+                        <category name="White" rate="235"/>
+                        <category name="More than one race" rate="5"/>
+                        <category name="Unknown or Not Reported" rate="0"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Race"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="American Indian or Alaska Native" rate="34"/>
+                        <category name="Asian" rate="5"/>
+                        <category name="Native Hawaiian or Other Pacific Islander" rate="0"/>
+                        <category name="Black or African American" rate="95"/>
+                        <category name="White" rate="225"/>
+                        <category name="More than one race" rate="2"/>
+                        <category name="Unknown or Not Reported" rate="0"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Race"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="American Indian or Alaska Native" rate="35"/>
+                        <category name="Asian" rate="5"/>
+                        <category name="Native Hawaiian or Other Pacific Islander" rate="0"/>
+                        <category name="Black or African American" rate="100"/>
+                        <category name="White" rate="220"/>
+                        <category name="More than one race" rate="4"/>
+                        <category name="Unknown or Not Reported" rate="0"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Region of Enrollment"/>
+                    <categoricalMeasurement>
+                        <category name="United States" rate="891"/>
+                        <category name="Mexico" rate="132"/>
+                        <category name="Chile" rate="31"/>
+                        <category name="Argentina" rate="31"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Region of Enrollment"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="United States" rate="302"/>
+                        <category name="Mexico" rate="45"/>
+                        <category name="Chile" rate="12"/>
+                        <category name="Argentina" rate="13"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Region of Enrollment"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="United States" rate="294"/>
+                        <category name="Mexico" rate="44"/>
+                        <category name="Chile" rate="10"/>
+                        <category name="Argentina" rate="9"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-Region of Enrollment"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="United States" rate="295"/>
+                        <category name="Mexico" rate="43"/>
+                        <category name="Chile" rate="9"/>
+                        <category name="Argentina" rate="9"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
                     <studyOutcomeMeasure id="popChar-Weight"/>
                     <continuousMeasurement mean="89.95" sampleSize="1085" stdDev="20.981"/>
                     <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
@@ -10993,6 +11504,53 @@ If participant does not achieve target blood pressure at Week 4, then the dosage
                     <studyOutcomeMeasure id="popChar-Weight"/>
                     <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
                     <continuousMeasurement mean="90.66" sampleSize="356" stdDev="20.7"/>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-eGFR category"/>
+                    <categoricalMeasurement>
+                        <category name="Moderate impairment" rate="76"/>
+                        <category name="Mild impairment" rate="632"/>
+                        <category name="Normal" rate="377"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-eGFR category"/>
+                    <arm name="Azilsartan Medoxomil 20-40mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Moderate impairment" rate="26"/>
+                        <category name="Mild impairment" rate="220"/>
+                        <category name="Normal" rate="126"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-eGFR category"/>
+                    <arm name="Azilsartan Medoxomil 40-80mg plus Chlorthalidone 12.5-25 mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Moderate impairment" rate="25"/>
+                        <category name="Mild impairment" rate="207"/>
+                        <category name="Normal" rate="125"/>
+                    </categoricalMeasurement>
+                    <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
+                        <epoch name="Main phase"/>
+                    </whenTaken>
+                </measurement>
+                <measurement>
+                    <studyOutcomeMeasure id="popChar-eGFR category"/>
+                    <arm name="Olmesartan medoxomil 20-40mg/hydrochlorothiazide 12.5-25mg QD"/>
+                    <categoricalMeasurement>
+                        <category name="Moderate impairment" rate="25"/>
+                        <category name="Mild impairment" rate="205"/>
+                        <category name="Normal" rate="126"/>
+                    </categoricalMeasurement>
                     <whenTaken howLong="P0D" relativeTo="FROM_EPOCH_START">
                         <epoch name="Main phase"/>
                     </whenTaken>
