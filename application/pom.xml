@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.16-RC2-SNAPSHOT</version>
+		<version>1.16-RC2</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -16,9 +16,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<packaging>jar</packaging>
 
 	<properties>
-		<drugis-common.version>0.5.4-SNAPSHOT</drugis-common.version>
+		<drugis-common.version>0.5.4</drugis-common.version>
 		<jsmaa.version>0.9-ADDIS-1.12.4-2</jsmaa.version>
-		<mtc.version>0.14-RC1</mtc.version>
+		<mtc.version>0.14</mtc.version>
 		<addis.schemaVersion>6</addis.schemaVersion>
 		<jung.version>2.0.1</jung.version>
     <schemaVersionFile>src/main/resources/org/drugis/addis/entities/current-schema-version</schemaVersionFile>

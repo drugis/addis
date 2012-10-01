@@ -112,11 +112,11 @@ public class MockInconsistencyModel extends YadasInconsistencyModel implements I
 		return d_task;
 	}
 
-	public Parameter getInconsistencyVariance() {
+	public Parameter getInconsistencyStandardDeviation() {
 		return null;
 	}
 
-	public Parameter getRandomEffectsVariance() {
+	public Parameter getRandomEffectsStandardDeviation() {
 		return null;
 	}
 

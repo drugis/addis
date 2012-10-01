@@ -145,6 +145,7 @@ public class WelcomeDialog extends JFrame {
 		forAllDo(buttons, new Closure<AbstractButton>() {
 			public void execute(final AbstractButton exampleOption) {
 				int row = buttons.indexOf(exampleOption) == 0 ? 1 : buttons.indexOf(exampleOption) + 2;
+				exampleOption.setOpaque(false);
 				radios.add(exampleOption, cc.xy(1, row));
 				radios.add(createHelpButton(exampleOption), cc.xy(3, row));
 			}
