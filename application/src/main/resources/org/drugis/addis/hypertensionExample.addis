@@ -125,7 +125,7 @@
         </endpoint>
     </endpoints>
     <adverseEvents>
-        <adverseEvent name=" Acute coronary syndrome" description=" Acute coronary syndrome (Cardiac disorders)" direction="LOWER_IS_BETTER">
+        <adverseEvent name="Acute coronary syndrome" description="Acute coronary syndrome (Cardiac disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Abdominal adhesions" description="Abdominal adhesions (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
@@ -7049,8 +7049,8 @@ Safety issue: No</note>
                         <note source="CLINICALTRIALS">Atrial fibrillation (Cardiac disorders)</note>
                     </notes>
                 </studyOutcomeMeasure>
-                <studyOutcomeMeasure id="adverseEvent- Acute coronary syndrome" primary="false">
-                    <adverseEvent name=" Acute coronary syndrome"/>
+                <studyOutcomeMeasure id="adverseEvent-Acute coronary syndrome" primary="false">
+                    <adverseEvent name="Acute coronary syndrome"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
                         <epoch name="Main phase"/>
                     </whenTaken>
@@ -7617,7 +7617,7 @@ Intervention Description: Ramipril 2.5 mg, tablets, orally, once daily for two w
                     </whenTaken>
                 </measurement>
                 <measurement>
-                    <studyOutcomeMeasure id="adverseEvent- Acute coronary syndrome"/>
+                    <studyOutcomeMeasure id="adverseEvent-Acute coronary syndrome"/>
                     <arm name="Azilsartan Medoxomil 40 mg QD"/>
                     <rateMeasurement rate="0" sampleSize="294"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
@@ -7625,7 +7625,7 @@ Intervention Description: Ramipril 2.5 mg, tablets, orally, once daily for two w
                     </whenTaken>
                 </measurement>
                 <measurement>
-                    <studyOutcomeMeasure id="adverseEvent- Acute coronary syndrome"/>
+                    <studyOutcomeMeasure id="adverseEvent-Acute coronary syndrome"/>
                     <arm name="Azilsartan Medoxomil 80 mg QD"/>
                     <rateMeasurement rate="0" sampleSize="293"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
@@ -7633,7 +7633,7 @@ Intervention Description: Ramipril 2.5 mg, tablets, orally, once daily for two w
                     </whenTaken>
                 </measurement>
                 <measurement>
-                    <studyOutcomeMeasure id="adverseEvent- Acute coronary syndrome"/>
+                    <studyOutcomeMeasure id="adverseEvent-Acute coronary syndrome"/>
                     <arm name="Ramipril 10 mg QD"/>
                     <rateMeasurement rate="1" sampleSize="293"/>
                     <whenTaken howLong="P0D" relativeTo="BEFORE_EPOCH_END">
