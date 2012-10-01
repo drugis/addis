@@ -271,10 +271,10 @@ public class NetworkMetaAnalysisConverter {
 		} else if(ps.getVariance() != null) {
 			VarianceParameterType name = ps.getVariance().getName();
 			if(name == VarianceParameterType.VAR_W) { 
-				p = new org.drugis.mtc.parameterization.InconsistencyVariance();
+				p = new org.drugis.mtc.parameterization.InconsistencyStandardDeviation();
 			} 
 			if(name == VarianceParameterType.VAR_D) { 
-				p = new org.drugis.mtc.parameterization.RandomEffectsVariance();
+				p = new org.drugis.mtc.parameterization.RandomEffectsStandardDeviation();
 			}
 		} else if(ps.getRelativeEffect() != null) { 
 			if(ps.getRelativeEffect().getWhichEvidence() == EvidenceTypeEnum.ALL) {
@@ -421,11 +421,11 @@ public class NetworkMetaAnalysisConverter {
 			for (Treatment t : ip.getCycle()) { 
 				ps.getInconsistency().getTreatmentDefinition().add(TreatmentDefinitionConverter.save(nma.getTreatmentDefinition(t)));
 			}
-		} else if (p instanceof org.drugis.mtc.parameterization.InconsistencyVariance) { 
+		} else if (p instanceof org.drugis.mtc.parameterization.InconsistencyStandardDeviation) { 
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_W);
 			ps.setVariance(value);
-		} else if (p instanceof org.drugis.mtc.parameterization.RandomEffectsVariance) { 
+		} else if (p instanceof org.drugis.mtc.parameterization.RandomEffectsStandardDeviation) { 
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_D);
 			ps.setVariance(value);
