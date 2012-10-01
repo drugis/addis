@@ -125,10 +125,10 @@
         </endpoint>
     </endpoints>
     <adverseEvents>
-        <adverseEvent name="Acute coronary syndrome" description="Acute coronary syndrome (Cardiac disorders)" direction="LOWER_IS_BETTER">
+        <adverseEvent name="Abdominal adhesions" description="Abdominal adhesions (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
-        <adverseEvent name="Abdominal adhesions" description="Abdominal adhesions (Gastrointestinal disorders)" direction="LOWER_IS_BETTER">
+        <adverseEvent name="Acute coronary syndrome" description="Acute coronary syndrome (Cardiac disorders)" direction="LOWER_IS_BETTER">
             <rate/>
         </adverseEvent>
         <adverseEvent name="Angina pectoris" description="Angina pectoris (Cardiac disorders)" direction="LOWER_IS_BETTER">
