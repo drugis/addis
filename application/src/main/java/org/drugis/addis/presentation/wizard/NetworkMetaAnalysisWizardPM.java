@@ -297,9 +297,11 @@ public class NetworkMetaAnalysisWizardPM extends AbstractAnalysisWizardPresentat
 	}
 
 	public void populateSelectableStudies() {
-		d_selectableStudies.clear();
-		d_selectableStudies.addAll(filterStudiesComparing(getOutcomeMeasureModel().getValue(), 
-				getStudiesEndpointAndIndication(), getRefinedAlternativesGraph().getSelectedDefinitions()));
+		if (d_armSelectionRebuildNeeded) { 
+			d_selectableStudies.clear();
+			d_selectableStudies.addAll(filterStudiesComparing(getOutcomeMeasureModel().getValue(), 
+					getStudiesEndpointAndIndication(), getRefinedAlternativesGraph().getSelectedDefinitions()));
+		}
 	}
 
 	private SelectableStudyCharTableModel createSelectableStudyListPm() {
