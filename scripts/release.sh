@@ -11,6 +11,7 @@ mvn compile
 
 VERSION=`cat version`
 rm version
+README=README.md
 DIR=addis-$VERSION
 GFX=application/src/main/resources/org/drugis/addis/gfx
 
@@ -21,16 +22,22 @@ else
 	echo "---- Version: $VERSION"
 fi
 
-# Create header.png for current version
-echo '---- Generating header.png'
-(cat graphics/header.scm; echo "(addis-version-header \"ADDIS v $VERSION\" \"graphics/header.xcf\" \"$GFX/header.png\")"; echo '(gimp-quit 0)') | gimp -i -b -
-
-
 if [[ "$VERSION" == *-SNAPSHOT ]]; then
 	echo '!!!! Not packaging -SNAPSHOT';
 	exit;
 fi;
 
+if grep -q $VERSION: $README
+then
+  echo "---- README up-to-date"
+else 
+  echo "!!!! Could not find version $VERSION in README.md, please update appropriately"
+  exit
+fi
+
+# Create header.png for current version
+echo '---- Generating header.png'
+(cat graphics/header.scm; echo "(addis-version-header \"ADDIS v $VERSION\" \"graphics/header.xcf\" \"$GFX/header.png\")"; echo '(gimp-quit 0)') | gimp -i -b -
 #create readme.html for pretty-printed display in installer
 echo "<html><head><style type="text/css">h1{font-size:20pt;}</style> <title>README for ADDIS</title></head><body>" > installer/src/izpack/README.html
 markdown README.md >> installer/src/izpack/README.html 
