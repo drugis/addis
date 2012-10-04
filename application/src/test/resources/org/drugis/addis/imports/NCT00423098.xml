@@ -1,0 +1,1571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clinical_study>
+  <!-- This xml conforms to an XML Schema at:
+    http://clinicaltrials.gov/ct2/html/images/info/public.xsd
+ and an XML DTD at:
+    http://clinicaltrials.gov/ct2/html/images/info/public.dtd -->
+  <required_header>
+    <download_date>Information obtained from ClinicalTrials.gov on September 06, 2012</download_date>
+    <link_text>Link to the current ClinicalTrials.gov record.</link_text>
+    <url>http://clinicaltrials.gov/show/NCT00423098</url>
+  </required_header>
+  <id_info>
+    <org_study_id>CERL080A2420</org_study_id>
+    <nct_id>NCT00423098</nct_id>
+  </id_info>
+  <brief_title>Efficacy and Safety of Enteric-coated Mycophenolate Sodium in Combination With Two Corticosteroid Regimens for the Treatment of Lupus Nephritis Flare</brief_title>
+  <official_title>A Randomized, Multicenter, Open-label, 6-month Study to Explore the Efficacy and Safety of Enteric-coated Mycophenolate Sodium in Combination With Two Corticosteroid Regimens for the Treatment of Lupus Nephritis Flare</official_title>
+  <sponsors>
+    <lead_sponsor>
+      <agency>Novartis Pharmaceuticals</agency>
+      <agency_class>Industry</agency_class>
+    </lead_sponsor>
+  </sponsors>
+  <source>Novartis</source>
+  <oversight_info>
+    <authority>France: Afssaps - Agence française de sécurité sanitaire des produits de santé (Saint-Denis)</authority>
+  </oversight_info>
+  <brief_summary>
+    <textblock>
+      The study will investigate the efficacy and safety of enteric-coated mycophenolate sodium in
+      combination with two different corticosteroid (CS) regimes for the induction of remission of
+      a lupus nephritis flare. Patients will be randomly allocated to standard CS regimen (group
+      I) or to a reduced dose CS regimen (group II)
+    </textblock>
+  </brief_summary>
+  <overall_status>Completed</overall_status>
+  <start_date>February 2007</start_date>
+  <completion_date type="Actual">November 2009</completion_date>
+  <primary_completion_date type="Actual">November 2009</primary_completion_date>
+  <phase>Phase 2</phase>
+  <study_type>Interventional</study_type>
+  <study_design>Allocation:  Randomized, Endpoint Classification:  Safety/Efficacy Study, Intervention Model:  Parallel Assignment, Masking:  Open Label, Primary Purpose:  Treatment</study_design>
+  <primary_outcome>
+    <measure>Number of Patients With Complete Remission</measure>
+    <time_frame>24 Weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>Complete remission was defined as urine protein/urine creatinine ratio &lt; 0.5 gram urine protein per gram urine creatinine, urine sediment normalized (no cellular casts, &lt; 5 red cells per high power field), and serum creatinine within 10% of normal range according to local lab.</description>
+  </primary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Complete Remission</measure>
+    <time_frame>12 Weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>Complete remission was defined as urine protein/urine creatinine ratio &lt; 0.5 gram urine protein per gram urine creatinine, urine sediment normalized (no cellular casts, &lt; 5 red cells per high power field), and serum creatinine within 10% of normal value.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Partial Remission</measure>
+    <time_frame>Baseline to 12 and 24 weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>Partial remission was defined as urine protein/creatinine ratio reduced by at least 50% from baseline and stable serum creatinine within 10% of baseline value) or improved.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Cumulative Dose of Prednisone Equivalent Corticosteroids (CS)</measure>
+    <time_frame>12 Weeks and 24 Weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>Corticosteroid use was measured as cumulative dose until 12 and 24 weeks of treatment as well as daily doses at baseline, 12 and 24 weeks.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Moderate to Severe Flares</measure>
+    <time_frame>12 and 24 weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>A moderate to severe flare was defined as the occurrence of increased lupus activity after partial or complete remission, based on the presence of 1 BILAG A score or &gt;=3 BILAG B scores. British Isles Lupus Assessment Group (BILAG) index divides lupus activity in 8 organs/systems which are each given a score of A to E. A=disease sufficiently active to need disease modifying treatment; B=problems requiring symptomatic treatment; C=mild stable disease; D=previously affected but currently inactive system; E=the system or organ has never been involved. BILAG score: A=9, B=3, C=1, D/E=0; range(0-72)</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Duration of Exposure to Study Medication</measure>
+    <time_frame>24 weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>The duration of exposure was calculated as the date of the last Mycophenolate sodium dose minus the date of the last Mycophenolate sodium dose +1.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Adverse Events and Infections</measure>
+    <time_frame>24 weeks</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>Safety assessments included collecting all adverse events (AEs), serious adverse events (SAEs), with their severity and relationship to study drug. According to FDA 21CFR 314.80, a serious adverse event (SAE) is described as any adverse event that leads to death, is life threatening ( NIH criteria Grade 4), causes or prolongs hospitalization, results in a congenital anomaly, or any other important medical event not described above.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Number of Patients With Treatment Failure</measure>
+    <time_frame>12 Weeks and 24 Weeks</time_frame>
+    <safety_issue>Yes</safety_issue>
+    <description>Treatment failure was defined as no therapeutic response (without complete or partial remission) or premature discontinuation during the first 24 weeks from study medication or the study for any reason except complete or partial remission.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Change From Baseline in Overall Disease Activity With Systematic Lupus Erythematosus Disease Activity Index (SLEDAI)</measure>
+    <time_frame>From Baseline to week 4, week 12 and week 24</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>SLEDAI stands for Systemic Lupus Erythematosus Disease Activity Index and was a well established global score index based on assessment of 24 items measuring a disease activity in the 10-day period prior to the assessment. SLEDAI item weights range from 1 for fever to 8 for seizures. A maximum theoretical score is 105. Total score range from 1 to 105. A flare has been defined as a SLEDAI score increase of 3 or more to a level of 8 or higher. During flares SLEDAI scores of 25 to 30 are common.</description>
+  </secondary_outcome>
+  <secondary_outcome>
+    <measure>Change From Baseline in Overall Disease Activity With British Isles Lupus Assessment Group (BILAG)</measure>
+    <time_frame>From Baseline to week 4, week 12 and week 24</time_frame>
+    <safety_issue>No</safety_issue>
+    <description>BILAG (British Isles Lupus Assessment Group) index divides lupus activity into 8 organs/systems and was based on the principle of the physician's intention to treat, assessing activity in the previous one month. Each organ or system was given a score of A to E, where A = disease that is sufficiently active to require disease modifying treatment; a B = problems requiring symptomatic treatment; C = stable mild disease; D = previously affected but currently inactive system; and E = the system or organ has never been involved. [A=9, B=3, C=1, D/E=0  the score range for each patient will be 0-72].</description>
+  </secondary_outcome>
+  <number_of_arms>2</number_of_arms>
+  <enrollment type="Actual">81</enrollment>
+  <condition>Lupus Nephritis</condition>
+  <arm_group>
+    <arm_group_label>Standard dose</arm_group_label>
+    <arm_group_type>Experimental</arm_group_type>
+    <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of Prednisone was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+  </arm_group>
+  <arm_group>
+    <arm_group_label>Low dose</arm_group_label>
+    <arm_group_type>Active Comparator</arm_group_type>
+    <description>Mycophenolate sodium was administered in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of Prednisone was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+  </arm_group>
+  <intervention>
+    <intervention_type>Drug</intervention_type>
+    <intervention_name>Mycophenolate sodium</intervention_name>
+    <description>Mycophenolate sodium as administered orally for 2 weeks at 1440mg daily and then increased to 2160mg daily for 22 weeks.</description>
+    <arm_group_label>Standard dose</arm_group_label>
+    <arm_group_label>Low dose</arm_group_label>
+    <other_name>Myfortic</other_name>
+  </intervention>
+  <intervention>
+    <intervention_type>Drug</intervention_type>
+    <intervention_name>Prednisone</intervention_name>
+    <description>Oral prednisone or prednisone equivalent was started on Day 4 and subsequently tapered every 2 weeks according to the patient's weight.</description>
+    <arm_group_label>Standard dose</arm_group_label>
+    <arm_group_label>Low dose</arm_group_label>
+  </intervention>
+  <intervention>
+    <intervention_type>Drug</intervention_type>
+    <intervention_name>Methylprednisolone</intervention_name>
+    <description>All patients received bolus therapy with 0.5 g of intravenous Methylprednisolone per day for 3 consecutive days.</description>
+    <arm_group_label>Standard dose</arm_group_label>
+    <arm_group_label>Low dose</arm_group_label>
+  </intervention>
+  <eligibility>
+    <criteria>
+      <textblock>
+        Inclusion criteria
+
+          -  Male or female patients with systemic lupus erythematosus (SLE)(at least 4
+             classification criteria)
+
+          -  Aged ≥18 years,
+
+          -  Proliferative lupus nephritis classified as ISN/RPS class III or IV
+
+          -  Renal biopsy within the last 24-month preceding the study entry
+
+          -  Proteinuria defined as &gt;0.5 gram urine protein per gram urine creatinine at screening
+             and baseline
+
+          -  Clinical activity defined by one or more of the following changes in renal function:
+             Serum creatinine &gt;1.0 mg/dl (88.4 μmol/l)
+
+          -  Microscopic hematuria defined as &gt;5 red cells per high power field
+
+          -  Presence of cellular casts
+
+        Exclusion criteria
+
+          -  Patients with calculated creatinine clearance &lt;30 ml/min (using the Cockcroft-Gault
+             formula)
+
+          -  Patients having received an intravenous (i.v.)  corticosteroid bolus during the last
+             3 months,
+
+          -  Patients having received oral or i.v. cyclophosphamide during the last 3 month
+
+          -  Patients having received mycophenolate mofetil (MMF) within the preceding 3 months
+
+          -  Use of any antibody therapy within the past 6 months
+
+          -  Pregnant or nursing (lactating) women or women of child-bearing potential who are
+             planning to become pregnant, or are not willing to use effective means of
+             contraception throughout the study and during one month after the end of the study.
+
+          -  Use of other investigational drugs within 1 month of enrollment (except for
+             antibodies: within 6 months of enrollment
+
+          -  History of hypersensitivity to any of the study drugs or to drugs with similar
+             chemical structures,
+
+          -  History of malignancy of any organ system, treated or untreated, within the past 5
+             years whether or not there is evidence of local recurrence or metastases, with the
+             exception of localized basal cell carcinoma of the skin.
+
+        Other protocol-defined inclusion/exclusion criteria may apply.
+      </textblock>
+    </criteria>
+    <gender>Both</gender>
+    <minimum_age>18 Years</minimum_age>
+    <maximum_age>N/A</maximum_age>
+    <healthy_volunteers>No</healthy_volunteers>
+  </eligibility>
+  <overall_official>
+    <last_name>Novartis Pharmaceuticals</last_name>
+    <role>Study Director</role>
+    <affiliation>Novartis Pharmaceuticals</affiliation>
+  </overall_official>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Bogota</city>
+        <country>Colombia</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Creteil</city>
+        <country>France</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Nantes</city>
+        <country>France</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis Investigative Site</name>
+      <address>
+        <city>Paris</city>
+        <country>France</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Berlin</city>
+        <country>Germany</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Tubingen</city>
+        <country>Germany</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Athens</city>
+        <country>Greece</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Budapest</city>
+        <country>Hungary</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Debrecen</city>
+        <country>Hungary</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Brescia</city>
+        <country>Italy</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Ferrara</city>
+        <country>Italy</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Milano</city>
+        <country>Italy</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Padova</city>
+        <country>Italy</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Barcelona</city>
+        <country>Spain</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Madrid</city>
+        <country>Spain</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Taichung</city>
+        <country>Taiwan</country>
+      </address>
+    </facility>
+  </location>
+  <location>
+    <facility>
+      <name>Novartis</name>
+      <address>
+        <city>Cambridge</city>
+        <country>United Kingdom</country>
+      </address>
+    </facility>
+  </location>
+  <location_countries>
+    <country>Colombia</country>
+    <country>France</country>
+    <country>Germany</country>
+    <country>Greece</country>
+    <country>Hungary</country>
+    <country>Italy</country>
+    <country>Spain</country>
+    <country>Taiwan</country>
+    <country>United Kingdom</country>
+  </location_countries>
+  <removed_countries>
+    <country>United States</country>
+  </removed_countries>
+  <verification_date>May 2011</verification_date>
+  <lastchanged_date>May 31, 2011</lastchanged_date>
+  <firstreceived_date>January 16, 2007</firstreceived_date>
+  <firstreceived_results_date>December 14, 2010</firstreceived_results_date>
+  <responsible_party>
+    <name_title>External Affairs</name_title>
+    <organization>Novartis Pharmaceuticals</organization>
+  </responsible_party>
+  <keyword>Lupus Nephritis</keyword>
+  <keyword>enteric-coated mycophenolate sodium</keyword>
+  <keyword>EC-MPS</keyword>
+  <keyword>Myfortic</keyword>
+  <is_fda_regulated>No</is_fda_regulated>
+  <has_expanded_access>No</has_expanded_access>
+  <condition_browse>
+    <!-- CAUTION:  The following MeSH terms are assigned with an imperfect algorithm  -->
+    <mesh_term>Lupus Nephritis</mesh_term>
+    <mesh_term>Nephritis</mesh_term>
+  </condition_browse>
+  <intervention_browse>
+    <!-- CAUTION:  The following MeSH terms are assigned with an imperfect algorithm  -->
+    <mesh_term>Methylprednisolone acetate</mesh_term>
+    <mesh_term>Prednisolone acetate</mesh_term>
+    <mesh_term>Methylprednisolone</mesh_term>
+    <mesh_term>Methylprednisolone Hemisuccinate</mesh_term>
+    <mesh_term>Prednisolone</mesh_term>
+    <mesh_term>Prednisone</mesh_term>
+    <mesh_term>Prednisolone hemisuccinate</mesh_term>
+    <mesh_term>Prednisolone phosphate</mesh_term>
+    <mesh_term>Mycophenolic Acid</mesh_term>
+    <mesh_term>Mycophenolate mofetil</mesh_term>
+  </intervention_browse>
+
+  <clinical_results>
+
+    <participant_flow>
+      <group_list>
+        <group group_id="P1">
+          <title>Standard Dose</title>
+          <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+        </group>
+        <group group_id="P2">
+          <title>Low Dose</title>
+          <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+        </group>
+      </group_list>
+      <period_list>
+        <period>
+          <title>Overall Study</title>
+          <milestone_list>
+            <milestone>
+              <title>STARTED</title>
+              <participants_list>
+                <participants group_id="P1" count="42">Total number of patients screened was 90, but the total number of randomized patients was 81.</participants>
+                <participants group_id="P2" count="39"/>
+              </participants_list>
+            </milestone>
+            <milestone>
+              <title>COMPLETED</title>
+              <participants_list>
+                <participants group_id="P1" count="39">Completed 24 weeks of study medication.</participants>
+                <participants group_id="P2" count="35"/>
+              </participants_list>
+            </milestone>
+            <milestone>
+              <title>NOT COMPLETED</title>
+              <participants_list>
+                <participants group_id="P1" count="3"/>
+                <participants group_id="P2" count="4"/>
+              </participants_list>
+            </milestone>
+          </milestone_list>
+          <drop_withdraw_reason_list>
+            <drop_withdraw_reason>
+              <title>Adverse Event</title>
+              <participants_list>
+                <participants group_id="P1" count="1"/>
+                <participants group_id="P2" count="2"/>
+              </participants_list>
+            </drop_withdraw_reason>
+            <drop_withdraw_reason>
+              <title>Unsatisfactory therapeutic effect</title>
+              <participants_list>
+                <participants group_id="P1" count="0"/>
+                <participants group_id="P2" count="1"/>
+              </participants_list>
+            </drop_withdraw_reason>
+            <drop_withdraw_reason>
+              <title>Administrative problems</title>
+              <participants_list>
+                <participants group_id="P1" count="0"/>
+                <participants group_id="P2" count="1"/>
+              </participants_list>
+            </drop_withdraw_reason>
+            <drop_withdraw_reason>
+              <title>Death</title>
+              <participants_list>
+                <participants group_id="P1" count="2"/>
+                <participants group_id="P2" count="0"/>
+              </participants_list>
+            </drop_withdraw_reason>
+          </drop_withdraw_reason_list>
+        </period>
+      </period_list>
+    </participant_flow>
+
+    <baseline>
+      <group_list>
+        <group group_id="B1">
+          <title>Standard Dose</title>
+          <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+        </group>
+        <group group_id="B2">
+          <title>Low Dose</title>
+          <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+        </group>
+        <group group_id="B3">
+          <title>Total</title>
+          <description>Total of all reporting groups</description>
+        </group>
+      </group_list>
+      <measure_list>
+        <measure>
+          <title>Number of Participants</title>
+          <units>participants</units>
+          <param>Number</param>
+          <category_list>
+            <category>
+              <measurement_list>
+                <measurement group_id="B1" value="42"/>
+                <measurement group_id="B2" value="39"/>
+                <measurement group_id="B3" value="81"/>
+              </measurement_list>
+            </category>
+          </category_list>
+        </measure>
+        <measure>
+          <title>Age</title>
+          <units>years</units>
+          <param>Mean</param>
+          <dispersion>Standard Deviation</dispersion>
+          <category_list>
+            <category>
+              <measurement_list>
+                <measurement group_id="B1" value="32.2" spread="8.53"/>
+                <measurement group_id="B2" value="34.2" spread="10.74"/>
+                <measurement group_id="B3" value="33.1" spread="9.65"/>
+              </measurement_list>
+            </category>
+          </category_list>
+        </measure>
+        <measure>
+          <title>Age, Customized</title>
+          <units>participants</units>
+          <param>Number</param>
+          <category_list>
+            <category>
+              <sub_title>18-29 years</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="20"/>
+                <measurement group_id="B2" value="18"/>
+                <measurement group_id="B3" value="38"/>
+              </measurement_list>
+            </category>
+            <category>
+              <sub_title>30-39 years</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="16"/>
+                <measurement group_id="B2" value="10"/>
+                <measurement group_id="B3" value="26"/>
+              </measurement_list>
+            </category>
+            <category>
+              <sub_title>40-49 years</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="4"/>
+                <measurement group_id="B2" value="6"/>
+                <measurement group_id="B3" value="10"/>
+              </measurement_list>
+            </category>
+            <category>
+              <sub_title>50-59 years</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="2"/>
+                <measurement group_id="B2" value="4"/>
+                <measurement group_id="B3" value="6"/>
+              </measurement_list>
+            </category>
+            <category>
+              <sub_title>&gt;=60 years</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="0"/>
+                <measurement group_id="B2" value="1"/>
+                <measurement group_id="B3" value="1"/>
+              </measurement_list>
+            </category>
+          </category_list>
+        </measure>
+        <measure>
+          <title>Gender</title>
+          <units>participants</units>
+          <param>Number</param>
+          <category_list>
+            <category>
+              <sub_title>Female</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="37"/>
+                <measurement group_id="B2" value="29"/>
+                <measurement group_id="B3" value="66"/>
+              </measurement_list>
+            </category>
+            <category>
+              <sub_title>Male</sub_title>
+              <measurement_list>
+                <measurement group_id="B1" value="5"/>
+                <measurement group_id="B2" value="10"/>
+                <measurement group_id="B3" value="15"/>
+              </measurement_list>
+            </category>
+          </category_list>
+        </measure>
+      </measure_list>
+    </baseline>
+
+    <outcome_list>
+      <outcome>
+        <type>Primary</type>
+        <title>Number of Patients With Complete Remission</title>
+        <description>Complete remission was defined as urine protein/urine creatinine ratio &lt; 0.5 gram urine protein per gram urine creatinine, urine sediment normalized (no cellular casts, &lt; 5 red cells per high power field), and serum creatinine within 10% of normal range according to local lab.</description>
+        <time_frame>24 Weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intention to treat (ITT) population: All randomized patients who received at least one dose of study drug.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Number of Patients With Complete Remission</title>
+            <description>Complete remission was defined as urine protein/urine creatinine ratio &lt; 0.5 gram urine protein per gram urine creatinine, urine sediment normalized (no cellular casts, &lt; 5 red cells per high power field), and serum creatinine within 10% of normal range according to local lab.</description>
+            <units>Participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <sub_title>Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="8"/>
+                  <measurement group_id="O2" value="8"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="34"/>
+                  <measurement group_id="O2" value="31"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Number of Patients With Complete Remission</title>
+        <description>Complete remission was defined as urine protein/urine creatinine ratio &lt; 0.5 gram urine protein per gram urine creatinine, urine sediment normalized (no cellular casts, &lt; 5 red cells per high power field), and serum creatinine within 10% of normal value.</description>
+        <time_frame>12 Weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intention to treat (ITT) population: All randomized patients who received at least one dose of study drug.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Number of Patients With Complete Remission</title>
+            <description>Complete remission was defined as urine protein/urine creatinine ratio &lt; 0.5 gram urine protein per gram urine creatinine, urine sediment normalized (no cellular casts, &lt; 5 red cells per high power field), and serum creatinine within 10% of normal value.</description>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <sub_title>Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="9"/>
+                  <measurement group_id="O2" value="5"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="33"/>
+                  <measurement group_id="O2" value="34"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Number of Patients With Partial Remission</title>
+        <description>Partial remission was defined as urine protein/creatinine ratio reduced by at least 50% from baseline and stable serum creatinine within 10% of baseline value) or improved.</description>
+        <time_frame>Baseline to 12 and 24 weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intention to treat (ITT) population: All randomized patients who received at least one dose of study drug.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Number of Patients With Partial Remission</title>
+            <description>Partial remission was defined as urine protein/creatinine ratio reduced by at least 50% from baseline and stable serum creatinine within 10% of baseline value) or improved.</description>
+            <units>Participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <sub_title>At 12 weeks - Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="16"/>
+                  <measurement group_id="O2" value="11"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At 12 weeks - No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="26"/>
+                  <measurement group_id="O2" value="28"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At 24 weeks - Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="20"/>
+                  <measurement group_id="O2" value="14"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At 24 weeks - No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="22"/>
+                  <measurement group_id="O2" value="25"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Cumulative Dose of Prednisone Equivalent Corticosteroids (CS)</title>
+        <description>Corticosteroid use was measured as cumulative dose until 12 and 24 weeks of treatment as well as daily doses at baseline, 12 and 24 weeks.</description>
+        <time_frame>12 Weeks and 24 Weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intention to treat (ITT) population: All randomized patients who received at least one dose of study drug.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Cumulative Dose of Prednisone Equivalent Corticosteroids (CS)</title>
+            <description>Corticosteroid use was measured as cumulative dose until 12 and 24 weeks of treatment as well as daily doses at baseline, 12 and 24 weeks.</description>
+            <units>mg/kg</units>
+            <param>Mean</param>
+            <dispersion>Standard Deviation</dispersion>
+            <category_list>
+              <category>
+                <sub_title>Week 12</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="106.1" spread="13.55"/>
+                  <measurement group_id="O2" value="68.2" spread="16.41"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Week 24</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="114.2" spread="15.01"/>
+                  <measurement group_id="O2" value="73.0" spread="17.76"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Number of Patients With Moderate to Severe Flares</title>
+        <description>A moderate to severe flare was defined as the occurrence of increased lupus activity after partial or complete remission, based on the presence of 1 BILAG A score or &gt;=3 BILAG B scores. British Isles Lupus Assessment Group (BILAG) index divides lupus activity in 8 organs/systems which are each given a score of A to E. A=disease sufficiently active to need disease modifying treatment; B=problems requiring symptomatic treatment; C=mild stable disease; D=previously affected but currently inactive system; E=the system or organ has never been involved. BILAG score: A=9, B=3, C=1, D/E=0; range(0-72)</description>
+        <time_frame>12 and 24 weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intention to treat (ITT) population: All randomized patients who received at least one dose of study drug.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Number of Patients With Moderate to Severe Flares</title>
+            <description>A moderate to severe flare was defined as the occurrence of increased lupus activity after partial or complete remission, based on the presence of 1 BILAG A score or &gt;=3 BILAG B scores. British Isles Lupus Assessment Group (BILAG) index divides lupus activity in 8 organs/systems which are each given a score of A to E. A=disease sufficiently active to need disease modifying treatment; B=problems requiring symptomatic treatment; C=mild stable disease; D=previously affected but currently inactive system; E=the system or organ has never been involved. BILAG score: A=9, B=3, C=1, D/E=0; range(0-72)</description>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <sub_title>At week 12 - Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="0"/>
+                  <measurement group_id="O2" value="0"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At week 12 - No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At week 24 - Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="1"/>
+                  <measurement group_id="O2" value="0"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At week 24 - No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="41"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Duration of Exposure to Study Medication</title>
+        <description>The duration of exposure was calculated as the date of the last Mycophenolate sodium dose minus the date of the last Mycophenolate sodium dose +1.</description>
+        <time_frame>24 weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Safety population: All patients who received at least one dose of study drug and had at least one post-baseline safety assessment.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Duration of Exposure to Study Medication</title>
+            <description>The duration of exposure was calculated as the date of the last Mycophenolate sodium dose minus the date of the last Mycophenolate sodium dose +1.</description>
+            <units>days</units>
+            <param>Mean</param>
+            <dispersion>Standard Deviation</dispersion>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="164.5" spread="24.87"/>
+                  <measurement group_id="O2" value="157.7" spread="41.15"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Number of Patients With Adverse Events and Infections</title>
+        <description>Safety assessments included collecting all adverse events (AEs), serious adverse events (SAEs), with their severity and relationship to study drug. According to FDA 21CFR 314.80, a serious adverse event (SAE) is described as any adverse event that leads to death, is life threatening ( NIH criteria Grade 4), causes or prolongs hospitalization, results in a congenital anomaly, or any other important medical event not described above.</description>
+        <time_frame>24 weeks</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Safety population: All patients who received at least one dose of study drug and had at least one post-baseline safety assessment.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Number of Patients With Adverse Events and Infections</title>
+            <description>Safety assessments included collecting all adverse events (AEs), serious adverse events (SAEs), with their severity and relationship to study drug. According to FDA 21CFR 314.80, a serious adverse event (SAE) is described as any adverse event that leads to death, is life threatening ( NIH criteria Grade 4), causes or prolongs hospitalization, results in a congenital anomaly, or any other important medical event not described above.</description>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <sub_title>At least one adverse event</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="35" spread="5.63"/>
+                  <measurement group_id="O2" value="30" spread="6.62"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any severe adverse event</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="7" spread="7.08"/>
+                  <measurement group_id="O2" value="3" spread="8.31"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any drug related adverse event</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="18" spread="7.32"/>
+                  <measurement group_id="O2" value="16" spread="8.35"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any serious adverse event</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="8"/>
+                  <measurement group_id="O2" value="4"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any infection</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="25"/>
+                  <measurement group_id="O2" value="17"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any severe infection</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="3"/>
+                  <measurement group_id="O2" value="1"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any drug related infection</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="10"/>
+                  <measurement group_id="O2" value="6"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Any serious infection</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="4"/>
+                  <measurement group_id="O2" value="1"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Number of Patients With Treatment Failure</title>
+        <description>Treatment failure was defined as no therapeutic response (without complete or partial remission) or premature discontinuation during the first 24 weeks from study medication or the study for any reason except complete or partial remission.</description>
+        <time_frame>12 Weeks and 24 Weeks</time_frame>
+        <safety_issue>Yes</safety_issue>
+        <population>Safety Population: All patients who received at least one dose of study drug and had at least one post-baseline safety assessment.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Number of Patients With Treatment Failure</title>
+            <description>Treatment failure was defined as no therapeutic response (without complete or partial remission) or premature discontinuation during the first 24 weeks from study medication or the study for any reason except complete or partial remission.</description>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <sub_title>At 12 weeks -  Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="23"/>
+                  <measurement group_id="O2" value="25"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At 12 weeks -  No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="19"/>
+                  <measurement group_id="O2" value="14"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At 24 weeks - Yes</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="21"/>
+                  <measurement group_id="O2" value="22"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>At 24 weeks - No</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="21"/>
+                  <measurement group_id="O2" value="17"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Change From Baseline in Overall Disease Activity With Systematic Lupus Erythematosus Disease Activity Index (SLEDAI)</title>
+        <description>SLEDAI stands for Systemic Lupus Erythematosus Disease Activity Index and was a well established global score index based on assessment of 24 items measuring a disease activity in the 10-day period prior to the assessment. SLEDAI item weights range from 1 for fever to 8 for seizures. A maximum theoretical score is 105. Total score range from 1 to 105. A flare has been defined as a SLEDAI score increase of 3 or more to a level of 8 or higher. During flares SLEDAI scores of 25 to 30 are common.</description>
+        <time_frame>From Baseline to week 4, week 12 and week 24</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intent-to-treat (ITT) population included all randomized patients who received at least one dose of study drug. Only patients with assessments at both baseline and post-baseline visits are summarized.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Change From Baseline in Overall Disease Activity With Systematic Lupus Erythematosus Disease Activity Index (SLEDAI)</title>
+            <description>SLEDAI stands for Systemic Lupus Erythematosus Disease Activity Index and was a well established global score index based on assessment of 24 items measuring a disease activity in the 10-day period prior to the assessment. SLEDAI item weights range from 1 for fever to 8 for seizures. A maximum theoretical score is 105. Total score range from 1 to 105. A flare has been defined as a SLEDAI score increase of 3 or more to a level of 8 or higher. During flares SLEDAI scores of 25 to 30 are common.</description>
+            <units>Units on a scale</units>
+            <param>Mean</param>
+            <dispersion>Standard Deviation</dispersion>
+            <category_list>
+              <category>
+                <sub_title>Change from Baseline to Week 4: (N= 39, 37)</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="-7.4" spread="5.63"/>
+                  <measurement group_id="O2" value="-7.7" spread="6.62"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Change from Baseline to Week 12: (N= 41, 35)</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="-9.7" spread="7.08"/>
+                  <measurement group_id="O2" value="-10.3" spread="8.31"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Change from Baseline to Week 24: (N= 39, 34)</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="-10.3" spread="7.32"/>
+                  <measurement group_id="O2" value="-9.8" spread="8.35"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+      <outcome>
+        <type>Secondary</type>
+        <title>Change From Baseline in Overall Disease Activity With British Isles Lupus Assessment Group (BILAG)</title>
+        <description>BILAG (British Isles Lupus Assessment Group) index divides lupus activity into 8 organs/systems and was based on the principle of the physician's intention to treat, assessing activity in the previous one month. Each organ or system was given a score of A to E, where A = disease that is sufficiently active to require disease modifying treatment; a B = problems requiring symptomatic treatment; C = stable mild disease; D = previously affected but currently inactive system; and E = the system or organ has never been involved. [A=9, B=3, C=1, D/E=0  the score range for each patient will be 0-72].</description>
+        <time_frame>From Baseline to week 4, week 12 and week 24</time_frame>
+        <safety_issue>No</safety_issue>
+        <population>Intent-to-treat (ITT) populationincluded all randomized patients who received at least one dose of study drug. Only patients with assessments at both baseline and post-baseline visits are summarized.</population>
+        <group_list>
+          <group group_id="O1">
+            <title>Standard Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+          <group group_id="O2">
+            <title>Low Dose</title>
+            <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+          </group>
+        </group_list>
+        <measure_list>
+          <measure>
+            <title>Number of Participants</title>
+            <units>participants</units>
+            <param>Number</param>
+            <category_list>
+              <category>
+                <measurement_list>
+                  <measurement group_id="O1" value="42"/>
+                  <measurement group_id="O2" value="39"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+          <measure>
+            <title>Change From Baseline in Overall Disease Activity With British Isles Lupus Assessment Group (BILAG)</title>
+            <description>BILAG (British Isles Lupus Assessment Group) index divides lupus activity into 8 organs/systems and was based on the principle of the physician's intention to treat, assessing activity in the previous one month. Each organ or system was given a score of A to E, where A = disease that is sufficiently active to require disease modifying treatment; a B = problems requiring symptomatic treatment; C = stable mild disease; D = previously affected but currently inactive system; and E = the system or organ has never been involved. [A=9, B=3, C=1, D/E=0  the score range for each patient will be 0-72].</description>
+            <units>Units on a scale</units>
+            <param>Mean</param>
+            <dispersion>Standard Deviation</dispersion>
+            <category_list>
+              <category>
+                <sub_title>Change from baseline Week 4: (N= 40, 37)</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="-4.8" spread="5.34"/>
+                  <measurement group_id="O2" value="-5.5" spread="6.50"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Change from baseline Week 12: (N= 41, 35)</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="-8.6" spread="6.76"/>
+                  <measurement group_id="O2" value="-8.7" spread="6.19"/>
+                </measurement_list>
+              </category>
+              <category>
+                <sub_title>Change from baseline Week 24: (N= 40, 34)</sub_title>
+                <measurement_list>
+                  <measurement group_id="O1" value="-8.6" spread="5.79"/>
+                  <measurement group_id="O2" value="-9.4" spread="5.52"/>
+                </measurement_list>
+              </category>
+            </category_list>
+          </measure>
+        </measure_list>
+      </outcome>
+    </outcome_list>
+
+    <reported_events>
+      <group_list>
+        <group group_id="E1">
+          <title>Standard Dose</title>
+          <description>Mycophenolate sodium was administered orally in combination with a standard dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 1 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+        </group>
+        <group group_id="E2">
+          <title>Low Dose</title>
+          <description>Mycophenolate sodium was administered orally in combination with a reduced dose of corticosteroids (CS) administered as prednisone or prednisone equivalent (PRED). Mycophenolate sodium was administered in divided doses at a daily dose of 1440 mg during the first 2 weeks of the study and then at 2160 mg daily for the next 22 weeks. The dose of CS was started at 0.5 mg per kg body weight and subsequently tapered according to the patient's weight. The planned treatment duration was 24 weeks.</description>
+        </group>
+      </group_list>
+      <serious_events>
+        <default_vocab>MedDRA</default_vocab>
+        <default_assessment>Systematic Assessment</default_assessment>
+        <category_list>
+          <category>
+            <title>Total</title>
+            <event_list>
+              <event>
+                <sub_title>Total, serious adverse events</sub_title>
+                <counts group_id="E1" subjects_affected="8" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="4" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Gastrointestinal disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Diarrhoea</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Pancreatitis acute</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Vomiting</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>General disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Death</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Mucosal inflammation</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Multi-organ failure</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Oedema peripheral</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Infections and infestations</title>
+            <event_list>
+              <event>
+                <sub_title>Cytomegalovirus infection</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Epstein-barr virus infection</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Gastroenteritis</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Herpes zoster</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Sinusitis</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Injury, poisoning and procedural complications</title>
+            <event_list>
+              <event>
+                <sub_title>Fall</sub_title>
+                <counts group_id="E1" subjects_affected="0" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Tendon rupture</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Nervous system disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Headache</sub_title>
+                <counts group_id="E1" subjects_affected="0" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Syncope</sub_title>
+                <counts group_id="E1" subjects_affected="0" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Renal and urinary disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Renal failure acute</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Respiratory, thoracic and mediastinal disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Dysphonia</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Vascular disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Hypertension</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+        </category_list>
+      </serious_events>
+      <other_events>
+        <frequency_threshold>5</frequency_threshold>
+        <default_vocab>MedDRA</default_vocab>
+        <default_assessment>Systematic Assessment</default_assessment>
+        <category_list>
+          <category>
+            <title>Total</title>
+            <event_list>
+              <event>
+                <sub_title>Total, other adverse events</sub_title>
+                <counts group_id="E1" subjects_affected="28" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="18" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Blood and lymphatic system disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Anaemia</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="3" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Cardiac disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Tachycardia</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Gastrointestinal disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Abdominal pain upper</sub_title>
+                <counts group_id="E1" subjects_affected="1" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="3" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Constipation</sub_title>
+                <counts group_id="E1" subjects_affected="3" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Diarrhoea</sub_title>
+                <counts group_id="E1" subjects_affected="9" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="8" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Gastritis</sub_title>
+                <counts group_id="E1" subjects_affected="0" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Nausea</sub_title>
+                <counts group_id="E1" subjects_affected="3" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Vomiting</sub_title>
+                <counts group_id="E1" subjects_affected="3" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="4" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>General disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Oedema peripheral</sub_title>
+                <counts group_id="E1" subjects_affected="4" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="5" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Infections and infestations</title>
+            <event_list>
+              <event>
+                <sub_title>Folliculitis</sub_title>
+                <counts group_id="E1" subjects_affected="0" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Herpes zoster</sub_title>
+                <counts group_id="E1" subjects_affected="6" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="0" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Nasopharyngitis</sub_title>
+                <counts group_id="E1" subjects_affected="4" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Upper respiratory tract infection</sub_title>
+                <counts group_id="E1" subjects_affected="4" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Musculoskeletal and connective tissue disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Arthralgia</sub_title>
+                <counts group_id="E1" subjects_affected="4" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="5" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Muscle spasms</sub_title>
+                <counts group_id="E1" subjects_affected="3" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="1" subjects_at_risk="39"/>
+              </event>
+              <event>
+                <sub_title>Musculoskeletal stiffness</sub_title>
+                <counts group_id="E1" subjects_affected="0" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Psychiatric disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Insomnia</sub_title>
+                <counts group_id="E1" subjects_affected="4" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="4" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Respiratory, thoracic and mediastinal disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Cough</sub_title>
+                <counts group_id="E1" subjects_affected="3" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+          <category>
+            <title>Vascular disorders</title>
+            <event_list>
+              <event>
+                <sub_title>Hypertension</sub_title>
+                <counts group_id="E1" subjects_affected="2" subjects_at_risk="42"/>
+                <counts group_id="E2" subjects_affected="2" subjects_at_risk="39"/>
+              </event>
+            </event_list>
+          </category>
+        </category_list>
+      </other_events>
+    </reported_events>
+
+    <certain_agreements>
+      <restrictive_agreement>The terms and conditions of Novartis' agreements with its investigators may vary.  However, Novartis does not prohibit any investigator from publishing.  Any publications from a single-site are postponed until the publication of the pooled data (i.e., data from all sites) in the clinical trial.</restrictive_agreement>
+    </certain_agreements>
+    <point_of_contact>
+      <name_or_title>Study Director</name_or_title>
+      <organization>Novartis Pharmaceuticals</organization>
+      <phone>862-778-8300</phone>
+    </point_of_contact>
+  </clinical_results>
+</clinical_study>

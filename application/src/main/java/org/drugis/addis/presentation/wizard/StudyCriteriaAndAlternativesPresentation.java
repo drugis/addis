@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
@@ -37,13 +38,12 @@ import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.beans.FilteredObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
@@ -51,12 +51,12 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class StudyCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<Arm> {
 	
-	public class IndicationFilter implements Filter<Study> {
+	public class IndicationFilter implements Predicate<Study> {
 		private final Indication d_indication;
 		public IndicationFilter(Indication i) {
 			d_indication = i;
 		}
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return s.getIndication().equals(d_indication);
 		}
 	}

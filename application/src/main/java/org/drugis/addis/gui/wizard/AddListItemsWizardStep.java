@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,31 +31,24 @@ import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Note;
 import org.drugis.addis.entities.TypeWithName;
 import org.drugis.addis.gui.Main;
 import org.drugis.addis.presentation.ListOfNamedValidator;
-import org.drugis.addis.presentation.ModifiableHolder;
-import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.addis.presentation.wizard.AddListItemsPresentation;
+import org.drugis.common.event.IndifferentListDataListener;
 import org.drugis.common.gui.LayoutUtil;
-import org.drugis.common.gui.OkCancelDialog;
 import org.pietschy.wizard.PanelWizardStep;
 
 import com.jgoodies.binding.PresentationModel;
@@ -92,17 +85,8 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 	private void resetUnderlyingList() {
 		d_validator = new ListOfNamedValidator<T>(d_pm.getList(), d_pm.getMinElements());
 		PropertyConnector.connectAndUpdate(d_validator, this, "complete");
-		d_pm.getList().addListDataListener(new ListDataListener() {
-			
-			public void intervalRemoved(ListDataEvent e) {
-				rebuild();
-			}
-			
-			public void intervalAdded(ListDataEvent e) {
-				rebuild();
-			}
-			
-			public void contentsChanged(ListDataEvent e) {
+		d_pm.getList().addListDataListener(new IndifferentListDataListener() {
+			public void update() {
 				rebuild();
 			}
 		});
@@ -117,13 +101,12 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		return d_pm.getNotes(t);
 	}
 
-	public void rebuild() { 
+	public void rebuild() {
 		this.setVisible(false);
-		 
-		if (d_scrollPane != null)
-			remove(d_scrollPane);
+
+		if (d_scrollPane != null) remove(d_scrollPane);
 		buildWizardStep();
-		 
+
 		this.setVisible(true);
 	}
 
@@ -140,14 +123,14 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		d_builder = new PanelBuilder(layout);
 		d_builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
+
 		int rows = 1;
 		d_builder.addSeparator(d_pm.getItemName() + "s", cc.xyw(1, 1, 9));
-		
+
 		for(int i = 0; i < d_pm.getList().size(); ++i) {
 			rows = addComponents(d_builder, layout, cc, rows, i);
 		}
-		
+
 		rows = LayoutUtil.addRow(layout, rows);
 		JButton addBtn = new JButton("Add " + d_pm.getItemName());
 		d_builder.add(addBtn, cc.xy(1, rows));
@@ -156,24 +139,24 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 				d_pm.getList().add(createItem());
 			}
 		});
-		
+
 		JPanel panel = d_builder.getPanel();
 		this.setLayout(new BorderLayout());
 		d_scrollPane = new JScrollPane(panel);
 		d_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-	
+
 		add(d_scrollPane, BorderLayout.CENTER);
 	}
 
 	private int addComponents(PanelBuilder builder, FormLayout layout, CellConstraints cc, int rows, final int idx) {
 		rows = LayoutUtil.addRow(layout, rows);
-		
-		// add "remove" button 
+
+		// add "remove" button
 		JButton removeBtn = new JButton("Remove");
 		Bindings.bind(removeBtn, "enabled", d_pm.getRemovable(d_pm.getList().get(idx)));
 		builder.add(removeBtn, cc.xy(1, rows));
 		removeBtn.addActionListener(new RemoveItemListener(idx));
-		
+
 		// name input field
 		builder.addLabel("Name: ", cc.xy (3, rows));
 		JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -187,93 +170,46 @@ public abstract class AddListItemsWizardStep<T extends TypeWithName> extends Pan
 		});
 		namePanel.add(editNameButton);
 		builder.add(namePanel, cc.xy(5, rows));
-		
+
 		// type specific input fields
 		addAdditionalFields(builder, cc, rows, idx);
-		
+
 		// notes
 		rows = LayoutUtil.addRow(layout, rows);
 		d_builder.add(AddStudyWizard.buildNotesEditor(getNotes(d_pm.getList().get(idx))), cc.xyw(5, rows, 5));
-	
+
 		return rows;
 	}
-	
+
 	private void showRenameDialog(final int idx) {
-		JDialog renameDialog = new RenameDialog(d_parent, "Rename " + d_pm.getItemName(), true, idx);
+		JDialog renameDialog = new AddListItemsRenameDialog(d_parent, "Rename " + d_pm.getItemName(), true, idx);
 		renameDialog.setVisible(true);
 	}
 
 	private ValueModel getNameModel(final int idx) {
 		return new PresentationModel<TypeWithName>(d_pm.getList().get(idx)).getModel(TypeWithName.PROPERTY_NAME);
 	}
-	
-	private final class RenameDialog extends OkCancelDialog {
-		private final int d_idx;
-		private final ValueHolder<String> d_name;
-		private ValueHolder<Boolean> d_okEnabledModel = new ModifiableHolder<Boolean>(true);
 
-		private RenameDialog(Dialog owner, String title, boolean modal, int idx) {
-			super(owner, title, modal);
-			setLocationRelativeTo(owner);
-			d_idx = idx;
-			d_name = new ModifiableHolder<String>(d_pm.getList().get(d_idx).getName());
-			d_name.addValueChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					d_okEnabledModel.setValue(isCommitAllowed());
-				}
-			});
-			initComponents();
+	private class AddListItemsRenameDialog extends RenameDialog {
+		private AddListItemsRenameDialog(Dialog owner, String title, boolean modal, int idx) {
+			super(owner, title, modal, d_pm.getList(), idx);
 		}
 
-		private boolean nameIsUnique() {
-			for(int i = 0; i < d_pm.getList().size(); ++i) {
-				if (i != d_idx && d_name.getValue().equals(d_pm.getList().get(i).getName())) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		private void initComponents() {
-			getUserPanel().setLayout(new BorderLayout());
-			getUserPanel().add(BasicComponentFactory.createTextField(d_name, false), BorderLayout.CENTER);
-			pack();
-
-			getUserPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "submit");
-			getUserPanel().getActionMap().put("submit", new AbstractAction() {
-				public void actionPerformed(ActionEvent e) {
-					commit();
-				}
-			});
-			
-			Bindings.bind(d_okButton, "enabled", d_okEnabledModel);
-		}
-
-		protected void commit() {
-			if (isCommitAllowed()) {
-				d_pm.rename(d_idx, d_name.getValue());
-				setVisible(false);
-			}
-		}
-
-		protected void cancel() {
-			setVisible(false);
-		}
-
-		private boolean isCommitAllowed() {
-			return !d_name.getValue().isEmpty() && nameIsUnique();
+		@Override
+		protected void rename(String newName) {
+			d_pm.rename(d_idx, newName);
 		}
 	}
 
-	class RemoveItemListener extends AbstractAction {
+	private class RemoveItemListener extends AbstractAction {
 		int d_index;
-		
+
 		public RemoveItemListener(int index) {
 			d_index = index;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
-			d_pm.getList().remove(d_index);
-		}	
+			d_pm.remove(d_index);
+		}
 	}
 }

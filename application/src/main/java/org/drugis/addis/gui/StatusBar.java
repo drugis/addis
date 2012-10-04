@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package org.drugis.addis.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,6 +37,7 @@ import javax.swing.JToolBar;
 
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.presentation.ThreadHandlerPresentation;
+import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.gui.LinkLabel;
 import org.drugis.common.gui.OneWayObjectFormat;
 
@@ -45,6 +48,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 @SuppressWarnings("serial")
 public class StatusBar extends JToolBar {
 	private ThreadHandlerPresentation d_ThreadHandlerPresentation = new ThreadHandlerPresentation();
+	private JLabel d_verionLabel;
 	
 	public StatusBar(){
 		super();
@@ -55,18 +59,29 @@ public class StatusBar extends JToolBar {
 		builder.addButton(createCounter("for", "user tasks", d_ThreadHandlerPresentation.getThreadsInQueue()));
 		builder.addGlue();
 		
-		String latestVersion = AppInfo.getLatestVersion();
-		if (latestVersion != null) {
-			LinkLabel linkLabel = new LinkLabel(
-					"<font color=\"red\">new version available</font>",
-					"http://drugis.org/files/addis-" + latestVersion + ".zip");
-			linkLabel.setForeground(Color.RED);
-			builder.addButton(linkLabel);
-			builder.addRelatedGap();
-		}
+		final ValueHolder<String> latestVersion = AppInfo.getLatestVersion();
+		updateVersionLabel(latestVersion);
+		latestVersion.addValueChangeListener(new PropertyChangeListener() {	
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateVersionLabel(latestVersion);
+			}
+		});
+		builder.addButton(d_verionLabel);
+		builder.addRelatedGap();
 		builder.addButton(GUIFactory.buildSiteLink());
 
 		add(builder.getPanel(), BorderLayout.CENTER);
+	}
+
+	private void updateVersionLabel(ValueHolder<String> latestVersion) {
+		d_verionLabel = new JLabel();
+		if (AppInfo.compareVersion(latestVersion.getValue(), AppInfo.getAppVersion())) {
+			d_verionLabel = new LinkLabel(
+					"<font color=\"red\">new version available</font>",
+					"http://drugis.org/files/addis-" + latestVersion.getValue() + ".zip");
+			d_verionLabel.setForeground(Color.RED);
+
+		}
 	}
 
 	private JPanel createCounter(String pre, String post, ValueModel threads) {

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,17 +34,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.SortedSetModel;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 
 import com.jgoodies.binding.beans.BeanUtils;
+import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 
 public class DomainImpl extends Domain {
@@ -55,6 +58,8 @@ public class DomainImpl extends Domain {
 		new EntityCategory("indications", Indication.class);
 	private static final EntityCategory CATEGORY_DRUGS =
 		new EntityCategory("drugs", Drug.class);
+	private static final EntityCategory CATEGORY_TREATMENTCATEGORIZATIONS =
+			new EntityCategory("treatmentCategorizations", TreatmentCategorization.class);
 	private static final EntityCategory CATEGORY_ENDPOINTS =
 		new EntityCategory("endpoints", Endpoint.class);
 	private static final EntityCategory CATEGORY_ADVERSE_EVENTS =
@@ -76,6 +81,7 @@ public class DomainImpl extends Domain {
 			CATEGORY_UNITS,
 			CATEGORY_INDICATIONS,
 			CATEGORY_DRUGS,
+			CATEGORY_TREATMENTCATEGORIZATIONS,
 			CATEGORY_ENDPOINTS,
 			CATEGORY_ADVERSE_EVENTS,
 			CATEGORY_POPULATION_CHARACTERISTICS,
@@ -118,6 +124,8 @@ public class DomainImpl extends Domain {
 	private SortedSetModel<Study> d_studies = new DomainSortedSetModel<Study>();
 	private SortedSetModel<MetaAnalysis> d_metaAnalyses = new DomainSortedSetModel<MetaAnalysis>();		
 	private SortedSetModel<Drug> d_drugs = new DomainSortedSetModel<Drug>();
+	private ObservableList<TreatmentCategorization> d_treatments = new ArrayListModel<TreatmentCategorization>();
+
 	private SortedSetModel<Indication> d_indications = new DomainSortedSetModel<Indication>();	
 	private SortedSetModel<Unit> d_units = new DomainSortedSetModel<Unit>();
 	private SortedSetModel<PopulationCharacteristic> d_populationCharacteristics = new DomainSortedSetModel<PopulationCharacteristic>();
@@ -127,13 +135,13 @@ public class DomainImpl extends Domain {
 	private FilteredObservableList<MetaAnalysis> d_pairWiseMetaAnalyses;
 	
 	public DomainImpl() {
-		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new FilteredObservableList.Filter<MetaAnalysis>() {
-			public boolean accept(MetaAnalysis obj) {
+		d_pairWiseMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new Predicate<MetaAnalysis>() {
+			public boolean evaluate(MetaAnalysis obj) {
 				return obj instanceof PairWiseMetaAnalysis;
 			}
 		});
-		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new FilteredObservableList.Filter<MetaAnalysis>() {
-			public boolean accept(MetaAnalysis obj) {
+		d_networkMetaAnalyses = new FilteredObservableList<MetaAnalysis>(getMetaAnalyses(), new Predicate<MetaAnalysis>() {
+			public boolean evaluate(MetaAnalysis obj) {
 				return obj instanceof NetworkMetaAnalysis;
 			}
 		});
@@ -168,12 +176,24 @@ public class DomainImpl extends Domain {
 		throw new RuntimeException(e.getClass() + " not supported");
 	}
 	
+	/**
+	 * Creates new trivial TreatmentDefinitions based on drug
+	 * @param the drug to create a list for
+	 */
 	public ObservableList<Study> getStudies(Drug d) {
-		return new FilteredObservableList<Study>(getStudies(), new DrugFilter(new DrugSet(d)));
+		return new FilteredObservableList<Study>(getStudies(), new TreatmentDefinitionFilter(TreatmentDefinition.createTrivial(d)));
 	}
 	
 	public ObservableList<Study> getStudies(Indication i) {
 		return new FilteredObservableList<Study>(getStudies(), new IndicationFilter(i));
+	}
+	
+	public ObservableList<TreatmentCategorization> getCategorizations(final Drug drug) {
+		return new FilteredObservableList<TreatmentCategorization>(getTreatmentCategorizations(), new Predicate<TreatmentCategorization>() {
+			public boolean evaluate(TreatmentCategorization obj) {
+				return obj.getDrug().equals(drug);
+			}
+		});
 	}
 	
 	@Override
@@ -183,6 +203,7 @@ public class DomainImpl extends Domain {
 			return (
 				getEndpoints().equals(other.getEndpoints()) &&
 				getDrugs().equals(other.getDrugs()) &&
+				getTreatmentCategorizations().equals(other.getTreatmentCategorizations()) &&
 				getIndications().equals(other.getIndications()) &&
 				getAdverseEvents().equals(other.getAdverseEvents()) &&
 				getPopulationCharacteristics().equals(other.getPopulationCharacteristics()) &&
@@ -226,6 +247,8 @@ public class DomainImpl extends Domain {
 	public void deleteEntity(Entity entity) throws DependentEntitiesException {
 		if (entity instanceof Drug) {
 			getDrugs().remove(((Drug) entity));
+		} else if (entity instanceof TreatmentCategorization) {
+			getTreatmentCategorizations().remove(((TreatmentCategorization) entity));
 		} else if (entity instanceof Endpoint) {
 			getEndpoints().remove(((Endpoint) entity));
 		} else if (entity instanceof AdverseEvent) {
@@ -318,6 +341,11 @@ public class DomainImpl extends Domain {
 	public SortedSetModel<Drug> getDrugs() {
 		return d_drugs;
 	}
+	
+	@Override
+	public ObservableList<TreatmentCategorization> getTreatmentCategorizations() {
+		return d_treatments;
+	}
 
 	@Override
 	public SortedSetModel<Indication> getIndications() {
@@ -369,59 +397,64 @@ public class DomainImpl extends Domain {
 		return d_units;
 	}
 
-	public static class EndpointFilter implements Filter<Study> {
+	public static class EndpointFilter implements Predicate<Study> {
 		private Endpoint d_endpoint;
 
 		public EndpointFilter(Endpoint e) {
 			d_endpoint = e;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return Study.extractVariables(s.getEndpoints()).contains(d_endpoint);
 		}
 	}
-	public static class AdverseEventFilter implements Filter<Study> {
+	public static class AdverseEventFilter implements Predicate<Study> {
 		private AdverseEvent d_adverseEvent;
 
 		public AdverseEventFilter(AdverseEvent ade) {
 			d_adverseEvent = ade;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return Study.extractVariables(s.getAdverseEvents()).contains(d_adverseEvent);
 		}
 	}
-	public static class PopulationCharacteristicFilter implements Filter<Study> {
+	public static class PopulationCharacteristicFilter implements Predicate<Study> {
 		private PopulationCharacteristic d_popChar;
 
 		public PopulationCharacteristicFilter(PopulationCharacteristic e) {
 			d_popChar = e;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return Study.extractVariables(s.getPopulationChars()).contains(d_popChar);
 		}
 	}
-	public static class IndicationFilter implements Filter<Study> {
+	public static class IndicationFilter implements Predicate<Study> {
 		private final Indication d_indication;
 
 		public IndicationFilter(Indication indication) {
 			d_indication = indication;
 		}
 
-		public boolean accept(Study s) {
+		public boolean evaluate(Study s) {
 			return s.getIndication().equals(d_indication);
 		}
 	}
-	public class DrugFilter implements Filter<Study> {
-		private final DrugSet d_drugSet;
+	public class TreatmentDefinitionFilter implements Predicate<Study> {
+		private final TreatmentDefinition d_treatmentDefinition;
 		
-		public DrugFilter(DrugSet ds) {
-			d_drugSet = ds;
+		public TreatmentDefinitionFilter(TreatmentDefinition td) {
+			d_treatmentDefinition = td;
 		}
 		
-		public boolean accept(Study s) {
-			return s.getDrugs().contains(d_drugSet);
+		public boolean evaluate(Study s) {
+			for (Arm a : s.getArms()) {
+				if (d_treatmentDefinition.match(s, a)) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class StudyCharTableModelTest {
 	private Domain d_domain;
 	private StudyCharTableModel d_model;
 	private Indication d_ind;
-	private IndicationPresentation d_pm;
+	private StudyListPresentation d_pm;
 	private PresentationModelFactory d_pmf;
 	
 	@Before
@@ -67,7 +67,7 @@ public class StudyCharTableModelTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		d_ind = d_domain.getIndications().get(0);
-		d_pm = new IndicationPresentation(d_ind, d_domain.getStudies());
+		d_pm = new StudyListPresentation(d_domain.getStudies(d_ind));
 		d_pmf = new PresentationModelFactory(d_domain);
 		d_model = new StudyCharTableModel(d_pm, d_pmf);
 		
@@ -162,7 +162,7 @@ public class StudyCharTableModelTest {
 	@Test
 	public void testChangeContentsFiresTableChanged() {
 		ArrayListModel<Study> list = new ArrayListModel<Study>();
-		DefaultStudyListPresentation model = new DefaultStudyListPresentation(list);
+		StudyListPresentation model = new StudyListPresentation(list);
 		TableModel tableModel = new StudyCharTableModel(model, new PresentationModelFactory(d_domain));
 		TableModelListener mock = JUnitUtil.mockTableModelListener(new TableModelEvent(tableModel ));
 		tableModel.addTableModelListener(mock);

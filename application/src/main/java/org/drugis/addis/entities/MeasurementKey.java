@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,38 +27,32 @@
 package org.drugis.addis.entities;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
 import org.drugis.common.EqualsUtil;
 
-public class MeasurementKey extends AbstractEntity implements Entity, Comparable<MeasurementKey> {
+public class MeasurementKey extends AbstractEntity implements Entity {
 
-	private final Variable d_variable;
 	private final Arm d_arm;
 	private final WhenTaken d_wt;
+	private final StudyOutcomeMeasure<? extends Variable> d_som;
 
-	public MeasurementKey(Variable v, Arm a, WhenTaken wt) {
-		if (v == null) {
-			throw new NullPointerException("Variable may not be null");
-		}
-		if (v instanceof OutcomeMeasure && a == null) {
-			throw new NullPointerException(
-					"Arm may not be null for Endpoints/ADEs");
-		}
-		if (wt == null) {
-			throw new NullPointerException("Moment of measurement may not be null");
-		}
-		d_variable = v;
+	public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
+		if (som.getValue() instanceof OutcomeMeasure && a == null) throw new NullPointerException("Arm may not be null for Endpoints/ADEs");
+		if (wt == null) throw new NullPointerException("Moment of measurement may not be null");
+
+		d_som = som;
 		d_arm = a;
 		d_wt = wt;
 	}
 
-	public MeasurementKey(StudyOutcomeMeasure<? extends Variable> som, Arm a, WhenTaken wt) {
-		this(som.getValue(), a, wt);
+	public Variable getVariable() {
+		return d_som.getValue();
 	}
 
-	public Variable getVariable() {
-		return d_variable;
+	public StudyOutcomeMeasure<? extends Variable> getStudyOutcomeMeasure() {
+		return d_som;
 	}
 
 	public Arm getArm() {
@@ -71,26 +65,37 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 
 	@Override
 	public String toString() {
-		return "<" + d_variable + ", " + d_arm + " at " + d_wt + ">";
+		return "<" + d_som + ", " + d_arm + " at " + d_wt + ">";
 	}
 
 	@Override
 	public boolean equals(Object o) {
+		MeasurementKey other = matching(o);
+		return other != null && d_som == other.d_som;
+	}
+
+	public boolean deepEquals(Object o)  {
+		MeasurementKey other = matching(o);
+		return other != null && EqualsUtil.equal(d_som, other.d_som);
+	}
+
+	public MeasurementKey matching(Object o) {
 		if (o instanceof MeasurementKey) {
 			MeasurementKey other = (MeasurementKey) o;
-			return d_variable.equals(other.d_variable)
-					&& EqualsUtil.equal(d_arm, other.d_arm)
-					&& EqualsUtil.equal(d_wt, other.d_wt);
+			if(EqualsUtil.equal(d_arm, other.d_arm)
+				&& EqualsUtil.equal(d_wt, other.d_wt)) {
+				return other;
+			}
 		}
-		return false;
+		return null;
 	}
 
 	@Override
 	public int hashCode() {
 		int code = 1;
-		code = code * 31 + d_variable.hashCode();
-		code = code * 31 + (d_arm == null ? 0 : d_arm.hashCode());
-		code = code * 31 + (d_wt == null ? 0 : d_wt.hashCode());
+		code = code ^ (d_som == null ? 0 : System.identityHashCode(d_som));
+		code = code ^ (d_arm == null ? 0 : d_arm.hashCode());
+		code = code ^ (d_wt == null ? 0 : d_wt.hashCode());
 		return code;
 	}
 
@@ -99,20 +104,22 @@ public class MeasurementKey extends AbstractEntity implements Entity, Comparable
 		return Collections.emptySet();
 	}
 
-	@Override
-	public int compareTo(MeasurementKey o) {
-		if (d_variable.compareTo(o.d_variable) == 0) {
-			if (d_arm != null) {
-				if (d_arm.compareTo(o.d_arm) == 0) {
-					return d_wt.compareTo(o.d_wt);
+	public static class MeasurementKeyComparator implements Comparator<MeasurementKey> {
+		public int compare(MeasurementKey k0, MeasurementKey k1) {
+			int variable = k0.getVariable().compareTo(k1.getVariable());
+			if (variable == 0) {
+				if (k0.getArm() != null) {
+					if (k0.getArm().compareTo(k1.getArm()) == 0) {
+						return k0.getWhenTaken().compareTo(k1.getWhenTaken());
+					}
+					return k0.getArm().compareTo(k1.getArm());
+				} else if (k1.getArm() == null) {
+					return k0.getWhenTaken().compareTo(k1.getWhenTaken());
+				} else {
+					return -1;
 				}
-				return d_arm.compareTo(o.d_arm);
-			} else if (o.d_arm == null) {
-				return d_wt.compareTo(o.d_wt);
-			} else {
-				return -1;
 			}
+			return variable;
 		}
-		return d_variable.compareTo(o.d_variable);
 	}
 }

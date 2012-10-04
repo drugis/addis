@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CharacteristicSelectDialog;
 import org.drugis.addis.presentation.StudyCharTableModel;
 import org.drugis.addis.presentation.StudyListPresentation;
-import org.drugis.common.gui.GUIHelper;
+import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 
@@ -45,11 +45,11 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 public class StudiesTablePanel extends TablePanel {
 	public StudiesTablePanel(StudyListPresentation studyListPresentationModel, AddisWindow main) {
 		super(EntityTablePanel.createTable(main, new StudyCharTableModel(studyListPresentationModel, main.getPresentationModelFactory())));
-		
+
 		ButtonBarBuilder2 bb = new ButtonBarBuilder2();
 		bb.addButton(StudiesTablePanel.buildCustomizeButton(studyListPresentationModel, main));
 		bb.addGlue();
-		
+
 		add(bb.getPanel(), BorderLayout.SOUTH);
 	}
 
@@ -58,7 +58,6 @@ public class StudiesTablePanel extends TablePanel {
 		customizeButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent event) {
 				JDialog dialog = new CharacteristicSelectDialog(main, studyListPM);
-				GUIHelper.centerWindow(dialog, main);
 				dialog.setVisible(true);
 			}
 		});

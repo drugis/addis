@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,9 @@ import java.util.List;
 
 import org.drugis.addis.entities.StudyOutcomeMeasure;
 import org.drugis.addis.entities.Variable;
+import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.gui.AddisWindow;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
+import org.drugis.addis.presentation.wizard.WhenTakenFactory;
 import org.drugis.common.EqualsUtil;
 import org.drugis.common.gui.GUIHelper;
 
@@ -55,6 +56,11 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	private String d_title;
 	private String d_description;
 	private PropertyChangeListener d_slotValueListener = new SlotsUniqueListener();
+	private PropertyChangeListener d_placeHolderListener = new PropertyChangeListener() {
+		public void propertyChange(PropertyChangeEvent evt) {
+			d_inputCompleteModel.evaluate();
+		}
+	};
 	private final WhenTakenFactory d_wtf;
 	private final Class<T> d_type;
 
@@ -76,13 +82,18 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 
 	public void addSlot() {
 		StudyOutcomeMeasure<T> som = new StudyOutcomeMeasure<T>(d_type);
-		som.getWhenTaken().add(d_wtf.buildDefault());
+		WhenTaken measurmentEpoch = d_wtf.buildDefault();
+		if(measurmentEpoch != null) {
+			som.getWhenTaken().add(measurmentEpoch);
+		}
 		d_slots.add(som);
 		bindSlot(som);
 	}
 
 	private void bindSlot(StudyOutcomeMeasure<T> slot) {
 		slot.addPropertyChangeListener("value", d_slotValueListener);
+		slot.addPropertyChangeListener(StudyOutcomeMeasure.PROPERTY_HAS_PLACEHOLDER, d_placeHolderListener);
+
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() - 1, d_slots.size());
 		d_inputCompleteModel.addSlot(slot);
 	}
@@ -99,6 +110,8 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 
 	private void unbindSlot(StudyOutcomeMeasure<T> s) {
 		s.removePropertyChangeListener("value", d_slotValueListener);
+		s.removePropertyChangeListener(StudyOutcomeMeasure.PROPERTY_HAS_PLACEHOLDER, d_placeHolderListener);
+
 		firePropertyChange(PROPERTY_NSLOTS, d_slots.size() + 1, d_slots.size());
 		d_inputCompleteModel.removeSlot(s);
 	}
@@ -118,7 +131,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 	public boolean hasAddOptionDialog() {
 		return true;
 	}
-	
+
 	public void showAddOptionDialog(int idx) {
 		throw new RuntimeException("AddOptionDialog not implemented");
 	}
@@ -152,7 +165,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 			bindSlot(slot);
 		}
 	}
-	
+
 	class Slot<E> extends ModifiableHolder<E> {
 		private List<ModifiableHolder<E>> d_slots;
 		public Slot(List<ModifiableHolder<E>> slots) {
@@ -160,7 +173,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 		}
 		@Override
 		public void setValue(Object obj) {
-			super.setValue(obj);			
+			super.setValue(obj);
 			// Make sure each option is selected only once
 			for (ModifiableHolder<E> s : d_slots) {
 				if (s.getValue() != null && s != this && EqualsUtil.equal(s.getValue(), getValue())) {
@@ -168,34 +181,36 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 				}
 			}
 		}
-		
+
 	}
-	
+
 	class SlotsUniqueListener implements PropertyChangeListener {
 		@SuppressWarnings("unchecked")
 		public void propertyChange(PropertyChangeEvent evt) {
 			StudyOutcomeMeasure<T> holder = (StudyOutcomeMeasure<T>) evt.getSource();
-			if (holder.getValue() == null) {
+			if (holder.getValue() == null && holder.hasPlaceholder()) {
 				return;
 			}
 			for (StudyOutcomeMeasure<T> som : d_slots) {
-				if (som.getValue() != null && som != holder && EqualsUtil.equal(som.getValue(), holder.getValue())) {
+				if ((som.getValue() != null && !som.hasPlaceholder())
+						&& som != holder
+						&& EqualsUtil.equal(som.getValue(), holder.getValue())) {
 					som.setValue(null);
 				}
 			}
 		}
 	}
-	
+
 	public class InputCompleteModel extends AbstractValueModel implements PropertyChangeListener {
 		private Boolean d_oldValue;
-		
+
 		public InputCompleteModel() {
 			for (ModifiableHolder<T> s : d_slots) {
 				s.addValueChangeListener(this);
 			}
 			d_oldValue = getValue();
 		}
-		
+
 		public void propertyChange(PropertyChangeEvent evt) {
 			evaluate();
 		}
@@ -210,19 +225,23 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 		public Boolean getValue() {
 			boolean r = true;
 			for (ModifiableHolder<T> s: d_slots) {
-				if (s.getValue() == null) {
-					r = false;
-					break;
+				if (s instanceof StudyOutcomeMeasure) {
+					StudyOutcomeMeasure<T> som = (StudyOutcomeMeasure<T>) s;
+					if (s.getValue() != null && som.hasPlaceholder()) {
+						r = false;
+						break;
+					}
 				}
+
 			}
 			return r;
 		}
-		
+
 		public void addSlot(ModifiableHolder<T> s) {
 			s.addValueChangeListener(this);
 			evaluate();
 		}
-		
+
 		public void removeSlot(ModifiableHolder<T> s) {
 			s.removeValueChangeListener(this);
 			evaluate();
@@ -232,7 +251,7 @@ abstract public class SelectVariablesPresentation<T extends Variable> extends Mo
 			throw new RuntimeException("InputCompleteModel is read-only");
 		}
 	}
-	
+
 	public class AddSlotsAlwaysEnabledModel extends AbstractValueModel {
 		public Object getValue() {
 			return true;

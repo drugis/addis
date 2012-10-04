@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.ReadOnlyObservableList;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.TransformedObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 
 import com.jgoodies.binding.list.ObservableList;
@@ -48,8 +48,8 @@ public class SelectableOptionsModel<E extends Comparable<? super E>> {
 
 	public SelectableOptionsModel() {
 		ObservableList<Option<E>> contentAware = new ContentAwareListModel<Option<E>>(d_options);
-		FilteredObservableList<Option<E>> selectedOptions = new FilteredObservableList<Option<E>>(contentAware, new Filter<Option<E>>() {
-			public boolean accept(Option<E> obj) {
+		FilteredObservableList<Option<E>> selectedOptions = new FilteredObservableList<Option<E>>(contentAware, new Predicate<Option<E>>() {
+			public boolean evaluate(Option<E> obj) {
 				return obj.toggle.getValue();
 			}
 		});

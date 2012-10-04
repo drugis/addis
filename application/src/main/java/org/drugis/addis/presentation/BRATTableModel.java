@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import javax.swing.table.AbstractTableModel;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
@@ -48,6 +47,7 @@ import org.drugis.addis.entities.analysis.MeasurementSource.Listener;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.ConfidenceInterval;
 import org.drugis.addis.entities.relativeeffect.Distribution;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.BinnedScale;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.LinearScale;
@@ -140,10 +140,10 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			}
 		}
 		if (!logCIs.isEmpty()) {
-			d_logScale = new LogScale(ForestPlotPresentation.getRange(logCIs, AxisType.LOGARITHMIC));
+			d_logScale = new LogScale(REMAForestPlotPresentation.getRange(logCIs, AxisType.LOGARITHMIC));
 		}
 		if (!linCIs.isEmpty()) {
-			d_linScale = new LinearScale(ForestPlotPresentation.getRange(linCIs, AxisType.LINEAR));
+			d_linScale = new LinearScale(REMAForestPlotPresentation.getRange(linCIs, AxisType.LINEAR));
 		}
 		
 		double hullLower = -1;
@@ -242,7 +242,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			return sba.getRelativeEffectDistribution(om, (Arm) getSubject());
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			return mba.getRelativeEffectDistribution(om, (DrugSet) getSubject());
+			return mba.getRelativeEffectDistribution(om, (TreatmentDefinition) getSubject());
 		}
 		return null;
 	}
@@ -253,7 +253,7 @@ public class BRATTableModel<Alternative extends Entity, AnalysisType extends Ben
 			return sba.getMeasurement(sba.getCriteria().get(rowIndex), (Arm) a);
 		} else if (d_analysis instanceof MetaBenefitRiskAnalysis && rowIndex < d_analysis.getCriteria().size()) {
 			MetaBenefitRiskAnalysis mba = (MetaBenefitRiskAnalysis) d_analysis;
-			return mba.getMeasurement(mba.getCriteria().get(rowIndex), (DrugSet) a);
+			return mba.getMeasurement(mba.getCriteria().get(rowIndex), (TreatmentDefinition) a);
 		}
 		throw new IllegalStateException("Unknown analysis type " + d_analysis.getClass().getSimpleName());
 	}

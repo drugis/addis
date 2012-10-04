@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,8 +80,8 @@ import org.drugis.addis.gui.renderer.DomainTreeCellRenderer;
 import org.drugis.addis.presentation.PresentationModelFactory;
 import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation;
 import org.drugis.common.gui.FileSaveDialog;
-import org.drugis.common.gui.GUIHelper;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.mtc.gui.MainWindow;
 
 import cern.colt.Arrays;
 
@@ -99,7 +99,7 @@ public class AddisWindow extends JFrame {
 	private ViewBuilder d_rightPanelBuilder;
 	private DomainTreeModel d_domainTreeModel;
 	private JTree d_leftPanelTree;
-	
+
 	private JMenuItem d_editMenuDeleteItem;
 	private JMenuItem d_editMenuEditItem;
 	private PresentationModelFactory d_pmf;
@@ -109,19 +109,19 @@ public class AddisWindow extends JFrame {
 	private final Domain d_domain;
 	private Main d_main;
 
-	public AddisWindow(final Main main, Domain domain) {
+	public AddisWindow(final Main main, final Domain domain) {
 		super(DEFAULT_TITLE);
 		d_domain = domain;
 		d_pmf = new PresentationModelFactory(d_domain);
 		d_main = main;
 		d_main.getDomainChangedModel().addValueChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
+			public void propertyChange(final PropertyChangeEvent evt) {
 				updateTitle();
 			}
 		});
-		
+
 		d_main.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
+			public void propertyChange(final PropertyChangeEvent evt) {
 				if (evt.getPropertyName().equals(Main.PROPERTY_DISPLAY_NAME)) {
 					updateTitle();
 				}
@@ -129,17 +129,17 @@ public class AddisWindow extends JFrame {
 		});
 
 		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
-		
+
 		setPreferredSize(fitDimensionToScreen(960, 800));
 		setMinimumSize(new Dimension(750, 550)); // fit the screen for 800x600 resolution
 
 		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent evt) {
+			public void windowClosing(final WindowEvent evt) {
 				main.quitApplication();
 			}
 		});
-		
+
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		initComponents();
 		Main.bindPrintScreen(super.getContentPane());
@@ -150,14 +150,14 @@ public class AddisWindow extends JFrame {
 	private void selectDefaultPath() {
 		d_leftPanelTree.getSelectionModel().setSelectionPath(d_domainTreeModel.getPathTo(d_domain.getCategory(Study.class)));
 	}
-	
-	public static Dimension fitDimensionToScreen(int width, int height) {
+
+	public static Dimension fitDimensionToScreen(final int width, final int height) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		return new Dimension(
 				Math.min(width, screenSize.width - 20),
 				Math.min(height, screenSize.height - 50));
 	}
-	
+
 	public Domain getDomain() {
 		return d_domain;
 	}
@@ -199,7 +199,7 @@ public class AddisWindow extends JFrame {
 				Main.IMAGELOADER.getIcon(knowledge.getNewIconName()));
 		topAddStudyButton.setToolTipText(title);
 		topAddStudyButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				showAddDialog(knowledge, null);
 			}
 		});
@@ -215,7 +215,7 @@ public class AddisWindow extends JFrame {
 		initLeftPanel();
 		pane.setLeftComponent(d_leftPanel);
 		d_leftPanel.setMinimumSize(new Dimension(200, d_leftPanel.getMinimumSize().height));
-		
+
 		initRightPanel();
 		pane.setRightComponent(d_rightPanel);
 		d_rightPanel.setMinimumSize(new Dimension(770, d_rightPanel.getMinimumSize().height));
@@ -260,7 +260,7 @@ public class AddisWindow extends JFrame {
 		JMenuItem item = new JMenuItem("About");
 		item.setMnemonic('a');
 		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				showAboutDialog();
 			}
 		});
@@ -269,7 +269,6 @@ public class AddisWindow extends JFrame {
 
 	private void showAboutDialog() {
 		final AboutDialog dlg = new AboutDialog(this);
-		GUIHelper.centerWindow(dlg, this);
 		dlg.setVisible(true);
 	}
 
@@ -298,7 +297,7 @@ public class AddisWindow extends JFrame {
 	private JMenu createEditMenu() {
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('e');
-		
+
 		d_editMenuEditItem = createEditItem();
 		d_editMenuEditItem.setEnabled(false);
 		editMenu.add(d_editMenuEditItem);
@@ -307,13 +306,13 @@ public class AddisWindow extends JFrame {
 		d_editMenuDeleteItem.setEnabled(false);
 		d_editMenuDeleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		editMenu.add(d_editMenuDeleteItem);
-		
+
 		if(AppInfo.getAppVersion().equals(AppInfo.APPVERSIONFALLBACK)) {
 			JMenuItem menuItem = new JMenuItem("Generate error");
 			editMenu.add(menuItem);
-			
+
 			menuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(final ActionEvent e) {
 					String longStr = Arrays.toString(new double[100]);
 					throw new RuntimeException("Test exception " + longStr);
 				}
@@ -323,11 +322,11 @@ public class AddisWindow extends JFrame {
 	}
 
 	private JMenuItem createDeleteItem() {
-		final JMenuItem item = new JMenuItem("Delete", Main.IMAGELOADER.getIcon(FileNames.ICON_DELETE));
+		final JMenuItem item = new JMenuItem("Delete", MainWindow.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
 		item.setMnemonic('d');
 		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				if(deleteMenuAction()) { 
+			public void actionPerformed(final ActionEvent arg0) {
+				if(deleteMenuAction()) {
 					selectDefaultPath();
 				}
 			}
@@ -335,12 +334,12 @@ public class AddisWindow extends JFrame {
 
 		return item;
 	}
-	
+
 	private JMenuItem createEditItem() {
 		JMenuItem item = new JMenuItem("Edit", Main.IMAGELOADER.getIcon(FileNames.ICON_EDIT));
 		item.setMnemonic('e');
 		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				editMenuAction();
 			}
 		});
@@ -361,11 +360,11 @@ public class AddisWindow extends JFrame {
 		if (obj instanceof Entity) return (Entity) obj;
 		return null;
 	}
-	
+
 	protected void editMenuAction() {
 		Entity selected = getSelectedEntity();
 		if (selected == null) {
-			
+
 		} else if (selected instanceof Study) {
 			Study study = (Study) selected;
 			if (getDomain().hasDependents(study)) {
@@ -384,7 +383,7 @@ public class AddisWindow extends JFrame {
 				.getIcon(FileNames.ICON_OPENFILE));
 		openItem.setMnemonic('l');
 		openItem.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				if(d_main.isDataChanged()) {
 					if(saveChangesDialog()) {
 						d_main.fileLoadActions();
@@ -396,23 +395,23 @@ public class AddisWindow extends JFrame {
 		});
 		return openItem;
 	}
-	
+
 
 	protected boolean saveChangesDialog(){
 		boolean yesNoClicked = false;
-		int action = JOptionPane.showConfirmDialog(AddisWindow.this, "Do you want to save changes?", 
+		int action = JOptionPane.showConfirmDialog(AddisWindow.this, "Do you want to save changes?",
 				"File contents changed", JOptionPane.YES_NO_CANCEL_OPTION);
 		switch(action) {
 			case JOptionPane.YES_OPTION : {
 				try {
-					if (d_main.getCurFilename() == null) {				
+					if (d_main.getCurFilename() == null) {
 						MainFileSaveDialog dialog = new MainFileSaveDialog(AddisWindow.this, "xml", "XML files");
 						dialog.saveActions();
 						yesNoClicked = true;
 					} else {
 						d_main.saveDomainToFile(d_main.getCurFilename());
 						yesNoClicked = true;
-					}										
+					}
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(AddisWindow.this, "Error saving domain", "Error saving domain", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
@@ -424,31 +423,31 @@ public class AddisWindow extends JFrame {
 		}
 		return yesNoClicked;
 	}
-	
+
 	private final class MainFileSaveDialog extends FileSaveDialog {
-		private MainFileSaveDialog(Component frame, String extension,
-				String description) {
+		private MainFileSaveDialog(final Component frame, final String extension,
+				final String description) {
 			super(frame, extension, description);
 		}
 
 		@Override
-		public void doAction(String path, String extension) {
+		public void doAction(final String path, final String extension) {
 			d_main.saveDomainToFile(path);
 		}
 	}
-	
+
 	private JMenuItem createSaveItem() {
-		d_saveMenuItem = new JMenuItem("Save", Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
+		d_saveMenuItem = new JMenuItem("Save", Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_SAVEFILE));
 		d_saveMenuItem.setMnemonic('s');
 		Bindings.bind(d_saveMenuItem, "enabled", d_main.getDomainChangedModel());
-		
+
 		// Attach to ctrl-s
 		d_saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-		
+
 		d_saveMenuItem.addActionListener(new AbstractAction() {
-			
-			public void actionPerformed(ActionEvent e) {
-				if (d_main.getCurFilename() == null) {				
+
+			public void actionPerformed(final ActionEvent e) {
+				if (d_main.getCurFilename() == null) {
 					MainFileSaveDialog dialog = new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
 					dialog.saveActions();
 				} else {
@@ -456,35 +455,35 @@ public class AddisWindow extends JFrame {
 				}
 			}
 		});
-		
+
 		return d_saveMenuItem;
 	}
-	
+
 	private JMenuItem createSaveAsItem() {
-		JMenuItem saveItem = new JMenuItem("Save As", Main.IMAGELOADER.getIcon(FileNames.ICON_SAVEFILE));
-		
+		JMenuItem saveItem = new JMenuItem("Save As", Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_SAVEFILE));
+
 		// attach to ctrl-shift-s
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
 		//align "Ctrl+Shift+S" text in the menu to the right
 		saveItem.setAlignmentX(LEFT_ALIGNMENT);
-		
+
 		saveItem.setMnemonic('a');
 
 		saveItem.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				MainFileSaveDialog dialog = new MainFileSaveDialog(AddisWindow.this, "addis", "ADDIS data files");
 				dialog.saveActions();
 			}
 		});
 		return saveItem;
 	}
-	
+
 
 	private JMenuItem createExitItem() {
 		JMenuItem exitItem = new JMenuItem("Exit", Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
 		exitItem.setMnemonic('e');
 		exitItem.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				d_main.quitApplication();
 			}
 		});
@@ -492,7 +491,7 @@ public class AddisWindow extends JFrame {
 	}
 
 	private class DomainTreeSelectionListener implements TreeSelectionListener {
-		public void valueChanged(TreeSelectionEvent event) {
+		public void valueChanged(final TreeSelectionEvent event) {
 			Object node = ((JTree) event.getSource()).getLastSelectedPathComponent();
 			if (node == null || !(node instanceof Entity)) {
 				nonEntitySelected();
@@ -509,8 +508,8 @@ public class AddisWindow extends JFrame {
 			}
 		}
 	};
-	
-	private void categorySelected(EntityCategory node) {
+
+	private void categorySelected(final EntityCategory node) {
 		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(node);
 		setRightPanelView(knowledge.getCategoryViewBuilder(this, getDomain()));
 	}
@@ -520,7 +519,7 @@ public class AddisWindow extends JFrame {
 		d_editMenuEditItem.setEnabled(false);
 	}
 
-	private void entitySelected(Entity entity) {
+	private void entitySelected(final Entity entity) {
 		ViewBuilder view = getEntityKnowledge(entity).getEntityViewBuilder(this, getDomain(), entity);
 		setRightPanelView(view);
 		d_editMenuDeleteItem.setEnabled(true);
@@ -531,13 +530,13 @@ public class AddisWindow extends JFrame {
 		d_rightPanel = new JPanel(new BorderLayout());
 		d_rightPanel.setOpaque(true);
 	}
-	
 
-	public void setRightPanelView(ViewBuilder view) {
+
+	public void setRightPanelView(final ViewBuilder view) {
 		d_rightPanelBuilder = view;
 		reloadRightPanel();
 	}
-	
+
 	public void reloadRightPanel() {
 		reloadRightPanel(null);
 	}
@@ -560,46 +559,46 @@ public class AddisWindow extends JFrame {
 				}
 			}
 
-			private void setActiveTab(final String activeTab, JComponent panel) {
-				if(panel instanceof JTabbedPane && activeTab != null) { 
+			private void setActiveTab(final String activeTab, final JComponent panel) {
+				if(panel instanceof JTabbedPane && activeTab != null) {
 					JTabbedPane pane = ((JTabbedPane) panel);
 					pane.setSelectedIndex(pane.indexOfTab(activeTab));
 				}
 			}
 		});
 	}
-	
+
 	private JPanel buildErrorPanel() {
 		FormLayout layout = new FormLayout("pref:grow:fill", "p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		
+
 		CellConstraints cc = new CellConstraints();
 		builder.add(new JLabel("Error building panel"), cc.xy(1, 1));
-		
+
 		return builder.getPanel();
 	}
 
-	private void setRightPanelContents(JComponent component) {
+	private void setRightPanelContents(final JComponent component) {
 		d_rightPanel.removeAll();
 		d_rightPanel.add(encapsulate(component), BorderLayout.CENTER);
 	}
 
-	
-	private Component encapsulate(JComponent component) {
+
+	private Component encapsulate(final JComponent component) {
 		if (!(component instanceof AddisTabbedPane)) {
 			return new AddisScrollPane(component);
 		}
 		return component;
 	}
 
-	public void leftTreeFocus(Object node) {
+	public void leftTreeFocus(final Object node) {
 		TreePath path = d_domainTreeModel.getPathTo(node);
 		if (path != null) {
 			d_leftPanelTree.setSelectionPath(path);
 		}
 	}
-	
+
 	private void noneSelected() {
 		setRightPanelView(new ViewBuilder() {
 			public JComponent buildPanel() {
@@ -607,23 +606,22 @@ public class AddisWindow extends JFrame {
 			}
 		});
 	}
-	
-	private CategoryKnowledge getEntityKnowledge(Entity entity) {
+
+	private CategoryKnowledge getEntityKnowledge(final Entity entity) {
 		CategoryKnowledge knowledge = CategoryKnowledgeFactory.getCategoryKnowledge(
 				getDomain().getCategory(entity));
 		return knowledge;
 	}
 
 
-	public boolean deleteEntity(Entity selected, boolean confirmation) {
+	public boolean deleteEntity(final Entity selected, final boolean confirmation) {
 		String selectedType = getEntityKnowledge(selected).getSingularCapitalized();
 
 		if (confirmation) {
 			int conf = JOptionPane.showConfirmDialog(this,
 					"Do you really want to delete " + selectedType + " " + selected
 					+ " ?", "Confirm deletion", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE, Main.IMAGELOADER
-					.getIcon(FileNames.ICON_DELETE));
+					JOptionPane.QUESTION_MESSAGE, MainWindow.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_DELETE));
 			if (conf != JOptionPane.YES_OPTION) {
 				return false;
 			}
@@ -652,24 +650,24 @@ public class AddisWindow extends JFrame {
 		JMenuItem item = new JMenuItem(knowledge.getSingularCapitalized(), Main.IMAGELOADER.getIcon(knowledge.getNewIconName()));
 		item.setMnemonic(knowledge.getMnemonic());
 		item.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				showAddDialog(knowledge, null);
 			}
 		});
 		return item;
 	}
 
-	public void showAddDialog(CategoryKnowledge knowledge, ValueModel selectionModel) {
+	public void showAddDialog(final CategoryKnowledge knowledge, final ValueModel selectionModel) {
 		JDialog dialog = knowledge.getAddDialog(this, getDomain(), selectionModel);
-		GUIHelper.centerWindow(dialog, this);
+		dialog.setLocationByPlatform(true);
 		dialog.setVisible(true);
 	}
 
-	private void showEditStudyWizard(Study study) {
+	private void showEditStudyWizard(final Study study) {
 		AddStudyWizardPresentation pm = new AddStudyWizardPresentation(getDomain(), d_pmf, this, study);
 		JDialog dialog = StudiesKnowledge.buildStudyWizardDialog(this, "Edit Study", pm);
 		leftTreeFocus(d_domainTreeModel.getRoot());
-		GUIHelper.centerWindow(dialog, this);
+		dialog.setLocationByPlatform(true);
 		dialog.setVisible(true);
 	}
 
@@ -677,7 +675,7 @@ public class AddisWindow extends JFrame {
 		JMenuItem newItem = new JMenuItem("New", Main.IMAGELOADER.getIcon(FileNames.ICON_FILE_NEW));
 		newItem.setMnemonic('n');
 		newItem.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				if(d_main.isDataChanged()) {
 					if(saveChangesDialog()){
 						d_main.newFileActions();
@@ -689,13 +687,21 @@ public class AddisWindow extends JFrame {
 		});
 		return newItem;
 	}
-	
-	
+
+
 	public void updateTitle() {
 		setTitle(DEFAULT_TITLE + " - " + d_main.getDisplayName() + (d_main.getDomainChangedModel().getValue() ? "*" : ""));
 	}
 
 	public PresentationModelFactory getPresentationModelFactory() {
 		return d_pmf;
+	}
+
+	public Runnable getReloadRightPanelAction(final String activeTab) {
+		return new Runnable() {
+			public void run() {
+				reloadRightPanel(activeTab);
+			}
+		};
 	}
 }

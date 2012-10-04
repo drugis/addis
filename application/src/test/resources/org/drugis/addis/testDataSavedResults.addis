@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-5.xsd">
+<addis-data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://drugis.org/files/addis-6.xsd">
     <units>
         <unit name="gram" symbol="g"/>
         <unit name="liter" symbol="l"/>
@@ -7,6 +7,20 @@
     <indications>
         <indication code="310497006" name="Severe depression"/>
     </indications>
+    <drugs>
+        <drug name="Bupropion" atcCode="N06AX12"/>
+        <drug name="Citalopram" atcCode="N06AB04"/>
+        <drug name="Duloxetine" atcCode="N06AX21"/>
+        <drug name="Escitalopram" atcCode="N06AB10"/>
+        <drug name="Fluoxetine" atcCode="N06AB03"/>
+        <drug name="Fluvoxamine" atcCode="N06AB08"/>
+        <drug name="Mirtazapine" atcCode="N06AX11"/>
+        <drug name="Paroxetine" atcCode="N06AB05"/>
+        <drug name="Placebo" atcCode="Placebo"/>
+        <drug name="Sertraline" atcCode="N06AB06"/>
+        <drug name="Venlafaxine" atcCode="N06AX16"/>
+    </drugs>
+    <treatmentCategorizations/>
     <endpoints>
         <endpoint name="CGI Severity Change" description="" direction="HIGHER_IS_BETTER">
             <continuous unitOfMeasurement="Deviation from the baseline of CGI Severity of Illness score"/>
@@ -197,19 +211,6 @@
             <rate/>
         </adverseEvent>
     </adverseEvents>
-    <drugs>
-        <drug name="Bupropion" atcCode="N06AX12"/>
-        <drug name="Citalopram" atcCode="N06AB04"/>
-        <drug name="Duloxetine" atcCode="N06AX21"/>
-        <drug name="Escitalopram" atcCode="N06AB10"/>
-        <drug name="Fluoxetine" atcCode="N06AB03"/>
-        <drug name="Fluvoxamine" atcCode="N06AB08"/>
-        <drug name="Mirtazapine" atcCode="N06AX11"/>
-        <drug name="Paroxetine" atcCode="N06AB05"/>
-        <drug name="Placebo" atcCode="Placebo"/>
-        <drug name="Sertraline" atcCode="N06AB06"/>
-        <drug name="Venlafaxine" atcCode="N06AX16"/>
-    </drugs>
     <populationCharacteristics>
         <populationCharacteristic name="Age" description=" ">
             <continuous unitOfMeasurement="years"/>
@@ -24012,18 +24013,18 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Diarrhea"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Rudolph and Feiger, 1999"/>
                     <arm name="Fluoxetine" study="Tylee et al, 1997"/>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Rudolph and Feiger, 1999"/>
                     <arm name="Venlafaxine" study="Tylee et al, 1997"/>
@@ -24034,9 +24035,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Dizziness"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="Rudolph and Feiger, 1999"/>
@@ -24045,9 +24046,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="Rudolph and Feiger, 1999"/>
@@ -24060,9 +24061,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <endpoint name="HAM-D Responders"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="De Nayer et al, 2002"/>
@@ -24073,9 +24074,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="De Nayer et al, 2002"/>
@@ -24090,9 +24091,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Headache"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="De Nayer et al, 2002"/>
                     <arm name="Fluoxetine" study="Dierick et al, 1996"/>
@@ -24100,9 +24101,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="De Nayer et al, 2002"/>
                     <arm name="Venlafaxine" study="Dierick et al, 1996"/>
@@ -24114,9 +24115,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Insomnia"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="Dierick et al, 1996"/>
@@ -24124,9 +24125,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="Dierick et al, 1996"/>
@@ -24138,9 +24139,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Nausea"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="De Nayer et al, 2002"/>
@@ -24150,9 +24151,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="De Nayer et al, 2002"/>
@@ -24166,9 +24167,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Diarrhea"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Bennie et al, 1995"/>
                     <arm name="Fluoxetine" study="Chouinard et al, 1999"/>
@@ -24182,9 +24183,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Paroxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Paroxetine" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Paroxetine" study="Ballus et al, 2000"/>
@@ -24196,9 +24197,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Sertraline"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Sertraline" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Sertraline" study="Bennie et al, 1995"/>
@@ -24209,9 +24210,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Ballus et al, 2000"/>
                     <arm name="Venlafaxine" study="McPartlin et al, 1998"/>
@@ -24230,12 +24231,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 <relativeEffectsQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.8556865117340482"/>
                         <quantile level="0.5" value="-0.4100077206400044"/>
@@ -24243,12 +24244,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.016329300920808247"/>
                         <quantile level="0.5" value="0.41113437234661937"/>
@@ -24256,12 +24257,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.063062645653235"/>
                         <quantile level="0.5" value="-0.5616625940673496"/>
@@ -24269,12 +24270,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.017683991097560053"/>
                         <quantile level="0.5" value="0.4100077206400044"/>
@@ -24282,12 +24283,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.38559127092387185"/>
                         <quantile level="0.5" value="0.8521769761903053"/>
@@ -24295,12 +24296,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.7893969836349852"/>
                         <quantile level="0.5" value="-0.14489513174852908"/>
@@ -24308,12 +24309,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.8797386681511361"/>
                         <quantile level="0.5" value="-0.41113437234661937"/>
@@ -24321,12 +24322,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.3242416024941404"/>
                         <quantile level="0.5" value="-0.8521769761903053"/>
@@ -24334,12 +24335,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.6434421282597842"/>
                         <quantile level="0.5" value="-0.9446317449168773"/>
@@ -24347,12 +24348,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.003267017044504411"/>
                         <quantile level="0.5" value="0.5616625940673496"/>
@@ -24360,12 +24361,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.4892821715324907"/>
                         <quantile level="0.5" value="0.14489513174852908"/>
@@ -24373,12 +24374,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.36366030195617544"/>
                         <quantile level="0.5" value="0.9446317449168773"/>
@@ -24387,12 +24388,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </relativeEffectsQuantileSummary>
                 <summary psrf="1.0121925686332003">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.8556865117340482"/>
                     <quantile level="0.5" value="-0.4100077206400044"/>
@@ -24400,12 +24401,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0195445815356006">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.016329300920808247"/>
                     <quantile level="0.5" value="0.41113437234661937"/>
@@ -24413,12 +24414,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.028687726351835">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.063062645653235"/>
                     <quantile level="0.5" value="-0.5616625940673496"/>
@@ -24436,12 +24437,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 <relativeEffectsQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.9645767242167622"/>
                         <quantile level="0.5" value="-0.4615820884122749"/>
@@ -24449,12 +24450,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.06574187815850938"/>
                         <quantile level="0.5" value="0.40543680249498965"/>
@@ -24462,12 +24463,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.1342608597989599"/>
                         <quantile level="0.5" value="-0.46239974659711125"/>
@@ -24475,12 +24476,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.018124942672173197"/>
                         <quantile level="0.5" value="0.4615820884122749"/>
@@ -24488,12 +24489,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.33391082379999404"/>
                         <quantile level="0.5" value="0.9482552151278669"/>
@@ -24501,12 +24502,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.2505719922581222"/>
                         <quantile level="0.5" value="-0.2750400522491509"/>
@@ -24514,12 +24515,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.8722878966541198"/>
                         <quantile level="0.5" value="-0.40543680249498965"/>
@@ -24527,12 +24528,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.6474436041094724"/>
                         <quantile level="0.5" value="-0.9482552151278669"/>
@@ -24540,12 +24541,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.8733169227124205"/>
                         <quantile level="0.5" value="-0.9639759838341289"/>
@@ -24553,12 +24554,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.2301202420072395"/>
                         <quantile level="0.5" value="0.46239974659711125"/>
@@ -24566,12 +24567,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.48386700928444987"/>
                         <quantile level="0.5" value="0.2750400522491509"/>
@@ -24579,12 +24580,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.18538114897894492"/>
                         <quantile level="0.5" value="0.9639759838341289"/>
@@ -24593,12 +24594,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </relativeEffectsQuantileSummary>
                 <summary psrf="1.0118706746998678">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.9645767242167622"/>
                     <quantile level="0.5" value="-0.4615820884122749"/>
@@ -24606,12 +24607,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0043946884865838">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.33391082379999404"/>
                     <quantile level="0.5" value="0.9482552151278669"/>
@@ -24619,12 +24620,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.008384281364135">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.8733169227124205"/>
                     <quantile level="0.5" value="-0.9639759838341289"/>
@@ -24632,18 +24633,18 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0035247839311614">
                     <inconsistency>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </inconsistency>
                     <quantile level="0.025" value="-0.5169369275097396"/>
                     <quantile level="0.5" value="0.035722941500515956"/>
@@ -24651,21 +24652,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0038051390872582">
                     <inconsistency>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </inconsistency>
                     <quantile level="0.025" value="-0.9982930534493185"/>
                     <quantile level="0.5" value="-0.004681340958562166"/>
@@ -24673,18 +24674,18 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.003211057668215">
                     <inconsistency>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </inconsistency>
                     <quantile level="0.025" value="-0.4903108408519423"/>
                     <quantile level="0.5" value="0.13425510878112212"/>
@@ -24706,21 +24707,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <nodeSplitResults pValue="0.9043166666666667">
                 <mcmcSettings tuningIterations="20000" simulationIterations="60000" inferenceIterations="30000" thinningInterval="1" numberOfChains="4" varianceScalingFactor="2.5"/>
                 <splitNode>
-                    <alternative>
-                        <drug name="Fluoxetine" atcCode="N06AB03"/>
-                    </alternative>
-                    <alternative>
-                        <drug name="Paroxetine" atcCode="N06AB05"/>
-                    </alternative>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Fluoxetine"/>
+                    </treatmentDefinition>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Paroxetine"/>
+                    </treatmentDefinition>
                 </splitNode>
                 <summary psrf="1.0147033792814868">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.9401768106791394"/>
                     <quantile level="0.5" value="-0.43786850374227837"/>
@@ -24728,12 +24729,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0404368913698847">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.6157270281095055"/>
                     <quantile level="0.5" value="-0.8290919747127911"/>
@@ -24741,12 +24742,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0096962198831778">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.6595107964250937"/>
                     <quantile level="0.5" value="-0.9328710929332481"/>
@@ -24754,12 +24755,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.013894699330037">
                     <relativeEffect whichEvidence="DIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.9790151135862646"/>
                     <quantile level="0.5" value="-0.4549483081712755"/>
@@ -24767,12 +24768,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.034980027897645">
                     <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.1598407016004961"/>
                     <quantile level="0.5" value="-0.36474100305661183"/>
@@ -24788,21 +24789,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <nodeSplitResults pValue="0.7063166666666667">
                 <mcmcSettings tuningIterations="20000" simulationIterations="60000" inferenceIterations="30000" thinningInterval="1" numberOfChains="4" varianceScalingFactor="2.5"/>
                 <splitNode>
-                    <alternative>
-                        <drug name="Fluoxetine" atcCode="N06AB03"/>
-                    </alternative>
-                    <alternative>
-                        <drug name="Sertraline" atcCode="N06AB06"/>
-                    </alternative>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Fluoxetine"/>
+                    </treatmentDefinition>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Sertraline"/>
+                    </treatmentDefinition>
                 </splitNode>
                 <summary psrf="1.0015863258628062">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.07198766625312629"/>
                     <quantile level="0.5" value="0.40610621247899314"/>
@@ -24810,12 +24811,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.011076644223863">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.20989836631766473"/>
                     <quantile level="0.5" value="0.9948448848754126"/>
@@ -24823,12 +24824,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.00630017901852">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.7188690372022188"/>
                     <quantile level="0.5" value="-0.12468299086014567"/>
@@ -24836,12 +24837,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0105485871952162">
                     <relativeEffect whichEvidence="DIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.10286237416997962"/>
                     <quantile level="0.5" value="0.3820843462701017"/>
@@ -24849,12 +24850,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0088559423552028">
                     <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.2744594724370188"/>
                     <quantile level="0.5" value="0.5857308826804052"/>
@@ -24870,21 +24871,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <nodeSplitResults pValue="0.49315">
                 <mcmcSettings tuningIterations="20000" simulationIterations="60000" inferenceIterations="30000" thinningInterval="1" numberOfChains="4" varianceScalingFactor="2.5"/>
                 <splitNode>
-                    <alternative>
-                        <drug name="Fluoxetine" atcCode="N06AB03"/>
-                    </alternative>
-                    <alternative>
-                        <drug name="Venlafaxine" atcCode="N06AX16"/>
-                    </alternative>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Fluoxetine"/>
+                    </treatmentDefinition>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Venlafaxine"/>
+                    </treatmentDefinition>
                 </splitNode>
                 <summary psrf="1.197226103136307">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.01183763107800602"/>
                     <quantile level="0.5" value="0.4395367259243889"/>
@@ -24892,12 +24893,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.2546467415107136">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.381574125570089"/>
                     <quantile level="0.5" value="0.8618788147507865"/>
@@ -24905,12 +24906,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.022341071427812">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.0327471782511968"/>
                     <quantile level="0.5" value="-0.3201293911867611"/>
@@ -24918,12 +24919,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0321077778717926">
                     <relativeEffect whichEvidence="DIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.1051934092008304"/>
                     <quantile level="0.5" value="-0.34549266340188045"/>
@@ -24931,12 +24932,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0978522711852665">
                     <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.537718312520842"/>
                     <quantile level="0.5" value="-0.7012522667786996"/>
@@ -24952,21 +24953,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <nodeSplitResults pValue="0.7952">
                 <mcmcSettings tuningIterations="20000" simulationIterations="60000" inferenceIterations="30000" thinningInterval="1" numberOfChains="4" varianceScalingFactor="2.5"/>
                 <splitNode>
-                    <alternative>
-                        <drug name="Sertraline" atcCode="N06AB06"/>
-                    </alternative>
-                    <alternative>
-                        <drug name="Paroxetine" atcCode="N06AB05"/>
-                    </alternative>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Sertraline"/>
+                    </treatmentDefinition>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Paroxetine"/>
+                    </treatmentDefinition>
                 </splitNode>
                 <summary psrf="1.0028476415623722">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.0277455127144581"/>
                     <quantile level="0.5" value="-0.3959430250646066"/>
@@ -24974,12 +24975,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0012553803247417">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.13471867444836236"/>
                     <quantile level="0.5" value="0.39860741424394225"/>
@@ -24987,12 +24988,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0044381477732651">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.1512977888736935"/>
                     <quantile level="0.5" value="-0.5302153331401542"/>
@@ -25000,12 +25001,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.004608422550287">
                     <relativeEffect whichEvidence="DIRECT">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.6188424357804152"/>
                     <quantile level="0.5" value="-0.9406115452999635"/>
@@ -25013,12 +25014,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0034311187751843">
                     <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.558664557575764"/>
                     <quantile level="0.5" value="-0.8124134786699839"/>
@@ -25034,21 +25035,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <nodeSplitResults pValue="0.5768666666666666">
                 <mcmcSettings tuningIterations="20000" simulationIterations="60000" inferenceIterations="30000" thinningInterval="1" numberOfChains="4" varianceScalingFactor="2.5"/>
                 <splitNode>
-                    <alternative>
-                        <drug name="Sertraline" atcCode="N06AB06"/>
-                    </alternative>
-                    <alternative>
-                        <drug name="Venlafaxine" atcCode="N06AX16"/>
-                    </alternative>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Sertraline"/>
+                    </treatmentDefinition>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Venlafaxine"/>
+                    </treatmentDefinition>
                 </splitNode>
                 <summary psrf="1.0093396861643118">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.8759935240893304"/>
                     <quantile level="0.5" value="-0.4647341684414212"/>
@@ -25056,12 +25057,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0184884719817833">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.0032917440419338085"/>
                     <quantile level="0.5" value="0.49499654581128893"/>
@@ -25069,12 +25070,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0101345238919222">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.2265087692556222"/>
                     <quantile level="0.5" value="-0.6052537805617833"/>
@@ -25082,12 +25083,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.011609922875347">
                     <relativeEffect whichEvidence="DIRECT">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-2.0318797094875176"/>
                     <quantile level="0.5" value="-0.7115201752509521"/>
@@ -25095,12 +25096,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0080074077717607">
                     <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.8263300417057744"/>
                     <quantile level="0.5" value="-1.1205604193467757"/>
@@ -25116,21 +25117,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <nodeSplitResults pValue="0.2894833333333333">
                 <mcmcSettings tuningIterations="20000" simulationIterations="60000" inferenceIterations="30000" thinningInterval="1" numberOfChains="4" varianceScalingFactor="2.5"/>
                 <splitNode>
-                    <alternative>
-                        <drug name="Venlafaxine" atcCode="N06AX16"/>
-                    </alternative>
-                    <alternative>
-                        <drug name="Paroxetine" atcCode="N06AB05"/>
-                    </alternative>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Venlafaxine"/>
+                    </treatmentDefinition>
+                    <treatmentDefinition>
+                        <trivialCategory drug="Paroxetine"/>
+                    </treatmentDefinition>
                 </splitNode>
                 <summary psrf="1.0032539947680055">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.0278866461442449"/>
                     <quantile level="0.5" value="-0.5084967110736891"/>
@@ -25138,12 +25139,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0090512116976493">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.024654819095474012"/>
                     <quantile level="0.5" value="0.4076009542827981"/>
@@ -25151,12 +25152,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0084702227615172">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.0049697830307722"/>
                     <quantile level="0.5" value="-0.3901174992313369"/>
@@ -25164,12 +25165,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.013876695996401">
                     <relativeEffect whichEvidence="DIRECT">
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.5098527037629831"/>
                     <quantile level="0.5" value="0.5463004780881278"/>
@@ -25177,12 +25178,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0057560580606306">
                     <relativeEffect whichEvidence="INDIRECT">
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.897232413696087"/>
                     <quantile level="0.5" value="-0.13661347554117526"/>
@@ -25200,9 +25201,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Dizziness"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="Bennie et al, 1995"/>
@@ -25215,9 +25216,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Paroxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Paroxetine" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Paroxetine" study="Fava et al, 2002"/>
@@ -25226,9 +25227,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Sertraline"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Sertraline" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Sertraline" study="Bennie et al, 1995"/>
@@ -25238,9 +25239,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="McPartlin et al, 1998"/>
@@ -25260,12 +25261,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 <relativeEffectsQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.09496676024684508"/>
                         <quantile level="0.5" value="0.49476253793230746"/>
@@ -25273,12 +25274,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.9429102487824672"/>
                         <quantile level="0.5" value="-0.3886608494613532"/>
@@ -25286,12 +25287,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.5793342147836262"/>
                         <quantile level="0.5" value="1.025571604361263"/>
@@ -25299,12 +25300,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.1373775712932046"/>
                         <quantile level="0.5" value="-0.49476253793230746"/>
@@ -25312,12 +25313,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.4959449030430192"/>
                         <quantile level="0.5" value="-0.8735294138856957"/>
@@ -25325,12 +25326,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.10373075936191173"/>
                         <quantile level="0.5" value="0.5521340727378733"/>
@@ -25338,12 +25339,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.21061650125273412"/>
                         <quantile level="0.5" value="0.3886608494613532"/>
@@ -25351,12 +25352,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.25957084924562507"/>
                         <quantile level="0.5" value="0.8735294138856957"/>
@@ -25364,12 +25365,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.7720369005202689"/>
                         <quantile level="0.5" value="1.4279881967608201"/>
@@ -25377,12 +25378,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.525969529298155"/>
                         <quantile level="0.5" value="-1.025571604361263"/>
@@ -25390,12 +25391,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.1639294253775825"/>
                         <quantile level="0.5" value="-0.5521340727378733"/>
@@ -25403,12 +25404,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-2.1037005407824934"/>
                         <quantile level="0.5" value="-1.4279881967608201"/>
@@ -25417,12 +25418,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </relativeEffectsQuantileSummary>
                 <summary psrf="1.0220433932993787">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.09496676024684508"/>
                     <quantile level="0.5" value="0.49476253793230746"/>
@@ -25430,12 +25431,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0032129225252313">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.9429102487824672"/>
                     <quantile level="0.5" value="-0.3886608494613532"/>
@@ -25443,12 +25444,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0042344749093857">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.5793342147836262"/>
                     <quantile level="0.5" value="1.025571604361263"/>
@@ -25466,12 +25467,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 <relativeEffectsQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.15991869890633814"/>
                         <quantile level="0.5" value="0.5499713952654612"/>
@@ -25479,12 +25480,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.0864934673713673"/>
                         <quantile level="0.5" value="-0.40735088247392903"/>
@@ -25492,12 +25493,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.5838198417550918"/>
                         <quantile level="0.5" value="1.0916620293169992"/>
@@ -25505,12 +25506,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.2918114395714113"/>
                         <quantile level="0.5" value="-0.5499713952654612"/>
@@ -25518,12 +25519,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.5340197170410386"/>
                         <quantile level="0.5" value="-0.8462105160561818"/>
@@ -25531,12 +25532,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.2152821022186673"/>
                         <quantile level="0.5" value="0.5620166247193707"/>
@@ -25544,12 +25545,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-0.23693917079680343"/>
                         <quantile level="0.5" value="0.40735088247392903"/>
@@ -25557,12 +25558,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.10982721497526299"/>
                         <quantile level="0.5" value="0.8462105160561818"/>
@@ -25570,12 +25571,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="0.10159941646027831"/>
                         <quantile level="0.5" value="1.23177899526398"/>
@@ -25583,12 +25584,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Fluoxetine" atcCode="N06AB03"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Fluoxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.6176135207699172"/>
                         <quantile level="0.5" value="-1.0916620293169992"/>
@@ -25596,12 +25597,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Paroxetine" atcCode="N06AB05"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Paroxetine"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-1.3011413627141324"/>
                         <quantile level="0.5" value="-0.5620166247193707"/>
@@ -25609,12 +25610,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                     </relativeEffectQuantileSummary>
                     <relativeEffectQuantileSummary>
                         <relativeEffect whichEvidence="ALL">
-                            <alternative>
-<drug name="Venlafaxine" atcCode="N06AX16"/>
-                            </alternative>
-                            <alternative>
-<drug name="Sertraline" atcCode="N06AB06"/>
-                            </alternative>
+                            <treatmentDefinition>
+<trivialCategory drug="Venlafaxine"/>
+                            </treatmentDefinition>
+                            <treatmentDefinition>
+<trivialCategory drug="Sertraline"/>
+                            </treatmentDefinition>
                         </relativeEffect>
                         <quantile level="0.025" value="-2.0984137304706514"/>
                         <quantile level="0.5" value="-1.23177899526398"/>
@@ -25623,12 +25624,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </relativeEffectsQuantileSummary>
                 <summary psrf="1.0092593364610518">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-0.15991869890633814"/>
                     <quantile level="0.5" value="0.5499713952654612"/>
@@ -25636,12 +25637,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0064783076096344">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="-1.5340197170410386"/>
                     <quantile level="0.5" value="-0.8462105160561818"/>
@@ -25649,12 +25650,12 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0024878717268184">
                     <relativeEffect whichEvidence="ALL">
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
                     </relativeEffect>
                     <quantile level="0.025" value="0.10159941646027831"/>
                     <quantile level="0.5" value="1.23177899526398"/>
@@ -25662,18 +25663,18 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0060669734205976">
                     <inconsistency>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </inconsistency>
                     <quantile level="0.025" value="-0.5796237842991742"/>
                     <quantile level="0.5" value="0.08239461209381921"/>
@@ -25681,21 +25682,21 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0100578655813053">
                     <inconsistency>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Fluoxetine" atcCode="N06AB03"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Fluoxetine"/>
+                        </treatmentDefinition>
                     </inconsistency>
                     <quantile level="0.025" value="-1.1891927654283863"/>
                     <quantile level="0.5" value="-0.07587886134420546"/>
@@ -25703,18 +25704,18 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </summary>
                 <summary psrf="1.0557533412290383">
                     <inconsistency>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Sertraline" atcCode="N06AB06"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Venlafaxine" atcCode="N06AX16"/>
-                        </alternative>
-                        <alternative>
-                            <drug name="Paroxetine" atcCode="N06AB05"/>
-                        </alternative>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Sertraline"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Venlafaxine"/>
+                        </treatmentDefinition>
+                        <treatmentDefinition>
+                            <trivialCategory drug="Paroxetine"/>
+                        </treatmentDefinition>
                     </inconsistency>
                     <quantile level="0.025" value="-1.5831168110020628"/>
                     <quantile level="0.5" value="-0.04674522892638784"/>
@@ -25738,9 +25739,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <endpoint name="HAM-D Responders"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="Bennie et al, 1995"/>
@@ -25761,9 +25762,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Paroxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Paroxetine" study="Ballus et al, 2000"/>
                     <arm name="Paroxetine" study="Chouinard et al, 1999"/>
@@ -25776,9 +25777,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Sertraline"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Sertraline" study="Bennie et al, 1995"/>
                     <arm name="Sertraline" study="Boyer et al, 1998"/>
@@ -25789,9 +25790,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="Ballus et al, 2000"/>
@@ -25809,9 +25810,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Headache"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Bennie et al, 1995"/>
                     <arm name="Fluoxetine" study="Chouinard et al, 1999"/>
@@ -25826,9 +25827,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Paroxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Paroxetine" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Paroxetine" study="Ballus et al, 2000"/>
@@ -25840,9 +25841,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Sertraline"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Sertraline" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Sertraline" study="Bennie et al, 1995"/>
@@ -25853,9 +25854,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Ballus et al, 2000"/>
                     <arm name="Venlafaxine" study="De Nayer et al, 2002"/>
@@ -25870,9 +25871,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Insomnia"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="Chouinard et al, 1999"/>
@@ -25887,9 +25888,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Paroxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Paroxetine" study="Ballus et al, 2000"/>
                     <arm name="Paroxetine" study="Chouinard et al, 1999"/>
@@ -25901,9 +25902,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Sertraline"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Sertraline" study="Fava et al, 2002"/>
                     <arm name="Sertraline" study="Mehtonen et al, 2000"/>
@@ -25912,9 +25913,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="Ballus et al, 2000"/>
@@ -25929,9 +25930,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
             <indication name="Severe depression"/>
             <adverseEvent name="Nausea"/>
             <alternative>
-                <drugs>
-                    <drug name="Fluoxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Fluoxetine" study="Alves et al, 1999"/>
                     <arm name="Fluoxetine" study="Bennie et al, 1995"/>
@@ -25949,9 +25950,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Paroxetine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Paroxetine" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Paroxetine" study="Ballus et al, 2000"/>
@@ -25964,9 +25965,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Sertraline"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Sertraline" study="Aberg-Wistedt et al, 2000"/>
                     <arm name="Sertraline" study="Bennie et al, 1995"/>
@@ -25977,9 +25978,9 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
                 </arms>
             </alternative>
             <alternative>
-                <drugs>
-                    <drug name="Venlafaxine"/>
-                </drugs>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
                 <arms>
                     <arm name="Venlafaxine" study="Alves et al, 1999"/>
                     <arm name="Venlafaxine" study="Ballus et al, 2000"/>
@@ -26032,15 +26033,17 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
         <metaBenefitRiskAnalysis name="Fluox-Venla BR" analysisType="SMAA">
             <indication name="Severe depression"/>
             <baseline>
-                <drug name="Fluoxetine"/>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
             </baseline>
             <alternatives>
-                <alternative>
-                    <drug name="Fluoxetine"/>
-                </alternative>
-                <alternative>
-                    <drug name="Venlafaxine"/>
-                </alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
             </alternatives>
             <metaAnalyses>
                 <metaAnalysis name="Fluox-Venla Diarrhea"/>
@@ -26054,21 +26057,23 @@ Primary Care Psychiatry 1997; 3: 51-58</value>
         <metaBenefitRiskAnalysis name="Hansen BR" analysisType="SMAA">
             <indication name="Severe depression"/>
             <baseline>
-                <drug name="Fluoxetine"/>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
             </baseline>
             <alternatives>
-                <alternative>
-                    <drug name="Fluoxetine"/>
-                </alternative>
-                <alternative>
-                    <drug name="Paroxetine"/>
-                </alternative>
-                <alternative>
-                    <drug name="Sertraline"/>
-                </alternative>
-                <alternative>
-                    <drug name="Venlafaxine"/>
-                </alternative>
+                <treatmentDefinition>
+                    <trivialCategory drug="Fluoxetine"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Paroxetine"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Sertraline"/>
+                </treatmentDefinition>
+                <treatmentDefinition>
+                    <trivialCategory drug="Venlafaxine"/>
+                </treatmentDefinition>
             </alternatives>
             <metaAnalyses>
                 <metaAnalysis name="Hansen Diarrhea"/>

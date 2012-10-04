@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,10 +40,11 @@ import org.drugis.addis.FileNames;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.gui.GUIFactory;
 import org.drugis.addis.gui.Main;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.addis.util.AtcParser;
 import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.validation.BooleanAndModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
@@ -58,24 +59,25 @@ public class AddDrugView implements ViewBuilder {
 	private String d_atcCode;
 	private JButton d_loadButton;
 	private PresentationModel<Drug> d_model;
-	private NotEmptyValidator d_validator;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	private JPanel d_panel; 
 
 	public AddDrugView(PresentationModel<Drug> presentationModel, JButton okButton) {
-		d_validator = new NotEmptyValidator();
 		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = presentationModel;
 	}
 	
 	@SuppressWarnings("serial")
 	public void initComponents() {
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Drug.PROPERTY_NAME)));
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_NAME), false);
 		d_name.setColumns(15);
-		d_validator.add(d_name);
+		
 		d_loadButton = GUIFactory.createIconButton(FileNames.ICON_SEARCH, "Search ATC Code");
 		d_loadButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
+		
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Drug.PROPERTY_ATCCODE)));
 		d_atcCodeTextField = BasicComponentFactory.createTextField(d_model.getModel(Drug.PROPERTY_ATCCODE), false);
-		d_validator.add(d_atcCodeTextField);
 		
 		d_loadButton.addActionListener(new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {

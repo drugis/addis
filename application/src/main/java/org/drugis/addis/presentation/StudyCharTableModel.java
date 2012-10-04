@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,17 +56,7 @@ public class StudyCharTableModel extends AbstractTableModel {
 	}
 		
 	public int getColumnCount() {
-		return getNoVisibleCharacteristics() + 1;
-	}
-
-	private int getNoVisibleCharacteristics() {
-		int visible = 0;
-		for (Characteristic c : StudyCharacteristics.values()) {
-			if (d_pm.getCharacteristicVisibleModel(c).booleanValue()) {
-				visible++;
-			}
-		}
-		return visible;
+		return d_pm.countVisibleCharacteristics() + 1;
 	}
 
 	public int getRowCount() {
@@ -108,6 +98,13 @@ public class StudyCharTableModel extends AbstractTableModel {
 		return EntityUtil.getConcreteTypeOrEntity(getCharacteristic(columnIndex).getValueType());
 	}
 	
+	/**
+	 * Called when the list of included studies has been updated, but before table model events are fired.
+	 */
+	protected void includedStudiesListChanged() {
+		
+	}	
+	
 	private Characteristic getCharacteristic(int columnIndex) {
 		int idx = 0;
 		for (Characteristic c: StudyCharacteristics.values()) {
@@ -123,14 +120,17 @@ public class StudyCharTableModel extends AbstractTableModel {
 	
 	private class StudyListChangeListener implements ListDataListener {
 		public void contentsChanged(ListDataEvent e) {
+			includedStudiesListChanged();
 			fireTableStructureChanged(); // FIXME
 		}
 
 		public void intervalAdded(ListDataEvent e) {
+			includedStudiesListChanged();
 			fireTableStructureChanged(); // FIXME
 		}
 
 		public void intervalRemoved(ListDataEvent e) {
+			includedStudiesListChanged();
 			fireTableStructureChanged(); // FIXME
 		}		
 	}
@@ -139,5 +139,5 @@ public class StudyCharTableModel extends AbstractTableModel {
 		public void propertyChange(PropertyChangeEvent evt) {
 			fireTableStructureChanged();
 		}
-	}	
+	}
 }

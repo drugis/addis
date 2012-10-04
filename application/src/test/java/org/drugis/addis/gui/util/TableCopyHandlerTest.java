@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,22 +30,19 @@ import static org.drugis.addis.presentation.BRATTableModel.COLUMN_FOREST;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JTable;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.gui.renderer.SummaryCellRenderer;
 import org.drugis.addis.gui.renderer.BRATForestCellRenderer.ForestPlotTableCell;
 import org.drugis.addis.presentation.BRATTableModel;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
+import org.drugis.common.gui.table.TableCopyHandler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,19 +70,11 @@ public class TableCopyHandlerTest {
 	
 	@Test
 	public void testCopyForestAsPNG() throws IOException {
-		SummaryCellRenderer summaryCellRenderer = new SummaryCellRenderer();
-
-		BRATForest value = (BRATForest)d_btmStudy.getValueAt(1, COLUMN_FOREST);
-
-		Component superRenderer = summaryCellRenderer.getTableCellRendererComponent(new JTable(), value, true, true, 3, 3);		
-		final Color bg = superRenderer.getBackground();
-		final Color fg = superRenderer.getForeground();
+		BRATForest forest = (BRATForest)d_btmStudy.getValueAt(1, COLUMN_FOREST);
+		ForestPlotTableCell forestPlotTableCell = new ForestPlotTableCell(forest, Color.WHITE, Color.BLACK);
+		String image = TableCopyHandler.getMimeEncodedPng(forestPlotTableCell);
 		
-		final BRATForest forest = value;
-		
-		ForestPlotTableCell forestPlotTableCell = new ForestPlotTableCell(forest, bg, fg);
-		String image =  TableCopyHandler.getMimeEncodedPng(forestPlotTableCell);
-		assertEquals("iVBORw0KGgoAAAANSUhEUgAAAS0AAAAVCAIAAACc3y/NAAAAdklEQVR42u3ZQQ0AIQxFwXqqeVygAh8I4NoAgWmegh8me9hofejnMtMIxwsTcGgEDsWhOOSQQw7FoTgUhxyKQ3EoDjnULQ7XMwuH4pBDccghh++9abfnOJTvoTgUhxyKQ3Eo/w85FIfiUBxyKA7FoTjkUByqpAn9joI+RhAMuQAAAABJRU5ErkJggg==", image);
+		assertEquals("iVBORw0KGgoAAAANSUhEUgAAAS0AAAAVCAIAAACc3y/NAAAAcElEQVR42u3VwQkAIAwEweu/aYV8fQoqcbaEM4MZ+rskRrj/Cibg0AgcikNx6AI45FAcikNxyKE4FIfikEO94nDNLByKQw7FIYcc9rtpnYlD+Q/FoTjkUByKQ+06NAKH4lAcugAOORSH4lAccigOVU3Np6o8vXYELgAAAABJRU5ErkJggg==", image);
 	}
 
 }

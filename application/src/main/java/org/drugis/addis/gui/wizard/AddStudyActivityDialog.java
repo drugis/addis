@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	private static final long serialVersionUID = 325928004747685827L;
 	private final StudyActivityPresentation d_pm;
 	private AddisWindow d_mainWindow;
-	
+
 	public AddStudyActivityDialog(JDialog parent, AddisWindow mainWindow, StudyActivityPresentation pm) {
 		super(parent, "Activity", false);
 		d_mainWindow = mainWindow;
@@ -79,15 +79,15 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		} else {
 			setTitle("New Activity");
 		}
-		
+
 		d_pm.getActivityModel().addValueChangeListener(new PropertyChangeListener() {
-			
+
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				rebuild();
 			}
 		});
-		
+
 		rebuild();
 	}
 
@@ -97,7 +97,6 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 	}
 
 	private void disposeOfDialog() {
-		setVisible(false);
 		dispose();
 	}
 
@@ -106,7 +105,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		d_pm.commit();
 		disposeOfDialog();
 	}
-	
+
 	public void rebuild() {
 		getUserPanel().setVisible(false);
 		getUserPanel().removeAll(); // remove previous components (if any)
@@ -123,14 +122,13 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		final PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		final CellConstraints cc = new CellConstraints();
-		
+
 		int row = 1;
 		// add type
 		builder.addLabel("Type: ", cc.xy(1, row));
 		final JComboBox treatmentSelect = AuxComponentFactory.createBoundComboBox(d_pm.getActivityOptions().toArray(), d_pm.getActivityModel());
 		final ListCellRenderer renderer = treatmentSelect.getRenderer();
 		treatmentSelect.setRenderer(new ListCellRenderer() {
-			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
 				if (value instanceof TreatmentActivity) {
@@ -142,7 +140,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 			}
 		});
 		builder.add(treatmentSelect, cc.xy(3, row));
-		
+
 		// show or hide drug
 		if (d_pm.getActivityModel().getValue() instanceof TreatmentActivity) {
 			row = showDrugPanel(builder, row);
@@ -203,16 +201,16 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 		CellConstraints cc = new CellConstraints();
 		// add drug
 		builder.addSeparator("", cc.xyw(1, row, 5));
-		
+
 		FormLayout layout = builder.getLayout();
 		row = LayoutUtil.addRow(layout, row);
-		
+
 		builder.addLabel("Drug: ", cc.xy(1, row));
-		
+
 		final AbstractValueModel drugModel = dtp.getModel(DrugTreatment.PROPERTY_DRUG);
 		JComboBox drugSelect = AuxComponentFactory.createBoundComboBox(d_pm.getDrugOptions(), drugModel, true);
 		builder.add(drugSelect, cc.xy(3, row));
-		
+
 		JButton btn = GUIFactory.createPlusButton("Create drug");
 		builder.add(btn, cc.xy(5, row));
 		btn.addActionListener(new ActionListener() {
@@ -220,7 +218,7 @@ public class AddStudyActivityDialog extends OkCancelDialog {
 				d_mainWindow.showAddDialog(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class), drugModel);
 			}
 		});
-		
+
 		// add dose
 		row = buildDoseView(builder, row, layout, dtp);
 		return row;

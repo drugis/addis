@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.xml.datatype.Duration;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drugis.addis.presentation.DurationPresentation;
 import org.drugis.common.EqualsUtil;
 
@@ -41,18 +42,17 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 		FROM_EPOCH_START("From start of");
 
 		String d_string;
-		
+
 		RelativeTo(String s) {
 			d_string = s;
 		}
-		
+
 		@Override
 		public String toString() {
 			return d_string;
 		}
 	}
-	
-	
+
 	public static final String PROPERTY_EPOCH = "epoch";
 	public static final String PROPERTY_RELATIVE_TO = "relativeTo";
 	public static final String PROPERTY_OFFSET = "offset";
@@ -75,15 +75,15 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	public void setOffset(Duration duration) {
-		checkCommited();
+		checkCommited("Offset");
 		Duration oldValue = d_offset;
 		d_offset = duration;
 		firePropertyChange(PROPERTY_OFFSET, oldValue, d_offset);
 	}
 
-	private void checkCommited() {
+	private void checkCommited(String source) {
 		if (d_committed) {
-			throw new UnsupportedOperationException("Attempt to modify WhenTaken after commit.");
+			throw new UnsupportedOperationException("Attempt to modify WhenTaken after commit from " + source + ".");
 		}
 	}
 
@@ -92,18 +92,18 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	}
 
 	public void setRelativeTo(RelativeTo relativeTo) {
-		checkCommited();
+		checkCommited("relativeTo");
 		RelativeTo oldValue = d_relativeTo;
 		d_relativeTo = relativeTo;
 		firePropertyChange(PROPERTY_RELATIVE_TO, oldValue, d_relativeTo);
 	}
-	
+
 	public Epoch getEpoch() {
 		return d_epoch;
 	}
-	
+
 	public void setEpoch(Epoch epoch) {
-		checkCommited();
+		checkCommited("Epoch");
 		Epoch oldValue = d_epoch;
 		d_epoch = epoch;
 		firePropertyChange(PROPERTY_EPOCH, oldValue, d_epoch);
@@ -115,15 +115,15 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 	public Duration getDuration() {
 		return getOffset();
 	}
-	
+
 	/**
 	 * @see org.drugis.addis.entities.TypeWithDuration
-	 */	
+	 */
 	public void setDuration(Duration duration) {
 		setOffset(duration);
 	}
 
-	
+
 	public Set<? extends Entity> getDependencies() {
 		return Collections.singleton(d_epoch);
 	}
@@ -134,7 +134,7 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 			return false;
 		}
 		WhenTaken other = (WhenTaken) obj;
-		return EqualsUtil.equal(getOffset(), other.getOffset())
+		return EqualsUtil.equal(d_offset, other.d_offset)
 				&& EqualsUtil.equal(d_relativeTo, other.d_relativeTo)
 				&& EqualsUtil.equal(d_epoch, other.d_epoch);
 	}
@@ -158,16 +158,16 @@ public class WhenTaken extends AbstractEntity implements Entity, Comparable<When
 		if (d_relativeTo != o.d_relativeTo) {
 			return d_relativeTo == RelativeTo.FROM_EPOCH_START ? -1 : 1;
 		}
-		return getOffset().compare(o.getOffset());		
+		return getOffset().compare(o.getOffset());
 	}
-	
+
 	@Override
 	public int hashCode() {
-		int code = 1;
-		code = code * 31 + d_epoch.hashCode();
-		code = code * 31 + getOffset().hashCode();
-		code = code * 31 + d_relativeTo.hashCode();
-		return code;
+		return new HashCodeBuilder(17, 37)
+			.append(d_epoch)
+			.append(d_offset)
+			.append(d_relativeTo)
+			.toHashCode();
 	}
 
 	@Override
