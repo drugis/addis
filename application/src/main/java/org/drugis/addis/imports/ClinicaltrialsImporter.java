@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
@@ -80,6 +79,7 @@ import org.drugis.addis.entities.WhenTaken;
 import org.drugis.addis.entities.WhenTaken.RelativeTo;
 import org.drugis.addis.util.EntityUtil;
 import org.drugis.common.EqualsUtil;
+import org.drugis.common.gui.ErrorDialog;
 
 public class ClinicaltrialsImporter {
 
@@ -103,9 +103,15 @@ public class ClinicaltrialsImporter {
 			jc = JAXBContext.newInstance("org.drugis.addis.imports");
 			ClinicalStudy studyImport = (ClinicalStudy) jc.createUnmarshaller().unmarshal(is);
 			new ClinicaltrialsImporter(study, studyImport, importResults).importStudy();
-		} catch (JAXBException e) {
-			System.err.println("Error in parsing xml file (ClinicaltrialsImporter.java))");
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			String exceptionTitle = "Could not complete import from ClinicalTrials.gov";
+			StringBuilder errorMessage = new StringBuilder();
+			errorMessage.append("Something went wrong while importing from ClinicalTrials.gov.");
+			if (importResults) {
+				errorMessage.append(" Please try again without importing results.");
+			}
+			errorMessage.append("\n\nWhen reporting this problem please include the NCT-ID where possible.");
+			ErrorDialog.showDialog(e, exceptionTitle, errorMessage.toString(), true);
 		}
 	}
 

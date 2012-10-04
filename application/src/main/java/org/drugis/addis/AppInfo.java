@@ -51,8 +51,8 @@ public class AppInfo {
 	public static final String APPVERSIONFALLBACK = "UNKNOWN";
 
 	public final static ValueHolder<String> s_newVersion = new ModifiableHolder<String>(null);
-	
-	static { 
+
+	static {
 		Future<String> version = Executors.newFixedThreadPool(1).submit(new CheckVersion());
 		try {
 			s_newVersion.setValue(version.get());
@@ -61,7 +61,7 @@ public class AppInfo {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static String getAppVersion() {
 		return getProperty("version", APPVERSIONFALLBACK);
 	}
@@ -69,8 +69,8 @@ public class AppInfo {
 	public static String getAppName() {
 		return getProperty("name", APPNAMEFALLBACK);
 	}
-	
-	
+
+
 	private static class CheckVersion implements Callable<String> {
 	    public String call() {
 			URL updateWebService;
@@ -85,18 +85,18 @@ public class AppInfo {
 		    return null;
 		}
 	}
-	
+
 	public static ValueHolder<String> getLatestVersion() {
 		return s_newVersion;
 	}
 
 	public static boolean compareVersion(String latestversion, String appVersion) {
-		if (appVersion.equals(APPVERSIONFALLBACK))
-			return true;		
-		
+		if (latestversion == null) return false;
+		if (appVersion.equals(APPVERSIONFALLBACK)) return false;
+
 		Version latest = new Version(latestversion);
 		Version app	= new Version(appVersion);
-		
+
 		return latest.compareTo(app) > 0 ? true : false;
 	}
 
