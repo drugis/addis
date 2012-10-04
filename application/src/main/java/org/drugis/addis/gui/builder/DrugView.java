@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,10 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
 import org.drugis.addis.gui.components.StudiesTablePanel;
 import org.drugis.addis.presentation.DrugPresentation;
+import org.drugis.addis.presentation.StudyListPresentation;
 import org.drugis.addis.util.AtcParser;
-import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.addis.util.AtcParser.AtcDescription;
+import org.drugis.addis.util.RunnableReadyModel;
 import org.drugis.common.gui.BuildViewWhenReadyComponent;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.LinkLabel;
@@ -76,27 +77,27 @@ public class DrugView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingularCapitalized(), cc.xy(1, 1));
-		builder.add(createOverviewPart(),
+		builder.add(createDrugOverviewPanel(d_model),
 				cc.xy(1, 3));
 		builder.addSeparator(CategoryKnowledgeFactory.getCategoryKnowledge(Study.class).getPlural()
 							 + " measuring this "
 							 + CategoryKnowledgeFactory.getCategoryKnowledge(Drug.class).getSingular() , cc.xy(1, 5));
-		builder.add(buildStudiesComp(), cc.xy(1, 7));
+		builder.add(buildStudyListComponent(d_model.getStudyListPresentation(), d_parent), cc.xy(1, 7));
 				
 		return builder.getPanel();	
 	}
 
-	private JComponent buildStudiesComp() {
+	public static JComponent buildStudyListComponent(StudyListPresentation model, AddisWindow parent) {
 		JComponent studiesComp = null;
-		if(d_model.getIncludedStudies().isEmpty()) {
+		if(model.getIncludedStudies().isEmpty()) {
 			studiesComp = new JLabel("No studies found.");
 		} else {
-			studiesComp = new StudiesTablePanel(d_model, d_parent);
+			studiesComp = new StudiesTablePanel(model, parent);
 		}
 		return studiesComp;
 	}
 
-	private JPanel createOverviewPart() {
+	public static JPanel createDrugOverviewPanel(DrugPresentation model) {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, left:pref, center:8dlu, left:pref",
 				"p, 3dlu, p, 3dlu, p"
@@ -106,13 +107,13 @@ public class DrugView implements ViewBuilder {
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addLabel("Name:", cc.xy(1, 1));
-		AbstractValueModel drugname = d_model.getModel(Drug.PROPERTY_NAME);
+		AbstractValueModel drugname = model.getModel(Drug.PROPERTY_NAME);
 		
 		builder.add(new LinkLabel(drugname.getString() + " -", "Search for SmPC at " + SEARCH_DOMAIN, getSearchUrl(drugname)) , cc.xy(3,1));
 		builder.addLabel("ATC Code:", cc.xy(1, 3));
-		builder.add(BasicComponentFactory.createLabel(d_model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
+		builder.add(BasicComponentFactory.createLabel(model.getModel(Drug.PROPERTY_ATCCODE)), cc.xy(3, 3));
 		
-		AtcDetailsRetriever retriever = new AtcDetailsRetriever();
+		AtcDetailsRetriever retriever = new AtcDetailsRetriever(model);
 		AtcDetailsPanelBuilder detailsBuilder = new AtcDetailsPanelBuilder(retriever);
 		RunnableReadyModel readyModel = new RunnableReadyModel(retriever);
 		BuildViewWhenReadyComponent c = new BuildViewWhenReadyComponent(detailsBuilder, readyModel, "Loading...");
@@ -122,13 +123,20 @@ public class DrugView implements ViewBuilder {
 		return builder.getPanel();
 	}
 	
-	private class AtcDetailsRetriever implements Runnable {
+	private static class AtcDetailsRetriever implements Runnable {
 		private IOException d_error;
 		private List<AtcDescription> d_drugDetails;
+		private DrugPresentation d_model;
+		private AbstractValueModel d_atcCode;
+		
+		public AtcDetailsRetriever(DrugPresentation model) {
+			d_model = model;
+		}
 
 		public void run() {
 			try {
-				d_drugDetails = new AtcParser().getAtcDetails(d_model.getModel(Drug.PROPERTY_ATCCODE).getString());
+				d_atcCode = d_model.getModel(Drug.PROPERTY_ATCCODE);
+				d_drugDetails = new AtcParser().getAtcDetails(d_atcCode.getString());
 			} catch (IOException e) {
 				d_error = e;
 			}
@@ -141,9 +149,13 @@ public class DrugView implements ViewBuilder {
 		public List<AtcDescription> getDrugDetails() {
 			return d_drugDetails;
 		}
+
+		public AbstractValueModel getAtcCode() {
+			return d_atcCode;
+		}
 	}
 	
-	private class AtcDetailsPanelBuilder implements ViewBuilder {
+	private static class AtcDetailsPanelBuilder implements ViewBuilder {
 		private final AtcDetailsRetriever d_details;
 
 		public AtcDetailsPanelBuilder(AtcDetailsRetriever details) {
@@ -163,7 +175,7 @@ public class DrugView implements ViewBuilder {
 					builder.addLabel("No details found for this ATC code.");
 				}
 				for(AtcDescription desc : d_details.getDrugDetails()) {
-					if(!desc.getCode().equals(d_model.getModel(Drug.PROPERTY_ATCCODE).getString())){
+					if(!desc.getCode().equals(d_details.getAtcCode().getString())){
 						builder.addLabel(desc.getCode() + ": " + desc.getDescription(), cc.xy(1, pos));
 						LayoutUtil.addRow(layout);
 						pos += 2;
@@ -174,7 +186,7 @@ public class DrugView implements ViewBuilder {
 		}		
 	}
 
-	private String getSearchUrl(AbstractValueModel drugname) {
+	private static String getSearchUrl(AbstractValueModel drugname) {
 		return "http://www." + SEARCH_DOMAIN + "/EMC/searchresults.aspx?term=" + drugname.getValue().toString().replace(' ', '+');
 	}
 }

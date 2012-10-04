@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@ import java.util.List;
 
 import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.Beta;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.TransformedStudentTBase;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.util.JSMAAintegration.MetaBenefitRiskSMAAFactory;
 import org.drugis.addis.util.JSMAAintegration.StudyBenefitRiskSMAAFactory;
 import org.junit.Before;
@@ -69,11 +69,11 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateMeanVector() {
-		DrugSet a1 = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet a2 = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet a3 = new DrugSet(ExampleData.buildDrugEscitalopram());
-		DrugSet a4 = new DrugSet(ExampleData.buildDrugSertraline());
-		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
+		TreatmentDefinition a1 = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition a2 = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentDefinition a3 = TreatmentDefinition.createTrivial(ExampleData.buildDrugEscitalopram());
+		TreatmentDefinition a4 = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		List<TreatmentDefinition> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[] = new double [] {1.2, 0.3, -8.4};
 		assertArrayEquals(new double[] {0.0, m[0], m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a1, m), 0.0);
 		assertArrayEquals(new double[] {m[0], 0.0, m[1], m[2]}, MetaBenefitRiskSMAAFactory.createMeanVector(alts, a2, m), 0.0);
@@ -82,11 +82,11 @@ public class SMAAEntityFactoryTest {
 	
 	@Test
 	public void testCreateCovarianceMatrix() {
-		DrugSet a1 = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet a2 = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet a3 = new DrugSet(ExampleData.buildDrugEscitalopram());
-		DrugSet a4 = new DrugSet(ExampleData.buildDrugSertraline());
-		List<DrugSet> alts = Arrays.asList(a1, a2, a3, a4);
+		TreatmentDefinition a1 = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition a2 = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentDefinition a3 = TreatmentDefinition.createTrivial(ExampleData.buildDrugEscitalopram());
+		TreatmentDefinition a4 = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		List<TreatmentDefinition> alts = Arrays.asList(a1, a2, a3, a4);
 		double m[][] = new double [][] {{1.2, 0.3, -8.4}, {1.8, -1.4, 0.5}, {1.0, 0.3, 0.4}};
 		
 		double m1[][] = new double[][] {{0.0, 0.0, 0.0, 0.0}, {0.0, 1.2, 0.3, -8.4}, {0.0, 1.8, -1.4, 0.5}, {0.0, 1.0, 0.3, 0.4}};
@@ -97,7 +97,7 @@ public class SMAAEntityFactoryTest {
 //	
 //	@Test
 //	public void testCreateCardinalMeasurementRate() {
-//		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new DrugSet(ExampleData.buildDrugFluoxetine()));
+//		GaussianBase relativeEffect = d_brAnalysis.getRelativeEffectDistribution(ExampleData.buildEndpointHamd(), new TreatmentCategorySet(ExampleData.buildDrugFluoxetine()));
 //		CardinalMeasurement actual = SMAAEntityFactory.createCardinalMeasurement(relativeEffect);
 //		assertTrue(!((LogNormalMeasurement) actual).getMean().isNaN());
 //		assertTrue(actual instanceof LogNormalMeasurement);
@@ -110,7 +110,7 @@ public class SMAAEntityFactoryTest {
 //	public void testCreateSmaaModel() {
 //		SMAAModel smaaModel = d_smaaFactory.createSmaaModel(d_brAnalysis);
 //		for(OutcomeMeasure om : d_brAnalysis.getCriteria()){
-//			for(DrugSet d : d_brAnalysis.getDrugs()){
+//			for(TreatmentCategorySet d : d_brAnalysis.getDrugs()){
 //				if (d.equals(d_brAnalysis.getBaseline()))
 //					continue;
 //				fi.smaa.jsmaa.model.Measurement actualMeasurement = smaaModel.getImpactMatrix().getMeasurement(d_smaaFactory.getCriterion(om), d_smaaFactory.getAlternative(d));

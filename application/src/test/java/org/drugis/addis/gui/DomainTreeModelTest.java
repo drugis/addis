@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,8 +50,8 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DomainImpl;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.EntityCategory;
 import org.drugis.addis.entities.EntityIdExistsException;
@@ -67,6 +67,7 @@ import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.event.TreeModelEventMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,18 +94,17 @@ public class DomainTreeModelTest {
 		
 		ExampleData.addDefaultEpochs(d_firstStudy);
 
-		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm pg = d_firstStudy.createAndAddArm("first", 100, d_firstDrug, new FixedDose(100.0, DoseUnit.createMilliGramsPerDay()));
 		
 		d_firstStudy.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_firstEndpoint));
 		d_firstStudy.getAdverseEvents().add(new StudyOutcomeMeasure<AdverseEvent>(d_firstADE));
 
 		ExampleData.addDefaultMeasurementMoments(d_firstStudy);
 		
-		d_firstStudy.setMeasurement(d_firstEndpoint, pg, d_firstEndpoint.buildMeasurement(pg));
-		d_firstStudy.setMeasurement(d_firstADE, pg, d_firstADE.buildMeasurement(pg));
+		d_firstStudy.setMeasurement(d_firstStudy.findStudyOutcomeMeasure(d_firstEndpoint), pg, d_firstEndpoint.buildMeasurement(pg));
+		d_firstStudy.setMeasurement(d_firstStudy.findStudyOutcomeMeasure(d_firstADE), pg, d_firstADE.buildMeasurement(pg));
 		
-		d_firstMetaAnalysis = new RandomEffectsMetaAnalysis("meta", d_firstEndpoint, 
-				Collections.singletonList((Study)d_firstStudy), new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
+		d_firstMetaAnalysis = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_firstEndpoint, Collections.singletonList((Study)d_firstStudy), TreatmentDefinition.createTrivial(d_firstDrug), TreatmentDefinition.createTrivial(d_firstDrug));
 		
 		d_firstPopChar = new PopulationCharacteristic("Age", new ContinuousVariableType());
 		
@@ -319,8 +319,7 @@ public class DomainTreeModelTest {
 	
 	@Test
 	public void testMetaStudyIsLeaf() throws NullPointerException, IllegalArgumentException, EntityIdExistsException {
-		RandomEffectsMetaAnalysis study = new RandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)),
-				new DrugSet(d_firstDrug), new DrugSet(d_firstDrug));
+		RandomEffectsMetaAnalysis study = ExampleData.buildRandomEffectsMetaAnalysis("meta2", d_firstEndpoint, new ArrayList<Study>(Collections.singleton(d_firstStudy)), TreatmentDefinition.createTrivial(d_firstDrug), TreatmentDefinition.createTrivial(d_firstDrug));
 		d_domain.getMetaAnalyses().add(study);
 		assertTrue(d_treeModel.isLeaf(study));
 		assertTrue(d_treeModel.isLeaf(d_firstMetaAnalysis));

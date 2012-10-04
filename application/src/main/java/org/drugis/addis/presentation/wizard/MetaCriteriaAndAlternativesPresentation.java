@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,15 @@ import java.util.TreeSet;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.drugis.addis.entities.DrugSet;
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.DecisionContext;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.presentation.ValueHolder;
 import org.drugis.common.beans.AbstractObservable;
@@ -51,7 +52,6 @@ import org.drugis.common.beans.ContentAwareListModel;
 import org.drugis.common.beans.FilteredObservableList;
 import org.drugis.common.beans.SortedSetModel;
 import org.drugis.common.beans.TransformedObservableList;
-import org.drugis.common.beans.FilteredObservableList.Filter;
 import org.drugis.common.beans.TransformedObservableList.Transform;
 import org.drugis.common.validation.BooleanAndModel;
 
@@ -60,7 +60,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<DrugSet> {
+public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternativesPresentation<TreatmentDefinition> {
 	private final class AutoSelectMetaAnalysisListener implements ListDataListener {
 		public void intervalRemoved(ListDataEvent e) { }
 
@@ -162,22 +162,22 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		}
 	}
 	
-	private class OutcomeMeasureFilter implements Filter<MetaAnalysis> {
+	private class OutcomeMeasureFilter implements Predicate<MetaAnalysis> {
 		private final OutcomeMeasure d_om;
 		public OutcomeMeasureFilter(OutcomeMeasure om) {
 			d_om = om;
 		}
-		public boolean accept(MetaAnalysis ma) {
+		public boolean evaluate(MetaAnalysis ma) {
 			return ma.getOutcomeMeasure().equals(d_om);
 		}
 	}
 
-	public static class IndicationFilter implements Filter<MetaAnalysis> {
+	public static class IndicationFilter implements Predicate<MetaAnalysis> {
 		private final Indication d_indication;
 		public IndicationFilter(Indication i) {
 			d_indication = i;
 		}
-		public boolean accept(MetaAnalysis ma) {
+		public boolean evaluate(MetaAnalysis ma) {
 			return ma.getIndication().equals(d_indication);
 		}
 	}
@@ -218,8 +218,8 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 				new String[] {CriterionAnalysisPair.PROPERTY_ANALYSIS});
 		
 		// Filter the CriterionAnalysisPair list to include only selected criteria.
-		final Filter<CriterionAnalysisPair> criterionSelectedFilter = new Filter<CriterionAnalysisPair>() {
-			public boolean accept(CriterionAnalysisPair obj) {
+		final Predicate<CriterionAnalysisPair> criterionSelectedFilter = new Predicate<CriterionAnalysisPair>() {
+			public boolean evaluate(CriterionAnalysisPair obj) {
 				return getSelectedCriteria().contains(obj.getCriterion());
 			}
 		};
@@ -261,9 +261,9 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	public BenefitRiskAnalysis<DrugSet> createAnalysis(String id, DecisionContext context) {
-		DrugSet baseline = d_baselineModel.getValue();
-		List<DrugSet> alternatives = new ArrayList<DrugSet>(getSelectedAlternatives());
+	public BenefitRiskAnalysis<TreatmentDefinition> createAnalysis(String id, DecisionContext context) {
+		TreatmentDefinition baseline = d_baselineModel.getValue();
+		List<TreatmentDefinition> alternatives = new ArrayList<TreatmentDefinition>(getSelectedAlternatives());
 		alternatives.remove(baseline);
 		return new MetaBenefitRiskAnalysis(
 				id,
@@ -316,11 +316,11 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 		return metaAnalyses.size() == 1 ? metaAnalyses.get(0) : null;
 	}
 
-	private Set<DrugSet> getAlternatives() {
-		Set<DrugSet> alternatives = new TreeSet<DrugSet>();
+	private Set<TreatmentDefinition> getAlternatives() {
+		Set<TreatmentDefinition> alternatives = new TreeSet<TreatmentDefinition>();
 		for(MetaAnalysis ma : d_metaAnalyses) {
 			if(ma.getIndication() == d_indicationModel.getValue())
-				alternatives.addAll(ma.getIncludedDrugs());
+				alternatives.addAll(ma.getAlternatives());
 		}
 		return alternatives;
 	}
@@ -344,20 +344,20 @@ public class MetaCriteriaAndAlternativesPresentation extends CriteriaAndAlternat
 	}
 
 	@Override
-	protected boolean getAlternativeShouldBeEnabled(DrugSet alternative) {
+	protected boolean getAlternativeShouldBeEnabled(TreatmentDefinition alternative) {
 		if (!super.getAlternativeShouldBeEnabled(alternative)) {
 			return false;
 		}
-		return getAlternativeIncludedInAllSelectedAnalyses((DrugSet) alternative);
+		return getAlternativeIncludedInAllSelectedAnalyses((TreatmentDefinition) alternative);
 	}
 
-	private boolean getAlternativeIncludedInAllSelectedAnalyses(DrugSet alternative) {
+	private boolean getAlternativeIncludedInAllSelectedAnalyses(TreatmentDefinition alternative) {
 		boolean noAnalysesSelected = true;
 		List<OutcomeMeasure> selectedCriteria = getSelectedCriteria();
 		for (CriterionAnalysisPair pair : d_selectedMetaAnalysesPairs) {
 			if (selectedCriteria.contains(pair.getCriterion()) && pair.getAnalysis() != null) {
 				noAnalysesSelected = false;
-				if (!pair.getAnalysis().getIncludedDrugs().contains(alternative)) {
+				if (!pair.getAnalysis().getAlternatives().contains(alternative)) {
 					return false;
 				}
 			}

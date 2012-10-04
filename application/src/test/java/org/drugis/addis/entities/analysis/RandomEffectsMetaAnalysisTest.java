@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drugis.addis.ADDISTestUtil;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.ExampleData;
+import org.drugis.addis.entities.Arm;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Entity;
+import org.drugis.addis.entities.FixedDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.Study;
@@ -49,6 +52,11 @@ import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectTestBase;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.DecisionTree;
+import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +86,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		d_studyList.add(d_fava);
 		d_studyList.add(d_newhouse);
 		d_studyList.add(d_sechter);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
+		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 	}
 	
 	@Test
@@ -88,8 +96,8 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		for (int i = 0; i < d_studyList.size(); ++i) {
 			StudyArmsEntry studyArmsEntry = entries.get(i);
 			assertEquals(d_studyList.get(i), studyArmsEntry.getStudy());
-			assertEquals(new DrugSet(d_fluox), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getBase()));
-			assertEquals(new DrugSet(d_sertr), studyArmsEntry.getStudy().getDrugs(studyArmsEntry.getSubject()));
+			assertEquals(TreatmentDefinition.createTrivial(d_fluox), studyArmsEntry.getStudy().getTreatmentDefinition(studyArmsEntry.getBase()));
+			assertEquals(TreatmentDefinition.createTrivial(d_sertr), studyArmsEntry.getStudy().getTreatmentDefinition(studyArmsEntry.getSubject()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getBase()));
 			assertTrue(d_studyList.get(i).getArms().contains(studyArmsEntry.getSubject()));
 		}
@@ -101,7 +109,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		d_studyList.add(newStudy);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
+		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -110,11 +118,30 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
-		armsList.add(new StudyArmsEntry(newStudy,newStudy.getArms().get(0),newStudy.getArms().get(1)));
-		armsList.add(new StudyArmsEntry(newStudy,newStudy.getArms().get(1),newStudy.getArms().get(0)));
+		Arm subject = newStudy.getArms().get(1);
+		Arm base = newStudy.getArms().get(0);
+		armsList.add(new StudyArmsEntry(newStudy, base, subject));
+		armsList.add(new StudyArmsEntry(newStudy, subject, base));
 		
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, armsList);
-	}	
+		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, newStudy.getTreatmentDefinition(base), newStudy.getTreatmentDefinition(subject), armsList, false);
+	}
+	
+	@Test
+	public void testCategoryMatching() {
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d_fluox, DoseUnit.createMilliGramsPerDay());
+		Category fluoxCat = new Category(catz, "Include");
+		catz.addCategory(fluoxCat);
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(fluoxCat));
+		Category sertrCat = Category.createTrivial(d_sertr);
+		List<StudyArmsEntry> entries = ExampleData.buildStudyArmEntries(d_studyList,  TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		
+		// The following should *not* throw an IllegalArgumentException
+		new RandomEffectsMetaAnalysis("meta", d_rateEndpoint,
+				new TreatmentDefinition(fluoxCat),
+				new TreatmentDefinition(sertrCat),
+				entries, false);
+	}
 	
 	
 	@Test
@@ -129,17 +156,17 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testGetFirstDrug() {
-		assertEquals(new DrugSet(d_fluox), d_rema.getFirstDrug());
+		assertEquals(TreatmentDefinition.createTrivial(d_fluox), d_rema.getFirstAlternative());
 	}
 	
 	@Test
 	public void testGetSecondDrug() {
-		assertEquals(new DrugSet(d_sertr), d_rema.getSecondDrug());
+		assertEquals(TreatmentDefinition.createTrivial(d_sertr), d_rema.getSecondAlternative());
 	}
 	
 	@Test
 	public void testIncludedDrugs() {
-		assertEquals(Arrays.asList(new DrugSet [] {new DrugSet(d_fluox), new DrugSet(d_sertr)}), d_rema.getIncludedDrugs());
+		assertEquals(Arrays.asList(new TreatmentDefinition [] {TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr)}), d_rema.getAlternatives());
 	}
 	
 	@Test
@@ -193,8 +220,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		studies.add(s1);
 		studies.add(s2);
 		
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta",
-				d_contEndpoint, studies, new DrugSet(d_fluox), new DrugSet(d_sertr));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_contEndpoint, studies, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		RandomEffectMetaAnalysisRelativeEffect<Measurement> relativeEffect = ma.getRelativeEffect(BasicMeanDifference.class);
 		assertEquals(2.5, relativeEffect.getConfidenceInterval().getPointEstimate(), 0.01);
 	}
@@ -204,6 +230,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		HashSet<Entity> deps = new HashSet<Entity>();
 		deps.add(d_fluox);
 		deps.add(d_sertr);
+		deps.add(DoseUnit.createMilliGramsPerDay().getUnit());
 		deps.add(d_ind);
 		deps.add(d_rateEndpoint);
 		deps.addAll(Arrays.asList(new Study[]{d_bennie, d_boyer, d_fava, d_newhouse, d_sechter}));
@@ -216,9 +243,9 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118);
 		d_studyList.add(zeroRate);
-		d_rema = new RandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, new DrugSet(d_fluox), new DrugSet(d_sertr));
+		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
 		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
-		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, new DrugSet(d_fluox), new DrugSet(d_sertr), BasicOddsRatio.class, false).isDefined());
+		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicOddsRatio.class, false).isDefined());
 		ADDISTestUtil.assertRelativeEffectListEquals(expected, actual);
 	}
 }

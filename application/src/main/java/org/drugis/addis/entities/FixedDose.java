@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,10 @@
 
 package org.drugis.addis.entities;
 
-import org.drugis.common.EqualsUtil;
+import org.apache.commons.math3.util.Precision;
 
 
 public class FixedDose extends AbstractDose {
-
 	public static final String PROPERTY_QUANTITY = "quantity";
 
 	private Double d_quantity;
@@ -65,8 +64,7 @@ public class FixedDose extends AbstractDose {
 	public boolean equals(Object o) {
 		if (o instanceof FixedDose) {
 			FixedDose other = (FixedDose)o;
-			return EqualsUtil.equal(other.getQuantity(), getQuantity()) &&
-				EqualsUtil.equal(other.getDoseUnit(), getDoseUnit());
+			return Precision.equals(DoseUnit.convert(d_quantity, d_unit, other.getDoseUnit()), other.getQuantity(), Precision.EPSILON);
 		}
 		return false;
 	}
@@ -84,5 +82,4 @@ public class FixedDose extends AbstractDose {
 	public AbstractDose clone() {
 		return new FixedDose(getQuantity(), getDoseUnit().clone());
 	}
-
 }

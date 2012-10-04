@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,20 +31,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
-import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Study;
-import org.drugis.addis.entities.StudyActivity;
-import org.drugis.addis.entities.TreatmentActivity;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mocks.MockNetworkMetaAnalysis;
-import org.drugis.addis.presentation.NetworkTableModelTest;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +50,7 @@ public class NetworkMetaAnalysisTest {
 	@Before
 	public void setup() throws InterruptedException{
 		d_analysis = ExampleData.buildNetworkMetaAnalysisHamD();
-		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkTableModelTest.buildMockNetworkMetaAnalysis();
+		d_mockAnalysis = (MockNetworkMetaAnalysis) NetworkMetaAnalysisTest.buildMockNetworkMetaAnalysis();
 		d_mockAnalysis.run();
 	}
 	
@@ -75,87 +67,49 @@ public class NetworkMetaAnalysisTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testRelativeEffectsList() {
-		DrugSet fluox = new DrugSet(ExampleData.buildDrugFluoxetine());
-		DrugSet parox = new DrugSet(ExampleData.buildDrugParoxetine());
-		DrugSet sertr = new DrugSet(ExampleData.buildDrugSertraline());
-		List<Pair<DrugSet>> expected = Arrays.asList(
-				new Pair<DrugSet>(fluox, parox),
-				new Pair<DrugSet>(fluox, sertr)
+		TreatmentDefinition fluox = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
+		TreatmentDefinition parox = TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine());
+		TreatmentDefinition sertr = TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline());
+		List<Pair<TreatmentDefinition>> expected = Arrays.asList(
+				new Pair<TreatmentDefinition>(fluox, parox),
+				new Pair<TreatmentDefinition>(fluox, sertr)
 		);
 		assertEquals(expected, d_analysis.getConsistencyModel().getRelativeEffectsList());
 	}
 	
 	@Test
 	public void testIsContinuous() {
-		assertFalse(NetworkTableModelTest.buildMockNetworkMetaAnalysis().isContinuous());
-		assertTrue(NetworkTableModelTest.buildMockContinuousNetworkMetaAnalysis().isContinuous());
+		assertFalse(NetworkMetaAnalysisTest.buildMockNetworkMetaAnalysis().isContinuous());
+		assertTrue(NetworkMetaAnalysisTest.buildMockContinuousNetworkMetaAnalysis().isContinuous());
+	}
+
+	public static NetworkMetaAnalysis buildMockNetworkMetaAnalysis() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyDeWilde(), ExampleData.buildStudyFava2002()});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
+		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
+				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointHamd(),
+				studies, drugs, ExampleData.buildMap(studies, drugs));
+		
+		return analysis;
+	}
+
+	public static NetworkMetaAnalysis buildMockContinuousNetworkMetaAnalysis() {
+		List<Study> studies = Arrays.asList(new Study[] {
+				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard()});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
+		
+		NetworkMetaAnalysis analysis = new MockNetworkMetaAnalysis("Test Network", 
+				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),
+				studies, drugs, ExampleData.buildMap(studies, drugs));
+		
+		return analysis;
 	}
 	
-	// TODO Move to NetworkBuilderFactoryTest
-	@Test
-	public void testTransformCombinationTreatment() {
-		Study study = ExampleData.buildStudyMcMurray().clone();
-		DrugTreatment ta1 = new DrugTreatment(ExampleData.buildDrugCandesartan(), null);
-		DrugTreatment ta2 = new DrugTreatment(ExampleData.buildDrugFluoxetine(), null);
-		StudyActivity activity = new StudyActivity("DRUGS", new TreatmentActivity(Arrays.asList(ta1, ta2)));
-		study.getStudyActivities().add(activity);
-		study.setStudyActivityAt(study.getArms().get(0), study.findTreatmentEpoch(), activity);
-		
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
-		Map<DrugSet, Arm> drugArmMap = new HashMap<DrugSet, Arm>();
-		for (Arm a : study.getArms()) {
-			drugArmMap.put(study.getDrugs(a), a);
-		}
-		armMap.put(study, drugArmMap);
-		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
-		
-		assertEquals("Candesartan_Fluoxetine", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(ExampleData.buildDrugCandesartan(), ExampleData.buildDrugFluoxetine()))).getId());
-	}
-	
-	@Test
-	public void testTransformTreatmentWithIllegalCharacters() {
-		Study study = ExampleData.buildStudyMcMurray().clone();
-		Drug myDrug = new Drug("My Drug!", "3");
-		DrugTreatment ta1 = new DrugTreatment(myDrug, null);
-		DrugTreatment ta2 = new DrugTreatment(ExampleData.buildDrugFluoxetine(), null);
-		StudyActivity activity = new StudyActivity("DRUGS", new TreatmentActivity(Arrays.asList(ta1, ta2)));
-		study.getStudyActivities().add(activity);
-		study.setStudyActivityAt(study.getArms().get(0), study.findTreatmentEpoch(), activity);
-		
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
-		Map<DrugSet, Arm> drugArmMap = new HashMap<DrugSet, Arm>();
-		for (Arm a : study.getArms()) {
-			drugArmMap.put(study.getDrugs(a), a);
-		}
-		armMap.put(study, drugArmMap);
-		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
-		
-		assertEquals("Fluoxetine_MyDrug", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(myDrug, ExampleData.buildDrugFluoxetine()))).getId());
-	}
-	
-	@Test
-	public void testTransformTreatmentDuplicateCleanName() {
-		Study study = ExampleData.buildStudyMcMurray().clone();
-		Drug myDrug1 = new Drug("My Drug!", "3");
-		Drug myDrug2 = new Drug("My!Drug", "4");
-		DrugTreatment ta1 = new DrugTreatment(myDrug1, null);
-		DrugTreatment ta2 = new DrugTreatment(myDrug2, null);
-		StudyActivity act1 = new StudyActivity("DRUGS1", new TreatmentActivity(Arrays.asList(ta1)));
-		StudyActivity act2 = new StudyActivity("DRUGS2", new TreatmentActivity(Arrays.asList(ta2)));
-		study.getStudyActivities().add(act1);
-		study.getStudyActivities().add(act2);
-		study.setStudyActivityAt(study.getArms().get(0), study.findTreatmentEpoch(), act1);
-		study.setStudyActivityAt(study.getArms().get(1), study.findTreatmentEpoch(), act2);
-		
-		Map<Study, Map<DrugSet, Arm>> armMap = new HashMap<Study, Map<DrugSet, Arm>>();
-		Map<DrugSet, Arm> drugArmMap = new HashMap<DrugSet, Arm>();
-		for (Arm a : study.getArms()) {
-			drugArmMap.put(study.getDrugs(a), a);
-		}
-		armMap.put(study, drugArmMap);
-		NetworkMetaAnalysis nma = new NetworkMetaAnalysis("don'tcare", study.getIndication(), study.getOutcomeMeasures().get(0), armMap);
-		
-		assertEquals("MyDrug", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(myDrug1))).getId());
-		assertEquals("MyDrug2", nma.getBuilder().getTreatmentMap().get(new DrugSet(Arrays.asList(myDrug2))).getId());
-	}
 }

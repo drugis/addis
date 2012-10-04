@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.FixedDose;
@@ -65,8 +66,8 @@ public class RelativeEffectTestBase {
 		ExampleData.addDefaultEpochs(s);
 	
 		s.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(d_rateEndpoint));
-		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
-		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertr, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));		
+		Arm g_fluox = s.createAndAddArm("Fluox", fluoxSize, d_fluox, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));
+		Arm g_sertr = s.createAndAddArm("Sertr", sertraSize, d_sertr, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));		
 		
 		BasicRateMeasurement m_sertr = (BasicRateMeasurement) d_rateEndpoint.buildMeasurement(g_sertr);
 		BasicRateMeasurement m_fluox = (BasicRateMeasurement) d_rateEndpoint.buildMeasurement(g_fluox);
@@ -76,8 +77,8 @@ public class RelativeEffectTestBase {
 	
 		ExampleData.addDefaultMeasurementMoments(s);
 	
-		s.setMeasurement(d_rateEndpoint, g_sertr, m_sertr);
-		s.setMeasurement(d_rateEndpoint, g_fluox, m_fluox);		
+		s.setMeasurement(s.findStudyOutcomeMeasure(d_rateEndpoint), g_sertr, m_sertr);
+		s.setMeasurement(s.findStudyOutcomeMeasure(d_rateEndpoint), g_fluox, m_fluox);		
 		
 		return s;
 	}
@@ -102,14 +103,14 @@ public class RelativeEffectTestBase {
 
 				ExampleData.addDefaultMeasurementMoments(s);
 
-				s.setMeasurement(d_contEndpoint, group, measurement);
-				s.setMeasurement(d_contEndpoint, group1, measurement1);
+				s.setMeasurement(s.findStudyOutcomeMeasure(d_contEndpoint), group, measurement);
+				s.setMeasurement(s.findStudyOutcomeMeasure(d_contEndpoint), group1, measurement1);
 				
 				return s ;
 			}
 
 	private Arm addArm(Study study, Drug drug, int nSubjects) {
-		FixedDose dose = new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(10.0, DoseUnit.createMilliGramsPerDay());
 		Arm group = study.createAndAddArm(drug.getName(), nSubjects, drug, dose);
 		return group;
 	}

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ public class StudyCharacteristicsView implements ViewBuilder {
 		builder.add(d80Button, cc.xy(5, row));
 		row = LayoutUtil.addRow(layout, row);
 		String str = "<html>Display the Summary of Efficacy Table according to the <a href='http://www.ema.europa.eu/ema/index.jsp?curl=pages/regulation/general/general_content_000121.jsp'>EMA D80</a> Clinical report template</html>";
-		JTextPane jep = AuxComponentFactory.createTextPaneWithHyperlinks(str);
+		JTextPane jep = AuxComponentFactory.createTextPane(str);
 		// ScrollPane because otherwise the caret in the textpane causing the tab to scroll down to the JTextPane.
 		Component sp = new JScrollPane(jep, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		builder.add(sp, cc.xy(5, row));

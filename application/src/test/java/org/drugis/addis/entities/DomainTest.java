@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.PairWiseMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.JUnitUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,8 +117,7 @@ public class DomainTest {
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
 		studies.add(new Study("iiidddd", ExampleData.buildIndicationDepression()));
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_domain.getMetaAnalyses().add(ma);
 	}
 	
@@ -204,8 +205,7 @@ public class DomainTest {
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(ExampleData.buildStudyChouinard());
 		studies.add(ExampleData.buildStudyDeWilde());
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		return ma;
 	}
 	
@@ -216,8 +216,7 @@ public class DomainTest {
 		Study study2 = ExampleData.buildStudyDeWilde();
 		study2.setIndication(ExampleData.buildIndicationChronicHeartFailure());
 		studies.add(study2);
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(),
-				studies, new DrugSet(ExampleData.buildDrugFluoxetine()), new DrugSet(ExampleData.buildDrugParoxetine()));
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", ExampleData.buildEndpointHamd(), studies, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()), TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()));
 		d_domain.getMetaAnalyses().add(ma);
 	}
 	
@@ -343,10 +342,10 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s1);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, DoseUnit.createMilliGramsPerDay()));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		ExampleData.addDefaultMeasurementMoments(s1);
-		s1.setMeasurement(e, g1, m1);
+		s1.setMeasurement(s1.findStudyOutcomeMeasure(e), g1, m1);
 		d_domain.getIndications().add(d_indication);
 		
 		Indication indic2 = new Indication(1L, "");
@@ -355,13 +354,13 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));		
-		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, DoseUnit.createMilliGramsPerDay()));		
+		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, DoseUnit.createMilliGramsPerDay()));
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		ExampleData.addDefaultMeasurementMoments(s2);
-		s2.setMeasurement(e, g2, m2);
-		s2.setMeasurement(e, g3, m3);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g2, m2);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g3, m3);
 		
 		
 		ObservableList<Study> d1Studies = d_domain.getStudies(d1);
@@ -393,10 +392,10 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s1);
 		s1.getEndpoints().clear();
 		s1.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g1 = s1.createAndAddArm("g1", 100, d1, new FixedDose(1.0, DoseUnit.createMilliGramsPerDay()));
 		BasicMeasurement m1 = new BasicRateMeasurement(10, g1.getSize());
 		ExampleData.addDefaultMeasurementMoments(s1);
-		s1.setMeasurement(e, g1, m1);
+		s1.setMeasurement(s1.findStudyOutcomeMeasure(e), g1, m1);
 		d_domain.getIndications().add(d_indication);
 		
 		Indication indic2 = new Indication(1L, "");
@@ -405,13 +404,13 @@ public class DomainTest {
 		ExampleData.addDefaultEpochs(s2);
 		s2.getEndpoints().clear();
 		s2.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(e)));
-		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));		
-		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, ExampleData.MILLIGRAMS_A_DAY));
+		Arm g2 = s2.createAndAddArm("g2", 250, d1, new FixedDose(5.0, DoseUnit.createMilliGramsPerDay()));		
+		Arm g3 = s2.createAndAddArm("g3", 250, d2, new FixedDose(5.0, DoseUnit.createMilliGramsPerDay()));
 		BasicMeasurement m2 = new BasicRateMeasurement(10, g2.getSize());
 		BasicMeasurement m3 = new BasicRateMeasurement(10, g3.getSize());		
 		ExampleData.addDefaultMeasurementMoments(s1);
-		s2.setMeasurement(e, g2, m2);
-		s2.setMeasurement(e, g3, m3);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g2, m2);
+		s2.setMeasurement(s2.findStudyOutcomeMeasure(e), g3, m3);
 		
 		d_domain.getEndpoints().add(e);
 		d_domain.getDrugs().addAll(Arrays.asList(d1, d2));
@@ -425,7 +424,22 @@ public class DomainTest {
 		assertTrue(studies.contains(s1));
 		assertTrue(studies.contains(s2));
 	}
+	
+	@Test
+	public void testGetCategorization() {
+		Drug fluox = ExampleData.buildDrugFluoxetine();
+		TreatmentCategorization cats1 = TreatmentCategorization.createDefault("cats1", fluox, DoseUnit.createMilliGramsPerDay());
+		Drug parox = ExampleData.buildDrugParoxetine();
+		TreatmentCategorization cats2 = TreatmentCategorization.createDefault("cats2", parox, DoseUnit.createMilliGramsPerDay());
 		
+		ObservableList<TreatmentCategorization> cats = d_domain.getTreatmentCategorizations();
+		cats.add(cats1);
+		cats.add(cats2);
+		
+		JUnitUtil.assertAllAndOnly(Collections.singleton(cats1), d_domain.getCategorizations(fluox));
+		JUnitUtil.assertAllAndOnly(Collections.singleton(cats2), d_domain.getCategorizations(parox));
+	}
+	
 	@Test
 	public void testEquals() {
 		Domain d1 = new DomainImpl();
@@ -476,13 +490,13 @@ public class DomainTest {
 		
 		Study s1 = new Study("X", d_indication);
 		ExampleData.addDefaultEpochs(s1);
-		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
-		s1.createAndAddArm("parox", 23, parox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("fluox", 23, fluox, new FixedDose(20, DoseUnit.createMilliGramsPerDay()));
+		s1.createAndAddArm("parox", 23, parox, new FixedDose(20, DoseUnit.createMilliGramsPerDay()));
 	
 		Study s2 = new Study("Y", d_indication);
 		ExampleData.addDefaultEpochs(s2);
-		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
-		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY));
+		s2.createAndAddArm("fluox", 23, fluox, new FixedDose(20, DoseUnit.createMilliGramsPerDay()));
+		s2.createAndAddArm("parox", 23, parox, new FixedDose(20, DoseUnit.createMilliGramsPerDay()));
 		
 		d_domain.getIndications().add(d_indication);
 		d_domain.getDrugs().addAll(Arrays.asList(fluox, parox));
@@ -495,7 +509,7 @@ public class DomainTest {
 		s2.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(e));
 		
 		ArrayList<Study> studies = new ArrayList<Study>(d_domain.getStudies());
-		RandomEffectsMetaAnalysis ma = new RandomEffectsMetaAnalysis("meta", e, studies, new DrugSet(fluox), new DrugSet(parox)); 
+		RandomEffectsMetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("meta", e, studies, TreatmentDefinition.createTrivial(fluox), TreatmentDefinition.createTrivial(parox)); 
 		d_domain.getMetaAnalyses().add(ma);
 		d_domain.deleteEntity(s1);
 	}
@@ -518,7 +532,7 @@ public class DomainTest {
 		Drug d = new Drug("d", "atc");
 		d_domain.getDrugs().add(d);
 	
-		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY));
+		s1.createAndAddArm("g", 10, d, new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));
 		d_domain.deleteEntity(d);
 	}
 
@@ -606,8 +620,8 @@ public class DomainTest {
 	
 	@Test
 	public void testGetCategories() {
-		assertEquals(10, d_domain.getCategories().size());
-		List<Class<?>> cats = Arrays.<Class<?>>asList(Unit.class, Indication.class, Drug.class, Endpoint.class, AdverseEvent.class, PopulationCharacteristic.class, 
+		assertEquals(11, d_domain.getCategories().size());
+		List<Class<?>> cats = Arrays.<Class<?>>asList(Unit.class, Indication.class, Drug.class, TreatmentCategorization.class, Endpoint.class, AdverseEvent.class, PopulationCharacteristic.class, 
 				Study.class, PairWiseMetaAnalysis.class, NetworkMetaAnalysis.class, BenefitRiskAnalysis.class);
 		List<Class<?>> domainCats = new ArrayListModel<Class<?>>();
 		for (EntityCategory ec : d_domain.getCategories()) {

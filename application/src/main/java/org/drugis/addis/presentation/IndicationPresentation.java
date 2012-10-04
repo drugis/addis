@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package org.drugis.addis.presentation;
 
 import java.beans.PropertyChangeEvent;
 
-import org.drugis.addis.entities.Characteristic;
 import org.drugis.addis.entities.DomainImpl;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.Study;
@@ -39,7 +38,7 @@ import com.jgoodies.binding.list.ObservableList;
 import com.jgoodies.binding.value.AbstractValueModel;
 
 @SuppressWarnings("serial")
-public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentation, StudyListPresentation {
+public class IndicationPresentation extends PresentationModel<Indication> implements LabeledPresentation {
 	public class LabelModel extends DefaultLabelModel {
 		protected LabelModel()  {
 			super(getBean());
@@ -55,23 +54,20 @@ public class IndicationPresentation extends PresentationModel<Indication> implem
 		}
 	}
 
-	private CharacteristicVisibleMap d_charMap = new CharacteristicVisibleMap();
-	private ObservableList<Study> d_studies;
+	private StudyListPresentation d_studyListPresentation;
 
 	public IndicationPresentation(final Indication indication, ObservableList<Study> sortedSetModel) {
 		super(indication);
-		d_studies = new FilteredObservableList<Study>(sortedSetModel, new DomainImpl.IndicationFilter(indication));
+		FilteredObservableList<Study> studies = new FilteredObservableList<Study>(sortedSetModel, new DomainImpl.IndicationFilter(indication));
+		d_studyListPresentation = new StudyListPresentation(studies);
 	}
 
+	public StudyListPresentation getStudyListPresentation() {
+		return d_studyListPresentation;
+	}
+	
+	@Override
 	public AbstractValueModel getLabelModel() {
 		return new LabelModel();
-	}
-
-	public AbstractValueModel getCharacteristicVisibleModel(Characteristic c) {
-		return d_charMap.get(c);
-	}
-
-	public ObservableList<Study> getIncludedStudies() {
-		return d_studies;
 	}
 }

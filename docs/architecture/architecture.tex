@@ -1,0 +1,220 @@
+\documentclass[a4paper]{article}
+\usepackage{fullpage}
+\usepackage{enumitem}
+
+\usepackage{graphicx}
+
+\title{ADDIS architecture description}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+
+ADDIS has a layered architecture based on the `Presentation Model' design pattern.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{overview}
+\caption{Architecture overview}
+\end{figure}
+
+Entities: captures the basic structure of the domain, and guards the integrity of data.
+Otherwise, the entities should be relatively simple objects (Java Beans) with few responsibilities.
+The entities can be read/written in the ADDIS XML format.
+The entities are the in-memory representation of the full data set.
+There is no database as such.
+
+Presentation: the presentation layer encapsulates the logic for interacting with the user.
+It includes capabilities for formatting and aggregating over properties of entities.
+It also has the logic for creating and editing entities.
+This serves to make GUI interactions as testable as possible.
+
+GUI: is mainly concerned with the layout and visual presentation of the user interface.
+Should defer to the presentation layer for any logic.
+
+ADDIS also integrates the GeMTC and JSMAA components which have a similar architecture.
+
+ADDIS does quite a bit of statistical calculations.
+We see these as part of the domain logic.
+Therefore if they are reasonably small, such calculations will usually be placed in separate classes in the entities package.
+See for example the {\tt entities.relativeeffect} sub-package.
+These classes are not serialized to XML like other entities so they are not really entities.
+More complex calculations often have their own package, such as lyndobrien and mcmcmodel.
+
+\section{XML serialization}
+
+In ADDIS prior to version 0.8, we used Java object serialization to save entities between sessions.
+However, this was very fragile as any minute change to the entities could make loading impossible.
+Worse, those errors were non-recoverable because the format is difficult to parse.
+Therefore, we switched to an XML format using Javalution.
+However, this also had several problems: the XML format was not well-defined (only implicitly in the Java code), the produced XML was not nicely structured, and there was no clear way to maintain backward compatibility when making changes to the data structure.
+With ADDIS v1.6 this was solved by the introduction of Schema-based XML serialization.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{xml}
+\caption{XML serialization and transformation}
+\label{fig:xml}
+\end{figure}
+
+The XML data structure is normatively defined by the {\tt addis-$n$.xsd} schema (where $n$ is the schema version).
+Using JAXB, a [de]serializer is generated from the schema.
+JAXB reads/writes the XML and generates java objects to represent the XML structure.
+Unfortunately these objects are of low quality and can not be used to replace the entities.
+Therefore, there is a JAXBConvertor to convert between the JAXB-generated objects and our hand-crafted entities.
+
+To maintain backward compatibility, we define an XSLT (XSL Transform) definition from the previous to the current version.
+These can be chained (see Figure~\ref{fig:xml}) to read data from any previous version.
+There is also a {\tt transform0-1.xslt} that was painstakingly constructed to convert the legacy XML to something sensible (and schema-compliant).
+
+\section{Presentation model}
+
+For simple entities, there is a single PresentationModel that provides ValueModels to bind properties of the entity in question to GUI components.
+More complicated entities are created using Wizards.
+These wizards require a lot of logic to properly guide the step-wise creation of the data structure.
+In such cases, there is a separate *WizardPresentation that encapsulates the creation-specific logic.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{presentation}
+\caption{Example presentation model implementation}
+\end{figure}
+
+For example, the NetworkMetaAnalysisWizard has a step where studies can be included or excluded.
+It consists of a table listing all available studies and a few of their characteristics.
+In the table, studies can be included or excluded using checkboxes.
+Steps further on in the wizard use the list of included studies.
+The table is built using a TableModel that encodes most of the logic and has tests.
+A JTable displays this model.
+Each checkbox is backed by a ValueModel that holds either true or false.
+The presentation is responsible for appropriately handling changes in the value - the GUI is only concerned with the ValueModel.
+The presentation model also provides an ObservableList of selected studies that can be displayed in other wizard steps, or used to build other TableModels, ValueModels, etc.
+
+\section{Computationally intensive tasks}
+
+Some tasks performed by ADDIS are computationally intensive and inherently parallel.
+To support such tasks, the {\tt org.drugis.common.threading} package has a flexible task scheduler that can handle tasks composed of (parallel or sequential) subtasks.
+It will automatically run as many parallel tasks as there are CPU cores available.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{activitytask}
+\caption{The ActivityTask corresponding to a network meta-analysis with two parallel chains}
+\end{figure}
+
+Such complex tasks are modeled as {\tt ActivityTasks}, using the language of UML activity diagrams.
+An example activity is shown for a network meta-analysis with 2 chains.
+
+Any computation that takes more than a few seconds should be scheduled using this mechanism.
+
+\clearpage
+
+\appendix
+
+\section{Requirements}
+
+We identify the main goals and requirements of the `future system' according to five key concerns: research, valorization, development, ecosystem, and learning.
+
+\paragraph{Research}
+The system should be an enabler for our own research and contribute to the success of grant proposals.
+\begin{enumerate}[label=R\arabic*]
+\item\label{rPrototyping} Rapid prototyping of new analyses and user interfaces to support new research questions
+\item\label{rDatabase} A large database to do research and meta-research
+\item\label{rTransparency} Transparency of implementation (open source)
+\item\label{rPublishable} Publishable (high quality) graphics and tables 
+\end{enumerate}
+
+\paragraph{Valorization}
+The system should generate sufficient revenue to support its continued development and operation.
+Since the business model has not been decided on, we focus on concerns that are likely to be common to potential approaches.
+\begin{enumerate}[label=V\arabic*]
+\item\label{vProductLine} Custom variants for different audiences, such as regulators, reimbursement authorities and industry (product line)
+\item\label{vInHouse} `In-house' deployments of the system for when the analyses are confidential / sensitive
+\item\label{vSilo} Access to internal organization data, possibly in conjunction with public data
+\item\label{vEaseOfUse} Ease of use: the system should visually attractive to `sell' it, and be easy to use to limit frustrations and the need for training
+\end{enumerate}
+
+\paragraph{Development}
+System development should be efficient, agile, and sustainable.
+\begin{enumerate}[label=D\arabic*]
+\item\label{dComputation} Analyses are often computationally intensive, they should run quickly and the system should scale to support many such computations in parallel if needed
+\item\label{dPlatform} There should be flexibility in choosing the right technologies, platforms, and frameworks to implement specific functionality (e.g. statistical computing using R and user interfaces using HTML + JavaScript)
+\item\label{dModular} The system should be maintainable and hence divided up in loosely coupled components with well-defined APIs
+\item\label{dDogfood} To ensure our public APIs are functioning in an optimal manner, our own software should use those APIs
+\item\label{dIntegrity} The integrity of data should be closely guarded and all data should have clear provenance and versioning information
+\end{enumerate}
+
+\paragraph{Ecosystem}
+For the ADDIS concept to work, it is critical that structured clinical trials data are available.
+It is unlikely that any one organization will be able to achieve this.
+Therefore, we should aim to `bootstrap' an open ecosystem in which structured clinical trials data can be shared.
+\begin{enumerate}[label=E\arabic*]
+\item\label{ePortal} Create a single collaborative portal for data extraction and sharing (open access / source)
+\item\label{eReview} Enhance the efficiency of systematic review by `closing the information chain' (see TrialMine.org)
+\item\label{eBot} Enable automated (third party) data extraction systems (bots) to contribute
+\item\label{eEaseOfUse} The system(s) should be easy to use and hassle-free to use -- e.g. single sign-on
+\item\label{eTraceability} All data and analyses can be traced back to their ultimate source
+\item\label{eThirdParty} Third parties should be able to develop new analysis tools and decision support systems based on the available data
+\end{enumerate}
+
+\paragraph{Learning}
+The system should promote the use of structured, transparent, and quantitative methods in health care policy decisions.
+\begin{enumerate}[label=L\arabic*]
+\item\label{lAccess} Enable access to `complex' methods and tools through a usable interface for non-experts
+\item\label{lDocumentation} Clear in-system documentation and links to further reading (e.g. methodology papers)
+\item\label{lAwareness} Raise awareness of newer statistical and decision making methods by implementing and applying them
+\end{enumerate}
+
+\section{Future architecture}
+
+Given that many of the requirements imply loosely coupled and flexibly reusable components with well-defined public APIs (\ref{rPrototyping}, \ref{vProductLine}, \ref{vInHouse}, \ref{vSilo}, \ref{dComputation}, \ref{dPlatform}, \ref{dModular}, \ref{eBot}, \ref{eThirdParty}), we will assume that a service-based (and web-based) architecture is most appropriate.
+We distinguish the following components:
+\begin{itemize}
+\item Web services that implement the different analyses (\ref{rPrototyping}, \ref{dComputation}, \ref{dPlatform})
+\item ADDIS, a `business intelligence' system for drug benefit-risk analysis (\ref{vProductLine}, \ref{dModular}, \ref{lAccess})
+\item A portal/database where researchers share structured RCT data (`rctWiki.org') (\ref{vSilo}, \ref{dModular}, \ref{dDogfood}, \ref{ePortal})
+\item The TrialMine.org system for literature screening (\ref{eReview})
+\item A user management component underlying all systems (\ref{vEaseOfUse}, \ref{dModular}, \ref{eEaseOfUse})
+\end{itemize}
+Note: `rctWiki.org' is a temporary name chosen to evoke a basic idea of what the system should do.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{future}
+\caption{Overview of the possible future architecture. GUI = Graphical User Interface, RCT = Randomized Controlled Trial, WS = Web Service}
+\end{figure}
+
+The user-facing systems have a back end that exposes an API, and an HTML + JavaScript GUI that calls that API (\ref{dPlatform}, \ref{dDogfood}).
+It is intended that this will enable third parties to create additional `business intelligence' systems based on `rctWiki.org' (\ref{eThirdParty}).
+Moreover, the API can be used to build, test, and use automated systems for the extraction of data (\ref{eBot}).
+While the two user-facing systems have clearly separated concerns, they will be tightly integrated (\ref{eEaseOfUse}), for example using:
+\begin{itemize}
+\item Single sign-on authentication
+\item Shared user and organization profiles
+\item Consistent visual identity
+\end{itemize}
+
+We also want to support corporate deployments of the ADDIS system (\ref{vInHouse}). This is possible because `rctWiki.org' exposes a well-defined API. We can then do the following:
+\begin{enumerate}
+\item Deploy an internal system exposing company data through the `rctWiki.org' interface (\ref{vSilo})
+\item Deploy an internal version of ADDIS that has access to both `rctWiki.org' and the internal database (\ref{vInHouse})
+\item (Optional) internal deployment of the analysis web services (\ref{vInHouse})
+\end{enumerate}
+To better support this scenario there should be clearly separated read-only (to be used by ADDIS) and read-write (to be used by the rctWiki.org GUI) interfaces for `rctWiki.org'.
+
+\section{Implementation strategy}
+The following is a possible transition strategy:
+\begin{enumerate}
+\item Implement the analysis web services based on R
+\item Implement the `rctWiki.org' read-only API based on the current ADDIS XML
+\item Build the ADDIS system (database and user-interfaces for meta-analysis and benefit-risk analysis, on par with the current ADDIS system)
+\item Transition to a RDBMS-based system for `rctWiki.org' (\ref{dIntegrity}) -- now ADDIS could already be a viable business intelligence system based on data we provide in rctWiki.org
+\item Start building a read/write version of `rctWiki.org'
+\item Integrate with TrialMine.org (\ref{eReview})
+\end{enumerate}
+By focussing on analysis functionality first, we have the quickest path to a useful system and enable the development of analysis functionality needed for several research proposals.
+In the interim, the desktop version of ADDIS can be used for data entry.
+
+\end{document}

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,110 +26,160 @@
 
 package org.drugis.addis.gui;
 
+import static org.apache.commons.collections15.CollectionUtils.forAllDo;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+import org.apache.commons.collections15.Closure;
 import org.drugis.addis.AppInfo;
 import org.drugis.addis.FileNames;
+import org.drugis.addis.gui.Main.Examples;
+import org.drugis.common.gui.HelpLoader;
+import org.drugis.common.gui.TextComponentFactory;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+
 @SuppressWarnings("serial")
-public class WelcomeDialog extends JFrame { 
-	
+public class WelcomeDialog extends JFrame {
+
+	private static final Border ETCHED_BORDER = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 	private static final int COMP_HEIGHT = 65;
 	private static final int FULL_WIDTH = 446; // width of the header image
 	private static final int SPACING = 3;
 	private static final int BUTTON_WIDTH = 151;
 	private static final int TEXT_WIDTH = FULL_WIDTH - SPACING - BUTTON_WIDTH;
-	
+
 	private Main d_main;
+	private static HelpLoader s_help = new HelpLoader(WelcomeDialog.class.getResourceAsStream("examples.properties"));
 
 	public WelcomeDialog(Main main) {
 		super();
 		d_main = main;
-		setTitle("Welcome to " + AppInfo.getAppName());		
+		setTitle("Welcome to " + AppInfo.getAppName());
 		initComps();
 		setResizable(false);
 		setIconImage(Main.IMAGELOADER.getImage(FileNames.ICON_ADDIS_APP));
-		
 		pack();
 		addWindowListener(new WindowAdapter() {
-			@Override
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);				
+				System.exit(0);
 			}
 		});
 	}
-	
+
 	private void closeWelcome() {
-		setVisible(false);
 		dispose();
 	}
-	
+
 	private void initComps() {
+
+		final ButtonGroup examples = new ButtonGroup();
+		examples.add(new JRadioButton(Main.Examples.DEPRESSION.name, true));
+		examples.add(new JRadioButton(Main.Examples.HYPERTENSION.name));
+
+
 		final AbstractAction exampleAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
-				d_main.loadExampleDomain();
+				d_main.loadExampleDomain(Main.Examples.findFileName(getSelection(examples).getText()));
 				closeWelcome();
 			}
 		};
-		
+
 		final AbstractAction loadAction = new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {
 				if(d_main.fileLoadActions() == JFileChooser.APPROVE_OPTION) {
 					closeWelcome();
 				}
 			}
 		};
-			
+
 		final AbstractAction newAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				d_main.newFileActions();
 				closeWelcome();
 			}
 		};
-		
+
 		FormLayout layout = new FormLayout(
-				"left:pref, " + SPACING + "px, left:pref", 
+				"left:pref, " + SPACING + "px, left:pref",
 				"p, 3dlu, p, " + SPACING + "px, p, " + SPACING + "px, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		CellConstraints cc = new CellConstraints();	
-		
+		final CellConstraints cc = new CellConstraints();
+
 		builder.add(createImageLabel(FileNames.IMAGE_HEADER), cc.xyw(1, 1, 3));
-		
 		builder.add(createButton("Load example", FileNames.ICON_TIP, exampleAction), cc.xy(1, 3));
-		builder.add(
-				createLabel("Example studies and analyses with anti-depressants. Recommended for first time users."),
-				cc.xy(3, 3));
-		
+
+		final PanelBuilder radios = new PanelBuilder(new FormLayout("p, fill:pref:grow, right:pref", "p, 3dlu, p"));
+
+		final ArrayList<AbstractButton> buttons = Collections.list(examples.getElements());
+		forAllDo(buttons, new Closure<AbstractButton>() {
+			public void execute(final AbstractButton exampleOption) {
+				int row = buttons.indexOf(exampleOption) == 0 ? 1 : buttons.indexOf(exampleOption) + 2;
+				exampleOption.setOpaque(false);
+				radios.add(exampleOption, cc.xy(1, row));
+				radios.add(createHelpButton(exampleOption), cc.xy(3, row));
+			}
+
+			private JButton createHelpButton(final AbstractButton exampleOption) {
+				JButton help = GUIFactory.createIconButton(org.drugis.mtc.gui.FileNames.ICON_ABOUT, "Information about this example");
+				removeBackground(help);
+
+				help.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Examples example = Examples.findByName(exampleOption.getText());
+						String helpText = s_help.getHelpText(example.name().toLowerCase());
+						showExampleInfo(helpText);
+					}
+				});
+				return help;
+			}
+		});
+
+		JPanel radiosPanel = radios.getPanel();
+		setBorder(radiosPanel);
+		builder.add(radiosPanel, cc.xy(3, 3));
+
 		builder.add(createButton("Open file", FileNames.ICON_OPENFILE, loadAction), cc.xy(1, 5));
-		builder.add(
-				createLabel("Load an existing ADDIS data file stored on your computer."),
-				cc.xy(3, 5));
-		
+		JTextPane load = createLabel("Load an existing ADDIS data file stored on your computer.");
+		builder.add(load, cc.xy(3, 5));
+
 		builder.add(createButton("New dataset", FileNames.ICON_FILE_NEW, newAction), cc.xy(1, 7));
 		builder.add(
 				createLabel("Start with an empty file to build up your own data and analyses."),
 				cc.xy(3, 7));
-		
+
 		builder.add(createImageLabel(FileNames.IMAGE_FOOTER), cc.xyw(1, 9, 3));
-		
+
 		setContentPane(builder.getPanel());
 	}
 
@@ -151,10 +201,55 @@ public class WelcomeDialog extends JFrame {
 	private JTextPane createLabel(String txt) {
 		JTextPane pane = new JTextPane();
 		pane.setText(txt);
-		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
-		pane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		setBorder(pane);
 		pane.setEditable(false);
 		return pane;
+	}
+
+	private void setBorder(JComponent pane) {
+		pane.setPreferredSize(new Dimension(TEXT_WIDTH, COMP_HEIGHT));
+		pane.setBorder(ETCHED_BORDER);
+		pane.setBackground(Color.white);
+	}
+
+	private void removeBackground(JButton button) {
+		button.setOpaque(false);
+		button.setContentAreaFilled(false);
+		button.setBorderPainted(false);
+	}
+
+	private void showExampleInfo(String helpText) {
+		final JDialog dialog = new JDialog(this);
+		dialog.setLocationByPlatform(true);
+		dialog.setPreferredSize(new Dimension(500, 250));
+
+		JComponent helpPane = TextComponentFactory.createTextPane(helpText, true);
+
+		JButton closeButton = new JButton("Close");
+		closeButton.setMnemonic('c');
+		closeButton.addActionListener(new AbstractAction() {
+			public void actionPerformed(ActionEvent arg0) {
+				dialog.dispose();
+			}
+		});
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(helpPane, BorderLayout.CENTER);
+		panel.add(closeButton, BorderLayout.SOUTH);
+
+		dialog.add(panel);
+		dialog.pack();
+		dialog.setVisible(true);
+	}
+
+	public static JRadioButton getSelection(ButtonGroup group) {
+	    for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {
+	        JRadioButton b = (JRadioButton)e.nextElement();
+	        if (b.getModel() == group.getSelection()) {
+	            return b;
+	        }
+	    }
+	    return null;
 	}
 
 }

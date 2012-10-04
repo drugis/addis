@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,14 +30,14 @@ package org.drugis.addis.presentation;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.CategoryKnowledgeFactory;
-import org.drugis.addis.presentation.wizard.AddStudyWizardPresentation.WhenTakenFactory;
+import org.drugis.addis.presentation.wizard.WhenTakenFactory;
 
 import com.jgoodies.binding.list.ObservableList;
 
 @SuppressWarnings("serial")
 public class SelectEndpointPresentation extends SelectVariablesPresentation<Endpoint> {
 	public SelectEndpointPresentation(ObservableList<Endpoint> options, WhenTakenFactory wtf, AddisWindow mainWindow) {
-		super(options, "Endpoint", "Select Endpoint", "Please select the appropriate endpoints.", wtf, mainWindow);
+		super(options, Endpoint.class, "Select Endpoint", "Please select the appropriate endpoints.", wtf, mainWindow);
 	}
 
 	@Override

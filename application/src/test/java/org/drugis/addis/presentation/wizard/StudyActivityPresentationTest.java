@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Activity;
+import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
 import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.FixedDose;
@@ -68,7 +68,7 @@ public class StudyActivityPresentationTest {
 		d_activity = new StudyActivity("Randomization", PredefinedActivity.RANDOMIZATION);
 		
 		d_drug = new Drug("Fluoxetine", "SomeCode");
-		d_dose = new FixedDose(10.0, ExampleData.MILLIGRAMS_A_DAY);
+		d_dose = new FixedDose(10.0, DoseUnit.createMilliGramsPerDay());
 		d_treatment = new DrugTreatment(d_drug, d_dose);
 		d_treatmentActivity = new StudyActivity("Treatment", new TreatmentActivity(d_treatment));
 	}
@@ -141,7 +141,7 @@ public class StudyActivityPresentationTest {
 		// Test initialization with combination treatment
 		TreatmentActivity ct = new TreatmentActivity();
 		ct.getTreatments().add(d_treatment);
-		ct.getTreatments().add(new DrugTreatment(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, ExampleData.MILLIGRAMS_A_DAY)));
+		ct.getTreatments().add(new DrugTreatment(new Drug("Fluoxeparatinose", "secret"), new FixedDose(12.0, DoseUnit.createMilliGramsPerDay())));
 		StudyActivity activity2 = new StudyActivity("Treatment", ct);
 		StudyActivityPresentation pm3 = new StudyActivityPresentation(d_emptyList, null, activity2);
 		list = new ArrayList<Activity>(Arrays.asList(PredefinedActivity.values()));

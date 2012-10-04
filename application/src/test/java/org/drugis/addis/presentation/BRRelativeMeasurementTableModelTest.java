@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +51,7 @@ public class BRRelativeMeasurementTableModelTest {
 	
 	@Test
 	public void testGetColumnCount() {
-		assertEquals(d_brAnalysis.getDrugs().size(), d_pm.getColumnCount());
+		assertEquals(d_brAnalysis.getAlternatives().size(), d_pm.getColumnCount());
 	}
 	
 	@Test
@@ -61,14 +61,14 @@ public class BRRelativeMeasurementTableModelTest {
 	
 	@Test
 	public void testGetColumnNames() {
-		List<DrugSet> drugs = getNonBaselines();
+		List<TreatmentDefinition> drugs = getNonBaselines();
 		for (int i = 0; i < drugs.size(); ++i) {
 			assertEquals(drugs.get(i).getLabel(), d_pm.getColumnName(i + 1));
 		}
 	}
 
-	private List<DrugSet> getNonBaselines() {
-		List<DrugSet> drugs = new ArrayList<DrugSet>(d_brAnalysis.getDrugs());
+	private List<TreatmentDefinition> getNonBaselines() {
+		List<TreatmentDefinition> drugs = new ArrayList<TreatmentDefinition>(d_brAnalysis.getAlternatives());
 		drugs.remove(d_brAnalysis.getBaseline());
 		return drugs;
 	}
@@ -83,10 +83,10 @@ public class BRRelativeMeasurementTableModelTest {
 
 	@Test
 	public void testGetValueAt() {
-		List<DrugSet> drugs = getNonBaselines();
+		List<TreatmentDefinition> drugs = getNonBaselines();
 		for (int i = 0; i < drugs.size(); ++i) {
 			for (int j=0; j < d_brAnalysis.getCriteria().size(); ++j) {
-				DrugSet drug = drugs.get(i);
+				TreatmentDefinition drug = drugs.get(i);
 				OutcomeMeasure om = d_brAnalysis.getCriteria().get(j);
 				GaussianBase expected = (GaussianBase) d_brAnalysis.getRelativeEffectDistribution(om, drug);
 				GaussianBase actual = (GaussianBase) d_pm.getValueAt(j, i + 1);

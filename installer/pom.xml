@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.14</version>
+		<version>1.16</version>
 	</parent>
-
+	
 	<groupId>org.drugis.addis</groupId>
 	<artifactId>installer</artifactId>
 	<name>ADDIS installer</name>
- 
+	
 	<packaging>jar</packaging>
-
+	
 	<properties>
 		<izpack-standalone.version>4.3.1</izpack-standalone.version>
 		<izpack-maven-plugin.version>1.0-alpha-5</izpack-maven-plugin.version>
 		<izpack.dir>${project.build.directory}/izpack</izpack.dir>
 	</properties>
-
+	
 	<repositories>
 		<repository>
 			<id>JBoss repository [DEPRECATED]</id>
 			<url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
 		</repository>
 	</repositories>
-
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.izpack</groupId>
@@ -39,7 +39,7 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -53,7 +53,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.1</version>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<id>create-staging-area</id>
@@ -62,7 +62,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
+							<target>
 								<copy file="${basedir}/target/installer-${project.version}.jar" tofile="${izpack.dir}/bin/customActions/JavaLocationListener.jar"/>
 								<copy file="${basedir}/src/izpack/addis.cmd" todir="${izpack.dir}"/>
 								<copy file="${basedir}/src/izpack/errordialog.vbs" todir="${izpack.dir}"/>
@@ -73,46 +73,45 @@
 								<copy file="${basedir}/../README.md" tofile="${izpack.dir}/README.txt"/>
 								<copy file="${basedir}/../LICENSE.txt" todir="${izpack.dir}"/>
 								<copy file="${basedir}/../application/target/addis-${project.version}-jar-with-dependencies.jar" tofile="${izpack.dir}/addis.jar"/>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
-          		<groupId>org.codehaus.izpack</groupId>
-          		<artifactId>izpack-maven-plugin</artifactId>
-          		<version>${izpack-maven-plugin.version}</version>
-			<executions>
-				<execution>
-					<phase>package</phase>
-					<goals>
-					<goal>izpack</goal>
-					</goals>
-					<configuration>
-						<izpackBasedir>${izpack.dir}</izpackBasedir>
-						<installerFile>${basedir}/target/addis-${project.version}-installer.jar</installerFile>
-					</configuration>
-				</execution>
-			</executions>
-          		<dependencies>
-            			<dependency>
-              				<groupId>org.codehaus.izpack</groupId>
-              				<artifactId>izpack-standalone-compiler</artifactId>
-              				<version>${izpack-standalone.version}</version>
-            			</dependency>
-				<dependency>
-				   	<groupId>net.sf.saxon</groupId>
-				   	<artifactId>saxon</artifactId>
-				   	<version>9.1.0.8</version>
-				</dependency>
-				<dependency>
-				   	<groupId>net.sf.saxon</groupId>
-				   	<artifactId>saxon-dom</artifactId>
-				   	<version>9.1.0.8</version>
-				</dependency>
-          		</dependencies>
-
-        	</plugin>
+				<groupId>org.codehaus.izpack</groupId>
+				<artifactId>izpack-maven-plugin</artifactId>
+				<version>${izpack-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>izpack</goal>
+						</goals>
+						<configuration>
+							<izpackBasedir>${izpack.dir}</izpackBasedir>
+							<installerFile>${basedir}/target/addis-${project.version}-installer.jar</installerFile>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.izpack</groupId>
+						<artifactId>izpack-standalone-compiler</artifactId>
+						<version>${izpack-standalone.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>net.sf.saxon</groupId>
+						<artifactId>saxon</artifactId>
+						<version>9.1.0.8</version>
+					</dependency>
+					<dependency>
+						<groupId>net.sf.saxon</groupId>
+						<artifactId>saxon-dom</artifactId>
+						<version>9.1.0.8</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 </project>
