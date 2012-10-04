@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,9 +52,7 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.ValueTreeGraph;
 import org.drugis.addis.gui.components.AddisTabbedPane;
-import org.drugis.addis.gui.components.EnhancedTable;
 import org.drugis.addis.gui.components.ListPanel;
-import org.drugis.addis.gui.components.TablePanel;
 import org.drugis.addis.gui.renderer.BRATDifferenceRenderer;
 import org.drugis.addis.gui.renderer.BRATForestCellRenderer;
 import org.drugis.addis.gui.renderer.DistributionQuantileCellRenderer;
@@ -66,6 +64,8 @@ import org.drugis.addis.presentation.BRATTableModel.BRATForest;
 import org.drugis.addis.presentation.StudyBenefitRiskPresentation;
 import org.drugis.common.gui.LayoutUtil;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.gui.table.EnhancedTable;
+import org.drugis.common.gui.table.TablePanel;
 
 import com.jgoodies.forms.builder.ButtonBarBuilder2;
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -87,7 +87,7 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		} else {
 			d_view = new LyndOBrienView(d_pm, d_mainWindow);
 		}
-		
+
 	}
 
 	public JComponent buildPanel() {
@@ -105,13 +105,13 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		"p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		
+
 		CellConstraints cc = new CellConstraints();
 
 		builder.addSeparator("Value Tree", cc.xy(1, 1));
 		final ValueTreeGraph valueTree = new ValueTreeGraph(d_pm.getBean().getCriteria());
 		builder.add(valueTree, cc.xy(1, 3));
-		
+
 		JButton saveBtn = new JButton("Save Image");
 		saveBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -150,8 +150,11 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 	private JComponent createSummaryLabel(BRATTableModel<Alternative, ? extends BenefitRiskAnalysis<Alternative>> model) {
 		String baselineName = model.getBaseline().getLabel();
 		String subjectName = model.getSubject().getLabel();
-		String str = "Key Benefit-Risk Summary table with embedded relative effect forest plot. The color in the \"difference\" column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.";
-		return AuxComponentFactory.createHtmlField(str);
+		String str =
+				"<p>Key Benefit-Risk Summary table with embedded relative effect forest plot. " +
+				"The color in the \"difference\" column indicates whether the point estimate favors " + baselineName + " (red) or " + subjectName + " (green). " +
+				"The symbol in the forest plot indicates whether the logarithmic (square) or linear (diamond) scale is used.</p>";
+		return AuxComponentFactory.createTextPane(str);
 	}
 
 
@@ -163,7 +166,7 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		table.setDefaultRenderer(BRATDifference.class, new BRATDifferenceRenderer());
 		table.setDefaultRenderer(BRATForest.class, new BRATForestCellRenderer<PresentationType>());
 		table.setRowHeight((int) Math.max(ForestPlot.ROWHEIGHT + 2, new JLabel("<html>a<br/>b</html>").getPreferredSize().getHeight()));
-		
+
 		// Set minimum widths
 		table.getTableHeader().getColumnModel().getColumn(BRATTableModel.COLUMN_FOREST).setMinWidth(ForestPlot.BARWIDTH + BRATForestCellRenderer.PADDING * 2);
 		for (int i = 0; i < table.getColumnCount(); ++i) {
@@ -190,13 +193,13 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 		FormLayout layout = new FormLayout("right:pref, 3dlu, fill:0:grow",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p, 3dlu, p");
 		PanelBuilder builder = new PanelBuilder(layout);
-		
+
 		builder.setOpaque(true);
-		
+
 		builder.addLabel("ID:", cc.xy(1, 1));
 		JLabel tmp = new JLabel((String) d_pm.getModel(BenefitRiskAnalysis.PROPERTY_NAME).getValue());
 		builder.add(tmp , cc.xy(3, 1));
-		
+
 		builder.addLabel("Analysis type:", cc.xy(1, 3));
 		builder.add(AuxComponentFactory.createAutoWrapLabel(d_pm.getModel(BenefitRiskAnalysis.PROPERTY_ANALYSIS_TYPE)),	cc.xy(3, 3));
 
@@ -210,22 +213,22 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 			builder.addLabel("Study:", cc.xy(1, row));
 			builder.add(AuxComponentFactory.createAutoWrapLabel(d_pm.getModel(StudyBenefitRiskAnalysis.PROPERTY_STUDY)), cc.xy(3, row));
 		}
-		
+
 		row += 2;
 		builder.addLabel("Criteria:", cc.xy(1, row));
 		ListPanel criteriaList = new ListPanel(getAnalysis(), BenefitRiskAnalysis.PROPERTY_CRITERIA, OutcomeMeasure.class);
 		builder.add(criteriaList,cc.xy(3, row));
-		
+
 		row += 2;
 		builder.addLabel("Alternatives:", cc.xy(1, row));
 		ListPanel alternativesList = new ListPanel(getAnalysis().getAlternatives());
 		builder.add(alternativesList,cc.xy(3, row));
-		
+
 		row += 2;
 		builder.addLabel("Baseline:", cc.xy(1, row));
 		JLabel baselineLabel = new JLabel(getBaseline().getLabel());
 		builder.add(baselineLabel,cc.xy(3, row));
-		
+
 		if (d_pm.getBean().getDecisionContext() != null) {
 			row  = LayoutUtil.addRow(layout, row);
 			builder.addSeparator("Decision context", cc.xyw(1, row, 3));
@@ -235,10 +238,10 @@ public abstract class AbstractBenefitRiskView<Alternative extends Entity, Presen
 				builder.add(AuxComponentFactory.createAutoWrapLabel(field.getModel()), cc.xy(3, row));
 			}
 		}
-		
+
 		return builder.getPanel();
 	}
-	
+
 	protected BenefitRiskAnalysis<?> getAnalysis() {
 		return (BenefitRiskAnalysis<?>)d_pm.getBean();
 	}

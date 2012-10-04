@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 
 import org.drugis.addis.entities.Arm;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisWindow;
 import org.drugis.addis.gui.AuxComponentFactory;
 import org.drugis.addis.gui.LyndOBrienChartFactory;
@@ -76,7 +76,7 @@ public class LyndOBrienView implements ViewBuilder {
 	AbstractBenefitRiskPresentation<?, ?> d_BRpm;
 	private JPanel d_panel;
 	private JLabel d_pvalueLabel;
-	
+
 	public LyndOBrienView(AbstractBenefitRiskPresentation<?,?> pm, AddisWindow mainWindow) {
 		d_pm = pm.getLyndOBrienPresentation();
 		d_BRpm = pm;
@@ -108,27 +108,27 @@ public class LyndOBrienView implements ViewBuilder {
 			baselineName = s.getTreatment(baseArm).getLabel();
 			alternativeName = s.getTreatment(altArm).getLabel();
 		} else if (d_BRpm.getBean() instanceof MetaBenefitRiskAnalysis) {
-			baselineName = ((DrugSet)baseline).getLabel();
-			alternativeName = ((DrugSet)alternative).getLabel();
+			baselineName = ((TreatmentDefinition)baseline).getLabel();
+			alternativeName = ((TreatmentDefinition)alternative).getLabel();
 		}
-		
-		builder.add(AuxComponentFactory.createHtmlField("Results of Monte Carlo simulations based on the difference-distributions of" +
-				" the alternatives and criteria. Results in the NW quadrant indicate that " + 
+
+		builder.add(AuxComponentFactory.createTextPane("Results of Monte Carlo simulations based on the difference-distributions of" +
+				" the alternatives and criteria. Results in the NW quadrant indicate that " +
 				baselineName +" is better and" +
 				" results in the SE quadrant indicate that "+ alternativeName  + " is better."), cc.xy(1,7));
 		builder.addSeparator("Benefit-Risk Aceptability curve", cc.xy(1, 9));
-		
+
 		JScrollPane pvalue = new JScrollPane(createWaiter(new PvalueplotBuilder()));
 		pvalue.setViewportBorder(null);
 		builder.add(pvalue, cc.xy(1,11));
-		
-		builder.add(AuxComponentFactory.createHtmlField("Probability for a given acceptability threshold " +
+
+		builder.add(AuxComponentFactory.createTextPane("Probability for a given acceptability threshold " +
 				"\u03BC that " + alternativeName + " is superior to " + baselineName + ". Indicates the" +
 				" proportion of datapoints in the Benefit-Risk" +
 				" plane that lie below the line y = \u03BC x"), cc.xy(1,13));
-		
+
 		d_panel = builder.getPanel();
-		
+
 		return d_panel;
 	}
 
@@ -140,10 +140,10 @@ public class LyndOBrienView implements ViewBuilder {
 					"p, 3dlu, p, 3dlu, p");
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc =  new CellConstraints();
-			
+
 			JProgressBar bar = new TaskProgressBar(d_pm.getProgressModel());
 			builder.add(bar,cc.xy(1, 1));
-			
+
 			final draggableMuChartPanel component = new draggableMuChartPanel(LyndOBrienChartFactory.buildScatterPlot(d_pm.getModel()));
 
 			d_pm.getModel().getTask().addTaskListener(this);
@@ -151,17 +151,17 @@ public class LyndOBrienView implements ViewBuilder {
 				public void propertyChange(PropertyChangeEvent evt) {
 					Double mu = component.getMu();
 					setMuAndPValueLabel(mu);
-					
+
 				}
 			});
 
 			d_pm.getModel().getTask().addTaskListener(component);
-			
+
 			builder.add(component, cc.xy(1,3));
 			setMuAndPValueLabel(1.0);
 			builder.add(d_pvalueLabel, cc.xy(1,5));
-			
-			
+
+
 			return builder.getPanel();
 		}
 
@@ -177,14 +177,14 @@ public class LyndOBrienView implements ViewBuilder {
 			d_pvalueLabel.setText("\u03BC = " + df.format(mu) + ", P-value: " + df.format(d_pm.getModel().getPValue(mu)));
 		}
 	}
-	
+
 	private class PvalueplotBuilder implements ViewBuilder {
 		public JComponent buildPanel() {
 			return new ChartPanel(LyndOBrienChartFactory.buildRiskAcceptabilityCurve(d_pm.getModel()));
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("serial")
 	private class draggableMuChartPanel extends ChartPanel implements TaskListener {
 
@@ -200,7 +200,7 @@ public class LyndOBrienView implements ViewBuilder {
 		public void addListener(PropertyChangeListener l) {
 			d_mu.addValueChangeListener(l);
 		}
-		
+
 		Double getMu() {
 			return d_mu.getValue();
 		}
@@ -209,7 +209,7 @@ public class LyndOBrienView implements ViewBuilder {
 			ChartRenderingInfo info = getChartRenderingInfo();
 			Rectangle2D dataArea = info.getPlotInfo().getDataArea();
 	        Point2D p = translateScreenToJava2D(
-	                new Point(point.x, point.y));				
+	                new Point(point.x, point.y));
 	        XYPlot plot = getChart().getXYPlot();
 	        RectangleEdge domainAxisEdge = plot.getDomainAxisEdge();
 	        RectangleEdge rangeAxisEdge = plot.getRangeAxisEdge();
@@ -219,11 +219,11 @@ public class LyndOBrienView implements ViewBuilder {
 	                domainAxisEdge), rangeAxis.java2DToValue(p.getY(), dataArea,
 	    	                rangeAxisEdge));
 		}
-		
+
 		public void mouseDragged(MouseEvent e){
 			Point point = e.getPoint();
 			Point2D.Double chartXY = convertToChartCoordinates(point);
-			
+
 	        // if the mouse is in the SW or NE quadrant, change mu so that it is drawn through the mouse position
 	        if ((chartXY.x > 0 && chartXY.y > 0) ||
 	        	(chartXY.x < 0 && chartXY.y < 0)) {
@@ -242,7 +242,7 @@ public class LyndOBrienView implements ViewBuilder {
 			double upperX = d.getUpperBound();
 			double lowerY = r.getLowerBound();
 			double upperY = r.getUpperBound();
-			
+
 			end = new Point2D.Double(Math.min(upperY / mu, upperX), Math.min(mu * upperX, upperY));
 			start = new Point2D.Double(Math.max(lowerY / mu, lowerX), Math.max(mu * lowerX, lowerY));
 
@@ -260,8 +260,8 @@ public class LyndOBrienView implements ViewBuilder {
 
 		}
 	};
-	
-	
+
+
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
 		return new BuildViewWhenReadyComponent(builder, d_BRpm.getMeasurementsReadyModel(), SMAAView.WAITING_MESSAGE);
 	}

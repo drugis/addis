@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package org.drugis.addis.entities;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 import javax.xml.datatype.Duration;
@@ -40,12 +41,13 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 	public static final String PROPERTY_SCALE_MODIFIER = "scaleModifier";
 	public static final String PROPERTY_UNIT = "unit";
 	public static final String PROPERTY_PER_TIME = "perTime";
-	
+
 	private ScaleModifier d_scaleModifier;
 	private Unit d_unit;
 	private Duration d_perTime;
+	private static final DoseUnit MILLIGRAMS_A_DAY = new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D"));
 
-	public DoseUnit(Unit u, ScaleModifier scaleMod, Duration perTime) {
+	public DoseUnit(final Unit u, final ScaleModifier scaleMod, final Duration perTime) {
 		d_unit = u;
 		d_scaleModifier = scaleMod;
 		d_perTime = perTime;
@@ -53,7 +55,7 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 
 	@Override
 	public Set<? extends Entity> getDependencies() {
-		return Collections.emptySet();
+		return Collections.singleton(d_unit);
 	}
 
 	public Unit getUnit() {
@@ -67,20 +69,20 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 	public Duration getPerTime() {
 		return d_perTime;
 	}
-	
-	public void setUnit(Unit unit) {
+
+	public void setUnit(final Unit unit) {
 		Unit oldValue = d_unit;
 		d_unit = unit;
 		firePropertyChange(PROPERTY_UNIT, oldValue, d_unit);
 	}
 
-	public void setScaleModifier(ScaleModifier scaleMod) {
+	public void setScaleModifier(final ScaleModifier scaleMod) {
 		ScaleModifier oldValue = d_scaleModifier;
 		d_scaleModifier = scaleMod;
 		firePropertyChange(PROPERTY_SCALE_MODIFIER, oldValue, d_scaleModifier);
 	}
 
-	public void setPerTime(Duration perTime) {
+	public void setPerTime(final Duration perTime) {
 		Duration oldValue = d_perTime;
 		d_perTime = perTime;
 		firePropertyChange(PROPERTY_PER_TIME, oldValue, d_perTime);
@@ -90,9 +92,9 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 	public String getLabel() {
 		return d_scaleModifier.getSymbol() + d_unit.getSymbol() + "/" + DurationPresentation.parseDuration(d_perTime, null);
 	}
-	
+
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (other == null || !(other instanceof DoseUnit)) {
 			return false;
 		}
@@ -101,21 +103,21 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 			EqualsUtil.equal(d_scaleModifier, o.d_scaleModifier) &&
 			EqualsUtil.equal(d_perTime, o.d_perTime);
 	}
-	
+
 	@Override
-	public boolean deepEquals(Entity other) {
+	public boolean deepEquals(final Entity other) {
 		if(equals(other)) {
 			DoseUnit o = (DoseUnit) other;
 			return EntityUtil.deepEqual(d_unit, o.d_unit);
 		}
 		return false;
 	}
-	
+
 	@Override
 	public DoseUnit clone() {
 		return new DoseUnit(d_unit, d_scaleModifier, d_perTime);
 	}
-	
+
 	@Override
 	public String toString() {
 		return getLabel();
@@ -127,7 +129,23 @@ public class DoseUnit extends AbstractEntity implements TypeWithDuration {
 	}
 
 	@Override
-	public void setDuration(Duration duration) {
+	public void setDuration(final Duration duration) {
 		setPerTime(duration);
+	}
+
+	public static double convert(final double quantity, final DoseUnit from, final DoseUnit to) {
+		double fromMillis = from.getPerTime().getTimeInMillis(new Date(0));
+		double toMillis = to.getPerTime().getTimeInMillis(new Date(0));
+		double scale = from.d_scaleModifier.getFactor() / to.d_scaleModifier.getFactor();
+
+		return quantity * scale * (toMillis / fromMillis);
+	}
+
+	public static DoseUnit createDefault() {
+		return createMilliGramsPerDay();
+	}
+
+	public static DoseUnit createMilliGramsPerDay() {
+		return MILLIGRAMS_A_DAY.clone();
 	}
 }

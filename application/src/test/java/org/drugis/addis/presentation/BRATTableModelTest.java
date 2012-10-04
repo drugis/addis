@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.ContinuousMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Variable;
@@ -56,6 +55,7 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.BasicStandardisedMeanDifference;
 import org.drugis.addis.entities.relativeeffect.Distribution;
 import org.drugis.addis.entities.relativeeffect.GaussianBase;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.LinearScale;
 import org.drugis.addis.forestplot.LogScale;
 import org.drugis.addis.presentation.BRATTableModel.BRATDifference;
@@ -68,7 +68,7 @@ import com.jgoodies.binding.list.ObservableList;
 
 public class BRATTableModelTest {
 
-	private BRATTableModel<DrugSet, MetaBenefitRiskAnalysis> d_btmMeta;
+	private BRATTableModel<TreatmentDefinition, MetaBenefitRiskAnalysis> d_btmMeta;
 	private BRATTableModel<Arm, StudyBenefitRiskAnalysis> d_btmMockStudy;
 	private BRATTableModel<Arm, StudyBenefitRiskAnalysis> d_btmStudy;
 	private StudyBenefitRiskAnalysis d_sba;
@@ -79,7 +79,7 @@ public class BRATTableModelTest {
 	@Before
 	public void setUp() {
 		d_mba = ExampleData.buildMetaBenefitRiskAnalysis();
-		d_btmMeta = new BRATTableModel<DrugSet, MetaBenefitRiskAnalysis>(d_mba, new DrugSet(ExampleData.buildDrugFluoxetine()));
+		d_btmMeta = new BRATTableModel<TreatmentDefinition, MetaBenefitRiskAnalysis>(d_mba, TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		StudyBenefitRiskAnalysis sba = ExampleData.buildStudyBenefitRiskAnalysis();
 		d_btmMockStudy = new BRATTableModel<Arm, StudyBenefitRiskAnalysis>(sba, sba.getAlternatives().get(1));
 		List<OutcomeMeasure> criteria = new ArrayList<OutcomeMeasure>();
@@ -172,13 +172,13 @@ public class BRATTableModelTest {
 		assertEquals(d_sba.getRelativeEffectDistribution(d_sba.getCriteria().get(1), d_subject),
 				((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference());
 		
-		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), new DrugSet(ExampleData.buildDrugFluoxetine())),
+		assertEquals(d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine())),
 				((BRATDifference)d_btmMeta.getValueAt(0, COLUMN_DIFFERENCE)).getDifference());
 	}
 
 	@Test
 	public void testForestConfidenceIntervals() {
-		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), new DrugSet(ExampleData.buildDrugFluoxetine()));
+		GaussianBase relEff = d_mba.getRelativeEffectDistribution(d_mba.getCriteria().get(0), TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()));
 		assertEquals((Double)relEff.getQuantile(0.025), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getLowerBound());
 		assertEquals((Double)relEff.getQuantile(0.5), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getPointEstimate());
 		assertEquals((Double)relEff.getQuantile(0.975), ((BRATForest)d_btmMeta.getValueAt(0, COLUMN_FOREST)).ci.getUpperBound());
@@ -197,14 +197,14 @@ public class BRATTableModelTest {
 
 		double linMin = linVal.getQuantile(0.025);
 		double linMax = linVal.getQuantile(0.975);
-		Interval<Double> linScale = ForestPlotPresentation.niceIntervalLinear(linMin, linMax);
+		Interval<Double> linScale = REMAForestPlotPresentation.niceIntervalLinear(linMin, linMax);
 		assertEquals(new LinearScale(linScale), d_btmStudy.getNiceLinearScale());
 		
 		Distribution logVal1 = ((BRATDifference)d_btmStudy.getValueAt(1, COLUMN_DIFFERENCE)).getDifference();
 		Distribution logVal2 = ((BRATDifference)d_btmStudy.getValueAt(2, COLUMN_DIFFERENCE)).getDifference();
 		double logMin = Math.min(logVal1.getQuantile(0.025), logVal2.getQuantile(0.025));
 		double logMax = Math.max(logVal1.getQuantile(0.975), logVal2.getQuantile(0.975));
-		Interval<Double> logScale = ForestPlotPresentation.niceIntervalLog(logMin, logMax);
+		Interval<Double> logScale = REMAForestPlotPresentation.niceIntervalLog(logMin, logMax);
 		assertEquals(new LogScale(logScale), d_btmStudy.getNiceLogScale());
 		
 		double min = Math.min(linScale.getLowerBound(), Math.log(logScale.getLowerBound()));

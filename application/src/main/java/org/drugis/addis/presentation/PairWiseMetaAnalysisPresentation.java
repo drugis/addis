@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,23 +31,22 @@ import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 @SuppressWarnings("serial")
 
-public class PairWiseMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis>
-implements StudyListPresentation {
+public class PairWiseMetaAnalysisPresentation extends AbstractMetaAnalysisPresentation<RandomEffectsMetaAnalysis> {
 
 	public PairWiseMetaAnalysisPresentation(RandomEffectsMetaAnalysis bean, PresentationModelFactory mgr) {
 		super(bean, mgr);
 	}
 	
 	public LabeledPresentation getFirstDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getFirstDrug());
+		return d_mgr.getLabeledModel(getBean().getFirstAlternative());
 	}
 	
 	public LabeledPresentation getSecondDrugModel() {
-		return d_mgr.getLabeledModel(getBean().getSecondDrug());		
+		return d_mgr.getLabeledModel(getBean().getSecondAlternative());		
 	}
 
-	public ForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
-		ForestPlotPresentation pm = new ForestPlotPresentation(getBean(), type, d_mgr);
+	public REMAForestPlotPresentation getForestPlotPresentation(Class<? extends RelativeEffect<?>> type) {
+		REMAForestPlotPresentation pm = new REMAForestPlotPresentation(getBean(), type);
 		return pm;
 	}
 }

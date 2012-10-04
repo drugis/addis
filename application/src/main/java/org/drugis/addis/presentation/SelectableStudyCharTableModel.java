@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +26,89 @@
 
 package org.drugis.addis.presentation;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.drugis.addis.entities.Study;
+
+import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.binding.list.ObservableList;
+
 @SuppressWarnings("serial")
 public class SelectableStudyCharTableModel extends StudyCharTableModel {
+	private HashMap<Study, ModifiableHolder<Boolean>> d_selectedStudiesMap = new HashMap<Study, ModifiableHolder<Boolean>>();
+	
+	private ObservableList<Study> d_selectedStudiesList = new ArrayListModel<Study>();
+	
+	public SelectableStudyCharTableModel(StudyListPresentation source, PresentationModelFactory pmf) {
+		super(source, pmf);
+		updateSelectedStudies();
+	}
 
-	private final SelectableStudyListPresentation d_spm;
+	private void updateSelectedStudies() {
+		for (Study s : getAvailableStudies()) {
+			if (!d_selectedStudiesMap.containsKey(s)) {
+				d_selectedStudiesMap.put(s, getBooleanHolder());
+			}
+		}
+		
+		Set<Study> leftStudies = new HashSet<Study>(d_selectedStudiesMap.keySet());
+		leftStudies.removeAll(getAvailableStudies());
+		for (Study s : leftStudies) {
+			d_selectedStudiesMap.remove(s);
+		}
+		d_selectedStudiesList.clear();
+		d_selectedStudiesList.addAll(createSelectedStudies());
+	}
 
-	public SelectableStudyCharTableModel(SelectableStudyListPresentation pm, PresentationModelFactory pmf) {
-		super(pm.getSource(), pmf);
-		d_spm = pm;
+	public ObservableList<Study> getAvailableStudies() {
+		return d_pm.getIncludedStudies();
 	}
 	
+	public ObservableList<Study> getSelectedStudiesModel() {
+		return d_selectedStudiesList;
+	}
+
+	private ModifiableHolder<Boolean> getBooleanHolder() {
+		ModifiableHolder<Boolean> holder = new ModifiableHolder<Boolean>();
+		holder.setValue(true);
+		holder.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				d_selectedStudiesList.clear();
+				d_selectedStudiesList.addAll(createSelectedStudies());
+			}
+		});
+		return holder;
+	}
+
+	private List<Study> createSelectedStudies() {
+		List<Study> selectedStudyList = new ArrayList<Study>();
+		
+		for (Study s : getAvailableStudies()) {
+			if (d_selectedStudiesMap.get(s).getValue() ) {
+				selectedStudyList.add(s);
+			}
+		}
+		
+		return selectedStudyList;
+	}
+	
+	/**
+	 * 
+	 * @see org.drugis.addis.presentation.SelectableStudyListPresentation#getSelectedStudyBooleanModel(org.drugis.addis.entities.Study)
+	 * @throws IllegalArgumentException if !getIncludedStudies().getValue().contains(s)
+	 */
+	public ModifiableHolder<Boolean> getSelectedStudyBooleanModel(Study s) throws IllegalArgumentException{
+		if (!getAvailableStudies().contains(s)) {
+			throw new IllegalArgumentException();
+		}
+		return d_selectedStudiesMap.get(s);
+	}
 	@Override
 	public int getColumnCount() {
 		return super.getColumnCount() + 1;
@@ -60,14 +133,14 @@ public class SelectableStudyCharTableModel extends StudyCharTableModel {
 		}
 		
 		if (columnIndex == 0) {
-			return getVisibleModelByRow(rowIndex).getValue();
+			return getSelectedModelByRow(rowIndex).getValue();
 		}	
 		
 		return super.getValueAt(rowIndex, columnIndex - 1);
 	}
 
-	private ModifiableHolder<Boolean> getVisibleModelByRow(int rowIndex) {
-		return d_spm.getSelectedStudyBooleanModel(d_spm.getAvailableStudies().get(rowIndex));
+	private ModifiableHolder<Boolean> getSelectedModelByRow(int rowIndex) {
+		return getSelectedStudyBooleanModel(getAvailableStudies().get(rowIndex));
 	}
 	
 	@Override
@@ -87,7 +160,12 @@ public class SelectableStudyCharTableModel extends StudyCharTableModel {
 	@Override
 	public void setValueAt(Object newValue, int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
-			getVisibleModelByRow(rowIndex).setValue((Boolean) newValue);
+			getSelectedModelByRow(rowIndex).setValue((Boolean) newValue);
 		}
+	}
+	
+	@Override
+	protected void includedStudiesListChanged() {
+		updateSelectedStudies();
 	}
 }

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,16 +47,16 @@ public class AddVariableDialog extends OkCancelDialog {
 	private AddisWindow d_mainWindow;
 	private ValueModel d_selectionModel;
 	private PresentationModel<Variable> d_pm;
-	
+
 	public AddVariableDialog(AddisWindow mainWindow, Domain domain, Variable variable, ValueModel selectionModel) {
 		super(mainWindow, "Add " + VariablePresentation.getEntityName(variable) );
 		d_mainWindow = mainWindow;
 		setModal(true);
 		d_domain = domain;
 		d_pm = mainWindow.getPresentationModelFactory().getModel(variable);
-		
+
 		AddVariableView view = new AddVariableView(this, d_pm, d_okButton);
-		
+
 		getUserPanel().add(view.buildPanel());
 		pack();
 		getRootPane().setDefaultButton(d_okButton);
@@ -65,7 +65,7 @@ public class AddVariableDialog extends OkCancelDialog {
 
 	@Override
 	protected void cancel() {
-		setVisible(false);
+		dispose();
 	}
 
 	@Override
@@ -78,18 +78,18 @@ public class AddVariableDialog extends OkCancelDialog {
 			    "Couldn't add Variable", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		if (d_pm.getBean() instanceof Endpoint) {
 			d_domain.getEndpoints().add(((Endpoint) d_pm.getBean()));
 		} else if (d_pm.getBean() instanceof AdverseEvent) {
 			d_domain.getAdverseEvents().add(((AdverseEvent) d_pm.getBean()));
 		} else if (d_pm.getBean() instanceof PopulationCharacteristic) {
 			d_domain.getPopulationCharacteristics().add(((PopulationCharacteristic) d_pm.getBean()));
-		} else { 
+		} else {
 			throw new IllegalArgumentException("Unknown type of OutcomeMeasure.");
 		}
-		
-		setVisible(false);
+
+		dispose();
 		if (d_selectionModel != null)
 			d_selectionModel.setValue(d_pm.getBean());
 		d_mainWindow.leftTreeFocus(d_pm.getBean());

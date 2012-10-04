@@ -1,0 +1,18 @@
+<!-- to avoid naming clash with Value, see http://stackoverflow.com/questions/4394134/jaxb-property-value-is-already-defined-use-jaxbproperty-to-resolve-this -->
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+          xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema"
+          version="2.1">
+    <bindings schemaLocation="clinicaltrials.xsd" version="1.0">
+        <schemaBindings>
+            <package name="org.drugis.addis.imports"/>
+        </schemaBindings>
+
+        <!-- rename the value element -->
+        <bindings node="//xs:complexType[@name='measurement_struct']">
+            <bindings node=".//xs:attribute[@name='value']">
+                <property name="valueAttribute"/>
+            </bindings>
+        </bindings>
+    </bindings>
+</bindings>

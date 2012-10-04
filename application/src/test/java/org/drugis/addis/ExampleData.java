@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drugis.addis.entities.Activity;
 import org.drugis.addis.entities.AdverseEvent;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
@@ -45,27 +46,37 @@ import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.entities.Domain;
 import org.drugis.addis.entities.DoseUnit;
 import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
+import org.drugis.addis.entities.DrugTreatment;
 import org.drugis.addis.entities.Endpoint;
 import org.drugis.addis.entities.Epoch;
 import org.drugis.addis.entities.FixedDose;
+import org.drugis.addis.entities.FlexibleDose;
 import org.drugis.addis.entities.Indication;
 import org.drugis.addis.entities.OutcomeMeasure;
+import org.drugis.addis.entities.OutcomeMeasure.Direction;
 import org.drugis.addis.entities.PopulationCharacteristic;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.ScaleModifier;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.StudyOutcomeMeasure;
+import org.drugis.addis.entities.TreatmentActivity;
 import org.drugis.addis.entities.Variable;
-import org.drugis.addis.entities.OutcomeMeasure.Direction;
+import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.analysis.MetaAnalysis;
 import org.drugis.addis.entities.analysis.MetaBenefitRiskAnalysis;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
-import org.drugis.addis.entities.analysis.BenefitRiskAnalysis.AnalysisType;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.DecisionTree;
+import org.drugis.addis.entities.treatment.DecisionTreeEdge;
+import org.drugis.addis.entities.treatment.DoseQuantityChoiceNode;
+import org.drugis.addis.entities.treatment.LeafNode;
+import org.drugis.addis.entities.treatment.RangeEdge;
+import org.drugis.addis.entities.treatment.TreatmentCategorization;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.mocks.MockMetaBenefitRiskAnalysis;
 import org.drugis.addis.mocks.MockStudyBenefitRiskAnalysis;
 import org.drugis.addis.util.EntityUtil;
@@ -100,8 +111,7 @@ public class ExampleData {
 	private static PopulationCharacteristic s_age;
 	private static Endpoint s_endpointMadrs;
 	private static Study s_studyBurke;
-	
-	public static DoseUnit MILLIGRAMS_A_DAY = new DoseUnit(Domain.GRAM, ScaleModifier.MILLI, EntityUtil.createDuration("P1D"));
+		
 	public static DoseUnit KILOGRAMS_PER_HOUR = new DoseUnit(Domain.GRAM, ScaleModifier.KILO, EntityUtil.createDuration("PT1H"));
 
 	public static void initDefaultData(Domain domain) {
@@ -242,7 +252,7 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Paroxetine data 1
-		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-0", 102, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(67);
@@ -254,7 +264,7 @@ public class ExampleData {
 		pConv.setSampleSize(40);
 		
 		// Fluoxetine data
-		dose = new FixedDose(27.5, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(27.5, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 101, buildDrugFluoxetine(), dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(67);
@@ -268,12 +278,12 @@ public class ExampleData {
 		addDefaultMeasurementMoments(study);
 
 		// only set measurements once studyactivities are initialised
-		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
-		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
-		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);
-		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);		
-		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		study.setMeasurement(buildAdverseEventConvulsion(), fluox, pConv);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), parox, pCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), parox, pConv);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), fluox, fHamd);		
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluox, fCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), fluox, pConv);
 		return study;
 	}
 
@@ -315,7 +325,7 @@ public class ExampleData {
 		addDefaultEpochs(study);
 
 		// Paroxetine data
-		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
@@ -325,7 +335,7 @@ public class ExampleData {
 		pConv.setSampleSize(40);
 
 		// Fluoxetine data
-		dose = new FixedDose(27.5, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(27.5, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
@@ -336,10 +346,10 @@ public class ExampleData {
 		addBaselineMeasurementMoment(study, Endpoint.class);
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(hamd, parox, pHamd);
-		study.setMeasurement(buildAdverseEventConvulsion(),parox, pConv);		
-		study.setMeasurement(hamd, fluox, fHamd);
-		study.setMeasurement(buildAdverseEventConvulsion(), fluox, fConv);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), parox, pConv);		
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildAdverseEventConvulsion()), fluox, fConv);
 		return study;
 	}
 
@@ -379,19 +389,19 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Paroxetine data 1
-		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox0 = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd0 = (BasicRateMeasurement)hamd.buildMeasurement(parox0);
 		pHamd0.setRate(23);
 		
 		// Paroxetine data 2
-		dose = new FixedDose(5.5, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(5.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox1 = study.createAndAddArm("Paroxetine-1", 54, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd1 = (BasicRateMeasurement)hamd.buildMeasurement(parox1);
 		pHamd1.setRate(23);
 
 		// Fluoxetine data
-		dose = new FixedDose(27.5, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(27.5, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-2", 41, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(26);
@@ -399,9 +409,9 @@ public class ExampleData {
 		// Initialise measurement moment data structure (only after arms are created)
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(hamd, parox0, pHamd0);
-		study.setMeasurement(hamd, parox1, pHamd1);
-		study.setMeasurement(hamd, fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox0, pHamd0);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox1, pHamd1);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluox, fHamd);
 
 		return study;
 	}
@@ -450,7 +460,7 @@ public class ExampleData {
 		// STUDY_START, STUDY_END missing
 		
 		// Citalopram data
-		FixedDose dose = new FixedDose(40, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(40, DoseUnit.createMilliGramsPerDay());
 		Arm cita = study.createAndAddArm("Citalopram-0", 125, buildDrugCitalopram(), dose);
 		BasicContinuousMeasurement cCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(cita);
 		cCgi.setMean(-1.2);
@@ -459,7 +469,7 @@ public class ExampleData {
 		cMadrs.setRate(57);
 		
 		// Escitalopram high dose data
-		dose = new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(20, DoseUnit.createMilliGramsPerDay());
 		Arm esciHigh = study.createAndAddArm("Escitalopram-1", 125, buildDrugEscitalopram(), dose);
 		BasicContinuousMeasurement ehCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciHigh);
 		ehCgi.setMean(-1.4);
@@ -468,7 +478,7 @@ public class ExampleData {
 		ehMadrs.setRate(64);
 
 		// Escitalopram low dose data
-		dose = new FixedDose(10, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(10, DoseUnit.createMilliGramsPerDay());
 		Arm esciLow = study.createAndAddArm("Escitalopram-2", 119, buildDrugEscitalopram(), dose);
 		BasicContinuousMeasurement elCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(esciLow);
 		elCgi.setMean(-1.3);
@@ -477,7 +487,7 @@ public class ExampleData {
 		elMadrs.setRate(59);
 		
 		// Placebo data
-		dose = new FixedDose(0, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(0, DoseUnit.createMilliGramsPerDay());
 		Arm placebo = study.createAndAddArm("Placebo-3", 122, buildPlacebo(), dose);
 		BasicContinuousMeasurement plCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(placebo);
 		plCgi.setMean(-0.8);
@@ -487,14 +497,14 @@ public class ExampleData {
 		
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(buildEndpointCgi(), cita, cCgi);
-		study.setMeasurement(buildEndpointMadrs(), cita, cMadrs);
-		study.setMeasurement(buildEndpointCgi(), esciHigh, ehCgi);
-		study.setMeasurement(buildEndpointMadrs(), esciHigh, ehMadrs);
-		study.setMeasurement(buildEndpointCgi(), esciLow, elCgi);
-		study.setMeasurement(buildEndpointMadrs(), esciLow, elMadrs);
-		study.setMeasurement(buildEndpointCgi(), placebo, plCgi);
-		study.setMeasurement(buildEndpointMadrs(), placebo, plMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), cita, cCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), cita, cMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), esciHigh, ehCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), esciHigh, ehMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), esciLow, elCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), esciLow, elMadrs);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), placebo, plCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointMadrs()), placebo, plMadrs);
 		return study;
 }
 	
@@ -520,8 +530,8 @@ public class ExampleData {
 		
 		addDefaultEpochs(study);
 		
-		FixedDose fluoxDose = new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY);
-		FixedDose sertrDose = new FixedDose(50, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose fluoxDose = new FixedDose(20, DoseUnit.createMilliGramsPerDay());
+		FixedDose sertrDose = new FixedDose(50, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-0", 144, buildDrugFluoxetine(), fluoxDose);
 		Arm sertr = study.createAndAddArm("Sertraline-1", 142, buildDrugSertraline(), sertrDose);
 		
@@ -534,8 +544,8 @@ public class ExampleData {
 		fCgi.setStdDev(0.5);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
-		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluox, fCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), fluox, fHamd);
 
 		// Sertraline data
 		BasicContinuousMeasurement sCgi = (BasicContinuousMeasurement)buildEndpointCgi().buildMeasurement(sertr);
@@ -543,8 +553,8 @@ public class ExampleData {
 		sCgi.setStdDev(0.5);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
-		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
-		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), sertr, sCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), sertr, sHamd);
 		return study;
 	}
 
@@ -587,7 +597,7 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Paroxetine data
-		FixedDose dose = new FixedDose(25.5, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(25.5, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-0", 37, buildDrugParoxetine(), dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(parox);
 		pHamd.setRate(23);
@@ -596,7 +606,7 @@ public class ExampleData {
 		pCgi.setStdDev(0.16);
 		
 		// Fluoxetine data
-		dose = new FixedDose(20, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(20, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 144, buildDrugFluoxetine(), dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(fluox);
 		fHamd.setRate(63);
@@ -605,7 +615,7 @@ public class ExampleData {
 		fCgi.setStdDev(0.16);
 
 		// Sertraline data
-		dose = new FixedDose(50, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(50, DoseUnit.createMilliGramsPerDay());
 		Arm sertr = study.createAndAddArm("Sertraline-2", 142, buildDrugSertraline(), dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)buildEndpointHamd().buildMeasurement(sertr);
 		sHamd.setRate(73);
@@ -615,12 +625,12 @@ public class ExampleData {
 
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(buildEndpointHamd(), parox, pHamd);
-		study.setMeasurement(buildEndpointCgi(), parox, pCgi);
-		study.setMeasurement(buildEndpointHamd(), fluox, fHamd);
-		study.setMeasurement(buildEndpointCgi(), fluox, fCgi);
-		study.setMeasurement(buildEndpointHamd(), sertr, sHamd);
-		study.setMeasurement(buildEndpointCgi(), sertr, sCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), parox, pCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluox, fCgi);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointHamd()), sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), sertr, sCgi);
 
 		return study;
 	}
@@ -670,19 +680,19 @@ public class ExampleData {
 		addDefaultEpochs(study);
 		
 		// Candesartan data
-		FixedDose cDose = new FixedDose(32, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose cDose = new FixedDose(32, DoseUnit.createMilliGramsPerDay());
 		Arm cand = study.createAndAddArm("Candesartan-0", 1273, buildDrugCandesartan(), cDose);
 		BasicRateMeasurement cDeath = new BasicRateMeasurement(302, cand.getSize());
 		
 		// Placebo data
-		FixedDose pDose = new FixedDose(32, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose pDose = new FixedDose(32, DoseUnit.createMilliGramsPerDay());
 		Arm placebo = study.createAndAddArm("Placebo-1", 1271, buildPlacebo(), pDose);
 		BasicRateMeasurement pDeath = new BasicRateMeasurement(347, placebo.getSize());
 
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(buildEndpointCVdeath(), cand, cDeath);
-		study.setMeasurement(buildEndpointCVdeath(), placebo, pDeath);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCVdeath()), cand, cDeath);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCVdeath()), placebo, pDeath);
 		
 		return study;
 	}
@@ -723,28 +733,28 @@ public class ExampleData {
 		study.setCharacteristic(BasicStudyCharacteristic.STATUS, BasicStudyCharacteristic.Status.COMPLETED);
 		
 		// Sertraline data
-		FixedDose dose = new FixedDose(75.0, ExampleData.MILLIGRAMS_A_DAY);
+		FixedDose dose = new FixedDose(75.0, DoseUnit.createMilliGramsPerDay());
 		Arm sertr = study.createAndAddArm("Sertraline-0", 96, sertraline, dose);
 		BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
 		sHamd.setRate(70);
 
 		// Fluoxetine data
-		dose = new FixedDose(30.0, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(30.0, DoseUnit.createMilliGramsPerDay());
 		Arm fluox = study.createAndAddArm("Fluoxetine-1", 92, fluoxetine, dose);
 		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
 		fHamd.setRate(57);
 		
 		// Paroxetine data
-		dose = new FixedDose(0.0, ExampleData.MILLIGRAMS_A_DAY);
+		dose = new FixedDose(0.0, DoseUnit.createMilliGramsPerDay());
 		Arm parox = study.createAndAddArm("Paroxetine-2", 93, paroxetine, dose);
 		BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
 		pHamd.setRate(64);
 
 		addDefaultMeasurementMoments(study);
 		
-		study.setMeasurement(hamd, parox, pHamd);
-		study.setMeasurement(hamd, fluox, fHamd);
-		study.setMeasurement(hamd, sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), parox, pHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluox, fHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), sertr, sHamd);
 		
 		return study;
 	}
@@ -875,10 +885,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisHamD() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard(), buildStudyDeWilde(), buildStudyFava2002()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()), 
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(buildDrugFluoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
 				buildIndicationDepression(), buildEndpointHamd(),
@@ -890,10 +900,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisConvulsion() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()),
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network2", 
 				buildIndicationDepression(), buildAdverseEventConvulsion(),
@@ -905,10 +915,10 @@ public class ExampleData {
 	public static NetworkMetaAnalysis buildNetworkMetaAnalysisCgi() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				buildStudyBennie(), buildStudyChouinard()});
-		List<DrugSet> drugs = Arrays.asList(new DrugSet[] {
-				new DrugSet(buildDrugFluoxetine()),
-				new DrugSet(buildDrugParoxetine()), 
-				new DrugSet(buildDrugSertraline())});
+		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
+				TreatmentDefinition.createTrivial(buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(buildDrugSertraline())});
 		
 		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("CGI network", 
 				buildIndicationDepression(), buildEndpointCgi(),
@@ -918,13 +928,13 @@ public class ExampleData {
 	}
 	
 	
-	public static Map<Study, Map<DrugSet, Arm>> buildMap(List<Study> studies,
-			List<DrugSet> drugs) {
-		Map<Study, Map<DrugSet, Arm>> map = new HashMap<Study, Map<DrugSet, Arm>>();
+	public static Map<Study, Map<TreatmentDefinition, Arm>> buildMap(List<Study> studies,
+			List<TreatmentDefinition> drugs) {
+		Map<Study, Map<TreatmentDefinition, Arm>> map = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (Study s : studies) {
-			Map<DrugSet, Arm> drugMap = new HashMap<DrugSet, Arm>();
-			for (DrugSet d : drugs) {
-				if (s.getDrugs().contains(d)) {
+			Map<TreatmentDefinition, Arm> drugMap = new HashMap<TreatmentDefinition, Arm>();
+			for (TreatmentDefinition d : drugs) {
+				if (s.getTreatmentDefinitions().contains(d)) {
 					drugMap.put(d, RelativeEffectFactory.findFirstArm(s, d));
 				}
 			}
@@ -953,10 +963,10 @@ public class ExampleData {
 		metaAnalysisList.add(buildMetaAnalysisConv());
 		
 		Drug parox = buildDrugParoxetine();
-		List<DrugSet> fluoxList = Collections.singletonList(new DrugSet(buildDrugFluoxetine()));
+		List<TreatmentDefinition> fluoxList = Collections.singletonList(TreatmentDefinition.createTrivial(buildDrugFluoxetine()));
 		
 		return new MockMetaBenefitRiskAnalysis("testBenefitRiskAnalysis",
-										indication, metaAnalysisList, new DrugSet(parox), fluoxList);										
+										indication, metaAnalysisList, TreatmentDefinition.createTrivial(parox), fluoxList);										
 	}
 
 	public static StudyBenefitRiskAnalysis buildStudyBenefitRiskAnalysis() {
@@ -991,23 +1001,37 @@ public class ExampleData {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Convulsion test analysis", buildAdverseEventConvulsion(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Convulsion test analysis",
+				buildAdverseEventConvulsion(),
+				s1.getTreatmentDefinition(base),
+				s1.getTreatmentDefinition(subject),
+				studyArms, false);
 	}
 
 	public static MetaAnalysis buildMetaAnalysisHamd() {
 		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
 		
 		Study s1 = buildStudyChouinard();
-		studyArms.add(new StudyArmsEntry(s1, s1.getArms().get(0), s1.getArms().get(1)));
+		Arm base = s1.getArms().get(0);
+		Arm subject = s1.getArms().get(1);
+		studyArms.add(new StudyArmsEntry(s1, base, subject));
 		Study s2 = buildStudyDeWilde();
 		studyArms.add(new StudyArmsEntry(s2, s2.getArms().get(0), s2.getArms().get(1)));		
 		
-		return new RandomEffectsMetaAnalysis("Hamd test analysis", buildEndpointHamd(), studyArms);
+		return new RandomEffectsMetaAnalysis(
+				"Hamd test analysis",
+				buildEndpointHamd(),
+				s1.getTreatmentDefinition(base),
+				s1.getTreatmentDefinition(subject),
+				studyArms, false);
 	}
 
 	public static MetaBenefitRiskAnalysis realBuildContinuousMockBenefitRisk() {
@@ -1015,44 +1039,127 @@ public class ExampleData {
 		Drug fluox = buildDrugFluoxetine();
 		Drug parox = buildDrugParoxetine();
 		Study study = buildStudyChouinard();
-		MetaAnalysis ma = new RandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), new DrugSet(fluox), new DrugSet(parox));
+		MetaAnalysis ma = ExampleData.buildRandomEffectsMetaAnalysis("ma", om, Collections.singletonList(study), TreatmentDefinition.createTrivial(fluox), TreatmentDefinition.createTrivial(parox));
 		MetaBenefitRiskAnalysis br = new MockMetaBenefitRiskAnalysis("br", study.getIndication(), 
 				Collections.singletonList(ma), 
-				new DrugSet(fluox), 
-				Collections.singletonList(new DrugSet(parox)));
+				TreatmentDefinition.createTrivial(fluox), 
+				Collections.singletonList(TreatmentDefinition.createTrivial(parox)));
 		return br;
 	}
 	
-    public static Study realBuildStudyZeroRate() {
-        Endpoint hamd = buildEndpointHamd();
-        Drug fluoxetine = buildDrugFluoxetine();
-        Drug sertraline = buildDrugSertraline();
-        Drug paroxetine = buildDrugParoxetine();
-        Study study = new Study("fluoxRatingZeroStudy", buildIndicationDepression());
-        study.getEndpoints().clear();
+	public static Study realBuildStudyCombinationTreatment() {
+		Endpoint hamd = buildEndpointHamd();
+		Drug fluoxetine = buildDrugFluoxetine();
+		Drug sertraline = buildDrugSertraline();
+		Drug paroxetine = buildDrugParoxetine();
+		Study study = new Study("combinationTreatment", buildIndicationDepression());
+		study.getEndpoints().clear();
 		study.getEndpoints().addAll(Study.wrapVariables(Collections.singletonList(hamd)));
-        
-        // Sertraline data
-        FixedDose dose = new FixedDose(75.0, ExampleData.MILLIGRAMS_A_DAY);
-        Arm sertr = study.createAndAddArm("Sertraline-0", 96, sertraline, dose);
-        BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
-        sHamd.setRate(70);
-        study.setMeasurement(hamd, sertr, sHamd);
+		
+		study.getEpochs().add(new Epoch("Main phase", EntityUtil.createDuration("P5D")));
+		
+		// Sertraline data
+		FixedDose dose = new FixedDose(75.0, DoseUnit.createMilliGramsPerDay());
+		Arm sertr = study.createAndAddArm("Sertraline-0", 96, sertraline, dose);
+		BasicRateMeasurement sHamd = (BasicRateMeasurement)hamd.buildMeasurement(sertr);
+		sHamd.setRate(70);
+		
+		// Fluoxetine + Paroxetine data
+		dose = new FixedDose(30.0, DoseUnit.createMilliGramsPerDay());
+		Arm fluoxAndParox = study.createAndAddArm("Fluoxetine-Paroxetine-1", 92, fluoxetine, dose);
+		Activity activity = study.getActivity(fluoxAndParox);
+		dose = new FixedDose(15.0, DoseUnit.createMilliGramsPerDay());
+		((TreatmentActivity)activity).getTreatments().add(new DrugTreatment(paroxetine, dose));
+		BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluoxAndParox);
+		fHamd.setRate(25);
+		
+		// Add measurements at the very last to prevent them from getting reset
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), sertr, sHamd);
+		study.setMeasurement(study.findStudyOutcomeMeasure(hamd), fluoxAndParox, fHamd);
+		
+		return study;
+	}
 
-        // Fluoxetine data
-        dose = new FixedDose(30.0, ExampleData.MILLIGRAMS_A_DAY);
-        Arm fluox = study.createAndAddArm("Fluoxetine-1", 92, fluoxetine, dose);
-        BasicRateMeasurement fHamd = (BasicRateMeasurement)hamd.buildMeasurement(fluox);
-        fHamd.setRate(0);
-        study.setMeasurement(hamd, fluox, fHamd);
-        
-        // Paroxetine data
-        dose = new FixedDose(0.0, ExampleData.MILLIGRAMS_A_DAY);
-        Arm parox = study.createAndAddArm("Paroxetine-2", 93, paroxetine, dose);
-        BasicRateMeasurement pHamd = (BasicRateMeasurement)hamd.buildMeasurement(parox);
-        pHamd.setRate(64);
-        study.setMeasurement(hamd, parox, pHamd);
-        
-        return study;
-    }
+	public static RandomEffectsMetaAnalysis buildRandomEffectsMetaAnalysis(String name, OutcomeMeasure om,
+			List<Study> studies, TreatmentDefinition drug1, TreatmentDefinition drug2) {
+		if (studies.size() == 0) {
+			throw new IllegalArgumentException("No studies in MetaAnalysis");
+		}
+		for (Study s : studies) {
+			if (!(s.getTreatmentDefinitions().contains(drug1) && s.getTreatmentDefinitions().contains(drug2))) {
+				throw new IllegalArgumentException("Not all studies contain the drugs under comparison");
+			}
+		}
+		return new RandomEffectsMetaAnalysis(name, om, drug1, drug2, ExampleData.buildStudyArmEntries(studies, drug1, drug2), false);
+	}
+
+	public static List<StudyArmsEntry> buildStudyArmEntries(
+			List<? extends Study> studies, TreatmentDefinition drug1, TreatmentDefinition drug2) {
+		List<StudyArmsEntry> studyArms = new ArrayList<StudyArmsEntry>();
+	
+		for (Study s : studies) {
+			Arm arm1 = RelativeEffectFactory.findFirstArm(s, drug1);
+			Arm arm2 = RelativeEffectFactory.findFirstArm(s, drug2);
+			studyArms.add(new StudyArmsEntry(s, arm1, arm2));
+		}
+		
+		return studyArms;
+	}
+	
+	public static TreatmentCategorization buildCategorizationFixedDose(Drug d) { 
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Fixed Dose", d, DoseUnit.createMilliGramsPerDay());
+		Category include = new Category(catz, "Include");
+		catz.addCategory(include);
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(include));
+		return catz;
+	}
+	
+	public static TreatmentCategorization buildCategorizationKnownDose(Drug d) { 
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include Known Doses", d, DoseUnit.createMilliGramsPerDay());
+		Category include = new Category(catz, "Include");
+		catz.addCategory(include);
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(include));
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), new LeafNode(include));
+		return catz;
+	}
+	
+	public static TreatmentCategorization buildCategorizationUpto20mg(Drug d) { 
+		DoseUnit doseUnit = DoseUnit.createMilliGramsPerDay();
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Include up to 20mg", d, doseUnit);
+		Category include = new Category(catz, "Include");
+		catz.addCategory(include);
+		DecisionTree tree = catz.getDecisionTree();
+		
+		DecisionTreeEdge fixedEdge = tree.findMatchingEdge(tree.getRoot(), FixedDose.class);
+		DoseQuantityChoiceNode fixedQuantity = new DoseQuantityChoiceNode(FixedDose.class, FixedDose.PROPERTY_QUANTITY, doseUnit);
+		tree.replaceChild(fixedEdge, fixedQuantity);
+		tree.addChild(new RangeEdge(0.0, false, 20.0, false), fixedQuantity, new LeafNode(include));
+		tree.addChild(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), fixedQuantity, new LeafNode());
+
+		DecisionTreeEdge flexibleEdge = tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class);
+		DoseQuantityChoiceNode flexibleMax = new DoseQuantityChoiceNode(FlexibleDose.class, FlexibleDose.PROPERTY_MAX_DOSE, doseUnit);
+		tree.replaceChild(flexibleEdge, flexibleMax);
+		tree.addChild(new RangeEdge(0.0, false, 20.0, false), flexibleMax, new LeafNode(include));
+		tree.addChild(new RangeEdge(20.0, true, Double.POSITIVE_INFINITY, true), flexibleMax, new LeafNode());
+		
+		return catz;
+	}
+	
+	
+	public static TreatmentCategorization buildCategorizationFixedFlexible(Drug d) { 
+		TreatmentCategorization catz = TreatmentCategorization.createDefault("Categorize Fixed, Flexible", d, DoseUnit.createMilliGramsPerDay());
+		Category fixed = new Category(catz, "Fixed");
+		Category flexible = new Category(catz, "Flexible");
+
+		catz.addCategory(fixed);
+		catz.addCategory(flexible);
+
+		DecisionTree tree = catz.getDecisionTree();
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FixedDose.class), new LeafNode(fixed));
+		tree.replaceChild(tree.findMatchingEdge(tree.getRoot(), FlexibleDose.class), new LeafNode(flexible));
+		return catz;
+	}
+	
 }

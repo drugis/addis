@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,11 +38,11 @@ import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.BasicContinuousMeasurement;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.ContinuousVariableType;
-import org.drugis.addis.entities.Drug;
-import org.drugis.addis.entities.DrugSet;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.treatment.Category;
+import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.mtc.ContinuousNetworkBuilder;
 import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.NetworkBuilder;
@@ -50,52 +50,100 @@ import org.drugis.mtc.data.DataType;
 import org.drugis.mtc.model.Treatment;
 
 public class NetworkBuilderFactory {
-	final static class NetworkBuilderStub extends NetworkBuilder<DrugSet> {
+	static final class DescriptionTransformer implements Transformer<TreatmentDefinition, String> {
+		@Override
+		public String transform(TreatmentDefinition input) {
+			return input.getLabel();
+		}
+	}
+
+	static final class NameTransformer implements Transformer<TreatmentDefinition, String> {
+		private final BidiMap<Category, String> nameLookup = new TreeBidiMap<Category, String>();
+
+		@Override
+		public String transform(TreatmentDefinition input) {
+			List<String> names = new ArrayList<String>();
+			for (Category category : input.getContents()) {
+				names.add(getCleanName(category));
+			}
+			return StringUtils.join(names, "_");
+		}
+
+		private String getCleanName(Category category) {
+			if (!nameLookup.containsKey(category)) {
+				insertUniqueName(category);
+			}
+			return nameLookup.get(category);
+		}
+
+		private void insertUniqueName(Category category) {
+			String sanitized = sanitize(category.getLabel());
+			String name = sanitized;
+			int i = 1;
+			while (nameLookup.containsValue(name)) {
+				name = sanitized + ++i;
+			}
+			nameLookup.put(category, name);
+		}
+
+		private String sanitize(String dirtyString) {
+			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
+		}
+	}
+	
+	private static final Transformer<TreatmentDefinition, String> s_descTransform = new DescriptionTransformer();
+	private static final Transformer<TreatmentDefinition, String> s_transform = new NameTransformer();
+
+	final static class NetworkBuilderStub extends NetworkBuilder<TreatmentDefinition> {
 		NetworkBuilderStub() {
 			super(s_transform, s_descTransform, DataType.NONE);
 		}
 
-		public Treatment addTreatment(DrugSet t) {
+		public Treatment addTreatment(TreatmentDefinition t) {
 			return makeTreatment(t);
 		}
 	}
 	
-	public static NetworkBuilder<DrugSet> createBuilderStub(List<DrugSet> drugs) {
+	public static NetworkBuilder<TreatmentDefinition> createBuilderStub(List<TreatmentDefinition> definitions) {
 		NetworkBuilderStub builder = new NetworkBuilderStub();
-		for(DrugSet s : drugs) { 
-			builder.addTreatment(s);
+		for(TreatmentDefinition d : definitions) { 
+			builder.addTreatment(d);
 		}
 		return builder;
 	}
 
-	public static NetworkBuilder<DrugSet> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
+	public static NetworkBuilder<TreatmentDefinition> createBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> definitions, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		if (isContinuous(outcomeMeasure)) {
-			return createContinuousBuilder(outcomeMeasure, studies, drugs, armMap);
+			return createContinuousBuilder(outcomeMeasure, studies, definitions, armMap);
 		} else {
-			return createRateBuilder(outcomeMeasure, studies, drugs, armMap);
+			return createRateBuilder(outcomeMeasure, studies, definitions, armMap);
 		}
 	}
 	
-	private static NetworkBuilder<DrugSet> createContinuousBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		ContinuousNetworkBuilder<DrugSet> builder = new ContinuousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
+	private static NetworkBuilder<TreatmentDefinition> createContinuousBuilder(
+			OutcomeMeasure outcomeMeasure,
+			List<Study> studies,
+			List<TreatmentDefinition> definitions, 
+			Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+		ContinuousNetworkBuilder<TreatmentDefinition> builder = new ContinuousNetworkBuilder<TreatmentDefinition>(s_transform, s_descTransform);
 		for(Study s : studies){
-			for (DrugSet d : drugs) {
+			for (TreatmentDefinition d : definitions) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicContinuousMeasurement cm = (BasicContinuousMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
-					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), cm.getMean(), cm.getStdDev(), cm.getSampleSize());
+					builder.add(s.getName(), d, cm.getMean(), cm.getStdDev(), cm.getSampleSize());
 				}
         	}
         }
 		return builder;
 	}
 
-	private static NetworkBuilder<DrugSet> createRateBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<DrugSet> drugs, Map<Study, Map<DrugSet, Arm>> armMap) {
-		DichotomousNetworkBuilder<DrugSet> builder = new DichotomousNetworkBuilder<DrugSet>(s_transform, s_descTransform);
+	private static NetworkBuilder<TreatmentDefinition> createRateBuilder(OutcomeMeasure outcomeMeasure, List<Study> studies, List<TreatmentDefinition> definitions, Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
+		DichotomousNetworkBuilder<TreatmentDefinition> builder = new DichotomousNetworkBuilder<TreatmentDefinition>(s_transform, s_descTransform);
 		for(Study s : studies){
-			for (DrugSet d : drugs) {
+			for (TreatmentDefinition d : definitions) {
 				if (armMap.get(s).containsKey(d)) {
 					BasicRateMeasurement brm = (BasicRateMeasurement) s.getMeasurement(outcomeMeasure, armMap.get(s).get(d));
-					builder.add(s.getName(), s.getDrugs(armMap.get(s).get(d)), brm.getRate(), brm.getSampleSize());
+					builder.add(s.getName(), d, brm.getRate(), brm.getSampleSize());
 				}
         	}
         }
@@ -111,44 +159,4 @@ public class NetworkBuilderFactory {
 			throw new IllegalStateException("Unexpected VariableType: " + outcome.getVariableType());
 		}
 	}
-	
-	private static final Transformer<DrugSet, String> s_descTransform = new Transformer<DrugSet, String>() {
-		@Override
-		public String transform(DrugSet input) {
-			return input.getLabel();
-		}
-	};
-	
-	private static final Transformer<DrugSet, String> s_transform = new Transformer<DrugSet, String>() {
-		private final BidiMap<Drug, String> nameLookup = new TreeBidiMap<Drug, String>();  
-		@Override
-		public String transform(DrugSet input) {
-			List<String> names = new ArrayList<String>();
-			for (Drug drug : input.getContents()) {
-				names.add(getCleanName(drug));
-			}
-			return StringUtils.join(names, "_");
-		}
-
-		private String getCleanName(Drug drug) {
-			if (!nameLookup.containsKey(drug)) {
-				insertUniqueName(drug);
-			}
-			return nameLookup.get(drug);
-		}
-
-		private void insertUniqueName(Drug drug) {
-			String sanitized = sanitize(drug.getName());
-			String name = sanitized;
-			int i = 1;
-			while (nameLookup.containsValue(name)) {
-				name = sanitized + ++i;
-			}
-			nameLookup.put(drug, name);
-		}
-		
-		private String sanitize(String dirtyString) {
-			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
-		}
-	};
 }

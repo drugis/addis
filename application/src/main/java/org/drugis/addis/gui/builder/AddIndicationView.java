@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,16 +30,21 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultFormatter;
+import javax.swing.text.Document;
 
 import org.drugis.addis.entities.Indication;
-import org.drugis.addis.gui.components.NotEmptyValidator;
+import org.drugis.addis.gui.util.NonEmptyValueModel;
 import org.drugis.common.gui.ViewBuilder;
+import org.drugis.common.validation.BooleanAndModel;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -48,10 +53,9 @@ public class AddIndicationView implements ViewBuilder {
 	private JFormattedTextField d_code;
 	private JTextField d_name;
 	private PresentationModel<Indication> d_model;
-	private NotEmptyValidator d_validator;
+	private BooleanAndModel d_validator = new BooleanAndModel();
 	
 	public AddIndicationView(PresentationModel<Indication> model, JButton okButton) {
-		d_validator = new NotEmptyValidator();
 		Bindings.bind(okButton, "enabled", d_validator);
 		d_model = model;
 	}
@@ -62,8 +66,9 @@ public class AddIndicationView implements ViewBuilder {
 		PropertyConnector.connectAndUpdate(d_model.getModel(Indication.PROPERTY_CODE), d_code, "value");
 		d_name = BasicComponentFactory.createTextField(d_model.getModel(Indication.PROPERTY_NAME), false);
 		
-		d_validator.add(d_code);
-		d_validator.add(d_name);
+		d_validator.add(new DocumentNotEmptyModel(d_code.getDocument()));
+		d_validator.add(new NonEmptyValueModel(d_model.getModel(Indication.PROPERTY_NAME)));
+
 	}
 
 	public JComponent buildPanel() {
@@ -88,4 +93,36 @@ public class AddIndicationView implements ViewBuilder {
 		return builder.getPanel();	
 	}
 
+	
+	private static class DocumentNotEmptyModel extends AbstractValueModel {
+		private static final long serialVersionUID = 843575902496056597L;
+		private Document d_document;
+
+		public DocumentNotEmptyModel(Document document) {
+			d_document = document;
+			document.addDocumentListener(new DocumentListener() {
+				public void changedUpdate(DocumentEvent ev) {
+					fireValueChange(null, getValue());			
+				}
+
+				public void insertUpdate(DocumentEvent ev) {
+					fireValueChange(null, getValue());
+				}
+
+				public void removeUpdate(DocumentEvent ev) {
+					fireValueChange(null, getValue());
+				}
+			});
+		}
+		
+		@Override
+		public Object getValue() {
+				return (d_document.getLength() != 0);
+		}
+
+		@Override
+		public void setValue(Object newValue) {
+			throw new RuntimeException("Modification not allowed");
+		}
+	}
 }

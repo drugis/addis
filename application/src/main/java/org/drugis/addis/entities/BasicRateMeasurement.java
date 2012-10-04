@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,15 +31,19 @@ import org.drugis.common.EqualsUtil;
 
 
 public class BasicRateMeasurement extends BasicMeasurement implements RateMeasurement {
-	
+
 	private Integer d_rate;
-	
+
 	public BasicRateMeasurement() {
 		super(0);
 	}
-	
-	public BasicRateMeasurement(Integer rate, Integer size) {
-		super(size);
+
+	/**
+	 * @param rate, the rate of participants that were affected
+	 * @param total, the total amount of participants
+	 */
+	public BasicRateMeasurement(Integer rate, Integer total) {
+		super(total);
 		d_rate = rate;
 	}
 
@@ -51,7 +55,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public String toString() {
 		return (d_rate == null ? "N/A" : d_rate.toString()) + " / " + (getSampleSize() == null ? "N/A" : getSampleSize().toString());
 	}
-	
+
 	public void setRate(Integer rate) {
 		Integer oldVal = d_rate;
 		d_rate = rate;
@@ -61,11 +65,11 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public Integer getRate() {
 		return d_rate;
 	}
-	
+
 	public boolean isOfType(VariableType type) {
 		return type instanceof RateVariableType;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof BasicRateMeasurement) {
@@ -75,7 +79,7 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return 31 * hash(d_sampleSize) + hash(d_rate);
@@ -88,10 +92,10 @@ public class BasicRateMeasurement extends BasicMeasurement implements RateMeasur
 	public BasicMeasurement clone() {
 		return new BasicRateMeasurement(d_rate, d_sampleSize);
 	}
-	
+
 	@Override
 	public boolean isComplete() {
 		return super.isComplete() && d_rate != null && d_rate > -1 && d_rate <= d_sampleSize;
 	}
-	
+
 }

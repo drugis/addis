@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <clinical_study>
+  <!-- This xml conforms to an XML Schema at:
+    http://clinicaltrials.gov/ct2/html/images/info/public.xsd
+ and an XML DTD at:
+    http://clinicaltrials.gov/ct2/html/images/info/public.dtd -->
   <required_header>
-    <download_date>Information obtained from ClinicalTrials.gov on January 10, 2010</download_date>
+    <download_date>Information obtained from ClinicalTrials.gov on September 06, 2012</download_date>
     <link_text>Link to the current ClinicalTrials.gov record.</link_text>
     <url>http://clinicaltrials.gov/show/NCT00644527</url>
   </required_header>
@@ -14,6 +18,7 @@
   <sponsors>
     <lead_sponsor>
       <agency>University of Heidelberg</agency>
+      <agency_class>Other</agency_class>
     </lead_sponsor>
   </sponsors>
   <source>University of Heidelberg</source>
@@ -102,12 +107,11 @@
   </detailed_description>
   <overall_status>Completed</overall_status>
   <start_date>March 2008</start_date>
-  <end_date>July 2008</end_date>
   <completion_date type="Actual">July 2008</completion_date>
   <primary_completion_date type="Actual">July 2008</primary_completion_date>
   <phase>N/A</phase>
   <study_type>Interventional</study_type>
-  <study_design>Supportive Care, Randomized, Double Blind (Subject, Investigator, Outcomes Assessor), Placebo Control, Parallel Assignment, Efficacy Study</study_design>
+  <study_design>Allocation:  Randomized, Endpoint Classification:  Efficacy Study, Intervention Model:  Parallel Assignment, Masking:  Double Blind (Subject, Investigator, Outcomes Assessor), Primary Purpose:  Supportive Care</study_design>
   <primary_outcome>
     <measure>Change of a composite measure including the Hamilton Depression Scale (double weighted), the Beck Depression Inventory (single weighted) and the HADS-D-scale (single weighted) between study entry and 5 / 10 and 15-week-follow-up.</measure>
     <time_frame>15 weeks</time_frame>
@@ -144,17 +148,17 @@
   <intervention>
     <intervention_type>Other</intervention_type>
     <intervention_name>Purpose designed music and sound listening program</intervention_name>
-  <description>Listening to one of two different specific music programs (Group A and B), which is composed for the treatment of depressive symptoms.  The music is listened to during a period of 30 minutes in the morning and 30 minutes in the evening over 5 - 15 weeks.</description>
-  <arm_group_label>1</arm_group_label>
-  <arm_group_label>2</arm_group_label>
-  <other_name>Receptive Sound and Music</other_name>
+    <description>Listening to one of two different specific music programs (Group A and B), which is composed for the treatment of depressive symptoms.  The music is listened to during a period of 30 minutes in the morning and 30 minutes in the evening over 5 - 15 weeks.</description>
+    <arm_group_label>1</arm_group_label>
+    <arm_group_label>2</arm_group_label>
+    <other_name>Receptive Sound and Music</other_name>
   </intervention>
   <intervention>
     <intervention_type>Other</intervention_type>
     <intervention_name>Sham music for depression</intervention_name>
-  <description>Listening 30 min in the morning and 30 min in the evening to selection of Mozart compositions over 5 weeks.</description>
-  <arm_group_label>3</arm_group_label>
-  <other_name>Mozart</other_name>
+    <description>Listening 30 min in the morning and 30 min in the evening to selection of Mozart compositions over 5 weeks.</description>
+    <arm_group_label>3</arm_group_label>
+    <other_name>Mozart</other_name>
   </intervention>
   <eligibility>
     <criteria>
@@ -198,13 +202,27 @@
         <country>Austria</country>
       </address>
     </facility>
-    <status/>
   </location>
+  <location_countries>
+    <country>Austria</country>
+  </location_countries>
   <verification_date>November 2008</verification_date>
   <lastchanged_date>November 17, 2008</lastchanged_date>
   <firstreceived_date>March 20, 2008</firstreceived_date>
   <responsible_party>
-  <name_title>Vera Brandes</name_title>
-  <organization>Paracelsus Medizinische Privatuniversität, Forschungsprogramm MusikMedizin</organization>
+    <name_title>Vera Brandes</name_title>
+    <organization>Paracelsus Medizinische Privatuniversität, Forschungsprogramm MusikMedizin</organization>
   </responsible_party>
+  <keyword>depression</keyword>
+  <keyword>music</keyword>
+  <keyword>sound</keyword>
+  <keyword>randomized controlled trial</keyword>
+  <is_fda_regulated>No</is_fda_regulated>
+  <has_expanded_access>No</has_expanded_access>
+  <condition_browse>
+    <!-- CAUTION:  The following MeSH terms are assigned with an imperfect algorithm  -->
+    <mesh_term>Depression</mesh_term>
+    <mesh_term>Depressive Disorder</mesh_term>
+  </condition_browse>
+  <!-- Results have not yet been released for this study                              -->
 </clinical_study>

@@ -12,4 +12,5 @@ application/src/main/generated-entities/
 version
 target
 *.log
-/application/transformedDefaultData.xml
+*/tags
+tags

@@ -1,0 +1,33 @@
+Fakhoury et al., 2010 review
+----------------------------
+
+PMID 20616619
+
+Problems with the review
+
+ - Data incorrectly reported (Zinman 2007 - HbA1c swapped)
+ - Definition of "number of hypoglycemic episodes" is unclear and possible inconsistent. Plus the data are not (always) reported per arm.
+ - Most studies have multiple arms with different dosages of the same drug. It is not clear how this was handled in the meta-analysis.
+ - There are no forest plots.
+
+Problems with the dataset
+
+ - Dosages are not consistently represented, some are still to be converted to the most exact definition (e.g. twice daily etc.)
+ - Endpoint directions are not always consistent
+ - Variable descriptions are missing
+
+
+Bydureon (Exenatide QW) EPAR
+----------------------------
+
+ - Possible alternative to full diabetes set, but dose is not as much of an issue.
+
+http://www.ema.europa.eu/docs/en_GB/document_library/EPAR_-_Public_assessment_report/human/002020/WC500108239.pdf
+
+Pivotal efficacy studies:
+
+2993LAR-015 - http://clinicaltrials.gov/show/NCT00308139
+BCB108 - http://clinicaltrials.gov/show/NCT00877890
+BCB106 - http://clinicaltrials.gov/show/NCT00637273
+H80-MC-GWBR - http://clinicaltrials.gov/show/NCT00641056
+

@@ -1,14 +1,14 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright (C) 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright (C) 2010 Gert van Valkenhoef, Tommi Tervonen, 
- * Tijs Zwinkels, Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, 
- * Ahmad Kamal, Daniel Reid.
- * Copyright (C) 2011 Gert van Valkenhoef, Ahmad Kamal, 
- * Daniel Reid, Florin Schimbinschi.
- * Copyright (C) 2012 Gert van Valkenhoef, Daniel Reid, 
- * Joël Kuiper, Wouter Reckman.
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
+ * Reid.
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Schimbinschi.
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,11 @@ import org.drugis.addis.entities.ContinuousVariableType;
 import org.drugis.addis.forestplot.ForestPlot;
 import org.drugis.addis.forestplot.LogScale;
 import org.drugis.addis.forestplot.RelativeEffectBar;
-import org.drugis.addis.presentation.ForestPlotPresentation;
 import org.drugis.addis.presentation.BRATTableModel.BRATForest;
+import org.drugis.addis.presentation.REMAForestPlotPresentation;
+import org.drugis.common.gui.table.RenderAsImage;
 
-public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRenderer {
+public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRenderer implements RenderAsImage {
 	public static final class ForestPlotTableCell extends JPanel {
 		private final Color d_fg;
 		private final BRATForest d_forest;
@@ -75,7 +76,7 @@ public class BRATForestCellRenderer<PresentationType> extends DefaultTableCellRe
 				g.drawLine(originX, 1 - ForestPlot.ROWPAD, originX, ForestPlot.FULLROW);
 			} else if (d_forest.axis != null) {
 				g.drawLine(d_forest.scale.getBin(d_forest.axis.getMin()).bin, 1, d_forest.scale.getBin(d_forest.axis.getMax()).bin, 1);
-				ForestPlot.drawAxisTicks(g, 1, ForestPlotPresentation.getTicks(d_forest.scale, d_forest.axis), ForestPlotPresentation.getTickVals(d_forest.scale, d_forest.axis));
+				ForestPlot.drawAxisTicks(g, 1, REMAForestPlotPresentation.getTicks(d_forest.scale, d_forest.axis), REMAForestPlotPresentation.getTickVals(d_forest.scale, d_forest.axis));
 			}
 			g.translate(-PADDING, 0);
 		}
