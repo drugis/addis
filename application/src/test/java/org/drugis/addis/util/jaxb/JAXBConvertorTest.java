@@ -171,6 +171,7 @@ public class JAXBConvertorTest {
 	private static final String TEST_DATA_3 = TEST_DATA_PATH + "testData-3.addis";
 	private static final String TEST_DATA_A_1 = TEST_DATA_PATH + "testDataA-1.addis";
 	private static final Duration ZERO_DAYS = EntityUtil.createDuration("P0D");
+	private static final String TEST_DATA_5 = TEST_DATA_PATH + "testData-5.addis";
 
 	private JAXBContext d_jaxb;
 	private static Unmarshaller d_unmarshaller;
@@ -2014,6 +2015,11 @@ public class JAXBConvertorTest {
 	@Test
 	public void testCombinationTreatmentRoundTripConversion() throws Exception {
 		doRoundTripTest(getTestData(TEST_DATA_3), false);
+	}
+	
+	@Test
+	public void testVersion5RoundTripConversion() throws Exception {
+		doRoundTripTest(getTestData(TEST_DATA_5), false);
 	}
 
 	/**
