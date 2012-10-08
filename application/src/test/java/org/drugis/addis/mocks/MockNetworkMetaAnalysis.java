@@ -39,7 +39,7 @@ import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.TaskUtil;
-import org.drugis.mtc.NetworkBuilder;
+import org.drugis.mtc.model.NetworkBuilder;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.presentation.ConsistencyWrapper;
 import org.drugis.mtc.presentation.InconsistencyWrapper;
@@ -48,7 +48,7 @@ import org.drugis.mtc.presentation.SimulationInconsistencyWrapper;
 
 
 public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
-	
+
 	private InconsistencyWrapper<TreatmentDefinition> d_mockInconsistencyModel;
 	private ConsistencyWrapper<TreatmentDefinition> d_mockConsistencyModel;
 
@@ -56,9 +56,9 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 			OutcomeMeasure om, List<Study> studies, List<TreatmentDefinition> drugs,
 			Map<Study, Map<TreatmentDefinition, Arm>> armMap) throws IllegalArgumentException {
 		super(name, indication, om, studies, drugs, armMap);
-		
+
 		d_builder = NetworkBuilderFactory.createBuilderStub(drugs);
-		
+
 		d_mockInconsistencyModel = new SimulationInconsistencyWrapper<TreatmentDefinition>(MockInconsistencyModel.buildMockSimulationInconsistencyModel(toTreatments(drugs)), d_builder.getTreatmentMap());
 		d_mockConsistencyModel = new SimulationConsistencyWrapper<TreatmentDefinition>(MockConsistencyModel.buildMockSimulationConsistencyModel(toTreatments(drugs)), drugs, d_builder.getTreatmentMap());
 
@@ -71,17 +71,17 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		}
 		return ts;
 	}
-	
+
 	@Override
-	public InconsistencyWrapper<TreatmentDefinition> getInconsistencyModel() {
+	public synchronized InconsistencyWrapper<TreatmentDefinition> getInconsistencyModel() {
 		return d_mockInconsistencyModel;
 	}
-	
+
 	@Override
-	public ConsistencyWrapper<TreatmentDefinition> getConsistencyModel() {
+	public synchronized ConsistencyWrapper<TreatmentDefinition> getConsistencyModel() {
 		return d_mockConsistencyModel;
 	}
-	
+
 	public void run() throws InterruptedException {
 		List<Task> tasks = new ArrayList<Task>();
 		if (!getConsistencyModel().getModel().isReady()) {
@@ -90,13 +90,13 @@ public class MockNetworkMetaAnalysis extends NetworkMetaAnalysis {
 		if (!getInconsistencyModel().getModel().isReady()) {
 			tasks.add(getInconsistencyModel().getModel().getActivityTask());
 		}
-		
+
 		for (Task task : tasks) {
 			TaskUtil.run(task);
 		}
 		firePropertyChange("fasrt", false, true);
 	}
-	
+
 	@Override
 	public NetworkBuilder<TreatmentDefinition> getBuilder() {
 		return d_builder;
