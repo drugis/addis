@@ -18,7 +18,7 @@
 	<properties>
 		<drugis-common.version>0.5.4</drugis-common.version>
 		<jsmaa.version>0.9-ADDIS-1.12.4-2</jsmaa.version>
-		<mtc.version>0.14</mtc.version>
+		<mtc.version>0.15-SNAPSHOT</mtc.version>
 		<addis.schemaVersion>6</addis.schemaVersion>
 		<jung.version>2.0.1</jung.version>
 		<schemaVersionFile>src/main/resources/org/drugis/addis/entities/current-schema-version</schemaVersionFile>
