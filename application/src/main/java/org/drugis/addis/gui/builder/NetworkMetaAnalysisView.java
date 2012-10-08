@@ -201,17 +201,18 @@ implements ViewBuilder {
 		builder.add(relativeEffectsTablePanel, cc.xyw(1, row, colSpan));
 		row += 2;
 
-		final NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(d_pm.getInconsistencyModel(), d_pm.getWrappedModel(d_pm.getInconsistencyModel()).isModelConstructed());
+		final NetworkInconsistencyFactorsTableModel inconsistencyFactorsTableModel = new NetworkInconsistencyFactorsTableModel(
+				d_pm.getInconsistencyModel(),
+				d_pm.getWrappedModel(d_pm.getInconsistencyModel()).isModelConstructed(),
+				true);
 		final EnhancedTable table = new EnhancedTable(inconsistencyFactorsTableModel, 300);
 		table.setDefaultRenderer(Summary.class, new SummaryCellRenderer(false));
 		final TablePanel inconsistencyFactorsTablePanel = new TablePanel(table);
 
 		d_pm.getWrappedModel(inconsistencyModel).isModelConstructed().addValueChangeListener(new PropertyChangeListener() {
-			@Override
 			public void propertyChange(final PropertyChangeEvent event) {
 				if (event.getNewValue().equals(true)) {
 					final Runnable r = new Runnable() {
-						@Override
 						public void run() {
 							inconsistencyFactorsTablePanel.doLayout();
 						}
