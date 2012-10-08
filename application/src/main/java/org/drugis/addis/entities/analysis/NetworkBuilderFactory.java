@@ -43,10 +43,10 @@ import org.drugis.addis.entities.RateVariableType;
 import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.Category;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
-import org.drugis.mtc.ContinuousNetworkBuilder;
-import org.drugis.mtc.DichotomousNetworkBuilder;
-import org.drugis.mtc.NetworkBuilder;
 import org.drugis.mtc.data.DataType;
+import org.drugis.mtc.model.ContinuousNetworkBuilder;
+import org.drugis.mtc.model.DichotomousNetworkBuilder;
+import org.drugis.mtc.model.NetworkBuilder;
 import org.drugis.mtc.model.Treatment;
 
 public class NetworkBuilderFactory {
@@ -90,7 +90,7 @@ public class NetworkBuilderFactory {
 			return dirtyString.replaceAll("[^a-zA-Z0-9]", "");
 		}
 	}
-	
+
 	private static final Transformer<TreatmentDefinition, String> s_descTransform = new DescriptionTransformer();
 	private static final Transformer<TreatmentDefinition, String> s_transform = new NameTransformer();
 
@@ -103,10 +103,10 @@ public class NetworkBuilderFactory {
 			return makeTreatment(t);
 		}
 	}
-	
+
 	public static NetworkBuilder<TreatmentDefinition> createBuilderStub(List<TreatmentDefinition> definitions) {
 		NetworkBuilderStub builder = new NetworkBuilderStub();
-		for(TreatmentDefinition d : definitions) { 
+		for(TreatmentDefinition d : definitions) {
 			builder.addTreatment(d);
 		}
 		return builder;
@@ -119,11 +119,11 @@ public class NetworkBuilderFactory {
 			return createRateBuilder(outcomeMeasure, studies, definitions, armMap);
 		}
 	}
-	
+
 	private static NetworkBuilder<TreatmentDefinition> createContinuousBuilder(
 			OutcomeMeasure outcomeMeasure,
 			List<Study> studies,
-			List<TreatmentDefinition> definitions, 
+			List<TreatmentDefinition> definitions,
 			Map<Study, Map<TreatmentDefinition, Arm>> armMap) {
 		ContinuousNetworkBuilder<TreatmentDefinition> builder = new ContinuousNetworkBuilder<TreatmentDefinition>(s_transform, s_descTransform);
 		for(Study s : studies){

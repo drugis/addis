@@ -31,11 +31,11 @@ import static org.junit.Assert.assertNotNull;
 
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.DefaultModelFactory;
-import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.InconsistencyModel;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.drugis.mtc.ModelFactory;
 import org.drugis.mtc.Parameter;
+import org.drugis.mtc.model.DichotomousNetworkBuilder;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
@@ -56,11 +56,11 @@ public class MTCIT {
         d_builder.add("3", "A", 12, 150);
         d_builder.add("3", "C", 100, 150);
         d_network = d_builder.buildNetwork();
-        
+
         ModelFactory factory = DefaultModelFactory.instance();
 		d_model = factory.getInconsistencyModel(d_network);
     }
-    
+
     @Test
     public void getResults() throws InterruptedException {
     	d_model.setExtendSimulation(ExtendSimulation.FINISH);
@@ -74,10 +74,10 @@ public class MTCIT {
     	assertNotNull(d_model.getRelativeEffect(c, a));
     	assertNotNull(d_model.getRelativeEffect(c, b));
     	assertNotNull(d_model.getRelativeEffect(b, c));
-    	
+
     	assertEquals(1, d_model.getInconsistencyFactors().size());
-    	
-    	for (Parameter p : d_model.getInconsistencyFactors()) 
+
+    	for (Parameter p : d_model.getInconsistencyFactors())
     		d_model.getResults().getSample(d_model.getResults().findParameter(p), 0, 0); // should not throw any error
     }
 }
