@@ -26,7 +26,7 @@
 
 package org.drugis.addis.util.JSMAAintegration;
 
-import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.common.threading.status.TaskProgressModel;
 
 import fi.smaa.common.RandomUtil;
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
@@ -75,7 +75,7 @@ public class BRSMAASimulationBuilder extends SimulationBuilder<SMAAModel, SMAA2R
 	protected void prepareSimulation(SMAA2Simulation simulation, SMAA2Results results) {
 		setResults(results);
 	}
-	
+
 	public TaskProgressModel getTaskProgressModel() {
 		return d_progressModel;
 	}
