@@ -32,9 +32,9 @@ import org.drugis.addis.entities.analysis.StudyBenefitRiskAnalysis;
 import org.drugis.addis.lyndobrien.BenefitRiskDistributionImpl;
 import org.drugis.addis.lyndobrien.LyndOBrienModel;
 import org.drugis.addis.lyndobrien.LyndOBrienModelImpl;
-import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.Task;
 import org.drugis.common.threading.ThreadHandler;
+import org.drugis.common.threading.status.TaskProgressModel;
 
 public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> {
 	AnalysisType d_brAnalysis;
@@ -42,15 +42,15 @@ public class LyndOBrienPresentation<Alternative extends Entity, AnalysisType ext
 	private LyndOBrienModelImpl d_model;
 	private TaskProgressModel d_tpm;
 	private ValueHolder<Boolean> d_initializedModel = new ModifiableHolder<Boolean>(false);
-	
+
 	public LyndOBrienPresentation(AnalysisType at) {
 		d_brAnalysis = at;
 	}
-	
+
 	public LyndOBrienModel getModel() {
 		return d_model;
 	}
-	
+
 	public ValueHolder<Boolean> getInitializedModel() {
 		return d_initializedModel;
 	}
