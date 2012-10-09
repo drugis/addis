@@ -31,9 +31,9 @@ import static org.junit.Assert.assertNotNull;
 import org.drugis.common.threading.TaskUtil;
 import org.drugis.mtc.ConsistencyModel;
 import org.drugis.mtc.DefaultModelFactory;
-import org.drugis.mtc.DichotomousNetworkBuilder;
 import org.drugis.mtc.MCMCModel.ExtendSimulation;
 import org.drugis.mtc.ModelFactory;
+import org.drugis.mtc.model.DichotomousNetworkBuilder;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.junit.Before;
@@ -54,11 +54,11 @@ public class ConsistencyModelIT {
         d_builder.add("3", "A", 12, 150);
         d_builder.add("3", "C", 100, 150);
         d_network = d_builder.buildNetwork();
-        
+
         ModelFactory factory = DefaultModelFactory.instance();
 		d_model = factory.getConsistencyModel(d_network);
     }
-    
+
     @Test
     public void getResults() throws InterruptedException {
     	d_model.setExtendSimulation(ExtendSimulation.FINISH);
