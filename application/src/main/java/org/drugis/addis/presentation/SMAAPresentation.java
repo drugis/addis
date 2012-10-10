@@ -34,8 +34,8 @@ import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
 import org.drugis.addis.util.JSMAAintegration.AbstractBenefitRiskSMAAFactory;
 import org.drugis.addis.util.JSMAAintegration.BRSMAASimulationBuilder;
 import org.drugis.addis.util.JSMAAintegration.SMAAEntityFactory;
-import org.drugis.common.gui.task.TaskProgressModel;
 import org.drugis.common.threading.NullTask;
+import org.drugis.common.threading.status.TaskProgressModel;
 
 import fi.smaa.jsmaa.gui.jfreechart.CentralWeightsDataset;
 import fi.smaa.jsmaa.gui.jfreechart.RankAcceptabilitiesDataset;
@@ -51,7 +51,7 @@ import fi.smaa.jsmaa.model.xml.JSMAABinding;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
-public class SMAAPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> 
+public class SMAAPresentation<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>>
 {
 
 	private AnalysisType d_a;
@@ -86,7 +86,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		d_prefPresModel = new PreferencePresentationModel(d_smaaModel, false);
 		d_initializedModel.setValue(true);
 		d_simBuilder = new BRSMAASimulationBuilder(d_smaaModel, d_rankAccepTM, d_rankAccepDS, d_cwTM, d_cwDS, d_progressModel);
-		
+
 		d_smaaModel.addModelListener(new SMAAModelListener() {
 			public void modelChanged(ModelChangeEvent type) {
 				startSimulation();
@@ -98,7 +98,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	private BRSMAASimulationBuilder getBuilder() {
 		return d_simBuilder;
 	}
-	
+
 	public ValueHolder<Boolean> getInitializedModel() {
 		return d_initializedModel;
 	}
@@ -131,7 +131,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	public CentralWeightTableModel getCentralWeightsTableModel() {
 		return d_cwTM;
 	}
-	
+
 	public TaskProgressModel getTaskProgressModel() {
 		return d_progressModel;
 	}
@@ -139,7 +139,7 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	public OutcomeMeasure getOutcomeMeasureForCriterion(CardinalCriterion crit) {
 		return d_smaaf.getOutcomeMeasure(crit);
 	}
-	
+
 	public AbstractBenefitRiskSMAAFactory<Alternative> getSMAAFactory() {
 		return d_smaaf;
 	}
@@ -151,5 +151,5 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}	
+	}
 }

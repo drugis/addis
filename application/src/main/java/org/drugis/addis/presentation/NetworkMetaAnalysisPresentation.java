@@ -41,7 +41,7 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.analysis.NetworkMetaAnalysis;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.gui.AddisMCMCPresentation;
-import org.drugis.common.gui.task.TaskProgressModel;
+import org.drugis.common.threading.status.AbstractProgressModel;
 import org.drugis.mtc.model.Network;
 import org.drugis.mtc.model.Treatment;
 import org.drugis.mtc.parameterization.BasicParameter;
@@ -106,7 +106,7 @@ public class NetworkMetaAnalysisPresentation extends AbstractMetaAnalysisPresent
 		}
 	}
 
-	public TaskProgressModel getProgressModel(MTCModelWrapper<TreatmentDefinition> mtc) {
+	public AbstractProgressModel getProgressModel(MTCModelWrapper<TreatmentDefinition> mtc) {
 		return d_models.get(mtc).getProgressModel();
 	}
 
