@@ -4,9 +4,15 @@ ADDIS - Aggregate Data Drug Information System
 [ADDIS][1] is a software developed within the Dutch [Escher-project][2]
 for managing and analyzing clinical trial information.
 
-ADDIS comes with a built-in example modeled on the paper: [Hansen et
-al., Annals of internal medicine, 143(6): 415-426, 2005][3]. All data
-was extracted by us from the original papers.
+ADDIS comes with two built-in examples:
+
+ * An anti-depressants example modeled on the paper: [Hansen et
+   al., Annals of internal medicine, 143(6): 415-426, 2005][3]. All data
+   was extracted by us from the original papers.
+
+ * A hypertension example based on the EMA EPAR evaluating Edarbi. The
+   data were imported from ClinicalTrials.gov, with manual corrections
+   where needed.
 
 Requirements
 ------------
@@ -16,11 +22,15 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
-1.16: Drug treatments can now be stratified by dose and dosing type with 
-  the new 'treatment' functionality. Dose stratifications can be used in network
-  meta-analyses and pairwise meta-analyses. Added hypertension example 
-  data set. Allow importing of results from clinicaltrials.gov (experimental). 
-  Fixed bugs which could lead to data loss.
+
+1.16.1: Updated to GeMTC 0.14.1 for bugfixes and minor improvements.
+
+1.16: Drug treatments can now be stratified by dose and dosing type with
+   the new 'treatment' functionality. Dose stratifications can be used
+   in network meta-analyses and pairwise meta-analyses. Added
+   hypertension example data set. Allow importing of results from
+   clinicaltrials.gov (experimental). Fixed bugs which could lead to
+   data loss.
 
 1.14.1: Bugfix release. 
 
@@ -43,10 +53,11 @@ Versions
 1.12.1: Input name of analyses in the first step of the wizard, not in
   a pop-up dialog at the very end.
 
-1.12: Add [BRAT table][10] and its value tree to benefit-risk view, allow
-  selection of baseline in benefit-risk analysis, enable BRAT description of
-  benefit-risk analysis, improve performance of network meta-analysis wizard,
-  clarify error dialog with bug reporting instructions, fix many bugs.
+1.12: Add [BRAT table][10] and its value tree to benefit-risk view,
+   allow selection of baseline in benefit-risk analysis, enable BRAT
+   description of benefit-risk analysis, improve performance of network
+   meta-analysis wizard, clarify error dialog with bug reporting
+   instructions, fix many bugs.
 
 1.10.1: Bugfix release
 
