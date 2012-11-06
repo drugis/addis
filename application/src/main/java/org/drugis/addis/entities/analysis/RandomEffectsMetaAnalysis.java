@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.Predicate;
 import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Indication;
@@ -114,19 +116,30 @@ public class RandomEffectsMetaAnalysis extends AbstractMetaAnalysis implements P
 		return studyArms;
 	}
 	
-	List<BasicRelativeEffect<? extends Measurement>> getFilteredRelativeEffects(Class<? extends RelativeEffect<?>> type) {
-		List<BasicRelativeEffect<? extends Measurement>> relEffects = new ArrayList<BasicRelativeEffect<? extends Measurement>>();
+	List<RelativeEffect<? extends Measurement>> getRelativeEffects(Class<? extends RelativeEffect<?>> type) {
+		List<RelativeEffect<? extends Measurement>> relEffects = new ArrayList<RelativeEffect<? extends Measurement>>();
 		for (StudyArmsEntry entry : getStudyArms()) {
-			RelativeEffect<? extends Measurement> re = RelativeEffectFactory.buildRelativeEffect(entry, d_outcome, type, d_isCorrected);
-			if (re.isDefined()) {
-				relEffects.add((BasicRelativeEffect<? extends Measurement>) re);
-			}
+			relEffects.add((BasicRelativeEffect<? extends Measurement>) RelativeEffectFactory.buildRelativeEffect(entry, d_outcome, type, d_isCorrected));
 		}
 		return relEffects;
 	}
+	
+	List<RelativeEffect<? extends Measurement>> getFilteredRelativeEffects(Class<? extends RelativeEffect<?>> type) {
+		final List<RelativeEffect<? extends Measurement>> relativeEffects = getRelativeEffects(type);
+		CollectionUtils.filter(relativeEffects, new Predicate<RelativeEffect<? extends Measurement>>() {
+			public boolean evaluate(RelativeEffect<? extends Measurement> re) {
+				return re.isDefined();
+			}
+		});
+		return relativeEffects;
+	}
 		
 	public RandomEffectMetaAnalysisRelativeEffect<Measurement> getRelativeEffect(Class<? extends RelativeEffect<?>> type) {
-		return new RandomEffectsRelativeEffect(getFilteredRelativeEffects(type));
+		final List<RelativeEffect<? extends Measurement>> relativeEffects = getFilteredRelativeEffects(type);
+		if (relativeEffects.isEmpty()) {
+			return null;
+		}
+		return new RandomEffectsRelativeEffect(relativeEffects);
 	}
 	
 	public boolean getIsCorrected() {

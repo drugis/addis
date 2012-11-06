@@ -123,8 +123,9 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 	private DerSimonianLairdComputations d_results;
 	private double d_neutralValue;
 
-	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects) {
-		switch (componentEffects.get(0).getAxisType()) {
+	public RandomEffectsRelativeEffect(List<RelativeEffect<? extends Measurement>> componentEffects) {
+		AxisType axisType = componentEffects.get(0).getAxisType();
+		switch (axisType) {
 		case LINEAR:
 			d_results = new LinDSLComputations(getDistributions(componentEffects));
 			d_neutralValue = 0;
@@ -134,7 +135,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 			d_neutralValue = 1;
 			break;
 		default:
-			throw new IllegalStateException("Unknown AxisType " + componentEffects.get(0).getAxisType());
+			throw new IllegalStateException("Unknown AxisType " + axisType);
 		}
 	}
 
@@ -163,7 +164,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		return "Random Effects Relative Effect";
 	}
 
-	public static List<Distribution> getDistributions(List<BasicRelativeEffect<?>> res) {
+	public static List<Distribution> getDistributions(List<RelativeEffect<?>> res) {
 		List<Distribution> dists = new ArrayList<Distribution>();
 		for (RelativeEffect<?> re: res) {
 			dists.add(re.getDistribution());
@@ -171,7 +172,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		return dists;
 	}
 
-	public static List<Distribution> getCorrectedDistributions(List<BasicRelativeEffect<?>> res) {
+	public static List<Distribution> getCorrectedDistributions(List<RelativeEffect<?>> res) {
 		List<Distribution> dists = new ArrayList<Distribution>();
 		for (RelativeEffect<?> re: res) {
 			if(re instanceof BasicRiskDifference) {

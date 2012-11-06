@@ -51,12 +51,6 @@ public class BasicRiskRatioTest extends RelativeEffectTestBase {
 	
 	@Before
 	public void setUp() {
-		d_bennie = createRateStudy("Bennie 1995",63,144,73,142);
-		d_boyer = createRateStudy("Boyer 1998", 61,120, 63,122);
-		d_fava = createRateStudy("Fava 2002", 57, 92, 70, 96);
-		d_newhouse = createRateStudy("Newhouse 2000", 84,119, 85,117);
-		d_sechter = createRateStudy("Sechter 1999", 76,120, 86,118);
-				
 		d_ratioBennie = RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskRatio.class);
 		d_ratioBoyer = RelativeEffectFactory.buildRelativeEffect(d_boyer, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskRatio.class);
 		d_ratioFava = RelativeEffectFactory.buildRelativeEffect(d_fava, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskRatio.class);
