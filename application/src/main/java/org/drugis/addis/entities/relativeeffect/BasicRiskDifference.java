@@ -99,5 +99,10 @@ public class BasicRiskDifference extends AbstractBasicRelativeEffect<RateMeasure
 	protected double getD() {
 		return getBaseline().getSampleSize() - getBaseline().getRate();
 	}
+
+	@Override
+	public AxisType getAxisType() {
+		return AxisType.LINEAR;
+	}
 	
 }

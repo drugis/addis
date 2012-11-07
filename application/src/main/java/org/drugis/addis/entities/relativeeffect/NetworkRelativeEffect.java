@@ -94,4 +94,9 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 		}
 	} 
 	
+	@Override
+	public AxisType getAxisType() {
+		return d_isLogTransformed ? AxisType.LOGARITHMIC : AxisType.LINEAR;
+	}
+	
 }

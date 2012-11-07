@@ -136,4 +136,13 @@ public class BasicRiskDifferenceTest {
 		BasicRiskDifference rd2 = new BasicRiskDifference(subj, base);
 		assertTrue(rd2.isDefined());
 	}
+	
+	@Test
+	public void testGettersWellBehavedWhenUndefined() {
+		BasicRateMeasurement base = new BasicRateMeasurement(0, 10);
+		BasicRateMeasurement subj = new BasicRateMeasurement(0, 10);
+		BasicRiskDifference rd = new BasicRiskDifference(base, subj);
+		assertFalse(rd.isDefined());
+		assertEquals(AxisType.LINEAR, rd.getAxisType());
+	}
 }
