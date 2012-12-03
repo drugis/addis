@@ -23,6 +23,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.16.2: Bugfix release.
+
 1.16.1: Updated to GeMTC 0.14.1 for bugfixes and minor improvements.
 
 1.16: Drug treatments can now be stratified by dose and dosing type with
