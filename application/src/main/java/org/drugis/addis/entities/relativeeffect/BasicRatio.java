@@ -30,7 +30,6 @@ package org.drugis.addis.entities.relativeeffect;
 import org.drugis.addis.entities.RateMeasurement;
 
 public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasurement> implements BasicRateRelativeEffect {
-	private static final double NEUTRAL_VALUE = 1.0;
 	protected BasicRatio(RateMeasurement baseline, RateMeasurement subject) throws IllegalArgumentException {
 		super(baseline, subject);
 	}
@@ -42,11 +41,6 @@ public abstract class BasicRatio extends AbstractBasicRelativeEffect<RateMeasure
 
 	public TransformedLogStudentT getDistribution() {
 		return new TransformedLogStudentT(getMu(), getSigma(), getDegreesOfFreedom());
-	}
-	
-	@Override
-	public double getNeutralValue() {
-		return NEUTRAL_VALUE;
 	}
 	
 	protected abstract double getMu();

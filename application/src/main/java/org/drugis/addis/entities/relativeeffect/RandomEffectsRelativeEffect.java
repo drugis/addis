@@ -121,7 +121,6 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 	}
 
 	private DerSimonianLairdComputations d_results;
-	private double d_neutralValue;
 	private AxisType d_axisType;
 
 	public RandomEffectsRelativeEffect(List<RelativeEffect<? extends Measurement>> componentEffects) {
@@ -129,11 +128,9 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		switch (d_axisType) {
 		case LINEAR:
 			d_results = new LinDSLComputations(getDistributions(componentEffects));
-			d_neutralValue = 0;
 			break;
 		case LOGARITHMIC:
 			d_results = new LogDSLComputations(getDistributions(componentEffects));
-			d_neutralValue = 1;
 			break;
 		default:
 			throw new IllegalStateException("Unknown AxisType " + d_axisType);
@@ -187,11 +184,6 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 			}
 		}
 		return dists;
-	}
-
-	@Override
-	public double getNeutralValue() {
-		return d_neutralValue;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 
 	@Override
 	public double getTwoSidedPValue() {
-		double prob = getDistribution().getCumulativeProbability(getNeutralValue());
+		double prob = getDistribution().getCumulativeProbability(getAxisType().neutralValue);
 		return 2 * Math.min(prob, 1 - prob);	
 	}
 }
