@@ -27,6 +27,12 @@
 package org.drugis.addis.entities.relativeeffect;
 
 public enum AxisType {
-	LINEAR,
-	LOGARITHMIC;
+	LINEAR(0),
+	LOGARITHMIC(1);
+	
+	public final double neutralValue;
+
+	AxisType(double neutralValue) {
+		this.neutralValue = neutralValue;
+	}
 }
