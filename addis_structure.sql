@@ -1,16 +1,16 @@
 CREATE TABLE "drug_activities" (
   "activity_id" serial,
-  "drug_name" varchar(255),
-  "min_dose" varchar(255),
-  "max_dose" varchar(255),
+  "drug_name" varchar,
+  "min_dose" varchar,
+  "max_dose" varchar,
   "unit_ucum_id" varchar,
   PRIMARY KEY ("activity_id") 
 );
 
 CREATE TABLE "activities" (
   "id" serial,
-  "study_name" varchar(255),
-  "name" varchar(255) NOT NULL,
+  "study_name" varchar,
+  "name" varchar NOT NULL,
   "drug_activity_id" int4,
   PRIMARY KEY ("id") 
 );
@@ -26,8 +26,8 @@ CREATE TABLE "designs" (
 
 CREATE TABLE "epochs" (
   "id" serial,
-  "study_name" varchar(255),
-  "epoch_name" varchar(255) NOT NULL,
+  "study_name" varchar,
+  "epoch_name" varchar NOT NULL,
   "duration" interval(255),
   "note_hook" int4,
   PRIMARY KEY ("id") 
@@ -35,16 +35,16 @@ CREATE TABLE "epochs" (
 
 CREATE TABLE "arms" (
   "id" serial,
-  "study_name" varchar(255),
-  "arm_name" varchar(255) NOT NULL,
-  "arm_size" varchar(255),
+  "study_name" varchar,
+  "arm_name" varchar NOT NULL,
+  "arm_size" varchar,
   "note_hook" int4,
   PRIMARY KEY ("id") 
 );
 
 CREATE TABLE "drugs" (
-  "name" varchar(255),
-  "atc_code" varchar(255) NOT NULL,
+  "name" varchar,
+  "atc_code" varchar NOT NULL,
   PRIMARY KEY ("name") ,
   UNIQUE ("atc_code")
 );
@@ -56,12 +56,12 @@ CREATE TYPE status AS ENUM ('NOT_YET_RECRUITING', 'RECRUITING', 'ENROLLING', 'AC
 
 CREATE TABLE "studies" (
   "id" serial,
-  "name" varchar(255),
+  "name" varchar,
   "note_hook" int4,
   "blinding_type_note_hook" int4,
-  "title" varchar(255),
+  "title" varchar,
   "title_note_hook" int4,
-  "indication" varchar(255),
+  "indication" varchar,
   "allocation_type_note_hook" int4,
   "objective_id" int4,
   "allocation_type" allocation_type,
@@ -78,8 +78,8 @@ CREATE TABLE "studies" (
 );
 
 CREATE TABLE "study_references" (
-  "study_name" varchar(255), 
-  "url" varchar(255), 
+  "study_name" varchar, 
+  "url" varchar, 
   "repostitory" text DEFAULT 'PubMed',
   PRIMARY KEY ("study_name", "url")
 );
@@ -89,7 +89,7 @@ CREATE TYPE measurement_type as ENUM ('CONTINUOUS', 'RATE', 'CATEGORICAL');
 CREATE TYPE variable_type as ENUM ('PopulationCharacteristic', 'Endpoint', 'AdverseEvent'); 
 
 CREATE TABLE "variables" (
-  "name" varchar(255),
+  "name" varchar,
   "description" text,
   "type" variable_type,
   "direction" direction,
@@ -101,8 +101,8 @@ COMMENT ON COLUMN "variables"."type" IS 'If type is AdverseEvent then measuremen
 
 CREATE TABLE "measurements" (
   "id" serial,
-  "variable_name" varchar(255),
-  "study_name" varchar(255),
+  "variable_name" varchar,
+  "study_name" varchar,
   "arm_id" int4,
   "epoch_id" int4,
   "offset_from_epoch" date NOT NULL,
@@ -115,8 +115,8 @@ COMMENT ON COLUMN "measurements"."offset_from_epoch" IS 'Can be negative';
 
 CREATE TABLE "variable_categories" (
   "id" serial UNIQUE,
-  "variable_name" varchar(255),
-  "category_name" varchar(255),
+  "variable_name" varchar,
+  "category_name" varchar,
   PRIMARY KEY ("id", "variable_name", "category_name") 
 );
 
@@ -140,22 +140,22 @@ CREATE TABLE "measurement_results" (
 
 CREATE TABLE "objectives" (
   "id" int4 UNIQUE,
-  "objective" varchar(255),
-  "objective_nr" varchar(255),
+  "objective" varchar,
+  "objective_nr" varchar,
   "primary" bool,
   PRIMARY KEY ("objective", "objective_nr")
 );
 
 CREATE TABLE "indications" (
-  "name" varchar(255),
-  "code" varchar(255),
-  "code_system" varchar(255),
+  "name" varchar,
+  "code" varchar,
+  "code_system" varchar,
   PRIMARY KEY ("name") 
 );
 
 CREATE TABLE "code_systems" (
-  "code_system" varchar(255),
-  "code_system_name" varchar(255),
+  "code_system" varchar,
+  "code_system_name" varchar,
   PRIMARY KEY ("code_system") 
 );
 
