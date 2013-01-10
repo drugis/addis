@@ -114,15 +114,16 @@ COMMENT ON COLUMN "measurements"."arm_id" IS 'If null it references the overall 
 COMMENT ON COLUMN "measurements"."offset_from_epoch" IS 'Can be negative';
 
 CREATE TABLE "variable_categories" (
+  "id" serial UNIQUE,
   "variable_name" varchar(255),
   "category_name" varchar(255),
-  PRIMARY KEY ("variable_name", "category_name") 
+  PRIMARY KEY ("id", "variable_name", "category_name") 
 );
 
 CREATE TABLE "measurements_results" (
   "measurement_id" int4 NOT NULL,
   "result_id" int4 NOT NULL,
-  "category" varchar(255),
+  "category" int4,
   PRIMARY KEY ("measurement_id", "result_id") 
 );
 
@@ -173,6 +174,7 @@ CREATE TABLE "notes" (
 
 
 ALTER TABLE "variable_categories" ADD CONSTRAINT "variable_category_fkey" FOREIGN KEY ("variable_name") REFERENCES "variables" ("name");
+ALTER TABLE "measurements_results" ADD CONSTRAINT "measurements_category_fkey" FOREIGN KEY ("category") REFERENCES "variable_categories" ("id");
 ALTER TABLE "measurements" ADD CONSTRAINT "study_measurement_fkey" FOREIGN KEY ("study_name") REFERENCES "studies" ("name");
 ALTER TABLE "measurements" ADD CONSTRAINT "variable_measurement_fkey" FOREIGN KEY ("variable_name") REFERENCES "variables" ("name");
 ALTER TABLE "measurements" ADD CONSTRAINT "epoch_measurement_fkey" FOREIGN KEY ("epoch_id") REFERENCES "epochs" ("id");
