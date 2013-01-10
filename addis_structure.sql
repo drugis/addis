@@ -172,7 +172,6 @@ CREATE TABLE "notes" (
   PRIMARY KEY ("id", "note_hook_id") 
 );
 
-
 ALTER TABLE "variable_categories" ADD CONSTRAINT "variable_category_fkey" FOREIGN KEY ("variable_name") REFERENCES "variables" ("name");
 ALTER TABLE "measurements_results" ADD CONSTRAINT "measurements_category_fkey" FOREIGN KEY ("category") REFERENCES "variable_categories" ("id");
 ALTER TABLE "measurements" ADD CONSTRAINT "study_measurement_fkey" FOREIGN KEY ("study_name") REFERENCES "studies" ("name");
