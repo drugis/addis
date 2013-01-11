@@ -43,10 +43,17 @@ CREATE TABLE "arms" (
 );
 
 CREATE TABLE "drugs" (
-  "name" varchar,
-  "atc_code" varchar NOT NULL,
-  PRIMARY KEY ("name") ,
-  UNIQUE ("atc_code")
+  "name" varchar NOT NULL UNIQUE, 
+  "code" varchar,
+  "code_system" varchar,
+  PRIMARY KEY ("name", "code", "code_system")
+);
+
+CREATE TABLE "units" ( 
+  "name" varchar NOT NULL,
+  "symbol" varchar, 
+  "ucum" varchar, 
+  PRIMARY key ("name")
 );
 
 CREATE TYPE allocation_type AS ENUM ('UNKNOWN', 'RANDOMIZED', 'NONRANDOMIZED');
@@ -63,7 +70,7 @@ CREATE TABLE "studies" (
   "title_note_hook" int4,
   "indication" varchar,
   "allocation_type_note_hook" int4,
-  "objective_id" int4,
+  "objective" text,
   "allocation_type" allocation_type,
   "blinding_type" blinding_type,
   "number_of_centers" int2,
@@ -76,6 +83,15 @@ CREATE TABLE "studies" (
   "start_date" date,
   PRIMARY KEY ("name")
 );
+
+--CREATE TABLE "studies_metadata" ( 
+  --"name", varchar,
+  --"study_id" int4, 
+  --"type_id" int4, 
+  --"value", text,
+  --"note_hook", int4
+  --PRIMARY KEY ("study_id", "name") 
+--)
 
 CREATE TABLE "study_references" (
   "study_name" varchar, 
@@ -94,10 +110,11 @@ CREATE TABLE "variables" (
   "type" variable_type,
   "direction" direction,
   "measurement_type" measurement_type,
+  "unit" varchar,
   PRIMARY KEY ("name")
 );
-COMMENT ON COLUMN "variables"."type" IS 'If type is PopulationCharacteristic then direction has no value';
-COMMENT ON COLUMN "variables"."type" IS 'If type is AdverseEvent then measurement_type is always rate';
+COMMENT ON COLUMN "variables"."type" IS 'If type is PopulationCharacteristic then direction has no value. 
+                                         If type is AdverseEvent then measurement_type is always rate';
 
 CREATE TABLE "measurements" (
   "id" serial,
@@ -138,13 +155,13 @@ CREATE TABLE "measurement_results" (
   PRIMARY KEY ("id") 
 );
 
-CREATE TABLE "objectives" (
-  "id" int4 UNIQUE,
-  "objective" varchar,
-  "objective_nr" varchar,
-  "primary" bool,
-  PRIMARY KEY ("objective", "objective_nr")
-);
+--CREATE TABLE "objectives" (
+  --"id" int4 UNIQUE,
+  --"objective" varchar,
+  --"objective_nr" varchar,
+  --"primary" bool,
+  --PRIMARY KEY ("objective", "objective_nr")
+--);
 
 CREATE TABLE "indications" (
   "name" varchar,
@@ -189,7 +206,6 @@ ALTER TABLE "measurements_results" ADD CONSTRAINT "measurements_measurement_resu
 ALTER TABLE "measurements_results" ADD CONSTRAINT "measurements_result_results_fkey" FOREIGN KEY ("result_id") REFERENCES "measurement_results" ("id");
 ALTER TABLE "indications" ADD CONSTRAINT "indication_code_system_fkey" FOREIGN KEY ("code_system") REFERENCES "code_systems" ("code_system");
 ALTER TABLE "studies" ADD CONSTRAINT "study_indication_fkey" FOREIGN KEY ("indication") REFERENCES "indications" ("name");
-ALTER TABLE "studies" ADD CONSTRAINT "study_objective_fkey" FOREIGN KEY ("objective_id") REFERENCES "objectives" ("id");
 ALTER TABLE "notes" ADD CONSTRAINT "note_note_hooks" FOREIGN KEY ("note_hook_id") REFERENCES "note_hooks" ("id");
 ALTER TABLE "measurements" ADD CONSTRAINT "measurement_note_hook_fkey" FOREIGN KEY ("note_hook") REFERENCES "note_hooks" ("id");
 ALTER TABLE "arms" ADD CONSTRAINT "study_arms_note_hook_fkey" FOREIGN KEY ("note_hook") REFERENCES "note_hooks" ("id");
@@ -198,4 +214,5 @@ ALTER TABLE "studies" ADD CONSTRAINT "study_note_hook_fkey" FOREIGN KEY ("note_h
 ALTER TABLE "studies" ADD CONSTRAINT "study_blinding_type_note_hook_fkey" FOREIGN KEY ("blinding_type_note_hook") REFERENCES "note_hooks" ("id");
 ALTER TABLE "studies" ADD CONSTRAINT "study_title_note_hook_fkey" FOREIGN KEY ("title_note_hook") REFERENCES "note_hooks" ("id");
 ALTER TABLE "studies" ADD CONSTRAINT "allocation_type_note_hook_fkey" FOREIGN KEY ("allocation_type_note_hook") REFERENCES "note_hooks" ("id");
-
+ALTER TABLE "drugs" ADD CONSTRAINT "drugs_code_system_fkey" FOREIGN KEY ("code_system") REFERENCES "code_systems" ("code_system");
+ALTER TABLE "variables" ADD CONSTRAINT "variable_unit" FOREIGN KEY ("unit") REFERENCES "units" ("name");
