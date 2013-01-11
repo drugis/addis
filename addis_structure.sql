@@ -94,7 +94,6 @@ CREATE TABLE "studies" (
 --)
 
 CREATE TABLE "study_references" (
-  "study_name" varchar, 
   "url" varchar, 
   "repostitory" text DEFAULT 'PubMed',
   PRIMARY KEY ("study_name", "url")
@@ -177,7 +176,7 @@ CREATE TABLE "code_systems" (
 );
 
 CREATE TABLE "note_hooks" (
-  "id" int4,
+  "id" serial,
   PRIMARY KEY ("id") 
 );
 

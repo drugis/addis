@@ -66,7 +66,7 @@
     </xsl:template>
     
     <xsl:template match="studies/study">
-        
+   
     </xsl:template>
     
 </xsl:stylesheet>
