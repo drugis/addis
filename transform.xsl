@@ -125,39 +125,120 @@
         <xsl:for-each select="pubMedId">
         INSERT INTO study_references (study_name, id) VALUES ( 
            '<xsl:value-of select="../../../@name" />',
-           '<xsl:value-of select="text()" />);
+           '<xsl:value-of select="text()" />');
         </xsl:for-each>
     </xsl:template>
     
     <xsl:template match="arms/arm">
         WITH arm_note_hook AS ( 
             INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id
-        )
-        INSERT INTO arms (study_name, arm_name, arm_size, note_hook) VALUES ( 
-            '<xsl:value-of select="../../@name" />',
-            '<xsl:value-of select="@name" />',
-            '<xsl:value-of select="@size" />',
-            (SELECT id FROM arm_note_hook LIMIT 1));
+        ) 
+        INSERT INTO arms (
+            study_name, 
+            arm_name, 
+            arm_size, 
+            note_hook
+            ) VALUES (
+                '<xsl:value-of select="../../@name" />',
+                '<xsl:value-of select="@name" />',
+                '<xsl:value-of select="@size" />',
+                (SELECT id FROM arm_note_hook LIMIT 1));
     </xsl:template>
     
-    <xsl:template match="epochs/epoch">
+   <xsl:template match="epochs/epoch">
         WITH epoch_note_hook AS ( 
             INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id
         )
         INSERT INTO epochs (study_name, epoch_name, duration, note_hook) VALUES ( 
             '<xsl:value-of select="../../@name" />',
             '<xsl:value-of select="@name" />', 
-            '<xsl:value-of select="duration/text()" />',
-            (SELECT id FROM arm_note_hook LIMIT 1));
+            <xsl:value-of select="drugis:null-or-value(duration/text())" />,
+            (SELECT id FROM epoch_note_hook LIMIT 1));
     </xsl:template>
     
     <xsl:template match="measurements/measurement">
         <xsl:variable name="studyOutcomeId" select="studyOutcomeMeasure/@id" />
         <xsl:variable name="studyOutcome" select="../../studyOutcomeMeasures/studyOutcomeMeasure[@id=$studyOutcomeId]" />
+        <xsl:variable name="studyName" select="../../@name" />
+        <xsl:variable name="variableName" select="($studyOutcome/populationCharacteristic|$studyOutcome/adverseEvent|$studyOutcome/endpoint)/@name" />
+        WITH variable AS ( 
+            SELECT id FROM variables WHERE name = '<xsl:value-of select="$variableName" />'
+        ), arm AS ( 
+            SELECT id FROM arms WHERE arm_name = '<xsl:value-of select="arm/@name" />' AND study_name = '<xsl:value-of select="$studyName" />'
+        ), epoch AS ( 
+            SELECT id FROM epochs WHERE epoch_name = '<xsl:value-of select="whenTaken/epoch/@name" />' AND study_name = '<xsl:value-of select="$studyName" />'
+        ),  measurement_note_hook AS ( 
+            INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id
+        ) INSERT INTO measurements ("variable_id", "study_name", "arm_id", "epoch_id", "primary", "offset_from_epoch", "before_epoch", "note_hook") VALUES ( 
+            (SELECT id FROM variable LIMIT 1),
+            '<xsl:value-of select="$studyName" />',
+            (SELECT id FROM arm LIMIT 1),
+            (SELECT id FROM epoch LIMIT 1),
+            <xsl:value-of select="$studyOutcome/@primary" />,
+            '<xsl:value-of select="whenTaken/@howLong" />',
+            <xsl:choose>
+                <xsl:when test="boolean(whenTaken/@relativeTo = 'BEFORE_EPOCH_END')">true</xsl:when>
+                <xsl:when test="boolean(whenTaken/@relativeTo = 'FROM_EPOCH_START')">false</xsl:when>
+                <xsl:otherwise>NULL</xsl:otherwise>
+            </xsl:choose>,
+            (SELECT id FROM measurement_note_hook LIMIT 1)); 
         
-        INSERT INTO measurements (variable_id, study_name, arm_id, epoch_id, primary, offset_from_epoch, note_hook) VALUES ( 
-            <xsl:value-of select="$studyOutcome/@primary" />
-        );
-    </xsl:template>
+        
+        
+        <xsl:choose>
+            <xsl:when test="continuousMeasurement">
+                WITH result AS ( 
+                    INSERT INTO measurement_results (std_dev, mean, sample_size) VALUES (
+                        <xsl:value-of select="drugis:null-or-value(string(continuousMeasurement/@stdDev))" />,
+                        <xsl:value-of select="drugis:null-or-value(string(continuousMeasurement/@mean))" />,
+                        <xsl:value-of select="drugis:null-or-value(string(continuousMeasurement/@sampleSize))" />
+                    ) RETURNING id
+                ), measurement AS (
+                    <xsl:value-of select="drugis:select-measurement($studyName, arm/@name, whenTaken/epoch/@name, $variableName)" />
+                )
+                INSERT INTO measurements_results (measurement_id, result_id) VALUES ( 
+                    (SELECT id FROM measurement LIMIT 1), 
+                    (SELECT id FROM result LIMIT 1));
+            </xsl:when>
+            <xsl:when test="rateMeasurement">
+                WITH result AS ( 
+                    INSERT INTO measurement_results (rate, sample_size) VALUES (
+                    '<xsl:value-of select="drugis:null-or-value(string(rateMeasurement/@rate))" />',
+                '<xsl:value-of select="drugis:null-or-value(string(rateMeasurement/@sampleSize))" />'
+                    ) RETURNING id
+                ), measurement AS (
+                    <xsl:value-of select="drugis:select-measurement($studyName, arm/@name, whenTaken/epoch/@name, $variableName)" />
+                )
+                INSERT INTO measurements_results (measurement_id, result_id) VALUES ( 
+                    (SELECT id FROM measurement LIMIT 1), 
+                    (SELECT id FROM result LIMIT 1));
+            </xsl:when>
+           <!-- <xsl:when test="categoricalMeasurement">
+                <xsl:for-each select="categoricalMeasurement/category">
+                    WITH result AS ( 
+                    INSERT INTO measurement_results (rate) VALUES ('<xsl:value-of select="@rate" />') RETURNING id
+                    ), measurement AS (
+                    <xsl:value-of select="drugis:select-measurement($studyName, arm/@name, whenTaken/epoch/@name, $variableName)" />
+                    )
+                    INSERT INTO measurements_results (measurement_id, result_id, category_id) VALUES ( 
+                    (SELECT id FROM measurement LIMIT 1), 
+                    (SELECT id FROM result LIMIT 1), 
+                    (SELECT id FROM variable_categories WHERE category_name = '<xsl:value-of select="@name" />' AND variable_name = '<xsl:value-of select="$variableName" />' LIMIT 1));
+                </xsl:for-each>
+            </xsl:when> -->
+        </xsl:choose>
+    </xsl:template> 
+    
+    <xsl:function name="drugis:select-measurement">
+        <xsl:param name="study"/>
+        <xsl:param name="arm"/>
+        <xsl:param name="epoch"/>
+        <xsl:param name="variable" />
+        SELECT id FROM measurements WHERE 
+            variable_id = (SELECT id FROM variables WHERE name = '<xsl:value-of select="$variable" />' LIMIT 1)
+            AND arm_id = (SELECT id FROM arms WHERE arm_name = '<xsl:value-of select="$arm" />' AND study_name = '<xsl:value-of select="$study" />' LIMIT 1)
+            AND study_name = '<xsl:value-of select="$study" />' 
+            AND epoch_id = (SELECT id FROM epochs WHERE epoch_name = '<xsl:value-of select="$epoch" />' AND study_name = '<xsl:value-of select="$study" />' LIMIT 1)
+    </xsl:function>
     
 </xsl:stylesheet>

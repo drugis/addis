@@ -30,7 +30,7 @@ CREATE TABLE "epochs" (
   "id" serial,
   "study_name" varchar,
   "epoch_name" varchar NOT NULL,
-  "duration" tinterval,
+  "duration" interval DEFAULT 'P0D',
   "note_hook" int4,
   PRIMARY KEY ("id") 
 );
@@ -93,7 +93,7 @@ CREATE TABLE "study_references" (
   "study_name" varchar,
   "id" varchar, 
   "repostitory" text DEFAULT 'PubMed',
-  PRIMARY KEY ("study_name", "url")
+  PRIMARY KEY ("study_name", "id")
 );
 
 CREATE TYPE direction as ENUM ('HIGHER_IS_BETTER', 'LOWER_IS_BETTER'); 
@@ -101,8 +101,8 @@ CREATE TYPE measurement_type as ENUM ('CONTINUOUS', 'RATE', 'CATEGORICAL');
 CREATE TYPE variable_type as ENUM ('PopulationCharacteristic', 'Endpoint', 'AdverseEvent'); 
 
 CREATE TABLE "variables" (
-  "id" serial, 
-  "name" varchar UNIQUE,
+  "id" serial UNIQUE, 
+  "name" varchar,
   "description" text,
   "type" variable_type,
   "direction" direction,
@@ -133,10 +133,12 @@ CREATE TABLE "measurements" (
   "arm_id" int4,
   "epoch_id" int4,
   "primary" bool,
-  "offset_from_epoch" tinterval,
+  "offset_from_epoch" interval,
+	"before_epoch" bool,
   "note_hook" int4,
   PRIMARY KEY ("id") 
 );
+CREATE INDEX measurements_idx ON "measurements" ("study_name");
 
 COMMENT ON COLUMN "measurements"."arm_id" IS 'If null it references the overall column in the results table';
 COMMENT ON COLUMN "measurements"."offset_from_epoch" IS 'Can be negative';
@@ -144,11 +146,11 @@ COMMENT ON COLUMN "measurements"."offset_from_epoch" IS 'Can be negative';
 CREATE TABLE "measurements_results" (
   "measurement_id" int4 NOT NULL,
   "result_id" int4 NOT NULL,
-  "category" int4,
+  "category_id" int4,
   PRIMARY KEY ("measurement_id", "result_id") 
 );
 
-COMMENT ON COLUMN "measurements_results"."category" IS 'Only applicable for categorical measurements';
+COMMENT ON COLUMN "measurements_results"."category_id" IS 'Only applicable for categorical measurements';
 
 CREATE TABLE "measurement_results" (
   "id" serial,
@@ -186,7 +188,7 @@ CREATE TABLE "notes" (
 );
 
 ALTER TABLE "variable_categories" ADD CONSTRAINT "variable_category_fkey" FOREIGN KEY ("variable_name") REFERENCES "variables" ("name");
-ALTER TABLE "measurements_results" ADD CONSTRAINT "measurements_category_fkey" FOREIGN KEY ("category") REFERENCES "variable_categories" ("id");
+ALTER TABLE "measurements_results" ADD CONSTRAINT "measurements_category_fkey" FOREIGN KEY ("category_id") REFERENCES "variable_categories" ("id");
 ALTER TABLE "measurements" ADD CONSTRAINT "study_measurement_fkey" FOREIGN KEY ("study_name") REFERENCES "studies" ("name");
 ALTER TABLE "measurements" ADD CONSTRAINT "variable_measurement_fkey" FOREIGN KEY ("variable_id") REFERENCES "variables" ("id");
 ALTER TABLE "measurements" ADD CONSTRAINT "epoch_measurement_fkey" FOREIGN KEY ("epoch_id") REFERENCES "epochs" ("id");
