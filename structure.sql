@@ -77,7 +77,7 @@ CREATE TYPE status AS ENUM ('NOT_YET_RECRUITING', 'RECRUITING', 'ENROLLING', 'AC
 CREATE TABLE "studies" (
   "id" serial,
   "name" varchar,
-  "title" varchar,
+  "title" text,
   "indication" varchar,
   "objective" text,
   "allocation_type" allocation_type,
@@ -189,10 +189,10 @@ CREATE TABLE "note_hooks" (
 );
 
 CREATE TABLE "notes" (
-  "id" int4,
+  "id" serial,
   "note_hook_id" int4,
-  "source" source,
   "text" text,
+  "source" source,
   PRIMARY KEY ("id", "note_hook_id") 
 );
 

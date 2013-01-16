@@ -21,6 +21,23 @@
         </xsl:choose>
     </xsl:function>
     
+    <xsl:function name="drugis:create-note">
+        <xsl:param name="hook_name" />
+        <xsl:param name="notes" />
+        <xsl:if test="boolean($notes/note)">
+            INSERT INTO notes ("note_hook_id", "text", "source") VALUES 
+            <xsl:for-each select="$notes/note">
+                ((SELECT id FROM <xsl:value-of select="$hook_name" /> LIMIT 1), 
+                '<xsl:value-of select="text()" />',
+                '<xsl:value-of select="@source" />')
+                <xsl:if test="position() != last()">,</xsl:if>
+            </xsl:for-each>
+        </xsl:if>
+        <xsl:if test="not(boolean($notes/note))">
+            SELECT 0
+        </xsl:if>
+    </xsl:function>
+
     <xsl:template match="addis-data">
         INSERT INTO code_systems (code_system, code_system_name) VALUES ('<xsl:value-of select="$snomed" />', 'Systematized Nomenclature of Medicine-Clinical Terms (SNOMED CT)');
         INSERT INTO code_systems (code_system, code_system_name) VALUES ('<xsl:value-of select="$atc" />', 'Anatomical Therapeutic Chemical (ATC) classification');
@@ -119,11 +136,24 @@
             <xsl:value-of select="drugis:null-or-value(characteristics/status/value/text())" />,
             <xsl:value-of select="drugis:null-or-value(characteristics/study_end/text())" />,
             <xsl:value-of select="drugis:null-or-value(characteristics/study_start/text())" />);
+
         <xsl:apply-templates select="characteristics/references" />
         <xsl:apply-templates select="arms/arm" />
         <xsl:apply-templates select="epochs/epoch" />
         <xsl:apply-templates select="measurements/measurement" />
         <xsl:apply-templates select="activities/studyActivity" />
+        
+        <xsl:variable name="study_note">(SELECT note_hook FROM studies WHERE name = '<xsl:value-of select="@name" />)</xsl:variable>
+        <xsl:value-of select="drugis:create-note($study_note, notes)" />;
+        
+        <xsl:variable name="blinding_type_note">(SELECT blinding_type_note_hook FROM studies WHERE name = '<xsl:value-of select="@name" />)</xsl:variable>
+        <xsl:value-of select="drugis:create-note($blinding_type_note, characteristics/blinding/notes)" />;
+        
+        <xsl:variable name="title_note">(SELECT title_note_hook FROM studies WHERE name = '<xsl:value-of select="@name" />)</xsl:variable>
+        <xsl:value-of select="drugis:create-note($title_note, characteristics/title/notes)" />;
+        
+        <xsl:variable name="allocation_type_note">(SELECT allocation_type_note_hook FROM studies WHERE name = '<xsl:value-of select="@name" />)</xsl:variable>
+        <xsl:value-of select="drugis:create-note($allocation_type_note, characteristics/allocation/notes)" />;
     </xsl:template>
     
     <xsl:template match="characteristics/references">
@@ -137,22 +167,21 @@
     <xsl:template match="arms/arm">
         WITH arm_note_hook AS ( 
             INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id
-        ) 
-        INSERT INTO arms (
-            study_name, 
-            arm_name, 
-            arm_size, 
-            note_hook
-            ) VALUES (
-                '<xsl:value-of select="../../@name" />',
-                '<xsl:value-of select="@name" />',
-                '<xsl:value-of select="@size" />',
-                (SELECT id FROM arm_note_hook LIMIT 1));
+        ), notes AS (
+            <xsl:value-of select="drugis:create-note('arm_note_hook', notes)" />
+        )
+        INSERT INTO arms (study_name, arm_name, arm_size, note_hook) VALUES (
+            '<xsl:value-of select="../../@name" />',
+            '<xsl:value-of select="@name" />',
+            '<xsl:value-of select="@size" />',
+            (SELECT id FROM arm_note_hook LIMIT 1));
     </xsl:template>
-    
+
    <xsl:template match="epochs/epoch">
         WITH epoch_note_hook AS ( 
             INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id
+        ), notes AS (
+            <xsl:value-of select="drugis:create-note('epoch_note_hook', notes)" />
         )
         INSERT INTO epochs (study_name, epoch_name, duration, note_hook) VALUES ( 
             '<xsl:value-of select="../../@name" />',
@@ -174,6 +203,8 @@
             SELECT id FROM epochs WHERE epoch_name = '<xsl:value-of select="whenTaken/epoch/@name" />' AND study_name = '<xsl:value-of select="$studyName" />'
         ),  measurement_note_hook AS ( 
             INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id
+        ), notes AS ( 
+            <xsl:value-of select="drugis:create-note('epoch_note_hook', studyOutcome/notes)" />
         ) INSERT INTO measurements ("variable_id", "study_name", "arm_id", "epoch_id", "primary", "offset_from_epoch", "before_epoch", "note_hook") VALUES ( 
             (SELECT id FROM variable LIMIT 1),
             '<xsl:value-of select="$studyName" />',
@@ -251,14 +282,23 @@
         <xsl:variable name="isDrugActivity" select="boolean(activity/treatment)" />
         <xsl:variable name="studyName" select="../../@name" />
         <xsl:variable name="activityName" select="@name" />
-        INSERT INTO activities (name, study_name, type) VALUES (
-        '<xsl:value-of select="@name" />',
-        '<xsl:value-of select="$studyName" />',
-        <xsl:choose>
-            <xsl:when test="$isDrugActivity">'TREATMENT'</xsl:when>
-            <xsl:when test="activity/predefined">'<xsl:value-of select="activity/predefined/text()"/>'</xsl:when>
-            <xsl:otherwise>'OTHER'</xsl:otherwise>
-        </xsl:choose>);
+        WITH activity AS (
+            INSERT INTO activities (name, study_name, type) VALUES (
+                '<xsl:value-of select="@name" />',
+                '<xsl:value-of select="$studyName" />',
+                <xsl:choose>
+                    <xsl:when test="$isDrugActivity">'TREATMENT'</xsl:when>
+                    <xsl:when test="activity/predefined">'<xsl:value-of select="activity/predefined/text()"/>'</xsl:when>
+                    <xsl:otherwise>'OTHER'</xsl:otherwise>
+                </xsl:choose> ) RETURNING id)
+        INSERT INTO designs ("arm_id", "epoch_id", "activity_id") VALUES 
+        
+        <xsl:for-each select="usedBy">
+            ((SELECT id FROM arms WHERE study_name = '<xsl:value-of select="$studyName" />' AND arm_name = '<xsl:value-of select="@arm" />'),
+            (SELECT id FROM epochs WHERE study_name = '<xsl:value-of select="$studyName" />' AND epoch_name = '<xsl:value-of select="@epoch" />'),
+            (SELECT id FROM activity LIMIT 1))
+            <xsl:if test="position() != last()">,</xsl:if>
+        </xsl:for-each>;
         
         <xsl:if test="$isDrugActivity">
             <xsl:for-each select="activity/treatment/drugTreatment">
