@@ -24,10 +24,15 @@
     <xsl:template match="addis-data">
         INSERT INTO code_systems (code_system, code_system_name) VALUES ('<xsl:value-of select="$snomed" />', 'Systematized Nomenclature of Medicine-Clinical Terms (SNOMED CT)');
         INSERT INTO code_systems (code_system, code_system_name) VALUES ('<xsl:value-of select="$atc" />', 'Anatomical Therapeutic Chemical (ATC) classification');
+        <xsl:apply-templates select="units/unit" />
         <xsl:apply-templates select="indications/indication" />
         <xsl:apply-templates select="drugs/drug" />
         <xsl:apply-templates select="endpoints/endpoint|populationCharacteristics/populationCharacteristic|adverseEvents/adverseEvent"></xsl:apply-templates>
         <xsl:apply-templates select="studies/study"></xsl:apply-templates>
+    </xsl:template>
+   
+    <xsl:template match="units/unit">
+        INSERT INTO units (name, symbol) VALUES ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@symbol"/>');
     </xsl:template>
    
     <xsl:template match="indications/indication">
@@ -47,8 +52,7 @@
     <xsl:template match="endpoints/endpoint|populationCharacteristics/populationCharacteristic|adverseEvents/adverseEvent">
         <xsl:if test="continuous/@unitOfMeasurement">
             INSERT INTO units (name) SELECT ('<xsl:value-of select="continuous/@unitOfMeasurement"/>') WHERE NOT EXISTS (SELECT name FROM units WHERE name = '<xsl:value-of select="continuous/@unitOfMeasurement"/>');
-        </xsl:if>
-        
+        </xsl:if>       
         INSERT INTO variables (name, description, type, direction, measurement_type, unit) VALUES ( 
             '<xsl:value-of select="@name" />',
             '<xsl:value-of select="@description" />',
@@ -119,13 +123,14 @@
         <xsl:apply-templates select="arms/arm" />
         <xsl:apply-templates select="epochs/epoch" />
         <xsl:apply-templates select="measurements/measurement" />
+        <xsl:apply-templates select="activities/studyActivity" />
     </xsl:template>
     
     <xsl:template match="characteristics/references">
         <xsl:for-each select="pubMedId">
-        INSERT INTO study_references (study_name, id) VALUES ( 
-           '<xsl:value-of select="../../../@name" />',
-           '<xsl:value-of select="text()" />');
+            INSERT INTO study_references (study_name, id) VALUES ( 
+               '<xsl:value-of select="../../../@name" />',
+               '<xsl:value-of select="text()" />');
         </xsl:for-each>
     </xsl:template>
     
@@ -182,9 +187,7 @@
                 <xsl:otherwise>NULL</xsl:otherwise>
             </xsl:choose>,
             (SELECT id FROM measurement_note_hook LIMIT 1)); 
-        
-        
-        
+    
         <xsl:choose>
             <xsl:when test="continuousMeasurement">
                 WITH result AS ( 
@@ -203,8 +206,8 @@
             <xsl:when test="rateMeasurement">
                 WITH result AS ( 
                     INSERT INTO measurement_results (rate, sample_size) VALUES (
-                    '<xsl:value-of select="drugis:null-or-value(string(rateMeasurement/@rate))" />',
-                '<xsl:value-of select="drugis:null-or-value(string(rateMeasurement/@sampleSize))" />'
+                    <xsl:value-of select="drugis:null-or-value(string(rateMeasurement/@rate))" />,
+                    <xsl:value-of select="drugis:null-or-value(string(rateMeasurement/@sampleSize))" />
                     ) RETURNING id
                 ), measurement AS (
                     <xsl:value-of select="drugis:select-measurement($studyName, arm/@name, whenTaken/epoch/@name, $variableName)" />
@@ -213,19 +216,22 @@
                     (SELECT id FROM measurement LIMIT 1), 
                     (SELECT id FROM result LIMIT 1));
             </xsl:when>
-           <!-- <xsl:when test="categoricalMeasurement">
+            <xsl:when test="categoricalMeasurement">
                 <xsl:for-each select="categoricalMeasurement/category">
                     WITH result AS ( 
-                    INSERT INTO measurement_results (rate) VALUES ('<xsl:value-of select="@rate" />') RETURNING id
+                        INSERT INTO measurement_results (rate) VALUES (
+                            <xsl:value-of select="drugis:null-or-value(string(@rate))" />
+                        ) RETURNING id
                     ), measurement AS (
-                    <xsl:value-of select="drugis:select-measurement($studyName, arm/@name, whenTaken/epoch/@name, $variableName)" />
+                        <xsl:value-of select="drugis:select-measurement($studyName, ../../arm/@name, ../../whenTaken/epoch/@name, $variableName)" />
                     )
                     INSERT INTO measurements_results (measurement_id, result_id, category_id) VALUES ( 
-                    (SELECT id FROM measurement LIMIT 1), 
-                    (SELECT id FROM result LIMIT 1), 
-                    (SELECT id FROM variable_categories WHERE category_name = '<xsl:value-of select="@name" />' AND variable_name = '<xsl:value-of select="$variableName" />' LIMIT 1));
+                        (SELECT id FROM measurement LIMIT 1), 
+                        (SELECT id FROM result LIMIT 1),
+                        (SELECT id FROM variable_categories 
+                            WHERE variable_name = '<xsl:value-of select="$variableName"/>' AND category_name = '<xsl:value-of select="@name" />' LIMIT 1));
                 </xsl:for-each>
-            </xsl:when> -->
+            </xsl:when>
         </xsl:choose>
     </xsl:template> 
     
@@ -240,5 +246,52 @@
             AND study_name = '<xsl:value-of select="$study" />' 
             AND epoch_id = (SELECT id FROM epochs WHERE epoch_name = '<xsl:value-of select="$epoch" />' AND study_name = '<xsl:value-of select="$study" />' LIMIT 1)
     </xsl:function>
+        
+    <xsl:template match="activities/studyActivity">
+        <xsl:variable name="isDrugActivity" select="boolean(activity/treatment)" />
+        <xsl:variable name="studyName" select="../../@name" />
+        <xsl:variable name="activityName" select="@name" />
+        INSERT INTO activities (name, study_name, type) VALUES (
+        '<xsl:value-of select="@name" />',
+        '<xsl:value-of select="$studyName" />',
+        <xsl:choose>
+            <xsl:when test="$isDrugActivity">'TREATMENT'</xsl:when>
+            <xsl:when test="activity/predefined">'<xsl:value-of select="activity/predefined/text()"/>'</xsl:when>
+            <xsl:otherwise>'OTHER'</xsl:otherwise>
+        </xsl:choose>);
+        
+        <xsl:if test="$isDrugActivity">
+            <xsl:for-each select="activity/treatment/drugTreatment">
+             WITH treatment AS ( 
+                INSERT INTO treatments (activity_id, drug_name, periodicity) VALUES ( 
+                    (SELECT id FROM activities WHERE study_name = '<xsl:value-of select="$studyName" />' AND name = '<xsl:value-of select="$activityName" />'),
+                    '<xsl:value-of select="drug/@name" />',
+                    '<xsl:value-of select="(fixedDose|flexibleDose)/doseUnit/@perTime" />') RETURNING id) 
+                INSERT INTO treatment_dosings (treatment_id, planned_time, min_dose, max_dose, scale_modifier, unit) VALUES ( 
+                    (SELECT id FROM treatment LIMIT 1),
+                    'P0D',
+                <xsl:choose>
+                    <xsl:when test="fixedDose">
+                        '<xsl:value-of select="fixedDose/@quantity" />',
+                        '<xsl:value-of select="fixedDose/@quantity" />',
+                        '<xsl:value-of select="fixedDose/doseUnit/@scaleModifier" />',
+                        '<xsl:value-of select="fixedDose/doseUnit/unit/@name" />'
+                    </xsl:when>
+                    <xsl:when test="flexibleDose">
+                        '<xsl:value-of select="flexibleDose/@minDose" />',
+                        '<xsl:value-of select="flexibleDose/@maxDose" />',
+                        '<xsl:value-of select="flexibleDose/doseUnit/@scaleModifier" />',
+                        '<xsl:value-of select="fixedDose/doseUnit/unit/@name" />'
+                    </xsl:when>
+                    <xsl:otherwise>
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL
+                    </xsl:otherwise>
+                </xsl:choose>);
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:template>
     
 </xsl:stylesheet>
