@@ -56,18 +56,20 @@ CREATE TABLE "arms" (
 CREATE UNIQUE INDEX ON "arms" ("study_name", "arm_name");
 
 CREATE TABLE "drugs" (
-  "name" varchar NOT NULL UNIQUE, 
+  "name" varchar, 
   "code" varchar,
   "code_system" varchar,
-  PRIMARY KEY ("name", "code", "code_system")
+  PRIMARY KEY ("name")
 );
+CREATE UNIQUE INDEX ON "drugs" ("code", "code_system");
 
 CREATE TABLE "units" ( 
-  "name" varchar NOT NULL,
+  "name" varchar,
   "symbol" varchar, 
   "ucum" varchar, 
   PRIMARY key ("name")
 );
+CREATE INDEX ON "units" ("ucum");
 
 CREATE TYPE allocation_type AS ENUM ('UNKNOWN', 'RANDOMIZED', 'NONRANDOMIZED');
 CREATE TYPE blinding_type AS ENUM ('OPEN', 'SINGLE_BLIND', 'DOUBLE_BLIND', 'TRIPLE_BLIND', 'UNKNOWN');
