@@ -30,33 +30,35 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
 public class CorrectedRiskRatioTest extends RelativeEffectTestBase {
-	private BasicRiskRatio d_riskRatioBennie;
+	private BasicRiskRatio d_riskRatio;
 	
 	@Before
 	public void setUp() {
-		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
-		d_riskRatioBennie = (BasicRiskRatio) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskRatio.class, true);
+		Study study = ExampleData.buildRateStudy("A", 0, 144, 73, 142);
+		d_riskRatio = (BasicRiskRatio) RelativeEffectFactory.buildRelativeEffect(study, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskRatio.class, true);
 	}
 
 	@Test
 	public void testMu() {
 		// c=0.5, n2 = 145, a = 73.5, n1 = 143 -> b = 69.5, d = 144.5
 		Double expected = Math.log((73.5 / 143) / (0.5 / 145));
-		assertEquals(expected, d_riskRatioBennie.getMu(), 0.000001);
+		assertEquals(expected, d_riskRatio.getMu(), 0.000001);
 	}
 	
 	@Test
 	public void testError() {
 		// c=0.5, n2 = 145, a = 73.5, n1 = 143 -> b = 69.5, d = 144.5
 		Double expected = Math.sqrt(1.0 / 73.5 + 1.0 / 0.5 - 1.0 / 143.0 - 1.0 / 145.0);
-		assertEquals(expected, d_riskRatioBennie.getError(), 0.00001);
+		assertEquals(expected, d_riskRatio.getError(), 0.00001);
 		
 	}
 

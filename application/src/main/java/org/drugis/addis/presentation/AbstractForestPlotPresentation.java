@@ -77,8 +77,15 @@ public abstract class AbstractForestPlotPresentation implements ForestPlotPresen
 			max = Math.max((double) ci.getUpperBound(), max);
 		}
 		
-		Interval<Double> interval = new Interval<Double>(min, max);
+		if (Double.isNaN(min) || Double.isNaN(max)) {
+			if (scaleType.equals(AxisType.LOGARITHMIC)) {
+				return new Interval<Double>(0.5, 2.0);
+			} else {
+				return new Interval<Double>(-1.0, 1.0);
+			}
+		}	
 		
+		Interval<Double> interval = new Interval<Double>(min, max);
 		if (scaleType == AxisType.LINEAR)
 			return niceIntervalLinear(interval);
 		if (scaleType == AxisType.LOGARITHMIC)
@@ -239,7 +246,8 @@ public abstract class AbstractForestPlotPresentation implements ForestPlotPresen
 	@Override
 	public String getHeterogeneityI2() {
 		DecimalFormat df = new DecimalFormat("##0.0");
-		return df.format(d_pooled.getHeterogeneityI2()) + "%";
+		final double x = d_pooled.getHeterogeneityI2();
+		return Double.isNaN(x) ? "N/A" : (df.format(x) + "%");
 	}
 
 	@Override

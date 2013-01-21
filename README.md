@@ -22,6 +22,9 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
+1.16.3: Bugfix release.
+
+1.16.2: Bugfix release.
 
 1.16.1: Updated to GeMTC 0.14.1 for bugfixes and minor improvements.
 

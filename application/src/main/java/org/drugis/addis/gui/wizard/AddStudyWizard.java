@@ -36,8 +36,11 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,6 +53,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -1068,8 +1072,8 @@ public class AddStudyWizard extends Wizard {
 				d_idField.setColumns(30);
 				bindDefaultId(d_idField);
 				d_builder.add(d_idField, cc.xy(3, row));
-				d_idField.addCaretListener(new ImportButtonEnableListener());
 				final Border border = d_idField.getBorder();
+				final IdValidModel idValidModel = new IdValidModel();
 				d_idField.addCaretListener(new CaretListener() {
 					public void caretUpdate(CaretEvent e) {
 						if (!d_pm.isIdAvailable()){
@@ -1080,23 +1084,32 @@ public class AddStudyWizard extends Wizard {
 							d_idField.setToolTipText("");
 							d_idField.setBorder(border);
 						}
+						idValidModel.update();
 					}
 				});
 
 				// add import button
 				row = LayoutUtil.addRow(layout, row);
-
 				d_importButton = GUIFactory.createLabeledIconButton("Import from ClinicalTrials.gov", FileNames.ICON_IMPORT);
 				d_importButton.setToolTipText("Enter NCT id above to retrieve study data from ClinicalTrials.gov");
-				d_importButton.setEnabled(isIdValid());
+				final ModifiableHolder<Boolean> retrieverReady = new ModifiableHolder<Boolean>(true);
+
 				d_importButton.addActionListener(new AbstractAction() {
 					public void actionPerformed(ActionEvent arg0) {
-						CTRetriever ctRetriever = new CTRetriever();
-						RunnableReadyModel readyModel = new RunnableReadyModel(ctRetriever);
-						new Thread(readyModel).start();
+						final RunnableReadyModel retriever = new RunnableReadyModel(new CTRetriever());
+						retrieverReady.setValue(false);
+						retriever.addPropertyChangeListener(new PropertyChangeListener() {
+							public void propertyChange(PropertyChangeEvent evt) {
+								retrieverReady.setValue(retriever.getValue());
+							}
+						});
+						new Thread(retriever).start();
 					}});
 
+				BooleanAndModel importAvailable = new BooleanAndModel(idValidModel,retrieverReady);
 				d_withResultsCheckBox = BasicComponentFactory.createCheckBox(d_pm.shouldImportCTWithResults(), "import results (experimental)");
+				Bindings.bind(d_importButton, "enabled",  importAvailable);
+				Bindings.bind(d_withResultsCheckBox, "enabled",  importAvailable);
 
 				ButtonBarBuilder2 bb = ButtonBarBuilder2.createLeftToRightBuilder();
 				bb.addButton(d_importButton);
@@ -1145,24 +1158,15 @@ public class AddStudyWizard extends Wizard {
 				add(d_scrollPane, BorderLayout.CENTER);
 		 }
 
-		public class StartLoadingAnimation implements Runnable {
-			public void run() {
-				d_importButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
-				d_importButton.setEnabled(false);
-			}
-		}
-		public class StopLoadingAnimation implements Runnable {
-			public void run() {
-				d_importButton.setDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_IMPORT));
-				d_importButton.setEnabled(true);
-			}
-		}
 		public class CTRetriever implements Runnable {
 			public void run() {
 				try {
-					SwingUtilities.invokeAndWait(new StartLoadingAnimation());
+					setImportDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_LOADING));
+
 					d_pm.importCT();
-					SwingUtilities.invokeAndWait(new StopLoadingAnimation());
+
+					setImportDisabledIcon(Main.IMAGELOADER.getIcon(FileNames.ICON_IMPORT));
+
 				} catch (FileNotFoundException e) { // file not found is expected when user enters "strange" IDs
 					JOptionPane.showMessageDialog(d_me, "Couldn't find NCT ID: "+ d_pm.getIdModel().getValue(), "Not Found" , JOptionPane.WARNING_MESSAGE);
 				} catch (IOException e) { // IOExceptions are expected when there is a network error -- so report them
@@ -1172,16 +1176,39 @@ public class AddStudyWizard extends Wizard {
 				}
 				prepare();
 			}
+
+			private void setImportDisabledIcon(final ImageIcon icon) throws InterruptedException, InvocationTargetException {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						d_importButton.setDisabledIcon(icon);
+					}
+				});
+			}
 		}
 
-		private class ImportButtonEnableListener implements CaretListener {
-			public void caretUpdate(CaretEvent arg0) {
-				d_importButton.setEnabled(isIdValid());
-			}
-		 }
+		private class IdValidModel extends AbstractValueModel implements ValueHolder<Boolean> {
+			Boolean d_valid = false;
 
-		private boolean isIdValid() {
-			return d_idField.getText().toUpperCase().trim().matches("^NCT[0-9]+$");
+			@Override
+			public Boolean getValue() {
+				return d_valid;
+			}
+
+			@Override
+			public void setValue(Object newValue) {
+				throw new RuntimeException("Unexpected modification");
+			}
+
+			private Boolean isIdValid() {
+				return d_idField.getText().toUpperCase().trim().matches("^NCT[0-9]+$");
+			}
+
+			public void update() {
+				Boolean oldVal = d_valid;
+				d_valid = isIdValid();
+				fireValueChange(oldVal, d_valid);
+			}
+
 		}
 
 		public static void bindDefaultId(final JTextField idField) {

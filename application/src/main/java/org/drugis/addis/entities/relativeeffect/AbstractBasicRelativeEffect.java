@@ -35,7 +35,6 @@ import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.Measurement;
 
 public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends AbstractRelativeEffect<T> implements BasicRelativeEffect<T>{
-	private static final double NEUTRAL_VALUE = 0.0;
 	protected T d_subject;
 	protected T d_baseline;
 
@@ -79,10 +78,5 @@ public abstract class AbstractBasicRelativeEffect<T extends Measurement> extends
 	
 	public boolean isDefined() {
 		return d_subject.isComplete() && d_baseline.isComplete() && getDegreesOfFreedom() > 0;
-	}
-	
-	@Override
-	public double getNeutralValue() {
-		return NEUTRAL_VALUE;
 	}
 }

@@ -30,11 +30,6 @@ import org.drugis.addis.entities.Measurement;
 import org.drugis.common.beans.AbstractObservable;
 
 public abstract class AbstractRelativeEffect<T extends Measurement> extends AbstractObservable implements RelativeEffect<T> {
-
-	public AxisType getAxisType() {
-		return getDistribution().getAxisType();
-	}
-
 	public ConfidenceInterval getConfidenceInterval() {
 		if (!isDefined()) {
 			return new ConfidenceInterval(Double.NaN, Double.NaN, Double.NaN);
@@ -45,7 +40,7 @@ public abstract class AbstractRelativeEffect<T extends Measurement> extends Abst
 
 	@Override
 	public double getTwoSidedPValue() {
-		double prob = getDistribution().getCumulativeProbability(getNeutralValue());
+		double prob = getDistribution().getCumulativeProbability(getAxisType().neutralValue);
 		return 2 * Math.min(prob, 1 - prob);	
 	}
 }

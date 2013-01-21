@@ -68,4 +68,9 @@ public class BasicMeanDifference extends AbstractBasicRelativeEffect<ContinuousM
 	public Distribution getDistribution() {
 		return new TransformedStudentT(getMu(), getError(), getDegreesOfFreedom());
 	}
+
+	@Override
+	public AxisType getAxisType() {
+		return AxisType.LINEAR;
+	}
 }

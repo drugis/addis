@@ -87,4 +87,9 @@ public class BasicStandardisedMeanDifference extends AbstractBasicRelativeEffect
 	public Distribution getDistribution() {
 		return new TransformedStudentT(getMu(), getError(), getDegreesOfFreedom());
 	}
+
+	@Override
+	public AxisType getAxisType() {
+		return AxisType.LINEAR;
+	}
 }
