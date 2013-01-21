@@ -293,9 +293,11 @@
     <xsl:template match="studyOutcomeMeasures/studyOutcomeMeasure/whenTaken">
         WITH note_hook AS ( 
             INSERT INTO note_hooks (id) VALUES (DEFAULT) RETURNING id 
+        ), notes AS ( 
+            <xsl:value-of select="drugis:create-notes('note_hook', ../notes, false())" />
         )
         <xsl:variable name="name" select="drugis:create-mm-name(epoch/@name, @howLong, @relativeTo)" />
-        INSERT INTO study_measurement_moments ("study_id", "name", "epoch_name", "primary", "offset_from_epoch", "before_epoch", "note_hook") 
+        INSERT INTO measurement_moments ("study_id", "name", "epoch_name", "primary", "offset_from_epoch", "before_epoch", "note_hook") 
         SELECT <xsl:value-of select="drugis:get-study(../../../@name)"/>,
             <xsl:value-of select="$name"/>,
             '<xsl:value-of select="epoch/@name"/>',
@@ -304,7 +306,7 @@
             '<xsl:value-of select="@relativeTo"/>',
             (SELECT id FROM note_hook)
         WHERE <xsl:value-of select="$name"/> NOT IN (
-            SELECT name FROM study_measurement_moments
+            SELECT name FROM measurement_moments
             WHERE study_id = <xsl:value-of select="drugis:get-study(../../../@name)"/>
         );
     </xsl:template>
@@ -322,7 +324,7 @@
         <xsl:variable name="studyId" select="drugis:get-study($studyName)" />
         WITH variable AS ( 
         <xsl:value-of select="drugis:get-study-var($studyName, $varName)" />
-        ) INSERT INTO measurements ("study_id", "variable_id", "arm_name", "study_measurement_moment_name", 
+        ) INSERT INTO measurements ("study_id", "variable_id", "arm_name", "measurement_moment_name", 
             "attribute", "integer_value", "real_value") VALUES (
         <xsl:value-of select="$studyId" />,
         (SELECT id FROM variable),

@@ -112,12 +112,12 @@
   <body>
 
     <!-- Primary Index -->
-	<p><br><br>Dumped on 2013-01-18</p>
+	<p><br><br>Dumped on 2013-01-21</p>
 <h1><a name="index">Index of database - addis</a></h1>
 <ul>
     
     <li><a name="public.schema">public</a></li><ul>
-    	<li><a href="#public.table.activities">activities</a></li><li><a href="#public.table.arms">arms</a></li><li><a href="#public.table.code-systems">code_systems</a></li><li><a href="#public.table.designs">designs</a></li><li><a href="#public.table.drugs">drugs</a></li><li><a href="#public.table.epochs">epochs</a></li><li><a href="#public.table.indications">indications</a></li><li><a href="#public.table.measurements">measurements</a></li><li><a href="#public.table.note-hooks">note_hooks</a></li><li><a href="#public.table.notes">notes</a></li><li><a href="#public.table.project-variables">project_variables</a></li><li><a href="#public.table.projects">projects</a></li><li><a href="#public.table.studies">studies</a></li><li><a href="#public.table.study-measurement-moments">study_measurement_moments</a></li><li><a href="#public.table.study-references">study_references</a></li><li><a href="#public.table.study-variables">study_variables</a></li><li><a href="#public.table.treatment-dosings">treatment_dosings</a></li><li><a href="#public.table.treatments">treatments</a></li><li><a href="#public.table.units">units</a></li><li><a href="#public.table.variable-categories">variable_categories</a></li><li><a href="#public.table.variable-map">variable_map</a></li><li><a href="#public.table.variables">variables</a></li>
+    	<li><a href="#public.table.activities">activities</a></li><li><a href="#public.table.arms">arms</a></li><li><a href="#public.table.code-systems">code_systems</a></li><li><a href="#public.table.designs">designs</a></li><li><a href="#public.table.drugs">drugs</a></li><li><a href="#public.table.epochs">epochs</a></li><li><a href="#public.table.indications">indications</a></li><li><a href="#public.table.measurement-moments">measurement_moments</a></li><li><a href="#public.table.measurements">measurements</a></li><li><a href="#public.table.note-hooks">note_hooks</a></li><li><a href="#public.table.notes">notes</a></li><li><a href="#public.table.project-variables">project_variables</a></li><li><a href="#public.table.projects">projects</a></li><li><a href="#public.table.studies">studies</a></li><li><a href="#public.table.study-references">study_references</a></li><li><a href="#public.table.study-variables">study_variables</a></li><li><a href="#public.table.treatment-dosings">treatment_dosings</a></li><li><a href="#public.table.treatments">treatments</a></li><li><a href="#public.table.units">units</a></li><li><a href="#public.table.variable-categories">variable_categories</a></li><li><a href="#public.table.variable-map">variable_map</a></li><li><a href="#public.table.variables">variables</a></li>
   	
     </ul>
     
@@ -473,6 +473,10 @@
 		
 			<ul>
 				<li><a href="#public.table.indications">indications</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.variables">variables</a></li>
 			</ul>
 		
 		
@@ -915,7 +919,7 @@
 			</ul>
 		
 			<ul>
-				<li><a href="#public.table.study-measurement-moments">study_measurement_moments</a></li>
+				<li><a href="#public.table.measurement-moments">measurement_moments</a></li>
 			</ul>
 		
 		
@@ -1051,6 +1055,240 @@
 	
         <hr>
 		<h2>Table:
+			<a name="public.table.measurement-moments">measurement_moments</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>measurement_moments Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.epochs">epochs.study_id#1</a>
+                  
+                
+                  
+                
+                  
+                
+                </td>
+            	<td>study_id</td>
+            	<td>integer</td>
+                <td><i>
+				
+					
+
+					
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.epochs">epochs.name#1</a>
+                  
+                
+                  
+                
+                </td>
+            	<td>epoch_name</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					
+
+					
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>primary</td>
+            	<td>boolean</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>offset_from_epoch</td>
+            	<td>interval</td>
+                <td><i>
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>before_epoch</td>
+            	<td>epoch_offset</td>
+                <td><i>
+				
+					
+
+					
+                       UNIQUE#1
+                    
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                  <a href="#public.table.note-hooks">note_hooks.id</a>
+                  
+                
+                </td>
+            	<td>note_hook</td>
+            	<td>integer</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.measurements">measurements</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
 			<a name="public.table.measurements">measurements</a>
 		</h2>
         
@@ -1073,7 +1311,7 @@
                   
                 
                   
-                  <a href="#public.table.study-measurement-moments">study_measurement_moments.study_id#3</a>
+                  <a href="#public.table.measurement-moments">measurement_moments.study_id#3</a>
                   
                 
                   
@@ -1140,21 +1378,21 @@
 				<td>
                 
                   
-                
+                  <a href="#public.table.measurement-moments">measurement_moments.name#3</a>
                   
-                  <a href="#public.table.study-measurement-moments">study_measurement_moments.name#3</a>
+                
                   
                 
                 </td>
-            	<td>study_measurement_moment_name</td>
+            	<td>measurement_moment_name</td>
             	<td>character varying</td>
                 <td><i>
 				
-					PRIMARY KEY
 					
 
 					
 				
+					PRIMARY KEY
 					
 
 					
@@ -1346,11 +1584,19 @@
 			</ul>
 		
 			<ul>
+				<li><a href="#public.table.measurement-moments">measurement_moments</a></li>
+			</ul>
+		
+			<ul>
 				<li><a href="#public.table.notes">notes</a></li>
 			</ul>
 		
 			<ul>
 				<li><a href="#public.table.studies">studies</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.study-variables">study_variables</a></li>
 			</ul>
 		
 		
@@ -1521,12 +1767,20 @@
                 
                   
                 
+                  
+                  <a href="#public.table.projects">projects.id</a>
+                  
+                
                 </td>
             	<td>project_id</td>
             	<td>integer</td>
                 <td><i>
 				
 					PRIMARY KEY
+					
+
+					
+				
 					
 
 					
@@ -1675,6 +1929,13 @@
 		
 
         <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.project-variables">project_variables</a></li>
+			</ul>
+		
 		
 
     <!-- Indexes -->
@@ -2108,232 +2369,6 @@
 	
         <hr>
 		<h2>Table:
-			<a name="public.table.study-measurement-moments">study_measurement_moments</a>
-		</h2>
-        
-
-
-        <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>study_measurement_moments Structure</caption>
-                <tr>
-                <th>F-Key</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Description</th>
-                </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                  <a href="#public.table.epochs">epochs.study_id#1</a>
-                  
-                
-                  
-                
-                  
-                
-                </td>
-            	<td>study_id</td>
-            	<td>integer</td>
-                <td><i>
-				
-					
-
-					
-				
-					PRIMARY KEY
-					
-
-					
-				
-					
-
-					
-                       UNIQUE#1
-                    
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>name</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                  <a href="#public.table.epochs">epochs.name#1</a>
-                  
-                
-                  
-                
-                </td>
-            	<td>epoch_name</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					
-
-					
-				
-					
-
-					
-                       UNIQUE#1
-                    
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                </td>
-            	<td>primary</td>
-            	<td>boolean</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>offset_from_epoch</td>
-            	<td>interval</td>
-                <td><i>
-				
-					
-
-					
-                       UNIQUE#1
-                    
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>before_epoch</td>
-            	<td>epoch_offset</td>
-                <td><i>
-				
-					
-
-					
-                       UNIQUE#1
-                    
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                </td>
-            	<td>note_hook</td>
-            	<td>integer</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-        </table>
-
-        <!-- Inherits -->
-		
-
-		
-		
-		
-
-        <!-- Constraint List -->
-		
-
-        <!-- Foreign Key Discovery -->
-		
-			<p>Tables referencing this one via Foreign Key Constraints:</p>
-		
-			<ul>
-				<li><a href="#public.table.measurements">measurements</a></li>
-			</ul>
-		
-		
-
-    <!-- Indexes -->
-    
-
-	<!-- View Definition -->
-	
-
-	<!-- List off permissions -->
-	
-
-	<p>
-		<a href="#index">Index</a> -
-		<a href="#public.schema">Schema public</a>
-    </p>
-	
-        <hr>
-		<h2>Table:
 			<a name="public.table.study-references">study_references</a>
 		</h2>
         
@@ -2561,10 +2596,18 @@
             <tr class="tr0">
 				<td>
                 
+                  
+                  <a href="#public.table.note-hooks">note_hooks.id</a>
+                  
+                
                 </td>
             	<td>note_hook</td>
             	<td>integer</td>
                 <td><i>
+				
+					
+
+					
 				
 
 				
@@ -3203,12 +3246,20 @@
                 
                   
                 
+                  
+                  <a href="#public.table.variables">variables.id</a>
+                  
+                
                 </td>
             	<td>sub</td>
             	<td>integer</td>
                 <td><i>
 				
 					PRIMARY KEY
+					
+
+					
+				
 					
 
 					
@@ -3226,12 +3277,20 @@
                 
                   
                 
+                  
+                  <a href="#public.table.variables">variables.id</a>
+                  
+                
                 </td>
             	<td>super</td>
             	<td>integer</td>
                 <td><i>
 				
 					PRIMARY KEY
+					
+
+					
+				
 					
 
 					
@@ -3419,10 +3478,18 @@
             <tr class="tr1">
 				<td>
                 
+                  
+                  <a href="#public.table.code-systems">code_systems.code_system</a>
+                  
+                
                 </td>
             	<td>code_system</td>
             	<td>character varying</td>
                 <td><i>
+				
+					
+
+					
 				
 
 				
@@ -3454,6 +3521,10 @@
 		
 			<ul>
 				<li><a href="#public.table.variable-categories">variable_categories</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.variable-map">variable_map</a></li>
 			</ul>
 		
 		

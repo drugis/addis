@@ -163,16 +163,16 @@ CREATE TABLE "variable_categories" (
 CREATE TABLE "measurements" (
   "study_id" int4,
   "variable_id" int4,
-  "study_measurement_moment_name" varchar,
+  "measurement_moment_name" varchar,
   "arm_name" varchar,
   "attribute" varchar, 
   "integer_value" int4,
   "real_value" float, 
-  PRIMARY KEY ("variable_id", "study_measurement_moment_name", "arm_name", "attribute") 
+  PRIMARY KEY ("variable_id", "measurement_moment_name", "arm_name", "attribute") 
 );
 COMMENT ON COLUMN "measurements"."variable_id" IS 'Uniquely identifies the study';
 
-CREATE TABLE "study_measurement_moments" ( 
+CREATE TABLE "measurement_moments" ( 
   "study_id" int4,
   "name" varchar,
   "epoch_name" varchar,
@@ -209,15 +209,20 @@ CREATE TABLE "notes" (
   "source" source,
   PRIMARY KEY ("id", "note_hook_id") 
 );
-
+ALTER TABLE "project_variables" ADD CONSTRAINT "projects_variables_fkey" FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
+ALTER TABLE "variable_map" ADD CONSTRAINT "variable_subtype_map_fkey" FOREIGN KEY ("sub") REFERENCES "variables" ("id"); 
+ALTER TABLE "variable_map" ADD CONSTRAINT "variable_supertype_map_fkey" FOREIGN KEY ("super") REFERENCES "variables" ("id"); 
 ALTER TABLE "variables" ADD CONSTRAINT "variable_unit_fkey" FOREIGN KEY ("unit") REFERENCES "units" ("name");
+ALTER TABLE "variables" ADD CONSTRAINT "variable_code_system_fkey" FOREIGN KEY ("code_system") REFERENCES "code_systems" ("code_system");
 ALTER TABLE "variable_categories" ADD CONSTRAINT "variable_category_fkey" FOREIGN KEY ("variable_id") REFERENCES "variables" ("id");
 ALTER TABLE "study_variables" ADD CONSTRAINT "study_variable_fkey" FOREIGN KEY ("variable_id") REFERENCES "variables" ("id");
+ALTER TABLE "study_variables" ADD CONSTRAINT "study_variable_note_hook_fkey" FOREIGN KEY ("note_hook") REFERENCES "note_hooks" ("id");
 
-ALTER TABLE "study_measurement_moments" ADD CONSTRAINT "epoch_study_measurement_fkey" FOREIGN KEY ("study_id", "epoch_name") REFERENCES "epochs" ("study_id", "name");
+ALTER TABLE "measurement_moments" ADD CONSTRAINT "epoch_study_measurement_fkey" FOREIGN KEY ("study_id", "epoch_name") REFERENCES "epochs" ("study_id", "name");
+ALTER TABLE "measurement_moments" ADD CONSTRAINT "study_measurement_note_hook_fkey" FOREIGN KEY ("note_hook") REFERENCES "note_hooks" ("id");
 ALTER TABLE "measurements" ADD CONSTRAINT "variable_measurement_fkey" FOREIGN KEY ("study_id", "variable_id") REFERENCES "study_variables" ("study_id", "variable_id");
 ALTER TABLE "measurements" ADD CONSTRAINT "arm_measurement_fkey" FOREIGN KEY ("study_id", "arm_name") REFERENCES "arms" ("study_id", "name");
-ALTER TABLE "measurements" ADD CONSTRAINT "study_measurement_moments" FOREIGN KEY ("study_id", "study_measurement_moment_name") REFERENCES "study_measurement_moments" ("study_id", "name");
+ALTER TABLE "measurements" ADD CONSTRAINT "measurement_moments" FOREIGN KEY ("study_id", "measurement_moment_name") REFERENCES "measurement_moments" ("study_id", "name");
 ALTER TABLE "arms" ADD CONSTRAINT "study_arm_fkey" FOREIGN KEY ("study_id") REFERENCES "studies" ("id");
 ALTER TABLE "arms" ADD CONSTRAINT "study_arms_note_hook_fkey" FOREIGN KEY ("note_hook") REFERENCES "note_hooks" ("id");
 ALTER TABLE "epochs" ADD CONSTRAINT "study_epoch_fkey" FOREIGN KEY ("study_id") REFERENCES "studies" ("id");
