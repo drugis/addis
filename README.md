@@ -22,6 +22,7 @@ modern operating systems ship with a suitable JRE.
 
 Versions
 --------
+1.16.3: Bugfix release.
 
 1.16.2: Bugfix release.
 

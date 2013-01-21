@@ -30,9 +30,9 @@
 
 
             <varlistentry>
-              <term><structfield>id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>integer</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -55,29 +55,20 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>study_name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
               <term><structfield>name</structfield></term>
               <listitem><para>
                 <type>character varying</type>
 
 
+                <literal>PRIMARY KEY</literal>
 
-                <literal>NOT NULL</literal>
+
+
+
+
+
+
+
 
 
 
@@ -159,9 +150,9 @@
 
 
             <varlistentry>
-              <term><structfield>id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>integer</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -171,22 +162,6 @@
 
 
 
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>study_name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
 
 
 
@@ -208,18 +183,29 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>arm_name</structfield></term>
+              <term><structfield>name</structfield></term>
               <listitem><para>
                 <type>character varying</type>
 
 
-
-                <literal>NOT NULL</literal>
-
+                <literal>PRIMARY KEY</literal>
 
 
 
 
+
+
+
+
+
+
+
+
+
+              </para>
+
+              <para>
+                Empty string indicates &quot;total population&quot; (yes, this is sub-optimal)
               </para>
 
             </listitem>
@@ -387,6 +373,14 @@
             </para>
           </listitem>
 
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.variables"/>
+            </para>
+          </listitem>
+
         </itemizedlist>
 
 
@@ -415,9 +409,58 @@
 
 
             <varlistentry>
-              <term><structfield>arm_id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
                 <type>integer</type>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.activities"/>
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.arms"/>
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.epochs"/>
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>arm_name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
 
 
 
@@ -448,9 +491,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>epoch_id</structfield></term>
+              <term><structfield>epoch_name</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>character varying</type>
 
 
 
@@ -481,9 +524,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>activity_id</structfield></term>
+              <term><structfield>activity_name</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>character varying</type>
 
 
 
@@ -541,15 +584,7 @@
                 <type>character varying</type>
 
 
-
-
-                      <literal>UNIQUE</literal>
-
-
-
                 <literal>PRIMARY KEY</literal>
-
-
 
 
 
@@ -574,15 +609,6 @@
                 <type>character varying</type>
 
 
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
 
 
 
@@ -603,13 +629,6 @@
 
 
 
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
 
 
 
@@ -617,8 +636,6 @@
 
 
                 <literal>REFERENCES</literal> <xref linkend="public.table.code-systems"/>
-
-
 
 
               </para>
@@ -673,9 +690,9 @@
 
 
             <varlistentry>
-              <term><structfield>id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>integer</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -685,22 +702,6 @@
 
 
 
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>study_name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
 
 
 
@@ -722,13 +723,20 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>epoch_name</structfield></term>
+              <term><structfield>name</structfield></term>
               <listitem><para>
                 <type>character varying</type>
 
 
+                <literal>PRIMARY KEY</literal>
 
-                <literal>NOT NULL</literal>
+
+
+
+
+
+
+
 
 
 
@@ -804,7 +812,7 @@
 
           <listitem>
             <para>
-              <xref linkend="public.table.measurements"/>
+              <xref linkend="public.table.measurement-moments"/>
             </para>
           </listitem>
 
@@ -929,12 +937,12 @@
       </para>
     </section>
 
-      <section id="public.table.measurement-results"
-               xreflabel="public.measurement_results">
-        <title id="public.table.measurement-results-title">
+      <section id="public.table.measurement-moments"
+               xreflabel="public.measurement_moments">
+        <title id="public.table.measurement-moments-title">
          Table:
          
-         <structname>measurement_results</structname>
+         <structname>measurement_moments</structname>
         </title>
  
 
@@ -942,14 +950,18 @@
         <para>
           <variablelist>
             <title>
-              Structure of <structname>measurement_results</structname>
+              Structure of <structname>measurement_moments</structname>
             </title>
 
 
             <varlistentry>
-              <term><structfield>id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>integer</type>
+
+
+
+
 
 
                 <literal>PRIMARY KEY</literal>
@@ -961,234 +973,7 @@
 
 
 
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>std_dev</structfield></term>
-              <listitem><para>
-                <type>real</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>mean</structfield></term>
-              <listitem><para>
-                <type>real</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>rate</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>sample_size</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-
-
-        <itemizedlist>
-          <title>
-            Tables referencing measurements_results via Foreign Key Constraints
-          </title>
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.measurements-results"/>
-            </para>
-          </listitem>
-
-        </itemizedlist>
-
-
-
-
-
-
-      </para>
-    </section>
-
-      <section id="public.table.measurements"
-               xreflabel="public.measurements">
-        <title id="public.table.measurements-title">
-         Table:
-         
-         <structname>measurements</structname>
-        </title>
- 
-
-
-        <para>
-          <variablelist>
-            <title>
-              Structure of <structname>measurements</structname>
-            </title>
-
-
-            <varlistentry>
-              <term><structfield>id</structfield></term>
-              <listitem><para>
-                <type>serial</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>variable_id</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>study_name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.studies"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>arm_id</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.arms"/>
-
-
-              </para>
-
-              <para>
-                If null it references the overall column in the results table
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>epoch_id</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-
+                      <literal>UNIQUE#1</literal>
 
 
 
@@ -1199,6 +984,67 @@
 
 
                 <literal>REFERENCES</literal> <xref linkend="public.table.epochs"/>
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>epoch_name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.epochs"/>
+
+
 
 
               </para>
@@ -1230,13 +1076,17 @@
 
 
 
+                      <literal>UNIQUE#1</literal>
 
 
 
-              </para>
 
-              <para>
-                Can be negative
+
+
+
+
+
+
               </para>
 
             </listitem>
@@ -1245,7 +1095,15 @@
             <varlistentry>
               <term><structfield>before_epoch</structfield></term>
               <listitem><para>
-                <type>boolean</type>
+                <type>epoch_offset</type>
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
 
 
 
@@ -1288,28 +1146,16 @@
 
 
 
-        <variablelist>
-          <title>Indexes on measurements</title>
-
-          <varlistentry>
-            <term>measurements_idx</term>
-            <listitem><para>study_name</para></listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
 
 
         <itemizedlist>
           <title>
-            Tables referencing measurements_results via Foreign Key Constraints
+            Tables referencing measurements via Foreign Key Constraints
           </title>
 
           <listitem>
             <para>
-              <xref linkend="public.table.measurements-results"/>
+              <xref linkend="public.table.measurements"/>
             </para>
           </listitem>
 
@@ -1323,12 +1169,12 @@
       </para>
     </section>
 
-      <section id="public.table.measurements-results"
-               xreflabel="public.measurements_results">
-        <title id="public.table.measurements-results-title">
+      <section id="public.table.measurements"
+               xreflabel="public.measurements">
+        <title id="public.table.measurements-title">
          Table:
          
-         <structname>measurements_results</structname>
+         <structname>measurements</structname>
         </title>
  
 
@@ -1336,18 +1182,54 @@
         <para>
           <variablelist>
             <title>
-              Structure of <structname>measurements_results</structname>
+              Structure of <structname>measurements</structname>
             </title>
 
 
             <varlistentry>
-              <term><structfield>measurement_id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
                 <type>integer</type>
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.arms"/>
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.measurement-moments"/>
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.study-variables"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>variable_id</structfield></term>
+              <listitem><para>
+                <type>integer</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1363,72 +1245,142 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.measurements"/>
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>result_id</structfield></term>
-              <listitem><para>
-                <type>integer</type>
 
 
 
 
 
 
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.measurement-results"/>
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>category_id</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.variable-categories"/>
+                <literal>REFERENCES</literal> <xref linkend="public.table.study-variables"/>
 
 
               </para>
 
               <para>
-                Only applicable for categorical measurements
+                Uniquely identifies the study
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>measurement_moment_name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.measurement-moments"/>
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>arm_name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.arms"/>
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>attribute</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>integer_value</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>real_value</structfield></term>
+              <listitem><para>
+                <type>double precision</type>
+
+
+
+
+
+
+
               </para>
 
             </listitem>
@@ -1521,7 +1473,7 @@
 
           <listitem>
             <para>
-              <xref linkend="public.table.measurements"/>
+              <xref linkend="public.table.measurement-moments"/>
             </para>
           </listitem>
 
@@ -1538,6 +1490,14 @@
           <listitem>
             <para>
               <xref linkend="public.table.studies"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.study-variables"/>
             </para>
           </listitem>
 
@@ -1672,6 +1632,206 @@
       </para>
     </section>
 
+      <section id="public.table.project-variables"
+               xreflabel="public.project_variables">
+        <title id="public.table.project-variables-title">
+         Table:
+         
+         <structname>project_variables</structname>
+        </title>
+ 
+
+
+        <para>
+          <variablelist>
+            <title>
+              Structure of <structname>project_variables</structname>
+            </title>
+
+
+            <varlistentry>
+              <term><structfield>project_id</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.projects"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>variable_id</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
+
+
+
+
+
+
+
+      </para>
+    </section>
+
+      <section id="public.table.projects"
+               xreflabel="public.projects">
+        <title id="public.table.projects-title">
+         Table:
+         
+         <structname>projects</structname>
+        </title>
+ 
+
+
+        <para>
+          <variablelist>
+            <title>
+              Structure of <structname>projects</structname>
+            </title>
+
+
+            <varlistentry>
+              <term><structfield>id</structfield></term>
+              <listitem><para>
+                <type>serial</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>description</structfield></term>
+              <listitem><para>
+                <type>text</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
+
+
+
+
+        <itemizedlist>
+          <title>
+            Tables referencing project_variables via Foreign Key Constraints
+          </title>
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.project-variables"/>
+            </para>
+          </listitem>
+
+        </itemizedlist>
+
+
+
+
+
+
+      </para>
+    </section>
+
       <section id="public.table.studies"
                xreflabel="public.studies">
         <title id="public.table.studies-title">
@@ -1695,8 +1855,15 @@
                 <type>serial</type>
 
 
+                <literal>PRIMARY KEY</literal>
 
-                <literal>NOT NULL</literal>
+
+
+
+
+
+
+
 
 
 
@@ -1711,15 +1878,6 @@
               <term><structfield>name</structfield></term>
               <listitem><para>
                 <type>character varying</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
 
 
 
@@ -2054,8 +2212,15 @@
           <title>Indexes on studies</title>
 
           <varlistentry>
-            <term>studies_id_idx</term>
-            <listitem><para>id</para></listitem>
+            <term>studies_indication_idx</term>
+            <listitem><para>indication</para></listitem>
+          </varlistentry>
+
+
+
+          <varlistentry>
+            <term>studies_name_idx</term>
+            <listitem><para>name</para></listitem>
           </varlistentry>
 
         </variablelist>
@@ -2087,7 +2252,7 @@
 
           <listitem>
             <para>
-              <xref linkend="public.table.measurements"/>
+              <xref linkend="public.table.study-references"/>
             </para>
           </listitem>
 
@@ -2119,9 +2284,13 @@
 
 
             <varlistentry>
-              <term><structfield>study_name</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>character varying</type>
+                <type>integer</type>
+
+
+
+
 
 
                 <literal>PRIMARY KEY</literal>
@@ -2134,6 +2303,10 @@
 
 
 
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.studies"/>
 
 
 
@@ -2191,6 +2364,173 @@
 
 
 
+
+
+
+
+
+
+      </para>
+    </section>
+
+      <section id="public.table.study-variables"
+               xreflabel="public.study_variables">
+        <title id="public.table.study-variables-title">
+         Table:
+         
+         <structname>study_variables</structname>
+        </title>
+ 
+
+
+        <para>
+          <variablelist>
+            <title>
+              Structure of <structname>study_variables</structname>
+            </title>
+
+
+            <varlistentry>
+              <term><structfield>study_id</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>variable_id</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+
+
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>is_primary</structfield></term>
+              <listitem><para>
+                <type>boolean</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>variable_type</structfield></term>
+              <listitem><para>
+                <type>variable_type</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>note_hook</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.note-hooks"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
+
+
+
+
+        <itemizedlist>
+          <title>
+            Tables referencing measurements via Foreign Key Constraints
+          </title>
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.measurements"/>
+            </para>
+          </listitem>
+
+        </itemizedlist>
 
 
 
@@ -2416,7 +2756,7 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>activity_id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
                 <type>integer</type>
 
@@ -2427,11 +2767,51 @@
 
 
 
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
 
 
 
 
                 <literal>REFERENCES</literal> <xref linkend="public.table.activities"/>
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>activity_name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.activities"/>
+
+
 
 
               </para>
@@ -2451,11 +2831,19 @@
 
 
 
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
 
 
 
 
                 <literal>REFERENCES</literal> <xref linkend="public.table.drugs"/>
+
+
 
 
               </para>
@@ -2588,6 +2976,18 @@
 
 
 
+        <variablelist>
+          <title>Indexes on units</title>
+
+          <varlistentry>
+            <term>units_ucum_idx</term>
+            <listitem><para>ucum</para></listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
 
 
         <itemizedlist>
@@ -2637,9 +3037,9 @@
 
 
             <varlistentry>
-              <term><structfield>id</structfield></term>
+              <term><structfield>variable_id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>integer</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -2649,22 +3049,6 @@
 
 
 
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>variable_name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
 
 
 
@@ -2691,6 +3075,15 @@
                 <type>character varying</type>
 
 
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
 
 
 
@@ -2709,18 +3102,100 @@
 
 
 
-        <itemizedlist>
-          <title>
-            Tables referencing measurements_results via Foreign Key Constraints
-          </title>
 
-          <listitem>
-            <para>
-              <xref linkend="public.table.measurements-results"/>
-            </para>
-          </listitem>
 
-        </itemizedlist>
+
+      </para>
+    </section>
+
+      <section id="public.table.variable-map"
+               xreflabel="public.variable_map">
+        <title id="public.table.variable-map-title">
+         Table:
+         
+         <structname>variable_map</structname>
+        </title>
+ 
+
+
+        <para>
+          <variablelist>
+            <title>
+              Structure of <structname>variable_map</structname>
+            </title>
+
+
+            <varlistentry>
+              <term><structfield>sub</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>super</structfield></term>
+              <listitem><para>
+                <type>integer</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
+
 
 
 
@@ -2753,14 +3228,13 @@
                 <type>serial</type>
 
 
-
-
-                      <literal>UNIQUE</literal>
-
+                <literal>PRIMARY KEY</literal>
 
 
 
-                <literal>NOT NULL</literal>
+
+
+
 
 
 
@@ -2777,15 +3251,6 @@
               <term><structfield>name</structfield></term>
               <listitem><para>
                 <type>character varying</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
 
 
 
@@ -2809,27 +3274,6 @@
 
 
 
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>type</structfield></term>
-              <listitem><para>
-                <type>variable_type</type>
-
-
-
-
-
-
-
-              </para>
-
-              <para>
-                If type is PopulationCharacteristic then direction has no value. 
-                                         If type is AdverseEvent then measurement_type is always rate
               </para>
 
             </listitem>
@@ -2918,6 +3362,14 @@
 
 
 
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.code-systems"/>
+
+
               </para>
 
             </listitem>
@@ -2945,12 +3397,20 @@
 
         <itemizedlist>
           <title>
-            Tables referencing measurements via Foreign Key Constraints
+            Tables referencing project_variables via Foreign Key Constraints
           </title>
 
           <listitem>
             <para>
-              <xref linkend="public.table.measurements"/>
+              <xref linkend="public.table.project-variables"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.study-variables"/>
             </para>
           </listitem>
 
@@ -2959,6 +3419,14 @@
           <listitem>
             <para>
               <xref linkend="public.table.variable-categories"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.variable-map"/>
             </para>
           </listitem>
 
