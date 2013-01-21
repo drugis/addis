@@ -72,7 +72,8 @@ edge [
 "measurements":rtcol0 -> "measurement_moments":ltcol0 [label="measurement_moments"];
 "measurements":rtcol0 -> "study_variables":ltcol0 [label="variable_measurement_fkey"];
 "notes":rtcol2 -> "note_hooks":ltcol1 [label="note_note_hooks"];
-"project_variables":rtcol1 -> "projects":ltcol1 [label="projects_variables_fkey"];
+"project_variables":rtcol1 -> "projects":ltcol1 [label="projects_variables__project_fkey"];
+"project_variables":rtcol2 -> "variables":ltcol1 [label="projects_variables_variable_fkey"];
 "studies":rtcol4 -> "indications":ltcol1 [label="study_indication_fkey"];
 "studies":rtcol16 -> "note_hooks":ltcol1 [label="study_note_hook_fkey"];
 "studies":rtcol17 -> "note_hooks":ltcol1 [label="study_blinding_type_note_hook_fkey"];

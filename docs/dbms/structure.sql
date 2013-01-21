@@ -209,7 +209,8 @@ CREATE TABLE "notes" (
   "source" source,
   PRIMARY KEY ("id", "note_hook_id") 
 );
-ALTER TABLE "project_variables" ADD CONSTRAINT "projects_variables_fkey" FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
+ALTER TABLE "project_variables" ADD CONSTRAINT "projects_variables__project_fkey" FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
+ALTER TABLE "project_variables" ADD CONSTRAINT "projects_variables_variable_fkey" FOREIGN KEY ("variable_id") REFERENCES "variables" ("id");
 ALTER TABLE "variable_map" ADD CONSTRAINT "variable_subtype_map_fkey" FOREIGN KEY ("sub") REFERENCES "variables" ("id"); 
 ALTER TABLE "variable_map" ADD CONSTRAINT "variable_supertype_map_fkey" FOREIGN KEY ("super") REFERENCES "variables" ("id"); 
 ALTER TABLE "variables" ADD CONSTRAINT "variable_unit_fkey" FOREIGN KEY ("unit") REFERENCES "units" ("name");

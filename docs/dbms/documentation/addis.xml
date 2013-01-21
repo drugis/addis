@@ -1702,6 +1702,14 @@
 
 
 
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+
+
               </para>
 
             </listitem>
@@ -3389,8 +3397,16 @@
 
         <itemizedlist>
           <title>
-            Tables referencing study_variables via Foreign Key Constraints
+            Tables referencing project_variables via Foreign Key Constraints
           </title>
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.project-variables"/>
+            </para>
+          </listitem>
+
+
 
           <listitem>
             <para>
