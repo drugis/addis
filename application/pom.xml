@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.16.3-SNAPSHOT</version>
+		<version>1.16.3</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -18,7 +18,7 @@
 	<properties>
 		<drugis-common.version>0.5.5</drugis-common.version>
 		<jsmaa.version>1.0-ADDIS-1.16.3</jsmaa.version>
-		<mtc.version>0.14.2</mtc.version>
+		<mtc.version>0.14.3</mtc.version>
 		<addis.schemaVersion>6</addis.schemaVersion>
 		<jung.version>2.0.1</jung.version>
 		<schemaVersionFile>src/main/resources/org/drugis/addis/entities/current-schema-version</schemaVersionFile>
