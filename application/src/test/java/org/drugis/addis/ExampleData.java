@@ -1162,4 +1162,79 @@ public class ExampleData {
 		return catz;
 	}
 	
+	/**
+	 * Build a study with a single dichotomous endpoint ({@link #buildEndpointHamd()}) and two arms:
+	 * one with {@link #buildDrugFluoxetine()} and one with {@link #buildDrugSertraline()} and the
+	 * given measurements.
+	 * @param studyName Name for the study.
+	 * @param fluoxResp Responders for Fluoxetine.
+	 * @param fluoxSize Sample size for Fluoxetine.
+	 * @param sertrResp Responders for Sertraline.
+	 * @param sertrSize Sample size for Sertraline. 
+	 * @return A newly created study.
+	 */
+	public static Study buildRateStudy(String studyName, int fluoxResp, int fluoxSize, int sertraResp, int sertraSize) {
+		Study s = new Study(studyName, buildIndicationDepression());
+	
+		ExampleData.addDefaultEpochs(s);
+	
+		final StudyOutcomeMeasure<Endpoint> som = new StudyOutcomeMeasure<Endpoint>(buildEndpointHamd());
+		s.getEndpoints().add(som);
+		Arm fluoxArm = s.createAndAddArm("Fluox", fluoxSize, buildDrugFluoxetine(), new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));
+		Arm sertrArm = s.createAndAddArm("Sertr", sertraSize, buildDrugSertraline(), new FixedDose(10.0, DoseUnit.createMilliGramsPerDay()));		
+		
+		BasicRateMeasurement fluoxMeas = (BasicRateMeasurement) buildEndpointHamd().buildMeasurement(fluoxArm);
+		fluoxMeas.setRate(fluoxResp);
+		BasicRateMeasurement sertrMeas = (BasicRateMeasurement) buildEndpointHamd().buildMeasurement(sertrArm);
+		sertrMeas.setRate(sertraResp);
+	
+		ExampleData.addDefaultMeasurementMoments(s);
+	
+		s.setMeasurement(som, sertrArm, sertrMeas);
+		s.setMeasurement(som, fluoxArm, fluoxMeas);		
+		
+		return s;
+	}
+
+	/**
+	 * Build a study with a single continuous endpoint ({@link #buildEndpointCgi()}) and two arms:
+	 * one with {@link #buildDrugFluoxetine()} and one with {@link #buildDrugSertraline()} and the
+	 * given measurements.
+	 * @param studyName Name for the study.
+	 * @param fluoxSize Sample size for Fluoxetine.
+	 * @param fluoxMean Mean for Fluoxetine.
+	 * @param fluoxDev Standard deviation for Fluoxetine.
+	 * @param sertrSize Sample size for Sertraline. 
+	 * @param sertrMean Mean for Sertraline.
+	 * @param sertrDev Standard deviation for Sertraline.
+	 * @return A newly created study.
+	 */
+	public static Study buildContinuousStudy(String studyName,
+			int fluoxSize, double fluoxMean, double fluoxDev,
+			int sertrSize, double sertrMean, double sertrDev) {
+		Study study = new Study(studyName, buildIndicationDepression());
+		addDefaultEpochs(study);
+		study.getEndpoints().add(new StudyOutcomeMeasure<Endpoint>(buildEndpointCgi()));
+		
+		FixedDose dose = new FixedDose(10.0, DoseUnit.createMilliGramsPerDay());
+	
+		Arm fluoxArm = study.createAndAddArm("fluox", fluoxSize, buildDrugFluoxetine(), dose);
+		BasicContinuousMeasurement fluoxMeas =
+			(BasicContinuousMeasurement) buildEndpointCgi().buildMeasurement(fluoxArm);
+		fluoxMeas.setMean(fluoxMean);
+		fluoxMeas.setStdDev(fluoxDev);
+		
+		Arm sertrArm = study.createAndAddArm("sertr", sertrSize, buildDrugSertraline(), dose);
+		BasicContinuousMeasurement sertrMeas =
+			(BasicContinuousMeasurement) buildEndpointCgi().buildMeasurement(sertrArm);
+		sertrMeas.setMean(sertrMean);
+		sertrMeas.setStdDev(sertrDev);
+	
+		addDefaultMeasurementMoments(study);
+	
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), fluoxArm, fluoxMeas);
+		study.setMeasurement(study.findStudyOutcomeMeasure(buildEndpointCgi()), sertrArm, sertrMeas);
+	
+		return study;
+	}
 }

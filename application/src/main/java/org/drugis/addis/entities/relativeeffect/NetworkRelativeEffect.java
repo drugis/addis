@@ -60,15 +60,6 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 		return d_defined;
 	}
 	
-	@Override
-	public double getNeutralValue() {
-		if (d_isLogTransformed) {
-			return 1;
-		} else { 
-			return 0;
-		}
-	}
-	
 	@Override 
 	public ConfidenceInterval getConfidenceInterval() {
 		if (!isDefined()) {
@@ -93,5 +84,10 @@ public class NetworkRelativeEffect<T extends Measurement> extends AbstractRelati
 			return new LogGaussian(mean, stdev);
 		}
 	} 
+	
+	@Override
+	public AxisType getAxisType() {
+		return d_isLogTransformed ? AxisType.LOGARITHMIC : AxisType.LINEAR;
+	}
 	
 }

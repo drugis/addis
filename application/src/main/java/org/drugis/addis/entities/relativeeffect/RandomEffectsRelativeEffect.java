@@ -121,20 +121,19 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 	}
 
 	private DerSimonianLairdComputations d_results;
-	private double d_neutralValue;
+	private AxisType d_axisType;
 
-	public RandomEffectsRelativeEffect(List<BasicRelativeEffect<? extends Measurement>> componentEffects) {
-		switch (componentEffects.get(0).getAxisType()) {
+	public RandomEffectsRelativeEffect(List<RelativeEffect<? extends Measurement>> componentEffects) {
+		d_axisType = componentEffects.get(0).getAxisType();
+		switch (d_axisType) {
 		case LINEAR:
 			d_results = new LinDSLComputations(getDistributions(componentEffects));
-			d_neutralValue = 0;
 			break;
 		case LOGARITHMIC:
 			d_results = new LogDSLComputations(getDistributions(componentEffects));
-			d_neutralValue = 1;
 			break;
 		default:
-			throw new IllegalStateException("Unknown AxisType " + componentEffects.get(0).getAxisType());
+			throw new IllegalStateException("Unknown AxisType " + d_axisType);
 		}
 	}
 
@@ -163,7 +162,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		return "Random Effects Relative Effect";
 	}
 
-	public static List<Distribution> getDistributions(List<BasicRelativeEffect<?>> res) {
+	public static List<Distribution> getDistributions(List<RelativeEffect<?>> res) {
 		List<Distribution> dists = new ArrayList<Distribution>();
 		for (RelativeEffect<?> re: res) {
 			dists.add(re.getDistribution());
@@ -171,7 +170,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 		return dists;
 	}
 
-	public static List<Distribution> getCorrectedDistributions(List<BasicRelativeEffect<?>> res) {
+	public static List<Distribution> getCorrectedDistributions(List<RelativeEffect<?>> res) {
 		List<Distribution> dists = new ArrayList<Distribution>();
 		for (RelativeEffect<?> re: res) {
 			if(re instanceof BasicRiskDifference) {
@@ -188,7 +187,7 @@ public class RandomEffectsRelativeEffect extends AbstractRelativeEffect<Measurem
 	}
 
 	@Override
-	public double getNeutralValue() {
-		return d_neutralValue;
+	public AxisType getAxisType() {
+		return d_axisType;
 	}
 }

@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drugis.addis.ExampleData;
@@ -48,7 +49,9 @@ import org.drugis.addis.entities.Variable;
 import org.drugis.addis.entities.analysis.RandomEffectsMetaAnalysis;
 import org.drugis.addis.entities.relativeeffect.AxisType;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
+import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.drugis.addis.forestplot.ForestPlot;
@@ -140,6 +143,18 @@ public class ForestPlotPresentationTest {
 		Interval<Double> interval = d_pm.getRange();
 		assertEquals(-2.0, interval.getLowerBound(), 0.01);
 		assertEquals(2.0, interval.getUpperBound(), 0.01);	
+	}
+	
+	@Test
+	public void testGetRangeUndefined() {
+		Study zeroRate = ExampleData.buildRateStudy("ZeroRate 2012", 0, 120, 10, 118);
+		RandomEffectsMetaAnalysis rema = ExampleData.buildRandomEffectsMetaAnalysis("meta",
+				ExampleData.buildEndpointHamd(),
+				Collections.singletonList(zeroRate),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline()));
+		assertEquals(new Interval<Double>(0.5, 2.0), new REMAForestPlotPresentation(rema, BasicOddsRatio.class).getRange());
+		assertEquals(new Interval<Double>(0.5, 2.0), new REMAForestPlotPresentation(rema, BasicRiskRatio.class).getRange());
 	}
 	
 	@Test

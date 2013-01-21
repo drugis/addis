@@ -64,9 +64,9 @@ public class BRATDifferenceRenderer extends DistributionQuantileCellRenderer {
 			Color red = isSelected ? d_selectRed : d_unselectRed;
 			
 			if (diff.getOutcomeMeasure().getDirection().equals(Direction.HIGHER_IS_BETTER)) {
-				renderer.setBackground(d.getQuantile(0.5) > 1 ? green : red);
+				renderer.setBackground(d.getQuantile(0.5) > d.getAxisType().neutralValue ? green : red);
 			} else {
-				renderer.setBackground(d.getQuantile(0.5) < 1 ? green : red);
+				renderer.setBackground(d.getQuantile(0.5) < d.getAxisType().neutralValue ? green : red);
 			}
 			return renderer;
 		}

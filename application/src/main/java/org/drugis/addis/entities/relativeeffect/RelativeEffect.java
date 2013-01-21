@@ -54,9 +54,4 @@ public interface RelativeEffect<T extends Measurement> extends Observable {
 	 * @return the p-value of this distribution being different from "no effect".
 	 */
 	public abstract double getTwoSidedPValue();
-
-	/**
-	 * @return the value representing "no effect".
-	 */
-	public abstract double getNeutralValue();
 }

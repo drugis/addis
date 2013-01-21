@@ -30,19 +30,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.drugis.addis.ExampleData;
 import org.drugis.addis.entities.BasicRateMeasurement;
 import org.drugis.addis.entities.RateMeasurement;
+import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.treatment.TreatmentDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
 public class CorrectedBasicRiskDifferenceTest extends RelativeEffectTestBase {
-	private BasicRiskDifference d_riskDifferenceBennie;
+	private BasicRiskDifference d_riskDifference;
+	private Study d_study;
 	
 	@Before
 	public void setUp() {
-		d_bennie = createRateStudy("Bennie 1995",0,144,73,142);
-		d_riskDifferenceBennie = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(d_bennie, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicRiskDifference.class, true);
+		d_study = ExampleData.buildRateStudy("Study 1995", 0, 144, 73, 142);
+		d_riskDifference = (BasicRiskDifference) RelativeEffectFactory.buildRelativeEffect(
+				d_study, d_rateEndpoint,
+				TreatmentDefinition.createTrivial(d_fluox),
+				TreatmentDefinition.createTrivial(d_sertr),
+				BasicRiskDifference.class, true);
 	}
 
 	@Test
@@ -117,13 +124,13 @@ public class CorrectedBasicRiskDifferenceTest extends RelativeEffectTestBase {
 	public void testError() {
 		// c=0.5, n2 = 145, a = 73.5, n1 = 143 -> b = 69.5, d = 144.5
 		double expectedVal = Math.sqrt(73.5 * 69.5 / Math.pow(143, 3) + 0.5 * 144.5 / Math.pow(145, 3));
-		assertEquals(expectedVal, d_riskDifferenceBennie.getError(), 0.000001);
+		assertEquals(expectedVal, d_riskDifference.getError(), 0.000001);
 	}
 	
 	@Test
 	public void testMu() {
 		// c=0.5, n2 = 145, a = 73.5, n1 = 143 -> b = 69.5, d = 144.5
 		double expected = (73.5/143 - 0.5/145);
-		assertEquals(expected, d_riskDifferenceBennie.getMu(), 0.00001);
+		assertEquals(expected, d_riskDifference.getMu(), 0.00001);
 	}
 }

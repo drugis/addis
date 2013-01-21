@@ -27,19 +27,29 @@
 package org.drugis.addis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.drugis.addis.entities.Measurement;
 import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 
 public class ADDISTestUtil {
-	public static void assertRelativeEffectListEquals(List<BasicRelativeEffect<? extends Measurement>> expected, List<BasicRelativeEffect<? extends Measurement>> actual) {
+	public static void assertRelativeEffectListEquals(List<RelativeEffect<? extends Measurement>> expected, List<RelativeEffect<? extends Measurement>> actual) {
 		assertEquals(expected.size(), actual.size());
 		for (int i = 0; i < expected.size(); ++i) {
 			assertEquals(expected.get(i).getClass(), actual.get(i).getClass());
-			assertEquals(expected.get(i).getBaseline(), actual.get(i).getBaseline());
-			assertEquals(expected.get(i).getSubject(), actual.get(i).getSubject());
+			if (expected.get(i) instanceof BasicRelativeEffect) {
+				assertTrue(actual.get(i) instanceof BasicRelativeEffect);
+				BasicRelativeEffect<?> exp = (BasicRelativeEffect<?>) expected.get(i);
+				BasicRelativeEffect<?> act = (BasicRelativeEffect<?>) actual.get(i);
+				assertEquals(exp.getBaseline(), act.getBaseline());
+				assertEquals(exp.getSubject(), act.getSubject());
+			} else {
+				assertFalse(actual.get(i) instanceof BasicRelativeEffect);
+			}
 		}
 	}
 }

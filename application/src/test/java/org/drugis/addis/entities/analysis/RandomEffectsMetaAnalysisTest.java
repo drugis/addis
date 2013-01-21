@@ -28,10 +28,12 @@ package org.drugis.addis.entities.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -47,9 +49,9 @@ import org.drugis.addis.entities.Study;
 import org.drugis.addis.entities.StudyArmsEntry;
 import org.drugis.addis.entities.relativeeffect.BasicMeanDifference;
 import org.drugis.addis.entities.relativeeffect.BasicOddsRatio;
-import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.BasicRiskRatio;
 import org.drugis.addis.entities.relativeeffect.RandomEffectMetaAnalysisRelativeEffect;
+import org.drugis.addis.entities.relativeeffect.RelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 import org.drugis.addis.entities.relativeeffect.RelativeEffectTestBase;
 import org.drugis.addis.entities.treatment.Category;
@@ -74,12 +76,6 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 
 	@Before
 	public void setUp() {
-		d_bennie = createRateStudy("Bennie 1995",63, 144, 73, 142);
-		d_boyer = createRateStudy("Boyer 1998", 61, 120, 63, 122);
-		d_fava = createRateStudy("Fava 2002", 57, 92, 70, 96);
-		d_newhouse = createRateStudy("Newhouse 2000", 84, 119, 85, 117);
-		d_sechter = createRateStudy("Sechter 1999", 76, 120, 86, 118);
-		
 		d_studyList = new ArrayList<Study>();
 		d_studyList.add(d_bennie);
 		d_studyList.add(d_boyer);
@@ -106,7 +102,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	@Test(expected=IllegalArgumentException.class)
 	public void testDifferentIndicationsThrows() {
 		Indication newInd = new Indication(666L, "bad");
-		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
+		Study newStudy = ExampleData.buildRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		d_studyList.add(newStudy);
 		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
@@ -115,7 +111,7 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	@Test(expected=IllegalArgumentException.class)
 	public void testDifferentDrugs() {
 		Indication newInd = new Indication(666L, "bad");
-		Study newStudy = createRateStudy("name", 0, 10, 0, 20);
+		Study newStudy = ExampleData.buildRateStudy("name", 0, 10, 0, 20);
 		newStudy.setIndication(newInd);
 		List<StudyArmsEntry> armsList = new ArrayList<StudyArmsEntry>();
 		Arm subject = newStudy.getArms().get(1);
@@ -214,8 +210,8 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testContinuousMetaAnalysis() {
-		Study s1 = createContStudy("s1", 50, 4, 2, 50, 6, 2, d_ind);
-		Study s2 = createContStudy("s2", 50, 4, 2, 50, 7, 2, d_ind);
+		Study s1 = ExampleData.buildContinuousStudy("s1", 50, 4, 2, 50, 6, 2);
+		Study s2 = ExampleData.buildContinuousStudy("s2", 50, 4, 2, 50, 7, 2);
 		List<Study> studies = new ArrayList<Study>();
 		studies.add(s1);
 		studies.add(s2);
@@ -240,12 +236,19 @@ public class RandomEffectsMetaAnalysisTest extends RelativeEffectTestBase {
 	
 	@Test
 	public void testFilterUndefinedRelativeEffects() {
-		List<BasicRelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
-		Study zeroRate = createRateStudy("ZeroRate 2012", 0, 120, 86, 118);
+		List<RelativeEffect<? extends Measurement>> expected = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
+		Study zeroRate = ExampleData.buildRateStudy("ZeroRate 2012", 0, 120, 86, 118);
 		d_studyList.add(zeroRate);
-		d_rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
-		List<BasicRelativeEffect<? extends Measurement>> actual = d_rema.getFilteredRelativeEffects(BasicOddsRatio.class);
+		RandomEffectsMetaAnalysis rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, d_studyList, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		List<RelativeEffect<? extends Measurement>> actual = rema.getFilteredRelativeEffects(BasicOddsRatio.class);
 		assertFalse(RelativeEffectFactory.buildRelativeEffect(zeroRate, d_rateEndpoint, TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr), BasicOddsRatio.class, false).isDefined());
 		ADDISTestUtil.assertRelativeEffectListEquals(expected, actual);
+	}
+	
+	@Test
+	public void testPooledIsNullWhenAllUndefined() {
+		Study zeroRate = ExampleData.buildRateStudy("ZeroRate 2012", 0, 120, 86, 118);
+		RandomEffectsMetaAnalysis rema = ExampleData.buildRandomEffectsMetaAnalysis("meta", d_rateEndpoint, Collections.singletonList(zeroRate), TreatmentDefinition.createTrivial(d_fluox), TreatmentDefinition.createTrivial(d_sertr));
+		assertNull(rema.getRelativeEffect(BasicOddsRatio.class));
 	}
 }
