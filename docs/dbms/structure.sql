@@ -1,4 +1,3 @@
-
 CREATE TYPE activity_type AS ENUM ('SCREENING', 'RANDOMIZATION', 'WASH_OUT', 'FOLLOW_UP', 'TREATMENT', 'OTHER');
 CREATE TYPE allocation_type AS ENUM ('UNKNOWN', 'RANDOMIZED', 'NONRANDOMIZED');
 CREATE TYPE blinding_type AS ENUM ('OPEN', 'SINGLE_BLIND', 'DOUBLE_BLIND', 'TRIPLE_BLIND', 'UNKNOWN');
@@ -10,26 +9,26 @@ CREATE TYPE variable_type as ENUM ('PopulationCharacteristic', 'Endpoint', 'Adve
 CREATE TYPE epoch_offset as ENUM ('FROM_EPOCH_START', 'BEFORE_EPOCH_END');
 
 CREATE TABLE "projects" ( 
-  "id" serial,
+  "id" bigserial,
   "name" varchar, 
   "description" text,
   PRIMARY KEY ("id")
 );
 
 CREATE TABLE "project_variables" ( 
-  "project_id" int4,
-  "variable_id" int4,
+  "project_id" bigint,
+  "variable_id" bigint,
   PRIMARY KEY ("project_id", "variable_id")
 );
 
 CREATE TABLE "variable_map" ( 
-  "sub" int4,
-  "super" int4,
+  "sub" bigint,
+  "super" bigint,
   PRIMARY KEY ("sub", "super")
 );
 
 CREATE TABLE "treatment_dosings" (
-  "treatment_id" int4,
+  "treatment_id" bigint,
   "planned_time" interval,
   "min_dose" varchar,
   "max_dose" varchar,
@@ -40,24 +39,24 @@ CREATE TABLE "treatment_dosings" (
 CREATE INDEX ON "treatment_dosings" ("treatment_id") WHERE "planned_time" IS NULL;
 
 CREATE TABLE "treatments" (
-  "id" serial,
-  "study_id" int4,
+  "id" bigserial,
+  "study_id" bigint,
   "activity_name" varchar,
   "drug_name" varchar,
-  "periodicity" interval,
+  "periodicity" interval DEFAULT 'P0D',
   PRIMARY KEY ("id"),
   UNIQUE("study_id", "activity_name", "drug_name")
 );
 
 CREATE TABLE "activities" (
-  "study_id" int4,
+  "study_id" bigint,
   "name" varchar,
   "type" activity_type,
   PRIMARY KEY ("study_id", "name") 
 );
 
 CREATE TABLE "designs" (
-  "study_id" int4,
+  "study_id" bigint,
   "arm_name" varchar,
   "epoch_name" varchar,
   "activity_name" varchar,
@@ -65,21 +64,21 @@ CREATE TABLE "designs" (
 );
 
 CREATE TABLE "epochs" (
-  "study_id" int4,
+  "study_id" bigint,
   "name" varchar,
   "duration" interval DEFAULT 'P0D',
-  "note_hook" int4,
+  "note_hook" bigint,
   PRIMARY KEY ("study_id", "name") 
 );
 
 CREATE TABLE "arms" (
-  "study_id" int4,
+  "study_id" bigint,
   "name" varchar,
   "arm_size" varchar,
-  "note_hook" int4,
+  "note_hook" bigint,
   PRIMARY KEY ("study_id", "name") 
 );
-COMMENT ON COLUMN "arms"."name" IS 'Empty string indicates "total population" (yes, this is sub-optimal)';
+COMMENT ON COLUMN "arms"."name" IS 'Empty string indicates "total population"';
 
 CREATE TABLE "drugs" (
   "name" varchar, 
@@ -98,7 +97,7 @@ CREATE TABLE "units" (
 CREATE INDEX ON "units" ("ucum");
 
 CREATE TABLE "studies" (
-  "id" serial,
+  "id" bigserial,
   "name" varchar,
   "title" text,
   "indication" varchar,
@@ -113,24 +112,24 @@ CREATE TABLE "studies" (
   "status" status,
   "start_date" date,
   "end_date" date,
-  "note_hook" int4,
-  "blinding_type_note_hook" int4,
-  "title_note_hook" int4,
-  "allocation_type_note_hook" int4,
+  "note_hook" bigint,
+  "blinding_type_note_hook" bigint,
+  "title_note_hook" bigint,
+  "allocation_type_note_hook" bigint,
   PRIMARY KEY ("id")
 );
 CREATE INDEX ON "studies" ("name");
 CREATE INDEX ON "studies" ("indication");
 
 CREATE TABLE "study_references" (
-  "study_id" int4,
+  "study_id" bigint,
   "id" varchar, 
   "repostitory" text DEFAULT 'PubMed',
   PRIMARY KEY ("study_id", "id")
 );
 
 CREATE TABLE "variables" (
-  "id" serial,
+  "id" bigserial,
   "name" varchar,
   "description" text,
   "direction" direction,
@@ -140,46 +139,46 @@ CREATE TABLE "variables" (
   "code_system" varchar,
   PRIMARY KEY ("id")
 );
-
-CREATE TABLE "study_variables" ( 
-  "study_id" int4,
-  "variable_id" int4,
-  "is_primary" bool,
-  "variable_type" variable_type,
-  "note_hook" int4,
-  PRIMARY KEY ("variable_id"),
-  UNIQUE ("study_id", "variable_id")
-);
-
 CREATE INDEX variable_id_idx ON "variables" ("id");
 CREATE UNIQUE INDEX variables_code_idx ON "variables" ("name", "code", "code_system");
 
+CREATE TABLE "study_variables" ( 
+  "study_id" bigint,
+  "variable_id" bigint,
+  "is_primary" bool,
+  "variable_type" variable_type,
+  "note_hook" bigint,
+  PRIMARY KEY ("variable_id"),
+  UNIQUE ("study_id", "variable_id")
+);
+CREATE INDEX study_variables_idx ON ("study_id");
+
 CREATE TABLE "variable_categories" (
-  "variable_id" int4,
+  "variable_id" bigint,
   "category_name" varchar,
   PRIMARY KEY ("variable_id", "category_name") 
 );
 
 CREATE TABLE "measurements" (
-  "study_id" int4,
-  "variable_id" int4,
+  "study_id" bigint,
+  "variable_id" bigint,
   "measurement_moment_name" varchar,
   "arm_name" varchar,
   "attribute" varchar, 
-  "integer_value" int4,
+  "integer_value" bigint,
   "real_value" float, 
   PRIMARY KEY ("variable_id", "measurement_moment_name", "arm_name", "attribute") 
 );
 COMMENT ON COLUMN "measurements"."variable_id" IS 'Uniquely identifies the study';
 
 CREATE TABLE "measurement_moments" ( 
-  "study_id" int4,
+  "study_id" bigint,
   "name" varchar,
   "epoch_name" varchar,
-  "primary" bool,
+  "is_primary" bool,
   "offset_from_epoch" interval,
   "before_epoch" epoch_offset,
-  "note_hook" int4,
+  "note_hook" bigint,
   PRIMARY KEY ("study_id", "name"),
   UNIQUE ("study_id", "epoch_name", "offset_from_epoch", "before_epoch")
 );
@@ -190,6 +189,7 @@ CREATE TABLE "indications" (
   "code_system" varchar,
   PRIMARY KEY ("name") 
 );
+CREATE UNIQUE INDEX indications_code_idx ON "indications" ("code", "code_system");
 
 CREATE TABLE "code_systems" (
   "code_system" varchar,
@@ -198,17 +198,18 @@ CREATE TABLE "code_systems" (
 );
 
 CREATE TABLE "note_hooks" (
-  "id" serial,
+  "id" bigserial,
   PRIMARY KEY ("id") 
 );
 
 CREATE TABLE "notes" (
-  "id" serial,
-  "note_hook_id" int4,
+  "id" bigserial,
+  "note_hook_id" bigint,
   "text" text,
   "source" source,
   PRIMARY KEY ("id", "note_hook_id") 
 );
+
 ALTER TABLE "project_variables" ADD CONSTRAINT "projects_variables__project_fkey" FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
 ALTER TABLE "project_variables" ADD CONSTRAINT "projects_variables_variable_fkey" FOREIGN KEY ("variable_id") REFERENCES "variables" ("id");
 ALTER TABLE "variable_map" ADD CONSTRAINT "variable_subtype_map_fkey" FOREIGN KEY ("sub") REFERENCES "variables" ("id"); 
