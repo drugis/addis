@@ -255,7 +255,6 @@
     
     <xsl:template match="studyOutcomeMeasures/studyOutcomeMeasure">
         <xsl:apply-templates select="whenTaken"/>
-        
         <xsl:variable name="tagName" select="name(./(endpoint|populationCharacteristic|adverseEvent))" />
         <xsl:variable name="varType" select="concat(upper-case(substring($tagName, 1, 1)), substring($tagName, 2))" />
         <xsl:variable name="varName" select="(endpoint|populationCharacteristic|adverseEvent)/@name" />
@@ -297,7 +296,7 @@
             <xsl:value-of select="drugis:create-notes('note_hook', ../notes, false())" />
         )
         <xsl:variable name="name" select="drugis:create-mm-name(epoch/@name, @howLong, @relativeTo)" />
-        INSERT INTO measurement_moments ("study_id", "name", "epoch_name", "primary", "offset_from_epoch", "before_epoch", "note_hook") 
+        INSERT INTO measurement_moments ("study_id", "name", "epoch_name", "is_primary", "offset_from_epoch", "before_epoch", "note_hook") 
         SELECT <xsl:value-of select="drugis:get-study(../../../@name)"/>,
             <xsl:value-of select="$name"/>,
             '<xsl:value-of select="epoch/@name"/>',
@@ -394,7 +393,7 @@
                     '<xsl:value-of select="drug/@name" />',
                     '<xsl:value-of select="(fixedDose|flexibleDose)/doseUnit/@perTime" />') RETURNING id) 
                 INSERT INTO treatment_dosings (treatment_id, planned_time, min_dose, max_dose, scale_modifier, unit) VALUES ( 
-                    (SELECT id FROM treatment ),
+                    (SELECT id FROM treatment),
                     'P0D',
                 <xsl:choose>
                     <xsl:when test="fixedDose">
