@@ -112,13 +112,13 @@
   <body>
 
     <!-- Primary Index -->
-	<p><br><br>Dumped on 2013-01-21</p>
+	<p><br><br>Dumped on 2013-03-12</p>
 <h1><a name="index">Index of database - addis</a></h1>
 <ul>
     
     <li><a name="public.schema">public</a></li><ul>
-    	<li><a href="#public.table.activities">activities</a></li><li><a href="#public.table.arms">arms</a></li><li><a href="#public.table.code-systems">code_systems</a></li><li><a href="#public.table.designs">designs</a></li><li><a href="#public.table.drugs">drugs</a></li><li><a href="#public.table.epochs">epochs</a></li><li><a href="#public.table.indications">indications</a></li><li><a href="#public.table.measurement-moments">measurement_moments</a></li><li><a href="#public.table.measurements">measurements</a></li><li><a href="#public.table.note-hooks">note_hooks</a></li><li><a href="#public.table.notes">notes</a></li><li><a href="#public.table.project-variables">project_variables</a></li><li><a href="#public.table.projects">projects</a></li><li><a href="#public.table.studies">studies</a></li><li><a href="#public.table.study-references">study_references</a></li><li><a href="#public.table.study-variables">study_variables</a></li><li><a href="#public.table.treatment-dosings">treatment_dosings</a></li><li><a href="#public.table.treatments">treatments</a></li><li><a href="#public.table.units">units</a></li><li><a href="#public.table.variable-categories">variable_categories</a></li><li><a href="#public.table.variable-map">variable_map</a></li><li><a href="#public.table.variables">variables</a></li>
-  	
+    	<li><a href="#public.table.activities">activities</a></li><li><a href="#public.table.arms">arms</a></li><li><a href="#public.table.code-systems">code_systems</a></li><li><a href="#public.table.concept-map">concept_map</a></li><li><a href="#public.table.concepts">concepts</a></li><li><a href="#public.table.designs">designs</a></li><li><a href="#public.table.epochs">epochs</a></li><li><a href="#public.table.measurement-moments">measurement_moments</a></li><li><a href="#public.table.measurements">measurements</a></li><li><a href="#public.table.note-hooks">note_hooks</a></li><li><a href="#public.table.notes">notes</a></li><li><a href="#public.table.project-studies">project_studies</a></li><li><a href="#public.table.projects">projects</a></li><li><a href="#public.table.studies">studies</a></li><li><a href="#public.table.study-references">study_references</a></li><li><a href="#public.table.study-variables">study_variables</a></li><li><a href="#public.table.treatment-dosings">treatment_dosings</a></li><li><a href="#public.table.treatments">treatments</a></li><li><a href="#public.table.variable-categories">variable_categories</a></li>
+  	<li><a href="#public.function.uuid-generate-v1">uuid_generate_v1()</a></li><li><a href="#public.function.uuid-generate-v1mc">uuid_generate_v1mc()</a></li><li><a href="#public.function.uuid-generate-v3-name-uuid-namespace-text">uuid_generate_v3(name uuid, namespace text)</a></li><li><a href="#public.function.uuid-generate-v4">uuid_generate_v4()</a></li><li><a href="#public.function.uuid-generate-v5-name-uuid-namespace-text">uuid_generate_v5(name uuid, namespace text)</a></li><li><a href="#public.function.uuid-nil">uuid_nil()</a></li><li><a href="#public.function.uuid-ns-dns">uuid_ns_dns()</a></li><li><a href="#public.function.uuid-ns-oid">uuid_ns_oid()</a></li><li><a href="#public.function.uuid-ns-url">uuid_ns_url()</a></li><li><a href="#public.function.uuid-ns-x500">uuid_ns_x500()</a></li>
     </ul>
     
 </ul>
@@ -151,7 +151,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -273,7 +273,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -312,7 +312,7 @@
 				
 				
 				</i>
-				<br><br>Empty string indicates &quot;total population&quot; (yes, this is sub-optimal)
+				<br><br>Empty string indicates &quot;total population&quot;
 				</td>
 			 </tr>
             
@@ -341,7 +341,7 @@
                 
                 </td>
             	<td>note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -468,15 +468,313 @@
 			<p>Tables referencing this one via Foreign Key Constraints:</p>
 		
 			<ul>
-				<li><a href="#public.table.drugs">drugs</a></li>
+				<li><a href="#public.table.concepts">concepts</a></li>
+			</ul>
+		
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.concept-map">concept_map</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>concept_map Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.concepts">concepts.id</a>
+                  
+                
+                </td>
+            	<td>sub</td>
+            	<td>uuid</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                
+                  
+                  <a href="#public.table.concepts">concepts.id</a>
+                  
+                
+                </td>
+            	<td>super</td>
+            	<td>uuid</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+
+    <!-- Indexes -->
+    
+
+	<!-- View Definition -->
+	
+
+	<!-- List off permissions -->
+	
+
+	<p>
+		<a href="#index">Index</a> -
+		<a href="#public.schema">Schema public</a>
+    </p>
+	
+        <hr>
+		<h2>Table:
+			<a name="public.table.concepts">concepts</a>
+		</h2>
+        
+
+
+        <table width="100%" cellspacing="0" cellpadding="3">
+                <caption>concepts Structure</caption>
+                <tr>
+                <th>F-Key</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                  
+                
+                </td>
+            	<td>id</td>
+            	<td>uuid</td>
+                <td><i>
+				
+					PRIMARY KEY
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>name</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>description</td>
+            	<td>text</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>type</td>
+            	<td>concept_type</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>code</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                  
+                  <a href="#public.table.code-systems">code_systems.code_system</a>
+                  
+                
+                </td>
+            	<td>code_system</td>
+            	<td>character varying</td>
+                <td><i>
+				
+					
+
+					
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>owner</td>
+            	<td>character varying</td>
+                <td><i>
+				
+
+				NOT NULL
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+        </table>
+
+        <!-- Inherits -->
+		
+
+		
+		
+		
+
+        <!-- Constraint List -->
+		
+
+        <!-- Foreign Key Discovery -->
+		
+			<p>Tables referencing this one via Foreign Key Constraints:</p>
+		
+			<ul>
+				<li><a href="#public.table.concept-map">concept_map</a></li>
 			</ul>
 		
 			<ul>
-				<li><a href="#public.table.indications">indications</a></li>
+				<li><a href="#public.table.studies">studies</a></li>
 			</ul>
 		
 			<ul>
-				<li><a href="#public.table.variables">variables</a></li>
+				<li><a href="#public.table.study-variables">study_variables</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.treatment-dosings">treatment_dosings</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.treatments">treatments</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.variable-categories">variable_categories</a></li>
 			</ul>
 		
 		
@@ -530,7 +828,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -675,121 +973,6 @@
 	
         <hr>
 		<h2>Table:
-			<a name="public.table.drugs">drugs</a>
-		</h2>
-        
-
-
-        <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>drugs Structure</caption>
-                <tr>
-                <th>F-Key</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Description</th>
-                </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>name</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                </td>
-            	<td>code</td>
-            	<td>character varying</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                  <a href="#public.table.code-systems">code_systems.code_system</a>
-                  
-                
-                </td>
-            	<td>code_system</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-        </table>
-
-        <!-- Inherits -->
-		
-
-		
-		
-		
-
-        <!-- Constraint List -->
-		
-
-        <!-- Foreign Key Discovery -->
-		
-			<p>Tables referencing this one via Foreign Key Constraints:</p>
-		
-			<ul>
-				<li><a href="#public.table.treatments">treatments</a></li>
-			</ul>
-		
-		
-
-    <!-- Indexes -->
-    
-
-	<!-- View Definition -->
-	
-
-	<!-- List off permissions -->
-	
-
-	<p>
-		<a href="#index">Index</a> -
-		<a href="#public.schema">Schema public</a>
-    </p>
-	
-        <hr>
-		<h2>Table:
 			<a name="public.table.epochs">epochs</a>
 		</h2>
         
@@ -815,7 +998,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -883,7 +1066,7 @@
                 
                 </td>
             	<td>note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -940,121 +1123,6 @@
 	
         <hr>
 		<h2>Table:
-			<a name="public.table.indications">indications</a>
-		</h2>
-        
-
-
-        <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>indications Structure</caption>
-                <tr>
-                <th>F-Key</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Description</th>
-                </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>name</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                </td>
-            	<td>code</td>
-            	<td>character varying</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                  <a href="#public.table.code-systems">code_systems.code_system</a>
-                  
-                
-                </td>
-            	<td>code_system</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-        </table>
-
-        <!-- Inherits -->
-		
-
-		
-		
-		
-
-        <!-- Constraint List -->
-		
-
-        <!-- Foreign Key Discovery -->
-		
-			<p>Tables referencing this one via Foreign Key Constraints:</p>
-		
-			<ul>
-				<li><a href="#public.table.studies">studies</a></li>
-			</ul>
-		
-		
-
-    <!-- Indexes -->
-    
-
-	<!-- View Definition -->
-	
-
-	<!-- List off permissions -->
-	
-
-	<p>
-		<a href="#index">Index</a> -
-		<a href="#public.schema">Schema public</a>
-    </p>
-	
-        <hr>
-		<h2>Table:
 			<a name="public.table.measurement-moments">measurement_moments</a>
 		</h2>
         
@@ -1082,7 +1150,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -1167,7 +1235,7 @@
 				<td>
                 
                 </td>
-            	<td>primary</td>
+            	<td>is_primary</td>
             	<td>boolean</td>
                 <td><i>
 				
@@ -1236,7 +1304,7 @@
                 
                 </td>
             	<td>note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -1320,7 +1388,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -1349,12 +1417,12 @@
                   
                 
                   
-                  <a href="#public.table.study-variables">study_variables.variable_id#1</a>
+                  <a href="#public.table.study-variables">study_variables.variable_concept#1</a>
                   
                 
                 </td>
-            	<td>variable_id</td>
-            	<td>integer</td>
+            	<td>variable_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -1464,7 +1532,7 @@
                 
                 </td>
             	<td>integer_value</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 
@@ -1543,7 +1611,7 @@
                 
                 </td>
             	<td>id</td>
-            	<td>serial</td>
+            	<td>bigserial</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -1638,7 +1706,7 @@
                 
                 </td>
             	<td>id</td>
-            	<td>serial</td>
+            	<td>bigserial</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -1665,7 +1733,7 @@
                 
                 </td>
             	<td>note_hook_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -1748,13 +1816,13 @@
 	
         <hr>
 		<h2>Table:
-			<a name="public.table.project-variables">project_variables</a>
+			<a name="public.table.project-studies">project_studies</a>
 		</h2>
         
 
 
         <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>project_variables Structure</caption>
+                <caption>project_studies Structure</caption>
                 <tr>
                 <th>F-Key</th>
                 <th>Name</th>
@@ -1773,7 +1841,7 @@
                 
                 </td>
             	<td>project_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -1799,12 +1867,12 @@
                   
                 
                   
-                  <a href="#public.table.variables">variables.id</a>
+                  <a href="#public.table.studies">studies.id</a>
                   
                 
                 </td>
-            	<td>variable_id</td>
-            	<td>integer</td>
+            	<td>study_id</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -1876,7 +1944,7 @@
                 
                 </td>
             	<td>id</td>
-            	<td>serial</td>
+            	<td>bigserial</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -1941,7 +2009,7 @@
 			<p>Tables referencing this one via Foreign Key Constraints:</p>
 		
 			<ul>
-				<li><a href="#public.table.project-variables">project_variables</a></li>
+				<li><a href="#public.table.project-studies">project_studies</a></li>
 			</ul>
 		
 		
@@ -1983,7 +2051,7 @@
                 
                 </td>
             	<td>id</td>
-            	<td>serial</td>
+            	<td>bigserial</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -2035,12 +2103,12 @@
 				<td>
                 
                   
-                  <a href="#public.table.indications">indications.name</a>
+                  <a href="#public.table.concepts">concepts.id</a>
                   
                 
                 </td>
-            	<td>indication</td>
-            	<td>character varying</td>
+            	<td>indication_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 					
@@ -2240,7 +2308,7 @@
                 
                 </td>
             	<td>note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2264,7 +2332,7 @@
                 
                 </td>
             	<td>blinding_type_note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2288,7 +2356,7 @@
                 
                 </td>
             	<td>title_note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2312,7 +2380,7 @@
                 
                 </td>
             	<td>allocation_type_note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2352,6 +2420,10 @@
 			</ul>
 		
 			<ul>
+				<li><a href="#public.table.project-studies">project_studies</a></li>
+			</ul>
+		
+			<ul>
 				<li><a href="#public.table.study-references">study_references</a></li>
 			</ul>
 		
@@ -2359,7 +2431,7 @@
 
     <!-- Indexes -->
     
-       studies_indication_idx indication
+       studies_indication_concept_idx indication_concept
     
        studies_name_idx name
     
@@ -2395,21 +2467,21 @@
 				<td>
                 
                   
-                  <a href="#public.table.studies">studies.id</a>
-                  
                 
+                  
+                  <a href="#public.table.studies">studies.id</a>
                   
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
+					PRIMARY KEY
 					
 
 					
 				
-					PRIMARY KEY
 					
 
 					
@@ -2513,14 +2585,13 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
+					PRIMARY KEY
 					
 
 					
-                       UNIQUE#1
-                    
 				
 
 				
@@ -2534,16 +2605,18 @@
 				<td>
                 
                   
-                  <a href="#public.table.variables">variables.id</a>
+                  <a href="#public.table.concepts">concepts.id</a>
                   
                 
                   
                 
+                  
+                  <a href="#public.table.concepts">concepts.id</a>
                   
                 
                 </td>
-            	<td>variable_id</td>
-            	<td>integer</td>
+            	<td>variable_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 					
@@ -2558,8 +2631,6 @@
 					
 
 					
-                       UNIQUE#1
-                    
 				
 
 				
@@ -2575,6 +2646,38 @@
                 </td>
             	<td>is_primary</td>
             	<td>boolean</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr1">
+				<td>
+                
+                </td>
+            	<td>measurement_type</td>
+            	<td>measurement_type</td>
+                <td><i>
+				
+
+				
+				
+				</i>
+				
+				</td>
+			 </tr>
+            
+            <tr class="tr0">
+				<td>
+                
+                </td>
+            	<td>unit_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 
@@ -2610,7 +2713,7 @@
                 
                 </td>
             	<td>note_hook</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2648,6 +2751,8 @@
 		
 
     <!-- Indexes -->
+    
+       study_variables_study_id_idx study_id
     
 
 	<!-- View Definition -->
@@ -2688,7 +2793,7 @@
                 
                 </td>
             	<td>treatment_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2783,12 +2888,12 @@
 				<td>
                 
                   
-                  <a href="#public.table.units">units.name</a>
+                  <a href="#public.table.concepts">concepts.id</a>
                   
                 
                 </td>
-            	<td>unit</td>
-            	<td>character varying</td>
+            	<td>unit_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 					
@@ -2857,7 +2962,7 @@
                 
                 </td>
             	<td>id</td>
-            	<td>serial</td>
+            	<td>bigserial</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -2884,7 +2989,7 @@
                 
                 </td>
             	<td>study_id</td>
-            	<td>integer</td>
+            	<td>bigint</td>
                 <td><i>
 				
 					
@@ -2941,14 +3046,14 @@
 				<td>
                 
                   
-                  <a href="#public.table.drugs">drugs.name</a>
+                  <a href="#public.table.concepts">concepts.id</a>
                   
                 
                   
                 
                 </td>
-            	<td>drug_name</td>
-            	<td>character varying</td>
+            	<td>drug_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 					
@@ -2979,7 +3084,7 @@
 				
 
 				
-				
+				DEFAULT &#39;00:00:00&#39;::interval
 				</i>
 				
 				</td>
@@ -3008,119 +3113,6 @@
 		
 
     <!-- Indexes -->
-    
-
-	<!-- View Definition -->
-	
-
-	<!-- List off permissions -->
-	
-
-	<p>
-		<a href="#index">Index</a> -
-		<a href="#public.schema">Schema public</a>
-    </p>
-	
-        <hr>
-		<h2>Table:
-			<a name="public.table.units">units</a>
-		</h2>
-        
-
-
-        <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>units Structure</caption>
-                <tr>
-                <th>F-Key</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Description</th>
-                </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>name</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                </td>
-            	<td>symbol</td>
-            	<td>character varying</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                </td>
-            	<td>ucum</td>
-            	<td>character varying</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-        </table>
-
-        <!-- Inherits -->
-		
-
-		
-		
-		
-
-        <!-- Constraint List -->
-		
-
-        <!-- Foreign Key Discovery -->
-		
-			<p>Tables referencing this one via Foreign Key Constraints:</p>
-		
-			<ul>
-				<li><a href="#public.table.treatment-dosings">treatment_dosings</a></li>
-			</ul>
-		
-			<ul>
-				<li><a href="#public.table.variables">variables</a></li>
-			</ul>
-		
-		
-
-    <!-- Indexes -->
-    
-       units_ucum_idx ucum
     
 
 	<!-- View Definition -->
@@ -3156,12 +3148,12 @@
                   
                 
                   
-                  <a href="#public.table.variables">variables.id</a>
+                  <a href="#public.table.concepts">concepts.id</a>
                   
                 
                 </td>
-            	<td>variable_id</td>
-            	<td>integer</td>
+            	<td>variable_concept</td>
+            	<td>uuid</td>
                 <td><i>
 				
 					PRIMARY KEY
@@ -3233,332 +3225,98 @@
 		<a href="#public.schema">Schema public</a>
     </p>
 	
-        <hr>
-		<h2>Table:
-			<a name="public.table.variable-map">variable_map</a>
-		</h2>
-        
-
-
-        <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>variable_map Structure</caption>
-                <tr>
-                <th>F-Key</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Description</th>
-                </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                
-                  
-                  <a href="#public.table.variables">variables.id</a>
-                  
-                
-                </td>
-            	<td>sub</td>
-            	<td>integer</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                  
-                
-                  
-                  <a href="#public.table.variables">variables.id</a>
-                  
-                
-                </td>
-            	<td>super</td>
-            	<td>integer</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-        </table>
-
-        <!-- Inherits -->
-		
-
-		
-		
-		
-
-        <!-- Constraint List -->
-		
-
-        <!-- Foreign Key Discovery -->
-		
-
-    <!-- Indexes -->
-    
-
-	<!-- View Definition -->
-	
-
-	<!-- List off permissions -->
-	
-
-	<p>
-		<a href="#index">Index</a> -
-		<a href="#public.schema">Schema public</a>
-    </p>
-	
-        <hr>
-		<h2>Table:
-			<a name="public.table.variables">variables</a>
-		</h2>
-        
-
-
-        <table width="100%" cellspacing="0" cellpadding="3">
-                <caption>variables Structure</caption>
-                <tr>
-                <th>F-Key</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Description</th>
-                </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                  
-                
-                </td>
-            	<td>id</td>
-            	<td>serial</td>
-                <td><i>
-				
-					PRIMARY KEY
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                </td>
-            	<td>name</td>
-            	<td>character varying</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                </td>
-            	<td>description</td>
-            	<td>text</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                </td>
-            	<td>direction</td>
-            	<td>direction</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                </td>
-            	<td>measurement_type</td>
-            	<td>measurement_type</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                  
-                  <a href="#public.table.units">units.name</a>
-                  
-                
-                </td>
-            	<td>unit</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr0">
-				<td>
-                
-                </td>
-            	<td>code</td>
-            	<td>character varying</td>
-                <td><i>
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-            <tr class="tr1">
-				<td>
-                
-                  
-                  <a href="#public.table.code-systems">code_systems.code_system</a>
-                  
-                
-                </td>
-            	<td>code_system</td>
-            	<td>character varying</td>
-                <td><i>
-				
-					
-
-					
-				
-
-				
-				
-				</i>
-				
-				</td>
-			 </tr>
-            
-        </table>
-
-        <!-- Inherits -->
-		
-
-		
-		
-		
-
-        <!-- Constraint List -->
-		
-
-        <!-- Foreign Key Discovery -->
-		
-			<p>Tables referencing this one via Foreign Key Constraints:</p>
-		
-			<ul>
-				<li><a href="#public.table.project-variables">project_variables</a></li>
-			</ul>
-		
-			<ul>
-				<li><a href="#public.table.study-variables">study_variables</a></li>
-			</ul>
-		
-			<ul>
-				<li><a href="#public.table.variable-categories">variable_categories</a></li>
-			</ul>
-		
-			<ul>
-				<li><a href="#public.table.variable-map">variable_map</a></li>
-			</ul>
-		
-		
-
-    <!-- Indexes -->
-    
-       variable_id_idx id
-    
-
-	<!-- View Definition -->
-	
-
-	<!-- List off permissions -->
-	
-
-	<p>
-		<a href="#index">Index</a> -
-		<a href="#public.schema">Schema public</a>
-    </p>
-	
 
 	<!-- We've gone through the table structure, now lets take a look at user functions -->
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-generate-v1">uuid_generate_v1()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_generate_v1</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-generate-v1mc">uuid_generate_v1mc()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_generate_v1mc</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-generate-v3-name-uuid-namespace-text">uuid_generate_v3(name uuid, namespace text)</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_generate_v3</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-generate-v4">uuid_generate_v4()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_generate_v4</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-generate-v5-name-uuid-namespace-text">uuid_generate_v5(name uuid, namespace text)</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_generate_v5</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-nil">uuid_nil()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_nil</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-ns-dns">uuid_ns_dns()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_ns_dns</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-ns-oid">uuid_ns_oid()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_ns_oid</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-ns-url">uuid_ns_url()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_ns_url</pre>
+	
+		<hr>
+		<h2>Function:
+			<a href="#public.schema"><a name="public.function.uuid-ns-x500">uuid_ns_x500()</a>
+		</h2>
+<h3>Returns: uuid</h3>
+<h3>Language: C</h3>
+        
+        <pre>uuid_ns_x500</pre>
 	
 
 
