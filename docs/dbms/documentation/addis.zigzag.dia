@@ -2813,7 +2813,7 @@
           </dia:attribute>
           <dia:attribute name="value">
 
-            <dia:string/>
+            <dia:string>#&#39;MANUAL&#39;::source#</dia:string>
 
           </dia:attribute>
           <dia:attribute name="visibility">
@@ -3186,7 +3186,7 @@
 
         <dia:composite type="umlattribute">
           <dia:attribute name="name">
-            <dia:string>#  repostitory#</dia:string>
+            <dia:string>#  repository#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
             <dia:string>#text#</dia:string>
@@ -4161,7 +4161,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_arms_note_hook_fkey#</dia:string>
+        <dia:string>#arms_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4275,7 +4275,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#concept_code_system_fkey#</dia:string>
+        <dia:string>#concepts_code_system_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4465,7 +4465,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_epochs_note_hook_fkey#</dia:string>
+        <dia:string>#epochs_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4541,7 +4541,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_measurement_note_hook_fkey#</dia:string>
+        <dia:string>#measurement_moments_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4693,7 +4693,45 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#note_note_hooks_fkey#</dia:string>
+        <dia:string>#measurements_variable_concept_fkey#</dia:string>
+      </dia:attribute>
+      <dia:attribute name="stereotype">
+        <dia:string>##</dia:string>
+      </dia:attribute>
+      <dia:attribute name="draw_arrow">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O9" connection="10"/>
+        <dia:connection handle="1" to="O5" connection="9"/>
+      </dia:connections>
+    </dia:object>
+
+    <dia:object type="UML - Dependency" version="0" id="O36">
+      <dia:attribute name="obj_pos">
+        <dia:point val="0,3.5"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
+      </dia:attribute>
+      <dia:attribute name="orth_points">
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_orient">
+        <dia:enum val="1"/>
+        <dia:enum val="0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_autoroute">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="name">
+        <dia:string>#notes_note_hook_id_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4707,7 +4745,7 @@
       </dia:connections>
     </dia:object>
 
-    <dia:object type="UML - Dependency" version="0" id="O36">
+    <dia:object type="UML - Dependency" version="0" id="O37">
       <dia:attribute name="obj_pos">
         <dia:point val="0,3.5"/>
       </dia:attribute>
@@ -4745,44 +4783,6 @@
       </dia:connections>
     </dia:object>
 
-    <dia:object type="UML - Dependency" version="0" id="O37">
-      <dia:attribute name="obj_pos">
-        <dia:point val="0,3.5"/>
-      </dia:attribute>
-      <dia:attribute name="obj_bb">
-        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
-      </dia:attribute>
-      <dia:attribute name="orth_points">
-        <dia:point val="1.0,1.0"/>
-        <dia:point val="1.0,1.0"/>
-        <dia:point val="1.0,1.0"/>
-      </dia:attribute>
-      <dia:attribute name="orth_orient">
-        <dia:enum val="1"/>
-        <dia:enum val="0"/>
-      </dia:attribute>
-      <dia:attribute name="orth_autoroute">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-
-      <dia:attribute name="line_colour">
-        <dia:color val="#000000"/>
-      </dia:attribute>
-      <dia:attribute name="name">
-        <dia:string>#study_fkey#</dia:string>
-      </dia:attribute>
-      <dia:attribute name="stereotype">
-        <dia:string>##</dia:string>
-      </dia:attribute>
-      <dia:attribute name="draw_arrow">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-      <dia:connections>
-        <dia:connection handle="0" to="O12" connection="10"/>
-        <dia:connection handle="1" to="O14" connection="9"/>
-      </dia:connections>
-    </dia:object>
-
     <dia:object type="UML - Dependency" version="0" id="O38">
       <dia:attribute name="obj_pos">
         <dia:point val="0,3.5"/>
@@ -4807,7 +4807,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_indication_fkey#</dia:string>
+        <dia:string>#project_studies_study_id_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4816,8 +4816,8 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O14" connection="14"/>
-        <dia:connection handle="1" to="O5" connection="9"/>
+        <dia:connection handle="0" to="O12" connection="10"/>
+        <dia:connection handle="1" to="O14" connection="9"/>
       </dia:connections>
     </dia:object>
 
@@ -4845,7 +4845,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_note_hook_fkey#</dia:string>
+        <dia:string>#studies_indication_concept_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4854,8 +4854,8 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O14" connection="38"/>
-        <dia:connection handle="1" to="O10" connection="9"/>
+        <dia:connection handle="0" to="O14" connection="14"/>
+        <dia:connection handle="1" to="O5" connection="9"/>
       </dia:connections>
     </dia:object>
 
@@ -4883,7 +4883,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_blinding_type_note_hook_fkey#</dia:string>
+        <dia:string>#studies_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4892,7 +4892,7 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O14" connection="40"/>
+        <dia:connection handle="0" to="O14" connection="38"/>
         <dia:connection handle="1" to="O10" connection="9"/>
       </dia:connections>
     </dia:object>
@@ -4921,7 +4921,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_title_note_hook_fkey#</dia:string>
+        <dia:string>#studies_blinding_type_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4930,7 +4930,7 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O14" connection="42"/>
+        <dia:connection handle="0" to="O14" connection="40"/>
         <dia:connection handle="1" to="O10" connection="9"/>
       </dia:connections>
     </dia:object>
@@ -4959,7 +4959,45 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#allocation_type_note_hook_fkey#</dia:string>
+        <dia:string>#studies_title_note_hook_fkey#</dia:string>
+      </dia:attribute>
+      <dia:attribute name="stereotype">
+        <dia:string>##</dia:string>
+      </dia:attribute>
+      <dia:attribute name="draw_arrow">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O14" connection="42"/>
+        <dia:connection handle="1" to="O10" connection="9"/>
+      </dia:connections>
+    </dia:object>
+
+    <dia:object type="UML - Dependency" version="0" id="O43">
+      <dia:attribute name="obj_pos">
+        <dia:point val="0,3.5"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
+      </dia:attribute>
+      <dia:attribute name="orth_points">
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_orient">
+        <dia:enum val="1"/>
+        <dia:enum val="0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_autoroute">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="name">
+        <dia:string>#studies_allocation_type_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -4973,7 +5011,7 @@
       </dia:connections>
     </dia:object>
 
-    <dia:object type="UML - Dependency" version="0" id="O43">
+    <dia:object type="UML - Dependency" version="0" id="O44">
       <dia:attribute name="obj_pos">
         <dia:point val="0,3.5"/>
       </dia:attribute>
@@ -5008,44 +5046,6 @@
       <dia:connections>
         <dia:connection handle="0" to="O15" connection="8"/>
         <dia:connection handle="1" to="O14" connection="9"/>
-      </dia:connections>
-    </dia:object>
-
-    <dia:object type="UML - Dependency" version="0" id="O44">
-      <dia:attribute name="obj_pos">
-        <dia:point val="0,3.5"/>
-      </dia:attribute>
-      <dia:attribute name="obj_bb">
-        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
-      </dia:attribute>
-      <dia:attribute name="orth_points">
-        <dia:point val="1.0,1.0"/>
-        <dia:point val="1.0,1.0"/>
-        <dia:point val="1.0,1.0"/>
-      </dia:attribute>
-      <dia:attribute name="orth_orient">
-        <dia:enum val="1"/>
-        <dia:enum val="0"/>
-      </dia:attribute>
-      <dia:attribute name="orth_autoroute">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-
-      <dia:attribute name="line_colour">
-        <dia:color val="#000000"/>
-      </dia:attribute>
-      <dia:attribute name="name">
-        <dia:string>#study_variable_fkey#</dia:string>
-      </dia:attribute>
-      <dia:attribute name="stereotype">
-        <dia:string>##</dia:string>
-      </dia:attribute>
-      <dia:attribute name="draw_arrow">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-      <dia:connections>
-        <dia:connection handle="0" to="O16" connection="10"/>
-        <dia:connection handle="1" to="O5" connection="9"/>
       </dia:connections>
     </dia:object>
 
@@ -5111,7 +5111,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#study_variable_note_hook_fkey#</dia:string>
+        <dia:string>#study_variables_unit_concept_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -5120,8 +5120,8 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O16" connection="20"/>
-        <dia:connection handle="1" to="O10" connection="9"/>
+        <dia:connection handle="0" to="O16" connection="16"/>
+        <dia:connection handle="1" to="O5" connection="9"/>
       </dia:connections>
     </dia:object>
 
@@ -5149,7 +5149,7 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#treatment_dosings_fkey#</dia:string>
+        <dia:string>#study_variables_note_hook_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -5158,8 +5158,8 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:connections>
-        <dia:connection handle="0" to="O17" connection="8"/>
-        <dia:connection handle="1" to="O18" connection="9"/>
+        <dia:connection handle="0" to="O16" connection="20"/>
+        <dia:connection handle="1" to="O10" connection="9"/>
       </dia:connections>
     </dia:object>
 
@@ -5187,7 +5187,45 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#treatment_dosings_unit_fkey#</dia:string>
+        <dia:string>#treatment_dosings_treatment_id_fkey#</dia:string>
+      </dia:attribute>
+      <dia:attribute name="stereotype">
+        <dia:string>##</dia:string>
+      </dia:attribute>
+      <dia:attribute name="draw_arrow">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O17" connection="8"/>
+        <dia:connection handle="1" to="O18" connection="9"/>
+      </dia:connections>
+    </dia:object>
+
+    <dia:object type="UML - Dependency" version="0" id="O49">
+      <dia:attribute name="obj_pos">
+        <dia:point val="0,3.5"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
+      </dia:attribute>
+      <dia:attribute name="orth_points">
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_orient">
+        <dia:enum val="1"/>
+        <dia:enum val="0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_autoroute">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="name">
+        <dia:string>#treatment_dosings_unit_concept_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>
@@ -5201,7 +5239,7 @@
       </dia:connections>
     </dia:object>
 
-    <dia:object type="UML - Dependency" version="0" id="O49">
+    <dia:object type="UML - Dependency" version="0" id="O50">
       <dia:attribute name="obj_pos">
         <dia:point val="0,3.5"/>
       </dia:attribute>
@@ -5239,44 +5277,6 @@
       </dia:connections>
     </dia:object>
 
-    <dia:object type="UML - Dependency" version="0" id="O50">
-      <dia:attribute name="obj_pos">
-        <dia:point val="0,3.5"/>
-      </dia:attribute>
-      <dia:attribute name="obj_bb">
-        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
-      </dia:attribute>
-      <dia:attribute name="orth_points">
-        <dia:point val="1.0,1.0"/>
-        <dia:point val="1.0,1.0"/>
-        <dia:point val="1.0,1.0"/>
-      </dia:attribute>
-      <dia:attribute name="orth_orient">
-        <dia:enum val="1"/>
-        <dia:enum val="0"/>
-      </dia:attribute>
-      <dia:attribute name="orth_autoroute">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-
-      <dia:attribute name="line_colour">
-        <dia:color val="#000000"/>
-      </dia:attribute>
-      <dia:attribute name="name">
-        <dia:string>#treatments_drug_fkey#</dia:string>
-      </dia:attribute>
-      <dia:attribute name="stereotype">
-        <dia:string>##</dia:string>
-      </dia:attribute>
-      <dia:attribute name="draw_arrow">
-        <dia:boolean val="true"/>
-      </dia:attribute>
-      <dia:connections>
-        <dia:connection handle="0" to="O18" connection="14"/>
-        <dia:connection handle="1" to="O5" connection="9"/>
-      </dia:connections>
-    </dia:object>
-
     <dia:object type="UML - Dependency" version="0" id="O51">
       <dia:attribute name="obj_pos">
         <dia:point val="0,3.5"/>
@@ -5301,7 +5301,45 @@
         <dia:color val="#000000"/>
       </dia:attribute>
       <dia:attribute name="name">
-        <dia:string>#variable_category_fkey#</dia:string>
+        <dia:string>#treatments_drug_concept_fkey#</dia:string>
+      </dia:attribute>
+      <dia:attribute name="stereotype">
+        <dia:string>##</dia:string>
+      </dia:attribute>
+      <dia:attribute name="draw_arrow">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O18" connection="14"/>
+        <dia:connection handle="1" to="O5" connection="9"/>
+      </dia:connections>
+    </dia:object>
+
+    <dia:object type="UML - Dependency" version="0" id="O52">
+      <dia:attribute name="obj_pos">
+        <dia:point val="0,3.5"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="-0.0515705,2.29861;25.1127,3.55157"/>
+      </dia:attribute>
+      <dia:attribute name="orth_points">
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+        <dia:point val="1.0,1.0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_orient">
+        <dia:enum val="1"/>
+        <dia:enum val="0"/>
+      </dia:attribute>
+      <dia:attribute name="orth_autoroute">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="name">
+        <dia:string>#variable_categories_variable_concept_fkey#</dia:string>
       </dia:attribute>
       <dia:attribute name="stereotype">
         <dia:string>##</dia:string>

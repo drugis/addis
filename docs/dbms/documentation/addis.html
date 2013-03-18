@@ -112,7 +112,7 @@
   <body>
 
     <!-- Primary Index -->
-	<p><br><br>Dumped on 2013-03-12</p>
+	<p><br><br>Dumped on 2013-03-18</p>
 <h1><a name="index">Index of database - addis</a></h1>
 <ul>
     
@@ -684,10 +684,18 @@
             <tr class="tr0">
 				<td>
                 
+                  
+                
                 </td>
             	<td>code</td>
             	<td>character varying</td>
                 <td><i>
+				
+					
+
+					
+                       UNIQUE#1
+                    
 				
 
 				
@@ -701,6 +709,8 @@
 				<td>
                 
                   
+                
+                  
                   <a href="#public.table.code-systems">code_systems.code_system</a>
                   
                 
@@ -708,6 +718,12 @@
             	<td>code_system</td>
             	<td>character varying</td>
                 <td><i>
+				
+					
+
+					
+                       UNIQUE#1
+                    
 				
 					
 
@@ -755,6 +771,10 @@
 		
 			<ul>
 				<li><a href="#public.table.concept-map">concept_map</a></li>
+			</ul>
+		
+			<ul>
+				<li><a href="#public.table.measurements">measurements</a></li>
 			</ul>
 		
 			<ul>
@@ -1417,6 +1437,10 @@
                   
                 
                   
+                  <a href="#public.table.concepts">concepts.id</a>
+                  
+                
+                  
                   <a href="#public.table.study-variables">study_variables.variable_concept#1</a>
                   
                 
@@ -1426,6 +1450,10 @@
                 <td><i>
 				
 					PRIMARY KEY
+					
+
+					
+				
 					
 
 					
@@ -1969,7 +1997,7 @@
                 <td><i>
 				
 
-				
+				NOT NULL
 				
 				</i>
 				
@@ -2076,7 +2104,7 @@
                 <td><i>
 				
 
-				
+				NOT NULL
 				
 				</i>
 				
@@ -2213,7 +2241,7 @@
 				
 
 				
-				
+				DEFAULT &#39;MANUAL&#39;::source
 				</i>
 				
 				</td>
@@ -2521,7 +2549,7 @@
 				<td>
                 
                 </td>
-            	<td>repostitory</td>
+            	<td>repository</td>
             	<td>text</td>
                 <td><i>
 				
@@ -2605,10 +2633,6 @@
 				<td>
                 
                   
-                  <a href="#public.table.concepts">concepts.id</a>
-                  
-                
-                  
                 
                   
                   <a href="#public.table.concepts">concepts.id</a>
@@ -2618,10 +2642,6 @@
             	<td>variable_concept</td>
             	<td>uuid</td>
                 <td><i>
-				
-					
-
-					
 				
 					PRIMARY KEY
 					
@@ -2675,10 +2695,18 @@
             <tr class="tr0">
 				<td>
                 
+                  
+                  <a href="#public.table.concepts">concepts.id</a>
+                  
+                
                 </td>
             	<td>unit_concept</td>
             	<td>uuid</td>
                 <td><i>
+				
+					
+
+					
 				
 
 				
@@ -2752,8 +2780,6 @@
 
     <!-- Indexes -->
     
-       study_variables_study_id_idx study_id
-    
 
 	<!-- View Definition -->
 	
@@ -2786,9 +2812,9 @@
 				<td>
                 
                   
-                  <a href="#public.table.treatments">treatments.id</a>
-                  
                 
+                  
+                  <a href="#public.table.treatments">treatments.id</a>
                   
                 
                 </td>
@@ -2796,11 +2822,11 @@
             	<td>bigint</td>
                 <td><i>
 				
+					PRIMARY KEY
 					
 
 					
 				
-					PRIMARY KEY
 					
 
 					
@@ -3035,7 +3061,7 @@
                     
 				
 
-				
+				NOT NULL
 				
 				</i>
 				
