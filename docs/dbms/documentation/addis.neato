@@ -1,0 +1,79 @@
+digraph g {
+node [ fontsize = "10", shape = record ];
+edge [];
+
+"activities" [shape = record, label = "{<col0> \N| study_id:  bigint\lname:  character varying\ltype:  activity_type\l}" ];
+
+"arms" [shape = record, label = "{<col0> \N| study_id:  bigint\lname:  character varying\larm_size:  character varying\lnote_hook:  bigint\l}" ];
+
+"code_systems" [shape = record, label = "{<col0> \N| code_system:  character varying\lcode_system_name:  character varying\l}" ];
+
+"concept_map" [shape = record, label = "{<col0> \N| sub:  uuid\lsuper:  uuid\l}" ];
+
+"concepts" [shape = record, label = "{<col0> \N| id:  uuid\lname:  character varying\ldescription:  text\ltype:  concept_type\lcode:  character varying\lcode_system:  character varying\lowner:  character varying\l}" ];
+
+"designs" [shape = record, label = "{<col0> \N| study_id:  bigint\larm_name:  character varying\lepoch_name:  character varying\lactivity_name:  character varying\l}" ];
+
+"epochs" [shape = record, label = "{<col0> \N| study_id:  bigint\lname:  character varying\lduration:  interval\lnote_hook:  bigint\l}" ];
+
+"measurement_moments" [shape = record, label = "{<col0> \N| study_id:  bigint\lname:  character varying\lepoch_name:  character varying\lis_primary:  boolean\loffset_from_epoch:  interval\lbefore_epoch:  epoch_offset\lnote_hook:  bigint\l}" ];
+
+"measurements" [shape = record, label = "{<col0> \N| study_id:  bigint\lvariable_concept:  uuid\lmeasurement_moment_name:  character varying\larm_name:  character varying\lattribute:  character varying\linteger_value:  bigint\lreal_value:  double precision\l}" ];
+
+"note_hooks" [shape = record, label = "{<col0> \N| id:  bigserial\l}" ];
+
+"notes" [shape = record, label = "{<col0> \N| id:  bigserial\lnote_hook_id:  bigint\ltext:  text\lsource:  source\l}" ];
+
+"project_studies" [shape = record, label = "{<col0> \N| project_id:  bigint\lstudy_id:  bigint\l}" ];
+
+"projects" [shape = record, label = "{<col0> \N| id:  bigserial\lname:  character varying\ldescription:  text\l}" ];
+
+"studies" [shape = record, label = "{<col0> \N| id:  bigserial\lname:  character varying\ltitle:  text\lindication_concept:  uuid\lobjective:  text\lallocation_type:  allocation_type\lblinding_type:  blinding_type\lnumber_of_centers:  smallint\lcreated_at:  date\lsource:  source\lexclusion:  text\linclusion:  text\lstatus:  status\lstart_date:  date\lend_date:  date\lnote_hook:  bigint\lblinding_type_note_hook:  bigint\ltitle_note_hook:  bigint\lallocation_type_note_hook:  bigint\l}" ];
+
+"study_references" [shape = record, label = "{<col0> \N| study_id:  bigint\lid:  character varying\lrepository:  text\l}" ];
+
+"study_variables" [shape = record, label = "{<col0> \N| study_id:  bigint\lvariable_concept:  uuid\lis_primary:  boolean\lmeasurement_type:  measurement_type\lunit_concept:  uuid\lvariable_type:  variable_type\lnote_hook:  bigint\l}" ];
+
+"treatment_dosings" [shape = record, label = "{<col0> \N| treatment_id:  bigint\lplanned_time:  interval\lmin_dose:  character varying\lmax_dose:  character varying\lscale_modifier:  character varying\lunit_concept:  uuid\l}" ];
+
+"treatments" [shape = record, label = "{<col0> \N| id:  bigserial\lstudy_id:  bigint\lactivity_name:  character varying\ldrug_concept:  uuid\lperiodicity:  interval\l}" ];
+
+"variable_categories" [shape = record, label = "{<col0> \N| variable_concept:  uuid\lcategory_name:  character varying\l}" ];
+
+
+"arms" -> "studies" [label="arms_study_id_fkey"];
+"arms" -> "note_hooks" [label="arms_note_hook_fkey"];
+"concept_map" -> "concepts" [label="concept_map_sub_fkey"];
+"concept_map" -> "concepts" [label="concept_map_super_fkey"];
+"concepts" -> "code_systems" [label="concepts_code_system_fkey"];
+"designs" -> "activities" [label="design_activity_fkey"];
+"designs" -> "arms" [label="design_arm_fkey"];
+"designs" -> "epochs" [label="design_epoch_fkey"];
+"epochs" -> "studies" [label="epochs_study_id_fkey"];
+"epochs" -> "note_hooks" [label="epochs_note_hook_fkey"];
+"measurement_moments" -> "epochs" [label="epoch_study_measurement_fkey"];
+"measurement_moments" -> "note_hooks" [label="measurement_moments_note_hook_fkey"];
+"measurements" -> "arms" [label="arm_measurement_fkey"];
+"measurements" -> "measurement_moments" [label="measurement_moments_fkey"];
+"measurements" -> "study_variables" [label="variable_measurement_fkey"];
+"measurements" -> "concepts" [label="measurements_variable_concept_fkey"];
+"notes" -> "note_hooks" [label="notes_note_hook_id_fkey"];
+"project_studies" -> "projects" [label="project_studies_project_id_fkey"];
+"project_studies" -> "studies" [label="project_studies_study_id_fkey"];
+"studies" -> "concepts" [label="studies_indication_concept_fkey"];
+"studies" -> "note_hooks" [label="studies_note_hook_fkey"];
+"studies" -> "note_hooks" [label="studies_blinding_type_note_hook_fkey"];
+"studies" -> "note_hooks" [label="studies_title_note_hook_fkey"];
+"studies" -> "note_hooks" [label="studies_allocation_type_note_hook_fkey"];
+"study_references" -> "studies" [label="study_references_study_id_fkey"];
+"study_variables" -> "concepts" [label="study_variables_variable_concept_fkey"];
+"study_variables" -> "concepts" [label="study_variables_unit_concept_fkey"];
+"study_variables" -> "note_hooks" [label="study_variables_note_hook_fkey"];
+"treatment_dosings" -> "treatments" [label="treatment_dosings_treatment_id_fkey"];
+"treatment_dosings" -> "concepts" [label="treatment_dosings_unit_concept_fkey"];
+"treatments" -> "activities" [label="treatment_activity_fkey"];
+"treatments" -> "concepts" [label="treatments_drug_concept_fkey"];
+"variable_categories" -> "concepts" [label="variable_categories_variable_concept_fkey"];
+}
+
+

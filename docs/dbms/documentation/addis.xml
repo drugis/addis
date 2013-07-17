@@ -32,7 +32,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -152,7 +152,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -205,7 +205,7 @@
               </para>
 
               <para>
-                Empty string indicates &quot;total population&quot; (yes, this is sub-optimal)
+                Empty string indicates &quot;total population&quot;
               </para>
 
             </listitem>
@@ -230,7 +230,7 @@
             <varlistentry>
               <term><structfield>note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -356,12 +356,304 @@
 
         <itemizedlist>
           <title>
-            Tables referencing drugs via Foreign Key Constraints
+            Tables referencing concepts via Foreign Key Constraints
           </title>
 
           <listitem>
             <para>
-              <xref linkend="public.table.drugs"/>
+              <xref linkend="public.table.concepts"/>
+            </para>
+          </listitem>
+
+        </itemizedlist>
+
+
+
+
+
+
+      </para>
+    </section>
+
+      <section id="public.table.concept-map"
+               xreflabel="public.concept_map">
+        <title id="public.table.concept-map-title">
+         Table:
+         
+         <structname>concept_map</structname>
+        </title>
+ 
+
+
+        <para>
+          <variablelist>
+            <title>
+              Structure of <structname>concept_map</structname>
+            </title>
+
+
+            <varlistentry>
+              <term><structfield>sub</structfield></term>
+              <listitem><para>
+                <type>uuid</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>super</structfield></term>
+              <listitem><para>
+                <type>uuid</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
+
+
+
+
+
+
+
+      </para>
+    </section>
+
+      <section id="public.table.concepts"
+               xreflabel="public.concepts">
+        <title id="public.table.concepts-title">
+         Table:
+         
+         <structname>concepts</structname>
+        </title>
+ 
+
+
+        <para>
+          <variablelist>
+            <title>
+              Structure of <structname>concepts</structname>
+            </title>
+
+
+            <varlistentry>
+              <term><structfield>id</structfield></term>
+              <listitem><para>
+                <type>uuid</type>
+
+
+                <literal>PRIMARY KEY</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>name</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+                <literal>NOT NULL</literal>
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>description</structfield></term>
+              <listitem><para>
+                <type>text</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>type</structfield></term>
+              <listitem><para>
+                <type>concept_type</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>code</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>code_system</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.code-systems"/>
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>owner</structfield></term>
+              <listitem><para>
+                <type>character varying</type>
+
+
+
+                <literal>NOT NULL</literal>
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+        </variablelist>
+
+
+
+
+
+
+
+        <itemizedlist>
+          <title>
+            Tables referencing concept_map via Foreign Key Constraints
+          </title>
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.concept-map"/>
             </para>
           </listitem>
 
@@ -369,7 +661,7 @@
 
           <listitem>
             <para>
-              <xref linkend="public.table.indications"/>
+              <xref linkend="public.table.measurements"/>
             </para>
           </listitem>
 
@@ -377,7 +669,39 @@
 
           <listitem>
             <para>
-              <xref linkend="public.table.variables"/>
+              <xref linkend="public.table.studies"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.study-variables"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.treatment-dosings"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.treatments"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.variable-categories"/>
             </para>
           </listitem>
 
@@ -411,7 +735,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -561,117 +885,6 @@
       </para>
     </section>
 
-      <section id="public.table.drugs"
-               xreflabel="public.drugs">
-        <title id="public.table.drugs-title">
-         Table:
-         
-         <structname>drugs</structname>
-        </title>
- 
-
-
-        <para>
-          <variablelist>
-            <title>
-              Structure of <structname>drugs</structname>
-            </title>
-
-
-            <varlistentry>
-              <term><structfield>name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>code</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>code_system</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.code-systems"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-
-
-        <itemizedlist>
-          <title>
-            Tables referencing treatments via Foreign Key Constraints
-          </title>
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.treatments"/>
-            </para>
-          </listitem>
-
-        </itemizedlist>
-
-
-
-
-
-
-      </para>
-    </section>
-
       <section id="public.table.epochs"
                xreflabel="public.epochs">
         <title id="public.table.epochs-title">
@@ -692,7 +905,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -768,7 +981,7 @@
             <varlistentry>
               <term><structfield>note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -826,117 +1039,6 @@
       </para>
     </section>
 
-      <section id="public.table.indications"
-               xreflabel="public.indications">
-        <title id="public.table.indications-title">
-         Table:
-         
-         <structname>indications</structname>
-        </title>
- 
-
-
-        <para>
-          <variablelist>
-            <title>
-              Structure of <structname>indications</structname>
-            </title>
-
-
-            <varlistentry>
-              <term><structfield>name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>code</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>code_system</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.code-systems"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-
-
-        <itemizedlist>
-          <title>
-            Tables referencing studies via Foreign Key Constraints
-          </title>
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.studies"/>
-            </para>
-          </listitem>
-
-        </itemizedlist>
-
-
-
-
-
-
-      </para>
-    </section>
-
       <section id="public.table.measurement-moments"
                xreflabel="public.measurement_moments">
         <title id="public.table.measurement-moments-title">
@@ -957,7 +1059,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -1053,7 +1155,7 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>primary</structfield></term>
+              <term><structfield>is_primary</structfield></term>
               <listitem><para>
                 <type>boolean</type>
 
@@ -1119,7 +1221,7 @@
             <varlistentry>
               <term><structfield>note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -1189,7 +1291,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -1227,9 +1329,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>variable_id</structfield></term>
+              <term><structfield>variable_concept</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>uuid</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1248,6 +1350,14 @@
 
 
 
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
 
@@ -1357,7 +1467,7 @@
             <varlistentry>
               <term><structfield>integer_value</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -1420,7 +1530,7 @@
             <varlistentry>
               <term><structfield>id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>bigserial</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1531,7 +1641,7 @@
             <varlistentry>
               <term><structfield>id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>bigserial</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1556,7 +1666,7 @@
             <varlistentry>
               <term><structfield>note_hook_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -1632,12 +1742,12 @@
       </para>
     </section>
 
-      <section id="public.table.project-variables"
-               xreflabel="public.project_variables">
-        <title id="public.table.project-variables-title">
+      <section id="public.table.project-studies"
+               xreflabel="public.project_studies">
+        <title id="public.table.project-studies-title">
          Table:
          
-         <structname>project_variables</structname>
+         <structname>project_studies</structname>
         </title>
  
 
@@ -1645,14 +1755,14 @@
         <para>
           <variablelist>
             <title>
-              Structure of <structname>project_variables</structname>
+              Structure of <structname>project_studies</structname>
             </title>
 
 
             <varlistentry>
               <term><structfield>project_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1683,9 +1793,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>variable_id</structfield></term>
+              <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1707,7 +1817,7 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+                <literal>REFERENCES</literal> <xref linkend="public.table.studies"/>
 
 
               </para>
@@ -1749,7 +1859,7 @@
             <varlistentry>
               <term><structfield>id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>bigserial</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1777,6 +1887,8 @@
                 <type>character varying</type>
 
 
+
+                <literal>NOT NULL</literal>
 
 
 
@@ -1813,12 +1925,12 @@
 
         <itemizedlist>
           <title>
-            Tables referencing project_variables via Foreign Key Constraints
+            Tables referencing project_studies via Foreign Key Constraints
           </title>
 
           <listitem>
             <para>
-              <xref linkend="public.table.project-variables"/>
+              <xref linkend="public.table.project-studies"/>
             </para>
           </listitem>
 
@@ -1852,7 +1964,7 @@
             <varlistentry>
               <term><structfield>id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>bigserial</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -1881,6 +1993,8 @@
 
 
 
+                <literal>NOT NULL</literal>
+
 
 
 
@@ -1907,9 +2021,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>indication</structfield></term>
+              <term><structfield>indication_concept</structfield></term>
               <listitem><para>
-                <type>character varying</type>
+                <type>uuid</type>
 
 
 
@@ -1922,7 +2036,7 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.indications"/>
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
               </para>
@@ -2019,6 +2133,8 @@
 
 
 
+                <literal>DEFAULT &apos;MANUAL&apos;::source</literal>
+
 
 
               </para>
@@ -2109,7 +2225,7 @@
             <varlistentry>
               <term><structfield>note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -2133,7 +2249,7 @@
             <varlistentry>
               <term><structfield>blinding_type_note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -2157,7 +2273,7 @@
             <varlistentry>
               <term><structfield>title_note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -2181,7 +2297,7 @@
             <varlistentry>
               <term><structfield>allocation_type_note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -2212,8 +2328,8 @@
           <title>Indexes on studies</title>
 
           <varlistentry>
-            <term>studies_indication_idx</term>
-            <listitem><para>indication</para></listitem>
+            <term>studies_indication_concept_idx</term>
+            <listitem><para>indication_concept</para></listitem>
           </varlistentry>
 
 
@@ -2245,6 +2361,14 @@
           <listitem>
             <para>
               <xref linkend="public.table.epochs"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.project-studies"/>
             </para>
           </listitem>
 
@@ -2286,11 +2410,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
-
-
-
-
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -2306,9 +2426,13 @@
 
 
 
+
+
+
+
+
+
                 <literal>REFERENCES</literal> <xref linkend="public.table.studies"/>
-
-
 
 
               </para>
@@ -2342,7 +2466,7 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>repostitory</structfield></term>
+              <term><structfield>repository</structfield></term>
               <listitem><para>
                 <type>text</type>
 
@@ -2393,12 +2517,13 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
+
+
+                <literal>PRIMARY KEY</literal>
 
 
 
-
-                      <literal>UNIQUE#1</literal>
 
 
 
@@ -2415,13 +2540,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>variable_id</structfield></term>
+              <term><structfield>variable_concept</structfield></term>
               <listitem><para>
-                <type>integer</type>
-
-
-
-
+                <type>uuid</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -2433,7 +2554,6 @@
 
 
 
-                      <literal>UNIQUE#1</literal>
 
 
 
@@ -2443,11 +2563,8 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
 
-
-
-
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
               </para>
@@ -2464,6 +2581,46 @@
 
 
 
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>measurement_type</structfield></term>
+              <listitem><para>
+                <type>measurement_type</type>
+
+
+
+
+
+
+
+              </para>
+
+            </listitem>
+          </varlistentry>
+
+            <varlistentry>
+              <term><structfield>unit_concept</structfield></term>
+              <listitem><para>
+                <type>uuid</type>
+
+
+
+
+
+
+
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
               </para>
@@ -2490,7 +2647,7 @@
             <varlistentry>
               <term><structfield>note_hook</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -2560,11 +2717,7 @@
             <varlistentry>
               <term><structfield>treatment_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
-
-
-
-
+                <type>bigint</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -2580,9 +2733,13 @@
 
 
 
+
+
+
+
+
+
                 <literal>REFERENCES</literal> <xref linkend="public.table.treatments"/>
-
-
 
 
               </para>
@@ -2664,9 +2821,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>unit</structfield></term>
+              <term><structfield>unit_concept</structfield></term>
               <listitem><para>
-                <type>character varying</type>
+                <type>uuid</type>
 
 
 
@@ -2679,7 +2836,7 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.units"/>
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
               </para>
@@ -2733,7 +2890,7 @@
             <varlistentry>
               <term><structfield>id</structfield></term>
               <listitem><para>
-                <type>serial</type>
+                <type>bigserial</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -2758,7 +2915,7 @@
             <varlistentry>
               <term><structfield>study_id</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>bigint</type>
 
 
 
@@ -2804,6 +2961,8 @@
 
 
 
+                <literal>NOT NULL</literal>
+
 
 
 
@@ -2820,9 +2979,9 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>drug_name</structfield></term>
+              <term><structfield>drug_concept</structfield></term>
               <listitem><para>
-                <type>character varying</type>
+                <type>uuid</type>
 
 
 
@@ -2841,7 +3000,7 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.drugs"/>
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
 
@@ -2860,6 +3019,8 @@
 
 
 
+                <literal>DEFAULT &apos;00:00:00&apos;::interval</literal>
+
 
 
               </para>
@@ -2883,129 +3044,6 @@
           <listitem>
             <para>
               <xref linkend="public.table.treatment-dosings"/>
-            </para>
-          </listitem>
-
-        </itemizedlist>
-
-
-
-
-
-
-      </para>
-    </section>
-
-      <section id="public.table.units"
-               xreflabel="public.units">
-        <title id="public.table.units-title">
-         Table:
-         
-         <structname>units</structname>
-        </title>
- 
-
-
-        <para>
-          <variablelist>
-            <title>
-              Structure of <structname>units</structname>
-            </title>
-
-
-            <varlistentry>
-              <term><structfield>name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>symbol</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>ucum</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-        <variablelist>
-          <title>Indexes on units</title>
-
-          <varlistentry>
-            <term>units_ucum_idx</term>
-            <listitem><para>ucum</para></listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-        <itemizedlist>
-          <title>
-            Tables referencing treatment_dosings via Foreign Key Constraints
-          </title>
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.treatment-dosings"/>
-            </para>
-          </listitem>
-
-
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.variables"/>
             </para>
           </listitem>
 
@@ -3037,9 +3075,9 @@
 
 
             <varlistentry>
-              <term><structfield>variable_id</structfield></term>
+              <term><structfield>variable_concept</structfield></term>
               <listitem><para>
-                <type>integer</type>
+                <type>uuid</type>
 
 
                 <literal>PRIMARY KEY</literal>
@@ -3061,7 +3099,7 @@
 
 
 
-                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
               </para>
@@ -3108,339 +3146,277 @@
       </para>
     </section>
 
-      <section id="public.table.variable-map"
-               xreflabel="public.variable_map">
-        <title id="public.table.variable-map-title">
-         Table:
-         
-         <structname>variable_map</structname>
-        </title>
+
+
+<!-- Function uuid_generate_v1() -->
+    <section id="public.function.uuid-generate-v1"
+             xreflabel="publicuuid_generate_v1()">
+      <title id="public.function.uuid-generate-v1-title">
+       uuid_generate_v1()
+      </title>
+      <titleabbrev id="public.function.uuid-generate-v1-titleabbrev">
+       uuid_generate_v1()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
  
-
-
-        <para>
-          <variablelist>
-            <title>
-              Structure of <structname>variable_map</structname>
-            </title>
-
-
-            <varlistentry>
-              <term><structfield>sub</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>super</structfield></term>
-              <listitem><para>
-                <type>integer</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.variables"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-
-
-
-
-
+       
+        <programlisting>uuid_generate_v1</programlisting>
       </para>
     </section>
 
-      <section id="public.table.variables"
-               xreflabel="public.variables">
-        <title id="public.table.variables-title">
-         Table:
-         
-         <structname>variables</structname>
-        </title>
+<!-- Function uuid_generate_v1mc() -->
+    <section id="public.function.uuid-generate-v1mc"
+             xreflabel="publicuuid_generate_v1mc()">
+      <title id="public.function.uuid-generate-v1mc-title">
+       uuid_generate_v1mc()
+      </title>
+      <titleabbrev id="public.function.uuid-generate-v1mc-titleabbrev">
+       uuid_generate_v1mc()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
  
-
-
-        <para>
-          <variablelist>
-            <title>
-              Structure of <structname>variables</structname>
-            </title>
-
-
-            <varlistentry>
-              <term><structfield>id</structfield></term>
-              <listitem><para>
-                <type>serial</type>
-
-
-                <literal>PRIMARY KEY</literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>name</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>description</structfield></term>
-              <listitem><para>
-                <type>text</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>direction</structfield></term>
-              <listitem><para>
-                <type>direction</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>measurement_type</structfield></term>
-              <listitem><para>
-                <type>measurement_type</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>unit</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.units"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>code</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-            <varlistentry>
-              <term><structfield>code_system</structfield></term>
-              <listitem><para>
-                <type>character varying</type>
-
-
-
-
-
-
-
-
-
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.code-systems"/>
-
-
-              </para>
-
-            </listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-        <variablelist>
-          <title>Indexes on variables</title>
-
-          <varlistentry>
-            <term>variable_id_idx</term>
-            <listitem><para>id</para></listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
-
-
-        <itemizedlist>
-          <title>
-            Tables referencing project_variables via Foreign Key Constraints
-          </title>
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.project-variables"/>
-            </para>
-          </listitem>
-
-
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.study-variables"/>
-            </para>
-          </listitem>
-
-
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.variable-categories"/>
-            </para>
-          </listitem>
-
-
-
-          <listitem>
-            <para>
-              <xref linkend="public.table.variable-map"/>
-            </para>
-          </listitem>
-
-        </itemizedlist>
-
-
-
-
-
-
+       
+        <programlisting>uuid_generate_v1mc</programlisting>
       </para>
     </section>
 
+<!-- Function uuid_generate_v3(name uuid, namespace text) -->
+    <section id="public.function.uuid-generate-v3-name-uuid-namespace-text"
+             xreflabel="publicuuid_generate_v3(name uuid, namespace text)">
+      <title id="public.function.uuid-generate-v3-name-uuid-namespace-text-title">
+       uuid_generate_v3(name uuid, namespace text)
+      </title>
+      <titleabbrev id="public.function.uuid-generate-v3-name-uuid-namespace-text-titleabbrev">
+       uuid_generate_v3(name uuid, namespace text)
+      </titleabbrev>
 
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_generate_v3</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_generate_v4() -->
+    <section id="public.function.uuid-generate-v4"
+             xreflabel="publicuuid_generate_v4()">
+      <title id="public.function.uuid-generate-v4-title">
+       uuid_generate_v4()
+      </title>
+      <titleabbrev id="public.function.uuid-generate-v4-titleabbrev">
+       uuid_generate_v4()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_generate_v4</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_generate_v5(name uuid, namespace text) -->
+    <section id="public.function.uuid-generate-v5-name-uuid-namespace-text"
+             xreflabel="publicuuid_generate_v5(name uuid, namespace text)">
+      <title id="public.function.uuid-generate-v5-name-uuid-namespace-text-title">
+       uuid_generate_v5(name uuid, namespace text)
+      </title>
+      <titleabbrev id="public.function.uuid-generate-v5-name-uuid-namespace-text-titleabbrev">
+       uuid_generate_v5(name uuid, namespace text)
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_generate_v5</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_nil() -->
+    <section id="public.function.uuid-nil"
+             xreflabel="publicuuid_nil()">
+      <title id="public.function.uuid-nil-title">
+       uuid_nil()
+      </title>
+      <titleabbrev id="public.function.uuid-nil-titleabbrev">
+       uuid_nil()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_nil</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_ns_dns() -->
+    <section id="public.function.uuid-ns-dns"
+             xreflabel="publicuuid_ns_dns()">
+      <title id="public.function.uuid-ns-dns-title">
+       uuid_ns_dns()
+      </title>
+      <titleabbrev id="public.function.uuid-ns-dns-titleabbrev">
+       uuid_ns_dns()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_ns_dns</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_ns_oid() -->
+    <section id="public.function.uuid-ns-oid"
+             xreflabel="publicuuid_ns_oid()">
+      <title id="public.function.uuid-ns-oid-title">
+       uuid_ns_oid()
+      </title>
+      <titleabbrev id="public.function.uuid-ns-oid-titleabbrev">
+       uuid_ns_oid()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_ns_oid</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_ns_url() -->
+    <section id="public.function.uuid-ns-url"
+             xreflabel="publicuuid_ns_url()">
+      <title id="public.function.uuid-ns-url-title">
+       uuid_ns_url()
+      </title>
+      <titleabbrev id="public.function.uuid-ns-url-titleabbrev">
+       uuid_ns_url()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_ns_url</programlisting>
+      </para>
+    </section>
+
+<!-- Function uuid_ns_x500() -->
+    <section id="public.function.uuid-ns-x500"
+             xreflabel="publicuuid_ns_x500()">
+      <title id="public.function.uuid-ns-x500-title">
+       uuid_ns_x500()
+      </title>
+      <titleabbrev id="public.function.uuid-ns-x500-titleabbrev">
+       uuid_ns_x500()
+      </titleabbrev>
+
+      <para>
+       <segmentedlist>
+        <title>Function Properties</title>
+        <?dbhtml list-presentation="list"?>
+        <segtitle>Language</segtitle>
+        <segtitle>Return Type</segtitle>
+        <seglistitem>
+         <seg>C</seg>
+         <seg>uuid</seg>
+        </seglistitem>
+       </segmentedlist>
+ 
+       
+        <programlisting>uuid_ns_x500</programlisting>
+      </para>
+    </section>
 
   </chapter>
 
