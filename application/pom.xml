@@ -175,6 +175,13 @@
 			<artifactId>jaxb2-basics-runtime</artifactId>
 			<version>0.6.0</version>
 		</dependency>
+		<!--  JSON Serialization  -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.12</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>

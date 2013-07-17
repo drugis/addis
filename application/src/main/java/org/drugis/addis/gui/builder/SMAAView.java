@@ -1,13 +1,13 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Copyright �� 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright �� 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
  * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
  * Reid.
- * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Copyright �� 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
  * Schimbinschi.
- * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
+ * Copyright �� 2012 Gert van Valkenhoef, Daniel Reid, Jo��l Kuiper, Wouter
  * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -90,32 +90,32 @@ public class SMAAView implements ViewBuilder  {
 		CellConstraints cc=  new CellConstraints();
 		FormLayout layout = new FormLayout(
 				"fill:0:grow",
-				"p, 3dlu, p, " + // 1-3 
+				"p, 3dlu, p, " + // 1-3
 				"3dlu, p, 3dlu, p, " + // 4-7
-				"3dlu, p, 3dlu, p, " + // 8-11 
+				"3dlu, p, 3dlu, p, " + // 8-11
 				"3dlu, p, 3dlu, p "
 				);
 		PanelBuilder d_builder = new PanelBuilder(layout, new ScrollableJPanel());
 		d_builder.setDefaultDialogBorder();
 		//d_builder.setOpaque(true);
-		
+
 		d_builder.addSeparator("Preferences", cc.xy(1, 5));
 		d_builder.add(buildPreferencesPart(), cc.xy(1, 7));
-		
+
 		d_builder.addSeparator("Rank Acceptabilities", cc.xy(1, 9));
 		d_builder.add(buildRankAcceptabilitiesPart(), cc.xy(1, 11));
-		
+
 		d_builder.addSeparator("Central Weights", cc.xy(1, 13));
 		d_builder.add(buildCentralWeightsPart(), cc.xy(1, 15));
-		
-		return d_builder.getPanel();	
+
+		return d_builder.getPanel();
 	}
-		
+
 	private JButton createExportButton() {
-		JButton expButton = new JButton("Export model to JSMAA");
+		JButton expButton = new JButton("Export model to JSON");
 		expButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "jsmaa", "JSMAA") {
+				FileSaveDialog dialog = new FileSaveDialog(d_mainWindow, "json", "JSON") {
 					@Override
 					public void doAction(String path, String extension) {
 						d_pm.saveSmaa(path);
@@ -124,8 +124,7 @@ public class SMAAView implements ViewBuilder  {
 				dialog.saveActions();
 			}
 		});
-		expButton.setEnabled(false);
-		expButton.setToolTipText("Temporarily disabled, while JSMAA is under development.");
+		expButton.setToolTipText("Save SMAA model to JSON.");
 		return expButton;
 	}
 
@@ -152,7 +151,7 @@ public class SMAAView implements ViewBuilder  {
 					new PropertyChangeListener() {
 						public void propertyChange(PropertyChangeEvent arg0) {
 							rebuildPanel(panel);
-						}			
+						}
 					});
 			rebuildPanel(panel);
 
@@ -178,7 +177,7 @@ public class SMAAView implements ViewBuilder  {
 			return new PreferenceInformationView(d_pm.getPreferencePresentationModel()).buildPanel();
 		}
 	}
-	
+
 	public JComponent buildPreferencesPart() {
 		return createWaiter(new PreferencesBuilder());
 	}
@@ -191,7 +190,7 @@ public class SMAAView implements ViewBuilder  {
 		}
 		return null;
 	}
-	
+
 	public JComponent buildRankAcceptabilitiesPart() {
 		JScrollPane rankpane = new JScrollPane(createWaiter(new RankAcceptabilitiesBuilder()));
 		rankpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -200,33 +199,33 @@ public class SMAAView implements ViewBuilder  {
 	}
 
 	class RankAcceptabilitiesBuilder implements ViewBuilder {
-		
+
 		public JComponent buildPanel() {
 			FormLayout layout = new FormLayout("pref", "p, 3dlu, p, 3dlu, p");
 			CellConstraints cc = new CellConstraints();
 			PanelBuilder builder = new PanelBuilder(layout);
 			builder.setDefaultDialogBorder();
-			
+
 			ResultsTable table = new ResultsTable(d_pm.getRankAcceptabilitiesTableModel());
-			table.setDefaultRenderer(Object.class, new ResultsCellColorRenderer(1.0));			
-			
+			table.setDefaultRenderer(Object.class, new ResultsCellColorRenderer(1.0));
+
 			final JFreeChart chart = ChartFactory.createStackedBarChart(
 			        "Rank Acceptability", "Alternative", "Rank Acceptability",
 			        d_pm.getRankAcceptabilityDataSet(), PlotOrientation.VERTICAL, true, true, false);
 			chart.addSubtitle(new org.jfree.chart.title.ShortTextTitle("Rank 1 is best, rank N is worst."));
-			
+
 			fi.smaa.jsmaa.gui.views.ResultsView view = new fi.smaa.jsmaa.gui.views.ResultsView(d_mainWindow, table, chart, "");
-			
+
 			builder.add(getSmaaSimulationProgressBar(), cc.xy(1, 1));
-			
+
 			JComponent smaaRaPanel = view.buildPanel();
 			builder.add(smaaRaPanel, cc.xy(1, 3));
-			
+
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 			bbuilder.addButton(createSaveImageButton(findChartPanel(smaaRaPanel)));
-			
+
 			builder.add(bbuilder.getPanel(), cc.xy(1, 5));
-			
+
 			return builder.getPanel();
 		}
 	}
@@ -234,7 +233,7 @@ public class SMAAView implements ViewBuilder  {
 	private Component getSmaaSimulationProgressBar() {
 		return new TaskProgressBar(d_pm.getTaskProgressModel());
 	}
-	
+
 	protected JButton createSaveImageButton(final JComponent chart) {
 		JButton button = new JButton("Save Image");
 		button.addActionListener(new ActionListener() {
@@ -245,7 +244,6 @@ public class SMAAView implements ViewBuilder  {
 		return button;
 	}
 
-	
 	class CentralWeightsBuilder implements ViewBuilder {
 		public JComponent buildPanel() {
 			final JFreeChart chart = ChartFactory.createLineChart(
@@ -256,15 +254,15 @@ public class SMAAView implements ViewBuilder  {
 			ResultsTable table = new ResultsTable(d_pm.getCentralWeightsTableModel());
 			table.setDefaultRenderer(Object.class, new CentralWeightsCellRenderer(1.0));
 			JComponent viewPanel = new ResultsView(d_mainWindow, table, chart, "").buildPanel();
-			
+
 			JPanel panel = new JPanel(new BorderLayout());
 			panel.add(viewPanel, BorderLayout.CENTER);
-			
+
 			ButtonBarBuilder2 bbuilder = new ButtonBarBuilder2();
 			bbuilder.addButton(createSaveImageButton(findChartPanel(viewPanel)));
 			panel.add(bbuilder.getPanel(), BorderLayout.SOUTH);
-	
-			return panel; 
+
+			return panel;
 		}
 	}
 
@@ -274,7 +272,7 @@ public class SMAAView implements ViewBuilder  {
 		cpane.setViewportBorder(null);
 		return cpane;
 	}
-	
+
 	protected BuildViewWhenReadyComponent createWaiter(ViewBuilder builder) {
 		return new BuildViewWhenReadyComponent(builder, d_BRpm.getSMAAPresentation().getInitializedModel(), WAITING_MESSAGE);
 	}
