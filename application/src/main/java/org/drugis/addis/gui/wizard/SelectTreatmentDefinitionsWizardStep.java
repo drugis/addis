@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,39 +47,39 @@ public class SelectTreatmentDefinitionsWizardStep extends PanelWizardStep {
 	private SelectableTreatmentDefinitionsGraph d_studyGraph;
 
 	public SelectTreatmentDefinitionsWizardStep(
-			SelectableTreatmentDefinitionsGraphModel graph, 
-			Runnable rebuild, 
-			String title, 
+			SelectableTreatmentDefinitionsGraphModel graph,
+			Runnable rebuild,
+			String title,
 			String description) {
 		super(title, description);
 		d_rebuild = rebuild;
 
 		setLayout(new BorderLayout());
-		    
+
 		FormLayout layout = new FormLayout(
 				"center:pref:grow",
 				"p"
-				);	
-		
+				);
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
-		
+
 		d_studyGraph = buildStudiesGraph(graph);
 		builder.add(d_studyGraph, cc.xy(1, 1));
-		
+
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
-		
+
 		Bindings.bind(this, "complete", graph.getSelectionCompleteModel());
 	}
-	
+
 	private SelectableTreatmentDefinitionsGraph buildStudiesGraph(SelectableTreatmentDefinitionsGraphModel graph) {
 		SelectableTreatmentDefinitionsGraph studyGraph = new SelectableTreatmentDefinitionsGraph(graph);
 		studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return studyGraph;
 	}
-	
+
 	@Override
 	public void prepare() {
 		d_rebuild.run();

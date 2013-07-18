@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,12 +64,12 @@ public class PubMedListFormat extends Format {
 	public Object parseObject(String source, ParsePosition pos) {
 		pos.setIndex(source.length() + 1);
 		PubMedIdList list = new PubMedIdList();
-		
+
 		StringTokenizer tokenizer = new StringTokenizer(source, ",");
 		while (tokenizer.hasMoreTokens()) {
-			validatePubMedID(tokenizer.nextToken(), list);	
+			validatePubMedID(tokenizer.nextToken(), list);
 	    }
-		
+
 		return list;
 	}
 

@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +35,7 @@ import javax.swing.JTabbedPane;
 
 public class AddisTabbedPane extends JTabbedPane {
 	private static final long serialVersionUID = -8961793373881538352L;
-	
+
 	public AddisTabbedPane() {
 		super();
 		setOpaque(true);
@@ -50,12 +51,12 @@ public class AddisTabbedPane extends JTabbedPane {
 	public void addTab(String title, Icon icon, Component component) {
 		super.addTab(title, icon, encapsulate(component));
 	}
-	
+
 	@Override
 	public void addTab(String title, Icon icon, Component component, String tip) {
 		super.addTab(title, icon, encapsulate(component), tip);
 	}
-	
+
 	private JScrollPane encapsulate(Component panel) {
 		return new AddisScrollPane(panel);
 	}

@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +34,13 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.common.gui.table.EnhancedTable;
 
 public class EntityTableDeleteListener extends KeyAdapter {
-	
+
 	private AddisWindow d_main;
 
 	public EntityTableDeleteListener(AddisWindow main) {
 		d_main = main;
 	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -47,10 +48,10 @@ public class EntityTableDeleteListener extends KeyAdapter {
 			if (!studyTable.isFocusOwner() || studyTable.getSelectedRowCount() != 1) {
 				return;
 			}
-				
+
 			int row = studyTable.convertRowIndexToModel(studyTable.getSelectedRow());
 			d_main.deleteEntity(EntityTablePanel.getEntityAt(studyTable, row), true);
-			
+
 			e.consume();
 		}
 	}

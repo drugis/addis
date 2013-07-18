@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,15 +50,15 @@ public class ContinuousInconsistencyModelIT {
 	@Before
     public void setUp() {
     	d_nma = buildContinuousNetworkMetaAnalysis();
-       
+
 		d_wrapper = (SimulationInconsistencyWrapper<TreatmentDefinition>) d_nma.getInconsistencyModel();
     }
-    
+
     @Test
     public void getResults() throws InterruptedException {
     	d_wrapper.getModel().setExtendSimulation(ExtendSimulation.FINISH);
     	TaskUtil.run(d_wrapper.getModel().getActivityTask());
-    	
+
     	assertEquals(1, d_nma.getInconsistencyModel().getInconsistencyFactors().size());
     	assertNotNull(d_wrapper.getQuantileSummary(d_wrapper.getInconsistencyFactors().get(0)));
     	TreatmentDefinition a = TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine());
@@ -70,19 +71,19 @@ public class ContinuousInconsistencyModelIT {
     	assertNotNull(d_wrapper.getRelativeEffect(c, b));
     	assertNotNull(d_wrapper.getRelativeEffect(b, c));
     }
-    
+
     private NetworkMetaAnalysis buildContinuousNetworkMetaAnalysis() {
 		List<Study> studies = Arrays.asList(new Study[] {
 				ExampleData.buildStudyBennie(), ExampleData.buildStudyChouinard(), ExampleData.buildStudyAdditionalThreeArm()});
 		List<TreatmentDefinition> drugs = Arrays.asList(new TreatmentDefinition[] {
 				TreatmentDefinition.createTrivial(ExampleData.buildDrugFluoxetine()),
-				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()), 
+				TreatmentDefinition.createTrivial(ExampleData.buildDrugParoxetine()),
 				TreatmentDefinition.createTrivial(ExampleData.buildDrugSertraline())});
-		
-		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network", 
+
+		NetworkMetaAnalysis analysis = new NetworkMetaAnalysis("Test Network",
 				ExampleData.buildIndicationDepression(), ExampleData.buildEndpointCgi(),
 				studies, drugs, ExampleData.buildMap(studies, drugs));
-		
+
 		return analysis;
 	}
 

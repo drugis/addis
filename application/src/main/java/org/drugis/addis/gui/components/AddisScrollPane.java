@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +33,7 @@ import javax.swing.JScrollPane;
 
 public class AddisScrollPane extends JScrollPane {
 	private static final long serialVersionUID = 1842401085979159347L;
-	
+
 	public AddisScrollPane(Component c) {
 		super(c);
 		getVerticalScrollBar().setUnitIncrement(16);

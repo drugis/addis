@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +45,7 @@ import fi.smaa.jsmaa.gui.presentation.CentralWeightTableModel;
 import fi.smaa.jsmaa.gui.presentation.PreferencePresentationModel;
 import fi.smaa.jsmaa.gui.presentation.RankAcceptabilityTableModel;
 import fi.smaa.jsmaa.gui.presentation.SMAA2ResultsTableModel;
+
 import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.ModelChangeEvent;
 import fi.smaa.jsmaa.model.SMAAModel;

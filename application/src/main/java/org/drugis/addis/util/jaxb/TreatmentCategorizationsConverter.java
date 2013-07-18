@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +55,7 @@ import org.drugis.common.EqualsUtil;
 
 
 public class TreatmentCategorizationsConverter {
-	
+
 	public static Class<? extends AbstractDose> getDoseClass(org.drugis.addis.entities.data.DoseType type) {
 		switch (type) {
 		case FIXED_DOSE:
@@ -72,13 +73,13 @@ public class TreatmentCategorizationsConverter {
 		String name = t.getName();
 		Drug drug = JAXBConvertor.findNamedItem(domain.getDrugs(), t.getDrug());
 		DoseUnit unit = JAXBConvertor.convertDoseUnit(t.getUnit(), domain);
-		
+
 		TreatmentCategorization tc = TreatmentCategorization.createBare(name, drug, unit);
-		
+
 		for (org.drugis.addis.entities.data.Category category : t.getCategory()) {
 			tc.addCategory(new Category(tc, category.getName()));
 		}
-		
+
 		convertDecisionTree(t.getDecisionTree(), tc.getDecisionTree(), t, tc, domain);
 		return tc;
 	}
@@ -86,7 +87,7 @@ public class TreatmentCategorizationsConverter {
 	private static void convertDecisionTree(
 			org.drugis.addis.entities.data.DecisionTree src,
 			DecisionTree dest,
-			org.drugis.addis.entities.data.TreatmentCategorization srcTc, 
+			org.drugis.addis.entities.data.TreatmentCategorization srcTc,
 			TreatmentCategorization destTc,
 			Domain domain) throws ConversionException {
 		convertSubtree(dest, destTc, src.getRootNode(), dest.getRoot());
@@ -99,7 +100,7 @@ public class TreatmentCategorizationsConverter {
 			throws ConversionException {
 		convertSubTree(dest, destTc, destParent, srcParent.getTypeEdge());
 	}
-	
+
 	private static void convertSubtree(DecisionTree dest,
 			TreatmentCategorization destTc,
 			org.drugis.addis.entities.data.ChoiceNode srcParent,
@@ -125,9 +126,9 @@ public class TreatmentCategorizationsConverter {
 	}
 
 	private static DecisionTreeNode convertLeafNode(org.drugis.addis.entities.data.LeafNode leafNode, TreatmentCategorization destTc) {
-		Category destCat = null; 
-		for(Category cat : destTc.getCategories()) { 
-			 if(leafNode.getCategory() != null && EqualsUtil.equal(cat.getName(), leafNode.getCategory().getName())) { 
+		Category destCat = null;
+		for(Category cat : destTc.getCategories()) {
+			 if(leafNode.getCategory() != null && EqualsUtil.equal(cat.getName(), leafNode.getCategory().getName())) {
 				 destCat = cat;
 			 }
 		}
@@ -183,7 +184,7 @@ public class TreatmentCategorizationsConverter {
 		List<org.drugis.addis.entities.data.TypeEdge> edges = node.getTypeEdge();
 		List<DecisionTreeEdge> outEdges = new ArrayList<DecisionTreeEdge>(tree.getOutEdges(parent));
 		Collections.sort(outEdges, new DecisionTreeEdgeComparator());
-		for(DecisionTreeEdge e : outEdges) { 
+		for(DecisionTreeEdge e : outEdges) {
 			edges.add(convertTypeEdge(tree, e));
 		}
 		return node;
@@ -202,7 +203,7 @@ public class TreatmentCategorizationsConverter {
 		List<org.drugis.addis.entities.data.RangeEdge> edges = node.getRangeEdge();
 		List<DecisionTreeEdge> outEdges = new ArrayList<DecisionTreeEdge>(tree.getOutEdges(parent));
 		Collections.sort(outEdges, new DecisionTreeEdgeComparator());
-		for(DecisionTreeEdge e : outEdges) { 
+		for(DecisionTreeEdge e : outEdges) {
 			edges.add(convertRangeEdge(tree, e));
 		}
 		return node;
@@ -216,7 +217,7 @@ public class TreatmentCategorizationsConverter {
 		e.setRangeUpperBound(rangeEdge.getUpperBound());
 		e.setIsRangeUpperBoundOpen(rangeEdge.isUpperBoundOpen());
 		convertEdgeTarget(tree, edge, e);
-		return e; 
+		return e;
 	}
 
 	private static void convertEdgeTarget(DecisionTree tree, DecisionTreeEdge edge,
@@ -230,7 +231,7 @@ public class TreatmentCategorizationsConverter {
 
 	private static org.drugis.addis.entities.data.LeafNode convertLeafNode(LeafNode leafNode) {
 		org.drugis.addis.entities.data.LeafNode n = new org.drugis.addis.entities.data.LeafNode();
-		if(leafNode.getCategory() != null) { 
+		if(leafNode.getCategory() != null) {
 			n.setCategory(JAXBConvertor.nameReference(leafNode.getName()));
 		}
 		return n;

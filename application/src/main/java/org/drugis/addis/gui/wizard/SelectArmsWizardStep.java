@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +53,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 @SuppressWarnings("serial")
 public class SelectArmsWizardStep extends PanelWizardStep {
-	
+
 
 	private final NetworkMetaAnalysisWizardPM d_pm;
 
@@ -65,26 +66,26 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 	@Override
 	public void prepare() {
 		d_pm.rebuildArmSelection();
-		
+
 		removeAll();
-		
-		FormLayout layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow", "p");	
+
+		FormLayout layout = new FormLayout("3dlu, left:pref, 3dlu, pref:grow", "p");
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
+
 		int row = 1;
 		for (Study curStudy : d_pm.getSelectableStudyListPM().getSelectedStudiesModel()) {
 			builder.addSeparator(curStudy.toString(), cc.xyw(1, row, 4));
 			row = LayoutUtil.addRow(layout, row);
-			
+
 			for (TreatmentDefinition def: d_pm.getSelectedRefinedTreatmentDefinitions()) {
 				if (!d_pm.getArmsPerStudyPerDefinition(curStudy, def).isEmpty()) {
 					row = createArmSelect(builder, row, curStudy, def, cc);
 				}
 			}
 		}
-		
+
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp, BorderLayout.CENTER);
 		sp.getVerticalScrollBar().setUnitIncrement(16);
@@ -94,14 +95,14 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 
 	private int createArmSelect(PanelBuilder builder, int row, final Study curStudy, TreatmentDefinition def, CellConstraints cc) {
 		builder.addLabel(def.getLabel(), cc.xy(2, row));
-		
+
 		ListModel arms = d_pm.getArmsPerStudyPerDefinition(curStudy, def);
 
 		final JComboBox drugBox = AuxComponentFactory.createBoundComboBox(arms, d_pm.getSelectedArmModel(curStudy, def), true);
 		if (arms.getSize() == 1)
 			drugBox.setEnabled(false);
 		final JPanel drugAndDosePanel = new JPanel(new BorderLayout());
-		
+
 		builder.add(drugBox, cc.xy(4, row));
 		drugBox.addActionListener(new ActionListener() {
 			@Override
@@ -112,7 +113,7 @@ public class SelectArmsWizardStep extends PanelWizardStep {
 		row = LayoutUtil.addRow(builder.getLayout(), row);
 		updateDrugAndDoseLabel(curStudy, drugBox, drugAndDosePanel);
 		builder.add(drugAndDosePanel, cc.xy(4, row));
-		
+
 		return LayoutUtil.addRow(builder.getLayout(), row);
 	}
 

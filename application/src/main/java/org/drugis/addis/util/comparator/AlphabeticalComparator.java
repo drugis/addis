@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +42,7 @@ public class AlphabeticalComparator implements Comparator<Object>  {
 	public int compareOm(OutcomeMeasure o1, OutcomeMeasure o2) {
 		if (o1.getClass().equals(o2.getClass()))
 			return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-		else 
+		else
 			return o1 instanceof Endpoint ? -1 : 1;
 	}
 }
