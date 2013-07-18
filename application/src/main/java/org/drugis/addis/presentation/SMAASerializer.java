@@ -157,7 +157,7 @@ public class SMAASerializer<Alternative extends Entity, AnalysisType extends Ben
 				// Add baseline
 				ObjectNode baselineNode = (ObjectNode) mapper.createObjectNode();
 				baselineNode.put("type", "dnorm");
-				baselineNode.put("name", d_analysis.getBaseline().getLabel());
+				baselineNode.put("name", toSlug(d_analysis.getBaseline().getLabel()));
 				baselineNode.put("mu", baseline.getMean());
 				baselineNode.put("sigma", baseline.getStDev());
 				parameterNode.put("baseline", baselineNode);
@@ -172,7 +172,7 @@ public class SMAASerializer<Alternative extends Entity, AnalysisType extends Ben
 				ArrayNode relativeCovColNames = (ArrayNode) mapper.createArrayNode();
 
 				for (int i = 0; i < relativeMeasurement.getAlternatives().size(); ++i) {
-					String alternative = relativeMeasurement.getAlternatives().get(i).getName();
+					String alternative = toSlug(relativeMeasurement.getAlternatives().get(i).getName());
 					relativeCovRowNames.add(alternative);
 					relativeCovColNames.add(alternative);
 					relativeMuNode.put(alternative, relativeMeasurement.getMeanVector().getEntry(i));
