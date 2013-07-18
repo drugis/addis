@@ -572,6 +572,14 @@
 
 
 
+                      <literal>UNIQUE#1</literal>
+
+
+
+
+
+
+
 
 
 
@@ -584,6 +592,14 @@
               <term><structfield>code_system</structfield></term>
               <listitem><para>
                 <type>character varying</type>
+
+
+
+
+                      <literal>UNIQUE#1</literal>
+
+
+
 
 
 
@@ -638,6 +654,14 @@
           <listitem>
             <para>
               <xref linkend="public.table.concept-map"/>
+            </para>
+          </listitem>
+
+
+
+          <listitem>
+            <para>
+              <xref linkend="public.table.measurements"/>
             </para>
           </listitem>
 
@@ -1329,6 +1353,14 @@
 
 
 
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
+
+
+
                 <literal>REFERENCES</literal> <xref linkend="public.table.study-variables"/>
 
 
@@ -1856,6 +1888,8 @@
 
 
 
+                <literal>NOT NULL</literal>
+
 
 
 
@@ -1958,6 +1992,8 @@
                 <type>character varying</type>
 
 
+
+                <literal>NOT NULL</literal>
 
 
 
@@ -2096,6 +2132,8 @@
 
 
 
+
+                <literal>DEFAULT &apos;MANUAL&apos;::source</literal>
 
 
 
@@ -2428,7 +2466,7 @@
           </varlistentry>
 
             <varlistentry>
-              <term><structfield>repostitory</structfield></term>
+              <term><structfield>repository</structfield></term>
               <listitem><para>
                 <type>text</type>
 
@@ -2507,10 +2545,6 @@
                 <type>uuid</type>
 
 
-
-
-
-
                 <literal>PRIMARY KEY</literal>
 
 
@@ -2525,10 +2559,6 @@
 
 
 
-
-
-
-                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
 
 
 
@@ -2585,6 +2615,14 @@
 
 
 
+
+
+
+
+
+                <literal>REFERENCES</literal> <xref linkend="public.table.concepts"/>
+
+
               </para>
 
             </listitem>
@@ -2636,18 +2674,6 @@
 
 
 
-        <variablelist>
-          <title>Indexes on study_variables</title>
-
-          <varlistentry>
-            <term>study_variables_study_id_idx</term>
-            <listitem><para>study_id</para></listitem>
-          </varlistentry>
-
-        </variablelist>
-
-
-
 
 
         <itemizedlist>
@@ -2694,10 +2720,6 @@
                 <type>bigint</type>
 
 
-
-
-
-
                 <literal>PRIMARY KEY</literal>
 
 
@@ -2711,9 +2733,13 @@
 
 
 
+
+
+
+
+
+
                 <literal>REFERENCES</literal> <xref linkend="public.table.treatments"/>
-
-
 
 
               </para>
@@ -2934,6 +2960,8 @@
 
 
 
+
+                <literal>NOT NULL</literal>
 
 
 

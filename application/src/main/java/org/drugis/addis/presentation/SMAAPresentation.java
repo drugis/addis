@@ -28,6 +28,7 @@ package org.drugis.addis.presentation;
 
 import java.io.FileOutputStream;
 
+import org.codehaus.jackson.JsonNode;
 import org.drugis.addis.entities.Entity;
 import org.drugis.addis.entities.OutcomeMeasure;
 import org.drugis.addis.entities.analysis.BenefitRiskAnalysis;
@@ -47,7 +48,6 @@ import fi.smaa.jsmaa.model.CardinalCriterion;
 import fi.smaa.jsmaa.model.ModelChangeEvent;
 import fi.smaa.jsmaa.model.SMAAModel;
 import fi.smaa.jsmaa.model.SMAAModelListener;
-import fi.smaa.jsmaa.model.xml.JSMAABinding;
 import fi.smaa.jsmaa.simulator.BuildQueue;
 import fi.smaa.jsmaa.simulator.SMAA2Results;
 
@@ -144,10 +144,16 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 		return d_smaaf;
 	}
 
+	public JsonNode getJSON() {
+		SMAASerialzer<Alternative, AnalysisType> serializer = new SMAASerialzer<Alternative, AnalysisType>(d_smaaf.createSMAAModel(), d_a, d_smaaf);
+		return serializer.getRootNode();
+	}
+
 	public void saveSmaa(String filename) {
 		try {
 			FileOutputStream os = new FileOutputStream(filename);
-			JSMAABinding.writeModel(d_smaaModel, os);
+			SMAASerialzer<Alternative, AnalysisType> serializer = new SMAASerialzer<Alternative, AnalysisType>(d_smaaf.createSMAAModel(), d_a, d_smaaf);
+			serializer.serialize(os);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
