@@ -30,14 +30,14 @@ import fi.smaa.jsmaa.model.RelativeGaussianCriterionMeasurement;
 import fi.smaa.jsmaa.model.RelativeLogitGaussianCriterionMeasurement;
 import fi.smaa.jsmaa.model.SMAAModel;
 
-public class SMAASerialzer<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> {
+public class SMAASerializer<Alternative extends Entity, AnalysisType extends BenefitRiskAnalysis<Alternative>> {
 
 	private SMAAModel d_model;
 	private BenefitRiskAnalysis<Alternative> d_analysis;
 	private AbstractBenefitRiskSMAAFactory<Alternative> d_factory;
 	private ObjectMapper d_mapper;
 
-	public SMAASerialzer(SMAAModel model, AnalysisType a, AbstractBenefitRiskSMAAFactory<Alternative> smaaFactory) {
+	public SMAASerializer(SMAAModel model, AnalysisType a, AbstractBenefitRiskSMAAFactory<Alternative> smaaFactory) {
 		d_model = model;
 		d_analysis = a;
 		d_factory = smaaFactory;

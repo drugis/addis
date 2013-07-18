@@ -145,14 +145,14 @@ public class SMAAPresentation<Alternative extends Entity, AnalysisType extends B
 	}
 
 	public JsonNode getJSON() {
-		SMAASerialzer<Alternative, AnalysisType> serializer = new SMAASerialzer<Alternative, AnalysisType>(d_smaaf.createSMAAModel(), d_a, d_smaaf);
+		SMAASerializer<Alternative, AnalysisType> serializer = new SMAASerializer<Alternative, AnalysisType>(d_smaaf.createSMAAModel(), d_a, d_smaaf);
 		return serializer.getRootNode();
 	}
 
 	public void saveSmaa(String filename) {
 		try {
 			FileOutputStream os = new FileOutputStream(filename);
-			SMAASerialzer<Alternative, AnalysisType> serializer = new SMAASerialzer<Alternative, AnalysisType>(d_smaaf.createSMAAModel(), d_a, d_smaaf);
+			SMAASerializer<Alternative, AnalysisType> serializer = new SMAASerializer<Alternative, AnalysisType>(d_smaaf.createSMAAModel(), d_a, d_smaaf);
 			serializer.serialize(os);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
