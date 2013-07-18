@@ -96,8 +96,7 @@ public class SMAASerialzer<Alternative extends Entity, AnalysisType extends Bene
 			if (measurementType.equals(RelativeLogitGaussianCriterionMeasurement.class)
 					|| measurementType.equals(RelativeGaussianCriterionMeasurement.class)) {
 				ObjectNode parameterNode = (ObjectNode) mapper.createObjectNode();
-				String type = measurementType.equals(RelativeLogitGaussianCriterionMeasurement.class) ? "relative-logit-normal"
-						: "relative-normal";
+				String type = measurementType.equals(RelativeLogitGaussianCriterionMeasurement.class) ? "relative-logit-normal" : "relative-normal";
 				performanceNode.put("type", type);
 
 				GaussianMeasurement baseline;
@@ -183,6 +182,17 @@ public class SMAASerialzer<Alternative extends Entity, AnalysisType extends Bene
 					parameters.put("beta", betaMeasurement.getBeta());
 					performanceNode.put("parameters", parameters);
 				}
+
+				if (measurement instanceof GaussianMeasurement) {
+					GaussianMeasurement gaussianMeasurement = (GaussianMeasurement) measurement;
+					performanceNode.put("type", "dnorm");
+					ObjectNode parameters = (ObjectNode) mapper.createObjectNode();
+					parameters.put("mu", gaussianMeasurement.getMean());
+					parameters.put("sigma", gaussianMeasurement.getStDev());
+					performanceNode.put("parameters", parameters);
+				}
+
+				measurementNode.put("performance", performanceNode);
 				performancesNode.add(measurementNode);
 			}
 		}
