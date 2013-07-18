@@ -33,13 +33,13 @@ import org.drugis.addis.gui.AddisWindow;
 import org.drugis.common.gui.table.EnhancedTable;
 
 public class EntityTableDeleteListener extends KeyAdapter {
-	
+
 	private AddisWindow d_main;
 
 	public EntityTableDeleteListener(AddisWindow main) {
 		d_main = main;
 	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -47,10 +47,10 @@ public class EntityTableDeleteListener extends KeyAdapter {
 			if (!studyTable.isFocusOwner() || studyTable.getSelectedRowCount() != 1) {
 				return;
 			}
-				
+
 			int row = studyTable.convertRowIndexToModel(studyTable.getSelectedRow());
 			d_main.deleteEntity(EntityTablePanel.getEntityAt(studyTable, row), true);
-			
+
 			e.consume();
 		}
 	}

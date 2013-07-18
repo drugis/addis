@@ -52,7 +52,7 @@ public class MeasurementTable extends JTableWithPopupEditor {
 	public MeasurementTable(TableModel tableModel) {
 		this(tableModel, null);
 	}
-	
+
 	/**
 	 * Editable measurement table.
 	 * @param tableModel

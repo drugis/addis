@@ -33,9 +33,9 @@ import java.text.ParsePosition;
 
 public class MissingValueFormat extends Format {
 	private static final long serialVersionUID = -7318072422588445440L;
-	
+
 	private final NumberFormat d_format;
-	
+
 	public MissingValueFormat(NumberFormat format) {
 		d_format = format;
 	}

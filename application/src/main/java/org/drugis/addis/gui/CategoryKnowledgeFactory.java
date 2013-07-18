@@ -68,15 +68,15 @@ public class CategoryKnowledgeFactory {
 		s_knowledge.put(PairWiseMetaAnalysis.class, new PairWiseMetaAnalysesKnowledge());
 		s_knowledge.put(NetworkMetaAnalysis.class, new NetworkMetaAnalysesKnowledge());
 		s_knowledge.put(BenefitRiskAnalysis.class, new BenefitRiskAnalysesKnowledge());
-		
+
 		PopulationCharacteristicsKnowledge popcharKnowledge = new PopulationCharacteristicsKnowledge();
 		s_knowledge.put(PopulationCharacteristic.class, popcharKnowledge);
 	};
-	
+
 	public static CategoryKnowledge getCategoryKnowledge(EntityCategory category) {
 		return s_knowledge.get(category.getEntityClass());
 	}
-	
+
 	/**
 	 * Only use when you know the type at compile time, and only use for the identical type as
 	 * defined for the category. If you need run-time type determination, use Domain.getEntityCategory(entity).

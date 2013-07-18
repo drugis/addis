@@ -57,10 +57,10 @@ public class EntityTablePanel extends TablePanel {
 			table.addKeyListener(new EntityTableDeleteListener(main));
 			table.addMouseListener(new EntityTableDoubleClickListener(main));
 		}
-		
+
 		return table;
 	}
-	
+
 	public static Entity getEntityAt(JTable table, int row) {
 		return (Entity) table.getModel().getValueAt(row, findEntityColumn(table));
 	}

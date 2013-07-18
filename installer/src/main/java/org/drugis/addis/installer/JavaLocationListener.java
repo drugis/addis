@@ -38,12 +38,12 @@ import com.izforge.izpack.util.AbstractUIProgressHandler;
 
 public class JavaLocationListener implements InstallerListener {
 
-	
+
 	public void afterDir(File dir, PackFile pf) throws Exception {
 
 	}
 
-	
+
 	public void afterFile(File file, PackFile pf) throws Exception {
 		String sp = pf.getRelativeSourcePath();
 		if (sp != null && sp.equals("addis.cmd")) {
@@ -54,54 +54,54 @@ public class JavaLocationListener implements InstallerListener {
 		}
 	}
 
-	
+
 	public void afterInstallerInitialization(AutomatedInstallData data)
 			throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public void afterPack(Pack pack, Integer i,
 			AbstractUIProgressHandler handler) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public void afterPacks(AutomatedInstallData idata,
 			AbstractUIProgressHandler handler) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public void beforeDir(File dir, PackFile pf) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public void beforeFile(File file, PackFile pf) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public void beforePack(Pack pack, Integer i,
 			AbstractUIProgressHandler handler) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public void beforePacks(AutomatedInstallData idata, Integer npacks,
 			AbstractUIProgressHandler handler) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	public boolean isFileListener() {
 		// TODO Auto-generated method stub
 		return true;

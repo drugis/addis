@@ -37,7 +37,7 @@ import org.drugis.addis.presentation.ForestPlotPresentation;
 
 @SuppressWarnings("serial")
 public class RelativeEffectCanvas extends JPanel {
-	
+
 	private ForestPlot d_plot;
 
 	public ForestPlot getPlot() {
@@ -47,12 +47,12 @@ public class RelativeEffectCanvas extends JPanel {
 	public RelativeEffectCanvas(ForestPlotPresentation pres) {
 		d_plot = new ForestPlot(pres);
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		d_plot.paint((Graphics2D) g);
 	}
-	
+
 	@Override
 	public Dimension getPreferredSize() {
 		return d_plot.getPlotSize();

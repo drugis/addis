@@ -35,7 +35,7 @@ import com.jgoodies.binding.value.ValueModel;
 public class NonEmptyValueModel extends AbstractValueModel {
 	private static final long serialVersionUID = 3077403842880451360L;
 	private ValueModel d_wrapped;
-	
+
 	public NonEmptyValueModel(ValueModel wrapped) {
 		d_wrapped = wrapped;
 		d_wrapped.addValueChangeListener(new PropertyChangeListener() {
@@ -45,7 +45,7 @@ public class NonEmptyValueModel extends AbstractValueModel {
 		});
 		update();
 	}
-	
+
 	public void update() {
 		fireValueChange(null, getValue());
 	}

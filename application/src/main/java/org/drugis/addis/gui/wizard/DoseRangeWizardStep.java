@@ -45,7 +45,7 @@ public class DoseRangeWizardStep extends AbstractTreatmentCategorizationWizardSt
 
 	private final RangeInputPresentation d_rangeInputPresentation;
 	private final String d_nextPropertyName;
-	
+
 	public static WizardStep createOnMultipleParentRanges (
 			final JDialog dialog,
 			final TreatmentCategorizationWizardPresentation pm,

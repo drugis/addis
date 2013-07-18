@@ -49,7 +49,7 @@ public class EntityUtil {
 	public static boolean deepEqual(Collection<? extends Entity> o1, Collection<? extends Entity> o2) {
 		return deepEqual(new ArrayList<Entity>(o1), new ArrayList<Entity>(o2));
 	}
-	
+
 	public static boolean deepEqual(List<? extends Entity> o1, List<? extends Entity> o2) {
 		if (o1.size() == o2.size()) {
 			for (int i = 0; i < o1.size(); ++i) {
@@ -61,7 +61,7 @@ public class EntityUtil {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Assumes that the key in <key, value> pairs is an Object to which a regular equals() is applicable.
 	 */
@@ -75,7 +75,7 @@ public class EntityUtil {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Find a key in a set using Object.equals or by using Object.shallowEquals(Object o) using reflection
 	 * Object.shallowEquals may be implemented to use a different equals criteria and is invoked after Object.equals
@@ -89,7 +89,7 @@ public class EntityUtil {
 				return otherKey;
 			}
 			java.lang.reflect.Method shallowEquals;
-			try { 
+			try {
 				shallowEquals = key.getClass().getMethod("deepEquals", Object.class);
 				boolean shallowEqual = ((Boolean)shallowEquals.invoke(key, otherKey));
 				if (shallowEqual) return otherKey;
@@ -101,7 +101,7 @@ public class EntityUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Flattens a Collection of Entities by dynamically calling getContents() on its members
 	 * @return a Collection of type T containing all the elements resulting from getContents()
@@ -111,7 +111,7 @@ public class EntityUtil {
 		HashSet<T> flat = new HashSet<T>();
 		for (Entity nested : set) {
 			java.lang.reflect.Method getContents;
-			try { 
+			try {
 				getContents = nested.getClass().getMethod("getContents");
 				flat.addAll((Collection<T>)getContents.invoke(nested));
 			} catch (NoSuchMethodException e) {
@@ -122,7 +122,7 @@ public class EntityUtil {
 		}
 		return flat;
 	}
-	
+
 	/**
 	 * Add a collection of entities and their dependencies to the set of dependencies.
 	 * @param dependencies Dependencies to add to.
@@ -142,7 +142,7 @@ public class EntityUtil {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Return a concrete super-type of the given type, or Entity.class.
 	 * If the given class is not an interface, return the given class itself.

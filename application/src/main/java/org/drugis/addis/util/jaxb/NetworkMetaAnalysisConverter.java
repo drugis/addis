@@ -81,13 +81,13 @@ import org.drugis.mtc.summary.SimpleMultivariateNormalSummary;
 import edu.uci.ics.jung.graph.util.Pair;
 
 public class NetworkMetaAnalysisConverter {
-	
+
 	// From JAXB to ADDIS (load)
 	public static NetworkMetaAnalysis load(org.drugis.addis.entities.data.NetworkMetaAnalysis nma, Domain domain) throws ConversionException {
 		String name = nma.getName();
 		Indication indication = JAXBConvertor.findNamedItem(domain.getIndications(), nma.getIndication().getName());
 		org.drugis.addis.entities.OutcomeMeasure om = JAXBConvertor.findOutcomeMeasure(domain, nma);
-		List<Study> studies = new ArrayList<Study>();		
+		List<Study> studies = new ArrayList<Study>();
 		List<TreatmentDefinition> defs = new ArrayList<TreatmentDefinition>();
 		Map<Study, Map<TreatmentDefinition, Arm>> armMap = new HashMap<Study, Map<TreatmentDefinition, Arm>>();
 		for (MetaAnalysisAlternative a : nma.getAlternative()) {
@@ -106,17 +106,17 @@ public class NetworkMetaAnalysisConverter {
 
 		NetworkMetaAnalysis networkMetaAnalysis = new NetworkMetaAnalysis(name, indication, om, armMap);
 
-		if(nma.getInconsistencyResults() != null) { 
+		if(nma.getInconsistencyResults() != null) {
 			loadInconsistencyModel(nma, networkMetaAnalysis, domain);
 		}
-		if(nma.getConsistencyResults() != null) { 
+		if(nma.getConsistencyResults() != null) {
 			loadConsistencyModel(nma, networkMetaAnalysis, domain);
 		}
 
 		for(NodeSplitResults nodeSplit : nma.getNodeSplitResults()) {
 			loadNodeSplitModel(nodeSplit, nma, networkMetaAnalysis, domain);
 		}
-		
+
 		return networkMetaAnalysis;
 	}
 
@@ -127,46 +127,46 @@ public class NetworkMetaAnalysisConverter {
 		final HashMap<Parameter, ConvergenceSummary> convergenceSummaries = new HashMap<Parameter, ConvergenceSummary>();
 		addParameterSummaries(networkMetaAnalysis, quantileSummaries, convergenceSummaries, results.getSummary(), domain);
 		NodeSplitPValueSummary nodeSplitPValueSummary = new NodeSplitPValueSummary(results.getPValue());
-		
+
 		List<org.drugis.addis.entities.data.TreatmentDefinition> alternatives = results.getSplitNode().getTreatmentDefinition();
 		Treatment base = networkMetaAnalysis.getTreatment(TreatmentDefinitionConverter.load(alternatives.get(0), domain));
 		Treatment subj = networkMetaAnalysis.getTreatment(TreatmentDefinitionConverter.load(alternatives.get(1), domain));
-		
+
 		BasicParameter splitParameter = new BasicParameter(base, subj);
-		
+
 		networkMetaAnalysis.loadNodeSplitModel(splitParameter, buildMCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries, nodeSplitPValueSummary);
 
 	}
 
 	private static MCMCSettingsCache buildMCMCSettingsCache(MCMCSettings settings) {
-		return new MCMCSettingsCache(settings.getInferenceIterations(), settings.getSimulationIterations(), 
+		return new MCMCSettingsCache(settings.getInferenceIterations(), settings.getSimulationIterations(),
 				settings.getThinningInterval(), settings.getTuningIterations(), settings.getVarianceScalingFactor(), settings.getNumberOfChains());
 	}
 
 	private static void loadInconsistencyModel(
 			org.drugis.addis.entities.data.NetworkMetaAnalysis nma,
-			NetworkMetaAnalysis networkMetaAnalysis, 
+			NetworkMetaAnalysis networkMetaAnalysis,
 			Domain domain) {
 		final InconsistencyResults results = nma.getInconsistencyResults();
 		final HashMap<Parameter, QuantileSummary> quantileSummaries = new HashMap<Parameter, QuantileSummary>();
 		final HashMap<Parameter, ConvergenceSummary> convergenceSummaries = new HashMap<Parameter, ConvergenceSummary>();
-		
+
 		addRelativeEffectQuantileSummaries(networkMetaAnalysis, quantileSummaries, results.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary(), domain);
 		addParameterSummaries(networkMetaAnalysis, quantileSummaries, convergenceSummaries, results.getSummary(), domain);
 		networkMetaAnalysis.loadInconsistencyModel(buildMCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries);
 	}
-	
+
 	private static void loadConsistencyModel(
 			org.drugis.addis.entities.data.NetworkMetaAnalysis nma,
-			NetworkMetaAnalysis networkMetaAnalysis, 
+			NetworkMetaAnalysis networkMetaAnalysis,
 			Domain domain) {
 		final ConsistencyResults results = nma.getConsistencyResults();
 		final HashMap<Parameter, QuantileSummary> quantileSummaries = new HashMap<Parameter, QuantileSummary>();
 		final HashMap<Parameter, ConvergenceSummary> convergenceSummaries = new HashMap<Parameter, ConvergenceSummary>();
-		
+
 		addRelativeEffectQuantileSummaries(networkMetaAnalysis, quantileSummaries, results.getRelativeEffectsQuantileSummary().getRelativeEffectQuantileSummary(), domain);
 		addParameterSummaries(networkMetaAnalysis, quantileSummaries, convergenceSummaries, results.getSummary(), domain);
-	
+
 		RelativeEffectsSummary relativeEffects = results.getRelativeEffectsSummary();
 		double[] mean = ArrayUtils.toPrimitive(relativeEffects.getMeans().toArray(new Double[results.getRelativeEffectsSummary().getMeans().size()]));
 		int covarianceSize = calcCovMatrixDim(relativeEffects.getCovariance().size());
@@ -182,20 +182,20 @@ public class NetworkMetaAnalysisConverter {
 			}
 		}
 		MultivariateNormalSummary relativeEffectsSummary = new SimpleMultivariateNormalSummary(mean, covarianceMatrix);
-		
+
 		// TreatmentCategorySets are always sorted in their natural order
 		List<Treatment> treatments = new ArrayList<Treatment>();
 		for(TreatmentDefinition d : networkMetaAnalysis.getAlternatives()) {
 			treatments.add(networkMetaAnalysis.getTreatment(d));
-		}		
+		}
 		double[][] rankProbabilityMatrix = new double[treatments.size()][treatments.size()];
 		int rankIdx = 0;
-		for(int row = treatments.size() - 1; row >= 0; row--) { 
-			for(int col = 0; col < treatments.size(); ++col) { 
+		for(int row = treatments.size() - 1; row >= 0; row--) {
+			for(int col = 0; col < treatments.size(); ++col) {
 				rankProbabilityMatrix[col][row] = results.getRankProbabilitySummary().get(rankIdx);
-				rankIdx++; 
+				rankIdx++;
 			}
-		}	
+		}
 		RankProbabilitySummary rankProbabilitySummary = new RankProbabilitySummary(rankProbabilityMatrix, treatments);
 		networkMetaAnalysis.loadConsistencyModel(buildMCMCSettingsCache(results.getMcmcSettings()), quantileSummaries, convergenceSummaries, relativeEffectsSummary, rankProbabilitySummary);
 	}
@@ -230,7 +230,7 @@ public class NetworkMetaAnalysisConverter {
 		Treatment subjTreatment = networkMetaAnalysis.getTreatment(TreatmentDefinitionConverter.load(relativeEffectParameter.getTreatmentDefinition().get(1), domain));
 		return new org.drugis.mtc.parameterization.BasicParameter(baseTreatment, subjTreatment);
 	}
-	
+
 	private static SplitParameter convertNodeSplit(Domain domain,
 			NetworkMetaAnalysis networkMetaAnalysis,
 			final RelativeEffectParameter relativeEffectParameter,
@@ -248,7 +248,7 @@ public class NetworkMetaAnalysisConverter {
 		for(ParameterSummary ps : summaries) {
 			Parameter p = createParameter(domain, networkMetaAnalysis, ps);
 			final QuantileSummary q = convertQuantileSummary(ps.getQuantile());
-			if(ps.getPsrf() != null) { 
+			if(ps.getPsrf() != null) {
 				final ConvergenceSummary c = new ConvergenceSummary(ps.getPsrf());
 				convergenceSummaries.put(p, c);
 			}
@@ -270,13 +270,13 @@ public class NetworkMetaAnalysisConverter {
 			p = new org.drugis.mtc.parameterization.InconsistencyParameter(alternativeTreatments);
 		} else if(ps.getVariance() != null) {
 			VarianceParameterType name = ps.getVariance().getName();
-			if(name == VarianceParameterType.VAR_W) { 
+			if(name == VarianceParameterType.VAR_W) {
 				p = new org.drugis.mtc.parameterization.InconsistencyStandardDeviation();
-			} 
-			if(name == VarianceParameterType.VAR_D) { 
+			}
+			if(name == VarianceParameterType.VAR_D) {
 				p = new org.drugis.mtc.parameterization.RandomEffectsStandardDeviation();
 			}
-		} else if(ps.getRelativeEffect() != null) { 
+		} else if(ps.getRelativeEffect() != null) {
 			if(ps.getRelativeEffect().getWhichEvidence() == EvidenceTypeEnum.ALL) {
 				p = convertRelativeEffect(domain, networkMetaAnalysis, ps.getRelativeEffect());
 			}
@@ -291,15 +291,15 @@ public class NetworkMetaAnalysisConverter {
 	}
 
 	private static QuantileSummary convertQuantileSummary(List<QuantileType> quantile) {
-		double[] probs = new double[quantile.size()]; 
-		double[] values = new double[quantile.size()];  
-		for(int i = 0; quantile.size() > i; ++i) { 
+		double[] probs = new double[quantile.size()];
+		double[] values = new double[quantile.size()];
+		for(int i = 0; quantile.size() > i; ++i) {
 			probs[i] = quantile.get(i).getLevel();
 			values[i] = quantile.get(i).getValue();
 		}
 		return new QuantileSummary(probs, values);
 	}
-	
+
 	//  From ADDIS to JAXB (save)
 	public static org.drugis.addis.entities.data.NetworkMetaAnalysis save(NetworkMetaAnalysis ma) throws ConversionException {
 		org.drugis.addis.entities.data.NetworkMetaAnalysis nma = new org.drugis.addis.entities.data.NetworkMetaAnalysis();
@@ -316,7 +316,7 @@ public class NetworkMetaAnalysisConverter {
 			MetaAnalysisAlternative alt = new MetaAnalysisAlternative();
 			alt.setTreatmentDefinition(TreatmentDefinitionConverter.save(t));
 			AnalysisArms arms = new AnalysisArms();
-			
+
 			for(Study study : ma.getIncludedStudies()) {
 				Arm arm = ma.getArm(study, t);
 				if (arm != null) {
@@ -326,16 +326,16 @@ public class NetworkMetaAnalysisConverter {
 			alt.setArms(arms);
 			nma.getAlternative().add(alt);
 		}
-		
+
 		nma.setInconsistencyResults(convertInconsistencyResults(ma));
 		nma.setConsistencyResults(convertConsistencyResults(ma));
-		
+
 		for(NodeSplitWrapper<TreatmentDefinition> model : ma.getNodeSplitModels()) {
 			if (model.isApproved()) {
 				nma.getNodeSplitResults().add(convertNodeSplitResults(ma, model));
 			}
 		}
-		return nma; 
+		return nma;
 	}
 
 	private static NodeSplitResults convertNodeSplitResults(NetworkMetaAnalysis ma, NodeSplitWrapper<TreatmentDefinition> model) {
@@ -366,7 +366,7 @@ public class NetworkMetaAnalysisConverter {
 	private static ConsistencyResults convertConsistencyResults(NetworkMetaAnalysis ma) {
 		ConsistencyResults results = new ConsistencyResults();
 		ConsistencyWrapper<TreatmentDefinition> model = ma.getConsistencyModel();
-		if (model.isApproved()) { 
+		if (model.isApproved()) {
 			results.setMcmcSettings(convertMCMCSettings(model));
 			convertParameterSummaries(ma, model, results.getSummary());
 			results.setRelativeEffectsQuantileSummary(convertRelativeEffectQuantileSummaries(ma, model));
@@ -381,11 +381,11 @@ public class NetworkMetaAnalysisConverter {
 			List<Double> meanVector = Arrays.asList(ArrayUtils.toObject(model.getRelativeEffectsSummary().getMeanVector()));
 			relativeEffectSummary.getMeans().addAll(meanVector);
 			results.setRelativeEffectsSummary(relativeEffectSummary);
-			
+
 			RankProbabilitySummary rankProbabilities = model.getRankProbabilities();
 			int rankProababilitySize = rankProbabilities.getTreatments().size();
-			for(int row = 0; row < rankProababilitySize; ++row) { 
-				for(int col = 0; col < rankProababilitySize; ++col) { 
+			for(int row = 0; row < rankProababilitySize; ++row) {
+				for(int col = 0; col < rankProababilitySize; ++col) {
 					results.getRankProbabilitySummary().add(rankProbabilities.getValue(rankProbabilities.getTreatments().get(col), row + 1));
 				}
 			}
@@ -399,10 +399,10 @@ public class NetworkMetaAnalysisConverter {
 		relativeEffectsSummary.getRelativeEffectQuantileSummary().addAll(convertRelativeEffectParameters(ma, model));
 		return relativeEffectsSummary;
 	}
-	
+
 	private static void convertParameterSummaries(NetworkMetaAnalysis ma, MTCModelWrapper<TreatmentDefinition> model, List<ParameterSummary> summaries) {
 		List<Parameter> parameters = new ArrayList<Parameter>(Arrays.asList(model.getParameters()));
-		if(model instanceof NodeSplitWrapper) { 
+		if(model instanceof NodeSplitWrapper) {
 			parameters.add(((NodeSplitWrapper<TreatmentDefinition>) model).getIndirectEffect());
 		}
 		Collections.sort(parameters, new ParameterComparator());
@@ -411,21 +411,21 @@ public class NetworkMetaAnalysisConverter {
 		}
 	}
 
-	private static ParameterSummary convertParameterSummary(Parameter p, MTCModelWrapper<TreatmentDefinition> mtc, NetworkMetaAnalysis nma) { 
+	private static ParameterSummary convertParameterSummary(Parameter p, MTCModelWrapper<TreatmentDefinition> mtc, NetworkMetaAnalysis nma) {
 		ParameterSummary ps = new ParameterSummary();
 		ps.setPsrf(mtc.getConvergenceSummary(p).getScaleReduction());
 		ps.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(p)));
-		if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) { 
+		if (p instanceof org.drugis.mtc.parameterization.InconsistencyParameter) {
 			org.drugis.mtc.parameterization.InconsistencyParameter ip = (org.drugis.mtc.parameterization.InconsistencyParameter)p;
 			ps.setInconsistency(new InconsistencyParameter());
-			for (Treatment t : ip.getCycle()) { 
+			for (Treatment t : ip.getCycle()) {
 				ps.getInconsistency().getTreatmentDefinition().add(TreatmentDefinitionConverter.save(nma.getTreatmentDefinition(t)));
 			}
-		} else if (p instanceof org.drugis.mtc.parameterization.InconsistencyStandardDeviation) { 
+		} else if (p instanceof org.drugis.mtc.parameterization.InconsistencyStandardDeviation) {
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_W);
 			ps.setVariance(value);
-		} else if (p instanceof org.drugis.mtc.parameterization.RandomEffectsStandardDeviation) { 
+		} else if (p instanceof org.drugis.mtc.parameterization.RandomEffectsStandardDeviation) {
 			VarianceParameter value = new VarianceParameter();
 			value.setName(VarianceParameterType.VAR_D);
 			ps.setVariance(value);
@@ -460,22 +460,22 @@ public class NetworkMetaAnalysisConverter {
 		List<RelativeEffectQuantileSummary> reqs = new ArrayList<RelativeEffectQuantileSummary>();
 		for (int i = 0; i < alternatives.size(); ++i) {
 			for (int j = 0; j < alternatives.size(); ++j) {
-				if(j != i) { 
+				if(j != i) {
 					Pair<TreatmentDefinition> relEffect = new Pair<TreatmentDefinition>(alternatives.get(i), alternatives.get(j));
 					RelativeEffectQuantileSummary qs = new RelativeEffectQuantileSummary();
 					qs.setRelativeEffect(convertRelativeEffectsParameter(relEffect));
 					qs.getQuantile().addAll(convertQuantileSummary(mtc.getQuantileSummary(mtc.getRelativeEffect(alternatives.get(i), alternatives.get(j)))));
 					reqs.add(qs);
-				} 
+				}
 			}
 		}
-		return reqs; 
+		return reqs;
 	}
-	
+
 	private static RelativeEffectParameter convertNodeSplitParameter(Pair<TreatmentDefinition> pair, boolean direct) {
 		return convertRelativeEffectParameter(pair, direct ? EvidenceTypeEnum.DIRECT : EvidenceTypeEnum.INDIRECT);
 	}
-	
+
 	private static RelativeEffectParameter convertRelativeEffectsParameter(Pair<TreatmentDefinition> pair) {
 		return convertRelativeEffectParameter(pair, EvidenceTypeEnum.ALL);
 	}
@@ -483,7 +483,7 @@ public class NetworkMetaAnalysisConverter {
 	private static RelativeEffectParameter convertRelativeEffectParameter(
 			Pair<TreatmentDefinition> pair, EvidenceTypeEnum evidenceType) {
 		RelativeEffectParameter rel = new RelativeEffectParameter();
-		rel.setWhichEvidence(evidenceType); 
+		rel.setWhichEvidence(evidenceType);
 		org.drugis.addis.entities.data.TreatmentDefinition first =  TreatmentDefinitionConverter.save(pair.getFirst());
 		org.drugis.addis.entities.data.TreatmentDefinition second = TreatmentDefinitionConverter.save(pair.getSecond());
 		rel.getTreatmentDefinition().addAll(Arrays.asList(first, second));
@@ -494,11 +494,11 @@ public class NetworkMetaAnalysisConverter {
 		MCMCSettings s = new MCMCSettings();
 		s.setSimulationIterations(wrapper.getSettings().getSimulationIterations());
 		s.setTuningIterations(wrapper.getSettings().getTuningIterations());
-		s.setThinningInterval(wrapper.getSettings().getThinningInterval()); 
+		s.setThinningInterval(wrapper.getSettings().getThinningInterval());
 		s.setInferenceIterations(wrapper.getSettings().getInferenceSamples());
-		s.setVarianceScalingFactor(wrapper.getSettings().getVarianceScalingFactor()); 
+		s.setVarianceScalingFactor(wrapper.getSettings().getVarianceScalingFactor());
 		s.setNumberOfChains(wrapper.getSettings().getNumberOfChains());
 		return s;
 	}
-	
+
 }

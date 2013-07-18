@@ -45,7 +45,7 @@ public class ValueTreeModel extends SimpleDirectedGraph<Object, ValueTreeModel.E
 
 	public ValueTreeModel(List<OutcomeMeasure> oms) {
 		super(ValueTreeModel.Edge.class);
-		
+
 		String root = "BR balance";
 		String benefits = "Benefits";
 		String risks = "Risks";

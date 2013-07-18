@@ -35,12 +35,12 @@ import org.drugis.mtc.presentation.MTCModelWrapper;
 
 public class AddisMCMCPresentation extends MCMCPresentation implements Comparable<AddisMCMCPresentation> {
 	protected final OutcomeMeasure d_om;
-	
+
 	public AddisMCMCPresentation(final MCMCModelWrapper wrapper, final OutcomeMeasure om, final String name) {
 		super(wrapper, name);
 		d_om = om;
 	}
-	
+
 	@Override
 	public ValueHolder<Boolean> isModelConstructed() {
 		return new ValueModelWrapper<Boolean>(super.isModelConstructed());

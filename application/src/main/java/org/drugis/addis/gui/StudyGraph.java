@@ -55,12 +55,12 @@ import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
 @SuppressWarnings("serial")
 public class StudyGraph extends JPanel {
 	protected TreatmentDefinitionsGraphModel d_pm;
-	
+
 	protected JGraphModelAdapter<Vertex, Edge> d_model;
 	private AttributeMap d_vertexAttributes;
 
 	private JGraph d_jgraph;
-	
+
 	public StudyGraph(TreatmentDefinitionsGraphModel pm) {
 		super(new BorderLayout());
 		d_pm = pm;
@@ -76,28 +76,28 @@ public class StudyGraph extends JPanel {
 	public void layoutGraph() {
 		// in the JGraphModelAdapter, the Vertex size is set. Therefore, this must be done every time the graph is redrawn
 		d_model = new JGraphModelAdapter<Vertex, Edge>(d_pm);
-		
+
 		// set out vertex (layout) attributes
 		d_model.setDefaultVertexAttributes(d_vertexAttributes);
-		
-		// the graph layout cache 
+
+		// the graph layout cache
 		GraphLayoutCache layoutCache = new GraphLayoutCache(d_model, getCellFactory());
-		
+
 		// create graph
 		removeAll();
 		d_jgraph = createGraph(layoutCache);
 		add(d_jgraph, BorderLayout.CENTER);
-		
+
 		// Layout the graph
 		final JGraphHierarchicalLayout layout = new JGraphHierarchicalLayout();
 		final JGraphFacade facade = new JGraphFacade(d_jgraph);
 		layout.run(facade);
 		Map nested = facade.createNestedMap(true, true);
 		d_jgraph.getGraphLayoutCache().edit(nested);
-		
+
 		d_jgraph.repaint();
 	}
-	
+
 	/**
 	 * Update vertex attributes.
 	 * @see MyDefaultCellViewFactory.addVertexAttributes
@@ -133,7 +133,7 @@ public class StudyGraph extends JPanel {
 			return null;
 		}
 	}
-	
+
 	protected JGraph createGraph(GraphLayoutCache layoutCache) {
 		JGraph jgraph = new StudyJGraph(d_model, layoutCache);
 		jgraph.setAntiAliased(true);
@@ -142,8 +142,8 @@ public class StudyGraph extends JPanel {
 	    ToolTipManager.sharedInstance().registerComponent(jgraph);
 		return jgraph;
 	}
-	
+
 	public void saveImage(JFrame frame) {
 		JGraphUtil.writeGraphImage(frame, d_jgraph);
-	}	
+	}
 }

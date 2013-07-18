@@ -40,7 +40,7 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 	public SelectableTreatmentDefinitionsGraph(SelectableTreatmentDefinitionsGraphModel pm) {
 		super(pm);
 	}
-	
+
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
@@ -49,10 +49,10 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 		graph.addMouseListener(listener);
 		return graph;
 	}
-	
+
 	@Override
 	protected MyDefaultCellViewFactory getCellFactory() {
 		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions());
-	}	
+	}
 
 }

@@ -47,11 +47,11 @@ public class BaselineOddsModelIT {
 		double expectedMu = 0.1320994;
 		double expectedSigma = 0.1779923;
 		double dev = expectedSigma * 0.05;
-		
+
 		BaselineOddsModel model = new BaselineOddsModel(buildMeasurementsList(n, r));
 		model.setExtendSimulation(ExtendSimulation.FINISH);
 		TaskUtil.run(model.getActivityTask());
-		
+
 		assertTrue(model.isReady());
 		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getSummary().getMean(), dev);

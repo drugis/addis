@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 public final class Version implements Comparable<Version> {
 	private final String d_versionStr;
 	private final List<Integer> d_components;
-	private static final Pattern s_pattern = Pattern.compile("^([0-9\\.]*)"); 
+	private static final Pattern s_pattern = Pattern.compile("^([0-9\\.]*)");
 
 	public Version(String versionStr) {
 		d_versionStr = versionStr;
@@ -61,11 +61,11 @@ public final class Version implements Comparable<Version> {
 		}
 		return 0;
 	}
-	
+
 	private int componentCount() {
 		return d_components.size();
 	}
-	
+
 	private Integer componentAt(int pos) {
 		return pos < d_components.size() ? d_components.get(pos) : 0;
 	}
@@ -83,7 +83,7 @@ public final class Version implements Comparable<Version> {
 	public String toString() {
 		return d_versionStr;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Version) {
@@ -92,7 +92,7 @@ public final class Version implements Comparable<Version> {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return 0;

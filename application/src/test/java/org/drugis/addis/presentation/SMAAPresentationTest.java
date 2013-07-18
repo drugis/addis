@@ -86,6 +86,5 @@ public class SMAAPresentationTest {
 		assertNotNull(alternatives.get("fluoxetine"));
 
 		assertNotNull(serializedJSON.get("performanceTable"));
-		System.out.println(serializedJSON);
 	}
 }

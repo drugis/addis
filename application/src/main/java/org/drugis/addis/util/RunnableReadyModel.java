@@ -38,12 +38,12 @@ public class RunnableReadyModel extends UnmodifiableHolder<Boolean> implements R
 		d_ready = false;
 		d_runnable = runnable;
 	}
-	
+
 	@Override
 	public Boolean getValue() {
 		return d_ready;
 	}
-	
+
 	public void run() {
 		d_runnable.run();
 		d_ready = true;

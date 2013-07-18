@@ -1,13 +1,13 @@
 /*
  * This file is part of ADDIS (Aggregate Data Drug Information System).
  * ADDIS is distributed from http://drugis.org/.
- * Copyright �� 2009 Gert van Valkenhoef, Tommi Tervonen.
- * Copyright �� 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
+ * Copyright © 2009 Gert van Valkenhoef, Tommi Tervonen.
+ * Copyright © 2010 Gert van Valkenhoef, Tommi Tervonen, Tijs Zwinkels,
  * Maarten Jacobs, Hanno Koeslag, Florin Schimbinschi, Ahmad Kamal, Daniel
  * Reid.
- * Copyright �� 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
+ * Copyright © 2011 Gert van Valkenhoef, Ahmad Kamal, Daniel Reid, Florin
  * Schimbinschi.
- * Copyright �� 2012 Gert van Valkenhoef, Daniel Reid, Jo��l Kuiper, Wouter
+ * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
  *
  * This program is free software: you can redistribute it and/or modify

@@ -69,12 +69,12 @@ public class IndicationAndNameInputPanel {
 			nameInput.setBorder(border);
 		}
 	}
-	
+
 	public static Component create(final PanelWizardStep panelWizardStep, final AnalysisWizardPresentation pm) {
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
 				"p"
-			);	
+			);
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		addToBuilder(builder, 1, pm);
@@ -88,8 +88,8 @@ public class IndicationAndNameInputPanel {
 	/**
 	 * Add the name and indication components to an existing builder. The builder's layout is assumed to have
 	 * at least three columns, and at least one available row. Rows are added as needed.
-	 * @param complete 
-	 * @return The index of the last used row. 
+	 * @param complete
+	 * @return The index of the last used row.
 	 */
 	public static int addToBuilder(PanelBuilder builder, int row, final AnalysisWizardPresentation pm) {
 		CellConstraints cc = new CellConstraints();
@@ -104,7 +104,7 @@ public class IndicationAndNameInputPanel {
 				updateBorder(nameInput, border, pm);
 			}
 		});
-	
+
 		row = LayoutUtil.addRow(builder.getLayout(), row);
 		JComboBox indBox = AuxComponentFactory.createBoundComboBox(pm.getIndicationsModel(), pm.getIndicationModel(), true);
 		builder.add(new JLabel("Indication : "), cc.xy(1, row));

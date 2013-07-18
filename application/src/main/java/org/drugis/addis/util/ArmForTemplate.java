@@ -34,9 +34,9 @@ import org.drugis.addis.presentation.DurationPresentation;
 public class ArmForTemplate
 {
 	private Study d_study;
-	
+
 	/**
-	 * Arm Class used by the template. 
+	 * Arm Class used by the template.
 	 * The getters are important, should not be renamed.
 	 * $it.name$ in template corresponds to getName(), where $it is the iterator
 	 */
@@ -59,7 +59,7 @@ public class ArmForTemplate
 	public String getNrRandomized() {
 		return d_arm.getSize().toString();
 	}
-	
+
 	private static String getEpochDuration(Epoch epoch) {
 		if (epoch != null && epoch.getDuration() != null) {
 			DurationPresentation<Epoch> pm = new DurationPresentation<Epoch>(epoch);

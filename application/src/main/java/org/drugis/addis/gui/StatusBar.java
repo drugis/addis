@@ -49,7 +49,7 @@ import com.jgoodies.forms.builder.ButtonBarBuilder2;
 public class StatusBar extends JToolBar {
 	private ThreadHandlerPresentation d_ThreadHandlerPresentation = new ThreadHandlerPresentation();
 	private JLabel d_verionLabel;
-	
+
 	public StatusBar(){
 		super();
 		setLayout(new BorderLayout());
@@ -58,10 +58,10 @@ public class StatusBar extends JToolBar {
 		builder.addButton(createCounter("Running", "jobs", d_ThreadHandlerPresentation.getRunningThreads()));
 		builder.addButton(createCounter("for", "user tasks", d_ThreadHandlerPresentation.getThreadsInQueue()));
 		builder.addGlue();
-		
+
 		final ValueHolder<String> latestVersion = AppInfo.getLatestVersion();
 		updateVersionLabel(latestVersion);
-		latestVersion.addValueChangeListener(new PropertyChangeListener() {	
+		latestVersion.addValueChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				updateVersionLabel(latestVersion);
 			}
@@ -92,6 +92,6 @@ public class StatusBar extends JToolBar {
 		panel.add(new JLabel(post));
 		return panel;
 	}
-	
+
 
 }

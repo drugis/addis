@@ -104,8 +104,8 @@ public class RangeInputPresentation {
 	public ValueHolder<Boolean> getConsiderNext() {
 		return d_considerNext;
 	}
-	
-	public boolean hasPrevious() { 
+
+	public boolean hasPrevious() {
 		return d_nextPropertyName != null;
 	}
 }

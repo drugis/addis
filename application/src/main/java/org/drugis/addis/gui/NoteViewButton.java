@@ -43,13 +43,13 @@ public class NoteViewButton extends JButton {
 	private ObservableList<Note> d_notes;
 	private Window d_parent;
 	private final String d_description;
-	
+
 	public NoteViewButton(Window parent, String description, ObservableList<Note> notes) {
 		super(Main.IMAGELOADER.getIcon(FileNames.ICON_NOTE));
 		d_parent = parent;
 		d_description = description;
 		d_notes = notes;
-		
+
 		if (d_notes == null || d_notes.isEmpty()) {
 			setEnabled(false);
 		}

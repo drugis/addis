@@ -41,7 +41,7 @@ public class AlphabeticalComparator implements Comparator<Object>  {
 	public int compareOm(OutcomeMeasure o1, OutcomeMeasure o2) {
 		if (o1.getClass().equals(o2.getClass()))
 			return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-		else 
+		else
 			return o1 instanceof Endpoint ? -1 : 1;
 	}
 }

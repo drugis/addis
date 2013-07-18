@@ -48,7 +48,7 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		super("Select Studies","Select the studies to be used for meta analysis. At least one study must be selected to continue.");
 		d_pm = pm;
 	}
-	
+
 	@Override
 	public void prepare() {
 		removeAll(); // Rebuild the panel
@@ -61,6 +61,6 @@ public class SelectStudiesWizardStep extends PanelWizardStep {
 		JLabel label = BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel());
 		add(label, BorderLayout.NORTH);
 		add(new JScrollPane(d_table), BorderLayout.CENTER);
-		
+
 	}
 }

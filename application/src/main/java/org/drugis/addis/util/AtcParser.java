@@ -38,30 +38,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AtcParser {
-		
+
 	public static class AtcDescription {
 		private String d_code;
 		private String d_desc;
-		
+
 		public AtcDescription () {
 			this.d_code = null;
 			this.d_desc = null;
 		}
-		
+
 		public AtcDescription (String code, String desc) {
 			this.d_code = code;
 			this.d_desc = desc;
 		}
-		
+
 		public String getCode() {
 			return d_code;
 		}
 
 		public String getDescription() {
 			return d_desc;
-		}		
+		}
 	}
-	
+
 	private static final Pattern s_codePattern = Pattern.compile("<a href=\"[^\"]*/\\?code=([A-Z0-9]*)(&[^\"]*)?\">([^<]*)</a>", Pattern.CASE_INSENSITIVE);
 	private static final int READ_TIMEOUT = 3000;
 	private static final int CONNECTION_TIMEOUT = 3000;
@@ -76,8 +76,8 @@ public class AtcParser {
 		}
 		return detailsList;
 	}
-	
-	public List<AtcDescription> parse(InputStream is) throws IOException {	
+
+	public List<AtcDescription> parse(InputStream is) throws IOException {
 		String inputLine;
 		List<AtcDescription> finalList = new ArrayList<AtcDescription>();
 		BufferedReader readCode = new BufferedReader(new InputStreamReader(is));
@@ -98,7 +98,7 @@ public class AtcParser {
 			BufferedReader readCode = new BufferedReader(new InputStreamReader(is));
 			String inputLine;
 			AtcDescription result = new AtcDescription();
-			while ((inputLine = readCode.readLine()) != null && result.getCode() == null) {			
+			while ((inputLine = readCode.readLine()) != null && result.getCode() == null) {
 				if(!new AtcParser().findDrugDetails(inputLine).isEmpty()) {
 					result = new AtcParser().findDrugDetails(inputLine).get(0);
 				}
@@ -107,7 +107,7 @@ public class AtcParser {
 		}
 		return new AtcDescription();
 	}
-	
+
 	public List<AtcDescription> getAtcDetails(String atcCode) throws IOException {
 		if(atcCode.length() != 0) {
 			InputStream d_urlStream = new URL("http://www.whocc.no/atc_ddd_index/?code="+atcCode).openConnection().getInputStream();

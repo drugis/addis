@@ -70,7 +70,7 @@ import org.xml.sax.SAXException;
 import com.jgoodies.binding.list.ObservableList;
 
 /**
- * Used to clean up the Diabetes Dataset on http://mantis.drugis.org/file_download.php?file_id=29 
+ * Used to clean up the Diabetes Dataset on http://mantis.drugis.org/file_download.php?file_id=29
  */
 public class ConvertDiabetesDatasetUtil {
 	private Domain d_domain;
@@ -91,48 +91,48 @@ public class ConvertDiabetesDatasetUtil {
 		OutputStream fileWrite = new FileOutputStream("converted.addis");
 		JAXBHandler.marshallAddisData(out, fileWrite);
 		fileWrite.close();
-		
+
 	}
-	
+
 	private void run() throws IOException {
 		changeRaceEndpoints();
-		removeMeasuredOnceOutcomeMeasures();		
+		removeMeasuredOnceOutcomeMeasures();
 		renameStudies();
 	}
 
 	private void renameStudies() throws IOException {
-		for(Study study : d_domain.getStudies()) { 
+		for(Study study : d_domain.getStudies()) {
 			PubMedIdList pubmed = (PubMedIdList)study.getCharacteristic(BasicStudyCharacteristic.PUBMED);
-			
-			try { 
+
+			try {
 				Document doc = getPubMedXML(pubmed);
 
 				XPathFactory factory = XPathFactory.newInstance();
 				XPath xpath = factory.newXPath();
-			
+
 				XPathExpression yearExpr = xpath.compile("/PubmedArticleSet/PubmedArticle[1]/MedlineCitation[1]/DateCreated[1]/Year[1]");
 				Object yearResults = yearExpr.evaluate(doc, XPathConstants.NODESET);
-				
+
 				String year = ((NodeList) yearResults).item(0).getTextContent();
-				
+
 				XPathExpression authorExpr = xpath.compile("/PubmedArticleSet/PubmedArticle[1]/MedlineCitation[1]/Article[1]/AuthorList[1]/Author/LastName");
 				Object authorResults = authorExpr.evaluate(doc, XPathConstants.NODESET);
 				NodeList authorNodes = (NodeList)authorResults;
-				
+
 				List<String> authors = new ArrayList<String>();
 
 				for (int i = 0; i < authorNodes.getLength(); i++) {
 					authors.add(authorNodes.item(i).getTextContent());
 				}
 				String title = "";
-				if(authors.size() > 2) { 
+				if(authors.size() > 2) {
 					title = authors.get(0) + " et al, " + year;
-				} else { 
+				} else {
 					title = StringUtils.join(authors, ", ") + ", " + year;
 				}
 				study.setName(title);
-				
-			} catch (Exception e) { 
+
+			} catch (Exception e) {
 				continue;
 			}
 		}
@@ -159,7 +159,7 @@ public class ConvertDiabetesDatasetUtil {
 
 		for(Variable var : variables) {
 			ObservableList<Study> studies = d_domain.getStudies(var);
-			if(studies.getSize() < 2) { 
+			if(studies.getSize() < 2) {
 				for(Study study : studies) {
 					StudyOutcomeMeasure<Variable> som = study.findStudyOutcomeMeasure(var);
 					study.getStudyOutcomeMeasures().remove(som);
@@ -171,14 +171,14 @@ public class ConvertDiabetesDatasetUtil {
 
 			}
 		}
-		
+
 	}
 
 	private void changeRaceEndpoints() {
 		PopulationCharacteristic newChar = EntityUtil.findByName(d_domain.getPopulationCharacteristics(), "Race (Taxonomic)");
-		ObservableList<String> newCats = ((CategoricalVariableType)newChar.getVariableType()).getCategories();		
-		
-		for(Study study : d_domain.getStudies()) { 
+		ObservableList<String> newCats = ((CategoricalVariableType)newChar.getVariableType()).getCategories();
+
+		for(Study study : d_domain.getStudies()) {
 			StudyOutcomeMeasure<PopulationCharacteristic> oldSom = getPopulationChar(d_domain, study);
 			if(oldSom == null) continue;
 			ObservableList<String> oldCats = ((CategoricalVariableType) oldSom.getValue().getVariableType()).getCategories();
@@ -186,13 +186,13 @@ public class ConvertDiabetesDatasetUtil {
 			StudyOutcomeMeasure<PopulationCharacteristic> newSom = oldSom.clone();
 			newSom.setValue(newChar);
 			study.getStudyOutcomeMeasures().add(study.getStudyOutcomeMeasures().indexOf(oldSom), newSom);
-			for(WhenTaken wt : oldSom.getWhenTaken()) { 
-				for(Arm arm : AffixedObservableList.createSuffixed(study.getArms(),  (Arm)null)) { 
+			for(WhenTaken wt : oldSom.getWhenTaken()) {
+				for(Arm arm : AffixedObservableList.createSuffixed(study.getArms(),  (Arm)null)) {
 					FrequencyMeasurement m = (FrequencyMeasurement) study.getMeasurement(oldSom.getValue(), arm, wt);
 					if(m == null) continue;
 					FrequencyMeasurement newFreq = new FrequencyMeasurement(newChar);
-					
-					for(String oldCat : oldCats) { 
+
+					for(String oldCat : oldCats) {
 						setNewFreq(newCats, m, newFreq, oldCat);
 					}
 					study.setMeasurement(newSom, arm, wt, newFreq);
@@ -208,8 +208,8 @@ public class ConvertDiabetesDatasetUtil {
 		oldCat = StringUtils.capitalize(oldCat);
 		int frequency = oldFreq.getFrequency(oldCat.toLowerCase());
 		String newCat = null;
-		for(String cat : newCats) { 
-			if(oldCat.toLowerCase().startsWith(cat.toLowerCase())) { 
+		for(String cat : newCats) {
+			if(oldCat.toLowerCase().startsWith(cat.toLowerCase())) {
 				newCat = cat;
 			}
 		}
@@ -220,7 +220,7 @@ public class ConvertDiabetesDatasetUtil {
 
 	private StudyOutcomeMeasure<PopulationCharacteristic> getPopulationChar(Domain domainData, Study study) {
 		for(StudyOutcomeMeasure<PopulationCharacteristic> popChar  : study.getPopulationChars())  {
-			if(popChar.getValue().getName().matches("(?i)race.*")) { 
+			if(popChar.getValue().getName().matches("(?i)race.*")) {
 				return popChar;
 			}
 		}

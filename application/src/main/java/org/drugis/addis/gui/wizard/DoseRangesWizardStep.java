@@ -71,7 +71,7 @@ public class DoseRangesWizardStep extends AbstractTreatmentCategorizationWizardS
 			list.removeListDataListener(d_rebuildListener);
 		}
 		d_observed.clear();
-		
+
 		// Initialize ranges
 		final DecisionTree tree = d_pm.getBean().getDecisionTree();
 		for (final DecisionTreeEdge edge : d_parents) {
@@ -80,7 +80,7 @@ public class DoseRangesWizardStep extends AbstractTreatmentCategorizationWizardS
 				DoseRangeWizardStep.populate(d_pm, (ChoiceNode)node);
 			}
 		}
-		
+
 		// Listen to range lists
 		for (DecisionTreeEdge edge : d_parents) {
 			DecisionTreeNode node = tree.getEdgeTarget(edge);
@@ -90,7 +90,7 @@ public class DoseRangesWizardStep extends AbstractTreatmentCategorizationWizardS
 				d_observed.add(ranges);
 			}
 		}
-		
+
 		rebuildPanel();
 	}
 
@@ -106,13 +106,13 @@ public class DoseRangesWizardStep extends AbstractTreatmentCategorizationWizardS
 		int row = 1;
 
 		final DecisionTree tree = d_pm.getBean().getDecisionTree();
-	
+
 		for (final DecisionTreeEdge edge : d_parents) {
 			final ChoiceNode parent = (ChoiceNode) tree.getEdgeSource(edge);
-			
+
 			row = LayoutUtil.addRow(layout, row);
 			builder.addSeparator(RangeEdge.format(GUIHelper.humanize(parent.getPropertyName()), (RangeEdge) edge), cc.xyw(1, row, fullWidth));
-			
+
 			final DecisionTreeNode node = tree.getEdgeTarget(edge);
 			if (node instanceof ChoiceNode) {
 				final RangeInputBuilder rangeBuilder = new RangeInputBuilder(d_dialog, new RangeInputPresentation(d_pm, (ChoiceNode) node, null));

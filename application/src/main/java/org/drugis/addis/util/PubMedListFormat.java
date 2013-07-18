@@ -63,12 +63,12 @@ public class PubMedListFormat extends Format {
 	public Object parseObject(String source, ParsePosition pos) {
 		pos.setIndex(source.length() + 1);
 		PubMedIdList list = new PubMedIdList();
-		
+
 		StringTokenizer tokenizer = new StringTokenizer(source, ",");
 		while (tokenizer.hasMoreTokens()) {
-			validatePubMedID(tokenizer.nextToken(), list);	
+			validatePubMedID(tokenizer.nextToken(), list);
 	    }
-		
+
 		return list;
 	}
 

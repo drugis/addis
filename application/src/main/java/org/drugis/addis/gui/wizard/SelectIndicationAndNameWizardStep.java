@@ -51,17 +51,17 @@ public class SelectIndicationAndNameWizardStep extends PanelWizardStep {
 	public SelectIndicationAndNameWizardStep(NetworkMetaAnalysisWizardPM pm, AddisWindow main) {
 		super("Define Context", "Select the indication and outcome measure that you want to use for this meta-analysis " +
 				"and give it a unique name.");
-		
+
 		FormLayout layout = new FormLayout(
 				"right:pref, 3dlu, pref:grow",
 				"p, 3dlu, p"
-			);	
+			);
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		builder.setDefaultDialogBorder();
 
 		int row = IndicationAndNameInputPanel.addToBuilder(builder, 1, pm) + 2;
-		
+
 		builder.add(new JLabel("Outcome measure : "), cc.xy(1, row));
 		JComboBox endPointBox = AuxComponentFactory.createBoundComboBox(
 				pm.getAvailableOutcomeMeasures(), pm.getOutcomeMeasureModel(), true);
@@ -73,7 +73,7 @@ public class SelectIndicationAndNameWizardStep extends PanelWizardStep {
 				pm.getNameValidModel(),
 				new BooleanNotModel(new ValueEqualsModel(pm.getIndicationModel(), null)),
 				new BooleanNotModel(new ValueEqualsModel(pm.getOutcomeMeasureModel(), null))
-		)); 
+		));
 		Bindings.bind(this, "complete", complete);
 	}
 }

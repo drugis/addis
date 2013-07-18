@@ -49,11 +49,11 @@ public class BaselineMeanDifferenceModelIT {
 		double expectedMu = -1.804124;
 		double expectedSigma = 0.645427;
 		double dev = expectedSigma * 0.075;
-		
+
 		BaselineMeanDifferenceModel model = new BaselineMeanDifferenceModel(buildMeasurementsList(m, s, n));
 		model.setExtendSimulation(ExtendSimulation.FINISH);
 		TaskUtil.run(model.getActivityTask());
-		
+
 		assertTrue(model.isReady());
 		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getSummary().getMean(), dev);

@@ -34,7 +34,7 @@ import javax.swing.Scrollable;
 
 @SuppressWarnings("serial")
 public class ScrollableJPanel extends JPanel implements Scrollable {
-			
+
 	public ScrollableJPanel() {
 	}
 
