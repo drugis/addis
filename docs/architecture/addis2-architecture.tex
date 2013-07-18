@@ -1,0 +1,138 @@
+\documentclass[a4paper]{article}
+\usepackage{fullpage}
+\usepackage{enumitem}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{ADDIS 2.x requirements and architecture}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\paragraph{ADDIS long-term vision}
+Aggregate Data Drug Information System (ADDIS) aims to support transparent, high quality, and easy to use software to support decisions regarding multiple treatment options, such as market authorization and reimbursement decisions.
+Importantly, results and recommendations should be directly traceable to the underlying evidence (i.e. clinical trials).
+To this end, ADDIS must capture the entire process in a single integrated workflow.
+Additional challenges include developing appropriate statistical and decision analytical methods and enabling efficient access to, and management of, the evidence.
+ADDIS is open source software to encourage third party contributions and enable independent auditing.
+
+\paragraph{Current status}
+A proof-of-concept system (ADDIS 1.16, \url{http://drugis.org/addis}) has been developed in the context of the TI Pharma project Escher (T6-202).
+Escher focussed on the market authorisation process and consequently ADDIS enables benefit-risk decisions based on clinical trials.
+ADDIS implements a database of aggregate-level clinical trial results, network meta-analysis to synthesise the results of multiple trials, and stochastic multi-criteria decision models to support complex benefit-risk decisions.
+
+The proof-of-concept is a cross-platform desktop application developed in Java.
+This enabled rapid prototyping by limiting concerns of infrastructure, distribution, and security.
+However, this limits our ability to integrate components not written in Java and makes it difficult to collaborate on a single data set.
+To increase our flexibility in supporting future research projects and to increase the real-world applicability of ADDIS, we need to transition from the current prototype to a new architecture.
+
+\section{Requirements}
+
+We identify the main goals and requirements of the `future system' according to five key concerns: research, valorization, development, ecosystem, and learning.
+
+\paragraph{Research}
+The system should be an enabler for our own research and contribute to the success of grant proposals.
+\begin{enumerate}[label=R\arabic*]
+\item\label{rPrototyping} Rapid prototyping of new analyses and user interfaces to support new research questions
+\item\label{rDatabase} A large database to do research and meta-research
+\item\label{rTransparency} Transparency of implementation (open source)
+\item\label{rPublishable} Publishable (high quality) graphics and tables 
+\end{enumerate}
+
+\paragraph{Valorization}
+The system should generate sufficient revenue to support its continued development and operation.
+Since the business model has not been decided on, we focus on concerns that are likely to be common to potential approaches.
+\begin{enumerate}[label=V\arabic*]
+\item\label{vProductLine} Custom variants for different audiences, such as regulators, reimbursement authorities and industry (product line)
+\item\label{vInHouse} `In-house' deployments of the system for when the analyses are confidential / sensitive
+\item\label{vSilo} Access to internal organization data, possibly in conjunction with public data
+\item\label{vEaseOfUse} Ease of use: the system should visually attractive to `sell' it, and be easy to use to limit frustrations and the need for training
+\end{enumerate}
+
+\paragraph{Development}
+System development should be efficient, agile, and sustainable.
+\begin{enumerate}[label=D\arabic*]
+\item\label{dComputation} Analyses are often computationally intensive, they should run quickly and the system should scale to support many such computations in parallel if needed
+\item\label{dPlatform} There should be flexibility in choosing the right technologies, platforms, and frameworks to implement specific functionality (e.g. statistical computing using R and user interfaces using HTML + JavaScript)
+\item\label{dModular} The system should be maintainable and hence divided up in loosely coupled components with well-defined APIs
+\item\label{dDogfood} To ensure our public APIs are functioning in an optimal manner, our own software should use those APIs
+\item\label{dIntegrity} The integrity of data should be closely guarded and all data should have clear provenance and versioning information
+\end{enumerate}
+
+\paragraph{Ecosystem}
+For the ADDIS concept to work, it is critical that structured clinical trials data are available.
+It is unlikely that any one organization will be able to achieve this.
+Therefore, we should aim to `bootstrap' an open ecosystem in which structured clinical trials data can be shared.
+\begin{enumerate}[label=E\arabic*]
+\item\label{ePortal} Create a single collaborative portal for data extraction and sharing (open access / source)
+\item\label{eReview} Enhance the efficiency of systematic review by `closing the information chain' (i.e. capturing the entire process from literature screening to analysis)
+\item\label{eMap} Enable the flexible re-use of data by enabling the definition, re-definition and mapping of meta-data -- it should be possible to integrate data extracted by independent teams by mapping the meta-data
+\item\label{eBot} Enable automated (third party) data extraction systems (bots) to contribute
+\item\label{eEaseOfUse} The system(s) should be easy to use and hassle-free to use -- e.g. single sign-on
+\item\label{eTraceability} All data and analyses can be traced back to their ultimate source
+\item\label{eThirdParty} Third parties should be able to develop new analysis tools and decision support systems based on the available data
+\end{enumerate}
+
+\paragraph{Learning}
+The system should promote the use of structured, transparent, and quantitative methods in health care policy decisions.
+\begin{enumerate}[label=L\arabic*]
+\item\label{lAccess} Enable access to `complex' methods and tools through a usable interface for non-experts
+\item\label{lDocumentation} Clear in-system documentation and links to further reading (e.g. methodology papers)
+\item\label{lAwareness} Raise awareness of newer statistical and decision making methods by implementing and applying them
+\end{enumerate}
+
+\section{Future architecture}
+
+Given that many of the requirements imply loosely coupled and flexibly reusable components with well-defined public APIs (\ref{rPrototyping}, \ref{vProductLine}, \ref{vInHouse}, \ref{vSilo}, \ref{dComputation}, \ref{dPlatform}, \ref{dModular}, \ref{eBot}, \ref{eThirdParty}), we will assume that a service-based (and web-based) architecture is most appropriate.
+We distinguish the following components:
+\begin{itemize}
+\item Web services that implement the different analyses (\ref{rPrototyping}, \ref{dComputation}, \ref{dPlatform})
+\item ADDIS, a `business intelligence' system for drug benefit-risk analysis (\ref{vProductLine}, \ref{dModular}, \ref{lAccess}) -- basically a `work flow engine' in which different ways of going from a database of trials to analyses can implemented
+\item TrialVerse, a portal/database where researchers share structured RCT data (\ref{vSilo}, \ref{dModular}, \ref{dDogfood}, \ref{ePortal})
+\item TrialMine, a system for literature screening (\ref{eReview})
+\item ConceptMapper, a shared component where definitions (concepts) can be deposited, refined, and mapped (\ref{rDatabase}, \ref{ePortal}, \ref{eReview}, \ref{eMap})
+\item A user management component underlying all systems (\ref{vEaseOfUse}, \ref{dModular}, \ref{eEaseOfUse})
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{future}
+\caption{Overview of the possible future architecture. GUI = Graphical User Interface, RCT = Randomized Controlled Trial, WS = Web Service}
+\end{figure}
+
+The user-facing systems have a back end that exposes an API, and an HTML + JavaScript GUI that calls that API (\ref{dPlatform}, \ref{dDogfood}).
+It is intended that this will enable third parties to create additional `business intelligence' systems based on TrialVerse (\ref{eThirdParty}).
+Moreover, the API can be used to build, test, and use automated systems for the extraction of data (\ref{eBot}).
+While the two user-facing systems have clearly separated concerns, they will be tightly integrated (\ref{eEaseOfUse}), for example using:
+\begin{itemize}
+\item Single sign-on authentication
+\item Shared user and organization profiles
+\item Consistent visual identity
+\end{itemize}
+
+We also want to support corporate deployments of the ADDIS system (\ref{vInHouse}). This is possible because TrialVerse exposes a well-defined API. We can then do the following:
+\begin{enumerate}
+\item Deploy an internal system exposing company data through the TrialVerse interface (\ref{vSilo})
+\item Deploy an internal version of ADDIS that has access to both TrialVerse and the internal database (\ref{vInHouse})
+\item (Optional) internal deployment of the analysis web services (\ref{vInHouse})
+\end{enumerate}
+To better support this scenario there should be clearly separated read-only (to be used by ADDIS) and read-write (to be used by the TrialVerse GUI) interfaces for TrialVerse.
+
+\section{Implementation strategy}
+The following is a possible transition strategy:
+\begin{enumerate}
+\item Implement the analysis web services based on R
+\item Implement the TrialVerse read-only API based on the current ADDIS XML and a rudementary version of ConceptMapper
+\item Build the ADDIS system (database and user-interfaces for meta-analysis and benefit-risk analysis, on par with the current ADDIS system)
+\item Transition to a RDBMS-based system for TrialVerse (\ref{dIntegrity}) -- now ADDIS could already be a viable business intelligence system based on data we provide in TrialVerse
+\item Start building a read/write version of TrialVerse and a more complete ConceptMapper
+\item Integrate with TrialMine (\ref{eReview})
+\end{enumerate}
+By focussing on analysis functionality first, we have the quickest path to a useful system and enable the development of analysis functionality needed for several research proposals.
+In the interim, the desktop version of ADDIS can be used for data entry.
+
+\end{document}

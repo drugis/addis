@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,15 +55,15 @@ public class EndpointForTemplate {
 		d_endpoint = endpoint;
 		d_isPrimary = isPrimary;
 	}
-	
-	public String getType() { 
+
+	public String getType() {
 		return d_endpoint.getVariableType().getType();
 	}
-	
+
 	public String getPrimary() {
 		return d_isPrimary ? "Primary" : "Secondary";
 	}
-	
+
 	public String getName() {
 		return d_endpoint.getName();
 	}
@@ -77,20 +78,20 @@ public class EndpointForTemplate {
 		}
 		return ms.toArray(new String[0]);
 	}
-	
+
 	// These three are not used in Java but called by the template
 	public String[] getTestStatistics() {
-		return getStatistics(StatisticType.POINT_ESTIMATE);		
+		return getStatistics(StatisticType.POINT_ESTIMATE);
 	}
 
 	public String[] getVariabilityStatistics() {
 		return getStatistics(StatisticType.CONFIDENCE_INTERVAL);
 	}
-	
+
 	public String[] getPValueStatistics() {
 		return getStatistics(StatisticType.P_VALUE);
 	}
-	
+
 	public String[] getStatistics(StatisticType type) {
 		List<String> statistics = new ArrayList<String>();
 		Arm base = d_study.getArms().get(0);
@@ -117,7 +118,7 @@ public class EndpointForTemplate {
 		}
 	}
 
-	
+
 	private String formatPValue(BasicMeasurement baseline, BasicMeasurement subject, DecimalFormat df) {
 		AbstractBasicRelativeEffect<? extends Measurement> relEffect = getRelativeEffect(baseline, subject);
 		if (relEffect.getTwoSidedPValue() >= 0.01) {
@@ -138,13 +139,13 @@ public class EndpointForTemplate {
 	}
 
 	private AbstractBasicRelativeEffect<? extends Measurement> getRelativeEffect(BasicMeasurement baseline, BasicMeasurement subject) {
-		return (d_endpoint.getVariableType() instanceof ContinuousVariableType ? 
-				new BasicMeanDifference((ContinuousMeasurement)baseline, (ContinuousMeasurement)subject) : 
+		return (d_endpoint.getVariableType() instanceof ContinuousVariableType ?
+				new BasicMeanDifference((ContinuousMeasurement)baseline, (ContinuousMeasurement)subject) :
 				new BasicRiskRatio((RateMeasurement) baseline, (RateMeasurement) subject));
 	}
-	
+
 	public String getTestStatisticType() {
 		return d_endpoint.getVariableType() instanceof ContinuousVariableType ? "Mean Difference" : "Risk Ratio";
 	}
-	
+
 }

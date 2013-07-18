@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,12 +39,12 @@ public class RunnableReadyModel extends UnmodifiableHolder<Boolean> implements R
 		d_ready = false;
 		d_runnable = runnable;
 	}
-	
+
 	@Override
 	public Boolean getValue() {
 		return d_ready;
 	}
-	
+
 	public void run() {
 		d_runnable.run();
 		d_ready = true;

@@ -11,7 +11,7 @@ public class FixedObservableGraph<V, E> extends ObservableGraph<V, E> {
 	public FixedObservableGraph(Graph<V, E> delegate) {
 		super(delegate);
 	}
-	
+
 	@Override
 	protected void fireGraphEvent(GraphEvent<V, E> evt) {
 		for(GraphEventListener<V,E> listener : new ArrayList<GraphEventListener<V,E>>(listenerList)) {

@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,37 +50,37 @@ import com.jgoodies.binding.adapter.Bindings;
 
 @SuppressWarnings("serial")
 public class PairwiseMetaAnalysisWizard extends Wizard {
-	
+
 	public PairwiseMetaAnalysisWizard(AddisWindow mainWindow, PairWiseMetaAnalysisWizardPresentation pm) {
 		super(buildModel(pm, mainWindow));
 		setDefaultExitMode(Wizard.EXIT_ON_FINISH);
 	}
-	
+
 	private static WizardModel buildModel(final PairWiseMetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 		StaticModel wizardModel = new StaticModel();
 		wizardModel.add(new SelectIndicationAndNameWizardStep(pm, mainWindow));
-		wizardModel.add(new SelectTwoDrugsWizardStep(pm, 
-				pm.getRawAlternativesGraph(), 
-				pm.getRawFirstDefinitionModel(), 
-				pm.getRawSecondDefinitionModel(), 
+		wizardModel.add(new SelectTwoDrugsWizardStep(pm,
+				pm.getRawAlternativesGraph(),
+				pm.getRawFirstDefinitionModel(),
+				pm.getRawSecondDefinitionModel(),
 				new Runnable() {
 					public void run() {
 						pm.rebuildRawAlternativesGraph();
-						
+
 					}
 				}, "Select Drugs", pm.getRawDescription()));
 		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
-		wizardModel.add(new SelectTwoDrugsWizardStep(pm, 
-				pm.getRefinedAlternativesGraph(), 
-				pm.getRefinedFirstDefinitionModel(), 
-				pm.getRefinedSecondDefinitionModel(), 
+		wizardModel.add(new SelectTwoDrugsWizardStep(pm,
+				pm.getRefinedAlternativesGraph(),
+				pm.getRefinedFirstDefinitionModel(),
+				pm.getRefinedSecondDefinitionModel(),
 				new Runnable() {
 					public void run() {
 						pm.rebuildRefinedAlternativesGraph();
-						
+
 					}
 				}, "Select Definitions", pm.getRefinedDescription()));
-		
+
 		SelectStudiesWizardStep selectStudiesStep = new SelectStudiesWizardStep(pm);
 		wizardModel.add(selectStudiesStep);
 		Bindings.bind(selectStudiesStep, "complete", pm.getMetaAnalysisCompleteModel());
@@ -92,14 +93,14 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 		public OverviewWizardStep(PairWiseMetaAnalysisWizardPresentation pm, AddisWindow mainWindow) {
 			super(pm, mainWindow);
 		}
-		
+
 		@Override
 		public void prepare() {
 			removeAll();
 			d_pm.rebuildOverviewGraph();
-			
+
 			setLayout(new BorderLayout()); // needed for placement
-			
+
 			PairWiseMetaAnalysisPresentation pm = ((PairWiseMetaAnalysisWizardPresentation)d_pm).getMetaAnalysisModel();
 			final PairWiseMetaAnalysisView mav = new PairWiseMetaAnalysisView(
 					(PairWiseMetaAnalysisPresentation)pm, d_mainWindow);
@@ -109,11 +110,11 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 				JCheckBox checkBox = BasicComponentFactory.createCheckBox(pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED), "Correct for zeroes");
 				add(checkBox, BorderLayout.NORTH);
 			}
-			
+
 			final JScrollPane sp = new JScrollPane(panel);
 			sp.getVerticalScrollBar().setUnitIncrement(16);
 			add(sp, BorderLayout.CENTER);
-			
+
 			pm.getModel(RandomEffectsMetaAnalysis.PROPERTY_CORRECTED).addValueChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
 					sp.setVisible(false);
@@ -121,8 +122,8 @@ public class PairwiseMetaAnalysisWizard extends Wizard {
 					sp.setVisible(true);
 				}
 			});
-			
+
 			setComplete(true);
 		}
-	}	
+	}
 }

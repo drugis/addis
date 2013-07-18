@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,11 +48,11 @@ public class BaselineOddsModelIT {
 		double expectedMu = 0.1320994;
 		double expectedSigma = 0.1779923;
 		double dev = expectedSigma * 0.05;
-		
+
 		BaselineOddsModel model = new BaselineOddsModel(buildMeasurementsList(n, r));
 		model.setExtendSimulation(ExtendSimulation.FINISH);
 		TaskUtil.run(model.getActivityTask());
-		
+
 		assertTrue(model.isReady());
 		SummaryHelper.waitUntilDefined(model.getSummary());
 		assertEquals(expectedMu, model.getSummary().getMean(), dev);

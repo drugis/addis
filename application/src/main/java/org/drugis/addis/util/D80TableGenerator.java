@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,10 +59,10 @@ public class D80TableGenerator {
 		Epoch mainPhase = d_study.findTreatmentEpoch();
 		Epoch runInPhase = d_study.findEpochWithActivity(PredefinedActivity.WASH_OUT);
 		Epoch extensionPhase = d_study.findEpochWithActivity(PredefinedActivity.FOLLOW_UP);
-		
+
 		CompiledTemplate template = TemplateCompiler.compileTemplate(getTemplate());
 		Map<String, Object> propMap = new HashMap<String, Object>();
-		
+
 		propMap.put("title", d_study.getCharacteristic(BasicStudyCharacteristic.TITLE));
 		propMap.put("studyid", d_study.getName());
 		propMap.put("mainphase",  getEpochDuration(mainPhase));
@@ -85,7 +86,7 @@ public class D80TableGenerator {
 		}
 		return "&lt;duration&gt;";
 	}
-		
+
 	private ArmForTemplate[] getArms() {
 		ArmForTemplate[] ca = new ArmForTemplate[d_study.getArms().size()];
 		for (int i = 0; i < ca.length; ++i) {
@@ -93,7 +94,7 @@ public class D80TableGenerator {
 		}
 		return ca;
 	}
-	
+
 	public EndpointForTemplate[] getEndpoints() {
 		EndpointForTemplate[] ep = new EndpointForTemplate[d_study.getEndpoints().size()];
 		for (int i = 0; i < ep.length; ++i) {
@@ -102,11 +103,11 @@ public class D80TableGenerator {
 		}
 		return ep;
 	}
-	
+
 	public static String getHtml(Study study) {
 		return (new D80TableGenerator(study)).render();
 	}
-	
+
 	public static String getTemplate() {
 		String html = "";
 		try {

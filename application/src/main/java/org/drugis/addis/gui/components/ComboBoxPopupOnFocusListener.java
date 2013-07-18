@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +35,7 @@ import javax.swing.JComboBox;
 public class ComboBoxPopupOnFocusListener implements FocusListener {
 
 	private JComboBox d_box;
-	
+
 	public static void add (JComboBox box) {
 		ComboBoxPopupOnFocusListener l = new ComboBoxPopupOnFocusListener(box);
 		box.addFocusListener(l);

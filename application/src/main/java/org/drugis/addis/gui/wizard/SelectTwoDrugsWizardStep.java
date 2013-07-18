@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,48 +59,48 @@ public class SelectTwoDrugsWizardStep extends PanelWizardStep {
 	private ValueHolder<TreatmentDefinition> d_secondDefinition;
 	private Runnable d_rebuildGraph;
 
-	public SelectTwoDrugsWizardStep(PairWiseMetaAnalysisWizardPresentation pm, 
-			SelectableTreatmentDefinitionsGraphModel graph, 
-			ValueHolder<TreatmentDefinition> firstDefinition, 
-			ValueHolder<TreatmentDefinition> secondDefinition, 
+	public SelectTwoDrugsWizardStep(PairWiseMetaAnalysisWizardPresentation pm,
+			SelectableTreatmentDefinitionsGraphModel graph,
+			ValueHolder<TreatmentDefinition> firstDefinition,
+			ValueHolder<TreatmentDefinition> secondDefinition,
 			Runnable rebuildGraph, String title, String description) {
 		super(title, description);
-		
+
 		d_pm = pm;
 		d_graph = graph;
 		d_firstDefinition = firstDefinition;
 		d_secondDefinition = secondDefinition;
 		d_rebuildGraph = rebuildGraph;
-		
+
 		setLayout(new BorderLayout());
 		FormLayout layout = new FormLayout(
 				"center:pref:grow",
 				"p, 3dlu, p, 3dlu, p"
-				);	
-		
+				);
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
 		CellConstraints cc = new CellConstraints();
-		
-		builder.add(buildSelectDrugsPanel(), cc.xy(1, 1));			
+
+		builder.add(buildSelectDrugsPanel(), cc.xy(1, 1));
 		builder.add(BasicComponentFactory.createLabel(d_pm.getStudiesMeasuringLabelModel()),
 				cc.xy(1, 3));
 		builder.setBorder(BorderFactory.createEmptyBorder());
 		builder.add(buildStudiesGraph(), cc.xy(1, 5));
-		
+
 		JScrollPane sp = new JScrollPane(builder.getPanel());
 		add(sp);
-		sp.getVerticalScrollBar().setUnitIncrement(16);			
-		
+		sp.getVerticalScrollBar().setUnitIncrement(16);
+
 		Bindings.bind(this, "complete", graph.getSelectionCompleteModel());
 	}
-	
+
 	private Component buildStudiesGraph() {
 		TreatmentDefinitionsGraphModel pm = d_graph;
 		d_studyGraph = new StudyGraph(pm);
 		return d_studyGraph;
 	}
-	
+
 	@Override
 	public void prepare() {
 		d_rebuildGraph.run();
@@ -110,23 +111,23 @@ public class SelectTwoDrugsWizardStep extends PanelWizardStep {
 		FormLayout layout = new FormLayout(
 				"center:pref, 3dlu, center:pref, 3dlu, center:pref",
 				"p, 3dlu, p, 3dlu, p, 3dlu, p"
-				);	
-		
+				);
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		builder.setDefaultDialogBorder();
-		
+
 		CellConstraints cc = new CellConstraints();
 		builder.addLabel("First Drug",cc.xy(1, 1));
 		builder.addLabel("Second Drug",cc.xy(5, 1));
-					
+
 		JComboBox firstDrugBox = AuxComponentFactory.createBoundComboBox(d_graph.getDefinitions(), d_firstDefinition, true);
 		JComboBox secondDrugBox = AuxComponentFactory.createBoundComboBox(d_graph.getDefinitions(), d_secondDefinition, true);
-		
+
 		builder.add(firstDrugBox,cc.xy(1, 3));
 		builder.add(secondDrugBox,cc.xy(5, 3));
 		builder.addLabel("VS",cc.xy(3, 3));
-		JPanel panel = builder.getPanel();			
-		
+		JPanel panel = builder.getPanel();
+
 		return panel;
 	}
 }

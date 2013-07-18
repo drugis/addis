@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@ import com.jgoodies.binding.value.AbstractValueModel;
 
 public class ComboBoxSelectionModel extends AbstractValueModel {
 	private static final long serialVersionUID = -6232164102805810781L;
-	
+
 	private JComboBox d_comboBox;
 
 	public ComboBoxSelectionModel(JComboBox comboBox) {
@@ -46,7 +47,7 @@ public class ComboBoxSelectionModel extends AbstractValueModel {
 		comboBox.addActionListener(listener);
 		comboBox.addItemListener(listener);
 	}
-	
+
 	@Override
 	public Object getValue() {
 		return d_comboBox.getSelectedItem();
@@ -56,8 +57,8 @@ public class ComboBoxSelectionModel extends AbstractValueModel {
 	public void setValue(Object newValue) {
 		throw new RuntimeException("Modification not allowed");
 	}
-	
-	
+
+
 	private class ComboBoxListener implements ActionListener, ItemListener{
 		public void actionPerformed(ActionEvent ev) {
 			fireValueChange(null, getValue());

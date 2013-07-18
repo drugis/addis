@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.16.3</version>
+		<version>1.16.4</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -175,6 +175,13 @@
 			<artifactId>jaxb2-basics-runtime</artifactId>
 			<version>0.6.0</version>
 		</dependency>
+		<!--  JSON Serialization  -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.12</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
