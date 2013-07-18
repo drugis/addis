@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +34,9 @@ import java.text.ParsePosition;
 
 public class MissingValueFormat extends Format {
 	private static final long serialVersionUID = -7318072422588445440L;
-	
+
 	private final NumberFormat d_format;
-	
+
 	public MissingValueFormat(NumberFormat format) {
 		d_format = format;
 	}

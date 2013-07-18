@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +33,9 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextField;
 
 public class AutoSelectFocusListener implements FocusListener {
-	
+
 	private JTextField d_textField;
-	
+
 	public static void add(JTextField field) {
 		AutoSelectFocusListener l = new AutoSelectFocusListener(field);
 		field.addFocusListener(l);
@@ -43,7 +44,7 @@ public class AutoSelectFocusListener implements FocusListener {
 	private AutoSelectFocusListener(JTextField textField) {
 		d_textField = textField;
 	}
-	
+
 	public void focusGained(FocusEvent e) {
 		d_textField.setCaretPosition(0);
 		if (d_textField.getText()!=null) {

@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +41,9 @@ public final class CopyrightInfo {
 	private final int YEAR2010 = 1;
 	private final int YEAR2011 = 2;
 	private final int YEAR2012 = 3;
-	private final String[] years = {"2009", "2010", "2011", "2012"};
+	private final int YEAR2013 = 4;
+
+	private final String[] years = {"2009", "2010", "2011", "2012", "2013"};
 	private final static String HEADER_FILENAME = "HEADER";
 	private String [][] d_authors;
 	private static String d_aboutText;
@@ -54,6 +57,8 @@ public final class CopyrightInfo {
 									"Hanno Koeslag", "Florin Schimbinschi", "Ahmad Kamal", "Daniel Reid"};
 		d_authors[YEAR2011] = new String[] {"Gert van Valkenhoef", "Ahmad Kamal", "Daniel Reid", "Florin Schimbinschi" };
 		d_authors[YEAR2012] = new String[] {"Gert van Valkenhoef", "Daniel Reid", "Joël Kuiper", "Wouter Reckman" };
+		d_authors[YEAR2013] = new String[] {"Gert van Valkenhoef", "Joël Kuiper" };
+
 		d_aboutText = new String(AppInfo.getAppName() + " is open source and licensed under GPLv3.\n");
 
 		d_headerText = "This file is part of ADDIS (Aggregate Data Drug Information System).\n" +

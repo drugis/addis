@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,10 +58,10 @@ public class EntityTablePanel extends TablePanel {
 			table.addKeyListener(new EntityTableDeleteListener(main));
 			table.addMouseListener(new EntityTableDoubleClickListener(main));
 		}
-		
+
 		return table;
 	}
-	
+
 	public static Entity getEntityAt(JTable table, int row) {
 		return (Entity) table.getModel().getValueAt(row, findEntityColumn(table));
 	}

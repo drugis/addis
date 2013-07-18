@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@ import org.drugis.addis.presentation.ForestPlotPresentation;
 
 @SuppressWarnings("serial")
 public class RelativeEffectCanvas extends JPanel {
-	
+
 	private ForestPlot d_plot;
 
 	public ForestPlot getPlot() {
@@ -47,12 +48,12 @@ public class RelativeEffectCanvas extends JPanel {
 	public RelativeEffectCanvas(ForestPlotPresentation pres) {
 		d_plot = new ForestPlot(pres);
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		d_plot.paint((Graphics2D) g);
 	}
-	
+
 	@Override
 	public Dimension getPreferredSize() {
 		return d_plot.getPlotSize();

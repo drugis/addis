@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +53,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 public abstract class RenameDialog extends OkCancelDialog {
 	private static final long serialVersionUID = -7504316676802005798L;
-	
+
 	protected final List<? extends TypeWithName> d_list;
 	protected final int d_idx;
 	private final ValueHolder<String> d_name;
@@ -91,7 +92,7 @@ public abstract class RenameDialog extends OkCancelDialog {
 		JTextField nameField = BasicComponentFactory.createTextField(d_name, false);
 		nameField.setColumns(18);
 		builder.add(nameField, cc.xy(3, 1));
-		
+
 		getUserPanel().setLayout(new BorderLayout());
 		getUserPanel().add(builder.getPanel(), BorderLayout.CENTER);
 		pack();
@@ -102,7 +103,7 @@ public abstract class RenameDialog extends OkCancelDialog {
 				commit();
 			}
 		});
-		
+
 		Bindings.bind(d_okButton, "enabled", d_okEnabledModel);
 	}
 

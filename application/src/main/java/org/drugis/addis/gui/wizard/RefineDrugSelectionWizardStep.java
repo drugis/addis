@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,25 +49,25 @@ public class RefineDrugSelectionWizardStep extends PanelWizardStep {
 	private static final long serialVersionUID = -585100940524715529L;
 	private NetworkMetaAnalysisWizardPM d_pm;
 
-	public RefineDrugSelectionWizardStep(NetworkMetaAnalysisWizardPM pm) { 
+	public RefineDrugSelectionWizardStep(NetworkMetaAnalysisWizardPM pm) {
 		super("Refine Drugs","Optionally select Treatment Categorizations to use for the selected drugs");
 		d_pm = pm;
 	}
-	
+
 	private void buildPanel() {
 		setLayout(new BorderLayout());
 		FormLayout layout = new FormLayout(
-				"pref, 3dlu, right:pref:grow",				
+				"pref, 3dlu, right:pref:grow",
 				"p"
-				);	
-		
+				);
+
 		PanelBuilder builder = new PanelBuilder(layout);
 		CellConstraints cc = new CellConstraints();
 		int rows = 1;
-		for (final Drug drug : d_pm.getSelectedDrugs()) { 
+		for (final Drug drug : d_pm.getSelectedDrugs()) {
 			rows = LayoutUtil.addRow(layout, rows);
 			builder.add(new JLabel(drug.getLabel()), cc.xy(1, rows));
-			
+
 
 			JComboBox categorizationSelect = createCategorizationSelect(drug);
 			builder.add(categorizationSelect, cc.xy(3, rows));
@@ -82,7 +83,7 @@ public class RefineDrugSelectionWizardStep extends PanelWizardStep {
 		return categorizationSelect;
 	}
 
-	public void prepare() { 
+	public void prepare() {
 		rebuildPanel();
 	}
 

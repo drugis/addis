@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,15 +45,15 @@ import com.jgoodies.binding.list.ObservableList;
 public class ListPanel extends JPanel {
 	private ObservableList<?> d_entities;
 	private JLabel d_listLabel = new JLabel();
-	
+
 	public <E> ListPanel(ObservableList<E> entities) {
 		super(new BorderLayout());
 		d_listLabel.setBackground(null);
 		d_listLabel.setOpaque(true);
-		
+
 		d_entities = entities;
 		refreshItems();
-		
+
 		d_entities.addListDataListener(new ListDataListener() {
 			public void intervalRemoved(ListDataEvent e) {
 				refreshItems();
@@ -64,14 +65,14 @@ public class ListPanel extends JPanel {
 				refreshItems();
 			}
 		});
-		
+
 		super.add(d_listLabel, BorderLayout.CENTER);
 	}
-	
+
 	public <E> ListPanel(Object bean, String propertyName, Class<E> objType) {
 		this(new PropertyListHolder<E>(bean, propertyName, objType).getValue());
 	}
-	
+
 	public <E> ListPanel(List<E> value) {
 		this(new ArrayListModel<E>(value));
 	}
@@ -79,7 +80,7 @@ public class ListPanel extends JPanel {
 	public void refreshItems() {
 		d_listLabel.setText(extractListItems());
 	}
-	
+
 	private String extractListItems() {
 		String listItems = "<html><ul style='list-style-type: circle; padding:0 px; margin:0 px; margin-left:10px;'>";
 		for(int i=0; i < d_entities.size(); i++) {
@@ -87,7 +88,7 @@ public class ListPanel extends JPanel {
 		}
 		return listItems + "</ul></html>";
 	}
-	
+
 	private String makeListItem(Object obj) {
 		return "<li>" + (obj instanceof Entity ? ((Entity)obj).getLabel() : obj.toString()) + "</li>";
 	}

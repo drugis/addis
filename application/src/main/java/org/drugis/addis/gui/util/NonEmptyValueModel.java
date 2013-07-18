@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +36,7 @@ import com.jgoodies.binding.value.ValueModel;
 public class NonEmptyValueModel extends AbstractValueModel {
 	private static final long serialVersionUID = 3077403842880451360L;
 	private ValueModel d_wrapped;
-	
+
 	public NonEmptyValueModel(ValueModel wrapped) {
 		d_wrapped = wrapped;
 		d_wrapped.addValueChangeListener(new PropertyChangeListener() {
@@ -45,7 +46,7 @@ public class NonEmptyValueModel extends AbstractValueModel {
 		});
 		update();
 	}
-	
+
 	public void update() {
 		fireValueChange(null, getValue());
 	}

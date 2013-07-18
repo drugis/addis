@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +62,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 			public void run() {
 				pm.rebuildRawAlternativesGraph();
 			}
-		}, "Select Drugs", pm.getRawDescription()));		
+		}, "Select Drugs", pm.getRawDescription()));
 		wizardModel.add(new RefineDrugSelectionWizardStep(pm));
 		wizardModel.add(new SelectTreatmentDefinitionsWizardStep(pm.getRefinedAlternativesGraph(), new Runnable() {
 			public void run() {
@@ -77,7 +78,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 		wizardModel.add(overviewStep);
 		return wizardModel;
 	}
-	
+
 
 	public static class OverviewWizardStep extends AbstractOverviewWizardStep {
 		private StudyGraph d_studyGraph;
@@ -86,17 +87,17 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 			super(pm, main);
 
 			setLayout(new BorderLayout());
-			    
+
 			FormLayout layout = new FormLayout(
 					"center:pref:grow",
 					"p"
-					);	
-			
+					);
+
 			PanelBuilder builder = new PanelBuilder(layout);
 			CellConstraints cc = new CellConstraints();
-			
+
 			builder.add(buildStudiesGraph(), cc.xy(1, 1));
-			
+
 			JScrollPane sp = new JScrollPane(builder.getPanel());
 			sp.getVerticalScrollBar().setUnitIncrement(16);
 			add(sp, BorderLayout.CENTER);
@@ -109,7 +110,7 @@ public class NetworkMetaAnalysisWizard extends Wizard {
 			d_studyGraph.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			return d_studyGraph;
 		}
-		
+
 		@Override
 		public void prepare() {
 			((NetworkMetaAnalysisWizardPM) d_pm).rebuildOverviewGraph();

@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +35,7 @@ public class BoundedInterval {
 	private final boolean d_lowerBoundIsOpen;
 	private final boolean d_upperBoundIsOpen;
 	public static final double EPSILON = 1.0E-14;
-	
+
 	public BoundedInterval(DoubleRange range, boolean lowerBoundIsOpen, boolean upperBoundIsOpen) {
 		d_range = range;
 		d_lowerBoundIsOpen = lowerBoundIsOpen;
@@ -43,7 +44,7 @@ public class BoundedInterval {
 
 	public BoundedInterval(double lowerBound, boolean lowerBoundIsOpen, double upperBound, boolean upperBoundIsOpen) {
 		this(new DoubleRange(
-				 lowerBound + (lowerBoundIsOpen ? BoundedInterval.EPSILON : 0), 
+				 lowerBound + (lowerBoundIsOpen ? BoundedInterval.EPSILON : 0),
 				 upperBound	- (upperBoundIsOpen ? BoundedInterval.EPSILON : 0)),
 				 lowerBoundIsOpen,
 				 upperBoundIsOpen);
@@ -60,7 +61,7 @@ public class BoundedInterval {
 	public boolean isUpperBoundOpen() {
 		return d_upperBoundIsOpen;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof BoundedInterval) {
@@ -71,10 +72,10 @@ public class BoundedInterval {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return d_range.hashCode() + 31 * (d_lowerBoundIsOpen ? 1 : 0) + 31 * 31 * (d_upperBoundIsOpen ? 1 : 0);
 	}
-	
+
 }

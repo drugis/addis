@@ -9,6 +9,7 @@
  * Schimbinschi.
  * Copyright © 2012 Gert van Valkenhoef, Daniel Reid, Joël Kuiper, Wouter
  * Reckman.
+ * Copyright © 2013 Gert van Valkenhoef, Joël Kuiper.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +41,7 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 	public SelectableTreatmentDefinitionsGraph(SelectableTreatmentDefinitionsGraphModel pm) {
 		super(pm);
 	}
-	
+
 	@Override
 	protected JGraph createGraph(GraphLayoutCache cache) {
 		final JGraph graph = super.createGraph(cache);
@@ -49,10 +50,10 @@ public class SelectableTreatmentDefinitionsGraph extends StudyGraph {
 		graph.addMouseListener(listener);
 		return graph;
 	}
-	
+
 	@Override
 	protected MyDefaultCellViewFactory getCellFactory() {
 		return new SelectableCellViewFactory(d_model, ((SelectableTreatmentDefinitionsGraphModel)d_pm).getSelectedDefinitions());
-	}	
+	}
 
 }
