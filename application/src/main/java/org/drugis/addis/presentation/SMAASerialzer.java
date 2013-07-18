@@ -64,6 +64,9 @@ public class SMAASerialzer<Alternative extends Entity, AnalysisType extends Bene
 		if (m instanceof PerCriterionMeasurements) {
 			insertPerCriterionMeasurement(d_mapper, m, performancesNode);
 		}
+
+		rootNode.put("preferences", d_mapper.createObjectNode());
+
 		rootNode.put("performanceTable", performancesNode);
 		return rootNode;
 	}
@@ -156,6 +159,8 @@ public class SMAASerialzer<Alternative extends Entity, AnalysisType extends Bene
 				performanceNode.put("parameters", parameterNode);
 			}
 			measurementNode.put("performance", performanceNode);
+
+
 			performancesNode.add(measurementNode);
 		}
 	}
