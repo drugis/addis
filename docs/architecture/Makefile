@@ -1,9 +1,12 @@
-all: architecture.pdf
+all: addis1-architecture.pdf addis2-architecture.pdf
 
 %.pdf: %.tex
 	pdflatex $<
+	pdflatex $<
 
-architecture.pdf: overview.pdf xml.pdf presentation.pdf activitytask.pdf future.pdf
+addis1-architecture.pdf: overview.pdf xml.pdf presentation.pdf activitytask.pdf
+
+addis2-architecture.pdf: future.pdf
 
 %.eps: %.dia
 	dia -e $@ -t eps $<
