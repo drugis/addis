@@ -1,6 +1,6 @@
 ADDIS - Aggregate Data Drug Information System
 ==============================================
-[![Build Status](https://travis-ci.org/drugis/addis.png)](https://travis-ci.org/drugis/addis])
+[![Build Status](https://travis-ci.org/drugis/addis.png)](https://travis-ci.org/drugis/addis)
 
 [ADDIS][1] is a software developed within the Dutch [Escher-project][2]
 for managing and analyzing clinical trial information.
