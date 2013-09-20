@@ -286,7 +286,7 @@ public class ClinicaltrialsImporter {
 						MeasureCategoryStruct measures = baseline.getMeasureList().measure.get(0).categoryList.category.get(0);
 						MeasurementStruct measurement = findMeasurement(xmlArm.groupId, measures.getMeasurementList().measurement);
 						if (measurement != null) {
-							arm.setSize((int)convertToDouble(measurement.getValueAttribute()));
+							arm.setSize(convertToInteger(measurement.getValueAttribute()));
 						}
 					}
 				}
@@ -530,8 +530,10 @@ public class ClinicaltrialsImporter {
 			MeasurementStruct measurementStruct,
 			MeasureStruct measure) {
 		int total = Integer.parseInt(totalStruct.valueAttribute);
+
 		Double mean = convertToDouble(measurementStruct.valueAttribute);
 		Double stdDev = convertToDouble(measurementStruct.spread);
+
 		if (measure.dispersion.equals("Standard Error") && stdDev != null) {
 			stdDev = stdDev * Math.sqrt(total);
 		} else if (!measure.dispersion.equals("Standard Deviation")) {
@@ -561,8 +563,12 @@ public class ClinicaltrialsImporter {
 		return new BasicRateMeasurement();
 	}
 
-	private static double convertToDouble(String text) {
+	private static Double convertToDouble(String text) {
 		return (text != null && !text.toLowerCase().contains("na")) ? Double.parseDouble(text) : null;
+	}
+
+	private static Integer convertToInteger(String text) {
+		return (text != null && !text.toLowerCase().contains("na")) ? Integer.parseInt(text) : null;
 	}
 
 	private static MeasurementStruct getMeasurementForArm(final String xmlArmId, int categoryIdx, MeasureStruct measure) {

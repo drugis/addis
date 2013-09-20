@@ -130,7 +130,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Creates a JGraphCoordinateAssignment
-	 * 
+	 *
 	 * @param intraCellSpacing
 	 *            the minimum buffer between cells on the same rank
 	 * @param interRankCellSpacing
@@ -154,7 +154,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * A basic horizontal coordinate assignment algorithm
-	 * 
+	 *
 	 * @param facade
 	 *            the facade describing the input graph
 	 * @param model
@@ -220,7 +220,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Performs one median positioning sweep in both directions
-	 * 
+	 *
 	 * @param model
 	 *            an internal model of the hierarchical layout
 	 */
@@ -359,7 +359,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Performs one median positioning sweep in one direction
-	 * 
+	 *
 	 * @param i
 	 *            the iteration of the whole process
 	 * @param model
@@ -381,7 +381,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Performs median minimisation over one rank.
-	 * 
+	 *
 	 * @param rankValue
 	 *            the layer number of this rank
 	 * @param model
@@ -531,7 +531,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	/**
 	 * Calculates the priority the specified cell has based on the type of its
 	 * cell and the cells it is connected to on the next layer
-	 * 
+	 *
 	 * @param currentCell
 	 *            the cell whose weight is to be calculated
 	 * @param collection
@@ -559,7 +559,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	/**
 	 * Calculates the median position of the connected cell on the specified
 	 * rank
-	 * 
+	 *
 	 * @param connectedCells
 	 *            the cells the candidate connects to on this level
 	 * @param rankValue
@@ -589,7 +589,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Sets up cached information for speed
-	 * 
+	 *
 	 * @param model
 	 *            the model to cache
 	 */
@@ -618,7 +618,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	 * Sets up the layout in an initial positioning. The ranks are all centered
 	 * as much as possible along the middle vertex in each rank. The other cells
 	 * are then placed as close as possible on either side.
-	 * 
+	 *
 	 * @param facade
 	 *            the facade describing the input graph
 	 * @param model
@@ -645,7 +645,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	 * rank are moved to the left and the rest of the rank inserted as close
 	 * together as their size and buffering permits. This method works on just
 	 * the specified rank.
-	 * 
+	 *
 	 * @param rankValue
 	 *            the current rank being processed
 	 * @param facade
@@ -717,7 +717,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	/**
 	 * Calculates the width rank in the hierarchy. Also set the y value of each
 	 * rank whilst performing the calculation
-	 * 
+	 *
 	 * @param facade
 	 *            the facade describing the input graph
 	 * @param model
@@ -811,7 +811,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Removes empty space between parts of the layout
-	 * 
+	 *
 	 * @param model
 	 */
 	// private void compactLayout(JGraphHierarchyModel model) {
@@ -861,7 +861,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	/**
 	 * Adds a new rectangle to any intersecting rectangles stored in areas. If
 	 * no intersection a new area is created from its values.
-	 * 
+	 *
 	 * @param area
 	 * @param areas
 	 */
@@ -886,7 +886,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	// newArea.setRect(area.getX(), 0, area.getWidth(), 100000);
 	// areas.add(newArea);
 	// newArea.cells.add(cell);
-	//			
+	//
 	// }
 	// // Check if any of the cached areas now overlap, if they do, merge them
 	// Set removedAreas = new HashSet();
@@ -909,7 +909,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 	/**
 	 * Sets the cell locations in the facade to those stored after this layout
 	 * processing step has completed.
-	 * 
+	 *
 	 * @param facade
 	 *            the facade describing the input graph
 	 * @param model
@@ -1037,7 +1037,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Hook to add additional processing
-	 * 
+	 *
 	 * @param edge
 	 *            The hierarchical model edge
 	 * @param realEdge
@@ -1091,7 +1091,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 		/**
 		 * comparator on the medianValue
-		 * 
+		 *
 		 * @param other
 		 *            the object to be compared to
 		 * @return the standard return you would expect when comparing two
@@ -1103,10 +1103,10 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 			} else if (weightedValue < other.weightedValue) {
 				return 1;
 			} else {
-				return Boolean.compare(other.nudge, nudge);
+				return new Boolean(nudge).compareTo(other.nudge);
 			}
 		}
-		
+
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof WeightedCellSorter) {
@@ -1115,7 +1115,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 			}
 			return false;
 		}
-		
+
 		@Override
 		public String toString() {
 			return Integer.toString(weightedValue);
@@ -1222,7 +1222,7 @@ public class JGraphCoordinateAssignment implements JGraphHierarchicalLayoutStep 
 
 	/**
 	 * Sets the logging level of this class
-	 * 
+	 *
 	 * @param level
 	 *            the logging level to set
 	 */
