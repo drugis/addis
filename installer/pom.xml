@@ -26,6 +26,12 @@
 			<url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>pentaho-releases</id>
+			<url>http://repository.pentaho.org/artifactory/repo/</url>
+		</pluginRepository>
+	</pluginRepositories>
 	
 	<dependencies>
 		<dependency>
