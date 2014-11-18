@@ -137,7 +137,7 @@ public class StudyBenefitRiskAnalysis extends BenefitRiskAnalysis<Arm> {
 			return new Beta(1 + rateMeasurement.getRate(), 1 + rateMeasurement.getSampleSize() - rateMeasurement.getRate());
 		} else if (measurement instanceof ContinuousMeasurement) {
 			ContinuousMeasurement contMeasurement = (ContinuousMeasurement) measurement;
-			return new TransformedStudentT(contMeasurement.getMean(), contMeasurement.getStdDev(), 
+			return new TransformedStudentT(contMeasurement.getMean(), contMeasurement.getStdDev() / Math.sqrt(contMeasurement.getSampleSize()), 
 					contMeasurement.getSampleSize() - 1);
 		} else {
 			throw new IllegalStateException("Unknown measurement type " + measurement.getClass().getSimpleName());
