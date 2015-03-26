@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.16.5</version>
+		<version>1.16.6</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -283,6 +283,7 @@
 			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.8.3</version>
 				<executions>
 					<execution>
 						<id>ClinicalTrials.gov import schema</id>

@@ -154,7 +154,7 @@ public class StudyBenefitRiskAnalysisTest {
 		
 		Arm arm = study.getArms().get(1);
 		ContinuousMeasurement measurement = (ContinuousMeasurement) study.getMeasurement(endpoint, arm);
-		TransformedStudentTBase expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev(),
+		TransformedStudentTBase expected = new TransformedStudentT(measurement.getMean(), measurement.getStdDev() / Math.sqrt(measurement.getSampleSize()),
 				measurement.getSampleSize() - 1);
 		assertEquals(expected, d_analysis.getMeasurement(endpoint, arm));
 	}
