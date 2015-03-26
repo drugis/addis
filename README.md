@@ -23,6 +23,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.16.6: Bugfix release.
+
 1.16.5: Bugfix release.
 
 1.16.4: JSON export of benefit-risk models; bugfixes.
