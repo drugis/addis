@@ -30,7 +30,6 @@ package org.drugis.addis.util.JSMAAintegration;
 
 import java.util.Collections;
 
-import org.drugis.addis.util.JSMAAintegration.NetworkBenefitRiskIT;
 import org.drugis.common.threading.TaskUtil;
 import org.junit.Test;
 
