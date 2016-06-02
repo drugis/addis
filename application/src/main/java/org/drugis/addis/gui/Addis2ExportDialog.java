@@ -41,6 +41,7 @@ public class Addis2ExportDialog extends JDialog {
 		private String apiKey = "";
 		private String server = "https://addis.drugis.org/";
 		private String datasetId = UUID.randomUUID().toString();
+		private Integer userId = null;
 		
 		private String status = "";
 		
@@ -91,6 +92,38 @@ public class Addis2ExportDialog extends JDialog {
 			String oldVal = this.status;
 			this.status = newVal;
 			firePropertyChange("status", oldVal, newVal);
+		}
+		public Integer getUserId() {
+			return userId;
+		}
+		public void setUserId(Integer userId) {
+			this.userId = userId;
+		}
+	}
+	
+	private final class CredentialsChecker implements Runnable {
+		private final ExportInfo d_info;
+
+		public CredentialsChecker(ExportInfo info) {
+			d_info = info;
+		}
+
+		@Override
+		public void run() {
+			try {
+				d_info.setStatus("Checking connection...");
+				HttpClient client = HttpClients.createDefault();
+				URI meUri = new URIBuilder(d_info.getServer()).setPath("/whoami").build();
+				HttpGet get = new HttpGet(meUri);
+				get.setHeader("X-Auth-Application-Key", d_info.apiKey);
+				HttpResponse response = client.execute(get);
+				ObjectMapper mapper = new ObjectMapper();
+				Map parsed = mapper.readValue(response.getEntity().getContent(), Map.class);
+				d_info.setUserId((Integer) parsed.get("id")); 
+				d_info.setStatus("Authenticated as user " + d_info.getUserId().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -149,7 +182,7 @@ public class Addis2ExportDialog extends JDialog {
 		super(parent, "Export to ADDIS 2", true);
 		d_mgr = mgr;
 		final ExportInfo info = new ExportInfo();
-		Addis2ExportView view = new Addis2ExportView(new PresentationModel<ExportInfo>(info), new Exporter(info));
+		Addis2ExportView view = new Addis2ExportView(new PresentationModel<ExportInfo>(info), new CredentialsChecker(info), new Exporter(info));
 		add(view.buildPanel());
 		pack();
 	}
