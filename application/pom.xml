@@ -229,9 +229,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>addis-rdf</groupId>
-			<artifactId>addis-rdf</artifactId>
-			<version>0.1.0</version>
+			<groupId>org.drugis.addis</groupId>
+			<artifactId>rdfexport</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
