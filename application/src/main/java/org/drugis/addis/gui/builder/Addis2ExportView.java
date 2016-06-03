@@ -38,7 +38,6 @@ import javax.swing.JTextField;
 
 import org.drugis.addis.gui.Addis2ExportDialog.ExportInfo;
 import org.drugis.addis.gui.util.NonEmptyValueModel;
-import org.drugis.common.gui.BuildViewWhenReadyComponent;
 import org.drugis.common.gui.ViewBuilder;
 import org.drugis.common.threading.SimpleSuspendableTask;
 import org.drugis.common.threading.ThreadHandler;
@@ -47,14 +46,11 @@ import org.drugis.common.validation.BooleanAndModel;
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
 import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.value.ValueHolder;
-import com.jgoodies.binding.value.ValueModel;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 public class Addis2ExportView implements ViewBuilder {
-	private ValueModel d_rdfReady;
 	private BooleanAndModel d_credentialsReady = new BooleanAndModel();
 	private BooleanAndModel d_readyModel = new BooleanAndModel();
 		
@@ -65,10 +61,10 @@ public class Addis2ExportView implements ViewBuilder {
 	private JTextField d_datasetIdField;
 	private JButton d_importButton;
 	private JButton d_credentialsCheckButton;
+	private JLabel d_authStatusLabel;
 	private JLabel d_statusLabel;
 
 	private JPanel d_panel;
-	private BuildViewWhenReadyComponent d_rdfReadyWaiter;
 	private PresentationModel<ExportInfo> d_pm;
 	private Runnable d_export;
 	private Runnable d_checkCredentials;
@@ -83,7 +79,8 @@ public class Addis2ExportView implements ViewBuilder {
 		d_credentialsReady.add(new NonEmptyValueModel(d_pm.getModel("apiKey")));
 		d_credentialsReady.add(new NonEmptyValueModel(d_pm.getModel("server")));
 		
-		d_readyModel.add(new NonEmptyValueModel(d_pm.getModel("userId")));
+		NonEmptyValueModel credentialsValid = new NonEmptyValueModel(d_pm.getModel("userId"));
+		d_readyModel.add(credentialsValid);
 		d_readyModel.add(new NonEmptyValueModel(d_pm.getModel("name")));
 		d_readyModel.add(new NonEmptyValueModel(d_pm.getModel("title")));
 		d_readyModel.add(new NonEmptyValueModel(d_pm.getModel("datasetId")));
@@ -92,6 +89,7 @@ public class Addis2ExportView implements ViewBuilder {
 		d_serverField.setColumns(30);
 		d_apiKeyField = BasicComponentFactory.createTextField(d_pm.getModel("apiKey"), false);
 		d_apiKeyField.setColumns(30);
+		d_authStatusLabel = BasicComponentFactory.createLabel(d_pm.getModel("authStatus"));
 		d_credentialsCheckButton = new JButton("Check credentials");
 		Bindings.bind(d_credentialsCheckButton, "enabled", d_credentialsReady);
 		d_credentialsCheckButton.addActionListener(new ActionListener() {
@@ -104,10 +102,13 @@ public class Addis2ExportView implements ViewBuilder {
 		
 		d_nameField = BasicComponentFactory.createTextField(d_pm.getModel("name"), false);
 		d_nameField.setColumns(15);
+		Bindings.bind(d_nameField, "enabled", credentialsValid);
 		d_titleField = BasicComponentFactory.createTextField(d_pm.getModel("title"), false);
 		d_titleField.setColumns(30);
+		Bindings.bind(d_titleField, "enabled", credentialsValid);
 		d_datasetIdField = BasicComponentFactory.createTextField(d_pm.getModel("datasetId"), false);
 		d_datasetIdField.setColumns(30);
+		Bindings.bind(d_datasetIdField, "enabled", credentialsValid);
 		d_statusLabel = BasicComponentFactory.createLabel(d_pm.getModel("status"));
 		d_importButton = new JButton("Import");
 		Bindings.bind(d_importButton, "enabled", d_readyModel);
@@ -117,15 +118,6 @@ public class Addis2ExportView implements ViewBuilder {
 				ThreadHandler.getInstance().scheduleTask(new SimpleSuspendableTask(d_export, "Export to ADDIS 2"));
 			}
 		});
-	}
-
-	private ViewBuilder rdfReadyPanelBuilder() {
-		return new ViewBuilder() {
-			@Override
-			public JComponent buildPanel() {
-				return new JLabel("Dataset ready!");
-			}
-		};
 	}
 
 	public JComponent buildPanel() {
@@ -147,6 +139,7 @@ public class Addis2ExportView implements ViewBuilder {
 		builder.add(d_serverField, cc.xyw(3, 3, 3));
 		builder.addLabel("API key:", cc.xy(1, 5));
 		builder.add(d_apiKeyField, cc.xyw(3, 5, 3));
+		builder.add(d_authStatusLabel, cc.xyw(1, 7, 3));
 		builder.add(d_credentialsCheckButton, cc.xy(5, 7));
 		
 		builder.addLabel("Name:", cc.xy(1, 9));
@@ -158,9 +151,7 @@ public class Addis2ExportView implements ViewBuilder {
 
 		builder.add(d_statusLabel, cc.xyw(1, 15, 3));
 		builder.add(d_importButton, cc.xy(5, 15));
-		
-//		builder.add(d_rdfReadyWaiter, cc.xyw(1, 9, 5));
-		
+				
 		d_panel = builder.getPanel();
 		return d_panel;	
 	}

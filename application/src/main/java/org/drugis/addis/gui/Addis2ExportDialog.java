@@ -1,5 +1,7 @@
 package org.drugis.addis.gui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -8,28 +10,20 @@ import java.util.UUID;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.HttpContext;
-import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.drugis.addis.entities.DomainManager;
-import org.drugis.addis.gui.Addis2ExportDialog.ExportInfo;
 import org.drugis.addis.gui.builder.Addis2ExportView;
-import org.drugis.addis.gui.util.NonEmptyValueModel;
-import org.drugis.addis.presentation.ModifiableHolder;
 import org.drugis.addis.rdf.AddisToRdfFactory;
 import org.drugis.common.beans.AbstractObservable;
-import org.drugis.common.gui.OkCancelDialog;
 
 import com.jgoodies.binding.PresentationModel;
 
@@ -42,7 +36,9 @@ public class Addis2ExportDialog extends JDialog {
 		private String server = "https://addis.drugis.org/";
 		private String datasetId = UUID.randomUUID().toString();
 		private Integer userId = null;
+		private boolean done = false;
 		
+		private String authStatus = "";
 		private String status = "";
 		
 		public String getName() {
@@ -68,6 +64,10 @@ public class Addis2ExportDialog extends JDialog {
 			String oldVal = this.apiKey;
 			this.apiKey = newVal;
 			firePropertyChange("apiKey", oldVal, newVal);
+			if (!newVal.equals(oldVal)) {
+				this.setUserId(null);
+				this.setAuthStatus("");
+			}
 		}
 		public String getServer() {
 			return server;
@@ -76,6 +76,10 @@ public class Addis2ExportDialog extends JDialog {
 			String oldVal = this.server;
 			this.server = newVal;
 			firePropertyChange("server", oldVal, newVal);
+			if (!newVal.equals(oldVal)) {
+				this.setUserId(null);
+				this.setAuthStatus("");
+			}
 		}
 		public String getDatasetId() {
 			return datasetId;
@@ -96,8 +100,26 @@ public class Addis2ExportDialog extends JDialog {
 		public Integer getUserId() {
 			return userId;
 		}
-		public void setUserId(Integer userId) {
-			this.userId = userId;
+		public void setUserId(Integer newVal) {
+			Integer oldVal = this.userId;
+			this.userId = newVal;
+			firePropertyChange("userId", oldVal, newVal);
+		}
+		public String getAuthStatus() {
+			return authStatus;
+		}
+		public void setAuthStatus(String newVal) {
+			String oldVal = this.authStatus;
+			this.authStatus = newVal;
+			firePropertyChange("authStatus", oldVal, newVal);
+		}
+		public boolean getDone() {
+			return done;
+		}
+		public void setDone(boolean newVal) {
+			boolean oldVal = this.done;
+			this.done = newVal;
+			firePropertyChange("done", oldVal, newVal);
 		}
 	}
 	
@@ -111,17 +133,23 @@ public class Addis2ExportDialog extends JDialog {
 		@Override
 		public void run() {
 			try {
-				d_info.setStatus("Checking connection...");
-				HttpClient client = HttpClients.createDefault();
-				URI meUri = new URIBuilder(d_info.getServer()).setPath("/whoami").build();
-				HttpGet get = new HttpGet(meUri);
+				d_info.setAuthStatus("Checking credentials...");
+				
+				HttpGet get = new HttpGet(new URIBuilder(d_info.getServer()).setPath("/whoami").build());
 				get.setHeader("X-Auth-Application-Key", d_info.apiKey);
-				HttpResponse response = client.execute(get);
-				ObjectMapper mapper = new ObjectMapper();
-				Map parsed = mapper.readValue(response.getEntity().getContent(), Map.class);
-				d_info.setUserId((Integer) parsed.get("id")); 
-				d_info.setStatus("Authenticated as user " + d_info.getUserId().toString());
+				HttpResponse response = HttpClients.createDefault().execute(get);
+				
+				StatusLine statusLine = response.getStatusLine();
+				if (statusLine.getStatusCode() == 200) {
+					ObjectMapper mapper = new ObjectMapper();
+					Map<?, ?> parsed = mapper.readValue(response.getEntity().getContent(), Map.class);
+					d_info.setUserId((Integer) parsed.get("id")); 
+					d_info.setAuthStatus("Authenticated as " + parsed.get("firstName") + " " + parsed.get("lastName"));
+				} else {
+					d_info.setAuthStatus("Authentication failed: " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+				}
 			} catch (Exception e) {
+				d_info.setAuthStatus("Error: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -137,17 +165,6 @@ public class Addis2ExportDialog extends JDialog {
 		@Override
 		public void run() {
 			try {
-				d_info.setStatus("Checking connection...");
-				HttpClient client = HttpClients.createDefault();
-				URI meUri = new URIBuilder(d_info.getServer()).setPath("/whoami").build();
-				HttpGet get = new HttpGet(meUri);
-				get.setHeader("X-Auth-Application-Key", d_info.apiKey);
-				HttpResponse response = client.execute(get);
-				ObjectMapper mapper = new ObjectMapper();
-				Map parsed = mapper.readValue(response.getEntity().getContent(), Map.class);
-				Integer userId = (Integer) parsed.get("id"); 
-				
-				
 				d_info.setStatus("Generating XML...");
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				d_mgr.saveXMLDomain(os);
@@ -158,17 +175,24 @@ public class Addis2ExportDialog extends JDialog {
 				
 				d_info.setStatus("Uploading RDF...");
 				URI writeDatasetUri = new URIBuilder(d_info.getServer())
-						.setPath("/users/" + userId + "/datasets/" + d_info.getDatasetId())
+						.setPath("/users/" + d_info.getUserId() + "/datasets/" + d_info.getDatasetId())
 		        .setParameter("commitTitle", "Exported from ADDIS 1.x")
 		        .build();
-				System.err.println(writeDatasetUri);
 				HttpPost post = new HttpPost(writeDatasetUri);
 				post.setHeader("Content-Type", "text/trig");
 				post.setHeader("X-Auth-Application-Key", d_info.apiKey);
 				post.setEntity(new ByteArrayEntity(rdf.getBytes()));
-				HttpResponse execute = client.execute(post);
-				d_info.setStatus("Response status: " + execute.getStatusLine());
+				HttpResponse response = HttpClients.createDefault().execute(post);
+				
+				StatusLine statusLine = response.getStatusLine();
+				if (statusLine.getStatusCode() == 200 || statusLine.getStatusCode() == 201) {
+					d_info.setStatus("Export complete");
+					d_info.setDone(true);
+				} else {
+					d_info.setStatus("Export failed: " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+				}
 			} catch (Exception e) {
+				d_info.setStatus("Error: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -183,6 +207,15 @@ public class Addis2ExportDialog extends JDialog {
 		d_mgr = mgr;
 		final ExportInfo info = new ExportInfo();
 		Addis2ExportView view = new Addis2ExportView(new PresentationModel<ExportInfo>(info), new CredentialsChecker(info), new Exporter(info));
+		info.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (evt.getPropertyName().equals("done") && evt.getNewValue().equals(true)) {
+					JOptionPane.showMessageDialog(Addis2ExportDialog.this, "Dataset successfully exported to ADDIS 2");
+					Addis2ExportDialog.this.dispose();
+				}
+			}
+		});
 		add(view.buildPanel());
 		pack();
 	}
