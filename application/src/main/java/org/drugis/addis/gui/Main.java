@@ -437,4 +437,8 @@ public class Main extends AbstractObservable {
 		return d_displayName;
 	}
 
+	public DomainManager getDomainManager() {
+		return d_domainMgr;
+	}
+
 }

@@ -290,6 +290,7 @@ public class AddisWindow extends JFrame {
 		fileMenu.add(createLoadItem());
 		fileMenu.add(createSaveItem());
 		fileMenu.add(createSaveAsItem());
+		fileMenu.add(createExportToAddis2Item());
 		fileMenu.add(createExitItem());
 
 		return fileMenu;
@@ -478,7 +479,19 @@ public class AddisWindow extends JFrame {
 		});
 		return saveItem;
 	}
+	
+	private JMenuItem createExportToAddis2Item() {
+		JMenuItem saveItem = new JMenuItem("Export to ADDIS 2", Main.IMAGELOADER.getIcon(org.drugis.mtc.gui.FileNames.ICON_SAVEFILE));
+		saveItem.setMnemonic('e');
 
+		saveItem.addActionListener(new AbstractAction() {
+			public void actionPerformed(final ActionEvent e) {
+				Addis2ExportDialog dialog = new Addis2ExportDialog(AddisWindow.this, d_main.getDomainManager());
+				dialog.setVisible(true);
+			}
+		});
+		return saveItem;
+	}
 
 	private JMenuItem createExitItem() {
 		JMenuItem exitItem = new JMenuItem("Exit", Main.IMAGELOADER.getIcon(FileNames.ICON_STOP));
