@@ -2,7 +2,8 @@
 
 ANT_LIB=~/.ant/lib
 if [ ! -e $ANT_LIB/maven-ant-tasks*.jar ]; then
-	echo "Missing maven ant library, please install it to $ANT_LIB";
+	echo "Missing maven ant library, please install it to $ANT_LIB.";
+	echo "Get it from https://drugis.org/files/maven-ant-tasks-2.1.3.jar";
 	exit;
 fi
 
