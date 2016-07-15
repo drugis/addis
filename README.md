@@ -23,6 +23,8 @@ modern operating systems ship with a suitable JRE.
 Versions
 --------
 
+1.16.7: Add export to ADDIS 2.
+
 1.16.6: Bugfix release.
 
 1.16.5: Bugfix release.
