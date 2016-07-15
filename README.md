@@ -17,13 +17,13 @@ ADDIS comes with two built-in examples:
 Requirements
 ------------
 
-ADDIS is made in [Java][4], and requires Java 6 (JRE 1.6) or newer. Most
+ADDIS is made in [Java][4], and requires Java 7 (JRE 1.7) or newer. Most
 modern operating systems ship with a suitable JRE.
 
 Versions
 --------
 
-1.16.7: Add export to ADDIS 2.
+1.16.7: Add export to ADDIS 2. Require Java 7.
 
 1.16.6: Bugfix release.
 
