@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.16.8</version>
+		<version>1.16.9-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
