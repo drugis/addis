@@ -95,6 +95,7 @@ public class ClinicaltrialsImporter {
 
 	static void getClinicaltrialsData(Study study, String url, boolean importResults) throws IOException {
 		URLConnection conn = new URL(url).openConnection();
+		conn.setRequestProperty("Accept", "application/xml");
 		getClinicaltrialsData(study, conn.getInputStream(), importResults);
 	}
 

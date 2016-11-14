@@ -72,7 +72,7 @@ public class ClinicaltrialsImporterTest {
 	@Test
 	public void testGetClinicaltrialsDataFromUri() {
 		try {
-			ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, "http://clinicaltrials.gov/show/NCT00644527?resultsxml=true", true);
+			ClinicaltrialsImporter.getClinicaltrialsData(d_testStudy, "https://clinicaltrials.gov/show/NCT00644527?resultsxml=true", true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

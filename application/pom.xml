@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.drugis</groupId>
 		<artifactId>addis</artifactId>
-		<version>1.16.7</version>
+		<version>1.16.8</version>
 	</parent>
 
 	<groupId>org.drugis.addis</groupId>
@@ -231,7 +231,7 @@
 		<dependency>
 			<groupId>org.drugis.addis</groupId>
 			<artifactId>rdfexport</artifactId>
-			<version>1.0.1</version>
+			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -369,9 +369,9 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
 					<archive>
 						<manifest>
 							<mainClass>org.drugis.addis.gui.Main</mainClass>

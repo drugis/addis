@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 public class PubMedIDRetriever {
 	public static final int READ_TIMEOUT = 3000;
 	public static final int CONNECTION_TIMEOUT = 3000;
-	public static final String PUBMED_API = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+	public static final String PUBMED_API = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 	
 	public static class ParseException extends IOException {
 		private static final long serialVersionUID = -3902366298759803187L;
