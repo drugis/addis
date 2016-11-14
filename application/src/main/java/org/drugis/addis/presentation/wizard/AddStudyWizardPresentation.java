@@ -74,6 +74,8 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddStudyWizardPresentation {
 
+	public static final String CLINICALTRIALS_GOV_BASE = "https://clinicaltrials.gov/show/";
+
 	public abstract class OutcomeMeasurementsModel {
 		abstract public TableModel getMeasurementTableModel();
 	}
@@ -189,10 +191,10 @@ public class AddStudyWizardPresentation {
 			String studyID = getIdModel().getValue().toString().trim().replace(" ", "%20");
 			Study clinicaltrialsData;
 			if (d_importCTWithResults.getValue()) {
-				String url = "http://clinicaltrials.gov/show/"+studyID+"?resultsxml=true";
+				String url = CLINICALTRIALS_GOV_BASE + studyID + "?resultsxml=true";
 				clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, true);
 			} else {
-				String url = "http://clinicaltrials.gov/show/"+studyID+"?displayxml=true";
+				String url = CLINICALTRIALS_GOV_BASE + studyID + "?displayxml=true";
 				clinicaltrialsData = ClinicaltrialsImporter.getClinicaltrialsData(url, false);
 			}
 			setNewStudy(clinicaltrialsData);
